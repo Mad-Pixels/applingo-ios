@@ -1,17 +1,6 @@
-import Foundation
+import SwiftUI
 
-protocol AppCoordinatorProtocol {
-    var logger: LoggerProtocol { get }
-    var apiManager: APIManagerProtocol { get }
-    var databaseManager: DatabaseManagerProtocol { get }
-    var settingsManager: SettingsManagerProtocol { get }
-    var localizationManager: LocalizationManagerProtocol { get }
-    var themeManager: ThemeManagerProtocol { get }
-    
-    func start()
-}
-
-class AppCoordinator: AppCoordinatorProtocol {
+class AppState: ObservableObject {
     let logger: LoggerProtocol
     let apiManager: APIManagerProtocol
     let databaseManager: DatabaseManagerProtocol
@@ -26,10 +15,11 @@ class AppCoordinator: AppCoordinatorProtocol {
         self.localizationManager = LocalizationManager(logger: logger)
         self.settingsManager = SettingsManager(logger: logger)
         self.themeManager = ThemeManager(logger: logger)
+        
+        setup()
     }
     
-    func start() {
-        // Инициализация компонентов
+    private func setup() {
         do {
             try databaseManager.connect()
             logger.log("Database connected successfully", level: .info)
@@ -37,17 +27,8 @@ class AppCoordinator: AppCoordinatorProtocol {
             logger.log("Failed to connect to database: \(error.localizedDescription)", level: .error)
         }
         
-        // Загрузка сохраненных настроек
         settingsManager.loadSettings()
-        
-        // Применение сохраненного языка
-        let savedLanguage = settingsManager.settings.language
-        localizationManager.setLanguage(savedLanguage)
-        
-        // Применение сохраненной темы
-        let savedTheme = settingsManager.settings.theme
-        themeManager.setTheme(savedTheme)
-        
-        // Дополнительная логика инициализации...
+        localizationManager.setLanguage(settingsManager.settings.language)
+        themeManager.setTheme(settingsManager.settings.theme)
     }
 }
