@@ -7,10 +7,12 @@ protocol ThemeManagerProtocol {
 }
 
 class ThemeManager: ThemeManagerProtocol {
+    let logger: LoggerProtocol
     private(set) var currentTheme: Theme
     
-    init() {
+    init(logger: LoggerProtocol) {
         self.currentTheme = LightTheme()
+        self.logger = logger
     }
     
     func setTheme(_ theme: String) {

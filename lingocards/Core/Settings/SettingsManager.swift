@@ -9,6 +9,7 @@ protocol SettingsManagerProtocol {
 class SettingsManager: SettingsManagerProtocol {
     private let userDefaults = UserDefaults.standard
     private let settingsKey = "AppSettings"
+    private let logger: LoggerProtocol
     
     var settings: AppSettings {
         didSet {
@@ -16,8 +17,9 @@ class SettingsManager: SettingsManagerProtocol {
         }
     }
     
-    init() {
+    init(logger: LoggerProtocol) {
         self.settings = AppSettings.default
+        self.logger = logger
     }
     
     func loadSettings() {

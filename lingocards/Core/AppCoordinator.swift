@@ -23,9 +23,9 @@ class AppCoordinator: AppCoordinatorProtocol {
         self.logger = Logger()
         self.apiManager = APIManager(baseURL: "https://lingocards-api.madpixels.io", token: "t9DbIipRtzPBVXYLoXxc6KSn", logger: logger)
         self.databaseManager = DatabaseManager(dbName: "LingoCards.sqlite", logger: logger)
-        self.settingsManager = SettingsManager()
-        self.localizationManager = LocalizationManager()
-        self.themeManager = ThemeManager()
+        self.localizationManager = LocalizationManager(logger: logger)
+        self.settingsManager = SettingsManager(logger: logger)
+        self.themeManager = ThemeManager(logger: logger)
     }
     
     func start() {
