@@ -5,6 +5,7 @@ struct ContentView: View {
     
     init(apiManager: APIManagerProtocol) {
         _viewModel = StateObject(wrappedValue: GreetingViewModel(apiManager: apiManager))
+        viewModel.fetchDownload()
     }
     
     var body: some View {

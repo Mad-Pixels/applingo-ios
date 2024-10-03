@@ -10,6 +10,24 @@ class GreetingViewModel: ObservableObject {
         fetchDictionary()
     }
     
+    func fetchDownload() {
+        let requestBody = RequestDownloadBody(dictionary_key: "engheb.csv")
+        let r = RequestDownload(apiManager: apiManager)
+        
+        r.invoke(requestBody: requestBody) { (result: Result<ResponseQuery, APIError>) in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let response):
+                    // Обработка успешного ответа
+                    print(response.data.items)
+                case .failure(let error):
+                    // Обработка ошибок
+                    print("Error: \(error)")
+                }
+            }
+        }
+    }
+    
     func fetchDictionary() {
         let requestBody = RequestQueryBody()
         let r = RequestQuery(apiManager: apiManager)
