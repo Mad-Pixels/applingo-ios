@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// Тёмная тема
 struct DarkTheme: Theme {
     let backgroundColor: Color = Color.black
     let textColor: Color = Color.white

@@ -2,11 +2,13 @@ import Foundation
 import Combine
 
 protocol SettingsManagerProtocol: ObservableObject {
+    var logger: LoggerProtocol? { get set }
     var settings: AppSettings { get set }
+    
     var settingsPublisher: Published<AppSettings>.Publisher { get }
+    
     func loadSettings()
     func saveSettings()
-    var logger: LoggerProtocol? { get set }
 }
 
 class SettingsManager: ObservableObject, SettingsManagerProtocol {
@@ -22,7 +24,6 @@ class SettingsManager: ObservableObject, SettingsManagerProtocol {
     var settingsPublisher: Published<AppSettings>.Publisher {
         $settings
     }
-
     var logger: LoggerProtocol?
 
     init() {
@@ -34,18 +35,18 @@ class SettingsManager: ObservableObject, SettingsManagerProtocol {
         if let data = userDefaults.data(forKey: settingsKey),
            let savedSettings = try? JSONDecoder().decode(AppSettings.self, from: data) {
             self.settings = savedSettings
-            logger?.log("Настройки загружены", level: .info, details: nil)
+            logger?.log("Settings was updated", level: .info, details: nil)
         } else {
-            logger?.log("Используются настройки по умолчанию", level: .info, details: nil)
+            logger?.log("Use default settings", level: .info, details: nil)
         }
     }
 
     func saveSettings() {
         if let encodedSettings = try? JSONEncoder().encode(settings) {
             userDefaults.set(encodedSettings, forKey: settingsKey)
-            logger?.log("Настройки сохранены", level: .info, details: nil)
+            logger?.log("Settings changes was saved", level: .info, details: nil)
         } else {
-            logger?.log("Не удалось сохранить настройки", level: .error, details: nil)
+            logger?.log("Error while saving settings", level: .error, details: nil)
         }
     }
 }

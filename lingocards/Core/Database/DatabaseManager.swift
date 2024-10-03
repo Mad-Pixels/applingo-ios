@@ -1,31 +1,23 @@
 import Foundation
 import SQLite3
 
-
-// Протокол, определяющий методы для работы с базой данных
 protocol DatabaseManagerProtocol {
-    func connect() throws
-    func execute(query: String) throws
     func fetch<T>(query: String) throws -> [T]
+    func execute(query: String) throws
+    func connect() throws
 }
 
-// Класс для управления локальной базой данных SQLite
 class DatabaseManager: DatabaseManagerProtocol {
     private let logger: LoggerProtocol
     private var db: OpaquePointer?
     private let dbPath: String
     
-    init(dbName: String, logger: LoggerProtocol) {
+    init(dbName: String, logger: any LoggerProtocol) {
+        self.dbPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(dbName).path
         self.logger = logger
-        
-        let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-        self.dbPath = documentsPath.appendingPathComponent(dbName).path
-        logger.log("Database path: \(dbPath)", level: .info, details: nil)
     }
     
-    // Метод для подключения к базе данных
     func connect() throws {
-        // Проверяем, существует ли файл базы данных
         if !FileManager.default.fileExists(atPath: dbPath) {
             logger.log("Database file not found. Creating new database.", level: .info, details: nil)
             try createDatabase()
@@ -34,7 +26,6 @@ class DatabaseManager: DatabaseManagerProtocol {
         if sqlite3_open(dbPath, &db) != SQLITE_OK {
             throw DatabaseError.connectionError("Unable to open database.")
         }
-        logger.log("Database connected successfully", level: .info, details: nil)
     }
     
     private func createDatabase() throws {
@@ -42,14 +33,11 @@ class DatabaseManager: DatabaseManagerProtocol {
             throw DatabaseError.fileCreationError("Unable to create database file.")
         }
         
-        // Здесь вы можете добавить логику создания таблиц
         try initializeDatabase()
-        
         logger.log("New database created and initialized", level: .info, details: nil)
     }
     
     private func initializeDatabase() throws {
-        // Пример создания таблицы
         let createTableQuery = """
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -75,7 +63,6 @@ class DatabaseManager: DatabaseManagerProtocol {
     // Метод для выборки данных из базы данных
     // Примечание: Этот метод нужно будет доработать для конкретных типов данных
     func fetch<T>(query: String) throws -> [T] {
-        // TODO: Реализовать логику выборки и преобразования данных
         return []
     }
     

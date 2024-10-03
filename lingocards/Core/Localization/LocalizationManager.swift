@@ -1,32 +1,29 @@
-// LocalizationManager.swift
 import Foundation
 import Combine
 
-/// Протокол, определяющий функциональность менеджера локализации.
 protocol LocalizationManagerProtocol {
     func setLanguage(_ language: String)
     func localizedString(for key: String, arguments: CVarArg...) -> String
     func currentLanguage() -> String
 }
 
-/// Управляет локализацией, наблюдая за изменениями настроек и обновляясь соответственно.
 class LocalizationManager: ObservableObject, LocalizationManagerProtocol {
-    private let logger: LoggerProtocol
-    private var bundle: Bundle?
     @Published private(set) var currentLanguageCode: String
+    private let logger: LoggerProtocol
+
     private var settingsManager: any SettingsManagerProtocol
     private var cancellables = Set<AnyCancellable>()
+    private var bundle: Bundle?
 
-    /// Инициализирует менеджер локализации.
-    init(logger: LoggerProtocol, settingsManager: any SettingsManagerProtocol) {
-        self.logger = logger
-        self.settingsManager = settingsManager
+    init(logger: any LoggerProtocol, settingsManager: any SettingsManagerProtocol) {
         self.currentLanguageCode = settingsManager.settings.language
+        self.settingsManager = settingsManager
+        self.logger = logger
+
         self.setLanguage(currentLanguageCode)
         setupBindings()
     }
 
-    /// Настраивает привязки для наблюдения за изменениями настроек.
     private func setupBindings() {
         settingsManager.settingsPublisher
             .map { $0.language }
@@ -37,18 +34,15 @@ class LocalizationManager: ObservableObject, LocalizationManagerProtocol {
             .store(in: &cancellables)
     }
 
-    /// Устанавливает текущий язык и обновляет бандл.
     func setLanguage(_ language: String) {
         guard let path = Bundle.main.path(forResource: language, ofType: "lproj"),
               let bundle = Bundle(path: path) else {
-            logger.log("Не удалось установить язык: \(language)", level: .error, details: nil)
+            logger.log("Failed to load bundle for language: \(language)", level: .error, details: nil)
             return
         }
-        self.bundle = bundle
+
         self.currentLanguageCode = language
-        logger.log("Язык установлен на: \(language)", level: .info, details: nil)
-        
-        // Уведомляем об изменениях
+        self.bundle = bundle
         objectWillChange.send()
     }
 
@@ -62,7 +56,6 @@ class LocalizationManager: ObservableObject, LocalizationManagerProtocol {
     }
 }
 
-
 extension String {
     func localized(arguments: CVarArg...) -> String {
         guard let manager = LocalizationService.shared.manager else {
@@ -72,11 +65,9 @@ extension String {
     }
 }
 
-
 class LocalizationService {
     static let shared = LocalizationService()
     var manager: LocalizationManagerProtocol?
-    
+
     private init() {}
 }
-

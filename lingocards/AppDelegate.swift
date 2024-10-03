@@ -8,9 +8,9 @@ struct LingoCardsApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environmentObject(appState)
                 .environmentObject(appState.localizationManager)
                 .environmentObject(appState.themeManager)
+                .environmentObject(appState)
         }
     }
 }

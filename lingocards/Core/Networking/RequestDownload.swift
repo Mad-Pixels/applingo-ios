@@ -1,13 +1,11 @@
 import Foundation
 
-// Структура тела запроса
 struct RequestDownloadBody: Encodable {
     let dictionary_key: String
 }
 
-// Структура ответа
 struct ResponseDownload: Decodable {
-    let data: ResponseQueryBody
+    let data: ResponseDownloadBody
 }
 
 struct ResponseDownloadBody: Decodable {
@@ -18,36 +16,40 @@ class RequestDownload {
     private let apiManager: APIManagerProtocol
     private let logger: LoggerProtocol
     
-    init(apiManager: APIManagerProtocol, logger: LoggerProtocol) {
+    init(apiManager: any APIManagerProtocol, logger: any LoggerProtocol) {
         self.apiManager = apiManager
         self.logger = logger
     }
     
-    func invoke<T: Decodable>(requestBody: RequestDownloadBody, completion: @escaping (Result<T, APIError>) -> Void) {
+    func invoke<T: Decodable>(requestBody: RequestDownloadBody) async throws -> T {
         do {
             let bodyData = try JSONEncoder().encode(requestBody)
-            apiManager.post(endpoint: "/device/v1/dictionary/download_urls", body: bodyData) { result in
-                switch result {
-                case .success(let data):
-                    do {
-                        let decodedResponse = try JSONDecoder().decode(T.self, from: data)
-                        completion(.success(decodedResponse))
-                    } catch {
-                        self.logger.log("API Download decoding response error: \(error)", level: .error, details: ["body": String(decoding: data, as: UTF8.self)])
-                        completion(.failure(.decodingError(error)))
-                    }
-                case .failure(let error):
-                    self.logger.log("API Download request failed: \(error)", level: .error, details: nil)
-                    completion(.failure(error))
-                }
-            }
+            let responseData = try await apiManager.request(
+                endpoint: "/device/v1/dictionary/download_urls",
+                method: .post,
+                body: bodyData
+            )
+            
+            let decodedResponse = try JSONDecoder().decode(T.self, from: responseData)
+            return decodedResponse
+        } catch let error as APIError {
+            logger.log("API Download request failed: \(error)", level: .error, details: nil)
+            throw error
         } catch {
             if let requestBodyDict = try? requestBody.toDictionary() {
-                self.logger.log("API Download encoding request error: \(error)", level: .error, details: requestBodyDict)
+                logger.log(
+                    "API Download request encoding or decoding error: \(error)",
+                    level: .error,
+                    details: requestBodyDict
+                )
             } else {
-                self.logger.log("API Download encoding request error: \(error)", level: .error, details: ["error": "Failed to convert request body to dictionary"])
+                logger.log(
+                    "API Download request encoding or decoding error: \(error)",
+                    level: .error,
+                    details: ["error": "Failed to convert request body to dictionary"]
+                )
             }
-            completion(.failure(.decodingError(error)))
+            throw APIError.decodingError(error)
         }
     }
 }

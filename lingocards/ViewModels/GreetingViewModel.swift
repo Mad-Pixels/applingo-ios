@@ -1,62 +1,74 @@
-// GreetingViewModel.swift
 import SwiftUI
 import Combine
 
 class GreetingViewModel: BaseViewModel {
     @Published var message: String = "Loading..."
     @Published var dictionaryItems: [QueryItem] = []
-
+    
     private let apiManager: APIManagerProtocol
     private let logger: LoggerProtocol
 
+    /// Инициализатор с внедрением зависимостей.
     init(apiManager: APIManagerProtocol, logger: LoggerProtocol) {
         self.apiManager = apiManager
         self.logger = logger
         super.init()
-        fetchDictionary()
+        Task {
+            await fetchDictionary()
+        }
     }
 
+    /// Метод для загрузки URL файла для скачивания.
     func fetchDownload() {
-        showPreloader()
-        let requestBody = RequestDownloadBody(dictionary_key: "engheb.csv")
-        let r = RequestDownload(apiManager: apiManager, logger: logger)
+        Task {
+            await MainActor.run { showPreloader() } // Показать индикатор загрузки в главном потоке
+            defer { Task { await MainActor.run { hidePreloader() } } } // Скрыть индикатор загрузки в главном потоке
 
-        r.invoke(requestBody: requestBody) { [weak self] (result: Result<ResponseDownload, APIError>) in
-            guard let self = self else { return }
-            DispatchQueue.main.async {
-                self.hidePreloader()
-                switch result {
-                case .success(let response):
-                    print(response.data)
-                    self.showNotify(title: "Success", message: "Download URL received", primaryAction: {})
-                case .failure(let error):
-                    print("Error: \(error)")
-                    self.showAlert(title: "Error", message: error.localizedDescription)
-                }
+            do {
+                let requestBody = RequestDownloadBody(dictionary_key: "engheb.csv")
+                let response: ResponseDownload = try await RequestDownload(apiManager: apiManager, logger: logger).invoke(requestBody: requestBody)
+                
+                // Успешное получение URL для скачивания
+                print(response.data)
+                await MainActor.run { showNotify(title: "Success", message: "Download URL received", primaryAction: {}) }
+            } catch {
+                await handleError(error, title: "Error", fallbackMessage: "Failed to fetch download URL.")
             }
         }
     }
 
+    /// Метод для получения словаря.
     func fetchDictionary() {
-        showPreloader()
-        let requestBody = RequestQueryBody()
-        let r = RequestQuery(apiManager: apiManager, logger: logger)
+        Task {
+            await MainActor.run { showPreloader() } // Показать индикатор загрузки в главном потоке
+            defer { Task { await MainActor.run { hidePreloader() } } } // Скрыть индикатор загрузки в главном потоке
 
-        r.invoke(requestBody: requestBody) { [weak self] (result: Result<ResponseQuery, APIError>) in
-            guard let self = self else { return }
-            DispatchQueue.main.async {
-                self.hidePreloader()
-                switch result {
-                case .success(let response):
-                    self.dictionaryItems = response.data.items
-                    self.message = "Data loaded"
-                    self.showNotify(title: "Success", message: "Dictionary loaded", primaryAction: {})
-                case .failure(let error):
-                    print("Error: \(error)")
-                    self.message = "Error fetching data"
-                    self.showAlert(title: "Error", message: error.localizedDescription)
+            do {
+                let requestBody = RequestQueryBody()
+                let response: ResponseQuery = try await RequestQuery(apiManager: apiManager, logger: logger).invoke(requestBody: requestBody)
+                
+                // Успешное получение данных словаря
+                await MainActor.run {
+                    dictionaryItems = response.data.items
+                    message = "Data loaded"
+                    showNotify(title: "Success", message: "Dictionary loaded", primaryAction: {})
                 }
+            } catch {
+                await handleError(error, title: "Error", fallbackMessage: "Failed to fetch dictionary data.")
             }
         }
+    }
+    
+    /// Универсальный метод для обработки ошибок и показа алерта.
+    @MainActor
+    private func handleError(_ error: Error, title: String, fallbackMessage: String) {
+        if let apiError = error as? APIError {
+            logger.log("API request failed: \(apiError)", level: .error, details: nil)
+            showAlert(title: title, message: apiError.localizedDescription)
+        } else {
+            logger.log("Unexpected error: \(error)", level: .error, details: nil)
+            showAlert(title: title, message: fallbackMessage)
+        }
+        message = fallbackMessage
     }
 }

@@ -1,11 +1,10 @@
 import Foundation
 import Combine
 
-/// Класс, представляющий настройки приложения.
 class AppSettings: ObservableObject, Codable {
     @Published var language: String
-    @Published var theme: String
     @Published var sendLogs: Bool
+    @Published var theme: String
 
     enum CodingKeys: String, CodingKey {
         case language, theme, sendLogs
@@ -13,11 +12,10 @@ class AppSettings: ObservableObject, Codable {
 
     init(language: String, theme: String, sendLogs: Bool) {
         self.language = language
-        self.theme = theme
         self.sendLogs = sendLogs
+        self.theme = theme
     }
 
-    /// Реализация протокола Codable для корректной сериализации @Published свойств.
     required convenience init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let language = try container.decode(String.self, forKey: .language)
@@ -29,10 +27,32 @@ class AppSettings: ObservableObject, Codable {
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(language, forKey: .language)
-        try container.encode(theme, forKey: .theme)
         try container.encode(sendLogs, forKey: .sendLogs)
+        try container.encode(theme, forKey: .theme)
+    }
+    
+    static let `default` = AppSettings(language: getDefaultLanguage(), theme: "light", sendLogs: true)
+
+    static var supportedLanguages: [String] {
+        return Bundle.main.localizations.filter { $0 != "Base" }
     }
 
-    /// Настройки по умолчанию.
-    static let `default` = AppSettings(language: "en", theme: "light", sendLogs: false)
+    static func getDefaultLanguage() -> String {
+        let preferredLanguages = Locale.preferredLanguages
+        if let matchingLanguage = preferredLanguages.first(where: { language in
+            let languageCode = getLanguageCode(from: language)
+            return supportedLanguages.contains(languageCode)
+        }) {
+            return getLanguageCode(from: matchingLanguage)
+        }
+        return "en"
+    }
+
+    private static func getLanguageCode(from language: String) -> String {
+        if #available(iOS 16, *) {
+            return Locale(identifier: language).language.languageCode?.identifier ?? "en"
+        } else {
+            return Locale(identifier: language).languageCode ?? "en"
+        }
+    }
 }

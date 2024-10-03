@@ -3,14 +3,13 @@ import UIKit
 import os.log
 import Combine
 
-/// Протокол, определяющий методы для логирования.
 protocol LoggerProtocol {
     func log(_ message: String, level: OSLogType, details: [String: Any]?)
 }
 
-/// Управляет логированием и наблюдает за настройками, чтобы определить, нужно ли отправлять логи на сервер.
 class Logger: LoggerProtocol {
     private let log = OSLog(subsystem: Bundle.main.bundleIdentifier ?? "com.LingoCards", category: "AppLogs")
+
     private var pendingLogs: [String] = []
     private var settingsManager: any SettingsManagerProtocol
     private var cancellables = Set<AnyCancellable>()
@@ -18,15 +17,6 @@ class Logger: LoggerProtocol {
     init(settingsManager: any SettingsManagerProtocol) {
         self.settingsManager = settingsManager
         setupBindings()
-    }
-
-    /// Настраивает привязки для наблюдения за изменениями настроек.
-    private func setupBindings() {
-        settingsManager.settingsPublisher
-            .sink { [weak self] _ in
-                self?.sendLogsIfNeeded()
-            }
-            .store(in: &cancellables)
     }
 
     func log(_ message: String, level: OSLogType = .default, details: [String: Any]? = nil) {
@@ -43,6 +33,22 @@ class Logger: LoggerProtocol {
         }
     }
 
+    func sendLogsToServer(message: String, details: [String: Any]? = nil) {
+        var logMessage: [String: Any] = ["message": message]
+        if let details = details {
+            logMessage["details"] = details
+        }
+        let deviceInfo = getDeviceInfo()
+        logMessage["device_info"] = deviceInfo
+
+        guard (try? JSONSerialization.data(withJSONObject: logMessage, options: [])) != nil else {
+            return
+        }
+        print("Send to server log message: \(logMessage)")
+        print("Details: \(details ?? [:])")
+        print("Device info: \(deviceInfo)")
+    }
+
     private func sendLogsIfNeeded() {
         if settingsManager.settings.sendLogs {
             for message in pendingLogs {
@@ -52,30 +58,17 @@ class Logger: LoggerProtocol {
         }
     }
 
-    /// Отправляет логи на сервер.
-    func sendLogsToServer(message: String, details: [String: Any]? = nil) {
-        // Подготавливаем лог-сообщение.
-        var logMessage: [String: Any] = ["message": message]
-        if let details = details {
-            logMessage["details"] = details
-        }
-        let deviceInfo = getDeviceInfo()
-        logMessage["device_info"] = deviceInfo
-
-        // Сериализуем лог-сообщение в JSON.
-        guard (try? JSONSerialization.data(withJSONObject: logMessage, options: [])) != nil else {
-            print("Не удалось сериализовать лог-сообщение в JSON")
-            return
-        }
-
-        print("Отправка логов на сервер с сообщением:", message)
-        // TODO: Реализуйте фактическую отправку логов через HTTPS.
+    private func setupBindings() {
+        settingsManager.settingsPublisher
+            .sink { [weak self] _ in
+                self?.sendLogsIfNeeded()
+            }
+            .store(in: &cancellables)
     }
 
-    /// Получает информацию об устройстве для логирования.
     private func getDeviceInfo() -> [String: Any] {
-        let device = UIDevice.current
         let processInfo = ProcessInfo.processInfo
+        let device = UIDevice.current
 
         let deviceInfo: [String: Any] = [
             "device_model": device.model,
@@ -85,7 +78,6 @@ class Logger: LoggerProtocol {
             "os_version": processInfo.operatingSystemVersionString,
             "locale": Locale.current.identifier
         ]
-
         return deviceInfo
     }
 }

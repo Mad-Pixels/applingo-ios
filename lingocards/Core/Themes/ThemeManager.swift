@@ -1,4 +1,3 @@
-// ThemeManager.swift
 import SwiftUI
 import Combine
 
@@ -9,13 +8,15 @@ protocol ThemeManagerProtocol: ObservableObject {
 
 class ThemeManager: ObservableObject, ThemeManagerProtocol {
     @Published private(set) var currentTheme: Theme
-    private let logger: LoggerProtocol
+    
     private let settingsManager: any SettingsManagerProtocol
     private var cancellables = Set<AnyCancellable>()
+    private let logger: LoggerProtocol
 
-    init(logger: LoggerProtocol, settingsManager: any SettingsManagerProtocol) {
-        self.logger = logger
+    init(logger: any LoggerProtocol, settingsManager: any SettingsManagerProtocol) {
         self.settingsManager = settingsManager
+        self.logger = logger
+        
         let initialTheme = settingsManager.settings.theme
         switch initialTheme {
         case "dark":
@@ -23,8 +24,18 @@ class ThemeManager: ObservableObject, ThemeManagerProtocol {
         default:
             self.currentTheme = LightTheme()
         }
+        
         applyTheme()
         setupBindings()
+    }
+    
+    deinit {
+        cancellables.forEach { $0.cancel() }
+    }
+    
+    func toggleTheme() {
+        let newTheme = currentTheme is LightTheme ? "dark" : "light"
+        settingsManager.settings.theme = newTheme
     }
 
     private func setupBindings() {
@@ -44,16 +55,9 @@ class ThemeManager: ObservableObject, ThemeManagerProtocol {
         default:
             currentTheme = LightTheme()
         }
-        logger.log("Тема изменена на \(theme)", level: .info, details: nil)
+        logger.log("New theme selected: \(theme)", level: .info, details: nil)
         applyTheme()
     }
 
-    func toggleTheme() {
-        let newTheme = currentTheme is LightTheme ? "dark" : "light"
-        settingsManager.settings.theme = newTheme
-    }
-
-    private func applyTheme() {
-        // Применение темы к UI, если необходимо
-    }
+    private func applyTheme() {}
 }
