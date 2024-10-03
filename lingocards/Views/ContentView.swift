@@ -1,19 +1,25 @@
 import SwiftUI
 
 struct ContentView: View {
-    @EnvironmentObject var appState: AppState
     @StateObject private var viewModel: GreetingViewModel
     
-    init() {
-        _viewModel = StateObject(wrappedValue: GreetingViewModel())
+    init(apiManager: APIManagerProtocol) {
+        _viewModel = StateObject(wrappedValue: GreetingViewModel(apiManager: apiManager))
     }
     
     var body: some View {
-        Text(viewModel.greeting.message)
-            .padding()
-            .onAppear {
-                viewModel.logGreeting(logger: appState.logger)
+        VStack {
+            Text(viewModel.message)
+                .padding()
+            
+            List(viewModel.dictionaryItems) { item in
+                Text(item.name)
             }
+            
+            Button("Refresh") {
+                viewModel.fetchDictionary()
+            }
+        }
     }
 }
 

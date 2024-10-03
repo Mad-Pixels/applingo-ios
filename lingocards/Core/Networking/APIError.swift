@@ -6,4 +6,10 @@ enum APIError: Error {
     case networkError(Error)
     case decodingError(Error)
     case invalidSignature
+    case apiError(String)
+    case unknownResponseError
+}
+
+struct APIErrorMessage: Decodable {
+    let Message: String
 }

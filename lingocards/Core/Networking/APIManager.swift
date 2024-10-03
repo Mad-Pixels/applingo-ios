@@ -3,13 +3,14 @@ import CryptoKit
 
 // Протокол, определяющий методы для работы с API
 protocol APIManagerProtocol {
-    func get<T: Decodable>(endpoint: String, completion: @escaping (Result<T, APIError>) -> Void)
-    func post<T: Encodable, U: Decodable>(endpoint: String, body: T, completion: @escaping (Result<U, APIError>) -> Void)
+    func get(endpoint: String, completion: @escaping (Result<Data, APIError>) -> Void)
+    func post(endpoint: String, body: Data, completion: @escaping (Result<Data, APIError>) -> Void)
 }
 
 // Класс для выполнения сетевых запросов
 class APIManager: APIManagerProtocol {
-    private let logger: LoggerProtocol
+    let logger: LoggerProtocol
+    
     private let session: URLSession
     private let baseURL: String
     private let token: String
@@ -21,20 +22,18 @@ class APIManager: APIManagerProtocol {
         self.token = token
     }
     
-    private func prepareRequest(for url: URL, method: String, body: Data? = nil) throws -> URLRequest {
+    private func signRequest(for url: URL, method: String, body: Data? = nil) throws -> URLRequest {
         var request = URLRequest(url: url)
         request.httpMethod = method
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        
+
         let timestamp = String(Int(Date().timeIntervalSince1970))
         request.setValue(timestamp, forHTTPHeaderField: "x-timestamp")
-        
-        let signatureInput: String
-        signatureInput = "\(timestamp)\(url.path)"
-        
+
+        let signatureInput = timestamp
         let signature = generateSignature(input: signatureInput)
         request.setValue(signature, forHTTPHeaderField: "x-signature")
-        
+
         if method == "POST" {
             request.httpBody = body
         }
@@ -44,76 +43,81 @@ class APIManager: APIManagerProtocol {
     private func generateSignature(input: String) -> String {
         let key = SymmetricKey(data: Data(token.utf8))
         let signature = HMAC<SHA256>.authenticationCode(for: Data(input.utf8), using: key)
-        return Data(signature).base64EncodedString()
+        let signatureData = Data(signature)
+        let signatureHex = signatureData.map { String(format: "%02hhx", $0) }.joined()
+        return signatureHex
     }
     
     // Метод для выполнения GET-запросов
-    func get<T: Decodable>(endpoint: String, completion: @escaping (Result<T, APIError>) -> Void) {
+    func get(endpoint: String, completion: @escaping (Result<Data, APIError>) -> Void) {
         guard let url = URL(string: baseURL + endpoint) else {
             completion(.failure(.invalidURL))
             return
         }
         
-        let task = session.dataTask(with: url) { data, response, error in
-            if let error = error {
-                completion(.failure(.networkError(error)))
-                return
+        do {
+            let request = try signRequest(for: url, method: "GET")
+            let task = session.dataTask(with: request) { data, response, error in
+                self.handleResponse(data: data, response: response, error: error, completion: completion)
             }
-            
-            guard let data = data else {
-                completion(.failure(.networkError(NSError(domain: "No Data", code: 0, userInfo: nil))))
-                return
-            }
-            
-            do {
-                let decodedResponse = try JSONDecoder().decode(T.self, from: data)
-                completion(.success(decodedResponse))
-            } catch {
-                completion(.failure(.decodingError(error)))
-            }
+            task.resume()
+        } catch {
+            completion(.failure(.invalidSignature))
         }
-        
-        task.resume()
     }
     
     // Метод для выполнения POST-запросов
-    func post<T: Encodable, U: Decodable>(endpoint: String, body: T, completion: @escaping (Result<U, APIError>) -> Void) {
+    func post(endpoint: String, body: Data, completion: @escaping (Result<Data, APIError>) -> Void) {
         guard let url = URL(string: baseURL + endpoint) else {
             completion(.failure(.invalidURL))
             return
         }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        
+
         do {
-            let jsonData = try JSONEncoder().encode(body)
-            request.httpBody = jsonData
+            logger.log("API request: \(url)", level: .info)
+            let request = try signRequest(for: url, method: "POST", body: body)
+
+            let task = session.dataTask(with: request) { data, response, error in
+                self.handleResponse(data: data, response: response, error: error, completion: completion)
+            }
+            task.resume()
         } catch {
-            completion(.failure(.decodingError(error)))
+            completion(.failure(.invalidSignature))
+        }
+    }
+    
+    // Метод для обработки ответа
+    private func handleResponse(data: Data?, response: URLResponse?, error: Error?, completion: @escaping (Result<Data, APIError>) -> Void) {
+        if let error = error {
+            logger.log("API request failed: \(error.localizedDescription)", level: .error)
+            completion(.failure(.networkError(error)))
             return
         }
-        
-        let task = session.dataTask(with: request) { data, response, error in
-            if let error = error {
-                completion(.failure(.networkError(error)))
-                return
-            }
-            
-            guard let data = data else {
-                completion(.failure(.networkError(NSError(domain: "No Data", code: 0, userInfo: nil))))
-                return
-            }
-            
-            do {
-                let decodedResponse = try JSONDecoder().decode(U.self, from: data)
-                completion(.success(decodedResponse))
-            } catch {
-                completion(.failure(.decodingError(error)))
+
+        guard let httpResponse = response as? HTTPURLResponse else {
+            completion(.failure(.networkError(NSError(domain: "Invalid Response", code: 0, userInfo: nil))))
+            return
+        }
+
+        guard let data = data else {
+            completion(.failure(.networkError(NSError(domain: "No Data", code: 0, userInfo: nil))))
+            return
+        }
+
+        logger.log("API response: \(String(decoding: data, as: Unicode.UTF8.self))", level: .debug)
+
+        if httpResponse.statusCode == 200 {
+            logger.log("API request successful", level: .info)
+            completion(.success(data))
+        } else {
+            // Попытка разобрать сообщение об ошибке
+            if let apiErrorMessage = try? JSONDecoder().decode(APIErrorMessage.self, from: data) {
+                logger.log("API request failed with error: \(apiErrorMessage.Message)", level: .error)
+                completion(.failure(.apiError(apiErrorMessage.Message)))
+            } else {
+                logger.log("Unknown response error", level: .error)
+                completion(.failure(.unknownResponseError))
             }
         }
-        
-        task.resume()
     }
 }
