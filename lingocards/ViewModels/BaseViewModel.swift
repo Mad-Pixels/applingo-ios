@@ -2,33 +2,17 @@ import SwiftUI
 import Combine
 
 class BaseViewModel: ObservableObject {
-    // Флаг для отображения/скрытия индикатора загрузки
     @Published var isLoading: Bool = false
-    // Опциональный элемент для отображения алерта
-    @Published var alertItem: AlertItem?
-    // Опциональный элемент для отображения уведомления
-    @Published var notifyItem: NotifyItem?
+    @Published var activeAlert: ActiveAlert?
     
-    // Хранилище для отмены подписок Combine
     private var cancellables = Set<AnyCancellable>()
     
     init() {
         setupSubscriptions()
     }
     
-    // Настройка подписок для автоматического скрытия индикатора загрузки
     private func setupSubscriptions() {
-        // Когда появляется алерт, скрываем индикатор загрузки
-        $alertItem
-            .dropFirst() // Игнорируем начальное значение nil
-            .filter { $0 != nil } // Реагируем только на не-nil значения
-            .sink { [weak self] _ in
-                self?.isLoading = false
-            }
-            .store(in: &cancellables)
-        
-        // То же самое для уведомлений
-        $notifyItem
+        $activeAlert
             .dropFirst()
             .filter { $0 != nil }
             .sink { [weak self] _ in
@@ -37,7 +21,6 @@ class BaseViewModel: ObservableObject {
             .store(in: &cancellables)
     }
     
-    // Методы для управления индикатором загрузки
     func showPreloader() {
         isLoading = true
     }
@@ -46,25 +29,35 @@ class BaseViewModel: ObservableObject {
         isLoading = false
     }
     
-    // Метод для отображения алерта
     func showAlert(title: String, message: String) {
-        alertItem = AlertItem(title: title, message: message)
+        activeAlert = .alert(AlertItem(title: title, message: message))
     }
     
-    // Метод для отображения уведомления с действиями
     func showNotify(title: String, message: String, primaryAction: @escaping () -> Void, secondaryAction: (() -> Void)? = nil) {
-        notifyItem = NotifyItem(title: title, message: message, primaryAction: primaryAction, secondaryAction: secondaryAction)
+        activeAlert = .notify(NotifyItem(title: title, message: message, primaryAction: primaryAction, secondaryAction: secondaryAction))
     }
 }
 
-// Структура для представления алерта
+enum ActiveAlert: Identifiable {
+    case alert(AlertItem)
+    case notify(NotifyItem)
+    
+    var id: String {
+        switch self {
+        case .alert(let alertItem):
+            return "alert_\(alertItem.id)"
+        case .notify(let notifyItem):
+            return "notify_\(notifyItem.id)"
+        }
+    }
+}
+
 struct AlertItem: Identifiable {
     let id = UUID()
     let title: String
     let message: String
 }
 
-// Структура для представления уведомления с действиями
 struct NotifyItem: Identifiable {
     let id = UUID()
     let title: String
