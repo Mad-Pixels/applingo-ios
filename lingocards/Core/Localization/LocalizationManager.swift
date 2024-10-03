@@ -47,6 +47,9 @@ class LocalizationManager: ObservableObject, LocalizationManagerProtocol {
         self.bundle = bundle
         self.currentLanguageCode = language
         logger.log("Язык установлен на: \(language)", level: .info, details: nil)
+        
+        // Уведомляем об изменениях
+        objectWillChange.send()
     }
 
     func localizedString(for key: String, arguments: CVarArg...) -> String {
@@ -76,3 +79,4 @@ class LocalizationService {
     
     private init() {}
 }
+
