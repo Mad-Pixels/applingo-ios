@@ -6,7 +6,7 @@ struct LingoCardsApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentView(apiManager: appState.apiManager)
+            ContentView(apiManager: appState.apiManager, logger: appState.logger)
                 .environmentObject(appState)
         }
     }

@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 import os.log
 
 // Протокол, определяющий методы для логирования
@@ -41,6 +42,10 @@ class Logger: LoggerProtocol {
             logMessage["details"] = details // Сохраняем детали в виде словаря
         }
         
+        // Добавление информации о устройстве и операционной системе
+        let deviceInfo = getDeviceInfo()
+        logMessage["device_info"] = deviceInfo
+        
         // Преобразуем лог в JSON-формат
         guard (try? JSONSerialization.data(withJSONObject: logMessage, options: [])) != nil else {
             print("Failed to serialize log message to JSON")
@@ -52,9 +57,31 @@ class Logger: LoggerProtocol {
             print("Details:", details)
         }
         
+        print("Device Info:", deviceInfo)
+        if let details = details {
+            print("Details:", details)
+        }
+        
         // TODO: Реализовать отправку логов на сервер через HTTPS
         // Пример отправки лога:
         // 1. Создать URL и URLRequest.
         // 2. Использовать URLSession для отправки POST-запроса с httpBody.
+    }
+    
+    private func getDeviceInfo() -> [String: Any] {
+        let device = UIDevice.current
+        let processInfo = ProcessInfo.processInfo
+        
+        // Информация о устройстве и ОС
+        let deviceInfo: [String: Any] = [
+            "device_model": device.model,
+            "device_name": device.name,
+            "system_name": device.systemName,
+            "system_version": device.systemVersion,
+            "os_version": processInfo.operatingSystemVersionString,
+            "locale": Locale.current.identifier
+        ]
+        
+        return deviceInfo
     }
 }

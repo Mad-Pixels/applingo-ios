@@ -57,11 +57,13 @@ class APIManager: APIManagerProtocol {
         
         do {
             let request = try signRequest(for: url, method: "GET")
+            logger.log("API GET request initialized", level: .info, details: ["url": url.absoluteString])
             let task = session.dataTask(with: request) { data, response, error in
                 self.handleResponse(data: data, response: response, error: error, completion: completion)
             }
             task.resume()
         } catch {
+            logger.log("API GET request signing failed: \(error)", level: .error, details: ["url": url.absoluteString])
             completion(.failure(.invalidSignature))
         }
     }
@@ -74,7 +76,9 @@ class APIManager: APIManagerProtocol {
         }
 
         do {
-            logger.log("API request: \(url)", level: .info, details: nil)
+            // Преобразуем тело запроса в словарь для логирования
+            let bodyDetails = try? JSONSerialization.jsonObject(with: body, options: []) as? [String: Any]
+            logger.log("API POST request: \(url)", level: .info, details: ["body": bodyDetails ?? "Body conversion failed"])
             let request = try signRequest(for: url, method: "POST", body: body)
 
             let task = session.dataTask(with: request) { data, response, error in
@@ -82,6 +86,7 @@ class APIManager: APIManagerProtocol {
             }
             task.resume()
         } catch {
+            logger.log("API POST request signing failed: \(error)", level: .error, details: ["url": url.absoluteString, "body": String(data: body, encoding: .utf8) ?? "Body conversion failed"])
             completion(.failure(.invalidSignature))
         }
     }
@@ -95,27 +100,29 @@ class APIManager: APIManagerProtocol {
         }
 
         guard let httpResponse = response as? HTTPURLResponse else {
+            logger.log("API request failed: Invalid response type", level: .error, details: nil)
             completion(.failure(.networkError(NSError(domain: "Invalid Response", code: 0, userInfo: nil))))
             return
         }
 
         guard let data = data else {
+            logger.log("API request failed: No data received", level: .error, details: ["statusCode": httpResponse.statusCode])
             completion(.failure(.networkError(NSError(domain: "No Data", code: 0, userInfo: nil))))
             return
         }
 
-        logger.log("API response: \(String(decoding: data, as: Unicode.UTF8.self))", level: .debug, details: nil)
+        logger.log("API response received", level: .debug, details: ["statusCode": httpResponse.statusCode, "data": String(decoding: data, as: UTF8.self)])
 
         if httpResponse.statusCode == 200 {
-            logger.log("API request successful", level: .info, details: nil)
+            logger.log("API request successful", level: .info, details: ["statusCode": httpResponse.statusCode])
             completion(.success(data))
         } else {
             // Попытка разобрать сообщение об ошибке
             if let apiErrorMessage = try? JSONDecoder().decode(APIErrorMessage.self, from: data) {
-                logger.log("API request failed with error: \(apiErrorMessage.Message)", level: .error, details: nil)
+                logger.log("API request failed with error: \(apiErrorMessage.Message)", level: .error, details: ["statusCode": httpResponse.statusCode])
                 completion(.failure(.apiError(apiErrorMessage.Message)))
             } else {
-                logger.log("Unknown response error", level: .error, details: nil)
+                logger.log("Unknown response error", level: .error, details: ["statusCode": httpResponse.statusCode, "data": String(decoding: data, as: UTF8.self)])
                 completion(.failure(.unknownResponseError))
             }
         }

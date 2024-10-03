@@ -32,9 +32,11 @@ struct QueryItem: Decodable, Identifiable {
 
 class RequestQuery {
     private let apiManager: APIManagerProtocol
+    private let logger: LoggerProtocol
 
-    init(apiManager: APIManagerProtocol) {
+    init(apiManager: APIManagerProtocol, logger: LoggerProtocol) {
         self.apiManager = apiManager
+        self.logger = logger
     }
 
     func invoke<T: Decodable>(requestBody: RequestQueryBody, completion: @escaping (Result<T, APIError>) -> Void) {
@@ -47,13 +49,20 @@ class RequestQuery {
                         let decodedResponse = try JSONDecoder().decode(T.self, from: data)
                         completion(.success(decodedResponse))
                     } catch {
+                        self.logger.log("API Query decoding response error: \(error)", level: .error, details: ["body": String(decoding: data, as: UTF8.self)])
                         completion(.failure(.decodingError(error)))
                     }
                 case .failure(let error):
+                    self.logger.log("API Query request failed: \(error)", level: .error, details: nil)
                     completion(.failure(error))
                 }
             }
         } catch {
+            if let requestBodyDict = try? requestBody.toDictionary() {
+                self.logger.log("API Query encoding request error: \(error)", level: .error, details: requestBodyDict)
+            } else {
+                self.logger.log("API Query encoding request error: \(error)", level: .error, details: ["error": "Failed to convert request body to dictionary"])
+            }
             completion(.failure(.decodingError(error)))
         }
     }
