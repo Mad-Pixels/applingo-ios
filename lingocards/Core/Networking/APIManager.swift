@@ -74,7 +74,7 @@ class APIManager: APIManagerProtocol {
         }
 
         do {
-            logger.log("API request: \(url)", level: .info)
+            logger.log("API request: \(url)", level: .info, details: nil)
             let request = try signRequest(for: url, method: "POST", body: body)
 
             let task = session.dataTask(with: request) { data, response, error in
@@ -89,7 +89,7 @@ class APIManager: APIManagerProtocol {
     // Метод для обработки ответа
     private func handleResponse(data: Data?, response: URLResponse?, error: Error?, completion: @escaping (Result<Data, APIError>) -> Void) {
         if let error = error {
-            logger.log("API request failed: \(error.localizedDescription)", level: .error)
+            logger.log("API request failed: \(error.localizedDescription)", level: .error, details: nil)
             completion(.failure(.networkError(error)))
             return
         }
@@ -104,18 +104,18 @@ class APIManager: APIManagerProtocol {
             return
         }
 
-        logger.log("API response: \(String(decoding: data, as: Unicode.UTF8.self))", level: .debug)
+        logger.log("API response: \(String(decoding: data, as: Unicode.UTF8.self))", level: .debug, details: nil)
 
         if httpResponse.statusCode == 200 {
-            logger.log("API request successful", level: .info)
+            logger.log("API request successful", level: .info, details: nil)
             completion(.success(data))
         } else {
             // Попытка разобрать сообщение об ошибке
             if let apiErrorMessage = try? JSONDecoder().decode(APIErrorMessage.self, from: data) {
-                logger.log("API request failed with error: \(apiErrorMessage.Message)", level: .error)
+                logger.log("API request failed with error: \(apiErrorMessage.Message)", level: .error, details: nil)
                 completion(.failure(.apiError(apiErrorMessage.Message)))
             } else {
-                logger.log("Unknown response error", level: .error)
+                logger.log("Unknown response error", level: .error, details: nil)
                 completion(.failure(.unknownResponseError))
             }
         }

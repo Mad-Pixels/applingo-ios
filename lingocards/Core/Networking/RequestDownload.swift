@@ -24,7 +24,7 @@ class RequestDownload {
     func invoke<T: Decodable>(requestBody: RequestDownloadBody, completion: @escaping (Result<T, APIError>) -> Void) {
         do {
             let bodyData = try JSONEncoder().encode(requestBody)
-            apiManager.post(endpoint: "/device/v1/dictionary/download_url", body: bodyData) { result in
+            apiManager.post(endpoint: "/device/v1/dictionary/download_urlss", body: bodyData) { result in
                 switch result {
                 case .success(let data):
                     do {

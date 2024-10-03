@@ -20,21 +20,21 @@ class DatabaseManager: DatabaseManagerProtocol {
         
         let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
         self.dbPath = documentsPath.appendingPathComponent(dbName).path
-        logger.log("Database path: \(dbPath)", level: .info)
+        logger.log("Database path: \(dbPath)", level: .info, details: nil)
     }
     
     // Метод для подключения к базе данных
     func connect() throws {
         // Проверяем, существует ли файл базы данных
         if !FileManager.default.fileExists(atPath: dbPath) {
-            logger.log("Database file not found. Creating new database.", level: .info)
+            logger.log("Database file not found. Creating new database.", level: .info, details: nil)
             try createDatabase()
         }
         
         if sqlite3_open(dbPath, &db) != SQLITE_OK {
             throw DatabaseError.connectionError("Unable to open database.")
         }
-        logger.log("Database connected successfully", level: .info)
+        logger.log("Database connected successfully", level: .info, details: nil)
     }
     
     private func createDatabase() throws {
@@ -45,7 +45,7 @@ class DatabaseManager: DatabaseManagerProtocol {
         // Здесь вы можете добавить логику создания таблиц
         try initializeDatabase()
         
-        logger.log("New database created and initialized", level: .info)
+        logger.log("New database created and initialized", level: .info, details: nil)
     }
     
     private func initializeDatabase() throws {
@@ -59,7 +59,7 @@ class DatabaseManager: DatabaseManagerProtocol {
         """
         
         try execute(query: createTableQuery)
-        logger.log("Database schema initialized", level: .info)
+        logger.log("Database schema initialized", level: .info, details: nil)
     }
     
     // Метод для выполнения SQL-запросов
