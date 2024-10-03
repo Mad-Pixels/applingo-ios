@@ -11,10 +11,10 @@ class GreetingViewModel: ObservableObject {
     }
     
     func fetchDictionary() {
-        let requestBody = QueryRequestBody()
-        let r = QueryRequest(apiManager: apiManager)
+        let requestBody = RequestQueryBody()
+        let r = RequestQuery(apiManager: apiManager)
         
-        r.query(requestBody: requestBody) { (result: Result<QueryResponse, APIError>) in
+        r.invoke(requestBody: requestBody) { (result: Result<ResponseQuery, APIError>) in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let response):

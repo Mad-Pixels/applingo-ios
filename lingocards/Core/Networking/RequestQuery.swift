@@ -1,7 +1,7 @@
 import Foundation
 
 // Структура тела запроса
-struct QueryRequestBody: Encodable {
+struct RequestQueryBody: Encodable {
     var category_main: String?
     var category_sub: String?
     var code: String?
@@ -12,11 +12,11 @@ struct QueryRequestBody: Encodable {
 }
 
 // Структура ответа
-struct QueryResponse: Decodable {
-    let data: QueryResponseData
+struct ResponseQuery: Decodable {
+    let data: ResponseQueryBody
 }
 
-struct QueryResponseData: Decodable {
+struct ResponseQueryBody: Decodable {
     let items: [QueryItem]
 }
 
@@ -30,14 +30,14 @@ struct QueryItem: Decodable, Identifiable {
     let description: String
 }
 
-class QueryRequest {
+class RequestQuery {
     private let apiManager: APIManagerProtocol
 
     init(apiManager: APIManagerProtocol) {
         self.apiManager = apiManager
     }
 
-    func query<T: Decodable>(requestBody: QueryRequestBody, completion: @escaping (Result<T, APIError>) -> Void) {
+    func invoke<T: Decodable>(requestBody: RequestQueryBody, completion: @escaping (Result<T, APIError>) -> Void) {
         do {
             let bodyData = try JSONEncoder().encode(requestBody)
             apiManager.post(endpoint: "/device/v1/dictionary/query", body: bodyData) { result in
