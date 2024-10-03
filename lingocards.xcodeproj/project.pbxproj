@@ -8,11 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		D8BD502C2CADC97100E978AB /* libsqlite3.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D8BD502B2CADC97100E978AB /* libsqlite3.0.tbd */; };
+		D8BD515C2CAEAA3300E978AB /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = D8BD515B2CAEAA3300E978AB /* Localizable.xcstrings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		D8BD4FEE2CADA16500E978AB /* lingocards.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = lingocards.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D8BD502B2CADC97100E978AB /* libsqlite3.0.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.0.tbd; path = usr/lib/libsqlite3.0.tbd; sourceTree = SDKROOT; };
+		D8BD515B2CAEAA3300E978AB /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; name = Localizable.xcstrings; path = lingocards/Resources/Localizable.xcstrings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -38,6 +40,7 @@
 		D8BD4FE52CADA16500E978AB = {
 			isa = PBXGroup;
 			children = (
+				D8BD515B2CAEAA3300E978AB /* Localizable.xcstrings */,
 				D8BD4FF02CADA16500E978AB /* lingocards */,
 				D8BD502A2CADC97100E978AB /* Frameworks */,
 				D8BD4FEF2CADA16500E978AB /* Products */,
@@ -124,6 +127,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D8BD515C2CAEAA3300E978AB /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -199,6 +203,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -255,6 +260,7 @@
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;

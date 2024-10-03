@@ -12,6 +12,7 @@ struct ContentView: View {
         ZStack {
             VStack {
                 Text(viewModel.message)
+                Text("greeting".localized())
                 
                 Button("Fetch Dictionary") {
                     viewModel.fetchDictionary()

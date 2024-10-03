@@ -20,15 +20,15 @@ class AppState: ObservableObject {
     }
     
     private func setup() {
+        setupLocalization()
+        settingsManager.loadSettings()
+        themeManager.setTheme(settingsManager.settings.theme)
+        
         do {
             try databaseManager.connect()
             logger.log("Database connected successfully", level: .info, details: nil)
         } catch {
             logger.log("Failed to connect to database: \(error.localizedDescription)", level: .error, details: nil)
         }
-        
-        settingsManager.loadSettings()
-        localizationManager.setLanguage(settingsManager.settings.language)
-        themeManager.setTheme(settingsManager.settings.theme)
     }
 }
