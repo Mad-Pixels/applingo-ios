@@ -1,18 +1,6 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "Author: %@" : {
-
-    },
-    "Cancel" : {
-
-    },
-    "Fetch Dictionary" : {
-
-    },
-    "Fetch Download" : {
-
-    },
     "greeting" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -21,11 +9,14 @@
             "state" : "translated",
             "value" : "greeting_en"
           }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "greeting_ru"
+          }
         }
       }
-    },
-    "OK" : {
-
     }
   },
   "version" : "1.0"
