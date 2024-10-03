@@ -19,19 +19,19 @@ protocol LocalizationManagerProtocol {
 }
 
 /// Реализация менеджера локализации
-class LocalizationManager: LocalizationManagerProtocol {
+class LocalizationManager: ObservableObject, LocalizationManagerProtocol {
     private let logger: LoggerProtocol
     private var bundle: Bundle?
-    private var currentLanguageCode: String
-    
+    @Published private(set) var currentLanguageCode: String
+
     /// Инициализатор
     /// - Parameter logger: Протокол для логирования
-    init(logger: LoggerProtocol) {
+    init(logger: LoggerProtocol, initialLanguage: String) {
         self.logger = logger
-        self.currentLanguageCode = Locale.current.language.languageCode?.identifier ?? "en"
-        self.setLanguage(self.currentLanguageCode)
+        self.currentLanguageCode = initialLanguage
+        self.setLanguage(initialLanguage)
     }
-    
+
     func setLanguage(_ language: String) {
         guard let path = Bundle.main.path(forResource: language, ofType: "lproj"),
               let bundle = Bundle(path: path) else {
@@ -41,13 +41,14 @@ class LocalizationManager: LocalizationManagerProtocol {
         self.bundle = bundle
         self.currentLanguageCode = language
         logger.log("Language set to: \(language)", level: .info, details: nil)
+        objectWillChange.send()
     }
-    
+
     func localizedString(for key: String, arguments: CVarArg...) -> String {
         let format = bundle?.localizedString(forKey: key, value: nil, table: "Localizable") ?? key
         return String(format: format, arguments: arguments)
     }
-    
+
     func currentLanguage() -> String {
         return currentLanguageCode
     }

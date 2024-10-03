@@ -1,6 +1,12 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "Dark" : {
+
+    },
+    "English" : {
+
+    },
     "greeting" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -18,10 +24,34 @@
         }
       }
     },
+    "Home" : {
+
+    },
+    "Language" : {
+
+    },
+    "Light" : {
+
+    },
+    "Logging" : {
+
+    },
+    "Send Logs" : {
+
+    },
+    "Settings" : {
+
+    },
     "Switch to Dark Theme" : {
 
     },
     "Switch to Light Theme" : {
+
+    },
+    "Theme" : {
+
+    },
+    "Русский" : {
 
     }
   },

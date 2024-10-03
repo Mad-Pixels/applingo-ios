@@ -1,37 +1,51 @@
 import Foundation
+import Combine
 
-protocol SettingsManagerProtocol {
+protocol SettingsManagerProtocol: ObservableObject {
     var settings: AppSettings { get set }
+    var settingsPublisher: Published<AppSettings>.Publisher { get }
     func loadSettings()
     func saveSettings()
+    var logger: LoggerProtocol? { get set }
 }
 
 class SettingsManager: SettingsManagerProtocol {
     private let userDefaults = UserDefaults.standard
     private let settingsKey = "AppSettings"
-    private let logger: LoggerProtocol
-    
-    var settings: AppSettings {
+
+    @Published var settings: AppSettings {
         didSet {
             saveSettings()
         }
     }
-    
-    init(logger: LoggerProtocol) {
-        self.settings = AppSettings.default
-        self.logger = logger
+
+    var settingsPublisher: Published<AppSettings>.Publisher {
+        $settings
     }
-    
+
+    var logger: LoggerProtocol?
+
+    init() {
+        self.settings = AppSettings.default
+        loadSettings()
+    }
+
     func loadSettings() {
         if let data = userDefaults.data(forKey: settingsKey),
            let savedSettings = try? JSONDecoder().decode(AppSettings.self, from: data) {
             self.settings = savedSettings
+            logger?.log("Settings loaded", level: .info, details: nil)
+        } else {
+            logger?.log("Using default settings", level: .info, details: nil)
         }
     }
-    
+
     func saveSettings() {
         if let encodedSettings = try? JSONEncoder().encode(settings) {
             userDefaults.set(encodedSettings, forKey: settingsKey)
+            logger?.log("Settings saved", level: .info, details: nil)
+        } else {
+            logger?.log("Failed to save settings", level: .error, details: nil)
         }
     }
 }

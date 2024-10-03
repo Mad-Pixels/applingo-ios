@@ -7,7 +7,7 @@ struct LingoCardsApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView(apiManager: appState.apiManager, logger: appState.logger)
-                //.environmentObject(appState)
+                .environmentObject(appState)
                 .environmentObject(appState.themeManager) // Передаем ThemeManager в окружение
         }
     }

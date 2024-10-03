@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
 import os.log
+import Combine
 
 // Протокол, определяющий методы для логирования
 protocol LoggerProtocol {
@@ -11,24 +12,42 @@ protocol LoggerProtocol {
 class Logger: LoggerProtocol {
     private let log = OSLog(subsystem: Bundle.main.bundleIdentifier ?? "com.LingoCards", category: "AppLogs")
     private var pendingLogs: [String] = []
-    private var sendLogs: Bool = false
-    
-    init(sendLogs: Bool) {
-        self.sendLogs = sendLogs
+    private var settingsManager: any SettingsManagerProtocol
+    private var cancellables = Set<AnyCancellable>()
+
+    init(settingsManager: any SettingsManagerProtocol) {
+        self.settingsManager = settingsManager
+        setupBindings()
     }
-    
-    // Метод для локального логирования
+
+    private func setupBindings() {
+        settingsManager.settingsPublisher
+            .sink { [weak self] (settings: AppSettings) in
+                self?.sendLogsIfNeeded()
+            }
+            .store(in: &cancellables)
+    }
+
     func log(_ message: String, level: OSLogType = .default, details: [String: Any]? = nil) {
         os_log("%{public}@", log: log, type: level, message)
         pendingLogs.append(message)
-        
+
         if let details = details {
             let detailsString = details.map { "\($0.key): \($0.value)" }.joined(separator: ", ")
             os_log("Details: %{public}@", log: log, type: .debug, detailsString)
         }
-        
-        if self.sendLogs && level == .error {
-            self.sendLogsToServer(message: message, details: details)
+
+        if settingsManager.settings.sendLogs && level == .error {
+            sendLogsToServer(message: message, details: details)
+        }
+    }
+
+    private func sendLogsIfNeeded() {
+        if settingsManager.settings.sendLogs {
+            for message in pendingLogs {
+                sendLogsToServer(message: message, details: nil)
+            }
+            pendingLogs.removeAll()
         }
     }
     
