@@ -28,7 +28,7 @@ class LocalizationManager: LocalizationManagerProtocol {
     /// - Parameter logger: Протокол для логирования
     init(logger: LoggerProtocol) {
         self.logger = logger
-        self.currentLanguageCode = Locale.current.languageCode ?? "en"
+        self.currentLanguageCode = Locale.current.language.languageCode?.identifier ?? "en"
         self.setLanguage(self.currentLanguageCode)
     }
     
