@@ -1,3 +1,4 @@
+// LingoCardsApp.swift
 import SwiftUI
 
 @main
@@ -6,9 +7,11 @@ struct LingoCardsApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView(apiManager: appState.apiManager, logger: appState.logger)
+            ContentView()
                 .environmentObject(appState)
-                .environmentObject(appState.themeManager) // Передаем ThemeManager в окружение
+                .environmentObject(appState.localizationManager)
+                .environmentObject(appState.themeManager)
         }
     }
 }
+

@@ -2,56 +2,51 @@ import SwiftUI
 import Combine
 
 class AppState: ObservableObject {
-    let logger: LoggerProtocol
-    let apiManager: APIManagerProtocol
+    let logger: Logger
+    let apiManager: APIManager
     let databaseManager: DatabaseManagerProtocol
-    let settingsManager: SettingsManager
+    var settingsManager: SettingsManager
     let localizationManager: LocalizationManager
     let themeManager: ThemeManager
 
+    static var shared: AppState?
+
     init() {
-        // 1. Инициализируем SettingsManager без Logger
+        // Инициализируем SettingsManager.
         self.settingsManager = SettingsManager()
 
-        // 2. Инициализируем Logger, передавая settingsManager
+        // Инициализируем Logger, передавая settingsManager.
         self.logger = Logger(settingsManager: settingsManager)
 
-        // 3. Устанавливаем Logger в SettingsManager
+        // Устанавливаем Logger в SettingsManager.
         self.settingsManager.logger = logger
 
-        // Инициализируем остальные компоненты
-        self.apiManager = APIManager(baseURL: "https://lingocards-api.madpixels.io",
-                                     token: "t9DbIipRtzPBVXYLoXxc6KSn",
-                                     logger: logger)
+        // Инициализируем остальные компоненты.
+        self.apiManager = APIManager(
+            baseURL: "https://lingocards-api.madpixels.io",
+            token: "t9DbIipRtzPBVXYLoXxc6KSn",
+            logger: logger
+        )
         self.databaseManager = DatabaseManager(dbName: "LingoCards.sqlite", logger: logger)
-        self.localizationManager = LocalizationManager(logger: logger,
-                                                       initialLanguage: settingsManager.settings.language)
-        self.themeManager = ThemeManager(logger: logger, initialTheme: settingsManager.settings.theme)
+        self.localizationManager = LocalizationManager(logger: logger, settingsManager: settingsManager)
+        self.themeManager = ThemeManager(logger: logger, settingsManager: settingsManager)
+
+        // Инициализируем LocalizationService
+        LocalizationService.shared.manager = localizationManager
+
+        AppState.shared = self
 
         setup()
     }
 
     private func setup() {
-        setupLocalization()
         settingsManager.loadSettings()
-        observeSettingsChanges()
 
         do {
             try databaseManager.connect()
-            logger.log("Database connected successfully", level: .info, details: nil)
+            logger.log("База данных успешно подключена", level: .info, details: nil)
         } catch {
-            logger.log("Failed to connect to database: \(error.localizedDescription)", level: .error, details: nil)
+            logger.log("Не удалось подключиться к базе данных: \(error.localizedDescription)", level: .error, details: nil)
         }
     }
-
-    private func observeSettingsChanges() {
-        settingsManager.$settings
-            .sink { [weak self] settings in
-                self?.localizationManager.setLanguage(settings.language)
-                self?.themeManager.setTheme(settings.theme)
-            }
-            .store(in: &cancellables)
-    }
-
-    private var cancellables = Set<AnyCancellable>()
 }

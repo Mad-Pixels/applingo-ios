@@ -1,51 +1,56 @@
+// LocalizationManager.swift
 import Foundation
+import Combine
 
-/// Протокол, определяющий функциональность менеджера локализации
+/// Протокол, определяющий функциональность менеджера локализации.
 protocol LocalizationManagerProtocol {
-    /// Устанавливает текущий язык для локализации
-    /// - Parameter language: Код языка (например, "en" или "ru")
     func setLanguage(_ language: String)
-    
-    /// Возвращает локализованную строку для заданного ключа
-    /// - Parameters:
-    ///   - key: Ключ локализации
-    ///   - arguments: Аргументы для форматирования строки (если есть)
-    /// - Returns: Локализованная строка
     func localizedString(for key: String, arguments: CVarArg...) -> String
-    
-    /// Возвращает текущий установленный язык
-    /// - Returns: Код текущего языка
     func currentLanguage() -> String
 }
 
-/// Реализация менеджера локализации
+/// Управляет локализацией, наблюдая за изменениями настроек и обновляясь соответственно.
 class LocalizationManager: ObservableObject, LocalizationManagerProtocol {
     private let logger: LoggerProtocol
     private var bundle: Bundle?
     @Published private(set) var currentLanguageCode: String
+    private var settingsManager: any SettingsManagerProtocol
+    private var cancellables = Set<AnyCancellable>()
 
-    /// Инициализатор
-    /// - Parameter logger: Протокол для логирования
-    init(logger: LoggerProtocol, initialLanguage: String) {
+    /// Инициализирует менеджер локализации.
+    init(logger: LoggerProtocol, settingsManager: any SettingsManagerProtocol) {
         self.logger = logger
-        self.currentLanguageCode = initialLanguage
-        self.setLanguage(initialLanguage)
+        self.settingsManager = settingsManager
+        self.currentLanguageCode = settingsManager.settings.language
+        self.setLanguage(currentLanguageCode)
+        setupBindings()
     }
 
+    /// Настраивает привязки для наблюдения за изменениями настроек.
+    private func setupBindings() {
+        settingsManager.settingsPublisher
+            .map { $0.language }
+            .removeDuplicates()
+            .sink { [weak self] language in
+                self?.setLanguage(language)
+            }
+            .store(in: &cancellables)
+    }
+
+    /// Устанавливает текущий язык и обновляет бандл.
     func setLanguage(_ language: String) {
         guard let path = Bundle.main.path(forResource: language, ofType: "lproj"),
               let bundle = Bundle(path: path) else {
-            logger.log("Failed to set language: \(language)", level: .error, details: nil)
+            logger.log("Не удалось установить язык: \(language)", level: .error, details: nil)
             return
         }
         self.bundle = bundle
         self.currentLanguageCode = language
-        logger.log("Language set to: \(language)", level: .info, details: nil)
-        objectWillChange.send()
+        logger.log("Язык установлен на: \(language)", level: .info, details: nil)
     }
 
     func localizedString(for key: String, arguments: CVarArg...) -> String {
-        let format = bundle?.localizedString(forKey: key, value: nil, table: "Localizable") ?? key
+        let format = bundle?.localizedString(forKey: key, value: nil, table: nil) ?? key
         return String(format: format, arguments: arguments)
     }
 
@@ -54,19 +59,8 @@ class LocalizationManager: ObservableObject, LocalizationManagerProtocol {
     }
 }
 
-/// Синглтон для доступа к менеджеру локализации
-class LocalizationService {
-    static let shared = LocalizationService()
-    var manager: LocalizationManagerProtocol?
-    
-    private init() {}
-}
 
-// MARK: - Удобное расширение для использования локализации
 extension String {
-    /// Возвращает локализованную версию строки
-    /// - Parameter arguments: Аргументы для форматирования строки (если есть)
-    /// - Returns: Локализованная строка
     func localized(arguments: CVarArg...) -> String {
         guard let manager = LocalizationService.shared.manager else {
             return self
@@ -75,10 +69,10 @@ extension String {
     }
 }
 
-/// Расширение для AppState для настройки локализации
-extension AppState {
-    /// Настраивает локализацию для приложения
-    func setupLocalization() {
-        LocalizationService.shared.manager = self.localizationManager
-    }
+
+class LocalizationService {
+    static let shared = LocalizationService()
+    var manager: LocalizationManagerProtocol?
+    
+    private init() {}
 }

@@ -1,20 +1,22 @@
-import Foundation
+// ThemeManager.swift
 import SwiftUI
+import Combine
 
-/// Протокол для управления темами
 protocol ThemeManagerProtocol: ObservableObject {
     var currentTheme: Theme { get }
     func toggleTheme()
 }
 
-/// Класс для управления темами
-class ThemeManager: ObservableObject {
+class ThemeManager: ObservableObject, ThemeManagerProtocol {
     @Published private(set) var currentTheme: Theme
-    let logger: LoggerProtocol
+    private let logger: LoggerProtocol
+    private let settingsManager: any SettingsManagerProtocol
+    private var cancellables = Set<AnyCancellable>()
 
-    init(logger: LoggerProtocol, initialTheme: String) {
+    init(logger: LoggerProtocol, settingsManager: any SettingsManagerProtocol) {
         self.logger = logger
-        // Устанавливаем тему на основе переданного параметра
+        self.settingsManager = settingsManager
+        let initialTheme = settingsManager.settings.theme
         switch initialTheme {
         case "dark":
             self.currentTheme = DarkTheme()
@@ -22,26 +24,36 @@ class ThemeManager: ObservableObject {
             self.currentTheme = LightTheme()
         }
         applyTheme()
+        setupBindings()
     }
 
-    func setTheme(_ theme: String) {
+    private func setupBindings() {
+        settingsManager.settingsPublisher
+            .map { $0.theme }
+            .removeDuplicates()
+            .sink { [weak self] theme in
+                self?.setTheme(theme)
+            }
+            .store(in: &cancellables)
+    }
+
+    private func setTheme(_ theme: String) {
         switch theme {
         case "dark":
             currentTheme = DarkTheme()
         default:
             currentTheme = LightTheme()
         }
-        logger.log("Theme changed to \(theme)", level: .info, details: nil)
-        objectWillChange.send()
+        logger.log("Тема изменена на \(theme)", level: .info, details: nil)
         applyTheme()
     }
 
     func toggleTheme() {
         let newTheme = currentTheme is LightTheme ? "dark" : "light"
-        setTheme(newTheme)
+        settingsManager.settings.theme = newTheme
     }
 
     private func applyTheme() {
-        // Применение темы к глобальным UI элементам, если необходимо
+        // Применение темы к UI, если необходимо
     }
 }

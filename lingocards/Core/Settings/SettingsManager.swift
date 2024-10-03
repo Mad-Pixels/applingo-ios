@@ -9,7 +9,7 @@ protocol SettingsManagerProtocol: ObservableObject {
     var logger: LoggerProtocol? { get set }
 }
 
-class SettingsManager: SettingsManagerProtocol {
+class SettingsManager: ObservableObject, SettingsManagerProtocol {
     private let userDefaults = UserDefaults.standard
     private let settingsKey = "AppSettings"
 
@@ -34,18 +34,18 @@ class SettingsManager: SettingsManagerProtocol {
         if let data = userDefaults.data(forKey: settingsKey),
            let savedSettings = try? JSONDecoder().decode(AppSettings.self, from: data) {
             self.settings = savedSettings
-            logger?.log("Settings loaded", level: .info, details: nil)
+            logger?.log("Настройки загружены", level: .info, details: nil)
         } else {
-            logger?.log("Using default settings", level: .info, details: nil)
+            logger?.log("Используются настройки по умолчанию", level: .info, details: nil)
         }
     }
 
     func saveSettings() {
         if let encodedSettings = try? JSONEncoder().encode(settings) {
             userDefaults.set(encodedSettings, forKey: settingsKey)
-            logger?.log("Settings saved", level: .info, details: nil)
+            logger?.log("Настройки сохранены", level: .info, details: nil)
         } else {
-            logger?.log("Failed to save settings", level: .error, details: nil)
+            logger?.log("Не удалось сохранить настройки", level: .error, details: nil)
         }
     }
 }

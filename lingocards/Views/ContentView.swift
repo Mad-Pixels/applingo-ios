@@ -4,77 +4,37 @@ struct ContentView: View {
     @StateObject private var viewModel: GreetingViewModel
     @EnvironmentObject private var appState: AppState
     @EnvironmentObject private var themeManager: ThemeManager
-    @State private var currentLanguage: String = LocalizationService.shared.manager?.currentLanguage() ?? "en"
-    @State private var showSettings = false // Добавили переменную для управления показом настроек
+    @State private var currentLanguage: String = "en"
+    @State private var showSettings = false
 
-    init(apiManager: APIManagerProtocol, logger: LoggerProtocol) {
-        _viewModel = StateObject(wrappedValue: GreetingViewModel(apiManager: apiManager, logger: logger))
+    init() {
+        if let appState = AppState.shared {
+            let apiManager = appState.apiManager
+            let logger = appState.logger
+            _viewModel = StateObject(wrappedValue: GreetingViewModel(apiManager: apiManager, logger: logger))
+        } else {
+            fatalError("AppState.shared не инициализирован")
+        }
     }
 
     var body: some View {
-        NavigationView { // Оборачиваем контент в NavigationView
+        NavigationView {
             ZStack {
                 themeManager.currentTheme.backgroundColor
-                    .edgesIgnoringSafeArea(.all) // Устанавливаем цвет фона из текущей темы
+                    .edgesIgnoringSafeArea(.all)
 
                 VStack {
                     Text(viewModel.message)
-                        .foregroundColor(themeManager.currentTheme.textColor) // Устанавливаем цвет текста из темы
+                        .foregroundColor(themeManager.currentTheme.textColor)
                     Text("greeting".localized())
                         .foregroundColor(themeManager.currentTheme.textColor)
 
-                    Button("fetch_dictionary".localized()) {
-                        viewModel.fetchDictionary()
-                    }
-                    .padding()
-                    .background(themeManager.currentTheme.accentColor)
-                    .foregroundColor(themeManager.currentTheme.textColor)
-                    .cornerRadius(8)
+                    // Остальной код...
 
-                    Button("fetch_download".localized()) {
-                        viewModel.fetchDownload()
-                    }
-                    .padding()
-                    .background(themeManager.currentTheme.accentColor)
-                    .foregroundColor(themeManager.currentTheme.textColor)
-                    .cornerRadius(8)
-
-                    // Кнопка смены языка
-                    Button("change_language".localized()) {
-                        toggleLanguage()
-                    }
-                    .padding()
-                    .background(themeManager.currentTheme.accentColor)
-                    .foregroundColor(themeManager.currentTheme.textColor)
-                    .cornerRadius(8)
-
-                    // Кнопка переключения темы
-                    Button(themeManager.currentTheme is LightTheme ? "Switch to Dark Theme" : "Switch to Light Theme") {
-                        themeManager.toggleTheme()
-                    }
-                    .padding()
-                    .background(themeManager.currentTheme.accentColor)
-                    .foregroundColor(themeManager.currentTheme.textColor)
-                    .cornerRadius(8)
-
-                    List(viewModel.dictionaryItems) { item in
-                        VStack(alignment: .leading) {
-                            Text(item.name)
-                                .font(.headline)
-                                .foregroundColor(themeManager.currentTheme.textColor)
-                            Text(item.description)
-                                .font(.subheadline)
-                                .foregroundColor(themeManager.currentTheme.textColor)
-                            Text("author".localized(arguments: item.author))
-                                .font(.caption)
-                                .foregroundColor(themeManager.currentTheme.textColor)
-                        }
-                        .listRowBackground(themeManager.currentTheme.backgroundColor)
-                    }
                 }
                 .blur(radius: viewModel.isLoading ? 3 : 0)
             }
-            .navigationBarTitle("Home", displayMode: .inline) // Указываем заголовок
+            .navigationBarTitle("Home", displayMode: .inline)
             .navigationBarItems(trailing: Button(action: {
                 showSettings.toggle()
             }) {
@@ -82,9 +42,9 @@ struct ContentView: View {
                     .foregroundColor(themeManager.currentTheme.accentColor)
             })
             .sheet(isPresented: $showSettings) {
-                SettingsView(settingsManager: appState.settingsManager)
+                SettingsView()
                     .environmentObject(appState)
-                    .environmentObject(appState.themeManager)
+                    .environmentObject(themeManager)
             }
             .alert(item: $viewModel.activeAlert) { activeAlert in
                 // Обработка алертов
@@ -104,18 +64,17 @@ struct ContentView: View {
                     )
                 }
             }
+            .onAppear {
+                // Теперь можем безопасно использовать appState
+                self.currentLanguage = appState.settingsManager.settings.language
+            }
         }
     }
 
     private func toggleLanguage() {
-        guard let manager = LocalizationService.shared.manager else { return }
-
-        // Переключаем язык между английским и русским
+        // Обновляем язык через settingsManager
         let newLanguage = currentLanguage == "en" ? "ru" : "en"
-        manager.setLanguage(newLanguage)
+        appState.settingsManager.settings.language = newLanguage
         currentLanguage = newLanguage
-
-        // Обновляем UI
-        viewModel.objectWillChange.send()
     }
 }

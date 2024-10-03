@@ -2,37 +2,35 @@ import SwiftUI
 
 struct SettingsView: View {
     @EnvironmentObject var appState: AppState
-    @ObservedObject var settingsManager: SettingsManager
+    @EnvironmentObject var themeManager: ThemeManager
 
     var body: some View {
-        Form {
-            Section(header: Text("Language")) {
-                Picker("Language", selection: $settingsManager.settings.language) {
-                    Text("English").tag("en")
-                    Text("Русский").tag("ru")
-                    // Добавьте другие языки по необходимости
+        NavigationView {
+            Form {
+                Section(header: Text("Language")) {
+                    Picker("Language", selection: $appState.settingsManager.settings.language) {
+                        Text("English").tag("en")
+                        Text("Русский").tag("ru")
+                    }
+                    .pickerStyle(SegmentedPickerStyle())
                 }
-                .onChange(of: settingsManager.settings.language) { newValue in
-                    appState.localizationManager.setLanguage(newValue)
-                }
-            }
 
-            Section(header: Text("Theme")) {
-                Picker("Theme", selection: $settingsManager.settings.theme) {
-                    Text("Light").tag("light")
-                    Text("Dark").tag("dark")
+                Section(header: Text("Theme")) {
+                    Picker("Theme", selection: $appState.settingsManager.settings.theme) {
+                        Text("Light").tag("light")
+                        Text("Dark").tag("dark")
+                    }
+                    .pickerStyle(SegmentedPickerStyle())
                 }
-                .onChange(of: settingsManager.settings.theme) { newValue in
-                    appState.themeManager.setTheme(newValue)
-                }
-            }
 
-            Section(header: Text("Logging")) {
-                Toggle(isOn: $settingsManager.settings.sendLogs) {
-                    Text("Send Logs")
+                Section(header: Text("Logging")) {
+                    Toggle(isOn: $appState.settingsManager.settings.sendLogs) {
+                        Text("Send Logs")
+                    }
                 }
             }
+            .navigationBarTitle("Settings", displayMode: .inline)
+            .background(themeManager.currentTheme.backgroundColor)
         }
-        .navigationTitle("Settings")
     }
 }

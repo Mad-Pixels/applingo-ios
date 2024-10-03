@@ -3,12 +3,12 @@ import UIKit
 import os.log
 import Combine
 
-// Протокол, определяющий методы для логирования
+/// Протокол, определяющий методы для логирования.
 protocol LoggerProtocol {
     func log(_ message: String, level: OSLogType, details: [String: Any]?)
 }
 
-// Класс для управления логированием
+/// Управляет логированием и наблюдает за настройками, чтобы определить, нужно ли отправлять логи на сервер.
 class Logger: LoggerProtocol {
     private let log = OSLog(subsystem: Bundle.main.bundleIdentifier ?? "com.LingoCards", category: "AppLogs")
     private var pendingLogs: [String] = []
@@ -20,9 +20,10 @@ class Logger: LoggerProtocol {
         setupBindings()
     }
 
+    /// Настраивает привязки для наблюдения за изменениями настроек.
     private func setupBindings() {
         settingsManager.settingsPublisher
-            .sink { [weak self] (settings: AppSettings) in
+            .sink { [weak self] _ in
                 self?.sendLogsIfNeeded()
             }
             .store(in: &cancellables)
@@ -50,48 +51,32 @@ class Logger: LoggerProtocol {
             pendingLogs.removeAll()
         }
     }
-    
-    // Метод для отправки логов на сервер
+
+    /// Отправляет логи на сервер.
     func sendLogsToServer(message: String, details: [String: Any]? = nil) {
-        // Создаем словарь для лог-сообщения
+        // Подготавливаем лог-сообщение.
         var logMessage: [String: Any] = ["message": message]
-        
-        // Преобразуем детали в строковый формат для безопасной сериализации
         if let details = details {
-            logMessage["details"] = details // Сохраняем детали в виде словаря
+            logMessage["details"] = details
         }
-        
-        // Добавление информации о устройстве и операционной системе
         let deviceInfo = getDeviceInfo()
         logMessage["device_info"] = deviceInfo
-        
-        // Преобразуем лог в JSON-формат
+
+        // Сериализуем лог-сообщение в JSON.
         guard (try? JSONSerialization.data(withJSONObject: logMessage, options: [])) != nil else {
-            print("Failed to serialize log message to JSON")
+            print("Не удалось сериализовать лог-сообщение в JSON")
             return
         }
-        
-        print("Sending logs to server with message:", message)
-        if let details = details {
-            print("Details:", details)
-        }
-        
-        print("Device Info:", deviceInfo)
-        if let details = details {
-            print("Details:", details)
-        }
-        
-        // TODO: Реализовать отправку логов на сервер через HTTPS
-        // Пример отправки лога:
-        // 1. Создать URL и URLRequest.
-        // 2. Использовать URLSession для отправки POST-запроса с httpBody.
+
+        print("Отправка логов на сервер с сообщением:", message)
+        // TODO: Реализуйте фактическую отправку логов через HTTPS.
     }
-    
+
+    /// Получает информацию об устройстве для логирования.
     private func getDeviceInfo() -> [String: Any] {
         let device = UIDevice.current
         let processInfo = ProcessInfo.processInfo
-        
-        // Информация о устройстве и ОС
+
         let deviceInfo: [String: Any] = [
             "device_model": device.model,
             "device_name": device.name,
@@ -100,7 +85,7 @@ class Logger: LoggerProtocol {
             "os_version": processInfo.operatingSystemVersionString,
             "locale": Locale.current.identifier
         ]
-        
+
         return deviceInfo
     }
 }
