@@ -6,8 +6,8 @@ class AppState: ObservableObject {
     let databaseManager: DatabaseManagerProtocol
     let settingsManager: SettingsManagerProtocol
     let localizationManager: LocalizationManagerProtocol
-    let themeManager: ThemeManagerProtocol
-    
+    let themeManager: ThemeManager
+
     init() {
         self.logger = Logger(sendLogs: true)
         self.apiManager = APIManager(baseURL: "https://lingocards-api.madpixels.io", token: "t9DbIipRtzPBVXYLoXxc6KSn", logger: logger)
@@ -22,7 +22,6 @@ class AppState: ObservableObject {
     private func setup() {
         setupLocalization()
         settingsManager.loadSettings()
-        themeManager.setTheme(settingsManager.settings.theme)
         
         do {
             try databaseManager.connect()

@@ -1,9 +1,10 @@
-import UIKit
+import SwiftUI
 
+/// Протокол, определяющий свойства темы
 protocol Theme {
-    var backgroundColor: UIColor { get }
-    var textColor: UIColor { get }
-    var accentColor: UIColor { get }
+    var backgroundColor: Color { get }
+    var textColor: Color { get }
+    var accentColor: Color { get }
     var userInterfaceStyle: UIUserInterfaceStyle { get }
     // Добавьте другие цвета и стили по необходимости
 }

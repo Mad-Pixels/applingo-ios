@@ -1,35 +1,52 @@
 import Foundation
-import UIKit
+import SwiftUI
 
-protocol ThemeManagerProtocol {
+/// Протокол для управления темами
+protocol ThemeManagerProtocol: ObservableObject {
     var currentTheme: Theme { get }
-    func setTheme(_ theme: String)
+    func toggleTheme()
 }
 
+/// Класс для управления темами
 class ThemeManager: ThemeManagerProtocol {
+    /// Текущее выбранная тема
+    @Published private(set) var currentTheme: Theme
+    /// Логгер для записи событий
     let logger: LoggerProtocol
-    private(set) var currentTheme: Theme
-    
+
+    /// Инициализация с загрузкой сохраненной темы или использованием темы по умолчанию
     init(logger: LoggerProtocol) {
-        self.currentTheme = LightTheme()
         self.logger = logger
-    }
-    
-    func setTheme(_ theme: String) {
-        switch theme {
-        case "dark":
-            currentTheme = DarkTheme()
-        default:
-            currentTheme = LightTheme()
+        // Загружаем сохраненную тему из UserDefaults или используем светлую тему по умолчанию
+        if let savedTheme = UserDefaults.standard.string(forKey: "selectedTheme") {
+            switch savedTheme {
+            case "dark":
+                self.currentTheme = DarkTheme()
+            default:
+                self.currentTheme = LightTheme()
+            }
+        } else {
+            self.currentTheme = LightTheme()
         }
         applyTheme()
     }
-    
-    private func applyTheme() {
-        // Применение темы к глобальным UI элементам
-        UIApplication.shared.windows.forEach { window in
-            window.overrideUserInterfaceStyle = currentTheme.userInterfaceStyle
-            // Дополнительные настройки темы...
+
+    /// Переключение темы
+    func toggleTheme() {
+        if currentTheme is LightTheme {
+            currentTheme = DarkTheme()
+            UserDefaults.standard.setValue("dark", forKey: "selectedTheme")
+        } else {
+            currentTheme = LightTheme()
+            UserDefaults.standard.setValue("light", forKey: "selectedTheme")
         }
+        logger.log("Theme changed to \(currentTheme is LightTheme ? "Light" : "Dark")", level: .info, details: nil)
+        applyTheme()
+    }
+
+    /// Применение темы к приложению
+    private func applyTheme() {
+        // В SwiftUI изменение темы будет происходить автоматически через привязки
+        // Если есть необходимость изменить глобальные настройки, можно сделать это здесь
     }
 }

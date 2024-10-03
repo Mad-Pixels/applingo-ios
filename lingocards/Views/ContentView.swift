@@ -3,6 +3,7 @@ import SwiftUI
 struct ContentView: View {
     @StateObject private var viewModel: GreetingViewModel
     @EnvironmentObject private var appState: AppState
+    @EnvironmentObject private var themeManager: ThemeManager
     @State private var currentLanguage: String = LocalizationService.shared.manager?.currentLanguage() ?? "en"
     
     init(apiManager: APIManagerProtocol, logger: LoggerProtocol) {
@@ -11,37 +12,65 @@ struct ContentView: View {
     
     var body: some View {
         ZStack {
+            themeManager.currentTheme.backgroundColor
+                .edgesIgnoringSafeArea(.all) // Устанавливаем цвет фона из текущей темы
+            
             VStack {
                 Text(viewModel.message)
+                    .foregroundColor(themeManager.currentTheme.textColor) // Устанавливаем цвет текста из темы
                 Text("greeting".localized())
+                    .foregroundColor(themeManager.currentTheme.textColor)
                 
                 Button("fetch_dictionary".localized()) {
                     viewModel.fetchDictionary()
                 }
+                .padding()
+                .background(themeManager.currentTheme.accentColor)
+                .foregroundColor(themeManager.currentTheme.textColor)
+                .cornerRadius(8)
                 
                 Button("fetch_download".localized()) {
                     viewModel.fetchDownload()
                 }
+                .padding()
+                .background(themeManager.currentTheme.accentColor)
+                .foregroundColor(themeManager.currentTheme.textColor)
+                .cornerRadius(8)
                 
                 // Кнопка смены языка
                 Button("change_language".localized()) {
                     toggleLanguage()
                 }
                 .padding()
+                .background(themeManager.currentTheme.accentColor)
+                .foregroundColor(themeManager.currentTheme.textColor)
+                .cornerRadius(8)
+                
+                // Кнопка переключения темы
+                Button(themeManager.currentTheme is LightTheme ? "Switch to Dark Theme" : "Switch to Light Theme") {
+                    themeManager.toggleTheme()
+                }
+                .padding()
+                .background(themeManager.currentTheme.accentColor)
+                .foregroundColor(themeManager.currentTheme.textColor)
+                .cornerRadius(8)
                 
                 List(viewModel.dictionaryItems) { item in
                     VStack(alignment: .leading) {
-                        Text(item.name).font(.headline)
-                        Text(item.description).font(.subheadline)
-                        Text("author".localized(arguments: item.author)).font(.caption)
+                        Text(item.name)
+                            .font(.headline)
+                            .foregroundColor(themeManager.currentTheme.textColor)
+                        Text(item.description)
+                            .font(.subheadline)
+                            .foregroundColor(themeManager.currentTheme.textColor)
+                        Text("author".localized(arguments: item.author))
+                            .font(.caption)
+                            .foregroundColor(themeManager.currentTheme.textColor)
                     }
+                    .listRowBackground(themeManager.currentTheme.backgroundColor)
                 }
             }
             .blur(radius: viewModel.isLoading ? 3 : 0)
-            
-            if viewModel.isLoading {
-                ProgressView()
-            }
         }
         .alert(item: $viewModel.activeAlert) { activeAlert in
             switch activeAlert {

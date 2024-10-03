@@ -17,6 +17,12 @@
           }
         }
       }
+    },
+    "Switch to Dark Theme" : {
+
+    },
+    "Switch to Light Theme" : {
+
     }
   },
   "version" : "1.0"

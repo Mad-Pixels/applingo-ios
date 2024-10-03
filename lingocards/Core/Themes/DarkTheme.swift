@@ -1,8 +1,9 @@
-import UIKit
+import SwiftUI
 
+/// Тёмная тема
 struct DarkTheme: Theme {
-    let backgroundColor: UIColor = .black
-    let textColor: UIColor = .white
-    let accentColor: UIColor = .orange
+    let backgroundColor: Color = Color.black
+    let textColor: Color = Color.white
+    let accentColor: Color = Color.orange
     let userInterfaceStyle: UIUserInterfaceStyle = .dark
 }
