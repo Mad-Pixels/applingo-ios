@@ -21,13 +21,30 @@ struct ResponseQueryBody: Decodable {
 }
 
 struct QueryItem: Decodable, Identifiable {
-    var id: String { dictionary_key }
+    let id: String
     let name: String
     let category_main: String
     let category_sub: String
     let author: String
     let dictionary_key: String
     let description: String
+    
+    enum CodingKeys: String, CodingKey {
+        case name, category_main, category_sub, author, dictionary_key, description
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        name = try container.decode(String.self, forKey: .name)
+        category_main = try container.decode(String.self, forKey: .category_main)
+        category_sub = try container.decode(String.self, forKey: .category_sub)
+        author = try container.decode(String.self, forKey: .author)
+        dictionary_key = try container.decode(String.self, forKey: .dictionary_key)
+        description = try container.decode(String.self, forKey: .description)
+        
+        // Используем dictionary_key в качестве id
+        id = dictionary_key
+    }
 }
 
 class RequestQuery {
