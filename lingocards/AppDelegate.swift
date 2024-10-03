@@ -1,9 +1,9 @@
-// LingoCardsApp.swift
 import SwiftUI
 
 @main
 struct LingoCardsApp: App {
-    @StateObject private var appState = AppState()
+    // Используем уже существующий экземпляр AppState через shared
+    @StateObject private var appState = AppState.shared
 
     var body: some Scene {
         WindowGroup {
@@ -14,4 +14,3 @@ struct LingoCardsApp: App {
         }
     }
 }
-

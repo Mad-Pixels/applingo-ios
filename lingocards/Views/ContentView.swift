@@ -9,13 +9,10 @@ struct ContentView: View {
     @State private var showSettings = false
 
     init() {
-        if let appState = AppState.shared {
-            let apiManager = appState.apiManager
-            let logger = appState.logger
-            _viewModel = StateObject(wrappedValue: GreetingViewModel(apiManager: apiManager, logger: logger))
-        } else {
-            fatalError("AppState.shared не инициализирован")
-        }
+        let appState = AppState.shared
+        let apiManager = appState.apiManager
+        let logger = appState.logger
+        _viewModel = StateObject(wrappedValue: GreetingViewModel(apiManager: apiManager, logger: logger))
     }
 
     // Вычисляемые свойства для локализованных строк

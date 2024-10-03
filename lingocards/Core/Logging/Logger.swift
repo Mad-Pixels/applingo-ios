@@ -10,9 +10,11 @@ protocol LoggerProtocol {
 class Logger: LoggerProtocol {
     private let log = OSLog(subsystem: Bundle.main.bundleIdentifier ?? "com.LingoCards", category: "AppLogs")
 
-    private var pendingLogs: [String] = []
+    private var pendingLogs: [String] = []      // Хранит все логи для отображения в UI или отладки
+    private var errorLogs: [(message: String, details: [String: Any]?)] = []  // Хранит только ошибки для отправки на сервер
     private var settingsManager: any SettingsManagerProtocol
     private var cancellables = Set<AnyCancellable>()
+    private let logQueue = DispatchQueue(label: "com.LingoCards.LoggerQueue")
 
     init(settingsManager: any SettingsManagerProtocol) {
         self.settingsManager = settingsManager
@@ -20,48 +22,62 @@ class Logger: LoggerProtocol {
     }
 
     func log(_ message: String, level: OSLogType = .default, details: [String: Any]? = nil) {
-        os_log("%{public}@", log: log, type: level, message)
-        pendingLogs.append(message)
+        logQueue.async {
+            // Записываем лог в локальный системный лог
+            os_log("%{public}@", log: self.log, type: level, message)
+            self.pendingLogs.append(message)
 
-        if let details = details {
-            let detailsString = details.map { "\($0.key): \($0.value)" }.joined(separator: ", ")
-            os_log("Details: %{public}@", log: log, type: .debug, detailsString)
-        }
+            // Если есть дополнительные детали, добавляем их в лог
+            if let details = details, !details.isEmpty {
+                let detailsString = details.map { "\($0.key): \($0.value)" }.joined(separator: ", ")
+                os_log("Details: %{public}@", log: self.log, type: .debug, detailsString)
+            }
 
-        if settingsManager.settings.sendLogs && level == .error {
-            sendLogsToServer(message: message, details: details)
+            // Отправляем лог на сервер только если уровень log == .error и отправка логов включена
+            if level == .error, self.settingsManager.settings.sendLogs {
+                // Отправляем лог на сервер только если детали присутствуют
+                self.sendLogsToServer(message: message, details: details)
+            }
         }
     }
 
     func sendLogsToServer(message: String, details: [String: Any]? = nil) {
-        var logMessage: [String: Any] = ["message": message]
-        if let details = details {
-            logMessage["details"] = details
-        }
-        let deviceInfo = getDeviceInfo()
-        logMessage["device_info"] = deviceInfo
+        logQueue.async { // Обеспечиваем потокобезопасность
+            // Проверяем наличие деталей перед отправкой
+            guard let details = details, !details.isEmpty else {
+                print("Skipping log message: No details to send for message - \(message)")
+                return
+            }
 
-        guard (try? JSONSerialization.data(withJSONObject: logMessage, options: [])) != nil else {
-            return
+            var logMessage: [String: Any] = ["message": message]
+            logMessage["details"] = details
+            let deviceInfo = self.getDeviceInfo()
+            logMessage["device_info"] = deviceInfo
+
+            // Печатаем лог вместо реальной отправки на сервер (например, через URLSession)
+            print("Send to server log message: \(logMessage)")
+            print("Details: \(details)")
+            print("Device info: \(deviceInfo)")
         }
-        print("Send to server log message: \(logMessage)")
-        print("Details: \(details ?? [:])")
-        print("Device info: \(deviceInfo)")
     }
 
     private func sendLogsIfNeeded() {
-        if settingsManager.settings.sendLogs {
-            for message in pendingLogs {
-                sendLogsToServer(message: message, details: nil)
+        logQueue.async {
+            // Отправляем только накопленные ошибки (errorLogs), если включена отправка логов
+            if self.settingsManager.settings.sendLogs {
+                for (message, details) in self.errorLogs {
+                    self.sendLogsToServer(message: message, details: details)
+                }
+                self.errorLogs.removeAll()  // Очищаем отправленные логи ошибок
             }
-            pendingLogs.removeAll()
         }
     }
 
     private func setupBindings() {
+        // Реакция на изменение настроек
         settingsManager.settingsPublisher
             .sink { [weak self] _ in
-                self?.sendLogsIfNeeded()
+                self?.sendLogsIfNeeded()  // Отправляем накопленные ошибки, если настройки изменились
             }
             .store(in: &cancellables)
     }
@@ -79,5 +95,9 @@ class Logger: LoggerProtocol {
             "locale": Locale.current.identifier
         ]
         return deviceInfo
+    }
+    
+    deinit {
+        cancellables.forEach { $0.cancel() }
     }
 }

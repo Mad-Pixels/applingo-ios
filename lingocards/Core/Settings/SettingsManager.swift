@@ -34,19 +34,24 @@ class SettingsManager: ObservableObject, SettingsManagerProtocol {
     func loadSettings() {
         if let data = userDefaults.data(forKey: settingsKey),
            let savedSettings = try? JSONDecoder().decode(AppSettings.self, from: data) {
-            self.settings = savedSettings
-            logger?.log("Settings was updated", level: .info, details: nil)
+            DispatchQueue.main.async { [weak self] in
+                self?.settings = savedSettings
+                self?.logger?.log("Settings were updated", level: .info, details: nil)
+            }
         } else {
-            logger?.log("Use default settings", level: .info, details: nil)
+            logger?.log("Using default settings", level: .info, details: nil)
         }
     }
 
     func saveSettings() {
-        if let encodedSettings = try? JSONEncoder().encode(settings) {
-            userDefaults.set(encodedSettings, forKey: settingsKey)
-            logger?.log("Settings changes was saved", level: .info, details: nil)
-        } else {
-            logger?.log("Error while saving settings", level: .error, details: nil)
+        DispatchQueue.global(qos: .background).async { [weak self] in
+            guard let self = self else { return }
+            if let encodedSettings = try? JSONEncoder().encode(self.settings) {
+                self.userDefaults.set(encodedSettings, forKey: self.settingsKey)
+                self.logger?.log("Settings changes were saved", level: .info, details: nil)
+            } else {
+                self.logger?.log("Error while saving settings", level: .error, details: nil)
+            }
         }
     }
 }

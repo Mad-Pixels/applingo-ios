@@ -2,6 +2,8 @@ import SwiftUI
 import Combine
 
 class AppState: ObservableObject {
+    static let shared = AppState()
+    
     let logger: Logger
     let apiManager: APIManager
     let databaseManager: DatabaseManagerProtocol
@@ -9,9 +11,7 @@ class AppState: ObservableObject {
     let localizationManager: LocalizationManager
     let themeManager: ThemeManager
 
-    static var shared: AppState?
-
-    init() {
+    private init() {
         // Инициализируем SettingsManager.
         self.settingsManager = SettingsManager()
 
@@ -33,8 +33,6 @@ class AppState: ObservableObject {
 
         // Инициализируем LocalizationService
         LocalizationService.shared.manager = localizationManager
-
-        AppState.shared = self
 
         setup()
     }

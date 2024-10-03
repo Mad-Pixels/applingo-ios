@@ -55,8 +55,14 @@ class DatabaseManager: DatabaseManagerProtocol {
         var errorMessage: UnsafeMutablePointer<Int8>?
         if sqlite3_exec(db, query, nil, nil, &errorMessage) != SQLITE_OK {
             let errorString = String(cString: errorMessage!)
-            sqlite3_free(errorMessage)
-            throw DatabaseError.queryError(errorString)
+            
+            if let errorMessage = errorMessage {
+                let errorString = String(cString: errorMessage)
+                sqlite3_free(errorMessage)
+                throw DatabaseError.queryError(errorString)
+            } else {
+                throw DatabaseError.queryError("Unknown error")
+            }
         }
     }
     

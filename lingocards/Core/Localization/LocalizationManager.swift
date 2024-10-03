@@ -28,6 +28,7 @@ class LocalizationManager: ObservableObject, LocalizationManagerProtocol {
         settingsManager.settingsPublisher
             .map { $0.language }
             .removeDuplicates()
+            .receive(on: DispatchQueue.main) // Обеспечиваем выполнение на главном потоке
             .sink { [weak self] language in
                 self?.setLanguage(language)
             }
@@ -41,9 +42,11 @@ class LocalizationManager: ObservableObject, LocalizationManagerProtocol {
             return
         }
 
-        self.currentLanguageCode = language
-        self.bundle = bundle
-        objectWillChange.send()
+        DispatchQueue.main.async { [weak self] in
+            self?.currentLanguageCode = language
+            self?.bundle = bundle
+            // Удаляем objectWillChange.send(), так как он не нужен
+        }
     }
 
     func localizedString(for key: String, arguments: CVarArg...) -> String {
@@ -53,6 +56,10 @@ class LocalizationManager: ObservableObject, LocalizationManagerProtocol {
 
     func currentLanguage() -> String {
         return currentLanguageCode
+    }
+    
+    deinit {
+        cancellables.forEach { $0.cancel() }
     }
 }
 
