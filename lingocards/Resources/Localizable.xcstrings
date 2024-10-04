@@ -1,7 +1,16 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "Add Dictionary" : {
+
+    },
+    "Add Word" : {
+
+    },
     "Cancel" : {
+
+    },
+    "Close" : {
 
     },
     "Connection Error: (message)" : {
@@ -10,7 +19,25 @@
     "Dark" : {
 
     },
+    "Definition" : {
+
+    },
+    "Delete" : {
+
+    },
     "Dictionaries" : {
+
+    },
+    "Download from Server" : {
+
+    },
+    "Edit" : {
+
+    },
+    "Enter definition" : {
+
+    },
+    "Enter word" : {
 
     },
     "File Creation Error: (message)" : {
@@ -33,6 +60,9 @@
         }
       }
     },
+    "Import CSV" : {
+
+    },
     "Language" : {
 
     },
@@ -40,6 +70,9 @@
 
     },
     "Light" : {
+
+    },
+    "Loading..." : {
 
     },
     "Logging" : {
@@ -51,6 +84,9 @@
     "Query Error: (message)" : {
 
     },
+    "Save" : {
+
+    },
     "Select Language" : {
 
     },
@@ -60,10 +96,16 @@
     "Send Logs" : {
 
     },
+    "Server Dictionaries" : {
+
+    },
     "Settings" : {
 
     },
     "Theme" : {
+
+    },
+    "Word" : {
 
     },
     "Words" : {
