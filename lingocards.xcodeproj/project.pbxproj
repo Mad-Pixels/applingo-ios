@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		D8BD502C2CADC97100E978AB /* libsqlite3.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = D8BD502B2CADC97100E978AB /* libsqlite3.0.tbd */; };
+		D8B011FD2CB0359000EB9A3D /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = D8B011FC2CB0359000EB9A3D /* GRDB */; };
 		D8BD515C2CAEAA3300E978AB /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = D8BD515B2CAEAA3300E978AB /* Localizable.xcstrings */; };
 /* End PBXBuildFile section */
 
@@ -30,7 +30,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D8BD502C2CADC97100E978AB /* libsqlite3.0.tbd in Frameworks */,
+				D8B011FD2CB0359000EB9A3D /* GRDB in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -83,6 +83,7 @@
 			);
 			name = lingocards;
 			packageProductDependencies = (
+				D8B011FC2CB0359000EB9A3D /* GRDB */,
 			);
 			productName = lingocards;
 			productReference = D8BD4FEE2CADA16500E978AB /* lingocards.app */;
@@ -113,6 +114,9 @@
 			);
 			mainGroup = D8BD4FE52CADA16500E978AB;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				D8B011FB2CB0359000EB9A3D /* XCRemoteSwiftPackageReference "GRDB.swift" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = D8BD4FEF2CADA16500E978AB /* Products */;
 			projectDirPath = "";
@@ -346,6 +350,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		D8B011FB2CB0359000EB9A3D /* XCRemoteSwiftPackageReference "GRDB.swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/groue/GRDB.swift.git";
+			requirement = {
+				kind = exactVersion;
+				version = 6.29.3;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		D8B011FC2CB0359000EB9A3D /* GRDB */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D8B011FB2CB0359000EB9A3D /* XCRemoteSwiftPackageReference "GRDB.swift" */;
+			productName = GRDB;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = D8BD4FE62CADA16500E978AB /* Project object */;
 }

@@ -5,7 +5,9 @@ import Combine
 class DictionariesViewModel: BaseViewModel {
     @Published var dictionaries: [DictionaryItem] = []
     @Published var showAddOptions: Bool = false
-    @Published var showImportCSV: Bool = false
+    @Published var showFileImporter: Bool = false
+    @Published var importError: String?
+    @Published var importSuccess: Bool = false
     @Published var showDownloadServer: Bool = false
     @Published var selectedDictionary: DictionaryItem? = nil
     
@@ -72,10 +74,7 @@ class DictionariesViewModel: BaseViewModel {
     }
     
     func importCSV() {
-        showAddOptions = false
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-            self.showImportCSV = true
-        }
+        showFileImporter = true
     }
 
     func downloadSelectedDictionary(_ dictionary: DictionaryItem) {
