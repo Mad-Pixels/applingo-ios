@@ -109,19 +109,21 @@ struct DictionaryRow: View {
 
 struct AddDictionaryOptionsView: View {
     @ObservedObject var viewModel: DictionariesViewModel
+    @State private var showDocumentPicker = false
+    @State private var selectedFileURL: URL?
 
     var body: some View {
         NavigationView {
             VStack(spacing: 20) {
+                // Кнопка для импорта CSV
                 Button(action: {
-                    viewModel.importCSV()
+                    showDocumentPicker = true
                 }) {
                     Text("Import CSV")
                         .frame(maxWidth: .infinity)
                         .padding()
                 }
-                //.buttonStyle(PrimaryButtonStyle())
-                
+
                 Button(action: {
                     viewModel.fetchDictionariesFromServer()
                 }) {
@@ -129,8 +131,7 @@ struct AddDictionaryOptionsView: View {
                         .frame(maxWidth: .infinity)
                         .padding()
                 }
-                //.buttonStyle(PrimaryButtonStyle())
-                
+
                 Spacer()
             }
             .padding()
@@ -138,6 +139,13 @@ struct AddDictionaryOptionsView: View {
             .navigationBarItems(trailing: Button("Close") {
                 viewModel.showAddOptions = false
             })
+            // Отображение DocumentPicker
+            .sheet(isPresented: $showDocumentPicker) {
+                DocumentPicker(selectedFileURL: $selectedFileURL) { url in
+                    // Обработка выбранного файла
+                    //viewModel.importCSV(from: url)
+                }
+            }
         }
     }
 }
