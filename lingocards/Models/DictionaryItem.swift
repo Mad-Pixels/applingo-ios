@@ -1,9 +1,14 @@
 import Foundation
 
-struct DictionaryItem: Identifiable {
+struct DictionaryItem: Identifiable, Equatable {
     let id: UUID = UUID()
     var name: String
     var description: String
+
+    // Соответствие Equatable
+    static func ==(lhs: DictionaryItem, rhs: DictionaryItem) -> Bool {
+        lhs.id == rhs.id
+    }
 }
 
 // Models/WordItem.swift

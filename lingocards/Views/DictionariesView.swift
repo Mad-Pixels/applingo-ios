@@ -69,7 +69,6 @@ struct DictionariesView: View {
                 }
             )
             .onDisappear {
-                // При уходе с экрана отменяем все текущие операции
                 viewModel.cancelLoading()
             }
         }
@@ -124,6 +123,7 @@ struct AddDictionaryOptionsView: View {
     }
 }
 
+
 struct ServerDictionariesView: View {
     @ObservedObject var viewModel: DictionariesViewModel
     @State private var showDetailPopup = false
@@ -174,10 +174,9 @@ struct ServerDictionariesView: View {
                         Spacer()
 
                         Button("Download") {
-                            viewModel.dictionaries.append(selectedDictionary)
-                            showDetailPopup = false // Закрываем окно после загрузки
+                            viewModel.downloadSelectedDictionary(selectedDictionary)
+                            showDetailPopup = false // Закрываем всплывающее окно
                         }
-                        //.buttonStyle(PrimaryButtonStyle())
                         .padding()
                     }
                     .frame(width: 300, height: 300)

@@ -2,9 +2,6 @@
 import SwiftUI
 import Combine
 
-import SwiftUI
-import Combine
-
 class DictionariesViewModel: BaseViewModel {
     @Published var dictionaries: [DictionaryItem] = []
     @Published var showAddOptions: Bool = false
@@ -24,8 +21,6 @@ class DictionariesViewModel: BaseViewModel {
     }
     
     func loadDictionaries() {
-        // Загрузка словарей из источника данных
-        // Сейчас используем тестовые данные
         dictionaries = [
             DictionaryItem(name: "Dictionary 1", description: "Description 1"),
             DictionaryItem(name: "Dictionary 2", description: "Description 2")
@@ -40,66 +35,72 @@ class DictionariesViewModel: BaseViewModel {
             message: "Are you sure you want to delete '\(dictionary.name)'?",
             primaryAction: {
                 self.dictionaries.remove(atOffsets: offsets)
-                self.resetFlags()
             }
         )
     }
     
     func showDictionaryDetails(_ dictionary: DictionaryItem) {
         selectedDictionary = dictionary
-        resetFlags()
     }
     
     func fetchDictionariesFromServer() {
-        isLoading = true
-        resetFlags()
-        
-        fetchTask?.cancel()
+        // Сначала закрываем текущее окно добавления
+        showAddOptions = false
 
-        // Симуляция сетевого запроса
-        let future = Future<[DictionaryItem], Never> { promise in
-            // Симуляция сетевого запроса
-            DispatchQueue.global().asyncAfter(deadline: .now() + 2) {
-                // Тестовые данные сервера
-                let serverData = [
-                    DictionaryItem(name: "Server Dictionary 1", description: "Server Description 1"),
-                    DictionaryItem(name: "Server Dictionary 2", description: "Server Description 2")
-                ]
-                promise(.success(serverData))
+        // Немного задерживаем открытие следующего окна, чтобы корректно завершить анимацию закрытия
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            self.isLoading = true
+
+            self.fetchTask?.cancel() // Отмена текущей загрузки, если есть
+
+            // Имитация загрузки данных с сервера
+            let future = Future<[DictionaryItem], Never> { promise in
+                DispatchQueue.global().asyncAfter(deadline: .now() + 2) {
+                    // Имитация серверных данных
+                    let serverData = [
+                        DictionaryItem(name: "Server Dictionary 1", description: "Server Description 1"),
+                        DictionaryItem(name: "Server Dictionary 2", description: "Server Description 2")
+                    ]
+                    promise(.success(serverData))
+                }
             }
+            .receive(on: DispatchQueue.main) // Обработка данных на главном потоке
+
+            // Сохранение задачи в fetchTask
+            self.fetchTask = future
+                .sink { [weak self] serverData in
+                    self?.isLoading = false
+                    self?.serverDictionaries = serverData
+                    self?.showDownloadServer = true // Показ окна с результатами
+                }
+
+            // Добавляем fetchTask в cancellables для управления жизненным циклом
+            self.fetchTask?.store(in: &self.cancellables)
         }
-        .receive(on: DispatchQueue.main)
-        
-        // Сохраняем ссылку на текущую задачу загрузки
-        fetchTask = future
-            .sink { [weak self] serverData in
-                self?.isLoading = false
-                self?.serverDictionaries = serverData
-                self?.showDownloadServer = true
-            }
-        
-        // Храним fetchTask в наборе cancellables для корректного управления жизненным циклом
-        fetchTask?.store(in: &cancellables)
     }
     
     func importCSV() {
-        // Обработка импорта CSV
-        // Сейчас просто показываем алерт
-        resetFlags()
-        showAlert(title: "Import CSV", message: "CSV import functionality is not implemented yet.")
-    }
-    
-    private func resetFlags() {
         showAddOptions = false
-        showImportCSV = false
-        showDownloadServer = false
-        selectedDictionary = nil
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            self.showImportCSV = true
+        }
+    }
+
+    func downloadSelectedDictionary(_ dictionary: DictionaryItem) {
+        // Добавляем выбранный словарь
+        dictionaries.append(dictionary)
+
+        // Закрываем все открытые окна
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            self.showDownloadServer = false
+            self.selectedDictionary = nil
+            self.showAddOptions = false
+        }
     }
     
     func cancelLoading() {
         isLoading = false
         fetchTask?.cancel()
         fetchTask = nil
-        resetFlags()
     }
 }
