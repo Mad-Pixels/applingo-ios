@@ -39,8 +39,17 @@ class DatabaseManager: DatabaseManagerProtocol {
         
         dbQueue = try DatabaseQueue(path: databaseURL.path, configuration: config)
         
-        // Выполнение миграций
-        try migrator.migrate(dbQueue!)
+        logger.log("Database path: \(databaseURL.path)", level: .info, details: nil)
+        
+        // Проверка и запуск миграций
+        if let dbQueue = dbQueue {
+            logger.log("Starting migrations", level: .info, details: nil)
+            try migrator.migrate(dbQueue)
+            logger.log("Migrations completed", level: .info, details: nil)
+        } else {
+            logger.log("Failed to connect to the database", level: .error, details: nil)
+            throw DatabaseError.connectionError("Database not connected")
+        }
     }
     
     // Миграции базы данных
@@ -62,6 +71,7 @@ class DatabaseManager: DatabaseManagerProtocol {
                 // Добавьте другие столбцы по необходимости
             }
         }
+        self.logger.log("Migrations registered", level: .info, details: nil)
         
         // Здесь вы можете добавить другие миграции для дополнительных таблиц
         

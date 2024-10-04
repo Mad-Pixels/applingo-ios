@@ -49,6 +49,12 @@ class AppState: ObservableObject {
         // Apply initial theme and language
         applyTheme(theme)
         applyLanguage(language)
+        
+        do {
+            try self.databaseManager.connect()
+        } catch {
+            logger.log("Failed to connect to the database: \(error)", level: .error, details: nil)
+        }
     }
 
     private func applyTheme(_ theme: String) {
