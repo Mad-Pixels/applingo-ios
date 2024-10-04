@@ -3,28 +3,48 @@ import SwiftUI
 
 struct DictionariesView: View {
     @StateObject private var viewModel = DictionariesViewModel()
-    @EnvironmentObject var localizationManager: LocalizationManager // Для локализации
+    @EnvironmentObject var localizationManager: LocalizationManager
 
     var body: some View {
         NavigationView {
-            List {
-                ForEach(viewModel.dictionaries) { dictionary in
-                    DictionaryRow(dictionary: dictionary)
-                        .contentShape(Rectangle()) // Чтобы весь ряд реагировал на нажатие
-                        .onTapGesture {
-                            // Показ деталей
-                            viewModel.showDictionaryDetails(dictionary)
-                        }
+            ZStack {
+                List {
+                    ForEach(viewModel.dictionaries) { dictionary in
+                        DictionaryRow(dictionary: dictionary)
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                viewModel.showDictionaryDetails(dictionary)
+                            }
+                    }
+                    .onDelete(perform: viewModel.deleteDictionary)
                 }
-                .onDelete(perform: viewModel.deleteDictionary)
-            }
-            .navigationTitle(localizationManager.localizedString(for: "Dictionaries"))
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        viewModel.showAddOptions = true
-                    }) {
-                        Image(systemName: "plus")
+                .navigationTitle(localizationManager.localizedString(for: "Dictionaries"))
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button(action: {
+                            viewModel.showAddOptions = true
+                        }) {
+                            Image(systemName: "plus.circle.fill")
+                                .resizable()
+                                .frame(width: 30, height: 30)
+                                .foregroundColor(.blue)
+                        }
+                    }
+                }
+                
+                VStack {
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            viewModel.showAddOptions = true
+                        }) {
+                            Image(systemName: "plus.circle.fill")
+                                .resizable()
+                                .frame(width: 60, height: 60)
+                                .foregroundColor(.blue)
+                                .padding()
+                        }
                     }
                 }
             }
@@ -34,14 +54,14 @@ struct DictionariesView: View {
             .sheet(isPresented: $viewModel.showDownloadServer) {
                 ServerDictionariesView(viewModel: viewModel)
             }
-            .sheet(item: $viewModel.selectedDictionary) { dictionary in
-                DictionaryDetailView(dictionary: dictionary, viewModel: viewModel)
-            }
             .alert(item: $viewModel.activeAlert) { activeAlert in
-                // Обработка алертов
                 switch activeAlert {
                 case .alert(let alertItem):
-                    return Alert(title: Text(alertItem.title), message: Text(alertItem.message), dismissButton: .default(Text("OK")))
+                    return Alert(
+                        title: Text(alertItem.title),
+                        message: Text(alertItem.message),
+                        dismissButton: .default(Text("OK"))
+                    )
                 case .notify(let notifyItem):
                     return Alert(
                         title: Text(notifyItem.title),
@@ -112,25 +132,70 @@ struct AddDictionaryOptionsView: View {
 
 struct ServerDictionariesView: View {
     @ObservedObject var viewModel: DictionariesViewModel
+    @State private var showDetailPopup = false
 
     var body: some View {
-        NavigationView {
-            List {
-                ForEach(viewModel.serverDictionaries) { dictionary in
-                    DictionaryRow(dictionary: dictionary)
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            // Обработка выбора
-                            // Например, добавление в локальный список
-                            viewModel.dictionaries.append(dictionary)
-                            viewModel.showDownloadServer = false
-                        }
+        ZStack {
+            NavigationView {
+                List {
+                    ForEach(viewModel.serverDictionaries) { dictionary in
+                        DictionaryRow(dictionary: dictionary)
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                // Показ всплывающего окна с детальной информацией
+                                viewModel.selectedDictionary = dictionary
+                                showDetailPopup = true
+                            }
+                    }
                 }
+                .navigationTitle("Server Dictionaries")
+                .navigationBarItems(trailing: Button("Close") {
+                    viewModel.showDownloadServer = false
+                })
             }
-            .navigationTitle("Server Dictionaries")
-            .navigationBarItems(trailing: Button("Close") {
-                viewModel.showDownloadServer = false
-            })
+            
+            // Кастомное всплывающее окно с детальной информацией
+            if let selectedDictionary = viewModel.selectedDictionary, showDetailPopup {
+                VStack {
+                    VStack {
+                        HStack {
+                            Spacer()
+                            Button(action: {
+                                showDetailPopup = false
+                            }) {
+                                Image(systemName: "xmark.circle.fill")
+                                    .foregroundColor(.gray)
+                                    .font(.system(size: 24))
+                            }
+                            .padding()
+                        }
+
+                        Text(selectedDictionary.name)
+                            .font(.title)
+                            .padding()
+                        
+                        Text(selectedDictionary.description)
+                            .padding()
+
+                        Spacer()
+
+                        Button("Download") {
+                            viewModel.dictionaries.append(selectedDictionary)
+                            showDetailPopup = false // Закрываем окно после загрузки
+                        }
+                        //.buttonStyle(PrimaryButtonStyle())
+                        .padding()
+                    }
+                    .frame(width: 300, height: 300)
+                    .background(Color.white)
+                    .cornerRadius(20)
+                    .shadow(radius: 10)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color.black.opacity(0.4)) // Задний фон
+                .transition(.opacity)
+                .animation(.easeInOut)
+            }
         }
     }
 }
