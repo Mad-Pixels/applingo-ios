@@ -48,7 +48,7 @@ class LocalizationManager: ObservableObject, LocalizationManagerProtocol {
         
         self.currentLanguageCode = language
         self.bundle = bundle
-        self.logger.log("Language switched to: \(language)", level: .info, details: ["bundlePath": path])
+        self.logger.log("Language switched to: \(language)", level: .info, details: nil)
     }
 
     /// Метод для получения локализованной строки
