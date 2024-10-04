@@ -5,7 +5,6 @@ struct DictionaryItem: Identifiable, Equatable {
     var name: String
     var description: String
 
-    // Соответствие Equatable
     static func ==(lhs: DictionaryItem, rhs: DictionaryItem) -> Bool {
         lhs.id == rhs.id
     }

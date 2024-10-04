@@ -11,11 +11,14 @@ class DictionariesViewModel: BaseViewModel {
     
     // Для данных "Download from server"
     @Published var serverDictionaries: [DictionaryItem] = []
-
+    
     private var cancellables = Set<AnyCancellable>()
     private var fetchTask: AnyCancellable?
-    
-    override init() {
+    private var appState: AppState
+
+    // Конструктор с передачей appState
+    init(appState: AppState) {
+        self.appState = appState
         super.init()
         loadDictionaries()
     }
@@ -44,38 +47,27 @@ class DictionariesViewModel: BaseViewModel {
     }
     
     func fetchDictionariesFromServer() {
-        // Сначала закрываем текущее окно добавления
         showAddOptions = false
+        isLoading = true
 
-        // Немного задерживаем открытие следующего окна, чтобы корректно завершить анимацию закрытия
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-            self.isLoading = true
-
-            self.fetchTask?.cancel() // Отмена текущей загрузки, если есть
-
-            // Имитация загрузки данных с сервера
-            let future = Future<[DictionaryItem], Never> { promise in
-                DispatchQueue.global().asyncAfter(deadline: .now() + 2) {
-                    // Имитация серверных данных
-                    let serverData = [
-                        DictionaryItem(name: "Server Dictionary 1", description: "Server Description 1"),
-                        DictionaryItem(name: "Server Dictionary 2", description: "Server Description 2")
-                    ]
-                    promise(.success(serverData))
+        Task {
+            do {
+                let requestBody = RequestQueryBody(is_public: true)
+                let response: ResponseQuery = try await RequestQuery(apiManager: appState.apiManager, logger: appState.logger).invoke(requestBody: requestBody)
+                
+                DispatchQueue.main.async {
+                    self.serverDictionaries = response.data.items.map { item in
+                        DictionaryItem(name: item.name, description: "\(item.author) - \(item.category_sub)")
+                    }
+                    self.showDownloadServer = true
                 }
+            } catch {
+                self.showAlert(title: "Error", message: "Failed to fetch dictionaries from server: \(error.localizedDescription)")
             }
-            .receive(on: DispatchQueue.main) // Обработка данных на главном потоке
-
-            // Сохранение задачи в fetchTask
-            self.fetchTask = future
-                .sink { [weak self] serverData in
-                    self?.isLoading = false
-                    self?.serverDictionaries = serverData
-                    self?.showDownloadServer = true // Показ окна с результатами
-                }
-
-            // Добавляем fetchTask в cancellables для управления жизненным циклом
-            self.fetchTask?.store(in: &self.cancellables)
+            
+            DispatchQueue.main.async {
+                self.isLoading = false
+            }
         }
     }
     
@@ -87,10 +79,9 @@ class DictionariesViewModel: BaseViewModel {
     }
 
     func downloadSelectedDictionary(_ dictionary: DictionaryItem) {
-        // Добавляем выбранный словарь
         dictionaries.append(dictionary)
 
-        // Закрываем все открытые окна
+        // Закрытие всех окон
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             self.showDownloadServer = false
             self.selectedDictionary = nil

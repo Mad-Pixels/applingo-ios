@@ -8,7 +8,7 @@ struct LingoCardsApp: App {
         WindowGroup {
             ContentView()
                 .environmentObject(appState)
-                .environmentObject(appState.localizationManager) // Передаём localizationManager как EnvironmentObject
+                .environmentObject(appState.localizationManager)
         }
     }
 }

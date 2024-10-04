@@ -1,18 +1,25 @@
 // Views/DictionariesView.swift
 import SwiftUI
 
+
 struct DictionariesView: View {
-    @StateObject private var viewModel = DictionariesViewModel()
-    @EnvironmentObject var localizationManager: LocalizationManager // Для локализации
+    @EnvironmentObject var appState: AppState // Подключаем appState как EnvironmentObject
+    @EnvironmentObject var localizationManager: LocalizationManager // Подключаем localizationManager как EnvironmentObject
+    @StateObject private var viewModel: DictionariesViewModel
+
+    // Инициализация ViewModel с передачей appState
+    init() {
+        _viewModel = StateObject(wrappedValue: DictionariesViewModel(appState: AppState.shared))
+    }
 
     var body: some View {
         NavigationView {
             ZStack {
-                // Основной список
+                // Основной список словарей
                 List {
                     ForEach(viewModel.dictionaries) { dictionary in
                         DictionaryRow(dictionary: dictionary)
-                            .contentShape(Rectangle()) // Чтобы весь ряд реагировал на нажатие
+                            .contentShape(Rectangle()) // Убедимся, что вся строка реагирует на нажатие
                             .onTapGesture {
                                 viewModel.showDictionaryDetails(dictionary)
                             }
@@ -20,7 +27,7 @@ struct DictionariesView: View {
                     .onDelete(perform: viewModel.deleteDictionary)
                 }
                 .navigationTitle(localizationManager.localizedString(for: "Dictionaries"))
-                
+
                 // Плавающая кнопка "+"
                 VStack {
                     Spacer()
@@ -40,12 +47,15 @@ struct DictionariesView: View {
             }
             .sheet(isPresented: $viewModel.showAddOptions) {
                 AddDictionaryOptionsView(viewModel: viewModel)
+                    .environmentObject(appState) // Передаём appState в представление
             }
             .sheet(isPresented: $viewModel.showDownloadServer) {
                 ServerDictionariesView(viewModel: viewModel)
+                    .environmentObject(appState) // Передаём appState в представление
             }
             .sheet(item: $viewModel.selectedDictionary) { dictionary in
                 DictionaryDetailView(dictionary: dictionary, viewModel: viewModel)
+                    .environmentObject(appState) // Передаём appState в представление
             }
             .alert(item: $viewModel.activeAlert) { activeAlert in
                 // Обработка алертов
@@ -68,8 +78,11 @@ struct DictionariesView: View {
                     }
                 }
             )
+            .onAppear {
+                viewModel.loadDictionaries() // Загружаем словари при появлении экрана
+            }
             .onDisappear {
-                viewModel.cancelLoading()
+                viewModel.cancelLoading() // Отмена загрузки при уходе с экрана
             }
         }
     }
@@ -81,10 +94,16 @@ struct DictionaryRow: View {
 
     var body: some View {
         HStack {
-            Text(dictionary.name)
+            VStack(alignment: .leading) {
+                Text(dictionary.name)
+                    .font(.headline)
+                Text(dictionary.description)
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+            }
             Spacer()
-            Text(dictionary.description)
         }
+        .padding(.vertical, 8)
     }
 }
 
@@ -136,7 +155,6 @@ struct ServerDictionariesView: View {
                         DictionaryRow(dictionary: dictionary)
                             .contentShape(Rectangle())
                             .onTapGesture {
-                                // Показ всплывающего окна с детальной информацией
                                 viewModel.selectedDictionary = dictionary
                                 showDetailPopup = true
                             }
@@ -147,8 +165,7 @@ struct ServerDictionariesView: View {
                     viewModel.showDownloadServer = false
                 })
             }
-            
-            // Кастомное всплывающее окно с детальной информацией
+
             if let selectedDictionary = viewModel.selectedDictionary, showDetailPopup {
                 VStack {
                     VStack {
@@ -167,7 +184,7 @@ struct ServerDictionariesView: View {
                         Text(selectedDictionary.name)
                             .font(.title)
                             .padding()
-                        
+
                         Text(selectedDictionary.description)
                             .padding()
 
@@ -175,7 +192,7 @@ struct ServerDictionariesView: View {
 
                         Button("Download") {
                             viewModel.downloadSelectedDictionary(selectedDictionary)
-                            showDetailPopup = false // Закрываем всплывающее окно
+                            showDetailPopup = false
                         }
                         .padding()
                     }
@@ -185,7 +202,7 @@ struct ServerDictionariesView: View {
                     .shadow(radius: 10)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Color.black.opacity(0.4)) // Задний фон
+                .background(Color.black.opacity(0.4))
                 .transition(.opacity)
                 .animation(.easeInOut)
             }

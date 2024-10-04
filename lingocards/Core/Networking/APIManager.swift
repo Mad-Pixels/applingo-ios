@@ -38,7 +38,7 @@ class APIManager: APIManagerProtocol {
         do {
             let request = try signRequest(for: url, method: method, body: body)
             let (data, response) = try await session.data(for: request)
-            
+            logger.log("Request sent: \(request)", level: .info, details: nil)
             return try handleResponse(response: response, data: data)
         } catch {
             logger.log("API \(method.rawValue) request failed: \(error)", level: .error, details: ["url": url.absoluteString])

@@ -36,7 +36,7 @@ class AppState: ObservableObject {
         self.settingsManager = SettingsManager()
         self.logger = Logger(settingsManager: settingsManager)
         self.settingsManager.logger = logger
-        self.apiManager = APIManager(baseURL: "https://your-api-url.com", token: "your-api-token", logger: logger)
+        self.apiManager = APIManager(baseURL: "https://lingocards-api.madpixels.io", token: "t9DbIipRtzPBVXYLoXxc6KSn", logger: logger)
         self.databaseManager = DatabaseManager(dbName: "LingoCards.sqlite", logger: logger)
         self.localizationManager = LocalizationManager(logger: logger, settingsManager: settingsManager)
         self.themeManager = ThemeManager(logger: logger, settingsManager: settingsManager)
