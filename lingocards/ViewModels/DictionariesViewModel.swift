@@ -1,6 +1,7 @@
 // ViewModels/DictionariesViewModel.swift
 import SwiftUI
 import Combine
+import SwiftCSV
 
 class DictionariesViewModel: BaseViewModel {
     @Published var dictionaries: [DictionaryItem] = []
@@ -25,11 +26,123 @@ class DictionariesViewModel: BaseViewModel {
         loadDictionaries()
     }
     
+    ///
+    ///
+    ///
+    ///
+    ///
+    ///
+    func importCSV(from url: URL) {
+        Task {
+            do {
+                // Создание объекта CSV из файла URL
+                let csv = try CSV(url: url)
+                
+                let uniqueID = UUID().uuidString
+                let tableName = "dict_\(uniqueID.replacingOccurrences(of: "-", with: "_"))"
+
+                
+                let dictionaryItem = DatabaseDictionaryItem(
+                    hashId: Int64(Int(Date().timeIntervalSince1970)),
+                    displayName: "Imported Dictionary",
+                    tableName: tableName,
+                    description: "Imported CSV Dictionary",
+                    category: "Imported",
+                    author: "Unknown",
+                    createdAt: Int64(Date().timeIntervalSince1970),
+                    isPrivate: false,
+                    isActive: true
+                )
+                
+                // Создание таблицы в базе данных
+                try await appState.databaseManager.createDataTable(forDictionary: dictionaryItem)
+
+                var items: [DataItem] = []
+
+                // Итерация по строкам CSV-файла
+                for row in csv.namedRows {
+                    // Проверяем, что строка содержит хотя бы 2 столбца
+                    guard let frontText = row["front_text"], let backText = row["back_text"] else {
+                        appState.logger.log("Invalid CSV row format: \(row)", level: .info, details: nil)
+                        continue
+                    }
+
+                    // Опциональные параметры, если они существуют
+                    let description = row["description"]
+                    let hint = row["hint"]
+                    
+                    let randomHashId = Int64(Int.random(in: 0..<100_000_000_000_000_000))
+
+                    // Создаем новый элемент `DataItem` с учетом обязательных и опциональных параметров
+                    let dataItem = DataItem(
+                        hashId: randomHashId, // Генерация уникального идентификатора
+                        frontText: frontText,
+                        backText: backText,
+                        description: description,
+                        hint: hint,
+                        createdAt: Int64(Date().timeIntervalSince1970),
+                        salt: 0,
+                        success: 0,
+                        fail: 0,
+                        weight: 0,
+                        tableName: tableName
+                    )
+
+                    items.append(dataItem)
+                }
+
+                // Вставка всех элементов в базу данных в одной транзакции
+                try await appState.databaseManager.insertDataItems(items, intoTable: tableName)
+                
+                // Добавление записи о словаре в базу данных
+                try await appState.databaseManager.insertDictionaryItem(dictionaryItem)
+                
+                // Логирование успешного создания таблицы и импорта данных
+                appState.logger.log("Database table \(tableName) was created and filled with CSV data", level: .info, details: nil)
+                
+            } catch {
+                appState.logger.log("Failed to parse and import CSV: \(error)", level: .error, details: nil)
+            }
+        }
+    }
+    ///
+    ///
+    ///
+    ///
+    ///
+    ///
+    
     func loadDictionaries() {
-        dictionaries = [
-            DictionaryItem(name: "Dictionary 1", description: "Description 1"),
-            DictionaryItem(name: "Dictionary 2", description: "Description 2")
-        ]
+        ///
+        ///
+        ///
+        ///
+        ///
+        Task {
+            do {
+                // Асинхронное получение словарей из базы данных
+                let items = try await appState.databaseManager.fetchDictionaries()
+                    
+                // Обновление интерфейса должно происходить в основном потоке
+                await MainActor.run {
+                    dictionaries = items.map { dbItem in
+                        DictionaryItem(
+                            name: dbItem.displayName,
+                            description: dbItem.description
+                        )
+                    }
+                }
+            } catch {
+                // Обработка ошибок и логирование
+                appState.logger.log("Failed to load dictionaries: \(error)", level: .error, details: nil)
+            }
+        }
+        ///
+        ///
+        ///
+        ///
+        ///
+        ///
     }
     
     func deleteDictionary(at offsets: IndexSet) {

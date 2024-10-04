@@ -13,6 +13,8 @@ protocol DatabaseManagerProtocol {
     func updateDataItem(_ item: DataItem, inTable tableName: String) async throws
     func deleteDataItem(_ item: DataItem, fromTable tableName: String) async throws
     func execute<T>(_ block: @escaping (Database) throws -> T) async throws -> T
+    func insertDataItems(_ items: [DataItem], intoTable tableName: String) async throws // Новый метод
+
 }
 
 
@@ -25,6 +27,37 @@ class DatabaseManager: DatabaseManagerProtocol {
         self.dbName = dbName
         self.logger = logger
     }
+    
+    func insertDataItems(_ items: [DataItem], intoTable tableName: String) async throws {
+            guard let dbQueue = dbQueue else {
+                throw DatabaseError.connectionError("Database not connected")
+            }
+            
+            try await dbQueue.write { db in
+                for item in items {
+                    try db.execute(
+                        sql: """
+                        INSERT INTO \(tableName) (hashId, frontText, backText, description, hint, createdAt, salt, success, fail, weight)
+                        VALUES (:hashId, :frontText, :backText, :description, :hint, :createdAt, :salt, :success, :fail, :weight)
+                        """,
+                        arguments: [
+                            "hashId": item.hashId,
+                            "frontText": item.frontText,
+                            "backText": item.backText,
+                            "description": item.description ?? NSNull(),
+                            "hint": item.hint ?? NSNull(),
+                            "createdAt": item.createdAt,
+                            "salt": item.salt,
+                            "success": item.success,
+                            "fail": item.fail,
+                            "weight": item.weight
+                        ]
+                    )
+                }
+            }
+            
+            logger.log("Inserted \(items.count) items into table \(tableName)", level: .info, details: nil)
+        }
     
     // Подключение к базе данных и выполнение миграций
     func connect() throws {
@@ -96,6 +129,7 @@ class DatabaseManager: DatabaseManagerProtocol {
         try await dbQueue.write { db in
             try item.insert(db)
         }
+        logger.log("Dictionary item inserted", level: .info, details: nil)
     }
     
     func deleteDictionaryItem(_ item: DatabaseDictionaryItem) async throws {
@@ -128,6 +162,7 @@ class DatabaseManager: DatabaseManagerProtocol {
                 // Добавьте другие столбцы по необходимости
             }
         }
+        logger.log("Table \(item.tableName) created", level: .info, details: nil)
     }
     
     // Удаление таблицы словаря

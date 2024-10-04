@@ -143,7 +143,7 @@ struct AddDictionaryOptionsView: View {
             .sheet(isPresented: $showDocumentPicker) {
                 DocumentPicker(selectedFileURL: $selectedFileURL) { url in
                     // Обработка выбранного файла
-                    //viewModel.importCSV(from: url)
+                    viewModel.importCSV(from: url)
                 }
             }
         }
