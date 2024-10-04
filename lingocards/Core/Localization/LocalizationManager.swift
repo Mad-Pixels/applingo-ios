@@ -45,13 +45,10 @@ class LocalizationManager: ObservableObject, LocalizationManagerProtocol {
             return
         }
 
-        // Обновление состояния на главном потоке
-        DispatchQueue.main.async {
-            self.currentLanguageCode = language
-            self.bundle = bundle
-            self.objectWillChange.send() // Уведомляем об изменении состояния
-            self.logger.log("Language switched to: \(language)", level: .info, details: ["bundlePath": path])
-        }
+        
+        self.currentLanguageCode = language
+        self.bundle = bundle
+        self.logger.log("Language switched to: \(language)", level: .info, details: ["bundlePath": path])
     }
 
     /// Метод для получения локализованной строки
@@ -63,21 +60,4 @@ class LocalizationManager: ObservableObject, LocalizationManagerProtocol {
     func currentLanguage() -> String {
         return currentLanguageCode
     }
-}
-
-
-extension String {
-    func localized(arguments: CVarArg...) -> String {
-        guard let manager = LocalizationService.shared.manager else {
-            return self
-        }
-        return manager.localizedString(for: self, arguments: arguments)
-    }
-}
-
-class LocalizationService {
-    static let shared = LocalizationService()
-    var manager: LocalizationManagerProtocol?
-
-    private init() {}
 }

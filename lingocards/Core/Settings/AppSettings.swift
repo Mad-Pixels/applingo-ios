@@ -2,9 +2,9 @@ import Foundation
 import Combine
 
 class AppSettings: ObservableObject, Codable {
-    @Published var language: String
-    @Published var sendLogs: Bool
-    @Published var theme: String
+    var language: String
+    var sendLogs: Bool
+    var theme: String
 
     enum CodingKeys: String, CodingKey {
         case language, theme, sendLogs

@@ -96,30 +96,4 @@ class APIManager: APIManagerProtocol {
         let signatureData = Data(signature)
         return signatureData.map { String(format: "%02hhx", $0) }.joined()
     }
-    
-    private func handleResponse(response: URLResponse, data: Data?) throws {
-        guard let httpResponse = response as? HTTPURLResponse else {
-            logger.log("Invalid response type", level: .error, details: nil)
-            throw APIError.networkError(NSError(domain: "Invalid Response", code: 0, userInfo: nil))
-        }
-
-        guard httpResponse.statusCode == 200 else {
-            if let data = data, let apiErrorMessage = try? JSONDecoder().decode(APIErrorMessage.self, from: data) {
-                logger.log(
-                    "API request failed with error: \(apiErrorMessage.Message)",
-                    level: .error,
-                    details: ["statusCode": httpResponse.statusCode]
-                )
-                throw APIError.apiError(apiErrorMessage.Message)
-            } else {
-                logger.log("API request failed with status code: \(httpResponse.statusCode)", level: .error, details: nil)
-                throw APIError.unknownResponseError
-            }
-        }
-
-        guard data != nil else {
-            logger.log("No data received", level: .error, details: ["statusCode": httpResponse.statusCode])
-            throw APIError.networkError(NSError(domain: "No Data", code: 0, userInfo: nil))
-        }
-    }
 }

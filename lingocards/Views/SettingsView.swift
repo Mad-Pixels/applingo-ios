@@ -12,9 +12,7 @@ struct SettingsView: View {
                     Text("Dark").tag("dark")
                 }
                 .pickerStyle(SegmentedPickerStyle())
-                .onChange(of: appState.theme) { newTheme in
-                    appState.updateTheme(newTheme)
-                }
+                // No need for .onChange here
             }
 
             // Language Selection
@@ -25,17 +23,13 @@ struct SettingsView: View {
                     }
                 }
                 .pickerStyle(WheelPickerStyle())
-                .onChange(of: appState.language) { newLanguage in
-                    appState.updateLanguage(newLanguage)
-                }
+                // No need for .onChange here
             }
 
             // Logging Toggle
             Section(header: Text("Logging")) {
                 Toggle("Send Logs", isOn: $appState.sendLogs)
-                    .onChange(of: appState.sendLogs) { newSendLogs in
-                        appState.updateSendLogs(newSendLogs)
-                    }
+                // No need for .onChange here
             }
         }
         .navigationBarTitle("Settings", displayMode: .inline)

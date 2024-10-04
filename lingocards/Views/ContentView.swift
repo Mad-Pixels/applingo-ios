@@ -30,10 +30,5 @@ struct ContentView: View {
                 }
         }
         .preferredColorScheme(appState.theme == "dark" ? .dark : .light)
-        .onAppear {
-            appState.applyTheme(appState.theme)
-            appState.applyLanguage(appState.language)
-        }
-        .environmentObject(appState) // Ensure all subviews have access
     }
 }

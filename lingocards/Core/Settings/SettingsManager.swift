@@ -28,18 +28,18 @@ class SettingsManager: ObservableObject, SettingsManagerProtocol {
 
     init() {
         self.settings = AppSettings.default
+        
         loadSettings()
     }
 
     func loadSettings() {
-        if let data = userDefaults.data(forKey: settingsKey),
-           let savedSettings = try? JSONDecoder().decode(AppSettings.self, from: data) {
-            DispatchQueue.main.async { [weak self] in
-                self?.settings = savedSettings
-                self?.logger?.log("Settings were updated", level: .info, details: nil)
+        func loadSettings() {
+            if let data = userDefaults.data(forKey: settingsKey),
+               let savedSettings = try? JSONDecoder().decode(AppSettings.self, from: data) {
+                self.settings = savedSettings
+            } else {
+                self.logger?.log("Using default settings", level: .info, details: nil)
             }
-        } else {
-            logger?.log("Using default settings", level: .info, details: nil)
         }
     }
 

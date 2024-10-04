@@ -4,9 +4,26 @@ import Combine
 class AppState: ObservableObject {
     static let shared = AppState()
     
-    @Published var theme: String
-    @Published var language: String
-    @Published var sendLogs: Bool
+    @Published var theme: String {
+        didSet {
+            applyTheme(theme)
+            settingsManager.settings.theme = theme
+            settingsManager.saveSettings()
+        }
+    }
+    @Published var language: String {
+        didSet {
+            localizationManager.setLanguage(language)
+            settingsManager.settings.language = language
+            settingsManager.saveSettings()
+        }
+    }
+    @Published var sendLogs: Bool {
+        didSet {
+            settingsManager.settings.sendLogs = sendLogs
+            settingsManager.saveSettings()
+        }
+    }
     
     let logger: Logger
     let apiManager: APIManager
@@ -16,25 +33,13 @@ class AppState: ObservableObject {
     let themeManager: ThemeManager
 
     private init() {
-        // Initialize SettingsManager
         self.settingsManager = SettingsManager()
-
-        // Initialize Logger
         self.logger = Logger(settingsManager: settingsManager)
         self.settingsManager.logger = logger
-
-        // Initialize other components
-        self.apiManager = APIManager(
-            baseURL: "https://your-api-url.com",
-            token: "your-api-token",
-            logger: logger
-        )
-        self.databaseManager = DatabaseManager(dbName: "YourDatabase.sqlite", logger: logger)
+        self.apiManager = APIManager(baseURL: "https://your-api-url.com", token: "your-api-token", logger: logger)
+        self.databaseManager = DatabaseManager(dbName: "LingoCards.sqlite", logger: logger)
         self.localizationManager = LocalizationManager(logger: logger, settingsManager: settingsManager)
         self.themeManager = ThemeManager(logger: logger, settingsManager: settingsManager)
-
-        // Load settings
-        settingsManager.loadSettings()
 
         // Initialize @Published properties from settings
         self.theme = settingsManager.settings.theme
@@ -46,33 +51,11 @@ class AppState: ObservableObject {
         applyLanguage(language)
     }
 
-    func updateTheme(_ newTheme: String) {
-        self.theme = newTheme
-        settingsManager.settings.theme = newTheme
-        settingsManager.saveSettings()
-        applyTheme(newTheme)
-    }
-
-    func updateLanguage(_ newLanguage: String) {
-        self.language = newLanguage
-        settingsManager.settings.language = newLanguage
-        settingsManager.saveSettings()
-        applyLanguage(newLanguage)
-    }
-
-    func updateSendLogs(_ newSendLogs: Bool) {
-        self.sendLogs = newSendLogs
-        settingsManager.settings.sendLogs = newSendLogs
-        settingsManager.saveSettings()
-    }
-
-     func applyTheme(_ theme: String) {
+    private func applyTheme(_ theme: String) {
         themeManager.setTheme(theme)
-        // No need to manually notify views; @Published handles it
     }
 
-     func applyLanguage(_ language: String) {
+    private func applyLanguage(_ language: String) {
         localizationManager.setLanguage(language)
-        // No need to manually notify views; @Published handles it
     }
 }
