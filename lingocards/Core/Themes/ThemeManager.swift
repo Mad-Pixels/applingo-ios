@@ -48,7 +48,7 @@ class ThemeManager: ObservableObject, ThemeManagerProtocol {
             .store(in: &cancellables)
     }
 
-    private func setTheme(_ theme: String) {
+     func setTheme(_ theme: String) {
         switch theme {
         case "dark":
             currentTheme = DarkTheme()

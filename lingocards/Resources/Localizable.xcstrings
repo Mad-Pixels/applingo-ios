@@ -1,10 +1,13 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "Cancel" : {
+
+    },
     "Dark" : {
 
     },
-    "English" : {
+    "Dictionaries" : {
 
     },
     "greeting" : {
@@ -24,16 +27,25 @@
         }
       }
     },
-    "Home" : {
+    "Language" : {
 
     },
-    "Language" : {
+    "Learn" : {
 
     },
     "Light" : {
 
     },
     "Logging" : {
+
+    },
+    "OK" : {
+
+    },
+    "Select Language" : {
+
+    },
+    "Select Theme" : {
 
     },
     "Send Logs" : {
@@ -45,7 +57,7 @@
     "Theme" : {
 
     },
-    "Русский" : {
+    "Words" : {
 
     }
   },

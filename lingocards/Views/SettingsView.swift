@@ -2,35 +2,42 @@ import SwiftUI
 
 struct SettingsView: View {
     @EnvironmentObject var appState: AppState
-    @EnvironmentObject var themeManager: ThemeManager
 
     var body: some View {
-        NavigationView {
-            Form {
-                Section(header: Text("Language")) {
-                    Picker("Language", selection: $appState.settingsManager.settings.language) {
-                        Text("English").tag("en")
-                        Text("Русский").tag("ru")
-                    }
-                    .pickerStyle(SegmentedPickerStyle())
+        Form {
+            // Theme Selection
+            Section(header: Text("Theme")) {
+                Picker("Select Theme", selection: $appState.theme) {
+                    Text("Light").tag("light")
+                    Text("Dark").tag("dark")
                 }
-
-                Section(header: Text("Theme")) {
-                    Picker("Theme", selection: $appState.settingsManager.settings.theme) {
-                        Text("Light").tag("light")
-                        Text("Dark").tag("dark")
-                    }
-                    .pickerStyle(SegmentedPickerStyle())
-                }
-
-                Section(header: Text("Logging")) {
-                    Toggle(isOn: $appState.settingsManager.settings.sendLogs) {
-                        Text("Send Logs")
-                    }
+                .pickerStyle(SegmentedPickerStyle())
+                .onChange(of: appState.theme) { newTheme in
+                    appState.updateTheme(newTheme)
                 }
             }
-            .navigationBarTitle("Settings", displayMode: .inline)
-            .background(themeManager.currentTheme.backgroundColor)
+
+            // Language Selection
+            Section(header: Text("Language")) {
+                Picker("Select Language", selection: $appState.language) {
+                    ForEach(AppSettings.supportedLanguages, id: \.self) { language in
+                        Text(language.uppercased()).tag(language)
+                    }
+                }
+                .pickerStyle(WheelPickerStyle())
+                .onChange(of: appState.language) { newLanguage in
+                    appState.updateLanguage(newLanguage)
+                }
+            }
+
+            // Logging Toggle
+            Section(header: Text("Logging")) {
+                Toggle("Send Logs", isOn: $appState.sendLogs)
+                    .onChange(of: appState.sendLogs) { newSendLogs in
+                        appState.updateSendLogs(newSendLogs)
+                    }
+            }
         }
+        .navigationBarTitle("Settings", displayMode: .inline)
     }
 }
