@@ -1,32 +1,44 @@
 import SwiftUI
 
+import SwiftUI
+
 struct WordsView: View {
     @StateObject private var viewModel = WordsViewModel()
     @EnvironmentObject var localizationManager: LocalizationManager // Для локализации
 
     var body: some View {
         NavigationView {
-            VStack {
-                SearchBar(text: $viewModel.searchText)
-                List {
-                    ForEach(viewModel.filteredWords) { word in
-                        WordRow(word: word)
-                            .contentShape(Rectangle())
-                            .onTapGesture {
-                                // Показ деталей
-                                viewModel.showWordDetails(word)
-                            }
+            ZStack {
+                VStack {
+                    SearchBar(text: $viewModel.searchText)
+                    List {
+                        ForEach(viewModel.filteredWords) { word in
+                            WordRow(word: word)
+                                .contentShape(Rectangle())
+                                .onTapGesture {
+                                    // Показ деталей
+                                    viewModel.showWordDetails(word)
+                                }
+                        }
+                        .onDelete(perform: viewModel.deleteWord)
                     }
-                    .onDelete(perform: viewModel.deleteWord)
                 }
-            }
-            .navigationTitle(localizationManager.localizedString(for: "Words"))
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        viewModel.showAddWordForm = true
-                    }) {
-                        Image(systemName: "plus")
+                .navigationTitle(localizationManager.localizedString(for: "Words"))
+                
+                // Плавающая кнопка "+"
+                VStack {
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            viewModel.showAddWordForm = true
+                        }) {
+                            Image(systemName: "plus")
+                                .resizable()
+                                .frame(width: 24, height: 24)
+                        }
+                        .buttonStyle(FloatingButtonStyle()) // Применение стиля кнопки
+                        .padding()
                     }
                 }
             }
@@ -53,6 +65,7 @@ struct WordsView: View {
         }
     }
 }
+
 
 // Субпредставления
 struct WordRow: View {

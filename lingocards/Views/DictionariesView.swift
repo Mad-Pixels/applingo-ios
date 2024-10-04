@@ -3,15 +3,16 @@ import SwiftUI
 
 struct DictionariesView: View {
     @StateObject private var viewModel = DictionariesViewModel()
-    @EnvironmentObject var localizationManager: LocalizationManager
+    @EnvironmentObject var localizationManager: LocalizationManager // Для локализации
 
     var body: some View {
         NavigationView {
             ZStack {
+                // Основной список
                 List {
                     ForEach(viewModel.dictionaries) { dictionary in
                         DictionaryRow(dictionary: dictionary)
-                            .contentShape(Rectangle())
+                            .contentShape(Rectangle()) // Чтобы весь ряд реагировал на нажатие
                             .onTapGesture {
                                 viewModel.showDictionaryDetails(dictionary)
                             }
@@ -19,19 +20,8 @@ struct DictionariesView: View {
                     .onDelete(perform: viewModel.deleteDictionary)
                 }
                 .navigationTitle(localizationManager.localizedString(for: "Dictionaries"))
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button(action: {
-                            viewModel.showAddOptions = true
-                        }) {
-                            Image(systemName: "plus.circle.fill")
-                                .resizable()
-                                .frame(width: 30, height: 30)
-                                .foregroundColor(.blue)
-                        }
-                    }
-                }
                 
+                // Плавающая кнопка "+"
                 VStack {
                     Spacer()
                     HStack {
@@ -39,12 +29,12 @@ struct DictionariesView: View {
                         Button(action: {
                             viewModel.showAddOptions = true
                         }) {
-                            Image(systemName: "plus.circle.fill")
+                            Image(systemName: "plus")
                                 .resizable()
-                                .frame(width: 60, height: 60)
-                                .foregroundColor(.blue)
-                                .padding()
+                                .frame(width: 24, height: 24)
                         }
+                        .buttonStyle(FloatingButtonStyle()) // Применение стиля кнопки
+                        .padding()
                     }
                 }
             }
@@ -54,14 +44,14 @@ struct DictionariesView: View {
             .sheet(isPresented: $viewModel.showDownloadServer) {
                 ServerDictionariesView(viewModel: viewModel)
             }
+            .sheet(item: $viewModel.selectedDictionary) { dictionary in
+                DictionaryDetailView(dictionary: dictionary, viewModel: viewModel)
+            }
             .alert(item: $viewModel.activeAlert) { activeAlert in
+                // Обработка алертов
                 switch activeAlert {
                 case .alert(let alertItem):
-                    return Alert(
-                        title: Text(alertItem.title),
-                        message: Text(alertItem.message),
-                        dismissButton: .default(Text("OK"))
-                    )
+                    return Alert(title: Text(alertItem.title), message: Text(alertItem.message), dismissButton: .default(Text("OK")))
                 case .notify(let notifyItem):
                     return Alert(
                         title: Text(notifyItem.title),
@@ -78,6 +68,10 @@ struct DictionariesView: View {
                     }
                 }
             )
+            .onDisappear {
+                // При уходе с экрана отменяем все текущие операции
+                viewModel.cancelLoading()
+            }
         }
     }
 }
