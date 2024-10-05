@@ -1,5 +1,5 @@
 {
-  "originHash" : "a1cf592d07cf20ef783391346c57ea7edcf9664f2136da67a80350f2ea61cd02",
+  "originHash" : "ad7d3f3a992de93de66d87f7ad7905c67a6736fd934e72ca691489752372cddc",
   "pins" : [
     {
       "identity" : "grdb.swift",
@@ -8,6 +8,15 @@
       "state" : {
         "revision" : "2cf6c756e1e5ef6901ebae16576a7e4e4b834622",
         "version" : "6.29.3"
+      }
+    },
+    {
+      "identity" : "hero",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/HeroTransitions/Hero.git",
+      "state" : {
+        "revision" : "b307e2d48d582118e5101d04f5187c91595a1095",
+        "version" : "1.6.3"
       }
     },
     {

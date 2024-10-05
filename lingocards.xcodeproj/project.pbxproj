@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		D8A5D21E2CB0741900ACCD85 /* SwiftCSV in Frameworks */ = {isa = PBXBuildFile; productRef = D8A5D21D2CB0741900ACCD85 /* SwiftCSV */; };
+		D8A5D2212CB1010300ACCD85 /* Hero in Frameworks */ = {isa = PBXBuildFile; productRef = D8A5D2202CB1010300ACCD85 /* Hero */; };
 		D8B011FD2CB0359000EB9A3D /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = D8B011FC2CB0359000EB9A3D /* GRDB */; };
 		D8BD515C2CAEAA3300E978AB /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = D8BD515B2CAEAA3300E978AB /* Localizable.xcstrings */; };
 /* End PBXBuildFile section */
@@ -32,6 +33,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D8B011FD2CB0359000EB9A3D /* GRDB in Frameworks */,
+				D8A5D2212CB1010300ACCD85 /* Hero in Frameworks */,
 				D8A5D21E2CB0741900ACCD85 /* SwiftCSV in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -87,6 +89,7 @@
 			packageProductDependencies = (
 				D8B011FC2CB0359000EB9A3D /* GRDB */,
 				D8A5D21D2CB0741900ACCD85 /* SwiftCSV */,
+				D8A5D2202CB1010300ACCD85 /* Hero */,
 			);
 			productName = lingocards;
 			productReference = D8BD4FEE2CADA16500E978AB /* lingocards.app */;
@@ -120,6 +123,7 @@
 			packageReferences = (
 				D8B011FB2CB0359000EB9A3D /* XCRemoteSwiftPackageReference "GRDB.swift" */,
 				D8A5D21C2CB0741900ACCD85 /* XCRemoteSwiftPackageReference "SwiftCSV" */,
+				D8A5D21F2CB1010300ACCD85 /* XCRemoteSwiftPackageReference "Hero" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = D8BD4FEF2CADA16500E978AB /* Products */;
@@ -364,6 +368,14 @@
 				version = 0.6.0;
 			};
 		};
+		D8A5D21F2CB1010300ACCD85 /* XCRemoteSwiftPackageReference "Hero" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/HeroTransitions/Hero.git";
+			requirement = {
+				kind = exactVersion;
+				version = 1.6.3;
+			};
+		};
 		D8B011FB2CB0359000EB9A3D /* XCRemoteSwiftPackageReference "GRDB.swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/groue/GRDB.swift.git";
@@ -379,6 +391,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = D8A5D21C2CB0741900ACCD85 /* XCRemoteSwiftPackageReference "SwiftCSV" */;
 			productName = SwiftCSV;
+		};
+		D8A5D2202CB1010300ACCD85 /* Hero */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D8A5D21F2CB1010300ACCD85 /* XCRemoteSwiftPackageReference "Hero" */;
+			productName = Hero;
 		};
 		D8B011FC2CB0359000EB9A3D /* GRDB */ = {
 			isa = XCSwiftPackageProductDependency;

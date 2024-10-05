@@ -2,6 +2,7 @@
 import SwiftUI
 import Combine
 import SwiftCSV
+import UIKit
 
 class DictionariesViewModel: BaseViewModel {
     @Published var dictionaries: [DictionaryItem] = []
@@ -26,24 +27,24 @@ class DictionariesViewModel: BaseViewModel {
         loadDictionaries()
     }
     
-    ///
-    ///
-    ///
-    ///
-    ///
-    ///
+    /// Функция импорта CSV-файла
     func importCSV(from url: URL) {
         Task {
             do {
+                // Проверка доступности файла и прав доступа
+                guard url.startAccessingSecurityScopedResource() else {
+                    throw NSError(domain: NSCocoaErrorDomain, code: NSFileReadNoPermissionError, userInfo: [NSLocalizedDescriptionKey: "Нет доступа к файлу по указанному URL"])
+                }
+                defer { url.stopAccessingSecurityScopedResource() }
+                
                 // Создание объекта CSV из файла URL
                 let csv = try CSV(url: url)
                 
                 let uniqueID = UUID().uuidString
                 let tableName = "dict_\(uniqueID.replacingOccurrences(of: "-", with: "_"))"
 
-                
                 let dictionaryItem = DatabaseDictionaryItem(
-                    hashId: Int64(Int(Date().timeIntervalSince1970)),
+                    hashId: Int64(Date().timeIntervalSince1970),
                     displayName: "Imported Dictionary",
                     tableName: tableName,
                     description: "Imported CSV Dictionary",
@@ -62,16 +63,16 @@ class DictionariesViewModel: BaseViewModel {
                 // Итерация по строкам CSV-файла
                 for row in csv.namedRows {
                     // Проверяем, что строка содержит хотя бы 2 столбца
-                    guard let frontText = row["front_text"], let backText = row["back_text"] else {
+                    guard let frontText = row.first?.value,
+                          let backText = row.dropFirst().first?.value else {
                         appState.logger.log("Invalid CSV row format: \(row)", level: .info, details: nil)
                         continue
                     }
 
-                    // Опциональные параметры, если они существуют
-                    let description = row["description"]
-                    let hint = row["hint"]
+                    let description = row.dropFirst(2).first?.value
+                    let hint = row.dropFirst(3).first?.value
                     
-                    let randomHashId = Int64(Int.random(in: 0..<100_000_000_000_000_000))
+                    let randomHashId = Int64.random(in: 0..<100_000_000_000_000_000)
 
                     // Создаем новый элемент `DataItem` с учетом обязательных и опциональных параметров
                     let dataItem = DataItem(
@@ -105,19 +106,8 @@ class DictionariesViewModel: BaseViewModel {
             }
         }
     }
-    ///
-    ///
-    ///
-    ///
-    ///
-    ///
     
     func loadDictionaries() {
-        ///
-        ///
-        ///
-        ///
-        ///
         Task {
             do {
                 // Асинхронное получение словарей из базы данных
@@ -137,12 +127,6 @@ class DictionariesViewModel: BaseViewModel {
                 appState.logger.log("Failed to load dictionaries: \(error)", level: .error, details: nil)
             }
         }
-        ///
-        ///
-        ///
-        ///
-        ///
-        ///
     }
     
     func deleteDictionary(at offsets: IndexSet) {
@@ -205,5 +189,38 @@ class DictionariesViewModel: BaseViewModel {
         isLoading = false
         fetchTask?.cancel()
         fetchTask = nil
+    }
+}
+
+// View для выбора файла с использованием UIDocumentPickerViewController
+struct FileImporter: UIViewControllerRepresentable {
+    typealias UIViewControllerType = UIDocumentPickerViewController
+    var didPickDocument: (URL) -> Void
+
+    func makeUIViewController(context: Context) -> UIDocumentPickerViewController {
+        let documentPicker = UIDocumentPickerViewController(forOpeningContentTypes: [.commaSeparatedText])
+        documentPicker.delegate = context.coordinator
+        return documentPicker
+    }
+
+    func updateUIViewController(_ uiViewController: UIDocumentPickerViewController, context: Context) {}
+
+    func makeCoordinator() -> Coordinator {
+        return Coordinator(self)
+    }
+
+    class Coordinator: NSObject, UIDocumentPickerDelegate {
+        var parent: FileImporter
+
+        init(_ parent: FileImporter) {
+            self.parent = parent
+        }
+
+        func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+            guard let url = urls.first else { return }
+            parent.didPickDocument(url)
+        }
+
+        func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {}
     }
 }
