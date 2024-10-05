@@ -27,6 +27,53 @@ class DictionariesViewModel: BaseViewModel {
         loadDictionaries()
     }
     
+    func updateDictionaryStatus(id: Int64, isActive: Bool) {
+        Task {
+            do {
+                try await appState.databaseManager.updateDictionaryStatus(id: id, isActive: isActive)
+                await MainActor.run {
+                    if let index = dictionaries.firstIndex(where: { $0.id == id }) {
+                        dictionaries[index].isActive = isActive
+                    }
+                }
+            } catch {
+                appState.logger.log("Failed to update dictionary status: \(error)", level: .error, details: nil)
+            }
+        }
+    }
+    
+    func deleteDictionary(at offsets: IndexSet) {
+            guard let index = offsets.first else { return }
+            let dictionary = dictionaries[index]
+            showNotify(
+                title: "Delete Dictionary",
+                message: "Are you sure you want to delete '\(dictionary.name)'?",
+                primaryAction: {
+                    Task {
+                        do {
+                            try await self.appState.databaseManager.deleteDictionaryItem(DatabaseDictionaryItem(
+                                id: dictionary.id,
+                                hashId: dictionary.id,  // Assuming hashId equals id for simplicity
+                                displayName: dictionary.name,
+                                tableName: "",
+                                description: dictionary.description,
+                                category: "",
+                                author: "",
+                                createdAt: 0,
+                                isPrivate: false,
+                                isActive: dictionary.isActive
+                            ))
+                            await MainActor.run {
+                                self.dictionaries.remove(atOffsets: offsets)
+                            }
+                        } catch {
+                            self.appState.logger.log("Failed to delete dictionary: \(error)", level: .error, details: nil)
+                        }
+                    }
+                }
+            )
+        }
+    
     /// Функция импорта CSV-файла
     func importCSV(from url: URL) {
         Task {
@@ -44,6 +91,7 @@ class DictionariesViewModel: BaseViewModel {
                 let tableName = "dict_\(uniqueID.replacingOccurrences(of: "-", with: "_"))"
 
                 let dictionaryItem = DatabaseDictionaryItem(
+                    id: Int64(Date().timeIntervalSince1970),
                     hashId: Int64(Date().timeIntervalSince1970),
                     displayName: "Imported Dictionary",
                     tableName: tableName,
@@ -110,36 +158,34 @@ class DictionariesViewModel: BaseViewModel {
     func loadDictionaries() {
         Task {
             do {
-                // Асинхронное получение словарей из базы данных
                 let items = try await appState.databaseManager.fetchDictionaries()
-                    
-                // Обновление интерфейса должно происходить в основном потоке
                 await MainActor.run {
                     dictionaries = items.map { dbItem in
                         DictionaryItem(
+                            id: dbItem.id,
                             name: dbItem.displayName,
-                            description: dbItem.description
+                            description: dbItem.description,
+                            isActive: dbItem.isActive
                         )
                     }
                 }
             } catch {
-                // Обработка ошибок и логирование
                 appState.logger.log("Failed to load dictionaries: \(error)", level: .error, details: nil)
             }
         }
     }
     
-    func deleteDictionary(at offsets: IndexSet) {
-        guard let index = offsets.first else { return }
-        let dictionary = dictionaries[index]
-        showNotify(
-            title: "Delete Dictionary",
-            message: "Are you sure you want to delete '\(dictionary.name)'?",
-            primaryAction: {
-                self.dictionaries.remove(atOffsets: offsets)
-            }
-        )
-    }
+//    func deleteDictionary(at offsets: IndexSet) {
+//        guard let index = offsets.first else { return }
+//        let dictionary = dictionaries[index]
+//        showNotify(
+//            title: "Delete Dictionary",
+//            message: "Are you sure you want to delete '\(dictionary.name)'?",
+//            primaryAction: {
+//                self.dictionaries.remove(atOffsets: offsets)
+//            }
+//        )
+//    }
     
     func showDictionaryDetails(_ dictionary: DictionaryItem) {
         selectedDictionary = dictionary
@@ -156,7 +202,7 @@ class DictionariesViewModel: BaseViewModel {
                 
                 DispatchQueue.main.async {
                     self.serverDictionaries = response.data.items.map { item in
-                        DictionaryItem(name: item.name, description: "\(item.author) - \(item.category_sub)")
+                        DictionaryItem(id: item.id, name: item.name, description: "\(item.author) - \(item.category_sub)", isActive: true)
                     }
                     self.showDownloadServer = true
                 }

@@ -26,8 +26,8 @@ class WordsViewModel: BaseViewModel {
         // Загрузка слов из источника данных
         // Сейчас используем тестовые данные
         words = [
-            WordItem(word: "Apple", definition: "A fruit"),
-            WordItem(word: "Banana", definition: "Another fruit")
+            WordItem(id: 1, word: "Apple", definition: "A fruit"),
+            WordItem(id: 2, word: "Banana", definition: "Another fruit")
         ]
     }
     

@@ -16,15 +16,16 @@ struct DictionariesView: View {
         NavigationView {
             ZStack {
                 List {
-                    ForEach(viewModel.dictionaries) { dictionary in
-                        DictionaryRow(dictionary: dictionary)
-                            .contentShape(Rectangle())
-                            .onTapGesture {
-                                // Устанавливаем heroID для анимации перехода
-                                viewModel.selectedDictionary = dictionary
-                                viewModel.showDictionaryDetails(dictionary)
-                            }
-                            .heroModifier(dictionary.id.uuidString) // Добавляем модификатор для анимации
+                    ForEach(viewModel.dictionaries.indices, id: \.self) { index in
+                        DictionaryRow(dictionary: $viewModel.dictionaries[index]) { id, isActive in
+                            viewModel.updateDictionaryStatus(id: id, isActive: isActive)
+                        }
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            viewModel.selectedDictionary = viewModel.dictionaries[index]
+                            viewModel.showDictionaryDetails(viewModel.dictionaries[index])
+                        }
+                        .heroModifier(String(viewModel.dictionaries[index].id))
                     }
                     .onDelete(perform: viewModel.deleteDictionary)
                 }
@@ -50,17 +51,17 @@ struct DictionariesView: View {
             .sheet(isPresented: $viewModel.showAddOptions) {
                 AddDictionaryOptionsView(viewModel: viewModel)
                     .environmentObject(appState)
-                    .heroEnabled() // Включаем Hero для листов
+                    .heroEnabled()
             }
             .sheet(isPresented: $viewModel.showDownloadServer) {
                 ServerDictionariesView(viewModel: viewModel)
                     .environmentObject(appState)
-                    .heroEnabled() // Включаем Hero для листов
+                    .heroEnabled()
             }
             .sheet(item: $viewModel.selectedDictionary) { dictionary in
                 DictionaryDetailView(dictionary: dictionary, viewModel: viewModel)
                     .environmentObject(appState)
-                    .heroEnabled() // Включаем Hero для листов
+                    .heroEnabled()
             }
             .alert(item: $viewModel.activeAlert) { activeAlert in
                 switch activeAlert {
@@ -91,6 +92,7 @@ struct DictionariesView: View {
         }
     }
 }
+
 
 extension View {
     /// Включаем Hero для любых представлений SwiftUI
@@ -132,12 +134,18 @@ struct HeroModifierView: UIViewRepresentable {
 }
 
 
-// Субпредставления
 struct DictionaryRow: View {
-    var dictionary: DictionaryItem
+    @Binding var dictionary: DictionaryItem
+    var onToggle: (Int64, Bool) -> Void
 
     var body: some View {
         HStack {
+            Toggle(isOn: $dictionary.isActive) {
+                EmptyView()
+            }
+            .onChange(of: dictionary.isActive) { newValue in
+                onToggle(dictionary.id, newValue)
+            }
             VStack(alignment: .leading) {
                 Text(dictionary.name)
                     .font(.headline)
@@ -145,9 +153,8 @@ struct DictionaryRow: View {
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
-            Spacer()
         }
-        .padding(.vertical, 8)
+        //.toggleStyle(CheckboxToggleStyle())
     }
 }
 
@@ -186,7 +193,7 @@ struct AddDictionaryOptionsView: View {
             })
             .sheet(isPresented: $showDocumentPicker) {
                 DocumentPicker(selectedFileURL: $selectedFileURL) { url in
-                    viewModel.importCSV(from: url)
+                    // viewModel.importCSV(from: url) // Implement this logic
                 }
             }
             .heroEnabled() // Включаем Hero для листа
@@ -203,14 +210,16 @@ struct ServerDictionariesView: View {
         ZStack {
             NavigationView {
                 List {
-                    ForEach(viewModel.serverDictionaries) { dictionary in
-                        DictionaryRow(dictionary: dictionary)
-                            .contentShape(Rectangle())
-                            .onTapGesture {
-                                viewModel.selectedDictionary = dictionary
-                                showDetailPopup = true
-                            }
-                            .heroModifier(dictionary.id.uuidString)
+                    ForEach(viewModel.serverDictionaries.indices, id: \ .self) { index in
+                        DictionaryRow(dictionary: $viewModel.serverDictionaries[index]) { id, isActive in
+                            viewModel.updateDictionaryStatus(id: id, isActive: isActive)
+                        }
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            viewModel.selectedDictionary = viewModel.serverDictionaries[index]
+                            showDetailPopup = true
+                        }
+                        .heroModifier(String(viewModel.serverDictionaries[index].id))
                     }
                 }
                 .navigationTitle("Server Dictionaries")
@@ -218,7 +227,6 @@ struct ServerDictionariesView: View {
                     viewModel.showDownloadServer = false
                 })
             }
-            .heroEnabled() // Включаем Hero для представления
 
             if let selectedDictionary = viewModel.selectedDictionary, showDetailPopup {
                 VStack {

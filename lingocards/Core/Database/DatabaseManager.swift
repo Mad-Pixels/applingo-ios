@@ -11,10 +11,10 @@ protocol DatabaseManagerProtocol {
     func fetchDataItems(inTable tableName: String) async throws -> [DataItem]
     func insertDataItem(_ item: DataItem, intoTable tableName: String) async throws
     func updateDataItem(_ item: DataItem, inTable tableName: String) async throws
+    func updateDictionaryStatus(id: Int64, isActive: Bool) async throws
     func deleteDataItem(_ item: DataItem, fromTable tableName: String) async throws
     func execute<T>(_ block: @escaping (Database) throws -> T) async throws -> T
     func insertDataItems(_ items: [DataItem], intoTable tableName: String) async throws // Новый метод
-
 }
 
 
@@ -212,6 +212,27 @@ class DatabaseManager: DatabaseManagerProtocol {
                 ]
             )
         }
+    }
+    
+    // Метод обновления статуса isActive в таблице Dictionary
+    func updateDictionaryStatus(id: Int64, isActive: Bool) async throws {
+        guard let dbQueue = dbQueue else {
+            throw DatabaseError.connectionError("Database not connected")
+        }
+        try await dbQueue.write { db in
+            try db.execute(
+                sql: """
+                UPDATE \(DatabaseDictionaryItem.databaseTableName)
+                SET isActive = :isActive
+                WHERE id = :id
+                """,
+                arguments: [
+                    "isActive": isActive,
+                    "id": id
+                ]
+            )
+        }
+        logger.log("Dictionary status updated for id: \(id)", level: .info, details: nil)
     }
     
     func updateDataItem(_ item: DataItem, inTable tableName: String) async throws {

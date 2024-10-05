@@ -103,7 +103,7 @@ struct AddWordFormView: View {
                     presentationMode.wrappedValue.dismiss()
                 },
                 trailing: Button("Save") {
-                    let newWord = WordItem(word: wordText, definition: definitionText)
+                    let newWord = WordItem(id: 1, word: wordText, definition: definitionText)
                     viewModel.addWord(newWord)
                     presentationMode.wrappedValue.dismiss()
                 }.disabled(wordText.isEmpty || definitionText.isEmpty)

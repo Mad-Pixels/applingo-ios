@@ -1,7 +1,7 @@
 import GRDB
 
 struct DatabaseDictionaryItem: Codable, FetchableRecord, PersistableRecord {
-    var id: Int64?
+    var id: Int64
     var hashId: Int64
     var displayName: String
     var tableName: String

@@ -25,7 +25,7 @@ struct QueryItem: Decodable, Identifiable {
     let description: String
     let author: String
     let name: String
-    let id: String
+    let id: Int64
 
     enum CodingKeys: String, CodingKey {
         case name, category_main, category_sub, author, dictionary_key, description
@@ -41,7 +41,7 @@ struct QueryItem: Decodable, Identifiable {
         author = try container.decode(String.self, forKey: .author)
         name = try container.decode(String.self, forKey: .name)
 
-        id = dictionary_key
+        id = Int64(Date().timeIntervalSince1970)
     }
 }
 
