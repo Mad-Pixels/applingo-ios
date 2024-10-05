@@ -15,6 +15,7 @@ protocol DatabaseManagerProtocol {
     func deleteDataItem(_ item: DataItem, fromTable tableName: String) async throws
     func execute<T>(_ block: @escaping (Database) throws -> T) async throws -> T
     func insertDataItems(_ items: [DataItem], intoTable tableName: String) async throws // Новый метод
+    func fetchWords(page: Int, itemsPerPage: Int) async throws -> [WordItem]
 }
 
 
@@ -140,6 +141,50 @@ class DatabaseManager: DatabaseManagerProtocol {
             try item.delete(db)
         }
     }
+    
+    func fetchWords(page: Int, itemsPerPage: Int) async throws -> [WordItem] {
+        guard let dbQueue = dbQueue else {
+            throw DatabaseError.connectionError("Database not connected")
+        }
+
+        return try await dbQueue.read { db in
+            // Получаем все активные записи из таблицы Dictionary
+            let activeDictionaries = try DatabaseDictionaryItem
+                .filter(Column("isActive") == true)
+                .fetchAll(db)
+
+            var allWords: [WordItem] = []
+            var currentOffset = 0
+
+            // Проходимся по каждой активной таблице и загружаем из нее данные
+            for dictionary in activeDictionaries {
+                let tableName = dictionary.tableName
+
+                // Рассчитываем лимит для текущей таблицы
+                let remainingItems = itemsPerPage - allWords.count
+                if remainingItems <= 0 { break }
+
+                // Выполняем запрос для текущей таблицы с учетом глобального offset и лимита
+                let sql = """
+                    SELECT id, hashId, frontText AS word, backText AS definition
+                    FROM \(tableName)
+                    LIMIT \(remainingItems) OFFSET \(max(0, page * itemsPerPage - currentOffset))
+                    """
+                
+                let wordsFromCurrentTable = try WordItem.fetchAll(db, sql: sql)
+                allWords.append(contentsOf: wordsFromCurrentTable)
+                currentOffset += wordsFromCurrentTable.count
+
+                // Если набрали достаточно элементов, прекращаем загрузку
+                if allWords.count >= itemsPerPage {
+                    break
+                }
+            }
+            
+            return allWords
+        }
+    }
+
     
     // Создание таблицы для словаря
     func createDataTable(forDictionary item: DatabaseDictionaryItem) async throws {

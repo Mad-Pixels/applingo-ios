@@ -6,9 +6,13 @@ class WordsViewModel: BaseViewModel {
     @Published var showAddWordForm: Bool = false
     @Published var searchText: String = ""
     @Published var selectedWord: WordItem? = nil // Для отображения деталей
-
-    private var cancellables = Set<AnyCancellable>()
+    //@Published var isLoading = false // Отображение индикатора загрузки
     
+    private var cancellables = Set<AnyCancellable>()
+    private var currentPage = 0
+    private var itemsPerPage = 20
+    private var canLoadMorePages = true
+
     var filteredWords: [WordItem] {
         if searchText.isEmpty {
             return words
@@ -22,13 +26,30 @@ class WordsViewModel: BaseViewModel {
         loadWords()
     }
     
-    func loadWords() {
-        // Загрузка слов из источника данных
-        // Сейчас используем тестовые данные
-        words = [
-            WordItem(id: 1, word: "Apple", definition: "A fruit"),
-            WordItem(id: 2, word: "Banana", definition: "Another fruit")
-        ]
+    func loadWords(reset: Bool = false) {
+        guard !isLoading else { return }
+        
+        if reset {
+            words = []
+            currentPage = 0
+            canLoadMorePages = true
+        }
+        
+        isLoading = true
+        Task {
+            do {
+                let newWords = try await AppState.shared.databaseManager.fetchWords(page: currentPage, itemsPerPage: itemsPerPage)
+                DispatchQueue.main.async {
+                    self.words.append(contentsOf: newWords)
+                    self.currentPage += 1
+                    self.isLoading = false
+                    self.canLoadMorePages = newWords.count == self.itemsPerPage
+                }
+            } catch {
+                self.isLoading = false
+                AppState.shared.logger.log("Failed to load words: \(error)", level: .error, details: nil)
+            }
+        }
     }
     
     func deleteWord(at offsets: IndexSet) {
@@ -50,5 +71,16 @@ class WordsViewModel: BaseViewModel {
     func showWordDetails(_ word: WordItem) {
         selectedWord = word
     }
+    
+    func loadNextPageIfNeeded(currentItem: WordItem?) {
+        guard let currentItem = currentItem else {
+            loadWords()
+            return
+        }
+        
+        let thresholdIndex = words.index(words.endIndex, offsetBy: -5)
+        if words.firstIndex(where: { $0.id == currentItem.id }) == thresholdIndex, canLoadMorePages {
+            loadWords()
+        }
+    }
 }
-

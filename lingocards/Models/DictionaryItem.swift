@@ -1,4 +1,5 @@
 import Foundation
+import GRDB
 
 struct DictionaryItem: Identifiable, Equatable {
     let id: Int64
@@ -14,8 +15,30 @@ struct DictionaryItem: Identifiable, Equatable {
 // Models/WordItem.swift
 import Foundation
 
-struct WordItem: Identifiable {
-    let id: Int64
+struct WordItem: Identifiable, Codable, FetchableRecord, PersistableRecord {
+    var id: Int64?
+    var hashId: Int64
     var word: String
     var definition: String
+    
+    // Переопределяем инициализатор для соответствия протоколу FetchableRecord
+    init(row: Row) {
+        id = row["id"]
+        hashId = row["hashId"]
+        word = row["front_text"]
+        definition = row["back_text"]
+    }
+    
+    // Метод для вставки или обновления данных
+    func encode(to container: inout PersistenceContainer) {
+        container["id"] = id
+        container["hashId"] = hashId
+        container["front_text"] = word
+        container["back_text"] = definition
+    }
+    
+    // Переопределяем название таблицы, если оно отличается от названия структуры
+    static var databaseTableName: String {
+        return "WordItem"
+    }
 }

@@ -19,6 +19,9 @@ struct WordsView: View {
                                     // Показ деталей
                                     viewModel.showWordDetails(word)
                                 }
+                                .onAppear {
+                                    viewModel.loadNextPageIfNeeded(currentItem: word)
+                                }
                         }
                         .onDelete(perform: viewModel.deleteWord)
                     }
@@ -67,6 +70,7 @@ struct WordsView: View {
 }
 
 
+
 // Субпредставления
 struct WordRow: View {
     var word: WordItem
@@ -103,8 +107,8 @@ struct AddWordFormView: View {
                     presentationMode.wrappedValue.dismiss()
                 },
                 trailing: Button("Save") {
-                    let newWord = WordItem(id: 1, word: wordText, definition: definitionText)
-                    viewModel.addWord(newWord)
+                    //let newWord = WordItem(id: 1, word: wordText, definition: definitionText)
+                    //viewModel.addWord(newWord)
                     presentationMode.wrappedValue.dismiss()
                 }.disabled(wordText.isEmpty || definitionText.isEmpty)
             )

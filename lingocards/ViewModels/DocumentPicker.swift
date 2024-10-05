@@ -29,15 +29,19 @@ struct DocumentPicker: UIViewControllerRepresentable {
         }
 
         func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
-            if let selectedURL = urls.first {
-                // Обрабатываем выбранный файл и вызываем замыкание
-                parent.selectedFileURL = selectedURL
-                parent.onPick(selectedURL)
-            }
+            guard let url = urls.first else { return }
+            
+            parent.selectedFileURL = url
+            
+            // Логируем выбор файла
+            print("DocumentPicker: Selected file URL: \(url)")
+            //parent.parent.appState.logger.log("DocumentPicker: Selected file URL: \(url)", level: .info, details: nil)
+            
+            parent.onPick(url)  // Передаем URL дальше
         }
 
         func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
-            // Обработчик отмены выбора файла, если это необходимо
+            print("DocumentPicker: Selection cancelled") // Логируем отмену выбора
         }
     }
 }

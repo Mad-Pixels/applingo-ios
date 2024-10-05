@@ -1,13 +1,13 @@
 // Views/DictionariesView.swift
 import SwiftUI
-import Hero
 
 
 struct DictionariesView: View {
-    @EnvironmentObject var appState: AppState
-    @EnvironmentObject var localizationManager: LocalizationManager
+    @EnvironmentObject var appState: AppState // Подключаем appState как EnvironmentObject
+    @EnvironmentObject var localizationManager: LocalizationManager // Подключаем localizationManager как EnvironmentObject
     @StateObject private var viewModel: DictionariesViewModel
 
+    // Инициализация ViewModel с передачей appState
     init() {
         _viewModel = StateObject(wrappedValue: DictionariesViewModel(appState: AppState.shared))
     }
@@ -15,22 +15,20 @@ struct DictionariesView: View {
     var body: some View {
         NavigationView {
             ZStack {
+                // Основной список словарей
                 List {
-                    ForEach(viewModel.dictionaries.indices, id: \.self) { index in
-                        DictionaryRow(dictionary: $viewModel.dictionaries[index]) { id, isActive in
-                            viewModel.updateDictionaryStatus(id: id, isActive: isActive)
-                        }
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            viewModel.selectedDictionary = viewModel.dictionaries[index]
-                            viewModel.showDictionaryDetails(viewModel.dictionaries[index])
-                        }
-                        .heroModifier(String(viewModel.dictionaries[index].id))
+                    ForEach(viewModel.dictionaries) { dictionary in
+                        DictionaryRow(dictionary: dictionary)
+                            .contentShape(Rectangle()) // Убедимся, что вся строка реагирует на нажатие
+                            .onTapGesture {
+                                viewModel.showDictionaryDetails(dictionary)
+                            }
                     }
                     .onDelete(perform: viewModel.deleteDictionary)
                 }
                 .navigationTitle(localizationManager.localizedString(for: "Dictionaries"))
 
+                // Плавающая кнопка "+"
                 VStack {
                     Spacer()
                     HStack {
@@ -42,28 +40,25 @@ struct DictionariesView: View {
                                 .resizable()
                                 .frame(width: 24, height: 24)
                         }
-                        .buttonStyle(FloatingButtonStyle())
+                        .buttonStyle(FloatingButtonStyle()) // Применение стиля кнопки
                         .padding()
-                        .heroModifier("addButton")
                     }
                 }
             }
             .sheet(isPresented: $viewModel.showAddOptions) {
                 AddDictionaryOptionsView(viewModel: viewModel)
-                    .environmentObject(appState)
-                    .heroEnabled()
+                    .environmentObject(appState) // Передаём appState в представление
             }
             .sheet(isPresented: $viewModel.showDownloadServer) {
                 ServerDictionariesView(viewModel: viewModel)
-                    .environmentObject(appState)
-                    .heroEnabled()
+                    .environmentObject(appState) // Передаём appState в представление
             }
             .sheet(item: $viewModel.selectedDictionary) { dictionary in
                 DictionaryDetailView(dictionary: dictionary, viewModel: viewModel)
-                    .environmentObject(appState)
-                    .heroEnabled()
+                    .environmentObject(appState) // Передаём appState в представление
             }
             .alert(item: $viewModel.activeAlert) { activeAlert in
+                // Обработка алертов
                 switch activeAlert {
                 case .alert(let alertItem):
                     return Alert(title: Text(alertItem.title), message: Text(alertItem.message), dismissButton: .default(Text("OK")))
@@ -84,68 +79,21 @@ struct DictionariesView: View {
                 }
             )
             .onAppear {
-                viewModel.loadDictionaries()
+                viewModel.loadDictionaries() // Загружаем словари при появлении экрана
             }
             .onDisappear {
-                viewModel.cancelLoading()
+                viewModel.cancelLoading() // Отмена загрузки при уходе с экрана
             }
         }
     }
 }
 
-
-extension View {
-    /// Включаем Hero для любых представлений SwiftUI
-    func heroEnabled() -> some View {
-        self.background(HeroModifierView())
-    }
-
-    /// Добавляем hero модификатор с уникальным идентификатором
-    func heroModifier(_ heroID: String) -> some View {
-        self.modifier(HeroViewModifier(heroID: heroID))
-    }
-}
-
-struct HeroViewModifier: ViewModifier {
-    let heroID: String
-
-    func body(content: Content) -> some View {
-        content
-            .background(HeroModifierView(heroID: heroID))
-    }
-}
-
-struct HeroModifierView: UIViewRepresentable {
-    let heroID: String?
-
-    init(heroID: String? = nil) {
-        self.heroID = heroID
-    }
-
-    func makeUIView(context: Context) -> UIView {
-        let view = UIView()
-        if let heroID = heroID {
-            view.heroID = heroID
-        }
-        return view
-    }
-
-    func updateUIView(_ uiView: UIView, context: Context) {}
-}
-
-
+// Субпредставления
 struct DictionaryRow: View {
-    @Binding var dictionary: DictionaryItem
-    var onToggle: (Int64, Bool) -> Void
+    var dictionary: DictionaryItem
 
     var body: some View {
         HStack {
-            Toggle(isOn: $dictionary.isActive) {
-                EmptyView()
-            }
-            .onChange(of: dictionary.isActive) { newValue in
-                onToggle(dictionary.id, newValue)
-            }
             VStack(alignment: .leading) {
                 Text(dictionary.name)
                     .font(.headline)
@@ -153,8 +101,9 @@ struct DictionaryRow: View {
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
+            Spacer()
         }
-        //.toggleStyle(CheckboxToggleStyle())
+        .padding(.vertical, 8)
     }
 }
 
@@ -166,13 +115,13 @@ struct AddDictionaryOptionsView: View {
     var body: some View {
         NavigationView {
             VStack(spacing: 20) {
+                // Кнопка для импорта CSV
                 Button(action: {
                     showDocumentPicker = true
                 }) {
                     Text("Import CSV")
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .heroModifier("importCSVButton")
                 }
 
                 Button(action: {
@@ -181,7 +130,6 @@ struct AddDictionaryOptionsView: View {
                     Text("Download from Server")
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .heroModifier("downloadServerButton")
                 }
 
                 Spacer()
@@ -191,12 +139,13 @@ struct AddDictionaryOptionsView: View {
             .navigationBarItems(trailing: Button("Close") {
                 viewModel.showAddOptions = false
             })
+            // Отображение DocumentPicker
             .sheet(isPresented: $showDocumentPicker) {
                 DocumentPicker(selectedFileURL: $selectedFileURL) { url in
-                    // viewModel.importCSV(from: url) // Implement this logic
+                    // Обработка выбранного файла
+                    viewModel.importCSV(from: url)
                 }
             }
-            .heroEnabled() // Включаем Hero для листа
         }
     }
 }
@@ -210,16 +159,13 @@ struct ServerDictionariesView: View {
         ZStack {
             NavigationView {
                 List {
-                    ForEach(viewModel.serverDictionaries.indices, id: \ .self) { index in
-                        DictionaryRow(dictionary: $viewModel.serverDictionaries[index]) { id, isActive in
-                            viewModel.updateDictionaryStatus(id: id, isActive: isActive)
-                        }
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            viewModel.selectedDictionary = viewModel.serverDictionaries[index]
-                            showDetailPopup = true
-                        }
-                        .heroModifier(String(viewModel.serverDictionaries[index].id))
+                    ForEach(viewModel.serverDictionaries) { dictionary in
+                        DictionaryRow(dictionary: dictionary)
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                viewModel.selectedDictionary = dictionary
+                                showDetailPopup = true
+                            }
                     }
                 }
                 .navigationTitle("Server Dictionaries")
@@ -241,17 +187,14 @@ struct ServerDictionariesView: View {
                                     .font(.system(size: 24))
                             }
                             .padding()
-                            .heroModifier("closeButton")
                         }
 
                         Text(selectedDictionary.name)
                             .font(.title)
                             .padding()
-                            .heroModifier("serverDictionaryName_\(selectedDictionary.id)")
 
                         Text(selectedDictionary.description)
                             .padding()
-                            .heroModifier("serverDictionaryDescription_\(selectedDictionary.id)")
 
                         Spacer()
 
@@ -260,13 +203,11 @@ struct ServerDictionariesView: View {
                             showDetailPopup = false
                         }
                         .padding()
-                        .heroModifier("downloadButton")
                     }
                     .frame(width: 300, height: 300)
                     .background(Color.white)
                     .cornerRadius(20)
                     .shadow(radius: 10)
-                    .heroEnabled() // Включаем Hero для модального окна
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(Color.black.opacity(0.4))
@@ -286,24 +227,22 @@ struct DictionaryDetailView: View {
         VStack {
             Text(dictionary.name)
                 .font(.title)
-                .padding()
-                .heroModifier("dictionaryName_\(dictionary.id)")
             Text(dictionary.description)
                 .padding()
-                .heroModifier("dictionaryDescription_\(dictionary.id)")
             Spacer()
             HStack {
                 Button("Edit") {
                     // Обработка редактирования
+                    // Можно открыть форму редактирования
                 }
                 .padding()
-                .heroModifier("editButton_\(dictionary.id)")
                 Spacer()
                 Button("Delete") {
                     viewModel.showNotify(
                         title: "Delete Dictionary",
                         message: "Are you sure you want to delete this dictionary?",
                         primaryAction: {
+                            // Удаляем запись
                             if let index = viewModel.dictionaries.firstIndex(where: { $0.id == dictionary.id }) {
                                 viewModel.dictionaries.remove(at: index)
                             }
@@ -312,10 +251,8 @@ struct DictionaryDetailView: View {
                     )
                 }
                 .padding()
-                .heroModifier("deleteButton_\(dictionary.id)")
             }
         }
         .padding()
-        .heroEnabled() // Включаем Hero для DictionaryDetailView
     }
 }
