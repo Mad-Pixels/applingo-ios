@@ -89,117 +89,124 @@ class DictionariesViewModel: BaseViewModel {
 
     /// Функция импорта CSV-файла
     func importCSV(from url: URL) {
-            appState.logger.log("Selected file URL: \(url)", level: .info, details: nil) // Логируем URL файла
-            Task {
-                do {
-                    appState.logger.log("Import CSV called", level: .info, details: nil)  // Проверка вызова функции
+        appState.logger.log("Selected file URL: \(url)", level: .info, details: nil) // Логируем URL файла
 
-                    // Проверка доступности файла
-                    guard FileManager.default.fileExists(atPath: url.path) else {
-                        appState.logger.log("File not found at path: \(url.path)", level: .error, details: nil)
-                        throw NSError(domain: NSCocoaErrorDomain, code: NSFileNoSuchFileError, userInfo: [NSLocalizedDescriptionKey: "Файл не найден по указанному URL: \(url.path)"])
+        Task {
+            do {
+                appState.logger.log("Import CSV called", level: .info, details: nil)
+
+                // Попробуем получить доступ к защищенному ресурсу
+                guard url.startAccessingSecurityScopedResource() else {
+                    appState.logger.log("No access to file at URL", level: .error, details: nil)
+                    throw NSError(domain: NSCocoaErrorDomain, code: NSFileReadNoPermissionError, userInfo: [NSLocalizedDescriptionKey: "Нет доступа к файлу по указанному URL"])
+                }
+                defer { url.stopAccessingSecurityScopedResource() } // Освобождаем доступ после использования
+
+                // Проверка доступности файла по пути
+                guard FileManager.default.fileExists(atPath: url.path) else {
+                    appState.logger.log("File not found at path: \(url.path)", level: .error, details: nil)
+                    throw NSError(domain: NSCocoaErrorDomain, code: NSFileNoSuchFileError, userInfo: [NSLocalizedDescriptionKey: "Файл не найден по указанному URL: \(url.path)"])
+                }
+                appState.logger.log("File exists at path: \(url.path)", level: .info, details: nil)
+
+                // Получаем доступ к директории документов приложения
+                let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+                let destinationURL = documentDirectory.appendingPathComponent(url.lastPathComponent)
+
+                // Удаляем файл, если он уже существует в директории документов
+                if FileManager.default.fileExists(atPath: destinationURL.path) {
+                    try FileManager.default.removeItem(at: destinationURL)
+                }
+
+                // Копируем файл в локальное хранилище
+                try FileManager.default.copyItem(at: url, to: destinationURL)
+                appState.logger.log("File copied to destination path: \(destinationURL)", level: .info, details: nil)
+
+                // Чтение файла из нового местоположения
+                let fileData = try Data(contentsOf: destinationURL)
+                appState.logger.log("File data read successfully from destination path, size: \(fileData.count) bytes", level: .info, details: nil)
+
+                // Преобразование данных файла в строку
+                guard let fileString = String(data: fileData, encoding: .utf8) else {
+                    appState.logger.log("Failed to convert file data to string", level: .error, details: nil)
+                    throw NSError(domain: "CSVImport", code: 1, userInfo: [NSLocalizedDescriptionKey: "Не удалось преобразовать данные файла в строку"])
+                }
+                appState.logger.log("File converted to string successfully", level: .info, details: nil)
+
+                // Создание CSV объекта из строки
+                let csv = try CSV(string: fileString)
+                appState.logger.log("CSV object created successfully, rows count: \(csv.namedRows.count)", level: .info, details: nil)
+
+                // Создание записи для базы данных
+                let uniqueID = UUID().uuidString
+                let tableName = "dict_\(uniqueID.replacingOccurrences(of: "-", with: "_"))"
+
+                let dictionaryItem = DatabaseDictionaryItem(
+                    id: Int64(Date().timeIntervalSince1970),
+                    hashId: Int64(Date().timeIntervalSince1970),
+                    displayName: "Imported Dictionary",
+                    tableName: tableName,
+                    description: "Imported CSV Dictionary",
+                    category: "Imported",
+                    author: "Unknown",
+                    createdAt: Int64(Date().timeIntervalSince1970),
+                    isPrivate: false,
+                    isActive: true
+                )
+
+                // Создание таблицы в базе данных
+                try await appState.databaseManager.createDataTable(forDictionary: dictionaryItem)
+                appState.logger.log("Database table created: \(tableName)", level: .info, details: nil)
+
+                var items: [DataItem] = []
+
+                // Итерация по строкам CSV-файла
+                for row in csv.namedRows {
+                    guard let frontText = row.first?.value,
+                          let backText = row.dropFirst().first?.value else {
+                        appState.logger.log("Invalid CSV row format: \(row)", level: .error, details: nil)
+                        continue
                     }
-                    appState.logger.log("File exists at path: \(url.path)", level: .info, details: nil)
 
-                    // Проверка доступа к файлу
-                    guard url.startAccessingSecurityScopedResource() else {
-                        appState.logger.log("No access to file at URL", level: .error, details: nil)
-                        throw NSError(domain: NSCocoaErrorDomain, code: NSFileReadNoPermissionError, userInfo: [NSLocalizedDescriptionKey: "Нет доступа к файлу по указанному URL"])
-                    }
-                    defer { url.stopAccessingSecurityScopedResource() }
-                    
-                    let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-                    let destinationURL = documentDirectory.appendingPathComponent(url.lastPathComponent)
+                    let description = row.dropFirst(2).first?.value
+                    let hint = row.dropFirst(3).first?.value
 
-                    if FileManager.default.fileExists(atPath: destinationURL.path) {
-                        try FileManager.default.removeItem(at: destinationURL)
-                    }
-                    
-                    try FileManager.default.copyItem(at: url, to: destinationURL)
-                    appState.logger.log("File copied to destination path: \(destinationURL)", level: .info, details: nil)
+                    let randomHashId = Int64.random(in: 0..<100_000_000_000_000_000)
 
-                    // Теперь читаем файл из нового расположения
-                                    let fileData = try Data(contentsOf: destinationURL)
-                                    appState.logger.log("File data read successfully from destination path, size: \(fileData.count) bytes", level: .info, details: nil)
+                    let dataItem = DataItem(
+                        hashId: randomHashId,
+                        frontText: frontText,
+                        backText: backText,
+                        description: description,
+                        hint: hint,
+                        createdAt: Int64(Date().timeIntervalSince1970),
+                        salt: 0,
+                        success: 0,
+                        fail: 0,
+                        weight: 0,
+                        tableName: tableName
+                    )
 
-                                    // Преобразование данных файла в строку
-                                    guard let fileString = String(data: fileData, encoding: .utf8) else {
-                                        appState.logger.log("Failed to convert file data to string", level: .error, details: nil)
-                                        throw NSError(domain: "CSVImport", code: 1, userInfo: [NSLocalizedDescriptionKey: "Не удалось преобразовать данные файла в строку"])
-                                    }
-                                    appState.logger.log("File converted to string successfully", level: .info, details: nil)
+                    items.append(dataItem)
+                }
 
-                                    // Создание CSV объекта из строки
-                                    let csv = try CSV(string: fileString)
-                                    appState.logger.log("CSV object created successfully, rows count: \(csv.namedRows.count)", level: .info, details: nil)
+                appState.logger.log("Parsed \(items.count) items from CSV", level: .info, details: nil)
 
-                                    let uniqueID = UUID().uuidString
-                                    let tableName = "dict_\(uniqueID.replacingOccurrences(of: "-", with: "_"))"
+                // Вставка всех элементов в базу данных в одной транзакции
+                try await appState.databaseManager.insertDataItems(items, intoTable: tableName)
+                appState.logger.log("Inserted \(items.count) items into database", level: .info, details: nil)
 
-                                    let dictionaryItem = DatabaseDictionaryItem(
-                                        id: Int64(Date().timeIntervalSince1970),
-                                        hashId: Int64(Date().timeIntervalSince1970),
-                                        displayName: "Imported Dictionary",
-                                        tableName: tableName,
-                                        description: "Imported CSV Dictionary",
-                                        category: "Imported",
-                                        author: "Unknown",
-                                        createdAt: Int64(Date().timeIntervalSince1970),
-                                        isPrivate: false,
-                                        isActive: true
-                                    )
+                // Добавление записи о словаре в базу данных
+                try await appState.databaseManager.insertDictionaryItem(dictionaryItem)
+                appState.logger.log("Dictionary item inserted into database", level: .info, details: nil)
 
-                                    // Создание таблицы в базе данных
-                                    try await appState.databaseManager.createDataTable(forDictionary: dictionaryItem)
-                                    appState.logger.log("Database table created: \(tableName)", level: .info, details: nil)
+            } catch {
+                appState.logger.log("Failed to parse and import CSV: \(error)", level: .error, details: nil)
+            }
+        }
+    }
 
-                                    var items: [DataItem] = []
 
-                                    // Итерация по строкам CSV-файла
-                                    for row in csv.namedRows {
-                                        guard let frontText = row.first?.value,
-                                              let backText = row.dropFirst().first?.value else {
-                                            appState.logger.log("Invalid CSV row format: \(row)", level: .error, details: nil)
-                                            continue
-                                        }
-
-                                        let description = row.dropFirst(2).first?.value
-                                        let hint = row.dropFirst(3).first?.value
-
-                                        let randomHashId = Int64.random(in: 0..<100_000_000_000_000_000)
-
-                                        let dataItem = DataItem(
-                                            hashId: randomHashId,
-                                            frontText: frontText,
-                                            backText: backText,
-                                            description: description,
-                                            hint: hint,
-                                            createdAt: Int64(Date().timeIntervalSince1970),
-                                            salt: 0,
-                                            success: 0,
-                                            fail: 0,
-                                            weight: 0,
-                                            tableName: tableName
-                                        )
-
-                                        items.append(dataItem)
-                                    }
-
-                                    appState.logger.log("Parsed \(items.count) items from CSV", level: .info, details: nil)
-
-                                    // Вставка всех элементов в базу данных в одной транзакции
-                                    try await appState.databaseManager.insertDataItems(items, intoTable: tableName)
-                                    appState.logger.log("Inserted \(items.count) items into database", level: .info, details: nil)
-
-                                    // Добавление записи о словаре в базу данных
-                                    try await appState.databaseManager.insertDictionaryItem(dictionaryItem)
-                                    appState.logger.log("Dictionary item inserted into database", level: .info, details: nil)
-
-                                } catch {
-                                    appState.logger.log("Failed to parse and import CSV: \(error)", level: .error, details: nil)
-                                }
-                            }
-                        }
 
     // Загрузка словарей
     func loadDictionaries() {
