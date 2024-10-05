@@ -142,6 +142,23 @@ class DatabaseManager: DatabaseManagerProtocol {
         }
     }
     
+    func logTableStructure(forTableName tableName: String) async {
+        guard let dbQueue = dbQueue else {
+            logger.log("Database not connected", level: .error, details: nil)
+            return
+        }
+
+        do {
+            let columns = try await dbQueue.read { db in
+                try Row.fetchAll(db, sql: "PRAGMA table_info(\(tableName));")
+            }
+            logger.log("Columns for \(tableName): \(columns)", level: .info, details: nil)
+        } catch {
+            logger.log("Failed to fetch table info for \(tableName): \(error)", level: .error, details: nil)
+        }
+        
+    }
+    
     func fetchWords(page: Int, itemsPerPage: Int) async throws -> [WordItem] {
         guard let dbQueue = dbQueue else {
             throw DatabaseError.connectionError("Database not connected")
@@ -159,6 +176,11 @@ class DatabaseManager: DatabaseManagerProtocol {
             // Проходимся по каждой активной таблице и загружаем из нее данные
             for dictionary in activeDictionaries {
                 let tableName = dictionary.tableName
+                
+                Task {
+                    await self.logTableStructure(forTableName: tableName)
+                }
+                
 
                 // Рассчитываем лимит для текущей таблицы
                 let remainingItems = itemsPerPage - allWords.count
@@ -166,7 +188,7 @@ class DatabaseManager: DatabaseManagerProtocol {
 
                 // Выполняем запрос для текущей таблицы с учетом глобального offset и лимита
                 let sql = """
-                    SELECT id, hashId, frontText AS word, backText AS definition
+                    SELECT id, hashId, frontText , backText 
                     FROM \(tableName)
                     LIMIT \(remainingItems) OFFSET \(max(0, page * itemsPerPage - currentOffset))
                     """

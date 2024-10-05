@@ -25,16 +25,16 @@ struct WordItem: Identifiable, Codable, FetchableRecord, PersistableRecord {
     init(row: Row) {
         id = row["id"]
         hashId = row["hashId"]
-        word = row["front_text"]
-        definition = row["back_text"]
+        word = row["frontText"]
+        definition = row["backText"]
     }
     
     // Метод для вставки или обновления данных
     func encode(to container: inout PersistenceContainer) {
         container["id"] = id
         container["hashId"] = hashId
-        container["front_text"] = word
-        container["back_text"] = definition
+        container["frontText"] = word
+        container["backText"] = definition
     }
     
     // Переопределяем название таблицы, если оно отличается от названия структуры

@@ -28,22 +28,25 @@ class WordsViewModel: BaseViewModel {
     
     func loadWords(reset: Bool = false) {
         guard !isLoading else { return }
-        
+
         if reset {
             words = []
             currentPage = 0
             canLoadMorePages = true
         }
-        
+
         isLoading = true
+        AppState.shared.logger.log("Loading words, currentPage: \(currentPage), itemsPerPage: \(itemsPerPage)", level: .info, details: nil)
         Task {
             do {
                 let newWords = try await AppState.shared.databaseManager.fetchWords(page: currentPage, itemsPerPage: itemsPerPage)
                 DispatchQueue.main.async {
                     self.words.append(contentsOf: newWords)
+                    AppState.shared.logger.log("Loaded \(newWords.count) new words", level: .info, details: nil)
                     self.currentPage += 1
                     self.isLoading = false
                     self.canLoadMorePages = newWords.count == self.itemsPerPage
+                    AppState.shared.logger.log("Words array now has \(self.words.count) items", level: .info, details: nil)
                 }
             } catch {
                 self.isLoading = false
@@ -51,6 +54,7 @@ class WordsViewModel: BaseViewModel {
             }
         }
     }
+
     
     func deleteWord(at offsets: IndexSet) {
         guard let index = offsets.first else { return }
