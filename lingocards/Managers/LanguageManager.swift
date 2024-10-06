@@ -5,13 +5,11 @@ import SwiftUI
 class LanguageManager: ObservableObject {
     static let languageChangeNotification = Notification.Name("LanguageDidChange")
     @Published var currentLanguage: String {
-        didSet {
-            Defaults.appLanguage = currentLanguage
-            setLanguage(currentLanguage)
-            NotificationCenter.default.post(name: LanguageManager.languageChangeNotification, object: nil)
-
+            didSet {
+                Defaults.appLanguage = currentLanguage
+                setLanguage(currentLanguage)
+            }
         }
-    }
     
     private(set) var supportedLanguages: [String] = []
     
@@ -35,16 +33,19 @@ class LanguageManager: ObservableObject {
     }
     
     private func setLanguage(_ language: String) {
-            guard let path = Bundle.main.path(forResource: language, ofType: "lproj"),
-                let bundle = Bundle(path: path) else {
-                Logger.error("Could not find bundle for language \(language)")
-                return
-            }
-            Logger.debug("Set language to \(language)")
-            self.bundle = bundle
-            UserDefaults.standard.set([language], forKey: "AppleLanguages")
-            UserDefaults.standard.synchronize()
+        guard let path = Bundle.main.path(forResource: language, ofType: "lproj"),
+              let bundle = Bundle(path: path) else {
+            Logger.error("Could not find bundle for language \(language)")
+            return
         }
+        Logger.debug("Set language to \(language)")
+        self.bundle = bundle
+        UserDefaults.standard.set([language], forKey: "AppleLanguages")
+        UserDefaults.standard.synchronize()
+        
+        // Принудительно обновляем @Published свойство, чтобы вызвать обновление view
+        self.objectWillChange.send()
+    }
     
     func localizedString(for key: String, arguments: CVarArg...) -> String {
         let format = bundle?.localizedString(forKey: key, value: nil, table: nil) ?? key

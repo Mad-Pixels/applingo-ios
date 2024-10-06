@@ -2,13 +2,11 @@ import SwiftUI
 
 struct MainView: View {
     @EnvironmentObject var languageManager: LanguageManager
-    @State private var selectedTab = 0
-    @State private var viewID = UUID()
+    @State private var selectedTab: Int = 0
     
     var body: some View {
         TabView(selection: $selectedTab) {
             TabLearnView()
-                .id(viewID)
                 .tabItem {
                     Label {
                         Text(capitalizeFirstLetter(languageManager.localizedString(for: "TabLearn")))
@@ -19,7 +17,6 @@ struct MainView: View {
                 .tag(0)
             
             TabDictionariesView()
-                .id(viewID)
                 .tabItem {
                     Label {
                         Text(capitalizeFirstLetter(languageManager.localizedString(for: "TabDictionaries")))
@@ -30,7 +27,6 @@ struct MainView: View {
                 .tag(1)
             
             TabWordsView()
-                .id(viewID)
                 .tabItem {
                     Label {
                         Text(capitalizeFirstLetter(languageManager.localizedString(for: "TabWords")))
@@ -41,7 +37,6 @@ struct MainView: View {
                 .tag(2)
             
             TabSettingsView()
-                .id(viewID)
                 .tabItem {
                     Label {
                         Text(capitalizeFirstLetter(languageManager.localizedString(for: "TabSettings")))
@@ -50,9 +45,6 @@ struct MainView: View {
                     }
                 }
                 .tag(3)
-        }
-        .onReceive(NotificationCenter.default.publisher(for: LanguageManager.languageChangeNotification)) { _ in
-            viewID = UUID() // Это вызовет обновление содержимого вкладок без изменения выбранной вкладки
         }
     }
     

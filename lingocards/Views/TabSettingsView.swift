@@ -4,6 +4,8 @@ struct TabSettingsView: View {
     @EnvironmentObject var languageManager: LanguageManager
     
     var body: some View {
+        
+        /// Language picker
         NavigationView {
             Form {
                 Section(header: Text(languageManager.localizedString(for: "Language"))) {
@@ -13,12 +15,7 @@ struct TabSettingsView: View {
                                 .tag(language)
                         }
                     }
-                    .pickerStyle(WheelPickerStyle())  // Стилизация пикера
-                }
-
-                // Пример использования локализованной строки
-                Section {
-                    Text(languageManager.localizedString(for: "welcome_message"))
+                    .pickerStyle(WheelPickerStyle())
                 }
             }
             .navigationTitle(languageManager.localizedString(for: "Settings"))
