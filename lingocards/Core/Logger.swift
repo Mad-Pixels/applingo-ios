@@ -25,7 +25,7 @@ struct Logger {
         DDLog.removeAllLoggers()
         
         let consoleLogger = DDOSLogger.sharedInstance
-        DDLog.add(consoleLogger, with: .info)
+        DDLog.add(consoleLogger, with: .debug)
     }
 
     static func log(_ message: @autoclosure () -> String,
