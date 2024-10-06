@@ -1,6 +1,15 @@
 {
-  "originHash" : "ad7d3f3a992de93de66d87f7ad7905c67a6736fd934e72ca691489752372cddc",
+  "originHash" : "c99474444488d51bb99aabf46fb7f7a47af04e6ca98b02158cd1ff5330e82140",
   "pins" : [
+    {
+      "identity" : "cocoalumberjack",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/CocoaLumberjack/CocoaLumberjack",
+      "state" : {
+        "revision" : "4b8714a7fb84d42393314ce897127b3939885ec3",
+        "version" : "3.8.5"
+      }
+    },
     {
       "identity" : "grdb.swift",
       "kind" : "remoteSourceControl",
@@ -11,12 +20,12 @@
       }
     },
     {
-      "identity" : "hero",
+      "identity" : "swift-log",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/HeroTransitions/Hero.git",
+      "location" : "https://github.com/apple/swift-log",
       "state" : {
-        "revision" : "b307e2d48d582118e5101d04f5187c91595a1095",
-        "version" : "1.6.3"
+        "revision" : "9cb486020ebf03bfa5b5df985387a14a98744537",
+        "version" : "1.6.1"
       }
     },
     {

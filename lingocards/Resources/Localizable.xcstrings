@@ -1,117 +1,95 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "Add Dictionary" : {
+    "Log Error" : {
 
     },
-    "Add Word" : {
-
-    },
-    "Cancel" : {
-
-    },
-    "Close" : {
-
-    },
-    "Connection Error: (message)" : {
-
-    },
-    "Dark" : {
-
-    },
-    "Definition" : {
-
-    },
-    "Delete" : {
-
-    },
-    "Dictionaries" : {
-
-    },
-    "Download" : {
-
-    },
-    "Download from Server" : {
-
-    },
-    "Edit" : {
-
-    },
-    "Enter definition" : {
-
-    },
-    "Enter word" : {
-
-    },
-    "File Creation Error: (message)" : {
-
-    },
-    "greeting" : {
-      "extractionState" : "manual",
+    "TabDictionaries" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "greeting_en"
+            "value" : "dictionaries"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "greeting_ru"
+            "value" : "словари"
           }
         }
       }
     },
-    "Import CSV" : {
+    "TabLearn" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "learn"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "учить"
+          }
+        }
+      }
+    },
+    "TabSettings" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "settings"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "настройки"
+          }
+        }
+      }
+    },
+    "TabWords" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "words"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "слова"
+          }
+        }
+      }
+    },
+    "testDictionaries" : {
 
     },
-    "Language" : {
+    "testLearn" : {
 
     },
-    "Learn" : {
+    "testSettings" : {
 
     },
-    "Light" : {
+    "testWords" : {
 
     },
-    "Loading..." : {
+    "This is the Dictionaries View" : {
 
     },
-    "Logging" : {
+    "This is the Learn View" : {
 
     },
-    "OK" : {
+    "This is the Settings View" : {
 
     },
-    "Query Error: (message)" : {
-
-    },
-    "Save" : {
-
-    },
-    "Select Language" : {
-
-    },
-    "Select Theme" : {
-
-    },
-    "Send Logs" : {
-
-    },
-    "Server Dictionaries" : {
-
-    },
-    "Settings" : {
-
-    },
-    "Theme" : {
-
-    },
-    "Word" : {
-
-    },
-    "Words" : {
+    "This is the Words View" : {
 
     }
   },

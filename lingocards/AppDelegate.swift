@@ -1,14 +1,12 @@
 import SwiftUI
 
 @main
-struct LingoCardsApp: App {
-    @StateObject private var appState = AppState.shared
-
+struct LingocadrdApp: App {
+    init() {
+        Logger.initializeLogger()
+    }
+        
     var body: some Scene {
-        WindowGroup {
-            ContentView()
-                .environmentObject(appState)
-                .environmentObject(appState.localizationManager)
-        }
+        WindowGroup { MainView() }
     }
 }

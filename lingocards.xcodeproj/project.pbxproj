@@ -8,7 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		D8A5D21E2CB0741900ACCD85 /* SwiftCSV in Frameworks */ = {isa = PBXBuildFile; productRef = D8A5D21D2CB0741900ACCD85 /* SwiftCSV */; };
-		D8A5D2212CB1010300ACCD85 /* Hero in Frameworks */ = {isa = PBXBuildFile; productRef = D8A5D2202CB1010300ACCD85 /* Hero */; };
+		D8A5D35C2CB2F02D00ACCD85 /* CocoaLumberjack in Frameworks */ = {isa = PBXBuildFile; productRef = D8A5D35B2CB2F02D00ACCD85 /* CocoaLumberjack */; };
+		D8A5D35E2CB2F02D00ACCD85 /* CocoaLumberjackSwift in Frameworks */ = {isa = PBXBuildFile; productRef = D8A5D35D2CB2F02D00ACCD85 /* CocoaLumberjackSwift */; };
+		D8A5D3602CB2F02D00ACCD85 /* CocoaLumberjackSwiftLogBackend in Frameworks */ = {isa = PBXBuildFile; productRef = D8A5D35F2CB2F02D00ACCD85 /* CocoaLumberjackSwiftLogBackend */; };
 		D8B011FD2CB0359000EB9A3D /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = D8B011FC2CB0359000EB9A3D /* GRDB */; };
 		D8BD515C2CAEAA3300E978AB /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = D8BD515B2CAEAA3300E978AB /* Localizable.xcstrings */; };
 /* End PBXBuildFile section */
@@ -32,8 +34,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D8A5D35C2CB2F02D00ACCD85 /* CocoaLumberjack in Frameworks */,
 				D8B011FD2CB0359000EB9A3D /* GRDB in Frameworks */,
-				D8A5D2212CB1010300ACCD85 /* Hero in Frameworks */,
+				D8A5D35E2CB2F02D00ACCD85 /* CocoaLumberjackSwift in Frameworks */,
+				D8A5D3602CB2F02D00ACCD85 /* CocoaLumberjackSwiftLogBackend in Frameworks */,
 				D8A5D21E2CB0741900ACCD85 /* SwiftCSV in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -89,7 +93,9 @@
 			packageProductDependencies = (
 				D8B011FC2CB0359000EB9A3D /* GRDB */,
 				D8A5D21D2CB0741900ACCD85 /* SwiftCSV */,
-				D8A5D2202CB1010300ACCD85 /* Hero */,
+				D8A5D35B2CB2F02D00ACCD85 /* CocoaLumberjack */,
+				D8A5D35D2CB2F02D00ACCD85 /* CocoaLumberjackSwift */,
+				D8A5D35F2CB2F02D00ACCD85 /* CocoaLumberjackSwiftLogBackend */,
 			);
 			productName = lingocards;
 			productReference = D8BD4FEE2CADA16500E978AB /* lingocards.app */;
@@ -123,7 +129,7 @@
 			packageReferences = (
 				D8B011FB2CB0359000EB9A3D /* XCRemoteSwiftPackageReference "GRDB.swift" */,
 				D8A5D21C2CB0741900ACCD85 /* XCRemoteSwiftPackageReference "SwiftCSV" */,
-				D8A5D21F2CB1010300ACCD85 /* XCRemoteSwiftPackageReference "Hero" */,
+				D8A5D35A2CB2F02D00ACCD85 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = D8BD4FEF2CADA16500E978AB /* Products */;
@@ -285,7 +291,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"lingocards/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"lingocards/Resources/Preview\"";
 				DEVELOPMENT_TEAM = 55CM3593S6;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -314,7 +320,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"lingocards/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"lingocards/Resources/Preview\"";
 				DEVELOPMENT_TEAM = 55CM3593S6;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -368,12 +374,12 @@
 				version = 0.6.0;
 			};
 		};
-		D8A5D21F2CB1010300ACCD85 /* XCRemoteSwiftPackageReference "Hero" */ = {
+		D8A5D35A2CB2F02D00ACCD85 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/HeroTransitions/Hero.git";
+			repositoryURL = "https://github.com/CocoaLumberjack/CocoaLumberjack";
 			requirement = {
-				kind = exactVersion;
-				version = 1.6.3;
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.8.5;
 			};
 		};
 		D8B011FB2CB0359000EB9A3D /* XCRemoteSwiftPackageReference "GRDB.swift" */ = {
@@ -392,10 +398,20 @@
 			package = D8A5D21C2CB0741900ACCD85 /* XCRemoteSwiftPackageReference "SwiftCSV" */;
 			productName = SwiftCSV;
 		};
-		D8A5D2202CB1010300ACCD85 /* Hero */ = {
+		D8A5D35B2CB2F02D00ACCD85 /* CocoaLumberjack */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = D8A5D21F2CB1010300ACCD85 /* XCRemoteSwiftPackageReference "Hero" */;
-			productName = Hero;
+			package = D8A5D35A2CB2F02D00ACCD85 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */;
+			productName = CocoaLumberjack;
+		};
+		D8A5D35D2CB2F02D00ACCD85 /* CocoaLumberjackSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D8A5D35A2CB2F02D00ACCD85 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */;
+			productName = CocoaLumberjackSwift;
+		};
+		D8A5D35F2CB2F02D00ACCD85 /* CocoaLumberjackSwiftLogBackend */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D8A5D35A2CB2F02D00ACCD85 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */;
+			productName = CocoaLumberjackSwiftLogBackend;
 		};
 		D8B011FC2CB0359000EB9A3D /* GRDB */ = {
 			isa = XCSwiftPackageProductDependency;
