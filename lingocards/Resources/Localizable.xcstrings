@@ -4,7 +4,11 @@
     "Log Error" : {
 
     },
+    "Select Language" : {
+
+    },
     "TabDictionaries" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -21,6 +25,7 @@
       }
     },
     "TabLearn" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -37,6 +42,7 @@
       }
     },
     "TabSettings" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -53,6 +59,7 @@
       }
     },
     "TabWords" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -74,9 +81,6 @@
     "testLearn" : {
 
     },
-    "testSettings" : {
-
-    },
     "testWords" : {
 
     },
@@ -84,9 +88,6 @@
 
     },
     "This is the Learn View" : {
-
-    },
-    "This is the Settings View" : {
 
     },
     "This is the Words View" : {

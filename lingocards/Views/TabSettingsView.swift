@@ -1,16 +1,27 @@
 import SwiftUI
 
 struct TabSettingsView: View {
+    @EnvironmentObject var languageManager: LanguageManager
+    
     var body: some View {
-        VStack {
-            Text("testSettings")
-                .font(.largeTitle)
-                .padding()
-            
-            // Контент для вкладки "Settings"
-            Text("This is the Settings View")
-                .font(.title)
-                .foregroundColor(.red)
+        NavigationView {
+            Form {
+                Section(header: Text(languageManager.localizedString(for: "Language"))) {
+                    Picker("Select Language", selection: $languageManager.currentLanguage) {
+                        ForEach(languageManager.supportedLanguages, id: \.self) { language in
+                            Text(languageManager.displayName(for: language))
+                                .tag(language)
+                        }
+                    }
+                    .pickerStyle(WheelPickerStyle())  // Стилизация пикера
+                }
+
+                // Пример использования локализованной строки
+                Section {
+                    Text(languageManager.localizedString(for: "welcome_message"))
+                }
+            }
+            .navigationTitle(languageManager.localizedString(for: "Settings"))
         }
     }
 }
