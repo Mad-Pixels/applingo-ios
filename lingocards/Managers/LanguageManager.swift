@@ -2,58 +2,66 @@ import Foundation
 import Combine
 import SwiftUI
 
-class LanguageManager: ObservableObject {
-    static let languageChangeNotification = Notification.Name("LanguageDidChange")
+final class LanguageManager: ObservableObject {
     @Published var currentLanguage: String {
-            didSet {
-                Defaults.appLanguage = currentLanguage
-                setLanguage(currentLanguage)
-            }
+        didSet {
+            Defaults.appLanguage = currentLanguage
+            setLanguage(currentLanguage)
         }
-    
-    private(set) var supportedLanguages: [String] = []
-    
-    private var cancellables = Set<AnyCancellable>()
-    
-    private var bundle: Bundle?
-    
-    init() {
-        self.currentLanguage = Defaults.appLanguage ?? Locale.current.languageCode ?? "en"
-        self.supportedLanguages = getSupportedLanguages()
-        setLanguage(currentLanguage)
     }
-    
+
+    static let languageChangeNotification = Notification.Name("LanguageDidChange")
+
+    private(set) var supportedLanguages: [String] = []
+    private var bundle: Bundle?
+
+    init() {
+        self.currentLanguage = Self.getInitialLanguage()
+        self.supportedLanguages = getSupportedLanguages()
+
+        setLanguage(currentLanguage)
+        Logger.debug("[LanguageManager]: Initialize manager with \(currentLanguage)")
+    }
+
+    private static func getInitialLanguage() -> String {
+        if #available(iOS 16.0, *) {
+            return Defaults.appLanguage ?? Locale.current.language.languageCode?.identifier ?? "en"
+        } else {
+            return Defaults.appLanguage ?? Locale.current.languageCode ?? "en"
+        }
+    }
+
     private func getSupportedLanguages() -> [String] {
         guard let paths = Bundle.main.paths(forResourcesOfType: "lproj", inDirectory: nil) as [String]? else { return [] }
 
         let languages = paths
             .map { URL(fileURLWithPath: $0).deletingPathExtension().lastPathComponent }
             .filter { $0 != "Base" }
+
+        Logger.debug("[LanguageManager]: Supported languages: \(languages)")
         return languages
     }
-    
+
     private func setLanguage(_ language: String) {
         guard let path = Bundle.main.path(forResource: language, ofType: "lproj"),
               let bundle = Bundle(path: path) else {
-            Logger.error("Could not find bundle for language \(language)")
+            Logger.warning("Could not find bundle for language \(language). Falling back to default language.")
+            self.bundle = Bundle.main
             return
         }
-        Logger.debug("Set language to \(language)")
-        self.bundle = bundle
-        UserDefaults.standard.set([language], forKey: "AppleLanguages")
-        UserDefaults.standard.synchronize()
         
-        // Принудительно обновляем @Published свойство, чтобы вызвать обновление view
-        self.objectWillChange.send()
+        Logger.debug("[LanguageManager]: Set language to \(language)")
+        self.bundle = bundle
+        Defaults.appLanguage = language
     }
     
     func localizedString(for key: String, arguments: CVarArg...) -> String {
         let format = bundle?.localizedString(forKey: key, value: nil, table: nil) ?? key
-        return String(format: format, arguments: arguments)
+        return String(format: format, arguments: arguments).lowercased()
     }
     
     func displayName(for languageCode: String) -> String {
         let identifier = Locale(identifier: languageCode)
-        return identifier.localizedString(forIdentifier: languageCode) ?? languageCode
+        return identifier.localizedString(forIdentifier: languageCode)?.lowercased() ?? languageCode.lowercased()
     }
 }
