@@ -41,4 +41,11 @@ final class TabWordsViewModel: ObservableObject {
 
         Logger.debug("[WordsViewModel]: Words data successfully fetched")
     }
+    
+    func updateWord(_ updatedWord: WordItem) {
+            if let index = words.firstIndex(where: { $0.id == updatedWord.id }) {
+                words[index] = updatedWord
+            }
+            Logger.debug("[WordsViewModel]: Word updated successfully")
+        }
 }
