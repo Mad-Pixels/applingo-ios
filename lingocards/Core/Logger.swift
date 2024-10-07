@@ -42,10 +42,8 @@ struct Logger {
             timestamp: nil
         )
         DDLog.sharedInstance.log(asynchronous: true, message: logMessage)
-
-        // Если уровень логирования - error, формируем ErrorLog и "отправляем" его
         if level == .error, let errorType = errorType {
-            LogHandler.sendError(
+            LogHandler.shared.sendError(
                 messageString,
                 type: errorType,
                 additionalInfo: additionalInfo

@@ -69,18 +69,28 @@ struct ErrorLog: Codable {
     }
 }
 
-struct LogHandler {
-    static func sendLog(_ log: ErrorLog) {
-        print("Log ready to send: \(log.description)")
+final class LogHandler: ObservableObject {
+    static let shared = LogHandler()
+    
+    @Published var sendLogs: Bool = true
+    
+    private init() {}
+    
+    func sendLog(_ log: ErrorLog) {
+        if sendLogs {
+            print("Log ready to send: \(log.description)")
 
-        if let jsonData = try? JSONEncoder().encode(log),
-           let jsonString = String(data: jsonData, encoding: .utf8) {
-            print("Sending log to server: \(jsonString)")
-            // implement http sender here
+            if let jsonData = try? JSONEncoder().encode(log),
+               let jsonString = String(data: jsonData, encoding: .utf8) {
+                print("Sending log to server: \(jsonString)")
+                // implement http sender here
+            }
+        } else {
+            print("DEBUG: Log sending is disabled. Log content: \(log.description)")
         }
     }
     
-    static func sendError(_ message: String, type: ErrorType, additionalInfo: [String: String]? = nil) {
+    func sendError(_ message: String, type: ErrorType, additionalInfo: [String: String]? = nil) {
         let log = ErrorLog(
             errorType: type,
             errorMessage: message,
