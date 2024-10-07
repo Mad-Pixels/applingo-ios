@@ -1,42 +1,33 @@
-import SwiftUI
 import Combine
 
-enum ThemeType: String, CaseIterable {
-    case light = "Light"
-    case dark = "Dark"
-    
-    static func fromString(_ string: String) -> ThemeType {
-        return ThemeType(rawValue: string) ?? .light
-    }
-
-    var asString: String {
-        return self.rawValue
-    }
-
-    var colorScheme: ColorScheme {
-        switch self {
-        case .light:
-            return .light
-        case .dark:
-            return .dark
+final class ThemeManager: ObservableObject {
+    @Published var currentTheme: ThemeType {
+        didSet {
+            Defaults.appTheme = currentTheme.rawValue
+            Logger.debug("[ThemeManager]: Set theme to \(currentTheme.rawValue)")
         }
     }
-}
-
-final class ThemeManager: ObservableObject {
-    @Published var currentTheme: ThemeType
-
-    // Используем инициализатор для задания темы из Defaults
+    
+    private(set) var supportedThemes: [ThemeType] = []
+    
     init() {
-        let initialTheme = ThemeType.fromString(Defaults.appTheme ?? ThemeType.light.rawValue)
-        self.currentTheme = initialTheme
-        Logger.debug("[ThemeManager]: Initialized with theme \(self.currentTheme.rawValue)")
-    }
+        self.currentTheme = Self.getInitialTheme()
+        self.supportedThemes = getSupportedThemes()
 
-    func switchTheme(to theme: ThemeType) {
-        print("FOOO")
-        Logger.debug("[ThemeManager]: Switching theme to \(theme.rawValue)")
+        Logger.debug("[ThemeManager]: Initialize manager with \(self.currentTheme.rawValue)")
+    }
+    
+    private static func getInitialTheme() -> ThemeType {
+        return ThemeType.fromString(Defaults.appTheme ?? ThemeType.light.rawValue)
+    }
+    
+    private func getSupportedThemes() -> [ThemeType] {
+        let themes = ThemeType.allCases
+        Logger.debug("[ThemeManager]: Supported themes: \(themes.map { $0.rawValue })")
+        return themes
+    }
+    
+    func setTheme(to theme: ThemeType) {
         self.currentTheme = theme
-        Defaults.appTheme = theme.rawValue  // Сохраняем значение темы в UserDefaults через Defaults
     }
 }

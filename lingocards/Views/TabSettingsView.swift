@@ -10,14 +10,13 @@ struct TabSettingsView: View {
                 // Секция для выбора темы приложения
                 Section(header: Text(languageManager.localizedString(for: "Theme"))) {
                     Picker("Select Theme", selection: $themeManager.currentTheme) {
-                        ForEach(ThemeType.allCases, id: \.self) { theme in
+                        ForEach(themeManager.supportedThemes, id: \.self) { theme in
                             Text(theme.asString).tag(theme)
                         }
                     }
                     .pickerStyle(SegmentedPickerStyle())
                     .onChange(of: themeManager.currentTheme) { newTheme in
-                        print("Current theme changed to: \(newTheme.rawValue)")  // Проверка изменения темы
-                        themeManager.switchTheme(to: newTheme)
+                        themeManager.setTheme(to: newTheme)
                     }
                 }
 
