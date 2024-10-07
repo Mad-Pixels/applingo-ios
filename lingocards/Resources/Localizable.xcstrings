@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "" : {
+
+    },
     "Dictionaries" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -72,6 +75,9 @@
         }
       }
     },
+    "Search..." : {
+
+    },
     "Select Language" : {
 
     },
@@ -118,9 +124,6 @@
     "testLearn" : {
 
     },
-    "testWords" : {
-
-    },
     "Theme" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -142,9 +145,6 @@
 
     },
     "This is the Learn View" : {
-
-    },
-    "This is the Words View" : {
 
     },
     "Words" : {

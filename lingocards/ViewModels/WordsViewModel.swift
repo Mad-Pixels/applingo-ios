@@ -1,0 +1,44 @@
+import Foundation
+
+final class TabWordsViewModel: ObservableObject {
+    @Published var words: [WordItem] = []
+    @Published var searchText: String = "" {
+        didSet {
+            // Фильтруем слова при изменении searchText
+            getWords(search: searchText)
+        }
+    }
+
+    init() {
+        // Инициализируем тестовые данные при запуске
+        getWords()
+    }
+
+    // Метод для фильтрации и получения слов
+    func getWords(search: String = "") {
+        Logger.debug("[WordsViewModel]: fetching words...")
+
+        // Тестовые данные
+        let testData: [WordItem] = [
+            WordItem(id: 1, hashId: 1, frontText: "Hello", backText: "Привет", description: "Greeting", hint: "A common greeting", createdAt: 1633065600, salt: 1234),
+            WordItem(id: 2, hashId: 2, frontText: "Apple", backText: "Яблоко", description: "Fruit", hint: "A type of fruit", createdAt: 1633065700, salt: 2345),
+            WordItem(id: 3, hashId: 3, frontText: "Dog", backText: "Собака", description: "Animal", hint: "A common pet", createdAt: 1633065800, salt: 3456),
+            WordItem(id: 4, hashId: 4, frontText: "Cat", backText: "Кошка", description: "Animal", hint: "A common pet", createdAt: 1633065900, salt: 4567),
+            WordItem(id: 5, hashId: 5, frontText: "Sun", backText: "Солнце", description: "Celestial Body", hint: "Appears in the sky during the day", createdAt: 1633066000, salt: 5678),
+            WordItem(id: 6, hashId: 6, frontText: "Water", backText: "Вода", description: "Liquid", hint: "Essential for life", createdAt: 1633066100, salt: 6789),
+            WordItem(id: 7, hashId: 7, frontText: "Tree", backText: "Дерево", description: "Plant", hint: "Has leaves and branches", createdAt: 1633066200, salt: 7890),
+            WordItem(id: 8, hashId: 8, frontText: "House", backText: "Дом", description: "Building", hint: "Where people live", createdAt: 1633066300, salt: 8901),
+            WordItem(id: 9, hashId: 9, frontText: "Car", backText: "Машина", description: "Vehicle", hint: "Used for transportation", createdAt: 1633066400, salt: 9012),
+            WordItem(id: 10, hashId: 10, frontText: "Book", backText: "Книга", description: "Object", hint: "Used for reading", createdAt: 1633066500, salt: 10123)
+        ]
+
+        // Фильтруем данные по запросу поиска
+        if search.isEmpty {
+            words = testData
+        } else {
+            words = testData.filter { $0.frontText.localizedCaseInsensitiveContains(search) || $0.backText.localizedCaseInsensitiveContains(search) }
+        }
+
+        Logger.debug("[WordsViewModel]: Words data successfully fetched")
+    }
+}

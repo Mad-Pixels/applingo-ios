@@ -1,12 +1,13 @@
 import SwiftUI
 
 @main
-struct LingocadrdApp: App {
+struct LingocardApp: App {
     @StateObject private var languageManager = LanguageManager()
     @StateObject private var themeManager = ThemeManager()
     @State private var viewID = UUID()
     
     init() {
+
         Logger.initializeLogger()
     }
 
