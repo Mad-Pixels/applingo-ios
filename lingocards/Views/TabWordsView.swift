@@ -34,33 +34,13 @@ struct TabWordsView: View {
             .navigationTitle("Words")
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
-        .sheet(isPresented: $isShowingDetail) {
-            if let word = selectedWord {
-                WordDetailView(word: word, isPresented: $isShowingDetail, onSave: viewModel.updateWord)
-            }
+        .sheet(item: $selectedWord) { word in
+            WordDetailView(word: word, isPresented: $isShowingDetail, onSave: viewModel.updateWord)
         }
     }
 }
 
-struct WordRowView: View {
-    let word: WordItem
-    
-    var body: some View {
-        HStack {
-            Text(word.frontText)
-                .font(.headline)
-                .frame(maxWidth: .infinity, alignment: .leading)
-            
-            Image(systemName: "arrow.left.and.right.circle.fill")
-                .foregroundColor(.blue)
-            
-            Text(word.backText)
-                .font(.headline)
-                .frame(maxWidth: .infinity, alignment: .trailing)
-        }
-        .padding(.vertical, 4)
-    }
-}
+
 
 struct SearchBarView: View {
     @Binding var searchText: String
