@@ -8,7 +8,7 @@ struct CompLanguagePickerView: View {
     var displayName: (String) -> String
     
     var body: some View {
-        Section(header: Text(languageManager.localizedString(for: "Language").capitalizedFirstLetter)) {
+        Section(header: Text(languageManager.localizedString(for: "Language"))) {
             Picker("Select Language", selection: $selectedLanguage) {
                 ForEach(supportedLanguages, id: \.self) { language in
                     Text(displayName(language).capitalizedFirstLetter)

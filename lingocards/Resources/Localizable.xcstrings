@@ -87,6 +87,23 @@
     "testWords" : {
 
     },
+    "Theme" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "theme"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "тема"
+          }
+        }
+      }
+    },
     "This is the Dictionaries View" : {
 
     },

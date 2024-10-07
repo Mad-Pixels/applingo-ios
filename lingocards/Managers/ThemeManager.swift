@@ -3,7 +3,9 @@ import Combine
 final class ThemeManager: ObservableObject {
     @Published var currentTheme: ThemeType {
         didSet {
-            Defaults.appTheme = currentTheme.rawValue
+            if Defaults.appTheme != currentTheme.rawValue {
+                Defaults.appTheme = currentTheme.rawValue
+            }
         }
     }
     

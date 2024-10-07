@@ -7,18 +7,13 @@ struct TabSettingsView: View {
     var body: some View {
         NavigationView {
             Form {
-                // Секция для выбора темы приложения
-                Section(header: Text(languageManager.localizedString(for: "Theme"))) {
-                    Picker("Select Theme", selection: $themeManager.currentTheme) {
-                        ForEach(themeManager.supportedThemes, id: \.self) { theme in
-                            Text(theme.asString).tag(theme)
-                        }
-                    }
-                    .pickerStyle(SegmentedPickerStyle())
-                    .onChange(of: themeManager.currentTheme) { newTheme in
+                CompThemePickerView(
+                    selectedTheme: $themeManager.currentTheme,
+                    supportedThemes: themeManager.supportedThemes,
+                    onThemeChange: { newTheme in
                         themeManager.setTheme(to: newTheme)
                     }
-                }
+                )
 
                 CompLanguagePickerView(
                     selectedLanguage: $languageManager.currentLanguage,
