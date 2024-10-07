@@ -14,7 +14,8 @@ struct TabLearnView: View {
                 .foregroundColor(.blue)
             
             Button("Log Error") {
-                            Logger.error("An error occurred!")  // Лог на уровне error
+                Logger.error("Ошибка подключения к серверу", type: .network, additionalInfo: ["URL": "https://example.com", "Timeout": "30"])
+  // Лог на уровне error
                         }
         }
     }
