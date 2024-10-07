@@ -11,13 +11,16 @@ struct TabSettingsView: View {
                 Section(header: Text(languageManager.localizedString(for: "Theme"))) {
                     Picker("Select Theme", selection: $themeManager.currentTheme) {
                         ForEach(ThemeType.allCases, id: \.self) { theme in
-                            Text(theme.rawValue).tag(theme)
+                            Text(theme.asString).tag(theme)
                         }
                     }
-                    .pickerStyle(SegmentedPickerStyle()) // Используем SegmentedPicker для выбора темы
+                    .pickerStyle(SegmentedPickerStyle())
+                    .onChange(of: themeManager.currentTheme) { newTheme in
+                        print("Current theme changed to: \(newTheme.rawValue)")  // Проверка изменения темы
+                        themeManager.switchTheme(to: newTheme)
+                    }
                 }
-                
-                // Секция для выбора языка
+
                 CompLanguagePickerView(
                     selectedLanguage: $languageManager.currentLanguage,
                     supportedLanguages: languageManager.supportedLanguages,
@@ -25,7 +28,6 @@ struct TabSettingsView: View {
                 )
             }
             .navigationTitle(languageManager.localizedString(for: "Settings").capitalizedFirstLetter)
-            .preferredColorScheme(themeManager.currentTheme.colorScheme) // Применяем текущую цветовую схему
         }
     }
 }

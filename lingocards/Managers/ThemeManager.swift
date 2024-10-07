@@ -1,20 +1,18 @@
 import SwiftUI
+import Combine
 
 enum ThemeType: String, CaseIterable {
     case light = "Light"
     case dark = "Dark"
     
-    // Метод преобразования строки в ThemeType
     static func fromString(_ string: String) -> ThemeType {
         return ThemeType(rawValue: string) ?? .light
     }
-    
-    // Сопоставление со строковым представлением
+
     var asString: String {
         return self.rawValue
     }
-    
-    // Сопоставление с ColorScheme для SwiftUI
+
     var colorScheme: ColorScheme {
         switch self {
         case .light:
@@ -27,18 +25,18 @@ enum ThemeType: String, CaseIterable {
 
 final class ThemeManager: ObservableObject {
     @Published var currentTheme: ThemeType
-    
-    // Параметр currentTheme инициализируется в конструкторе
+
+    // Используем инициализатор для задания темы из Defaults
     init() {
-        let initialTheme = Defaults.appTheme ?? ThemeType.light.rawValue
-        self.currentTheme = ThemeType.fromString(initialTheme)
+        let initialTheme = ThemeType.fromString(Defaults.appTheme ?? ThemeType.light.rawValue)
+        self.currentTheme = initialTheme
         Logger.debug("[ThemeManager]: Initialized with theme \(self.currentTheme.rawValue)")
     }
 
-    // Метод для смены темы
     func switchTheme(to theme: ThemeType) {
+        print("FOOO")
+        Logger.debug("[ThemeManager]: Switching theme to \(theme.rawValue)")
         self.currentTheme = theme
-        Defaults.appTheme = theme.rawValue // Сохраняем новое значение в UserDefaults
-        Logger.debug("[ThemeManager]: Set theme to \(theme.rawValue)")
+        Defaults.appTheme = theme.rawValue  // Сохраняем значение темы в UserDefaults через Defaults
     }
 }
