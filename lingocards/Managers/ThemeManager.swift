@@ -4,7 +4,6 @@ final class ThemeManager: ObservableObject {
     @Published var currentTheme: ThemeType {
         didSet {
             Defaults.appTheme = currentTheme.rawValue
-            Logger.debug("[ThemeManager]: Set theme to \(currentTheme.rawValue)")
         }
     }
     
@@ -13,7 +12,6 @@ final class ThemeManager: ObservableObject {
     init() {
         self.currentTheme = Self.getInitialTheme()
         self.supportedThemes = getSupportedThemes()
-
         Logger.debug("[ThemeManager]: Initialize manager with \(self.currentTheme.rawValue)")
     }
     
