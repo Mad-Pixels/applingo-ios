@@ -7,7 +7,6 @@ struct Defaults {
         static let theme = "theme"
     }
     
-    /// Считывание и запись текущего языка приложения.
     static var appLanguage: String? {
         get {
             Logger.debug("[Defaults]: Reading app language from UserDefaults")
@@ -19,7 +18,6 @@ struct Defaults {
         }
     }
     
-    /// Считывание и запись текущей темы приложения.
     static var appTheme: String? {
         get {
             Logger.debug("[Defaults]: Reading app theme from UserDefaults")
@@ -31,7 +29,6 @@ struct Defaults {
         }
     }
     
-    /// Уровень логирования, который управляет отправкой логов (true - отправлять логи, false - не отправлять).
     static var sendLogs: Bool {
         get {
             let value = UserDefaults.standard.object(forKey: Keys.sendLogs) as? Bool
