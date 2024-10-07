@@ -42,7 +42,8 @@ struct Logger {
             timestamp: nil
         )
         DDLog.sharedInstance.log(asynchronous: true, message: logMessage)
-        if level == .error, let errorType = errorType {
+
+        if level == .error, let errorType = errorType, LogHandler.shared.sendLogs {
             LogHandler.shared.sendError(
                 messageString,
                 type: errorType,

@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 import UIKit
 
 enum ErrorType: String, Codable {
@@ -72,10 +73,31 @@ struct ErrorLog: Codable {
 final class LogHandler: ObservableObject {
     static let shared = LogHandler()
     
-    @Published var sendLogs: Bool = true
+    @Published var sendLogs: Bool {
+        didSet {
+            if Defaults.sendLogs != sendLogs {
+                Defaults.sendLogs = sendLogs
+                Logger.debug("[LogHandler]: Updated sendLogs to \(sendLogs) in UserDefaults")
+            }
+        }
+    }
     
-    private init() {}
+    private var cancellables = Set<AnyCancellable>()
     
+    private init() {
+        self.sendLogs = Defaults.sendLogs
+        observeSendLogs()
+    }
+    
+    private func observeSendLogs() {
+        $sendLogs
+            .sink { newValue in
+                Logger.debug("[LogHandler]: sendLogs changed to \(newValue)")
+                Defaults.sendLogs = newValue
+            }
+            .store(in: &cancellables)
+    }
+
     func sendLog(_ log: ErrorLog) {
         if sendLogs {
             print("Log ready to send: \(log.description)")
@@ -83,7 +105,7 @@ final class LogHandler: ObservableObject {
             if let jsonData = try? JSONEncoder().encode(log),
                let jsonString = String(data: jsonData, encoding: .utf8) {
                 print("Sending log to server: \(jsonString)")
-                // implement http sender here
+                // Здесь можно реализовать HTTP-запрос для отправки логов на сервер.
             }
         } else {
             print("DEBUG: Log sending is disabled. Log content: \(log.description)")
