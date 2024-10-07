@@ -1,14 +1,8 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "Log Error" : {
-
-    },
-    "Select Language" : {
-
-    },
-    "TabDictionaries" : {
-      "extractionState" : "stale",
+    "Dictionaries" : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -24,8 +18,25 @@
         }
       }
     },
-    "TabLearn" : {
-      "extractionState" : "stale",
+    "Language" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "language"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "язык"
+          }
+        }
+      }
+    },
+    "Learn" : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -41,8 +52,14 @@
         }
       }
     },
-    "TabSettings" : {
-      "extractionState" : "stale",
+    "Log Error" : {
+
+    },
+    "Select Language" : {
+
+    },
+    "Settings" : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -54,23 +71,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "настройки"
-          }
-        }
-      }
-    },
-    "TabWords" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "words"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "слова"
           }
         }
       }
@@ -92,6 +92,23 @@
     },
     "This is the Words View" : {
 
+    },
+    "Words" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "words"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "слова"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

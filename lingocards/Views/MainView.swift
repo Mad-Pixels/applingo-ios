@@ -9,7 +9,7 @@ struct MainView: View {
             TabLearnView()
                 .tabItem {
                     Label {
-                        Text(capitalizeFirstLetter(languageManager.localizedString(for: "TabLearn")))
+                        Text(languageManager.localizedString(for: "Learn").capitalizedFirstLetter)
                     } icon: {
                         Image(systemName: "book.fill")
                     }
@@ -19,7 +19,7 @@ struct MainView: View {
             TabDictionariesView()
                 .tabItem {
                     Label {
-                        Text(capitalizeFirstLetter(languageManager.localizedString(for: "TabDictionaries")))
+                        Text(languageManager.localizedString(for: "Dictionaries").capitalizedFirstLetter)
                     } icon: {
                         Image(systemName: "folder.fill")
                     }
@@ -29,7 +29,7 @@ struct MainView: View {
             TabWordsView()
                 .tabItem {
                     Label {
-                        Text(capitalizeFirstLetter(languageManager.localizedString(for: "TabWords")))
+                        Text(languageManager.localizedString(for: "Words").capitalizedFirstLetter)
                     } icon: {
                         Image(systemName: "textformat")
                     }
@@ -39,16 +39,12 @@ struct MainView: View {
             TabSettingsView()
                 .tabItem {
                     Label {
-                        Text(capitalizeFirstLetter(languageManager.localizedString(for: "TabSettings")))
+                        Text(languageManager.localizedString(for: "Settings").capitalizedFirstLetter)
                     } icon: {
                         Image(systemName: "gearshape.fill")
                     }
                 }
                 .tag(3)
         }
-    }
-    
-    func capitalizeFirstLetter(_ string: String) -> String {
-        return string.prefix(1).uppercased() + string.dropFirst()
     }
 }
