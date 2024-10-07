@@ -11,6 +11,7 @@
 		D8A5D35C2CB2F02D00ACCD85 /* CocoaLumberjack in Frameworks */ = {isa = PBXBuildFile; productRef = D8A5D35B2CB2F02D00ACCD85 /* CocoaLumberjack */; };
 		D8A5D35E2CB2F02D00ACCD85 /* CocoaLumberjackSwift in Frameworks */ = {isa = PBXBuildFile; productRef = D8A5D35D2CB2F02D00ACCD85 /* CocoaLumberjackSwift */; };
 		D8A5D3602CB2F02D00ACCD85 /* CocoaLumberjackSwiftLogBackend in Frameworks */ = {isa = PBXBuildFile; productRef = D8A5D35F2CB2F02D00ACCD85 /* CocoaLumberjackSwiftLogBackend */; };
+		D8A5D3E62CB4561200ACCD85 /* IQKeyboardManagerSwift in Frameworks */ = {isa = PBXBuildFile; productRef = D8A5D3E52CB4561200ACCD85 /* IQKeyboardManagerSwift */; };
 		D8B011FD2CB0359000EB9A3D /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = D8B011FC2CB0359000EB9A3D /* GRDB */; };
 		D8BD515C2CAEAA3300E978AB /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = D8BD515B2CAEAA3300E978AB /* Localizable.xcstrings */; };
 /* End PBXBuildFile section */
@@ -39,6 +40,7 @@
 				D8A5D35E2CB2F02D00ACCD85 /* CocoaLumberjackSwift in Frameworks */,
 				D8A5D3602CB2F02D00ACCD85 /* CocoaLumberjackSwiftLogBackend in Frameworks */,
 				D8A5D21E2CB0741900ACCD85 /* SwiftCSV in Frameworks */,
+				D8A5D3E62CB4561200ACCD85 /* IQKeyboardManagerSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -96,6 +98,7 @@
 				D8A5D35B2CB2F02D00ACCD85 /* CocoaLumberjack */,
 				D8A5D35D2CB2F02D00ACCD85 /* CocoaLumberjackSwift */,
 				D8A5D35F2CB2F02D00ACCD85 /* CocoaLumberjackSwiftLogBackend */,
+				D8A5D3E52CB4561200ACCD85 /* IQKeyboardManagerSwift */,
 			);
 			productName = lingocards;
 			productReference = D8BD4FEE2CADA16500E978AB /* lingocards.app */;
@@ -130,6 +133,7 @@
 				D8B011FB2CB0359000EB9A3D /* XCRemoteSwiftPackageReference "GRDB.swift" */,
 				D8A5D21C2CB0741900ACCD85 /* XCRemoteSwiftPackageReference "SwiftCSV" */,
 				D8A5D35A2CB2F02D00ACCD85 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */,
+				D8A5D3E42CB4561200ACCD85 /* XCRemoteSwiftPackageReference "IQKeyboardManager" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = D8BD4FEF2CADA16500E978AB /* Products */;
@@ -382,6 +386,14 @@
 				minimumVersion = 3.8.5;
 			};
 		};
+		D8A5D3E42CB4561200ACCD85 /* XCRemoteSwiftPackageReference "IQKeyboardManager" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/hackiftekhar/IQKeyboardManager";
+			requirement = {
+				kind = exactVersion;
+				version = 7.2.0;
+			};
+		};
 		D8B011FB2CB0359000EB9A3D /* XCRemoteSwiftPackageReference "GRDB.swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/groue/GRDB.swift.git";
@@ -412,6 +424,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = D8A5D35A2CB2F02D00ACCD85 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */;
 			productName = CocoaLumberjackSwiftLogBackend;
+		};
+		D8A5D3E52CB4561200ACCD85 /* IQKeyboardManagerSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D8A5D3E42CB4561200ACCD85 /* XCRemoteSwiftPackageReference "IQKeyboardManager" */;
+			productName = IQKeyboardManagerSwift;
 		};
 		D8B011FC2CB0359000EB9A3D /* GRDB */ = {
 			isa = XCSwiftPackageProductDependency;

@@ -1,5 +1,5 @@
 {
-  "originHash" : "275122ddad8e3943a5f5af13d1ff7a3b235c6377316236f0a74799af383ef695",
+  "originHash" : "e83ef9862ae7b28bc6444cc1e59d151c167f89f861dc1157ccc87b3b61de61f9",
   "pins" : [
     {
       "identity" : "cocoalumberjack",
@@ -17,6 +17,42 @@
       "state" : {
         "revision" : "2cf6c756e1e5ef6901ebae16576a7e4e4b834622",
         "version" : "6.29.3"
+      }
+    },
+    {
+      "identity" : "iqkeyboardcore",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/hackiftekhar/IQKeyboardCore.git",
+      "state" : {
+        "revision" : "3959266e4b064259d798df942e61037d12415a33",
+        "version" : "1.0.6"
+      }
+    },
+    {
+      "identity" : "iqkeyboardmanager",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/hackiftekhar/IQKeyboardManager.git",
+      "state" : {
+        "revision" : "0d9b0277275b8c5f5cd13daf52e988ff44c8f066",
+        "version" : "7.2.0"
+      }
+    },
+    {
+      "identity" : "iqkeyboardnotification",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/hackiftekhar/IQKeyboardNotification.git",
+      "state" : {
+        "revision" : "7d225c8e93f6072ae6ae0dbe774fe8d2f4a21255",
+        "version" : "1.0.4"
+      }
+    },
+    {
+      "identity" : "iqtextinputviewnotification",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/hackiftekhar/IQTextInputViewNotification.git",
+      "state" : {
+        "revision" : "0d274f3900c2257e39b37561a0486120813fd43b",
+        "version" : "1.0.6"
       }
     },
     {

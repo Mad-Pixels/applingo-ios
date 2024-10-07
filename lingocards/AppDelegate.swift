@@ -1,4 +1,5 @@
 import SwiftUI
+import IQKeyboardManagerSwift
 
 @main
 struct LingocardApp: App {
@@ -7,6 +8,8 @@ struct LingocardApp: App {
     @State private var viewID = UUID()
     
     init() {
+        IQKeyboardManager.shared.resignOnTouchOutside = true
+        IQKeyboardManager.shared.enable = true
 
         Logger.initializeLogger()
     }

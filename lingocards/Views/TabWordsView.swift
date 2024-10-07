@@ -31,6 +31,7 @@ struct TabWordsView: View {
             }
             .navigationTitle("Words")
         }
+        .ignoresSafeArea(.keyboard, edges: .bottom)
     }
 }
 
