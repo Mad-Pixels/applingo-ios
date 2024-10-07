@@ -20,7 +20,7 @@ struct TabSettingsView: View {
                     supportedLanguages: languageManager.supportedLanguages,
                     displayName: languageManager.displayName(for:)
                 )
-                CompLogSenderPickerView(
+                CompLogSenderToggleView(
                     sendLogs: $logHandler.sendLogs
                 )
             }

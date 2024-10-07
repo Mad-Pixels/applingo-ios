@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct CompLogSenderPickerView: View {
+struct CompLogSenderToggleView: View {
     @EnvironmentObject var languageManager: LanguageManager
     @Binding var sendLogs: Bool
     
