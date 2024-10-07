@@ -55,11 +55,45 @@
     "Log Error" : {
 
     },
+    "LogSettings" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "log settings"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "настройки логгирования"
+          }
+        }
+      }
+    },
     "Select Language" : {
 
     },
     "Select Theme" : {
 
+    },
+    "SendErrorsLogs" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "send errors logs"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "отправлять отчеты об ошибках"
+          }
+        }
+      }
     },
     "Settings" : {
       "extractionState" : "manual",
