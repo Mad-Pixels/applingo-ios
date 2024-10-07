@@ -15,14 +15,13 @@ enum ThemeType: String, CaseIterable {
 }
 
 final class ThemeManager: ObservableObject {
-    /// Текущая тема, которая обновляет все представления, подписанные на этот менеджер.
     @Published var currentTheme: ThemeType = ThemeType.fromString(Defaults.appTheme ?? ThemeType.light.rawValue) {
         didSet {
-            Defaults.appTheme = currentTheme.asString // Сохраняем выбранную тему в UserDefaults как строку
+            Defaults.appTheme = currentTheme.asString
+            Logger.debug("[ThemeManager]: Set theme to \(currentTheme.rawValue)")
         }
     }
 
-    /// Переключает тему приложения.
     func switchTheme(to theme: ThemeType) {
         currentTheme = theme
     }
