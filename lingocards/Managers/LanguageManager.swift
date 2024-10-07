@@ -45,6 +45,7 @@ final class LanguageManager: ObservableObject {
     private func setLanguage(_ language: String) {
         guard let path = Bundle.main.path(forResource: language, ofType: "lproj"),
               let bundle = Bundle(path: path) else {
+            
             Logger.warning("Could not find bundle for language \(language). Falling back to default language.")
             self.bundle = Bundle.main
             return

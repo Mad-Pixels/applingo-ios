@@ -2,6 +2,7 @@ import SwiftUI
 
 struct MainView: View {
     @EnvironmentObject var languageManager: LanguageManager
+    @EnvironmentObject var themeManager: ThemeManager
     @State private var selectedTab: Int = 0
     
     var body: some View {
@@ -46,5 +47,6 @@ struct MainView: View {
                 }
                 .tag(3)
         }
+        .preferredColorScheme(themeManager.currentTheme == .dark ? .dark : .light)
     }
 }
