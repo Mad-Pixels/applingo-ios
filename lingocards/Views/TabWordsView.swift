@@ -8,7 +8,7 @@ struct TabWordsView: View {
     var body: some View {
         NavigationView {
             VStack {
-                SearchBarView(searchText: $viewModel.searchText)
+                CompSearchView(searchText: $viewModel.searchText)
 
                 List(viewModel.words) { word in
                     HStack {
@@ -39,40 +39,3 @@ struct TabWordsView: View {
         }
     }
 }
-
-
-struct SearchBarView: View {
-    @Binding var searchText: String
-    
-    var body: some View {
-        HStack {
-            Image(systemName: "magnifyingglass")
-                .foregroundColor(.gray)
-            
-            ZStack(alignment: .leading) {
-                if searchText.isEmpty {
-                    Text("Search...")
-                        .foregroundColor(.gray)
-                }
-                
-                TextField("", text: $searchText)
-                    .foregroundColor(.primary)
-            }
-            
-            if !searchText.isEmpty {
-                Button(action: {
-                    searchText = ""
-                }) {
-                    Image(systemName: "xmark.circle.fill")
-                        .foregroundColor(.gray)
-                }
-            }
-        }
-        .padding()
-        .background(Color(.systemGray6))
-        .cornerRadius(10)
-        .padding(.horizontal)
-    }
-}
-
-

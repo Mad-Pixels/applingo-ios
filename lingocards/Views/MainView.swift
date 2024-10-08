@@ -4,7 +4,7 @@ struct MainView: View {
     @EnvironmentObject var languageManager: LanguageManager
     @EnvironmentObject var themeManager: ThemeManager
     @State private var selectedTab: Int = 0
-    
+
     var body: some View {
         TabView(selection: $selectedTab) {
             TabLearnView()
@@ -16,7 +16,7 @@ struct MainView: View {
                     }
                 }
                 .tag(0)
-            
+
             TabDictionariesView()
                 .tabItem {
                     Label {
@@ -26,7 +26,7 @@ struct MainView: View {
                     }
                 }
                 .tag(1)
-            
+
             TabWordsView()
                 .tabItem {
                     Label {
@@ -36,7 +36,7 @@ struct MainView: View {
                     }
                 }
                 .tag(2)
-            
+
             TabSettingsView()
                 .tabItem {
                     Label {
@@ -48,5 +48,10 @@ struct MainView: View {
                 .tag(3)
         }
         .preferredColorScheme(themeManager.currentTheme == .dark ? .dark : .light)
+        .onChange(of: selectedTab) { oldTab, newTab in
+            if newTab == 2 {
+                NotificationCenter.default.post(name: .didSelectWordsTab, object: nil)
+            }
+        }
     }
 }

@@ -92,7 +92,7 @@ final class LogHandler: ObservableObject {
     private func observeSendLogs() {
         $sendLogs
             .sink { newValue in
-                Logger.debug("[LogHandler]: sendLogs changed to \(newValue)")
+                Logger.debug("[LogHandler]: SendLogs changed to \(newValue)")
                 Defaults.sendLogs = newValue
             }
             .store(in: &cancellables)

@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 final class TabWordsViewModel: ObservableObject {
     @Published var words: [WordItem] = []
@@ -8,10 +9,17 @@ final class TabWordsViewModel: ObservableObject {
             getWords(search: searchText)
         }
     }
+    
+    private var cancellable: AnyCancellable?
 
     init() {
         // Инициализируем тестовые данные при запуске
-        getWords()
+        cancellable = NotificationCenter.default
+            .publisher(for: .didSelectWordsTab)
+            .sink { [weak self] _ in
+                // Выполняем загрузку данных, когда вкладка "Words" выбрана
+                self?.getWords(search: self?.searchText ?? "")
+            }
     }
 
     // Метод для фильтрации и получения слов
@@ -40,6 +48,10 @@ final class TabWordsViewModel: ObservableObject {
         }
 
         Logger.debug("[WordsViewModel]: Words data successfully fetched")
+    }
+    
+    deinit {
+        cancellable?.cancel()  // Отменяем подписку на уведомление при удалении объекта
     }
     
     func updateWord(_ updatedWord: WordItem) {
