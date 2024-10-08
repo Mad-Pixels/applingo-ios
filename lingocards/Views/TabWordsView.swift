@@ -26,8 +26,8 @@ struct TabWordsView: View {
                     .padding(.vertical, 4)
                     .contentShape(Rectangle())
                     .onTapGesture {
-                        selectedWord = word
                         isShowingDetail = true
+                        selectedWord = word
                     }
                 }
             }
@@ -39,7 +39,6 @@ struct TabWordsView: View {
         }
     }
 }
-
 
 
 struct SearchBarView: View {

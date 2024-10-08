@@ -41,6 +41,23 @@
         }
       }
     },
+    "Answers" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "answers"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ответы"
+          }
+        }
+      }
+    },
     "Cancel" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -88,6 +105,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "закрыть"
+          }
+        }
+      }
+    },
+    "Count" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "count"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "счет"
           }
         }
       }
@@ -172,7 +206,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "редактировать"
+            "value" : "изменить"
           }
         }
       }
@@ -204,6 +238,9 @@
       "extractionState" : "manual"
     },
     "Key 3" : {
+      "extractionState" : "manual"
+    },
+    "Key 4" : {
       "extractionState" : "manual"
     },
     "Language" : {
