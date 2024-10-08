@@ -21,7 +21,7 @@ final class TabWordsViewModel: ObservableObject {
         // Тестовые данные
         let testData: [WordItem] = [
             WordItem(id: 1, hashId: 1, frontText: "Hello", backText: "Привет", description: "", hint: "A common greeting", createdAt: 1633065600, salt: 1234, success: 14, fail: 5, weight: 6),
-            WordItem(id: 2, hashId: 2, frontText: "Apple", backText: "Яблоко", description: "Fruit", hint: "A type of fruit", createdAt: 1633065700, salt: 2345),
+        WordItem(id: 2, hashId: 2, frontText: "Apple", backText: "Яблоко", description: "AAAA BBBBB CCCCC DDDDD EEEEEE FFFFF GGGGG HHHHH IIII JJJJJ KKKKK LLLLL MMMMM NNNNN OOOOO PPPPP QQQQQ RRRRR SSSSS TTTTT UUUUU VVVVV WWWWW XXXXX YYYYY ZZZZZ", hint: "A type of fruit", createdAt: 1633065700, salt: 2345),
             WordItem(id: 3, hashId: 3, frontText: "Dog", backText: "Собака", description: "Animal", hint: "A common pet", createdAt: 1633065800, salt: 3456),
             WordItem(id: 4, hashId: 4, frontText: "Cat", backText: "Кошка", description: "Animal", hint: "A common pet", createdAt: 1633065900, salt: 4567),
             WordItem(id: 5, hashId: 5, frontText: "Sun", backText: "Солнце", description: "Celestial Body", hint: "Appears in the sky during the day", createdAt: 1633066000, salt: 5678),

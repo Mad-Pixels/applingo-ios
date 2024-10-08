@@ -22,29 +22,32 @@ struct WordDetailView: View {
         NavigationView {
             Form {
                 Section(header: Text(languageManager.localizedString(for: "Card"))) {
-                    TextField(
-                        languageManager.localizedString(for: "Word").capitalizedFirstLetter,
-                        text: $editedWord.frontText
+                    AppTextField(
+                        placeholder: languageManager.localizedString(for: "Word").capitalizedFirstLetter,
+                        text: $editedWord.frontText,
+                        isEditing: isEditing
                     )
-                        .disabled(!isEditing)
-                    TextField(
-                        languageManager.localizedString(for: "Definition").capitalizedFirstLetter,
-                        text: $editedWord.backText
+
+                    AppTextField(
+                        placeholder: languageManager.localizedString(for: "Definition").capitalizedFirstLetter,
+                        text: $editedWord.backText,
+                        isEditing: isEditing
                     )
-                        .disabled(!isEditing)
                 }
 
                 Section(header: Text(languageManager.localizedString(for: "Additional"))) {
-                    TextField(
-                        languageManager.localizedString(for: "Hint").capitalizedFirstLetter,
-                        text: $editedWord.hint.unwrap(default: "")
+                    AppTextField(
+                        placeholder: languageManager.localizedString(for: "Hint").capitalizedFirstLetter,
+                        text: $editedWord.hint.unwrap(default: ""),
+                        isEditing: isEditing
                     )
-                        .disabled(!isEditing)
-                    TextField(
-                        languageManager.localizedString(for: "Description").capitalizedFirstLetter,
-                        text: $editedWord.description.unwrap(default: "")
+
+                    AppTextEditor(
+                        placeholder: languageManager.localizedString(for: "Description").capitalizedFirstLetter,
+                        text: $editedWord.description.unwrap(default: ""),
+                        isEditing: isEditing
                     )
-                        .disabled(!isEditing)
+                    .frame(height: 100)
                 }
 
                 Section(header: Text(languageManager.localizedString(for: "Statistics"))) {
