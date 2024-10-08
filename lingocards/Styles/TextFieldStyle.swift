@@ -17,6 +17,7 @@ struct AppTextField: View {
     var body: some View {
         ZStack(alignment: .leading) {
             TextField(placeholder, text: $text)
+                .padding(10)
                 .textFieldStyle(PlainTextFieldStyle())
                 .disabled(!isEditing)
                 .background(
@@ -31,7 +32,6 @@ struct AppTextField: View {
                         }
                     }
                 )
-                .padding(10)
                 .animation(.easeInOut(duration: 0.2), value: isEditing)
         }
     }
@@ -54,6 +54,7 @@ struct AppTextEditor: View {
     var body: some View {
         ZStack(alignment: .topLeading) {
             TextEditor(text: $text)
+                .padding(6)
                 .disabled(!isEditing)
                 .scrollContentBackground(.hidden)
                 .background(
@@ -68,7 +69,6 @@ struct AppTextEditor: View {
                         }
                     }
                 )
-                .padding(6)
                 .frame(minHeight: 100)
                 .animation(.easeInOut(duration: 0.2), value: isEditing)
             
