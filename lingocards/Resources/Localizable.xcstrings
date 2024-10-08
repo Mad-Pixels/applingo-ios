@@ -297,6 +297,23 @@
         }
       }
     },
+    "NoWordsAvailable" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "no words available "
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "список пуст"
+          }
+        }
+      }
+    },
     "Save" : {
       "extractionState" : "stale",
       "localizations" : {

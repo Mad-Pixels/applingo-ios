@@ -15,24 +15,37 @@ struct TabWordsView: View {
                 )
                 .padding(.bottom, 12)
 
-                List(viewModel.words) { word in
-                    HStack {
-                        Text(word.frontText)
-                            .font(.headline)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-
-                        Image(systemName: "arrow.left.and.right.circle.fill")
-                            .foregroundColor(.blue)
-
-                        Text(word.backText)
-                            .font(.headline)
-                            .frame(maxWidth: .infinity, alignment: .trailing)
+                if viewModel.words.isEmpty {
+                    VStack {
+                        Spacer()
+                        Text(languageManager.localizedString(for: "NoWordsAvailable").capitalizedFirstLetter)
+                            .foregroundColor(.gray)
+                            .italic()
+                            .padding()
+                            .multilineTextAlignment(.center)
+                        Spacer()
                     }
-                    .padding(.vertical, 4)
-                    .contentShape(Rectangle())
-                    .onTapGesture {
-                        isShowingDetail = true
-                        selectedWord = word
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else {
+                    List(viewModel.words) { word in
+                        HStack {
+                            Text(word.frontText)
+                                .font(.headline)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+
+                            Image(systemName: "arrow.left.and.right.circle.fill")
+                                .foregroundColor(.blue)
+
+                            Text(word.backText)
+                                .font(.headline)
+                                .frame(maxWidth: .infinity, alignment: .trailing)
+                        }
+                        .padding(.vertical, 4)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            isShowingDetail = true
+                            selectedWord = word
+                        }
                     }
                 }
             }
