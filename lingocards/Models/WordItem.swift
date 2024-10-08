@@ -1,6 +1,6 @@
 import Foundation
 
-struct WordItem: Identifiable, Codable {
+struct WordItem: Identifiable, Codable, Equatable {
     var id: Int
     var hashId: Int
     
