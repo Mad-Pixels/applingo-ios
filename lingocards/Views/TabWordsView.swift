@@ -9,52 +9,57 @@ struct TabWordsView: View {
 
     var body: some View {
         NavigationView {
-            VStack {
-                CompSearchView(
-                    searchText: $viewModel.searchText,
-                    placeholder: languageManager.localizedString(for: "Search").capitalizedFirstLetter
-                )
-                .padding(.bottom, 12)
+            GeometryReader { geometry in
+                VStack {
+                    CompSearchView(
+                        searchText: $viewModel.searchText,
+                        placeholder: languageManager.localizedString(for: "Search").capitalizedFirstLetter
+                    )
+                    .padding(.bottom, 10)
 
-                // Отображение ошибки, если она есть
-                if errorManager.isErrorVisible, let error = errorManager.currentError, error.context == .words {
-                    Text(error.errorDescription ?? "")
-                        .foregroundColor(.red)
-                        .padding()
-                        .multilineTextAlignment(.center)
-                }
+                    if errorManager.isErrorVisible {
+                        Text(errorManager.currentError?.errorDescription ?? "")
+                            .foregroundColor(.red)
+                            .padding()
+                            .multilineTextAlignment(.center)
+                    }
 
-                // Отображение списка слов или сообщение, если список пуст
-                if viewModel.words.isEmpty {
-                    Text(languageManager.localizedString(for: "No words available"))
-                        .foregroundColor(.gray)
-                        .italic()
-                        .padding()
-                        .multilineTextAlignment(.center)
-                } else {
-                    List(viewModel.words) { word in
-                        HStack {
-                            Text(word.frontText)
-                                .font(.headline)
-                                .frame(maxWidth: .infinity, alignment: .leading)
+                    if viewModel.words.isEmpty && !errorManager.isErrorVisible {
+                        Spacer()
+                        Text(languageManager.localizedString(for: "NoWordsAvailable"))
+                            .foregroundColor(.gray)
+                            .italic()
+                            .padding()
+                            .multilineTextAlignment(.center)
+                        Spacer()
+                    } else {
+                        List(viewModel.words) { word in
+                            HStack {
+                                Text(word.frontText)
+                                    .font(.headline)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
 
-                            Image(systemName: "arrow.left.and.right.circle.fill")
-                                .foregroundColor(.blue)
+                                Image(systemName: "arrow.left.and.right.circle.fill")
+                                    .foregroundColor(.blue)
 
-                            Text(word.backText)
-                                .font(.headline)
-                                .frame(maxWidth: .infinity, alignment: .trailing)
-                        }
-                        .padding(.vertical, 4)
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            isShowingDetail = true
-                            selectedWord = word
+                                Text(word.backText)
+                                    .font(.headline)
+                                    .frame(maxWidth: .infinity, alignment: .trailing)
+                            }
+                            .padding(.vertical, 4)
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                isShowingDetail = true
+                                selectedWord = word
+                            }
                         }
                     }
+
+                    Spacer()
                 }
+                .frame(width: geometry.size.width, height: geometry.size.height, alignment: .top)
+                .navigationTitle(languageManager.localizedString(for: "Words").capitalizedFirstLetter)
             }
-            .navigationTitle(languageManager.localizedString(for: "Words").capitalizedFirstLetter)
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
         .sheet(item: $selectedWord) { word in
