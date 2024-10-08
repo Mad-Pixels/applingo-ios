@@ -39,16 +39,17 @@ struct AppTextField: View {
 
 struct AppTextEditor: View {
     @Binding var text: String
-    
     let placeholder: String
+    let minHeight: CGFloat
     let isEditing: Bool
     let border: Bool
     
-    init(placeholder: String, text: Binding<String>, isEditing: Bool, border: Bool = false) {
+    init(placeholder: String, text: Binding<String>, isEditing: Bool, border: Bool = false, minHeight: CGFloat = 156) {
         self.placeholder = placeholder
         self.isEditing = isEditing
         self.border = border
         self._text = text
+        self.minHeight = minHeight
     }
 
     var body: some View {
@@ -69,9 +70,9 @@ struct AppTextEditor: View {
                         }
                     }
                 )
-                .frame(minHeight: 156)
+                .frame(minHeight: minHeight)
                 .animation(.easeInOut(duration: 0.2), value: isEditing)
-            
+
             if text.isEmpty {
                 Text(placeholder)
                     .foregroundColor(Color(.placeholderText))
