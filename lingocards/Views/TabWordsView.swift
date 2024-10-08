@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct TabWordsView: View {
+    @EnvironmentObject var languageManager: LanguageManager
     @StateObject private var viewModel = TabWordsViewModel()
     @State private var selectedWord: WordItem?
     @State private var isShowingDetail = false
@@ -8,7 +9,11 @@ struct TabWordsView: View {
     var body: some View {
         NavigationView {
             VStack {
-                CompSearchView(searchText: $viewModel.searchText)
+                CompSearchView(
+                    searchText: $viewModel.searchText,
+                    placeholder: languageManager.localizedString(for: "Search").capitalizedFirstLetter
+                )
+                .padding(.bottom, 12)
 
                 List(viewModel.words) { word in
                     HStack {
@@ -31,7 +36,7 @@ struct TabWordsView: View {
                     }
                 }
             }
-            .navigationTitle("Words")
+            .navigationTitle(languageManager.localizedString(for: "Words").capitalizedFirstLetter)
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
         .sheet(item: $selectedWord) { word in

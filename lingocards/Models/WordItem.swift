@@ -4,6 +4,7 @@ struct WordItem: Identifiable, Codable, Equatable {
     var id: Int
     var hashId: Int
     
+    var tableName: String
     var frontText: String
     var backText: String
     
@@ -19,6 +20,7 @@ struct WordItem: Identifiable, Codable, Equatable {
     init(
         id: Int,
         hashId: Int,
+        tableName: String,
         frontText: String,
         backText: String,
         description: String? = nil,
@@ -31,6 +33,7 @@ struct WordItem: Identifiable, Codable, Equatable {
     ) {
         self.id = id
         self.hashId = hashId
+        self.tableName = tableName
         self.frontText = frontText
         self.backText = backText
         self.description = description

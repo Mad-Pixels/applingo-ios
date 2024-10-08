@@ -314,8 +314,22 @@
         }
       }
     },
-    "Search..." : {
-
+    "Search" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "search…"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "поиск…"
+          }
+        }
+      }
     },
     "Select Language" : {
 

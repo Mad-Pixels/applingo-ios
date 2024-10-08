@@ -2,6 +2,12 @@ import SwiftUI
 
 struct CompSearchView: View {
     @Binding var searchText: String
+    let placeholder: String
+
+    init(searchText: Binding<String>, placeholder: String) {
+        self._searchText = searchText
+        self.placeholder = placeholder
+    }
 
     var body: some View {
         HStack {
@@ -10,14 +16,13 @@ struct CompSearchView: View {
 
             ZStack(alignment: .leading) {
                 if searchText.isEmpty {
-                    Text("Search...")
+                    Text(placeholder)
                         .foregroundColor(.gray)
                 }
-                
                 TextField("", text: $searchText)
                     .foregroundColor(.primary)
             }
-            
+
             if !searchText.isEmpty {
                 Button(action: {
                     searchText = ""

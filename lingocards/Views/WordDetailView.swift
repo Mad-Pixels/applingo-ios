@@ -37,6 +37,12 @@ struct WordDetailView: View {
 
                 Section(header: Text(languageManager.localizedString(for: "Additional"))) {
                     AppTextField(
+                        placeholder: languageManager.localizedString(for: "TableName").capitalizedFirstLetter,
+                        text: $editedWord.tableName,
+                        isEditing: false
+                    )
+                    
+                    AppTextField(
                         placeholder: languageManager.localizedString(for: "Hint").capitalizedFirstLetter,
                         text: $editedWord.hint.unwrap(default: ""),
                         isEditing: isEditing
