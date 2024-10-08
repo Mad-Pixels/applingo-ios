@@ -3,13 +3,13 @@ import Combine
 
 enum GlobalError: Error, LocalizedError, Identifiable, Equatable {
     var id: UUID { UUID() }
-
-    case custom(message: String, context: ErrorContext, source: ErrorSource)
+    
+    case custom(appError: AppError, context: ErrorContext, source: ErrorSource)
     
     var errorDescription: String? {
         switch self {
-        case .custom(let message, _, _):
-            return message
+        case .custom(let appError, _, _):
+            return appError.errorDescription
         }
     }
 
@@ -37,9 +37,10 @@ final class ErrorManager: ObservableObject {
     
     private init() {}
 
-    func setError(message: String, context: ErrorContext, source: ErrorSource, dismissAfter seconds: TimeInterval = 7.5) {
-        let error = GlobalError.custom(message: message, context: context, source: source)
+    func setError(appError: AppError, context: ErrorContext, source: ErrorSource, dismissAfter seconds: TimeInterval = 7.5) {
+        let error = GlobalError.custom(appError: appError, context: context, source: source)
         setError(error, dismissAfter: seconds)
+        logError(appError)
     }
 
     func setError(_ error: GlobalError, dismissAfter seconds: TimeInterval = 2.0) {
@@ -48,6 +49,10 @@ final class ErrorManager: ObservableObject {
             self.isErrorVisible = true
             self.startDismissTimer(after: seconds)
         }
+    }
+
+    private func logError(_ appError: AppError) {
+        LogHandler.shared.sendError(appError.errorMessage, type: appError.errorType, additionalInfo: appError.additionalInfo)
     }
 
     func clearError() {

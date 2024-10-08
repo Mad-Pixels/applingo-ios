@@ -43,10 +43,16 @@ final class TabWordsViewModel: ObservableObject {
         if Int.random(in: 1...10) <= 1 {
             Logger.debug("[WordsViewModel]: failed to fetch words")
             self.words = []
+            
+            let error = AppError(
+                errorType: .database,
+                errorMessage: "Failed to fetch data from database",
+                additionalInfo: nil
+            )
 
             // Создаем AppError и передаем в ErrorManager
             ErrorManager.shared.setError(
-                message: "Failed to load words due to network issues",
+                appError: error,
                 context: .words,
                 source: .getWords
             )
@@ -88,5 +94,23 @@ final class TabWordsViewModel: ObservableObject {
             words[index] = updatedWord
         }
         Logger.debug("[WordsViewModel]: Word updated successfully")
+    }
+    
+    func deleteWord(_ word: WordItem) {
+        // С вероятностью 10% возвращаем ошибку
+        if Int.random(in: 1...3) <= 1 {
+            let error = AppError(
+                errorType: .database,
+                errorMessage: "Failed to delete the word due to database issues",
+                additionalInfo: ["Context": "TabWordsViewModel", "WordID": "\(word.id)"]
+            )
+            ErrorManager.shared.setError(appError: error, context: .words, source: .deleteWord)
+            Logger.debug("[WordsViewModel]: Failed to delete word with ID \(word.id) due to database issues")
+            return
+        }
+
+        // Логика удаления из массива
+        words.removeAll { $0.id == word.id }
+        Logger.debug("[WordsViewModel]: Word was deleted successfully")
     }
 }

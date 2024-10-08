@@ -20,34 +20,20 @@ enum ErrorSource: String {
     case fetchData
     case saveWord
     case unknown
+    case deleteWord
 }
 
-struct AppError: Codable, Identifiable {
-    var id = UUID()
-    
+struct AppError: Error, LocalizedError, Equatable, Identifiable {
+    var id: UUID { UUID() }
     let errorType: ErrorType
     let errorMessage: String
     let additionalInfo: [String: String]?
 
-    init(
-        errorType: ErrorType,
-        errorMessage: String,
-        additionalInfo: [String: String]? = nil
-    ) {
-        self.errorType = errorType
-        self.errorMessage = errorMessage
-        self.additionalInfo = additionalInfo
-    }
-
-    func toErrorLog() -> ErrorLog {
-        return ErrorLog(
-            errorType: errorType,
-            errorMessage: errorMessage,
-            additionalInfo: additionalInfo
-        )
+    var errorDescription: String? {
+        errorMessage
     }
     
-    var localizedDescription: String {
-        return errorMessage
+    static func ==(lhs: AppError, rhs: AppError) -> Bool {
+        return lhs.errorMessage == rhs.errorMessage && lhs.errorType == rhs.errorType && lhs.additionalInfo == rhs.additionalInfo
     }
 }

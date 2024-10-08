@@ -6,6 +6,7 @@ struct TabWordsView: View {
     @StateObject private var errorManager = ErrorManager.shared
     @State private var selectedWord: WordItem?
     @State private var isShowingDetail = false
+    @State private var isShowingAlert = false
 
     var body: some View {
         NavigationView {
@@ -33,25 +34,28 @@ struct TabWordsView: View {
                             .multilineTextAlignment(.center)
                         Spacer()
                     } else {
-                        List(viewModel.words) { word in
-                            HStack {
-                                Text(word.frontText)
-                                    .font(.headline)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
+                        List {
+                            ForEach(viewModel.words) { word in
+                                HStack {
+                                    Text(word.frontText)
+                                        .font(.headline)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
 
-                                Image(systemName: "arrow.left.and.right.circle.fill")
-                                    .foregroundColor(.blue)
+                                    Image(systemName: "arrow.left.and.right.circle.fill")
+                                        .foregroundColor(.blue)
 
-                                Text(word.backText)
-                                    .font(.headline)
-                                    .frame(maxWidth: .infinity, alignment: .trailing)
+                                    Text(word.backText)
+                                        .font(.headline)
+                                        .frame(maxWidth: .infinity, alignment: .trailing)
+                                }
+                                .padding(.vertical, 4)
+                                .contentShape(Rectangle())
+                                .onTapGesture {
+                                    isShowingDetail = true
+                                    selectedWord = word
+                                }
                             }
-                            .padding(.vertical, 4)
-                            .contentShape(Rectangle())
-                            .onTapGesture {
-                                isShowingDetail = true
-                                selectedWord = word
-                            }
+                            .onDelete(perform: deleteWord)
                         }
                     }
 
@@ -64,6 +68,13 @@ struct TabWordsView: View {
         .ignoresSafeArea(.keyboard, edges: .bottom)
         .sheet(item: $selectedWord) { word in
             WordDetailView(word: word, isPresented: $isShowingDetail, onSave: viewModel.updateWord)
+        }
+    }
+
+    private func deleteWord(at offsets: IndexSet) {
+        offsets.forEach { index in
+            let word = viewModel.words[index]
+            viewModel.deleteWord(word)
         }
     }
 }
