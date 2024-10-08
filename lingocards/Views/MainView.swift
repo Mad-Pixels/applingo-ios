@@ -3,10 +3,10 @@ import SwiftUI
 struct MainView: View {
     @EnvironmentObject var languageManager: LanguageManager
     @EnvironmentObject var themeManager: ThemeManager
-    @State private var selectedTab: Int = 0
+    @StateObject private var tabManager = TabManager.shared
 
     var body: some View {
-        TabView(selection: $selectedTab) {
+        TabView(selection: $tabManager.activeTab) {
             TabLearnView()
                 .tabItem {
                     Label {
@@ -15,7 +15,7 @@ struct MainView: View {
                         Image(systemName: "book.fill")
                     }
                 }
-                .tag(0)
+                .tag(Tab.learn)
 
             TabDictionariesView()
                 .tabItem {
@@ -25,7 +25,7 @@ struct MainView: View {
                         Image(systemName: "folder.fill")
                     }
                 }
-                .tag(1)
+                .tag(Tab.dictionaries)
 
             TabWordsView()
                 .tabItem {
@@ -35,7 +35,7 @@ struct MainView: View {
                         Image(systemName: "textformat")
                     }
                 }
-                .tag(2)
+                .tag(Tab.words)
 
             TabSettingsView()
                 .tabItem {
@@ -45,13 +45,11 @@ struct MainView: View {
                         Image(systemName: "gearshape.fill")
                     }
                 }
-                .tag(3)
+                .tag(Tab.settings)
         }
         .preferredColorScheme(themeManager.currentTheme == .dark ? .dark : .light)
-        .onChange(of: selectedTab) { oldTab, newTab in
-            if newTab == 2 {
-                NotificationCenter.default.post(name: .didSelectWordsTab, object: nil)
-            }
+        .onChange(of: tabManager.activeTab) { oldTab, newTab in
+            Logger.debug("[MainView]: Active tab changed from \(oldTab) to \(newTab)")
         }
     }
 }

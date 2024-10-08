@@ -5,7 +5,7 @@ import IQKeyboardManagerSwift
 struct LingocardApp: App {
     @StateObject private var languageManager = LanguageManager()
     @StateObject private var themeManager = ThemeManager()
-    @State private var viewID = UUID()
+    @StateObject private var tabManager = TabManager.shared
     
     init() {
         IQKeyboardManager.shared.resignOnTouchOutside = true
@@ -19,10 +19,7 @@ struct LingocardApp: App {
             MainView()
                 .environmentObject(languageManager)
                 .environmentObject(themeManager)
-                .id(viewID)
-                .onReceive(NotificationCenter.default.publisher(for: LanguageManager.languageChangeNotification)) { _ in
-                    viewID = UUID()
-                }
+                .environmentObject(tabManager)
         }
     }
 }
