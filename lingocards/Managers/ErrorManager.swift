@@ -13,7 +13,6 @@ enum GlobalError: Error, LocalizedError, Identifiable {
         }
     }
 
-    // Получение контекста ошибки
     var context: ErrorContext {
         switch self {
         case .appError(_, let context):
@@ -21,7 +20,6 @@ enum GlobalError: Error, LocalizedError, Identifiable {
         }
     }
 
-    // Получение исходной ошибки
     var appError: AppError {
         switch self {
         case .appError(let appError, _):
@@ -30,41 +28,37 @@ enum GlobalError: Error, LocalizedError, Identifiable {
     }
 }
 
-// Контекст ошибки для разделения по экранам или областям
-//enum ErrorContext: String {
-//    case words
-//    case dictionaries
-//    case settings
-//    case general
-//}
-
 final class ErrorManager: ObservableObject {
     static let shared = ErrorManager()  // Синглтон
 
     @Published var currentError: GlobalError?  // Текущее состояние ошибки
+    @Published var isErrorVisible: Bool = false  // Состояние видимости ошибки
     
     private init() {}  // Закрытый инициализатор, чтобы класс был синглтоном
     
-    // Метод для установки ошибки с `AppError` и `ErrorContext`
     func setError(appError: AppError, context: ErrorContext) {
         let globalError = GlobalError.appError(appError: appError, context: context)
         setError(globalError)
+        
+        // Показываем ошибку
+        isErrorVisible = true
         
         // Логгируем ошибку
         LogHandler.shared.sendLog(appError.toErrorLog())
     }
 
-    // Метод для установки `GlobalError`
     func setError(_ error: GlobalError) {
         DispatchQueue.main.async {
             self.currentError = error
+            self.isErrorVisible = true
         }
     }
 
-    // Метод для очистки ошибки
     func clearError() {
         DispatchQueue.main.async {
             self.currentError = nil
+            self.isErrorVisible = false
         }
     }
 }
+

@@ -2,6 +2,8 @@ import SwiftUI
 
 struct TabWordsView: View {
     @EnvironmentObject var languageManager: LanguageManager
+    @StateObject private var errorManager = ErrorManager.shared
+
     @StateObject private var viewModel = TabWordsViewModel()
     @State private var selectedWord: WordItem?
     @State private var isShowingDetail = false
@@ -9,19 +11,24 @@ struct TabWordsView: View {
     var body: some View {
         NavigationView {
             VStack {
-                // Поисковая строка
                 CompSearchView(
                     searchText: $viewModel.searchText,
                     placeholder: languageManager.localizedString(for: "Search").capitalizedFirstLetter
                 )
-                .padding(.bottom, 12)
+                .padding(.bottom, 10)
 
                 // Отображение ошибки, если она есть
-                if let error = ErrorManager.shared.currentError, error.context == .words {
+                if errorManager.isErrorVisible, let error = errorManager.currentError, error.context == .words {
                     Text(error.errorDescription ?? "")
                         .foregroundColor(.red)
                         .padding()
                         .multilineTextAlignment(.center)
+                        .onAppear {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                                errorManager.isErrorVisible = false
+                                errorManager.clearError()
+                            }
+                        }
                 }
 
                 // Отображение списка слов или сообщения, если список пуст

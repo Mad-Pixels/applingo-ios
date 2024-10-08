@@ -1,13 +1,27 @@
 import Foundation
 
-/// Модель для описания ошибки в приложении
+enum ErrorContext: String, Codable {
+    case words
+    case dictionaries
+    case settings
+    case general
+}
+
+enum ErrorType: String, Codable {
+    case database = "database"
+    case network = "network"
+    case unknown = "unknown"
+    case api = "api"
+    case ui = "ui"
+}
+
 struct AppError: Codable, Identifiable {
-    let id = UUID()  // Уникальный идентификатор для отслеживания ошибок
+    var id = UUID()
+    
     let errorType: ErrorType
     let errorMessage: String
     let additionalInfo: [String: String]?
 
-    /// Инициализация ошибки
     init(
         errorType: ErrorType,
         errorMessage: String,
@@ -18,7 +32,6 @@ struct AppError: Codable, Identifiable {
         self.additionalInfo = additionalInfo
     }
 
-    /// Метод для логгирования ошибки в формате `ErrorLog`
     func toErrorLog() -> ErrorLog {
         return ErrorLog(
             errorType: errorType,
@@ -28,23 +41,6 @@ struct AppError: Codable, Identifiable {
     }
     
     var localizedDescription: String {
-        return "[\(errorType.rawValue)] \(errorMessage)"
+        return errorMessage
     }
-}
-
-/// Контекст ошибки для разделения по экранам или областям
-enum ErrorContext: String, Codable {
-    case words
-    case dictionaries
-    case settings
-    case general
-}
-
-/// Типы ошибок
-enum ErrorType: String, Codable {
-    case database = "database"
-    case network = "network"
-    case unknown = "unknown"
-    case api = "api"
-    case ui = "ui"
 }
