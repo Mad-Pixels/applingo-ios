@@ -2,63 +2,77 @@ import SwiftUI
 
 struct WordDetailView: View {
     @EnvironmentObject var languageManager: LanguageManager
-    @Environment(\.presentationMode) private var presentationMode  // Управление закрытием модального представления
+    @Environment(\.presentationMode) private var presentationMode
     @State private var editedWord: WordItem
     @State private var isEditing = false
     
     @Binding var isPresented: Bool
     let onSave: (WordItem) -> Void
     
-    private let originalWord: WordItem  // Сохранение оригинального значения для сброса
+    private let originalWord: WordItem
 
     init(word: WordItem, isPresented: Binding<Bool>, onSave: @escaping (WordItem) -> Void) {
         _editedWord = State(initialValue: word)
         _isPresented = isPresented
+
         self.onSave = onSave
-        self.originalWord = word  // Сохранение исходного значения
+        self.originalWord = word
     }
     
     var body: some View {
         NavigationView {
             Form {
-                // Основная секция с полями для редактирования
-                Section(header: Text("Word")) {
-                    TextField("Front Text", text: $editedWord.frontText)
+                Section(header: Text(languageManager.localizedString(for: "Card"))) {
+                    TextField(
+                        languageManager.localizedString(for: "Word").capitalizedFirstLetter,
+                        text: $editedWord.frontText
+                    )
                         .disabled(!isEditing)
-                    TextField("Back Text", text: $editedWord.backText)
-                        .disabled(!isEditing)
-                }
-                
-                // Секция для дополнительной информации
-                Section(header: Text("Additional Information")) {
-                    TextField("Description", text: $editedWord.description.unwrap(default: ""))
-                        .disabled(!isEditing)
-                    TextField("Hint", text: $editedWord.hint.unwrap(default: ""))
+                    TextField(
+                        languageManager.localizedString(for: "Definition").capitalizedFirstLetter,
+                        text: $editedWord.backText
+                    )
                         .disabled(!isEditing)
                 }
                 
-                // Секция со статистикой (убрано поле с датой)
-                Section(header: Text("Statistics")) {
-                    Text("Success: \(editedWord.success)")
-                    Text("Fail: \(editedWord.fail)")
-                    Text("Weight: \(editedWord.weight)")
+                Section(header: Text(languageManager.localizedString(for: "Additional"))) {
+                    TextField(
+                        languageManager.localizedString(for: "Description").capitalizedFirstLetter,
+                        text: $editedWord.description.unwrap(default: "")
+                    )
+                        .disabled(!isEditing)
+                    TextField(
+                        languageManager.localizedString(for: "Hint").capitalizedFirstLetter,
+                        text: $editedWord.hint.unwrap(default: "")
+                    )
+                        .disabled(!isEditing)
+                }
+                
+                
+                Section(header: Text(languageManager.localizedString(for: "Statistics"))) {
+
                 }
             }
-            .navigationTitle("Word Details")
+            .navigationTitle(languageManager.localizedString(for: "Details").capitalizedFirstLetter)
             .navigationBarItems(
-                leading: Button(isEditing ? "Cancel" : "Close") {
+                leading: Button(
+                    isEditing ? languageManager.localizedString(for: "Cancel") :
+                        languageManager.localizedString(for: "Close")
+                ) {
                     if isEditing {
                         isEditing = false
-                        editedWord = originalWord  // Сброс изменений к исходным значениям
+                        editedWord = originalWord
                     } else {
                         isPresented = false
                     }
                 },
-                trailing: Button(isEditing ? "Save" : "Edit") {
+                trailing: Button(isEditing ? languageManager.localizedString(for: "Save") :
+                                    languageManager.localizedString(for: "Edit"))
+                {
                     if isEditing {
                         onSave(editedWord)
                         isEditing = false
-                        presentationMode.wrappedValue.dismiss()  // Закрытие модального окна после сохранения
+                        presentationMode.wrappedValue.dismiss()
                     } else {
                         isEditing = true
                     }
