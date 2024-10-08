@@ -58,7 +58,6 @@ struct TabWordsView: View {
                         .onDelete(perform: deleteWord)
                     }
                 }
-
                 Spacer()
             }
             .navigationTitle(languageManager.localizedString(for: "Words").capitalizedFirstLetter)
@@ -79,6 +78,7 @@ struct TabWordsView: View {
             .onChange(of: errorManager.currentError) { _, newError in
                 if let error = newError, error.context == .words, error.source == .deleteWord {
                     isShowingAlert = true
+                    autoDismissAlert()
                 }
             }
             .alert(
@@ -104,6 +104,15 @@ struct TabWordsView: View {
         offsets.forEach { index in
             let word = viewModel.words[index]
             viewModel.deleteWord(word)
+        }
+    }
+    
+    private func autoDismissAlert() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 7) {
+            if isShowingAlert {
+                isShowingAlert = false
+                errorManager.clearError()
+            }
         }
     }
 }
