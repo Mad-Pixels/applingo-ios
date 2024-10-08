@@ -3,29 +3,35 @@ import SwiftUI
 struct TabWordsView: View {
     @EnvironmentObject var languageManager: LanguageManager
     @StateObject private var viewModel = TabWordsViewModel()
+    @StateObject private var errorManager = ErrorManager.shared  // Используем ErrorManager
     @State private var selectedWord: WordItem?
     @State private var isShowingDetail = false
 
     var body: some View {
         NavigationView {
             VStack {
+                // Поисковая строка
                 CompSearchView(
                     searchText: $viewModel.searchText,
                     placeholder: languageManager.localizedString(for: "Search").capitalizedFirstLetter
                 )
                 .padding(.bottom, 12)
 
+                // Отображение ошибки, если она для контекста "words"
+                if let error = errorManager.currentError, error.context == .words {
+                    Text(error.localizedDescription)
+                        .foregroundColor(.red)
+                        .padding()
+                        .multilineTextAlignment(.center)
+                }
+
+                // Отображение списка или сообщения, если список пуст
                 if viewModel.words.isEmpty {
-                    VStack {
-                        Spacer()
-                        Text(languageManager.localizedString(for: "NoWordsAvailable").capitalizedFirstLetter)
-                            .foregroundColor(.gray)
-                            .italic()
-                            .padding()
-                            .multilineTextAlignment(.center)
-                        Spacer()
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    Text(languageManager.localizedString(for: "No words available"))
+                        .foregroundColor(.gray)
+                        .italic()
+                        .padding()
+                        .multilineTextAlignment(.center)
                 } else {
                     List(viewModel.words) { word in
                         HStack {

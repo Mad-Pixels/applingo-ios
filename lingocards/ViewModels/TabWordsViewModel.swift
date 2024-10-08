@@ -26,10 +26,18 @@ final class TabWordsViewModel: ObservableObject {
     func getWords(search: String = "") {
         Logger.debug("[WordsViewModel]: fetching words...")
 
+        // С вероятностью 10% возвращаем ошибку с контекстом
+        if Int.random(in: 1...10) <= 1 {
+            Logger.debug("[WordsViewModel]: failed to fetch words")
+            self.words = []  // Очищаем список слов
+            ErrorManager.shared.setError(message: "Failed to load words. Please try again later.", context: .words)
+            return
+        }
+
         // Тестовые данные
         let testData: [WordItem] = [
             WordItem(id: 1, hashId: 1, tableName: "table1", frontText: "Hello", backText: "Привет", description: "", hint: "", createdAt: 1633065600, salt: 1234, success: 14, fail: 5, weight: 6),
-        WordItem(id: 2, hashId: 2, tableName: "table1", frontText: "Apple", backText: "Яблоко", description: "AAAA BBBBB CCCCC DDDDD EEEEEE FFFFF GGGGG HHHHH IIII JJJJJ KKKKK LLLLL MMMMM NNNNN OOOOO PPPPP QQQQQ RRRRR SSSSS TTTTT UUUUU VVVVV WWWWW XXXXX YYYYY ZZZZZ AAAA BBBBB CCCCC DDDDD EEEEEE FFFFF GGGGG HHHHH IIII JJJJJ UUUUU VVVVV WWWWW XXXXX YYYYY ZZZZZ AAAA BBBBB CCCCC DDDDD EEEEEE ", hint: "A type of fruit", createdAt: 1633065700, salt: 2345),
+            WordItem(id: 2, hashId: 2, tableName: "table1", frontText: "Apple", backText: "Яблоко", description: "Fruit", hint: "A type of fruit", createdAt: 1633065700, salt: 2345),
             WordItem(id: 3, hashId: 3, tableName: "table1", frontText: "Dog", backText: "Собака", description: "Animal", hint: "A common pet", createdAt: 1633065800, salt: 3456),
             WordItem(id: 4, hashId: 4, tableName: "table1", frontText: "Cat", backText: "Кошка", description: "Animal", hint: "A common pet", createdAt: 1633065900, salt: 4567),
             WordItem(id: 5, hashId: 5, tableName: "table1", frontText: "Sun", backText: "Солнце", description: "Celestial Body", hint: "Appears in the sky during the day", createdAt: 1633066000, salt: 5678),
@@ -47,6 +55,8 @@ final class TabWordsViewModel: ObservableObject {
             words = testData.filter { $0.frontText.localizedCaseInsensitiveContains(search) || $0.backText.localizedCaseInsensitiveContains(search) }
         }
 
+        // Если все прошло успешно, очищаем состояние ошибки
+        ErrorManager.shared.clearError()
         Logger.debug("[WordsViewModel]: Words data successfully fetched")
     }
     
@@ -55,9 +65,9 @@ final class TabWordsViewModel: ObservableObject {
     }
     
     func updateWord(_ updatedWord: WordItem) {
-            if let index = words.firstIndex(where: { $0.id == updatedWord.id }) {
-                words[index] = updatedWord
-            }
-            Logger.debug("[WordsViewModel]: Word updated successfully")
+        if let index = words.firstIndex(where: { $0.id == updatedWord.id }) {
+            words[index] = updatedWord
         }
+        Logger.debug("[WordsViewModel]: Word updated successfully")
+    }
 }
