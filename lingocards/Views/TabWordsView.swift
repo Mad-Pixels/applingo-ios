@@ -63,6 +63,23 @@ struct TabWordsView: View {
                 }
                 .frame(width: geometry.size.width, height: geometry.size.height, alignment: .top)
                 .navigationTitle(languageManager.localizedString(for: "Words").capitalizedFirstLetter)
+                .onChange(of: errorManager.currentError) { _, newError in
+                    if let error = newError, error.context == .words, error.source == .deleteWord {
+                        isShowingAlert = true
+                    }
+                }
+                .alert(
+                    isPresented: $isShowingAlert,
+                    content: {
+                        Alert(
+                            title: Text(languageManager.localizedString(for: "Error")),
+                            message: Text(errorManager.currentError?.errorDescription ?? ""),
+                            dismissButton: .default(Text(languageManager.localizedString(for: "Close"))) {
+                                errorManager.clearError()
+                            }
+                        )
+                    }
+                )
             }
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
