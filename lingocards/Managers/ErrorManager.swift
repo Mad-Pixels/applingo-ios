@@ -72,6 +72,11 @@ final class ErrorManager: ObservableObject {
             }
         }
     }
+    
+    func isVisible(for context: ErrorContext, source: ErrorSource) -> Bool {
+        guard let error = currentError else { return false }
+        return error.context == context && error.source == source && isErrorVisible
+    }
 
     private func startDismissTimer(after seconds: TimeInterval) {
         dismissTimer?.cancel()

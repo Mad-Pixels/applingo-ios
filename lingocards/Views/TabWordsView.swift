@@ -18,7 +18,7 @@ struct TabWordsView: View {
                     )
                     .padding(.bottom, 10)
 
-                    if errorManager.isErrorVisible {
+                    if errorManager.isVisible(for: .words, source: .getWords) {
                         Text(errorManager.currentError?.errorDescription ?? "")
                             .foregroundColor(.red)
                             .padding()
