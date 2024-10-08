@@ -5,25 +5,31 @@ final class TabWordsViewModel: ObservableObject {
     @Published var words: [WordItem] = []
     @Published var searchText: String = "" {
         didSet {
-            getWords(search: searchText)
+            // Вызов getWords только при изменении searchText и активной вкладке
+            if isActiveTab {
+                getWords(search: searchText)
+            }
         }
     }
     
     private var cancellable: AnyCancellable?
-    private var errorCancellable: AnyCancellable?  // Для отслеживания ошибок
+    private var errorCancellable: AnyCancellable?
+    private var isActiveTab: Bool = false  // Флаг активности вкладки
 
     init() {
+        // Подписка на уведомление при выборе вкладки Words
         cancellable = NotificationCenter.default
             .publisher(for: .didSelectWordsTab)
             .sink { [weak self] _ in
+                self?.isActiveTab = true  // Устанавливаем флаг активности
                 self?.getWords(search: self?.searchText ?? "")
             }
 
         // Подписка на изменения видимости ошибки
         errorCancellable = ErrorManager.shared.$isErrorVisible
             .sink { [weak self] isVisible in
-                if !isVisible {
-                    // Если ошибка исчезла, можем снова загружать данные
+                // Если ошибка исчезла и вкладка активна, вызываем getWords
+                if !isVisible, self?.isActiveTab == true {
                     self?.getWords(search: self?.searchText ?? "")
                 }
             }
@@ -43,7 +49,7 @@ final class TabWordsViewModel: ObservableObject {
         if Int.random(in: 1...10) <= 1 {
             Logger.debug("[WordsViewModel]: failed to fetch words")
             self.words = []
-            
+
             let error = AppError(
                 errorType: .database,
                 errorMessage: "Failed to fetch data from database",
@@ -83,7 +89,7 @@ final class TabWordsViewModel: ObservableObject {
         ErrorManager.shared.clearError(for: .getWords)
         Logger.debug("[WordsViewModel]: Words data successfully fetched")
     }
-    
+
     deinit {
         cancellable?.cancel()
         errorCancellable?.cancel()
@@ -95,7 +101,7 @@ final class TabWordsViewModel: ObservableObject {
         }
         Logger.debug("[WordsViewModel]: Word updated successfully")
     }
-    
+
     func deleteWord(_ word: WordItem) {
         // С вероятностью 10% возвращаем ошибку
         if Int.random(in: 1...3) <= 1 {
