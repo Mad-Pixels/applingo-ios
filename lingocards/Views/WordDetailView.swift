@@ -47,7 +47,7 @@ struct WordDetailView: View {
                         text: $editedWord.description.unwrap(default: ""),
                         isEditing: isEditing
                     )
-                    .frame(height: 100)
+                    .frame(height: 150)
                 }
 
                 Section(header: Text(languageManager.localizedString(for: "Statistics"))) {

@@ -69,7 +69,7 @@ struct AppTextEditor: View {
                         }
                     }
                 )
-                .frame(minHeight: 100)
+                .frame(minHeight: 156)
                 .animation(.easeInOut(duration: 0.2), value: isEditing)
             
             if text.isEmpty {
