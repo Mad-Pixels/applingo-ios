@@ -2,31 +2,35 @@ import Foundation
 import Combine
 
 enum GlobalError: Error, LocalizedError, Identifiable {
-    var id: UUID { UUID() }
+    var id: UUID { UUID() }  // Для уникальности каждой ошибки
 
-    case appError(appError: AppError, context: ErrorContext)
-
+    // Добавляем поле `source`, чтобы отслеживать источник ошибки
+    case custom(message: String, context: ErrorContext, source: ErrorSource)
+    
     var errorDescription: String? {
         switch self {
-        case .appError(let appError, _):
-            return appError.localizedDescription
+        case .custom(let message, _, _):
+            return message
         }
     }
 
+    // Получение контекста ошибки
     var context: ErrorContext {
         switch self {
-        case .appError(_, let context):
+        case .custom(_, let context, _):
             return context
         }
     }
-
-    var appError: AppError {
+    
+    // Получение источника ошибки
+    var source: ErrorSource {
         switch self {
-        case .appError(let appError, _):
-            return appError
+        case .custom(_, _, let source):
+            return source
         }
     }
 }
+
 
 final class ErrorManager: ObservableObject {
     static let shared = ErrorManager()  // Синглтон
@@ -34,31 +38,55 @@ final class ErrorManager: ObservableObject {
     @Published var currentError: GlobalError?  // Текущее состояние ошибки
     @Published var isErrorVisible: Bool = false  // Состояние видимости ошибки
     
-    private init() {}  // Закрытый инициализатор, чтобы класс был синглтоном
-    
-    func setError(appError: AppError, context: ErrorContext) {
-        let globalError = GlobalError.appError(appError: appError, context: context)
-        setError(globalError)
-        
-        // Показываем ошибку
-        isErrorVisible = true
-        
-        // Логгируем ошибку
-        LogHandler.shared.sendLog(appError.toErrorLog())
+    private var dismissTimer: AnyCancellable?  // Таймер для автоматического удаления ошибки
+
+    private init() {}
+
+    // Метод для установки ошибки с указанием контекста и источника
+    func setError(message: String, context: ErrorContext, source: ErrorSource, dismissAfter seconds: TimeInterval = 2.0) {
+        let error = GlobalError.custom(message: message, context: context, source: source)
+        setError(error, dismissAfter: seconds)
     }
 
-    func setError(_ error: GlobalError) {
+    // Метод для явного задания `GlobalError` и очистки через заданное время
+    func setError(_ error: GlobalError, dismissAfter seconds: TimeInterval = 2.0) {
         DispatchQueue.main.async {
             self.currentError = error
             self.isErrorVisible = true
+            self.startDismissTimer(after: seconds)  // Запускаем таймер для автоматической очистки
         }
     }
 
+    // Метод для ручной очистки ошибки
     func clearError() {
         DispatchQueue.main.async {
             self.currentError = nil
             self.isErrorVisible = false
+            self.dismissTimer?.cancel()  // Останавливаем таймер, если он активен
         }
     }
-}
 
+    // Метод для очистки ошибок определенного источника
+    func clearError(for source: ErrorSource) {
+        DispatchQueue.main.async {
+            if let currentError = self.currentError, currentError.source == source {
+                self.currentError = nil
+                self.isErrorVisible = false
+                self.dismissTimer?.cancel()  // Останавливаем таймер, если он активен
+            }
+        }
+    }
+
+    // Метод для старта таймера удаления ошибки
+    private func startDismissTimer(after seconds: TimeInterval) {
+        // Останавливаем предыдущий таймер, если он уже был запущен
+        dismissTimer?.cancel()
+
+        // Создаем новый таймер для автоматического удаления ошибки через указанное время
+        dismissTimer = Just(())
+            .delay(for: .seconds(seconds), scheduler: DispatchQueue.main)
+            .sink { [weak self] in
+                self?.clearError()
+            }
+    }
+}

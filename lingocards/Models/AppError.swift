@@ -15,6 +15,13 @@ enum ErrorType: String, Codable {
     case ui = "ui"
 }
 
+enum ErrorSource: String {
+    case getWords
+    case fetchData
+    case saveWord
+    case unknown
+}
+
 struct AppError: Codable, Identifiable {
     var id = UUID()
     

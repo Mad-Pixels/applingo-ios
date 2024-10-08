@@ -2,9 +2,8 @@ import SwiftUI
 
 struct TabWordsView: View {
     @EnvironmentObject var languageManager: LanguageManager
-    @StateObject private var errorManager = ErrorManager.shared
-
     @StateObject private var viewModel = TabWordsViewModel()
+    @StateObject private var errorManager = ErrorManager.shared
     @State private var selectedWord: WordItem?
     @State private var isShowingDetail = false
 
@@ -15,7 +14,7 @@ struct TabWordsView: View {
                     searchText: $viewModel.searchText,
                     placeholder: languageManager.localizedString(for: "Search").capitalizedFirstLetter
                 )
-                .padding(.bottom, 10)
+                .padding(.bottom, 12)
 
                 // Отображение ошибки, если она есть
                 if errorManager.isErrorVisible, let error = errorManager.currentError, error.context == .words {
@@ -23,15 +22,9 @@ struct TabWordsView: View {
                         .foregroundColor(.red)
                         .padding()
                         .multilineTextAlignment(.center)
-                        .onAppear {
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                                errorManager.isErrorVisible = false
-                                errorManager.clearError()
-                            }
-                        }
                 }
 
-                // Отображение списка слов или сообщения, если список пуст
+                // Отображение списка слов или сообщение, если список пуст
                 if viewModel.words.isEmpty {
                     Text(languageManager.localizedString(for: "No words available"))
                         .foregroundColor(.gray)
@@ -55,8 +48,8 @@ struct TabWordsView: View {
                         .padding(.vertical, 4)
                         .contentShape(Rectangle())
                         .onTapGesture {
-                            selectedWord = word
                             isShowingDetail = true
+                            selectedWord = word
                         }
                     }
                 }
@@ -64,15 +57,8 @@ struct TabWordsView: View {
             .navigationTitle(languageManager.localizedString(for: "Words").capitalizedFirstLetter)
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
-        // Корректная передача аргументов в sheet
         .sheet(item: $selectedWord) { word in
-            WordDetailView(
-                word: word,
-                isPresented: $isShowingDetail,
-                onSave: { updatedWord in
-                    viewModel.updateWord(updatedWord)
-                }
-            )
+            WordDetailView(word: word, isPresented: $isShowingDetail, onSave: viewModel.updateWord)
         }
     }
 }
