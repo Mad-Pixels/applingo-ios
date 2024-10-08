@@ -3,7 +3,6 @@ import SwiftUI
 struct TabWordsView: View {
     @EnvironmentObject var languageManager: LanguageManager
     @StateObject private var viewModel = TabWordsViewModel()
-    @StateObject private var errorManager = ErrorManager.shared  // Используем ErrorManager
     @State private var selectedWord: WordItem?
     @State private var isShowingDetail = false
 
@@ -17,15 +16,15 @@ struct TabWordsView: View {
                 )
                 .padding(.bottom, 12)
 
-                // Отображение ошибки, если она для контекста "words"
-                if let error = errorManager.currentError, error.context == .words {
-                    Text(error.localizedDescription)
+                // Отображение ошибки, если она есть
+                if let error = ErrorManager.shared.currentError, error.context == .words {
+                    Text(error.errorDescription ?? "")
                         .foregroundColor(.red)
                         .padding()
                         .multilineTextAlignment(.center)
                 }
 
-                // Отображение списка или сообщения, если список пуст
+                // Отображение списка слов или сообщения, если список пуст
                 if viewModel.words.isEmpty {
                     Text(languageManager.localizedString(for: "No words available"))
                         .foregroundColor(.gray)
@@ -49,8 +48,8 @@ struct TabWordsView: View {
                         .padding(.vertical, 4)
                         .contentShape(Rectangle())
                         .onTapGesture {
-                            isShowingDetail = true
                             selectedWord = word
+                            isShowingDetail = true
                         }
                     }
                 }
@@ -58,8 +57,15 @@ struct TabWordsView: View {
             .navigationTitle(languageManager.localizedString(for: "Words").capitalizedFirstLetter)
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
+        // Корректная передача аргументов в sheet
         .sheet(item: $selectedWord) { word in
-            WordDetailView(word: word, isPresented: $isShowingDetail, onSave: viewModel.updateWord)
+            WordDetailView(
+                word: word,
+                isPresented: $isShowingDetail,
+                onSave: { updatedWord in
+                    viewModel.updateWord(updatedWord)
+                }
+            )
         }
     }
 }

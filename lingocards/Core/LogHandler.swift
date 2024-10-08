@@ -2,13 +2,13 @@ import Foundation
 import Combine
 import UIKit
 
-enum ErrorType: String, Codable {
-    case database = "database"
-    case network = "network"
-    case unknown = "unknown"
-    case api = "api"
-    case ui = "ui"
-}
+//enum ErrorType: String, Codable {
+//    case database = "database"
+//    case network = "network"
+//    case unknown = "unknown"
+//    case api = "api"
+//    case ui = "ui"
+//}
 
 struct ErrorLog: Codable {
     let errorType: ErrorType

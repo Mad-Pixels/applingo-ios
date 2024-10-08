@@ -1,37 +1,43 @@
 import Foundation
 import Combine
 
-// Определение типа ошибки с контекстом
 enum GlobalError: Error, LocalizedError, Identifiable {
-    var id: UUID { UUID() }  // Для уникальности каждой ошибки
+    var id: UUID { UUID() }
 
-    case custom(message: String, context: ErrorContext)
-    
+    case appError(appError: AppError, context: ErrorContext)
+
     var errorDescription: String? {
         switch self {
-        case .custom(let message, _):
-            return message
+        case .appError(let appError, _):
+            return appError.localizedDescription
         }
     }
 
     // Получение контекста ошибки
     var context: ErrorContext {
         switch self {
-        case .custom(_, let context):
+        case .appError(_, let context):
             return context
+        }
+    }
+
+    // Получение исходной ошибки
+    var appError: AppError {
+        switch self {
+        case .appError(let appError, _):
+            return appError
         }
     }
 }
 
 // Контекст ошибки для разделения по экранам или областям
-enum ErrorContext: String {
-    case words
-    case dictionaries
-    case settings
-    case general
-}
+//enum ErrorContext: String {
+//    case words
+//    case dictionaries
+//    case settings
+//    case general
+//}
 
-// Глобальный менеджер для управления ошибками
 final class ErrorManager: ObservableObject {
     static let shared = ErrorManager()  // Синглтон
 
@@ -39,17 +45,20 @@ final class ErrorManager: ObservableObject {
     
     private init() {}  // Закрытый инициализатор, чтобы класс был синглтоном
     
-    // Метод для установки ошибки с указанием контекста
+    // Метод для установки ошибки с `AppError` и `ErrorContext`
+    func setError(appError: AppError, context: ErrorContext) {
+        let globalError = GlobalError.appError(appError: appError, context: context)
+        setError(globalError)
+        
+        // Логгируем ошибку
+        LogHandler.shared.sendLog(appError.toErrorLog())
+    }
+
+    // Метод для установки `GlobalError`
     func setError(_ error: GlobalError) {
         DispatchQueue.main.async {
             self.currentError = error
         }
-    }
-
-    // Метод для установки ошибки с параметрами
-    func setError(message: String, context: ErrorContext) {
-        let error = GlobalError.custom(message: message, context: context)
-        setError(error)
     }
 
     // Метод для очистки ошибки
