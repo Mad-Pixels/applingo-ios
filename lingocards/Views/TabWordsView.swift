@@ -24,7 +24,6 @@ struct TabWordsView: View {
                         .padding()
                         .multilineTextAlignment(.center)
                 }
-
                 if viewModel.words.isEmpty && !errorManager.isErrorVisible {
                     Spacer()
                     Text(languageManager.localizedString(for: "NoWordsAvailable"))
