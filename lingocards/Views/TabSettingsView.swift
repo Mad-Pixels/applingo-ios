@@ -3,6 +3,7 @@ import SwiftUI
 struct TabSettingsView: View {
     @EnvironmentObject var languageManager: LanguageManager
     @EnvironmentObject var themeManager: ThemeManager
+    @EnvironmentObject var tabManager: TabManager
     @ObservedObject var logHandler = LogHandler.shared
     
     var body: some View {
@@ -25,6 +26,14 @@ struct TabSettingsView: View {
                 )
             }
             .navigationTitle(languageManager.localizedString(for: "Settings").capitalizedFirstLetter)
+            .onAppear {
+                tabManager.setActiveTab(.settings)
+            }
+            .onChange(of: tabManager.activeTab) { oldTab, newTab in
+                if newTab != .settings {
+                    tabManager.deactivateTab(.settings)
+                }
+            }
         }
     }
 }

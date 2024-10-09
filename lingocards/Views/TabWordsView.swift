@@ -68,8 +68,10 @@ struct TabWordsView: View {
                     viewModel.getWords(search: viewModel.searchText)
                 }
             }
-            .onDisappear {
-                tabManager.deactivateTab(.words)
+            .onChange(of: tabManager.activeTab) { oldTab, newTab in
+                if newTab != .words {
+                    tabManager.deactivateTab(.words)
+                }
             }
             .onChange(of: viewModel.searchText) { _, newSearchText in
                 if tabManager.isActive(tab: .words) {

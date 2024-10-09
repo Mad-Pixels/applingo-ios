@@ -13,10 +13,9 @@ final class TabManager: ObservableObject {
     }
 
     func setActiveTab(_ tab: AppTab) {
-        //guard self.activeTab != tab else { return }
         DispatchQueue.main.async {
             self.activeTab = tab
-            Logger.debug("[TabManager]: setActiveTab called with \(tab.rawValue)")
+            Logger.debug("[TabManager]: Activate tab \(tab.rawValue)")
         }
     }
     
@@ -24,9 +23,9 @@ final class TabManager: ObservableObject {
         if activeTab == tab {
             DispatchQueue.main.async {
                 self.activeTab = .learn
-                Logger.debug("[TabManager]: deactivateTab called with \(tab.rawValue)")
+                Logger.debug("[TabManager]: Deactivate tab \(tab.rawValue)")
                 
-                //self.clearErrors(for: tab)
+                self.clearErrors(for: tab)
             }
         }
     }
