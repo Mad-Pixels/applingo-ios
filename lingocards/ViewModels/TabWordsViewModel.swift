@@ -98,6 +98,19 @@ final class TabWordsViewModel: ObservableObject {
     }
 
     func updateWord(_ updatedWord: WordItem) {
+        // С вероятностью 10% возвращаем ошибку
+        if Int.random(in: 1...3) <= 1 {
+            let e = AppError(
+                errorType: .database,
+                errorMessage: "Failed to update word with ID \(updatedWord.id) due to database issues",
+                additionalInfo: nil
+            )
+            
+            ErrorManager.shared.setError(appError: e, tab: .words, source: .updateWord)
+            return
+        }
+
+        // Логика обновления слова в массиве
         if let index = words.firstIndex(where: { $0.id == updatedWord.id }) {
             words[index] = updatedWord
         }

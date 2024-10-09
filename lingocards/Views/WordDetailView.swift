@@ -4,6 +4,7 @@ struct WordDetailView: View {
     @Environment(\.presentationMode) private var presentationMode
     @EnvironmentObject var languageManager: LanguageManager
     @State private var editedWord: WordItem
+    @State private var isShowingErrorAlert = false
     @State private var isEditing = false
 
     @Binding var isPresented: Bool
@@ -41,7 +42,7 @@ struct WordDetailView: View {
                         text: $editedWord.tableName,
                         isEditing: false
                     )
-                    
+
                     AppTextField(
                         placeholder: languageManager.localizedString(for: "Hint").capitalizedFirstLetter,
                         text: $editedWord.hint.unwrap(default: ""),
@@ -93,9 +94,7 @@ struct WordDetailView: View {
                                     languageManager.localizedString(for: "Edit").capitalizedFirstLetter
                 ) {
                     if isEditing {
-                        onSave(editedWord)
-                        isEditing = false
-                        presentationMode.wrappedValue.dismiss()
+                        updateWord(editedWord)
                     } else {
                         isEditing = true
                     }
@@ -103,6 +102,28 @@ struct WordDetailView: View {
                 .disabled(isEditing && isSaveDisabled)
             )
             .animation(.easeInOut, value: isEditing)
+            .alert(isPresented: $isShowingErrorAlert) {
+                Alert(
+                    title: Text(languageManager.localizedString(for: "Error")),
+                    message: Text("Failed to update the word due to database issues."),
+                    dismissButton: .default(Text(languageManager.localizedString(for: "Close")))
+                )
+            }
+        }
+    }
+
+    private func updateWord(_ word: WordItem) {
+        let previousWord = editedWord
+
+        onSave(word)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            if let error = ErrorManager.shared.currentError, error.source == .updateWord {
+                self.editedWord = previousWord
+                self.isShowingErrorAlert = true
+            } else {
+                self.isEditing = false
+                self.presentationMode.wrappedValue.dismiss()
+            }
         }
     }
 

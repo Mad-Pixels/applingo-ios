@@ -40,8 +40,10 @@ final class ErrorManager: ObservableObject {
         let error = GlobalError.custom(appError: appError, tab: tab, source: source)
         logError(appError)
         DispatchQueue.main.async {
+            self.objectWillChange.send()
             self.currentError = error
             self.isErrorVisible = true
+            Logger.debug("[ErrorManager]: Error set: \(appError.errorMessage), isVisible: \(self.isErrorVisible)")
         }
     }
 
@@ -49,6 +51,7 @@ final class ErrorManager: ObservableObject {
         DispatchQueue.main.async {
             self.currentError = nil
             self.isErrorVisible = false
+            Logger.debug("[ErrorManager]: Error cleared, isVisible: \(self.isErrorVisible)")
         }
     }
 
@@ -57,6 +60,7 @@ final class ErrorManager: ObservableObject {
             if let currentError = self.currentError, currentError.source == source {
                 self.currentError = nil
                 self.isErrorVisible = false
+                Logger.debug("[ErrorManager]: Error for source \(source) cleared")
             }
         }
     }

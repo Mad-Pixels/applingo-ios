@@ -14,6 +14,7 @@ enum ErrorSource: String {
     case saveWord
     case unknown
     case deleteWord
+    case updateWord
 }
 
 struct AppError: Error, LocalizedError, Equatable, Identifiable {
