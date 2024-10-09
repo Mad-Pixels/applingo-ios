@@ -3,8 +3,8 @@ import Combine
 
 enum GlobalError: Error, LocalizedError, Identifiable, Equatable {
     var id: UUID { UUID() }
-    
-    case custom(appError: AppError, context: ErrorContext, source: ErrorSource)
+
+    case custom(appError: AppError, tab: AppTab, source: ErrorSource)
     
     var errorDescription: String? {
         switch self {
@@ -13,7 +13,7 @@ enum GlobalError: Error, LocalizedError, Identifiable, Equatable {
         }
     }
 
-    var context: ErrorContext {
+    var tab: AppTab {
         switch self {
         case .custom(_, let context, _):
             return context
@@ -30,36 +30,25 @@ enum GlobalError: Error, LocalizedError, Identifiable, Equatable {
 
 final class ErrorManager: ObservableObject {
     static let shared = ErrorManager()
-    private var dismissTimer: AnyCancellable?
-
+    
     @Published var currentError: GlobalError?
     @Published var isErrorVisible: Bool = false
-    
+
     private init() {}
 
-    func setError(appError: AppError, context: ErrorContext, source: ErrorSource, dismissAfter seconds: TimeInterval = 7.5) {
-        let error = GlobalError.custom(appError: appError, context: context, source: source)
-        setError(error, dismissAfter: seconds)
+    func setError(appError: AppError, tab: AppTab, source: ErrorSource) {
+        let error = GlobalError.custom(appError: appError, tab: tab, source: source)
         logError(appError)
-    }
-
-    func setError(_ error: GlobalError, dismissAfter seconds: TimeInterval = 2.0) {
         DispatchQueue.main.async {
             self.currentError = error
             self.isErrorVisible = true
-            self.startDismissTimer(after: seconds)
         }
-    }
-
-    private func logError(_ appError: AppError) {
-        LogHandler.shared.sendError(appError.errorMessage, type: appError.errorType, additionalInfo: appError.additionalInfo)
     }
 
     func clearError() {
         DispatchQueue.main.async {
             self.currentError = nil
             self.isErrorVisible = false
-            self.dismissTimer?.cancel()
         }
     }
 
@@ -68,23 +57,24 @@ final class ErrorManager: ObservableObject {
             if let currentError = self.currentError, currentError.source == source {
                 self.currentError = nil
                 self.isErrorVisible = false
-                self.dismissTimer?.cancel()
+            }
+        }
+    }
+
+    func clearErrors(for tab: AppTab) {
+        DispatchQueue.main.async {
+            if let currentError = self.currentError, currentError.tab == tab {
+                self.currentError = nil
+                self.isErrorVisible = false
             }
         }
     }
     
-    func isVisible(for context: ErrorContext, source: ErrorSource) -> Bool {
-        guard let error = currentError else { return false }
-        return error.context == context && error.source == source && isErrorVisible
+    func isVisible(for tab: AppTab, source: ErrorSource) -> Bool {
+        return isErrorVisible && currentError?.tab == tab && currentError?.source == source
     }
-
-    private func startDismissTimer(after seconds: TimeInterval) {
-        dismissTimer?.cancel()
-
-        dismissTimer = Just(())
-            .delay(for: .seconds(seconds), scheduler: DispatchQueue.main)
-            .sink { [weak self] in
-                self?.clearError()
-            }
+    
+    private func logError(_ appError: AppError) {
+        LogHandler.shared.sendError(appError.errorMessage, type: appError.errorType, additionalInfo: appError.additionalInfo)
     }
 }

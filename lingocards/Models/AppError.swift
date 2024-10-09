@@ -1,18 +1,11 @@
 import Foundation
 
-enum ErrorContext: String, Codable {
-    case words
-    case dictionaries
-    case settings
-    case general
-}
-
 enum ErrorType: String, Codable {
-    case database = "database"
-    case network = "network"
-    case unknown = "unknown"
-    case api = "api"
-    case ui = "ui"
+    case database
+    case network
+    case unknown
+    case api
+    case ui
 }
 
 enum ErrorSource: String {
@@ -24,7 +17,7 @@ enum ErrorSource: String {
 }
 
 struct AppError: Error, LocalizedError, Equatable, Identifiable {
-    var id: UUID { UUID() }
+    let id: UUID = UUID()
     let errorType: ErrorType
     let errorMessage: String
     let additionalInfo: [String: String]?

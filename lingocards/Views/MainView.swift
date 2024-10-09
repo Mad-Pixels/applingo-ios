@@ -15,7 +15,7 @@ struct MainView: View {
                         Image(systemName: "book.fill")
                     }
                 }
-                .tag(Tab.learn)
+                .tag(AppTab.learn)
 
             TabDictionariesView()
                 .tabItem {
@@ -25,7 +25,7 @@ struct MainView: View {
                         Image(systemName: "folder.fill")
                     }
                 }
-                .tag(Tab.dictionaries)
+                .tag(AppTab.dictionaries)
 
             TabWordsView()
                 .tabItem {
@@ -35,7 +35,7 @@ struct MainView: View {
                         Image(systemName: "textformat")
                     }
                 }
-                .tag(Tab.words)
+                .tag(AppTab.words)
 
             TabSettingsView()
                 .tabItem {
@@ -45,7 +45,7 @@ struct MainView: View {
                         Image(systemName: "gearshape.fill")
                     }
                 }
-                .tag(Tab.settings)
+                .tag(AppTab.settings)
         }
         .preferredColorScheme(themeManager.currentTheme == .dark ? .dark : .light)
         .onChange(of: tabManager.activeTab) { oldTab, newTab in

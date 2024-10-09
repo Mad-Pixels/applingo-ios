@@ -100,6 +100,7 @@ struct WordDetailView: View {
                         isEditing = true
                     }
                 }
+                .disabled(isEditing && isSaveDisabled)
             )
             .animation(.easeInOut, value: isEditing)
         }
@@ -109,5 +110,10 @@ struct WordDetailView: View {
         let total = Double(editedWord.success + editedWord.fail)
         guard total > 0 else { return 0 }
         return Double(editedWord.fail) / total
+    }
+    
+    private var isSaveDisabled: Bool {
+        editedWord.frontText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ||
+        editedWord.backText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 }

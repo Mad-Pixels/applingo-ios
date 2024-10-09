@@ -7,6 +7,7 @@ final class TabWordsViewModel: ObservableObject {
         didSet {
             // Вызов getWords только при изменении searchText и активной вкладке
             if isActiveTab {
+                Logger.debug("BBBBB: getwords")
                 getWords(search: searchText)
             }
         }
@@ -22,31 +23,32 @@ final class TabWordsViewModel: ObservableObject {
             .publisher(for: .didSelectWordsTab)
             .sink { [weak self] _ in
                 self?.isActiveTab = true  // Устанавливаем флаг активности
+                Logger.debug("AAA: flag isActiveTab true")
                 self?.getWords(search: self?.searchText ?? "")
             }
 
         // Подписка на изменения видимости ошибки
-        errorCancellable = ErrorManager.shared.$isErrorVisible
-            .sink { [weak self] isVisible in
-                // Если ошибка исчезла и вкладка активна, вызываем getWords
-                if !isVisible, self?.isActiveTab == true {
-                    self?.getWords(search: self?.searchText ?? "")
-                }
-            }
+//        errorCancellable = ErrorManager.shared.$isErrorVisible
+//            .sink { [weak self] isVisible in
+//                // Если ошибка исчезла и вкладка активна, вызываем getWords
+//                if !isVisible, self?.isActiveTab == true {
+//                    self?.getWords(search: self?.searchText ?? "")
+//                }
+//            }
     }
 
     // Основной метод получения данных
     func getWords(search: String = "") {
         // Проверяем, существует ли активная ошибка для `getWords`
-        if let error = ErrorManager.shared.currentError, error.source == .getWords {
-            Logger.debug("[WordsViewModel]: Cannot fetch words - an active error from getWords exists.")
-            return
-        }
+//        if let error = ErrorManager.shared.currentError, error.source == .getWords {
+//            Logger.debug("[WordsViewModel]: Cannot fetch words - an active error from getWords exists.")
+//            return
+//        }
 
         Logger.debug("[WordsViewModel]: fetching words...")
 
         // С вероятностью 10% возвращаем ошибку для `getWords`
-        if Int.random(in: 1...10) <= 1 {
+        if Int.random(in: 1...10) <= 2 {
             Logger.debug("[WordsViewModel]: failed to fetch words")
             self.words = []
 
@@ -59,7 +61,7 @@ final class TabWordsViewModel: ObservableObject {
             // Создаем AppError и передаем в ErrorManager
             ErrorManager.shared.setError(
                 appError: error,
-                context: .words,
+                tab: .words,
                 source: .getWords
             )
             return
@@ -110,7 +112,7 @@ final class TabWordsViewModel: ObservableObject {
                 errorMessage: "Failed to delete the word due to database issues",
                 additionalInfo: ["Context": "TabWordsViewModel", "WordID": "\(word.id)"]
             )
-            ErrorManager.shared.setError(appError: error, context: .words, source: .deleteWord)
+            ErrorManager.shared.setError(appError: error, tab: .words, source: .deleteWord)
             Logger.debug("[WordsViewModel]: Failed to delete word with ID \(word.id) due to database issues")
             return
         }

@@ -18,8 +18,8 @@ struct TabWordsView: View {
                 )
                 .padding(.bottom, 10)
 
-                if errorManager.isVisible(for: .words, source: .getWords) {
-                    Text(errorManager.currentError?.errorDescription ?? "")
+                if let error = errorManager.currentError, errorManager.isVisible(for: .words, source: .getWords) {
+                    Text(error.errorDescription ?? "")
                         .foregroundColor(.red)
                         .padding()
                         .multilineTextAlignment(.center)
@@ -58,6 +58,7 @@ struct TabWordsView: View {
                         .onDelete(perform: deleteWord)
                     }
                 }
+
                 Spacer()
             }
             .navigationTitle(languageManager.localizedString(for: "Words").capitalizedFirstLetter)
@@ -76,23 +77,19 @@ struct TabWordsView: View {
                 }
             }
             .onChange(of: errorManager.currentError) { _, newError in
-                if let error = newError, error.context == .words, error.source == .deleteWord {
+                if let error = newError, error.tab == .words, error.source == .deleteWord {
                     isShowingAlert = true
-                    autoDismissAlert()
                 }
             }
-            .alert(
-                isPresented: $isShowingAlert,
-                content: {
-                    Alert(
-                        title: Text(languageManager.localizedString(for: "Error")),
-                        message: Text(errorManager.currentError?.errorDescription ?? ""),
-                        dismissButton: .default(Text(languageManager.localizedString(for: "Close"))) {
-                            errorManager.clearError()
-                        }
-                    )
-                }
-            )
+            .alert(isPresented: $isShowingAlert) {
+                Alert(
+                    title: Text(languageManager.localizedString(for: "Error")),
+                    message: Text(errorManager.currentError?.errorDescription ?? ""),
+                    dismissButton: .default(Text(languageManager.localizedString(for: "Close"))) {
+                        errorManager.clearError()
+                    }
+                )
+            }
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
         .sheet(item: $selectedWord) { word in
@@ -104,15 +101,6 @@ struct TabWordsView: View {
         offsets.forEach { index in
             let word = viewModel.words[index]
             viewModel.deleteWord(word)
-        }
-    }
-    
-    private func autoDismissAlert() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 7) {
-            if isShowingAlert {
-                isShowingAlert = false
-                errorManager.clearError()
-            }
         }
     }
 }
