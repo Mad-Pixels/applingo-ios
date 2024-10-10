@@ -37,10 +37,11 @@ struct TabDictionariesView: View {
                                     .font(.subheadline)
                                     .foregroundColor(.gray)
                             }
+                            .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.vertical, 4)
-                            .contentShape(Rectangle()) // Позволяет нажатие на весь контейнер
+                            .contentShape(Rectangle())
                             .onTapGesture {
-                                selectedDictionary = dictionary // Устанавливаем выбранный элемент
+                                selectedDictionary = dictionary
                             }
                         }
                         .onDelete(perform: deleteDictionary)
