@@ -6,6 +6,7 @@ struct TabDictionariesView: View {
     @StateObject private var viewModel = TabDictionariesViewModel()
     @StateObject private var errorManager = ErrorManager.shared
     @State private var isShowingAlert = false
+    @State private var selectedDictionary: DictionaryItem?
 
     var body: some View {
         NavigationView {
@@ -31,13 +32,16 @@ struct TabDictionariesView: View {
                             VStack(alignment: .leading) {
                                 Text(dictionary.displayName)
                                     .font(.headline)
-                                    .padding(.vertical, 4)
-                                
-                                Text(dictionary.description)
+
+                                Text(dictionary.subcategory)
                                     .font(.subheadline)
                                     .foregroundColor(.gray)
                             }
                             .padding(.vertical, 4)
+                            .contentShape(Rectangle()) // Позволяет нажатие на весь контейнер
+                            .onTapGesture {
+                                selectedDictionary = dictionary // Устанавливаем выбранный элемент
+                            }
                         }
                         .onDelete(perform: deleteDictionary)
                     }
@@ -52,7 +56,7 @@ struct TabDictionariesView: View {
                     viewModel.getDictionaries()
                 }
             }
-            .onChange(of: tabManager.activeTab) { oldTab, newTab in
+            .onChange(of: tabManager.activeTab) { _, newTab in
                 if newTab != .dictionaries {
                     tabManager.deactivateTab(.dictionaries)
                 }
@@ -71,6 +75,15 @@ struct TabDictionariesView: View {
                     }
                 )
             }
+        }
+        .sheet(item: $selectedDictionary) { dictionary in
+            DictionaryDetailView(
+                dictionary: dictionary,
+                isPresented: .constant(true), // Постоянное значение true для управления отображением листа
+                onSave: { updatedDictionary, completion in
+                    viewModel.updateDictionary(updatedDictionary, completion: completion)
+                }
+            )
         }
     }
 

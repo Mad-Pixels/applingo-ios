@@ -4,6 +4,9 @@
     "" : {
 
     },
+    "%@" : {
+
+    },
     "%lld" : {
 
     },
@@ -210,6 +213,9 @@
           }
         }
       }
+    },
+    "Failed to update the dictionary due to database issues." : {
+
     },
     "Failed to update the word due to database issues." : {
 

@@ -80,4 +80,33 @@ final class TabDictionariesViewModel: ObservableObject {
         dictionaries.removeAll { $0.id == dictionary.id }
         Logger.debug("[DictionariesViewModel]: Dictionary was deleted successfully")
     }
+    
+    func updateDictionary(_ updatedDictionary: DictionaryItem, completion: @escaping (Result<Void, Error>) -> Void) {
+            // С вероятностью 10% возвращаем ошибку
+            if Int.random(in: 1...3) <= 1 {
+                let error = AppError(
+                    errorType: .database,
+                    errorMessage: "Failed to update dictionary with ID \(updatedDictionary.id) due to database issues",
+                    additionalInfo: nil
+                )
+                completion(.failure(error))
+                return
+            }
+
+            // Ищем индекс словаря, который нужно обновить
+            if let index = dictionaries.firstIndex(where: { $0.id == updatedDictionary.id }) {
+                dictionaries[index] = updatedDictionary
+                Logger.debug("[TabDictionariesViewModel]: Dictionary updated successfully")
+                completion(.success(()))
+            } else {
+                // Обрабатываем случай, когда словарь не найден
+                let error = AppError(
+                    errorType: .unknown,
+                    errorMessage: "Dictionary with ID \(updatedDictionary.id) not found",
+                    additionalInfo: nil
+                )
+                ErrorManager.shared.setError(appError: error, tab: .dictionaries, source: .updateDictionary)
+                completion(.failure(error))
+            }
+        }
 }
