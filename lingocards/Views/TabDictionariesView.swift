@@ -46,12 +46,11 @@ struct TabDictionariesView: View {
                                     selectedDictionary = dictionary
                                 }
 
-                                // Добавление Toggle с чекбоксом для изменения статуса словаря
                                 Toggle(isOn: $dictionary.isActive) {
                                     EmptyView()
                                 }
-                                .toggleStyle(CheckboxToggleStyle()) // Используем CheckboxToggleStyle для стилизации как чекбокс
-                                .onChange(of: dictionary.isActive) { newStatus in
+                                .toggleStyle(CheckboxToggleStyle())
+                                .onChange(of: dictionary.isActive) { oldStatus, newStatus in
                                     updateDictionaryStatus(dictionary, newStatus: newStatus)
                                 }
                             }
@@ -102,7 +101,6 @@ struct TabDictionariesView: View {
         }
     }
 
-    // Метод для удаления словаря
     private func deleteDictionary(at offsets: IndexSet) {
         offsets.forEach { index in
             let dictionary = viewModel.dictionaries[index]
@@ -110,7 +108,6 @@ struct TabDictionariesView: View {
         }
     }
 
-    // Метод для обновления статуса словаря и обработки ошибок
     private func updateDictionaryStatus(_ dictionary: DictionaryItem, newStatus: Bool) {
         viewModel.updateDictionaryStatus(dictionary.id, newStatus: newStatus) { result in
             DispatchQueue.main.async {
@@ -121,7 +118,6 @@ struct TabDictionariesView: View {
                     alertMessage = error.localizedDescription
                     isShowingAlert = true
 
-                    // Если ошибка, возвращаем прежнее состояние
                     if let index = viewModel.dictionaries.firstIndex(where: { $0.id == dictionary.id }) {
                         viewModel.dictionaries[index].isActive.toggle()
                     }
