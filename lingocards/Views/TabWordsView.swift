@@ -111,7 +111,9 @@ struct TabWordsView: View {
             }
         }
         .sheet(item: $selectedWord) { word in
-            WordDetailView(word: word, isPresented: $isShowingDetailView, onSave: viewModel.updateWord)
+            WordDetailView(word: word, isPresented: $isShowingDetailView, onSave: { updatedWord, completion in
+                viewModel.updateWord(updatedWord, completion: completion)
+            })
         }
     }
 

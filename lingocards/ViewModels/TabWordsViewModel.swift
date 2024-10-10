@@ -97,25 +97,32 @@ final class TabWordsViewModel: ObservableObject {
         errorCancellable?.cancel()
     }
 
-    func updateWord(_ updatedWord: WordItem) {
-        // С вероятностью 10% возвращаем ошибку
+    func updateWord(_ updatedWord: WordItem, completion: @escaping (Result<Void, Error>) -> Void) {
         if Int.random(in: 1...3) <= 1 {
             let e = AppError(
                 errorType: .database,
                 errorMessage: "Failed to update word with ID \(updatedWord.id) due to database issues",
                 additionalInfo: nil
             )
-            
-            ErrorManager.shared.setError(appError: e, tab: .words, source: .updateWord)
+            completion(.failure(e))
             return
         }
 
-        // Логика обновления слова в массиве
         if let index = words.firstIndex(where: { $0.id == updatedWord.id }) {
             words[index] = updatedWord
+            Logger.debug("[WordsViewModel]: Word updated successfully")
+            completion(.success(()))
+        } else {
+            let e = AppError(
+                errorType: .unknown,
+                errorMessage: "Word with ID \(updatedWord.id) not found",
+                additionalInfo: nil
+            )
+            ErrorManager.shared.setError(appError: e, tab: .words, source: .updateWord)
+            completion(.failure(e))
         }
-        Logger.debug("[WordsViewModel]: Word updated successfully")
     }
+
 
     func deleteWord(_ word: WordItem) {
         // С вероятностью 10% возвращаем ошибку

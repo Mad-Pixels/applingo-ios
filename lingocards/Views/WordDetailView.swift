@@ -8,11 +8,11 @@ struct WordDetailView: View {
     @State private var isEditing = false
 
     @Binding var isPresented: Bool
-    let onSave: (WordItem) -> Void
+    let onSave: (WordItem, @escaping (Result<Void, Error>) -> Void) -> Void
 
     private let originalWord: WordItem
 
-    init(word: WordItem, isPresented: Binding<Bool>, onSave: @escaping (WordItem) -> Void) {
+    init(word: WordItem, isPresented: Binding<Bool>, onSave: @escaping (WordItem, @escaping (Result<Void, Error>) -> Void) -> Void) {
         _editedWord = State(initialValue: word)
         _isPresented = isPresented
         self.onSave = onSave
@@ -115,14 +115,17 @@ struct WordDetailView: View {
     private func updateWord(_ word: WordItem) {
         let previousWord = editedWord
 
-        onSave(word)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-            if let error = ErrorManager.shared.currentError, error.source == .updateWord {
-                self.editedWord = previousWord
-                self.isShowingErrorAlert = true
-            } else {
+        onSave(word) { result in
+            switch result {
+            case .success:
                 self.isEditing = false
                 self.presentationMode.wrappedValue.dismiss()
+            case .failure(let error):
+                if let appError = error as? AppError {
+                    ErrorManager.shared.setError(appError: appError, tab: .words, source: .updateWord)
+                }
+                self.editedWord = previousWord
+                self.isShowingErrorAlert = true
             }
         }
     }
