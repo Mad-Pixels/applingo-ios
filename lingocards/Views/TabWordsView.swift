@@ -5,9 +5,11 @@ struct TabWordsView: View {
     @EnvironmentObject var tabManager: TabManager
     @StateObject private var viewModel = TabWordsViewModel()
     @StateObject private var errorManager = ErrorManager.shared
-    @State private var selectedWord: WordItem?
-    @State private var isShowingDetail = false
+    @State private var isShowingDetailView = false
+    @State private var isShowingAddView = false
     @State private var isShowingAlert = false
+    @State private var dictionaries: [DictionaryItem] = []
+    @State private var selectedWord: WordItem?
 
     var body: some View {
         NavigationView {
@@ -24,6 +26,7 @@ struct TabWordsView: View {
                         .padding()
                         .multilineTextAlignment(.center)
                 }
+
                 if viewModel.words.isEmpty && !errorManager.isErrorVisible {
                     Spacer()
                     Text(languageManager.localizedString(for: "NoWordsAvailable"))
@@ -50,7 +53,7 @@ struct TabWordsView: View {
                             .padding(.vertical, 4)
                             .contentShape(Rectangle())
                             .onTapGesture {
-                                isShowingDetail = true
+                                isShowingDetailView = true
                                 selectedWord = word
                             }
                         }
@@ -82,6 +85,11 @@ struct TabWordsView: View {
                     isShowingAlert = true
                 }
             }
+            .overlay(
+                ButtonAdd {
+                    invokeAddWord()
+                }
+            )
             .alert(isPresented: $isShowingAlert) {
                 Alert(
                     title: Text(languageManager.localizedString(for: "Error")),
@@ -93,8 +101,17 @@ struct TabWordsView: View {
             }
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
+        .sheet(isPresented: $isShowingAddView) {
+            if !dictionaries.isEmpty {
+                WordAddView(
+                    isPresented: $isShowingAddView,
+                    onSave: viewModel.saveWord,
+                    dictionaries: dictionaries
+                )
+            }
+        }
         .sheet(item: $selectedWord) { word in
-            WordDetailView(word: word, isPresented: $isShowingDetail, onSave: viewModel.updateWord)
+            WordDetailView(word: word, isPresented: $isShowingDetailView, onSave: viewModel.updateWord)
         }
     }
 
@@ -103,5 +120,20 @@ struct TabWordsView: View {
             let word = viewModel.words[index]
             viewModel.deleteWord(word)
         }
+    }
+
+    private func invokeAddWord() {
+        Logger.debug("[TabWordsView]: Fetching dictionaries...")
+//        let fetchedDictionaries = viewModel.getDictionaries()
+//        Logger.debug("Fetched dictionaries: \(fetchedDictionaries)")
+//        
+//        if fetchedDictionaries.isEmpty, let error = errorManager.currentError, error.source == .fetchData {
+//            Logger.debug("[TabWordsView]: Error while fetching dictionaries.")
+//            isShowingAlert = true // Показываем алерт, если getDictionaries вернул ошибку
+//        } else {
+//            Logger.debug("[TabWordsView]: Dictionaries successfully fetched, showing WordAddView.")
+//            dictionaries = fetchedDictionaries // Сохраняем словари
+//            isShowingAddView = true // Переходим к добавлению нового слова
+//        }
     }
 }

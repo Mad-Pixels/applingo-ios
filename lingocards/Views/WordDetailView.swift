@@ -116,7 +116,7 @@ struct WordDetailView: View {
         let previousWord = editedWord
 
         onSave(word)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             if let error = ErrorManager.shared.currentError, error.source == .updateWord {
                 self.editedWord = previousWord
                 self.isShowingErrorAlert = true

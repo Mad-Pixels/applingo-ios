@@ -134,4 +134,48 @@ final class TabWordsViewModel: ObservableObject {
         words.removeAll { $0.id == word.id }
         Logger.debug("[WordsViewModel]: Word was deleted successfully")
     }
+    
+    func saveWord(_ word: WordItem) {
+        if Int.random(in: 1...10) <= 0 {
+            Logger.debug("[WordsViewModel]: Failed to save word")
+
+            let error = AppError(
+                errorType: .database,
+                errorMessage: "Failed to save word due to database issues",
+                additionalInfo: ["WordID": "\(word.id)"]
+            )
+
+            ErrorManager.shared.setError(appError: error, tab: .words, source: .saveWord)
+            return
+        }
+
+        words.append(word)
+        Logger.debug("[WordsViewModel]: Word saved successfully")
+    }
+    
+    func getDictionaries() -> [DictionaryItem] {
+        if Int.random(in: 1...10) <= 0 {
+            Logger.debug("[WordsViewModel]: Failed to fetch dictionaries")
+                
+            let error = AppError(
+                errorType: .database,
+                errorMessage: "Failed to fetch dictionaries due to database issues",
+                additionalInfo: nil
+            )
+                
+            ErrorManager.shared.setError(appError: error, tab: .dictionaries, source: .fetchData)
+            return []
+        }
+
+        let dictionaries: [DictionaryItem] = [
+            DictionaryItem(id: 1, hashId: 101, displayName: "English Words", tableName: "english_words", description: "Basic English vocabulary", category: "Language", subcategory: "en-ru", author: "Author1", createdAt: 1633065600, isPrivate: false, isActive: true),
+            DictionaryItem(id: 2, hashId: 102, displayName: "French Words", tableName: "french_words", description: "Basic French vocabulary", category: "Language", subcategory: "fr-ru", author: "Author2", createdAt: 1633065700, isPrivate: false, isActive: true),
+            DictionaryItem(id: 3, hashId: 103, displayName: "Spanish Words", tableName: "spanish_words", description: "Basic Spanish vocabulary", category: "Language", subcategory: "es-ru", author: "Author3", createdAt: 1633065800, isPrivate: false, isActive: true),
+            DictionaryItem(id: 4, hashId: 104, displayName: "German Words", tableName: "german_words", description: "Basic German vocabulary", category: "Language", subcategory: "d-ru", author: "Author4", createdAt: 1633065900, isPrivate: false, isActive: true),
+            DictionaryItem(id: 5, hashId: 105, displayName: "Russian Words", tableName: "russian_words", description: "Basic Russian vocabulary", category: "Language", subcategory: "ru-ru", author: "Author5", createdAt: 1633066000, isPrivate: false, isActive: true)
+        ]
+
+        Logger.debug("[WordsViewModel]: Dictionaries data successfully fetched")
+        return dictionaries
+    }
 }
