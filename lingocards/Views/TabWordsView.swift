@@ -8,7 +8,6 @@ struct TabWordsView: View {
     @State private var isShowingDetailView = false
     @State private var isShowingAddView = false
     @State private var isShowingAlert = false
-    @State private var dictionaries: [DictionaryItem] = []
     @State private var selectedWord: WordItem?
 
     var body: some View {
@@ -70,7 +69,7 @@ struct TabWordsView: View {
                     viewModel.getWords(search: viewModel.searchText)
                 }
             }
-            .onChange(of: tabManager.activeTab) { oldTab, newTab in
+            .onChange(of: tabManager.activeTab) { _, newTab in
                 if newTab != .words {
                     tabManager.deactivateTab(.words)
                 }
@@ -102,18 +101,20 @@ struct TabWordsView: View {
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
         .sheet(isPresented: $isShowingAddView) {
-            if !dictionaries.isEmpty {
-                WordAddView(
-                    isPresented: $isShowingAddView,
-                    onSave: viewModel.saveWord,
-                    dictionaries: dictionaries
-                )
-            }
+            WordAddView(
+                dictionaries: viewModel.dictionaries,
+                isPresented: $isShowingAddView,
+                onSave: viewModel.saveWord
+            )
         }
         .sheet(item: $selectedWord) { word in
-            WordDetailView(word: word, isPresented: $isShowingDetailView, onSave: { updatedWord, completion in
-                viewModel.updateWord(updatedWord, completion: completion)
-            })
+            WordDetailView(
+                word: word,
+                isPresented: $isShowingDetailView,
+                onSave: { updatedWord, completion in
+                    viewModel.updateWord(updatedWord, completion: completion)
+                }
+            )
         }
     }
 
@@ -126,13 +127,16 @@ struct TabWordsView: View {
 
     private func addWord() {
         viewModel.getDictionaries { result in
-            switch result {
-            case .success(let dictionaries):
-                self.dictionaries = dictionaries
-                self.isShowingAddView = true
-            case .failure(let error):
-                self.isShowingAlert = true
-                ErrorManager.shared.setError(appError: error as! AppError, tab: .words, source: .fetchData)
+            DispatchQueue.main.async {
+                switch result {
+                case .success:
+                    self.isShowingAddView = true
+                case .failure(let error):
+                    self.isShowingAlert = true
+                    if let appError = error as? AppError {
+                        ErrorManager.shared.setError(appError: appError, tab: .words, source: .fetchData)
+                    }
+                }
             }
         }
     }

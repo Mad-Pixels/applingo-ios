@@ -1,5 +1,3 @@
-import Foundation
-
 struct WordItem: Identifiable, Codable, Equatable {
     var id: Int
     var hashId: Int
@@ -43,5 +41,19 @@ struct WordItem: Identifiable, Codable, Equatable {
         self.success = success
         self.fail = fail
         self.weight = weight
+    }
+    
+    static func empty() -> WordItem {
+        return WordItem(
+            id: 0,
+            hashId: 0,
+            tableName: "",
+            frontText: "",
+            backText: "",
+            description: nil,
+            hint: nil,
+            createdAt: 0,
+            salt: 0
+        )
     }
 }

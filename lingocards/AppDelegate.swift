@@ -5,6 +5,7 @@ import IQKeyboardManagerSwift
 struct LingocardApp: App {
     @StateObject private var languageManager = LanguageManager()
     @StateObject private var themeManager = ThemeManager()
+    @StateObject private var errorManager = ErrorManager.shared
     @StateObject private var tabManager = TabManager.shared
     
     init() {
@@ -18,6 +19,7 @@ struct LingocardApp: App {
         WindowGroup {
             MainView()
                 .environmentObject(languageManager)
+                .environmentObject(errorManager)
                 .environmentObject(themeManager)
                 .environmentObject(tabManager)
         }

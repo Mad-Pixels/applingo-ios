@@ -2,6 +2,7 @@ import Foundation
 import Combine
 
 final class TabWordsViewModel: ObservableObject {
+    @Published var dictionaries: [DictionaryItem] = []
     @Published var words: [WordItem] = []
     @Published var searchText: String = "" {
         didSet {
@@ -143,7 +144,7 @@ final class TabWordsViewModel: ObservableObject {
     }
     
     func saveWord(_ word: WordItem) {
-        if Int.random(in: 1...10) <= 0 {
+        if Int.random(in: 1...10) <= 10 {
             Logger.debug("[WordsViewModel]: Failed to save word")
 
             let error = AppError(
@@ -160,28 +161,35 @@ final class TabWordsViewModel: ObservableObject {
         Logger.debug("[WordsViewModel]: Word saved successfully")
     }
     
+    
     func getDictionaries(completion: @escaping (Result<[DictionaryItem], Error>) -> Void) {
-        // С вероятностью 10% возвращаем ошибку
-        if Int.random(in: 1...10) <= 1 {
-            let error = AppError(
-                errorType: .database,
-                errorMessage: "Failed to fetch dictionaries due to database issues",
-                additionalInfo: nil
-            )
-            completion(.failure(error))
-            return
-        }
+        DispatchQueue.global().async {
+                    // С вероятностью 10% возвращаем ошибку
+                    if Int.random(in: 1...10) <= 1 {
+                        let error = AppError(
+                            errorType: .database,
+                            errorMessage: "Failed to fetch dictionaries due to database issues",
+                            additionalInfo: nil
+                        )
+                        DispatchQueue.main.async {
+                            completion(.failure(error))
+                        }
+                        return
+                    }
 
-        // Генерация тестовых данных для словарей
-        let testData: [DictionaryItem] = [
-            DictionaryItem(id: 1, hashId: 101, displayName: "English Words", tableName: "english_words", description: "Basic English vocabulary", category: "Language", subcategory: "en-en", author: "Author1", createdAt: 1633065600, isPrivate: false, isActive: true),
-            DictionaryItem(id: 2, hashId: 102, displayName: "French Words", tableName: "french_words", description: "Basic French vocabulary", category: "Language", subcategory: "en-en", author: "Author2", createdAt: 1633065700, isPrivate: false, isActive: true),
-            DictionaryItem(id: 3, hashId: 103, displayName: "Spanish Words", tableName: "spanish_words", description: "Basic Spanish vocabulary", category: "Language", subcategory: "en-en", author: "Author3", createdAt: 1633065800, isPrivate: false, isActive: true),
-            DictionaryItem(id: 4, hashId: 104, displayName: "German Words", tableName: "german_words", description: "Basic German vocabulary", category: "Language", subcategory: "en-en", author: "Author4", createdAt: 1633065900, isPrivate: false, isActive: true),
-            DictionaryItem(id: 5, hashId: 105, displayName: "Russian Words", tableName: "russian_words", description: "Basic Russian vocabulary", category: "Language", subcategory: "en-en", author: "Author5", createdAt: 1633066000, isPrivate: false, isActive: true)
-        ]
+                    // Генерация тестовых данных для словарей
+            let testData: [DictionaryItem] = [
+                DictionaryItem(id: 1, hashId: 101, displayName: "English Words", tableName: "english_words", description: "Basic English vocabulary", category: "Language", subcategory: "en-en", author: "Author1", createdAt: 1633065600, isPrivate: false, isActive: true),
+                DictionaryItem(id: 2, hashId: 102, displayName: "French Words", tableName: "french_words", description: "Basic French vocabulary", category: "Language", subcategory: "en-en", author: "Author2", createdAt: 1633065700, isPrivate: false, isActive: true),
+                DictionaryItem(id: 3, hashId: 103, displayName: "Spanish Words", tableName: "spanish_words", description: "Basic Spanish vocabulary", category: "Language", subcategory: "en-en", author: "Author3", createdAt: 1633065800, isPrivate: false, isActive: true),
+                DictionaryItem(id: 4, hashId: 104, displayName: "German Words", tableName: "german_words", description: "Basic German vocabulary", category: "Language", subcategory: "en-en", author: "Author4", createdAt: 1633065900, isPrivate: false, isActive: true),
+                DictionaryItem(id: 5, hashId: 105, displayName: "Russian Words", tableName: "russian_words", description: "Basic Russian vocabulary", category: "Language", subcategory: "en-en", author: "Author5", createdAt: 1633066000, isPrivate: false, isActive: true)
+            ]
 
-        // Возвращаем тестовые данные
-        completion(.success(testData))
+                    DispatchQueue.main.async {
+                        self.dictionaries = testData  // Обновляем Published переменную
+                        completion(.success(testData))
+                    }
+                }
     }
 }

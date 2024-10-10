@@ -1,6 +1,6 @@
 import Foundation
 
-struct DictionaryItem: Identifiable, Codable, Equatable {
+struct DictionaryItem: Identifiable, Codable, Equatable, Hashable {
     var id: Int
     var hashId: Int
     
