@@ -300,6 +300,23 @@
         }
       }
     },
+    "NoDictionariesAvailable" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "no dictionaries available"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "список пуст"
+          }
+        }
+      }
+    },
     "NoWordsAvailable" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -411,9 +428,6 @@
         }
       }
     },
-    "testDictionaries" : {
-
-    },
     "testLearn" : {
 
     },
@@ -433,9 +447,6 @@
           }
         }
       }
-    },
-    "This is the Dictionaries View" : {
-
     },
     "This is the Learn View" : {
 
