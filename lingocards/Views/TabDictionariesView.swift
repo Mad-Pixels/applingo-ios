@@ -6,9 +6,10 @@ struct TabDictionariesView: View {
     @StateObject private var viewModel = TabDictionariesViewModel()
     @StateObject private var errorManager = ErrorManager.shared
     @State private var isShowingAlert = false
+    @State private var isShowingAddView = false
     @State private var alertMessage: String = ""
     @State private var selectedDictionary: DictionaryItem?
-
+    
     var body: some View {
         NavigationView {
             VStack {
@@ -80,6 +81,11 @@ struct TabDictionariesView: View {
                     alertMessage = error.errorDescription ?? ""
                 }
             }
+            .overlay(
+                ButtonAdd {
+                    addDictionary()
+                }
+            )
             .alert(isPresented: $isShowingAlert) {
                 Alert(
                     title: Text(languageManager.localizedString(for: "Error")),
@@ -90,10 +96,15 @@ struct TabDictionariesView: View {
                 )
             }
         }
+        .sheet(isPresented: $isShowingAddView) {
+            DictionaryAddView(
+                isPresented: $isShowingAddView
+            )
+        }
         .sheet(item: $selectedDictionary) { dictionary in
             DictionaryDetailView(
                 dictionary: dictionary,
-                isPresented: .constant(true), // Постоянное значение true для управления отображением листа
+                isPresented: .constant(true),
                 onSave: { updatedDictionary, completion in
                     viewModel.updateDictionary(updatedDictionary, completion: completion)
                 }
@@ -124,5 +135,9 @@ struct TabDictionariesView: View {
                 }
             }
         }
+    }
+
+    private func addDictionary() {
+        isShowingAddView = true
     }
 }
