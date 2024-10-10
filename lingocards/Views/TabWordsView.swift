@@ -124,6 +124,8 @@ struct TabWordsView: View {
 
     private func invokeAddWord() {
         Logger.debug("[TabWordsView]: Fetching dictionaries...")
+        dictionaries = viewModel.getDictionaries()
+        Logger.debug("Fetched dictionaries: \(dictionaries)")
 //        let fetchedDictionaries = viewModel.getDictionaries()
 //        Logger.debug("Fetched dictionaries: \(fetchedDictionaries)")
 //        
