@@ -87,7 +87,7 @@ struct TabWordsView: View {
             }
             .overlay(
                 ButtonAdd {
-                    invokeAddWord()
+                    addWord()
                 }
             )
             .alert(isPresented: $isShowingAlert) {
@@ -124,20 +124,16 @@ struct TabWordsView: View {
         }
     }
 
-    private func invokeAddWord() {
-        Logger.debug("[TabWordsView]: Fetching dictionaries...")
-        dictionaries = viewModel.getDictionaries()
-        Logger.debug("Fetched dictionaries: \(dictionaries)")
-//        let fetchedDictionaries = viewModel.getDictionaries()
-//        Logger.debug("Fetched dictionaries: \(fetchedDictionaries)")
-//        
-//        if fetchedDictionaries.isEmpty, let error = errorManager.currentError, error.source == .fetchData {
-//            Logger.debug("[TabWordsView]: Error while fetching dictionaries.")
-//            isShowingAlert = true // Показываем алерт, если getDictionaries вернул ошибку
-//        } else {
-//            Logger.debug("[TabWordsView]: Dictionaries successfully fetched, showing WordAddView.")
-//            dictionaries = fetchedDictionaries // Сохраняем словари
-//            isShowingAddView = true // Переходим к добавлению нового слова
-//        }
+    private func addWord() {
+        viewModel.getDictionaries { result in
+            switch result {
+            case .success(let dictionaries):
+                self.dictionaries = dictionaries
+                self.isShowingAddView = true
+            case .failure(let error):
+                self.isShowingAlert = true
+                ErrorManager.shared.setError(appError: error as! AppError, tab: .words, source: .fetchData)
+            }
+        }
     }
 }
