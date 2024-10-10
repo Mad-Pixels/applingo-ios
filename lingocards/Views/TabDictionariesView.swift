@@ -6,6 +6,7 @@ struct TabDictionariesView: View {
     @StateObject private var viewModel = TabDictionariesViewModel()
     @StateObject private var errorManager = ErrorManager.shared
     @State private var isShowingAlert = false
+    @State private var alertMessage: String = ""
     @State private var selectedDictionary: DictionaryItem?
 
     var body: some View {
@@ -28,21 +29,33 @@ struct TabDictionariesView: View {
                     Spacer()
                 } else {
                     List {
-                        ForEach(viewModel.dictionaries) { dictionary in
-                            VStack(alignment: .leading) {
-                                Text(dictionary.displayName)
-                                    .font(.headline)
+                        ForEach($viewModel.dictionaries, id: \.id) { $dictionary in
+                            HStack {
+                                VStack(alignment: .leading) {
+                                    Text(dictionary.displayName)
+                                        .font(.headline)
 
-                                Text(dictionary.subcategory)
-                                    .font(.subheadline)
-                                    .foregroundColor(.gray)
+                                    Text(dictionary.subcategory)
+                                        .font(.subheadline)
+                                        .foregroundColor(.gray)
+                                }
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding(.vertical, 4)
+                                .contentShape(Rectangle())
+                                .onTapGesture {
+                                    selectedDictionary = dictionary
+                                }
+
+                                // Добавление Toggle с чекбоксом для изменения статуса словаря
+                                Toggle(isOn: $dictionary.isActive) {
+                                    EmptyView()
+                                }
+                                .toggleStyle(CheckboxToggleStyle()) // Используем CheckboxToggleStyle для стилизации как чекбокс
+                                .onChange(of: dictionary.isActive) { newStatus in
+                                    updateDictionaryStatus(dictionary, newStatus: newStatus)
+                                }
                             }
-                            .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.vertical, 4)
-                            .contentShape(Rectangle())
-                            .onTapGesture {
-                                selectedDictionary = dictionary
-                            }
                         }
                         .onDelete(perform: deleteDictionary)
                     }
@@ -65,12 +78,13 @@ struct TabDictionariesView: View {
             .onChange(of: errorManager.currentError) { _, newError in
                 if let error = newError, error.tab == .dictionaries, error.source == .deleteDictionary {
                     isShowingAlert = true
+                    alertMessage = error.errorDescription ?? ""
                 }
             }
             .alert(isPresented: $isShowingAlert) {
                 Alert(
                     title: Text(languageManager.localizedString(for: "Error")),
-                    message: Text(errorManager.currentError?.errorDescription ?? ""),
+                    message: Text(alertMessage),
                     dismissButton: .default(Text(languageManager.localizedString(for: "Close"))) {
                         errorManager.clearError()
                     }
@@ -88,10 +102,31 @@ struct TabDictionariesView: View {
         }
     }
 
+    // Метод для удаления словаря
     private func deleteDictionary(at offsets: IndexSet) {
         offsets.forEach { index in
             let dictionary = viewModel.dictionaries[index]
             viewModel.deleteDictionary(dictionary)
+        }
+    }
+
+    // Метод для обновления статуса словаря и обработки ошибок
+    private func updateDictionaryStatus(_ dictionary: DictionaryItem, newStatus: Bool) {
+        viewModel.updateDictionaryStatus(dictionary.id, newStatus: newStatus) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success:
+                    Logger.debug("[TabDictionariesView]: Successfully updated status for dictionary \(dictionary.displayName).")
+                case .failure(let error):
+                    alertMessage = error.localizedDescription
+                    isShowingAlert = true
+
+                    // Если ошибка, возвращаем прежнее состояние
+                    if let index = viewModel.dictionaries.firstIndex(where: { $0.id == dictionary.id }) {
+                        viewModel.dictionaries[index].isActive.toggle()
+                    }
+                }
+            }
         }
     }
 }
