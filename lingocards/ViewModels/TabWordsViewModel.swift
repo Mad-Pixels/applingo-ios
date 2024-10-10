@@ -143,22 +143,33 @@ final class TabWordsViewModel: ObservableObject {
         Logger.debug("[WordsViewModel]: Word was deleted successfully")
     }
     
-    func saveWord(_ word: WordItem) {
-        if Int.random(in: 1...10) <= 10 {
-            Logger.debug("[WordsViewModel]: Failed to save word")
+    func saveWord(_ word: WordItem, completion: @escaping (Result<Void, Error>) -> Void) {
+        DispatchQueue.global().async {
+            // С вероятностью 20% возвращаем ошибку
+            if Int.random(in: 1...5) == 1 {
+                Logger.debug("[WordsViewModel]: Failed to save word")
 
-            let error = AppError(
-                errorType: .database,
-                errorMessage: "Failed to save word due to database issues",
-                additionalInfo: ["WordID": "\(word.id)"]
-            )
+                let error = AppError(
+                    errorType: .database,
+                    errorMessage: "Failed to save word due to database issues",
+                    additionalInfo: ["WordID": "\(word.id)"]
+                )
 
-            ErrorManager.shared.setError(appError: error, tab: .words, source: .saveWord)
-            return
+                // Устанавливаем ошибку в ErrorManager
+                DispatchQueue.main.async {
+                    ErrorManager.shared.setError(appError: error, tab: .words, source: .saveWord)
+                    completion(.failure(error))  // Возвращаем ошибку через completion
+                }
+                return
+            }
+
+            // Добавляем слово в массив
+            DispatchQueue.main.async {
+                self.words.append(word)
+                Logger.debug("[WordsViewModel]: Word saved successfully")
+                completion(.success(()))  // Сообщаем об успешном завершении через completion
+            }
         }
-
-        words.append(word)
-        Logger.debug("[WordsViewModel]: Word saved successfully")
     }
     
     

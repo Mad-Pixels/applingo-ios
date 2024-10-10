@@ -4,14 +4,15 @@ struct WordAddView: View {
     @Environment(\.presentationMode) private var presentationMode
     @EnvironmentObject var languageManager: LanguageManager
     @EnvironmentObject var errorManager: ErrorManager
-    @State private var wordItem = WordItem.empty()
 
     let dictionaries: [DictionaryItem]
     @Binding var isPresented: Bool
-    let onSave: (WordItem) -> Void
+    let onSave: (WordItem, @escaping (Result<Void, Error>) -> Void) -> Void
 
     @State private var selectedDictionary: DictionaryItem?
     @State private var isShowingErrorAlert = false
+    @State private var wordItem = WordItem.empty()
+    @State private var errorMessage: String = ""
 
     var body: some View {
         NavigationView {
@@ -63,7 +64,7 @@ struct WordAddView: View {
             .alert(isPresented: $isShowingErrorAlert) {
                 Alert(
                     title: Text(languageManager.localizedString(for: "Error")),
-                    message: Text(languageManager.localizedString(for: "Failed to save the word due to database issues.")),
+                    message: Text(errorMessage),
                     dismissButton: .default(Text(languageManager.localizedString(for: "Close")))
                 )
             }
@@ -80,7 +81,19 @@ struct WordAddView: View {
             return
         }
         wordItem.tableName = selectedDictionary.tableName
-        onSave(wordItem)
+
+        onSave(wordItem) { result in
+            switch result {
+            case .success:
+                presentationMode.wrappedValue.dismiss()
+            case .failure(let error):
+                if let appError = error as? AppError {
+                    ErrorManager.shared.setError(appError: appError, tab: .words, source: .saveWord)
+                }
+                errorMessage = error.localizedDescription
+                isShowingErrorAlert = true
+            }
+        }
     }
 
     private var isSaveDisabled: Bool {

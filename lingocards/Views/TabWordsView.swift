@@ -104,7 +104,9 @@ struct TabWordsView: View {
             WordAddView(
                 dictionaries: viewModel.dictionaries,
                 isPresented: $isShowingAddView,
-                onSave: viewModel.saveWord
+                onSave: { word, completion in
+                    viewModel.saveWord(word, completion: completion)
+                }
             )
         }
         .sheet(item: $selectedWord) { word in
