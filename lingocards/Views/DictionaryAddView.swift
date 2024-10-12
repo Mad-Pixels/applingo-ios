@@ -20,7 +20,7 @@ struct DictionaryAddView: View {
             }
 
             Button(action: {
-                isShowingRemoteList = true // Переход на новый экран
+                isShowingRemoteList = true
             }) {
                 Text(languageManager.localizedString(for: "Download").capitalizedFirstLetter)
                     .font(.title2)
@@ -33,7 +33,7 @@ struct DictionaryAddView: View {
         .fullScreenCover(isPresented: $isShowingRemoteList) {
             DictionaryRemoteList()
                 .ignoresSafeArea()
-                .interactiveDismissDisabled(true) // Отключаем свайп вниз
+                .interactiveDismissDisabled(true)
         }
         .navigationTitle(languageManager.localizedString(for: "Add Dictionary").capitalizedFirstLetter)
         .navigationBarTitleDisplayMode(.inline)

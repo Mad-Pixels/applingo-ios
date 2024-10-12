@@ -1,11 +1,12 @@
 import SwiftUI
 
 struct CompDictionaryPickerView: View {
+    @EnvironmentObject var languageManager: LanguageManager
     @Binding var selectedDictionary: DictionaryItem?
     var dictionaries: [DictionaryItem]
 
     var body: some View {
-        Section(header: Text("Select Dictionary")) {
+        Section() {
             Picker("Select Dictionary", selection: $selectedDictionary) {
                 ForEach(dictionaries, id: \.id) { dictionary in
                     Text(dictionary.displayName)

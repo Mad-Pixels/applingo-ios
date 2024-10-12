@@ -41,4 +41,16 @@ struct DictionaryItem: Identifiable, Codable, Equatable, Hashable {
         self.isPrivate = isPrivate
         self.isActive = isActive
     }
+    
+    var subTitle: String {
+        "[\(category)] \(subcategory)"
+    }
+    
+    var formattedCreatedAt: String {
+        let date = Date(timeIntervalSince1970: TimeInterval(createdAt))
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .short
+        return formatter.string(from: date)
+    }
 }

@@ -4,9 +4,6 @@
     "" : {
 
     },
-    "%@" : {
-
-    },
     "%lld" : {
 
     },
@@ -40,6 +37,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "123"
+          }
+        }
+      }
+    },
+    "AddNewWord" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "new word"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "добавить слово"
           }
         }
       }
@@ -91,6 +105,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "карточка"
+          }
+        }
+      }
+    },
+    "Category" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "category"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "категория"
           }
         }
       }
@@ -196,6 +227,23 @@
         }
       }
     },
+    "Dictionary" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "dictionary"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "словарь"
+          }
+        }
+      }
+    },
     "Edit" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -246,12 +294,6 @@
       "extractionState" : "manual"
     },
     "Key 2" : {
-      "extractionState" : "manual"
-    },
-    "Key 3" : {
-      "extractionState" : "manual"
-    },
-    "Key 4" : {
       "extractionState" : "manual"
     },
     "Language" : {

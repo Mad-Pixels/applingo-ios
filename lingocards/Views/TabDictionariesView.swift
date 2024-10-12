@@ -5,10 +5,10 @@ struct TabDictionariesView: View {
     @EnvironmentObject var tabManager: TabManager
     @StateObject private var viewModel = TabDictionariesViewModel()
     @StateObject private var errorManager = ErrorManager.shared
-    @State private var isShowingAlert = false
-    @State private var isShowingAddView = false
-    @State private var alertMessage: String = ""
     @State private var selectedDictionary: DictionaryItem?
+    @State private var alertMessage: String = ""
+    @State private var isShowingAddView = false
+    @State private var isShowingAlert = false
     
     var body: some View {
         NavigationView {
@@ -36,7 +36,7 @@ struct TabDictionariesView: View {
                                     Text(dictionary.displayName)
                                         .font(.headline)
 
-                                    Text(dictionary.subcategory)
+                                    Text(dictionary.subTitle)
                                         .font(.subheadline)
                                         .foregroundColor(.gray)
                                 }
@@ -124,7 +124,7 @@ struct TabDictionariesView: View {
             DispatchQueue.main.async {
                 switch result {
                 case .success:
-                    Logger.debug("[TabDictionariesView]: Successfully updated status for dictionary \(dictionary.displayName).")
+                    return
                 case .failure(let error):
                     alertMessage = error.localizedDescription
                     isShowingAlert = true

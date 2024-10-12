@@ -29,14 +29,14 @@ struct WordAddView: View {
                         text: $wordItem.backText,
                         isEditing: true
                     )
-                }
-
-                Section(header: Text(languageManager.localizedString(for: "Additional"))) {
+                    
                     CompDictionaryPickerView(
                         selectedDictionary: $selectedDictionary,
                         dictionaries: dictionaries
                     )
-                    
+                }
+
+                Section(header: Text(languageManager.localizedString(for: "Additional"))) {
                     AppTextField(
                         placeholder: languageManager.localizedString(for: "Hint").capitalizedFirstLetter,
                         text: $wordItem.hint.unwrap(default: ""),
@@ -51,7 +51,7 @@ struct WordAddView: View {
                     .frame(height: 150)
                 }
             }
-            .navigationTitle(languageManager.localizedString(for: "Add New Word").capitalizedFirstLetter)
+            .navigationTitle(languageManager.localizedString(for: "AddNewWord").capitalizedFirstLetter)
             .navigationBarItems(
                 leading: Button(languageManager.localizedString(for: "Cancel").capitalizedFirstLetter) {
                     presentationMode.wrappedValue.dismiss()

@@ -22,13 +22,22 @@ struct DictionaryDetailView: View {
     var body: some View {
         NavigationView {
             Form {
-                Section(header: Text(languageManager.localizedString(for: "Dictionary Details"))) {
+                Section(header: Text(languageManager.localizedString(for: "Dictionary"))) {
                     AppTextField(
                         placeholder: languageManager.localizedString(for: "Display Name").capitalizedFirstLetter,
                         text: $editedDictionary.displayName,
                         isEditing: isEditing
                     )
-
+                    
+                    AppTextEditor(
+                        placeholder: languageManager.localizedString(for: "Description").capitalizedFirstLetter,
+                        text: $editedDictionary.description,
+                        isEditing: isEditing
+                    )
+                    .frame(height: 150)
+                }
+                
+                Section(header: Text(languageManager.localizedString(for: "Category"))) {
                     AppTextField(
                         placeholder: languageManager.localizedString(for: "Category").capitalizedFirstLetter,
                         text: $editedDictionary.category,
@@ -40,42 +49,23 @@ struct DictionaryDetailView: View {
                         text: $editedDictionary.subcategory,
                         isEditing: isEditing
                     )
-
+                }
+                
+                Section(header: Text(languageManager.localizedString(for: "Additional"))) {
                     AppTextField(
                         placeholder: languageManager.localizedString(for: "Author").capitalizedFirstLetter,
                         text: $editedDictionary.author,
                         isEditing: isEditing
                     )
-
-                    AppTextEditor(
-                        placeholder: languageManager.localizedString(for: "Description").capitalizedFirstLetter,
-                        text: $editedDictionary.description,
-                        isEditing: isEditing
+                    
+                    AppTextField(
+                        placeholder: languageManager.localizedString(for: "Created At").capitalizedFirstLetter,
+                        text: .constant(editedDictionary.formattedCreatedAt),
+                        isEditing: false
                     )
-                    .frame(height: 150)
-                }
-
-                Section(header: Text(languageManager.localizedString(for: "Read-only Information"))) {
-                    HStack {
-                        Text(languageManager.localizedString(for: "Created At"))
-                            .font(.headline)
-                        Spacer()
-                        Text("\(DateFormatter.localizedString(from: Date(timeIntervalSince1970: TimeInterval(editedDictionary.createdAt)), dateStyle: .medium, timeStyle: .short))")
-                            .foregroundColor(.gray)
-                            .font(.subheadline)
-                    }
-
-                    HStack {
-                        Text(languageManager.localizedString(for: "Is Private"))
-                            .font(.headline)
-                        Spacer()
-                        Text(editedDictionary.isPrivate ? languageManager.localizedString(for: "Yes") : languageManager.localizedString(for: "No"))
-                            .foregroundColor(.gray)
-                            .font(.subheadline)
-                    }
                 }
             }
-            .navigationTitle(languageManager.localizedString(for: "Dictionary Details").capitalizedFirstLetter)
+            .navigationTitle(languageManager.localizedString(for: "Details").capitalizedFirstLetter)
             .navigationBarItems(
                 leading: Button(
                     isEditing ? languageManager.localizedString(for: "Cancel").capitalizedFirstLetter :
