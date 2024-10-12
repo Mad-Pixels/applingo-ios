@@ -51,7 +51,7 @@ struct WordAddView: View {
                     .frame(height: 150)
                 }
             }
-            .navigationTitle(languageManager.localizedString(for: "AddNewWord").capitalizedFirstLetter)
+            .navigationTitle(languageManager.localizedString(for: "AddWord").capitalizedFirstLetter)
             .navigationBarItems(
                 leading: Button(languageManager.localizedString(for: "Cancel").capitalizedFirstLetter) {
                     presentationMode.wrappedValue.dismiss()

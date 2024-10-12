@@ -7,6 +7,23 @@
     "%lld" : {
 
     },
+    "AddDictionary" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "new dictionary"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "добавить словарь"
+          }
+        }
+      }
+    },
     "Additional" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -41,7 +58,7 @@
         }
       }
     },
-    "AddNewWord" : {
+    "AddWord" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {

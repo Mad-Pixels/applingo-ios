@@ -35,7 +35,7 @@ struct DictionaryAddView: View {
                 .ignoresSafeArea()
                 .interactiveDismissDisabled(true)
         }
-        .navigationTitle(languageManager.localizedString(for: "Add Dictionary").capitalizedFirstLetter)
+        .navigationTitle(languageManager.localizedString(for: "AddDictionary").capitalizedFirstLetter)
         .navigationBarTitleDisplayMode(.inline)
         .padding()
     }
