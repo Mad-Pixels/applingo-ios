@@ -12,23 +12,15 @@ struct DictionaryAddView: View {
                 importCSV()
             }) {
                 Text(languageManager.localizedString(for: "Import CSV").capitalizedFirstLetter)
-                    .font(.title2)
-                    .frame(width: 200, height: 50)
-                    .background(Color.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
             }
+            .buttonMain()
 
             Button(action: {
                 isShowingRemoteList = true
             }) {
                 Text(languageManager.localizedString(for: "Download").capitalizedFirstLetter)
-                    .font(.title2)
-                    .frame(width: 200, height: 50)
-                    .background(Color.green)
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
             }
+            .buttonMain()
         }
         .fullScreenCover(isPresented: $isShowingRemoteList) {
             DictionaryRemoteList()
