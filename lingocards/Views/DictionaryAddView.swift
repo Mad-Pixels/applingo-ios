@@ -13,14 +13,14 @@ struct DictionaryAddView: View {
             }) {
                 Text(languageManager.localizedString(for: "Import CSV").capitalizedFirstLetter)
             }
-            .buttonMain()
+            .buttonStyle(ButtonMain())
 
             Button(action: {
                 isShowingRemoteList = true
             }) {
                 Text(languageManager.localizedString(for: "Download").capitalizedFirstLetter)
             }
-            .buttonMain()
+            .buttonStyle(ButtonMain())
         }
         .fullScreenCover(isPresented: $isShowingRemoteList) {
             DictionaryRemoteList()
