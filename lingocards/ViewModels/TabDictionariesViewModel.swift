@@ -20,6 +20,41 @@ final class TabDictionariesViewModel: ObservableObject {
     deinit {
         cancellable?.cancel()
     }
+    
+    func getRemoteDictionaries() {
+        Logger.debug("[TabDictionariesViewModel]: Fetching remote dictionaries...")
+
+        // Simulate a network fetch with a chance of failure
+        if Int.random(in: 1...10) <= 1 {
+            Logger.debug("[TabDictionariesViewModel]: Failed to fetch remote dictionaries")
+
+            self.dictionaries = []
+
+            let error = AppError(
+                errorType: .network,
+                errorMessage: "Failed to fetch data from remote server",
+                additionalInfo: nil
+            )
+
+            ErrorManager.shared.setError(
+                appError: error,
+                tab: .dictionaries,
+                source: .getRemoteDictionaries
+            )
+            return
+        }
+
+        // Sample remote data
+        let remoteData: [DictionaryItem] = [
+            DictionaryItem(id: 6, hashId: 106, displayName: "Italian Words", tableName: "italian_words", description: "Basic Italian vocabulary", category: "Language", subcategory: "it-en", author: "Author6", createdAt: 1633066100, isPrivate: false, isActive: false),
+            DictionaryItem(id: 7, hashId: 107, displayName: "Japanese Words", tableName: "japanese_words", description: "Basic Japanese vocabulary", category: "Language", subcategory: "ja-en", author: "Author7", createdAt: 1633066200, isPrivate: false, isActive: false)
+        ]
+
+        self.dictionaries = remoteData
+
+        ErrorManager.shared.clearError(for: .getRemoteDictionaries)
+        Logger.debug("[TabDictionariesViewModel]: Remote dictionaries data successfully fetched")
+    }
 
     // Основной метод получения данных словарей
     func getDictionaries() {
