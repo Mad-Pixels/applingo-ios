@@ -7,6 +7,7 @@ struct DictionaryRemoteList: View {
     @State private var selectedDictionary: DictionaryItem?
     @State private var alertMessage: String = ""
     @State private var isShowingAlert = false
+    @Environment(\.presentationMode) var presentationMode
 
     var body: some View {
         NavigationView {
@@ -52,6 +53,11 @@ struct DictionaryRemoteList: View {
                 Spacer()
             }
             .navigationTitle(languageManager.localizedString(for: "Remote Dictionaries").capitalizedFirstLetter)
+            .navigationBarItems(leading: Button(action: {
+                presentationMode.wrappedValue.dismiss()
+            }) {
+                Text(languageManager.localizedString(for: "Back").capitalizedFirstLetter)
+            })
             .onAppear {
                 viewModel.getRemoteDictionaries()
             }
