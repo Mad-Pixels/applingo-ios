@@ -6,6 +6,7 @@ struct DictionaryRemoteList: View {
     @StateObject private var errorManager = ErrorManager.shared
     @State private var selectedDictionary: DictionaryItem?
     @State private var alertMessage: String = ""
+    @State private var isShowingFilterView = false  // Переменная для отображения модального окна фильтра
     @Environment(\.presentationMode) var presentationMode
     @Binding var isPresented: Bool
 
@@ -52,20 +53,19 @@ struct DictionaryRemoteList: View {
 
                 Spacer()
             }
-            .navigationTitle(languageManager.localizedString(for: "Remote Dictionaries").capitalizedFirstLetter)
+            .navigationTitle(languageManager.localizedString(for: "Dictionaries").capitalizedFirstLetter)
             .navigationBarItems(leading: Button(action: {
                 presentationMode.wrappedValue.dismiss()
             }) {
                 Text(languageManager.localizedString(for: "Back").capitalizedFirstLetter)
             },
-                trailing: Button(action: {
-                    // Закрываем оба модальных окна
-                    isPresented = false  // Закрывает `DictionaryAddView`
-                    presentationMode.wrappedValue.dismiss()  // Закрывает `DictionaryRemoteList`
-                }) {
-                    Text(languageManager.localizedString(for: "Close").capitalizedFirstLetter)
-                }
-            )
+            trailing: Button(action: {
+                // Закрываем оба модальных окна
+                isPresented = false  // Закрывает `DictionaryAddView`
+                presentationMode.wrappedValue.dismiss()  // Закрывает `DictionaryRemoteList`
+            }) {
+                Text(languageManager.localizedString(for: "Close").capitalizedFirstLetter)
+            })
             .onAppear {
                 viewModel.getRemoteDictionaries()
             }
@@ -73,6 +73,17 @@ struct DictionaryRemoteList: View {
                 if let error = newError, error.tab == .dictionaries, error.source == .getRemoteDictionaries {
                     alertMessage = error.errorDescription ?? "error"
                 }
+            }
+
+            .overlay(
+                ButtonFilter {
+                    // Открытие модального окна фильтра
+                    isShowingFilterView = true
+                }
+            )
+            .sheet(isPresented: $isShowingFilterView) {
+                DictionaryRemoteFilterView()  // Открываем окно фильтра
+                    .environmentObject(languageManager)
             }
             .sheet(item: $selectedDictionary) { dictionary in
                 DictionaryRemoteDetailView(

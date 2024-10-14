@@ -12,14 +12,14 @@ struct DictionaryAddView: View {
                 Button(action: {
                     importCSV()
                 }) {
-                    Text(languageManager.localizedString(for: "Import CSV").capitalizedFirstLetter)
+                    Text(languageManager.localizedString(for: "ImportCSV"))
                 }
                 .buttonStyle(ButtonMain())
 
                 Button(action: {
                     isShowingRemoteList = true
                 }) {
-                    Text(languageManager.localizedString(for: "Download").capitalizedFirstLetter)
+                    Text(languageManager.localizedString(for: "Download"))
                 }
                 .buttonStyle(ButtonMain())
             }
