@@ -97,9 +97,8 @@ struct TabDictionariesView: View {
             }
         }
         .sheet(isPresented: $isShowingAddView) {
-            DictionaryAddView(
-                isPresented: $isShowingAddView
-            )
+            DictionaryAddView(isPresented: $isShowingAddView)
+                .environmentObject(languageManager)
         }
         .sheet(item: $selectedDictionary) { dictionary in
             DictionaryDetailView(

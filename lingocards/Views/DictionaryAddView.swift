@@ -3,33 +3,41 @@ import SwiftUI
 struct DictionaryAddView: View {
     @Environment(\.presentationMode) var presentationMode
     @EnvironmentObject var languageManager: LanguageManager
-    @State private var isShowingRemoteList = false
     @Binding var isPresented: Bool
+    @State private var isShowingRemoteList = false
 
     var body: some View {
-        VStack(spacing: 20) {
-            Button(action: {
-                importCSV()
-            }) {
-                Text(languageManager.localizedString(for: "Import CSV").capitalizedFirstLetter)
-            }
-            .buttonStyle(ButtonMain())
+        NavigationView {
+            VStack(spacing: 20) {
+                Button(action: {
+                    importCSV()
+                }) {
+                    Text(languageManager.localizedString(for: "Import CSV").capitalizedFirstLetter)
+                }
+                .buttonStyle(ButtonMain())
 
-            Button(action: {
-                isShowingRemoteList = true
-            }) {
-                Text(languageManager.localizedString(for: "Download").capitalizedFirstLetter)
+                Button(action: {
+                    isShowingRemoteList = true
+                }) {
+                    Text(languageManager.localizedString(for: "Download").capitalizedFirstLetter)
+                }
+                .buttonStyle(ButtonMain())
             }
-            .buttonStyle(ButtonMain())
+            .fullScreenCover(isPresented: $isShowingRemoteList) {
+                DictionaryRemoteList(isPresented: $isPresented)
+                    .ignoresSafeArea()
+                    .interactiveDismissDisabled(true)
+                    .environmentObject(languageManager)
+            }
+            .navigationTitle(languageManager.localizedString(for: "AddDictionary").capitalizedFirstLetter)
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarItems(trailing: Button(action: {
+                isPresented = false  // Закрывает `DictionaryAddView`
+            }) {
+                Text(languageManager.localizedString(for: "Close").capitalizedFirstLetter)
+            })
+            .padding()
         }
-        .fullScreenCover(isPresented: $isShowingRemoteList) {
-            DictionaryRemoteList()
-                .ignoresSafeArea()
-                .interactiveDismissDisabled(true)
-        }
-        .navigationTitle(languageManager.localizedString(for: "AddDictionary").capitalizedFirstLetter)
-        .navigationBarTitleDisplayMode(.inline)
-        .padding()
     }
 
     private func importCSV() {

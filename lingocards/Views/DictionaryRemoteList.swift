@@ -8,6 +8,7 @@ struct DictionaryRemoteList: View {
     @State private var alertMessage: String = ""
     @State private var isShowingAlert = false
     @Environment(\.presentationMode) var presentationMode
+    @Binding var isPresented: Bool
 
     var body: some View {
         NavigationView {
@@ -57,7 +58,15 @@ struct DictionaryRemoteList: View {
                 presentationMode.wrappedValue.dismiss()
             }) {
                 Text(languageManager.localizedString(for: "Back").capitalizedFirstLetter)
-            })
+            },
+                trailing: Button(action: {
+                    // Закрываем оба модальных окна
+                    isPresented = false  // Закрывает `DictionaryAddView`
+                    presentationMode.wrappedValue.dismiss()  // Закрывает `DictionaryRemoteList`
+                }) {
+                    Text(languageManager.localizedString(for: "Close").capitalizedFirstLetter)
+                }
+            )
             .onAppear {
                 viewModel.getRemoteDictionaries()
             }
