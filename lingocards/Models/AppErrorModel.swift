@@ -19,6 +19,7 @@ enum ErrorSource: String {
     case deleteDictionary
     case updateDictionary
     case getRemoteDictionaries
+    case getCategories
 }
 
 struct AppError: Error, LocalizedError, Equatable, Identifiable {

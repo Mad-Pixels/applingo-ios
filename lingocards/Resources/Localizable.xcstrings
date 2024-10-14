@@ -319,9 +319,6 @@
     "Failed to update the word due to database issues." : {
 
     },
-    "Hello World" : {
-
-    },
     "Hint" : {
       "extractionState" : "stale",
       "localizations" : {
