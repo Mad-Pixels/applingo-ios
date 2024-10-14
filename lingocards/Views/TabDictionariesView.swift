@@ -82,9 +82,9 @@ struct TabDictionariesView: View {
                 }
             }
             .overlay(
-                ButtonAdd {
+                ButtonFloating(action: {
                     addDictionary()
-                }
+                }, imageName: "plus")
             )
             .alert(isPresented: $isShowingAlert) {
                 Alert(

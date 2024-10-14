@@ -85,9 +85,9 @@ struct TabWordsView: View {
                 }
             }
             .overlay(
-                ButtonAdd {
+                ButtonFloating(action: {
                     addWord()
-                }
+                }, imageName: "plus")
             )
             .alert(isPresented: $isShowingAlert) {
                 Alert(

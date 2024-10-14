@@ -74,12 +74,10 @@ struct DictionaryRemoteList: View {
                     alertMessage = error.errorDescription ?? "error"
                 }
             }
-
             .overlay(
-                ButtonFilter {
-                    // Открытие модального окна фильтра
+                ButtonFloating(action: {
                     isShowingFilterView = true
-                }
+                }, imageName: "line.horizontal.3.decrease.circle")
             )
             .sheet(isPresented: $isShowingFilterView) {
                 DictionaryRemoteFilterView()  // Открываем окно фильтра

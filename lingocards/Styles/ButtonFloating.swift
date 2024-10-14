@@ -1,8 +1,8 @@
 import SwiftUI
 
-struct ButtonAdd: View {
+struct ButtonFloating: View {
     var action: () -> Void
-    var imageName: String = "plus"
+    var imageName: String
     
     var body: some View {
         VStack {
