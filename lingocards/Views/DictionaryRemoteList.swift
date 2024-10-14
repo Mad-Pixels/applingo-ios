@@ -6,7 +6,6 @@ struct DictionaryRemoteList: View {
     @StateObject private var errorManager = ErrorManager.shared
     @State private var selectedDictionary: DictionaryItem?
     @State private var alertMessage: String = ""
-    @State private var isShowingAlert = false
     @Environment(\.presentationMode) var presentationMode
     @Binding var isPresented: Bool
 
@@ -72,25 +71,14 @@ struct DictionaryRemoteList: View {
             }
             .onChange(of: errorManager.currentError) { _, newError in
                 if let error = newError, error.tab == .dictionaries, error.source == .getRemoteDictionaries {
-                    isShowingAlert = true
-                    alertMessage = error.errorDescription ?? ""
+                    alertMessage = error.errorDescription ?? "error"
                 }
-            }
-            .alert(isPresented: $isShowingAlert) {
-                Alert(
-                    title: Text(languageManager.localizedString(for: "Error")),
-                    message: Text(alertMessage),
-                    dismissButton: .default(Text(languageManager.localizedString(for: "Close"))) {
-                        errorManager.clearError()
-                    }
-                )
             }
             .sheet(item: $selectedDictionary) { dictionary in
                 DictionaryRemoteDetailView(
                     dictionary: dictionary,
                     isPresented: .constant(true),
                     onDownload: {
-                        // Implement download action here
                         Logger.debug("[DictionaryRemoteList]: Download button tapped for dictionary \(dictionary.displayName)")
                     }
                 )
