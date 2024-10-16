@@ -1,6 +1,6 @@
 import Foundation
 
-struct DictionaryQueryRequest: Codable {
+struct DictionaryQueryRequest: Codable, Equatable {
     var id: String?
     var name: String?
     var categoryMain: String?

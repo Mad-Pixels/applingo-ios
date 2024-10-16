@@ -6,6 +6,9 @@ struct DictionaryRemoteFilterView: View {
     @StateObject private var viewModel = DictionaryRemoteFilterViewModel()
     @State private var selectedFrontCategory: CategoryItem? = nil
     @State private var selectedBackCategory: CategoryItem? = nil
+    
+    // Получаем доступ к apiRequestParams из родительского View
+    @Binding var apiRequestParams: DictionaryQueryRequest
 
     var body: some View {
         NavigationView {
@@ -34,7 +37,13 @@ struct DictionaryRemoteFilterView: View {
 
                 HStack(spacing: 20) {
                     Button(action: {
-                        Logger.debug("Filters saved")
+                        // Конкатенируем front и back категории и присваиваем в apiRequestParams
+                        let frontCategoryName = selectedFrontCategory?.name ?? ""
+                        let backCategoryName = selectedBackCategory?.name ?? ""
+                        apiRequestParams.categorySub = "\(frontCategoryName)-\(backCategoryName)"
+
+                        Logger.debug("Filters saved: \(apiRequestParams.categorySub ?? "")")
+                        presentationMode.wrappedValue.dismiss() // Закрываем окно
                     }) {
                         Text(languageManager.localizedString(for: "Save").capitalizedFirstLetter)
                             .font(.title2)

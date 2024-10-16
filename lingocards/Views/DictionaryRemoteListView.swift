@@ -5,12 +5,14 @@ struct DictionaryRemoteList: View {
     @Environment(\.presentationMode) var presentationMode
     @StateObject private var viewModel = TabDictionariesViewModel()
     @StateObject private var errorManager = ErrorManager.shared
-    @State private var apiRequestParams = DictionaryQueryRequest(isPublic: true)
     @State private var selectedDictionary: DictionaryItem?
     @State private var isShowingFilterView = false
     @State private var isLoading: Bool = true
     @State private var errMessage: String = ""
     @Binding var isPresented: Bool
+    
+    // Переменная apiRequestParams
+    @State private var apiRequestParams = DictionaryQueryRequest(isPublic: true)
     
     var body: some View {
         NavigationView {
@@ -79,6 +81,14 @@ struct DictionaryRemoteList: View {
                     isLoading = false
                 }
             }
+            .onChange(of: apiRequestParams) { newParams in
+                Logger.debug("[DictionaryRemoteList]: apiRequestParams changed, fetching remote dictionaries")
+                isLoading = true
+                viewModel.getRemoteDictionaries(query: newParams)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    isLoading = false
+                }
+            }
             .onChange(of: errorManager.currentError) { _, newError in
                 if let error = newError, error.tab == .dictionaries, error.source == .getRemoteDictionaries {
                     errMessage = error.errorDescription ?? "error"
@@ -93,8 +103,9 @@ struct DictionaryRemoteList: View {
                     }
                 }
             )
+            // Передаем Binding на apiRequestParams в DictionaryRemoteFilterView
             .sheet(isPresented: $isShowingFilterView) {
-                DictionaryRemoteFilterView()
+                DictionaryRemoteFilterView(apiRequestParams: $apiRequestParams)
                     .environmentObject(languageManager)
             }
             .sheet(item: $selectedDictionary) { dictionary in
