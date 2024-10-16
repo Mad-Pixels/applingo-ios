@@ -72,6 +72,14 @@ struct DictionaryRemoteFilterView: View {
             .navigationBarTitleDisplayMode(.inline)
             .onAppear {
                 viewModel.getCategories()
+
+                // Устанавливаем начальные значения для Picker
+                if let firstFrontCategory = viewModel.frontCategories.first {
+                    selectedFrontCategory = firstFrontCategory
+                }
+                if let firstBackCategory = viewModel.backCategories.first {
+                    selectedBackCategory = firstBackCategory
+                }
             }
         }
     }
