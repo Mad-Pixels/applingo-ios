@@ -7,9 +7,9 @@ struct DictionaryRemoteList: View {
     @StateObject private var errorManager = ErrorManager.shared
     @State private var selectedDictionary: DictionaryItem?
     @State private var isShowingFilterView = false
-    @State private var alertMessage: String = ""
-    @Binding var isPresented: Bool
     @State private var isLoading: Bool = true
+    @State private var errMessage: String = ""
+    @Binding var isPresented: Bool
     
     var body: some View {
         NavigationView {
@@ -31,7 +31,6 @@ struct DictionaryRemoteList: View {
                     Spacer()
                 } else {
                     if isLoading {
-                        // Используем CompPreloaderView для отображения pre-loader
                         CompPreloaderView()
                     } else {
                         List {
@@ -66,7 +65,6 @@ struct DictionaryRemoteList: View {
                 Text(languageManager.localizedString(for: "Back").capitalizedFirstLetter)
             },
             trailing: Button(action: {
-                // Закрываем оба модальных окна
                 isPresented = false
                 presentationMode.wrappedValue.dismiss()
             }) {
@@ -75,19 +73,23 @@ struct DictionaryRemoteList: View {
             .onAppear {
                 isLoading = true
                 viewModel.getRemoteDictionaries()
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                     isLoading = false
                 }
             }
             .onChange(of: errorManager.currentError) { _, newError in
                 if let error = newError, error.tab == .dictionaries, error.source == .getRemoteDictionaries {
-                    alertMessage = error.errorDescription ?? "error"
+                    errMessage = error.errorDescription ?? "error"
                 }
             }
             .overlay(
-                ButtonFloating(action: {
-                    isShowingFilterView = true
-                }, imageName: "line.horizontal.3.decrease.circle")
+                Group {
+                    if !isLoading {
+                        ButtonFloating(action: {
+                            isShowingFilterView = true
+                        }, imageName: "line.horizontal.3.decrease.circle")
+                    }
+                }
             )
             .sheet(isPresented: $isShowingFilterView) {
                 DictionaryRemoteFilterView()

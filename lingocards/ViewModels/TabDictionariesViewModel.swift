@@ -25,7 +25,7 @@ final class TabDictionariesViewModel: ObservableObject {
         Logger.debug("[TabDictionariesViewModel]: Fetching remote dictionaries...")
 
         // Simulate a network fetch with a chance of failure
-        if Int.random(in: 1...10) <= 9 {
+        if Int.random(in: 1...10) <= 1 {
             Logger.debug("[TabDictionariesViewModel]: Failed to fetch remote dictionaries")
 
             self.dictionaries = []
