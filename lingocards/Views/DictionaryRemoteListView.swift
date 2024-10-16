@@ -5,6 +5,7 @@ struct DictionaryRemoteList: View {
     @Environment(\.presentationMode) var presentationMode
     @StateObject private var viewModel = TabDictionariesViewModel()
     @StateObject private var errorManager = ErrorManager.shared
+    @State private var apiRequestParams = DictionaryQueryRequest(isPublic: true)
     @State private var selectedDictionary: DictionaryItem?
     @State private var isShowingFilterView = false
     @State private var isLoading: Bool = true
@@ -72,7 +73,8 @@ struct DictionaryRemoteList: View {
             })
             .onAppear {
                 isLoading = true
-                viewModel.getRemoteDictionaries()
+                // Передаем apiRequestParams в метод getRemoteDictionaries
+                viewModel.getRemoteDictionaries(query: apiRequestParams)
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                     isLoading = false
                 }
