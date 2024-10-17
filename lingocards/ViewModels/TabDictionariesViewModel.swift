@@ -62,21 +62,14 @@ final class TabDictionariesViewModel: ObservableObject {
 
     // Основной метод получения данных словарей
     func getDictionaries() {
-        Logger.debug("[TabDictionariesViewModel]: Fetching dictionaries...")
+        Logger.debug("[TabDictionariesViewModel]: Fetching dictionaries from database...")
 
-        // С вероятностью 10% возвращаем ошибку для `getDictionaries`
-        if Int.random(in: 1...10) <= 1 {
-            Logger.debug("[TabDictionariesViewModel]: Failed to fetch dictionaries")
-
-            self.dictionaries = []  // Очищаем текущие данные
-
+        guard DatabaseManager.shared.isConnected else {
             let error = AppError(
                 errorType: .database,
-                errorMessage: "Failed to fetch data from database",
+                errorMessage: "Database is not connected",
                 additionalInfo: nil
             )
-
-            // Создаем AppError и передаем в ErrorManager
             ErrorManager.shared.setError(
                 appError: error,
                 tab: .dictionaries,
@@ -85,23 +78,31 @@ final class TabDictionariesViewModel: ObservableObject {
             return
         }
 
-        // Тестовые данные для отображения
-        let testData: [DictionaryItem] = [
-            DictionaryItem(id: 1, hashId: 101, displayName: "English Words", tableName: "english_words", description: "Basic English vocabulary", category: "Language", subcategory: "en-en", author: "Author1", createdAt: 1633065600, isPrivate: false, isActive: true),
-            DictionaryItem(id: 2, hashId: 102, displayName: "French Words", tableName: "french_words", description: "Basic French vocabulary", category: "Language", subcategory: "en-en", author: "Author2", createdAt: 1633065700, isPrivate: false, isActive: true),
-            DictionaryItem(id: 3, hashId: 103, displayName: "Spanish Words", tableName: "spanish_words", description: "Basic Spanish vocabulary", category: "Language", subcategory: "en-en", author: "Author3", createdAt: 1633065800, isPrivate: false, isActive: true),
-            DictionaryItem(id: 4, hashId: 104, displayName: "German Words", tableName: "german_words", description: "Basic German vocabulary", category: "Language", subcategory: "en-en", author: "Author4", createdAt: 1633065900, isPrivate: false, isActive: true),
-            DictionaryItem(id: 5, hashId: 105, displayName: "Russian Words", tableName: "russian_words", description: "Basic Russian vocabulary", category: "Language", subcategory: "en-en", author: "Author5", createdAt: 1633066000, isPrivate: false, isActive: true)
-        ]
+        do {
+            try DatabaseManager.shared.databaseQueue?.read { db in
+                let fetchedDictionaries = try DictionaryItem.fetchAll(db)  // Получаем все данные из таблицы
+                DispatchQueue.main.async {
+                    self.dictionaries = fetchedDictionaries
+                    Logger.debug("[TabDictionariesViewModel]: Dictionaries data successfully fetched from database")
+                }
+            }
 
-        // Обновляем Published переменную
-        self.dictionaries = testData
-
-        // Ошибок нет — очищаем ошибку для `getDictionaries`
-        ErrorManager.shared.clearError(for: .getDictionaries)
-        Logger.debug("[TabDictionariesViewModel]: Dictionaries data successfully fetched")
+            ErrorManager.shared.clearError(for: .getDictionaries)
+        } catch {
+            Logger.debug("[TabDictionariesViewModel]: Failed to fetch dictionaries from database: \(error)")
+            let appError = AppError(
+                errorType: .database,
+                errorMessage: "Failed to fetch data from database",
+                additionalInfo: ["error": "\(error)"]
+            )
+            ErrorManager.shared.setError(
+                appError: appError,
+                tab: .dictionaries,
+                source: .getDictionaries
+            )
+        }
     }
-    
+
     func deleteDictionary(_ dictionary: DictionaryItem) {
         // С вероятностью 10% возвращаем ошибку
         if Int.random(in: 1...3) <= 1 {
