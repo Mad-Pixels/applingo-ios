@@ -54,7 +54,7 @@ struct MainView: View {
         }
         .onAppear {
             do {
-                try databaseManager.connect()
+                try DatabaseManager.shared.connect()
             } catch {
                 Logger.debug("Failed to connect to the database: \(error)")
             }

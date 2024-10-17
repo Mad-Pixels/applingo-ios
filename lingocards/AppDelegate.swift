@@ -3,7 +3,6 @@ import IQKeyboardManagerSwift
 
 @main
 struct LingocardApp: App {
-    @StateObject private var databaseManager = DatabaseManager(dbName: "LingocardDB.sqlite")
     @StateObject private var languageManager = LanguageManager()
     @StateObject private var themeManager = ThemeManager()
     @StateObject private var errorManager = ErrorManager.shared
@@ -23,7 +22,7 @@ struct LingocardApp: App {
                 .environmentObject(errorManager)
                 .environmentObject(themeManager)
                 .environmentObject(tabManager)
-                .environmentObject(databaseManager)
+                .environmentObject(DatabaseManager.shared)
         }
     }
 }

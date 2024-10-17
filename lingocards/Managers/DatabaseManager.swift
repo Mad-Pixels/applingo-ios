@@ -3,15 +3,20 @@ import GRDB
 import Combine
 
 class DatabaseManager: ObservableObject {
+    // Singleton
+    static let shared = DatabaseManager(dbName: "LingocardDB.sqlite")
+
     @Published private(set) var isConnected: Bool = false
     private var dbQueue: DatabaseQueue?
     private let dbName: String
     private var databaseURL: URL?
 
-    init(dbName: String) {
+    // Приватный инициализатор для Singleton
+    private init(dbName: String) {
         self.dbName = dbName
     }
     
+    // Подключение к базе данных
     func connect() throws {
         guard dbQueue == nil else {
             Logger.debug("[Database]: Already connected")
@@ -34,6 +39,7 @@ class DatabaseManager: ObservableObject {
                 Logger.debug("[Database]: Migration started")
                 try migrator.migrate(dbQueue)
                 isConnected = true
+                Logger.debug("[Database]: Connected and migration completed.")
             }
         } catch {
             let appError = AppError(
@@ -46,6 +52,7 @@ class DatabaseManager: ObservableObject {
         }
     }
     
+    // Миграции базы данных
     private var migrator: DatabaseMigrator {
         var migrator = DatabaseMigrator()
         migrator.registerMigration("createDictionary") { db in
@@ -67,9 +74,15 @@ class DatabaseManager: ObservableObject {
         return migrator
     }
     
+    // Отключение от базы данных
     func disconnect() {
         dbQueue = nil
         isConnected = false
-        Logger.debug("[Database]: disconnected.")
+        Logger.debug("[Database]: Disconnected.")
+    }
+    
+    // Получение доступа к очереди базы данных
+    var databaseQueue: DatabaseQueue? {
+        return dbQueue
     }
 }
