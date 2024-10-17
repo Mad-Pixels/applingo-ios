@@ -54,39 +54,19 @@ struct DictionaryItem: Identifiable, Codable, Equatable, Hashable {
         formatter.timeStyle = .short
         return formatter.string(from: date)
     }
-    
-    static let databaseTableName = "Dictionary"
 }
 
 // Реализуем протоколы для чтения и записи
 extension DictionaryItem: FetchableRecord, PersistableRecord {
-    // Метод для декодирования данных из базы
-    init(row: Row) {
-        id = row["id"]
-        hashId = row["hashId"]
-        displayName = row["displayName"]
-        tableName = row["tableName"]
-        description = row["description"]
-        category = row["category"]
-        subcategory = row["subcategory"]
-        author = row["author"]
-        createdAt = row["createdAt"]
-        isPrivate = row["isPrivate"]
-        isActive = row["isActive"]
-    }
+    static let databaseTableName = "Dictionary"
 
-    // Указываем какие колонки использовать для вставки в базу данных
-    func encode(to container: inout PersistenceContainer) {
-        container["id"] = id
-        container["hashId"] = hashId
-        container["displayName"] = displayName
-        container["tableName"] = tableName
-        container["description"] = description
-        container["category"] = category
-        container["subcategory"] = subcategory
-        container["author"] = author
-        container["createdAt"] = createdAt
-        container["isPrivate"] = isPrivate
-        container["isActive"] = isActive
+    mutating func insert(_ db: Database) throws {
+        try db.execute(sql: """
+            INSERT INTO \(DictionaryItem.databaseTableName) 
+            (hashId, displayName, tableName, description, category, subcategory, author, createdAt, isPrivate, isActive)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, arguments: [
+                hashId, displayName, tableName, description, category, subcategory, author, createdAt, isPrivate, isActive
+            ])
     }
 }

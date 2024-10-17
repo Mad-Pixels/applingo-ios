@@ -3,18 +3,35 @@ import SwiftUI
 struct DictionaryAddView: View {
     @Environment(\.presentationMode) var presentationMode
     @EnvironmentObject var languageManager: LanguageManager
+    @EnvironmentObject var databaseManager: DatabaseManager  // Добавляем доступ к DatabaseManager
     @Binding var isPresented: Bool
     @State private var isShowingRemoteList = false
+    @State private var isShowingFileImporter = false
+    @State private var selectedFileURL: URL?
 
     var body: some View {
         NavigationView {
             VStack(spacing: 20) {
                 Button(action: {
-                    importCSV()
+                    isShowingFileImporter = true
                 }) {
                     Text(languageManager.localizedString(for: "ImportCSV"))
                 }
                 .buttonStyle(ButtonMain())
+                .fileImporter(
+                    isPresented: $isShowingFileImporter,
+                    allowedContentTypes: [.commaSeparatedText],
+                    allowsMultipleSelection: false
+                ) { result in
+                    switch result {
+                    case .success(let urls):
+                        if let url = urls.first {
+                            importCSV(from: url)
+                        }
+                    case .failure(let error):
+                        Logger.debug("Failed to import file: \(error)")
+                    }
+                }
 
                 Button(action: {
                     isShowingRemoteList = true
@@ -40,7 +57,14 @@ struct DictionaryAddView: View {
         }
     }
 
-    private func importCSV() {
-        // Логика для импорта CSV
+    private func importCSV(from url: URL) {
+        do {
+            // Импортируем CSV файл в базу данных
+            try databaseManager.importCSVFile(at: url)
+            Logger.debug("CSV file imported successfully")
+        } catch {
+            Logger.debug("Failed to import CSV file: \(error)")
+        }
     }
 }
+
