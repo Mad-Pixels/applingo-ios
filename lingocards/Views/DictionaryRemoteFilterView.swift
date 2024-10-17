@@ -50,7 +50,7 @@ struct DictionaryRemoteFilterView: View {
                         // Конкатенируем front и back категории и присваиваем в apiRequestParams
                         let frontCategoryName = selectedFrontCategory?.name ?? ""
                         let backCategoryName = selectedBackCategory?.name ?? ""
-                        apiRequestParams.categorySub = "\(frontCategoryName)-\(backCategoryName)"
+                        apiRequestParams.categorySub = "\(frontCategoryName)-\(backCategoryName)".lowercased()
 
                         Logger.debug("Filters saved: \(apiRequestParams.categorySub ?? "")")
                         presentationMode.wrappedValue.dismiss() // Закрываем окно
@@ -65,13 +65,16 @@ struct DictionaryRemoteFilterView: View {
                     }
 
                     Button(action: {
-                        presentationMode.wrappedValue.dismiss()
+                        // Сбрасываем значение categorySub
+                        apiRequestParams.categorySub = nil
+                        Logger.debug("Filters reset: categorySub set to an empty string")
+                        presentationMode.wrappedValue.dismiss() // Закрываем окно после сброса
                     }) {
-                        Text(languageManager.localizedString(for: "Close").capitalizedFirstLetter)
+                        Text(languageManager.localizedString(for: "Reset").capitalizedFirstLetter)
                             .font(.title2)
                             .padding()
                             .frame(maxWidth: .infinity)
-                            .background(Color.red)
+                            .background(Color.orange)
                             .foregroundColor(.white)
                             .cornerRadius(10)
                     }
