@@ -16,16 +16,26 @@ struct DictionaryRemoteFilterView: View {
                 Form {
                     Section(header: Text(languageManager.localizedString(for: "Dictionary")).font(.headline)) {
                         HStack {
+                            // Picker "from"
                             CompCategoryPickerView(
                                 selectedCategory: $selectedFrontCategory,
-                                categories: viewModel.frontCategories
+                                categories: viewModel.frontCategories,
+                                title: languageManager.localizedString(for: "from")
                             )
                             .environmentObject(languageManager)
                             .frame(maxWidth: .infinity)
 
+                            Image(systemName: "arrow.left.and.right.circle.fill")
+                                .resizable()
+                                .frame(width: 24, height: 24)
+                                .foregroundColor(.blue)
+                                .padding(.horizontal, 8)
+
+                            // Picker "to"
                             CompCategoryPickerView(
                                 selectedCategory: $selectedBackCategory,
-                                categories: viewModel.backCategories
+                                categories: viewModel.backCategories,
+                                title: languageManager.localizedString(for: "to")
                             )
                             .environmentObject(languageManager)
                             .frame(maxWidth: .infinity)
