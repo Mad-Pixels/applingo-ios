@@ -5,4 +5,5 @@ enum AppTab: String, Codable {
     case dictionaries
     case settings
     case learn
+    case main
 }

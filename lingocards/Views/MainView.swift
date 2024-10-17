@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct MainView: View {
+    @EnvironmentObject var databaseManager: DatabaseManager
     @EnvironmentObject var languageManager: LanguageManager
     @EnvironmentObject var themeManager: ThemeManager
     @StateObject private var tabManager = TabManager.shared
@@ -50,6 +51,13 @@ struct MainView: View {
         .preferredColorScheme(themeManager.currentTheme == .dark ? .dark : .light)
         .onChange(of: tabManager.activeTab) { oldTab, newTab in
             Logger.debug("[MainView]: Active tab changed from \(oldTab) to \(newTab)")
+        }
+        .onAppear {
+            do {
+                try databaseManager.connect()
+            } catch {
+                Logger.debug("Failed to connect to the database: \(error)")
+            }
         }
     }
 }

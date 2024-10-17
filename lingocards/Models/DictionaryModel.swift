@@ -53,4 +53,6 @@ struct DictionaryItem: Identifiable, Codable, Equatable, Hashable {
         formatter.timeStyle = .short
         return formatter.string(from: date)
     }
+    
+    static let databaseTableName = "Dictionary"
 }
