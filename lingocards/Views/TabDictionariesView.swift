@@ -12,56 +12,63 @@ struct TabDictionariesView: View {
     
     var body: some View {
         NavigationView {
-            VStack {
-                if let error = errorManager.currentError, errorManager.isVisible(for: .dictionaries, source: .getDictionaries) {
-                    Text(error.errorDescription ?? "")
-                        .foregroundColor(.red)
-                        .padding()
-                        .multilineTextAlignment(.center)
-                }
-
-                if viewModel.dictionaries.isEmpty && !errorManager.isErrorVisible {
-                    Spacer()
-                    Text(languageManager.localizedString(for: "NoDictionariesAvailable"))
-                        .foregroundColor(.gray)
-                        .italic()
-                        .padding()
-                        .multilineTextAlignment(.center)
-                    Spacer()
-                } else {
-                    List {
-                        ForEach($viewModel.dictionaries, id: \.id) { $dictionary in
-                            HStack {
-                                VStack(alignment: .leading) {
-                                    Text(dictionary.displayName)
-                                        .font(.headline)
-
-                                    Text(dictionary.subTitle)
-                                        .font(.subheadline)
-                                        .foregroundColor(.gray)
-                                }
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(.vertical, 4)
-                                .contentShape(Rectangle())
-                                .onTapGesture {
-                                    selectedDictionary = dictionary
-                                }
-
-                                Toggle(isOn: $dictionary.isActive) {
-                                    EmptyView()
-                                }
-                                .toggleStyle(CheckboxToggleStyle())
-                                .onChange(of: dictionary.isActive) { oldStatus, newStatus in
-                                    updateDictionaryStatus(dictionary, newStatus: newStatus)
-                                }
-                            }
-                            .padding(.vertical, 4)
-                        }
-                        .onDelete(perform: deleteDictionary)
+            ZStack { // Используем ZStack для фиксированного расположения кнопки
+                VStack {
+                    if let error = errorManager.currentError, errorManager.isVisible(for: .dictionaries, source: .getDictionaries) {
+                        Text(error.errorDescription ?? "")
+                            .foregroundColor(.red)
+                            .padding()
+                            .multilineTextAlignment(.center)
                     }
-                }
 
-                Spacer()
+                    if viewModel.dictionaries.isEmpty && !errorManager.isErrorVisible {
+                        Spacer()
+                        Text(languageManager.localizedString(for: "NoDictionariesAvailable"))
+                            .foregroundColor(.gray)
+                            .italic()
+                            .padding()
+                            .multilineTextAlignment(.center)
+                        Spacer()
+                    } else {
+                        List {
+                            ForEach($viewModel.dictionaries, id: \.id) { $dictionary in
+                                HStack {
+                                    VStack(alignment: .leading) {
+                                        Text(dictionary.displayName)
+                                            .font(.headline)
+
+                                        Text(dictionary.subTitle)
+                                            .font(.subheadline)
+                                            .foregroundColor(.gray)
+                                    }
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .padding(.vertical, 4)
+                                    .contentShape(Rectangle())
+                                    .onTapGesture {
+                                        selectedDictionary = dictionary
+                                    }
+
+                                    Toggle(isOn: $dictionary.isActive) {
+                                        EmptyView()
+                                    }
+                                    .toggleStyle(CheckboxToggleStyle())
+                                    .onChange(of: dictionary.isActive) { oldStatus, newStatus in
+                                        updateDictionaryStatus(dictionary, newStatus: newStatus)
+                                    }
+                                }
+                                .padding(.vertical, 4)
+                            }
+                            .onDelete(perform: deleteDictionary)
+                        }
+                    }
+
+                    Spacer()
+                }
+                
+                // Фиксированная кнопка добавления в нижнем правом углу
+                ButtonFloating(action: {
+                    addDictionary()
+                }, imageName: "plus")
             }
             .navigationTitle(languageManager.localizedString(for: "Dictionaries").capitalizedFirstLetter)
             .onAppear {
@@ -81,11 +88,6 @@ struct TabDictionariesView: View {
                     alertMessage = error.errorDescription ?? ""
                 }
             }
-            .overlay(
-                ButtonFloating(action: {
-                    addDictionary()
-                }, imageName: "plus")
-            )
             .alert(isPresented: $isShowingAlert) {
                 Alert(
                     title: Text(languageManager.localizedString(for: "Error")),

@@ -12,83 +12,88 @@ struct TabWordsView: View {
 
     var body: some View {
         NavigationView {
-            VStack {
-                CompSearchView(
-                    searchText: $viewModel.searchText,
-                    placeholder: languageManager.localizedString(for: "Search").capitalizedFirstLetter
-                )
-                .padding(.bottom, 10)
+            ZStack {
+                VStack {
+                    CompSearchView(
+                        searchText: $viewModel.searchText,
+                        placeholder: languageManager.localizedString(for: "Search").capitalizedFirstLetter
+                    )
+                    .padding(.bottom, 10)
 
-                if let error = errorManager.currentError, errorManager.isVisible(for: .words, source: .getWords) {
-                    Text(error.errorDescription ?? "")
-                        .foregroundColor(.red)
-                        .padding()
-                        .multilineTextAlignment(.center)
-                }
+                    if let error = errorManager.currentError, errorManager.isVisible(for: .words, source: .getWords) {
+                        Text(error.errorDescription ?? "")
+                            .foregroundColor(.red)
+                            .padding()
+                            .multilineTextAlignment(.center)
+                    }
 
-                if viewModel.words.isEmpty && !errorManager.isErrorVisible {
-                    Spacer()
-                    Text(languageManager.localizedString(for: "NoWordsAvailable"))
-                        .foregroundColor(.gray)
-                        .italic()
-                        .padding()
-                        .multilineTextAlignment(.center)
-                    Spacer()
-                } else {
-                    List {
-                        ForEach(viewModel.words) { word in
-                            HStack {
-                                Text(word.frontText)
-                                    .font(.headline)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
+                    if viewModel.words.isEmpty && !errorManager.isErrorVisible {
+                        Spacer()
+                        Text(languageManager.localizedString(for: "NoWordsAvailable"))
+                            .foregroundColor(.gray)
+                            .italic()
+                            .padding()
+                            .multilineTextAlignment(.center)
+                        Spacer()
+                    } else {
+                        List {
+                            ForEach(viewModel.words) { word in
+                                HStack {
+                                    Text(word.frontText)
+                                        .font(.headline)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
 
-                                Image(systemName: "arrow.left.and.right.circle.fill")
-                                    .foregroundColor(.blue)
+                                    Image(systemName: "arrow.left.and.right.circle.fill")
+                                        .foregroundColor(.blue)
 
-                                Text(word.backText)
-                                    .font(.headline)
-                                    .frame(maxWidth: .infinity, alignment: .trailing)
+                                    Text(word.backText)
+                                        .font(.headline)
+                                        .frame(maxWidth: .infinity, alignment: .trailing)
+                                }
+                                .padding(.vertical, 4)
+                                .contentShape(Rectangle())
+                                .onTapGesture {
+                                    isShowingDetailView = true
+                                    selectedWord = word
+                                }
                             }
-                            .padding(.vertical, 4)
-                            .contentShape(Rectangle())
-                            .onTapGesture {
-                                isShowingDetailView = true
-                                selectedWord = word
-                            }
+                            .onDelete(perform: deleteWord)
                         }
-                        .onDelete(perform: deleteWord)
+                    }
+
+                    Spacer()
+                }
+                .navigationTitle(languageManager.localizedString(for: "Words").capitalizedFirstLetter)
+                .onAppear {
+                    tabManager.setActiveTab(.words)
+                    if tabManager.isActive(tab: .words) {
+                        viewModel.getWords(search: viewModel.searchText)
                     }
                 }
-
-                Spacer()
-            }
-            .navigationTitle(languageManager.localizedString(for: "Words").capitalizedFirstLetter)
-            .onAppear {
-                tabManager.setActiveTab(.words)
-                if tabManager.isActive(tab: .words) {
-                    viewModel.getWords(search: viewModel.searchText)
+                .onChange(of: tabManager.activeTab) { _, newTab in
+                    if newTab != .words {
+                        tabManager.deactivateTab(.words)
+                    }
+                }
+                .onChange(of: viewModel.searchText) { _, newSearchText in
+                    if tabManager.isActive(tab: .words) {
+                        viewModel.getWords(search: newSearchText)
+                    }
+                }
+                .onChange(of: errorManager.currentError) { _, newError in
+                    if let error = newError, error.tab == .words, error.source == .deleteWord {
+                        isShowingAlert = true
+                    }
+                }
+                
+                // ButtonFloating overlay
+                VStack {
+                    Spacer()
+                    ButtonFloating(action: {
+                        addWord()
+                    }, imageName: "plus")
                 }
             }
-            .onChange(of: tabManager.activeTab) { _, newTab in
-                if newTab != .words {
-                    tabManager.deactivateTab(.words)
-                }
-            }
-            .onChange(of: viewModel.searchText) { _, newSearchText in
-                if tabManager.isActive(tab: .words) {
-                    viewModel.getWords(search: newSearchText)
-                }
-            }
-            .onChange(of: errorManager.currentError) { _, newError in
-                if let error = newError, error.tab == .words, error.source == .deleteWord {
-                    isShowingAlert = true
-                }
-            }
-            .overlay(
-                ButtonFloating(action: {
-                    addWord()
-                }, imageName: "plus")
-            )
             .alert(isPresented: $isShowingAlert) {
                 Alert(
                     title: Text(languageManager.localizedString(for: "Error")),

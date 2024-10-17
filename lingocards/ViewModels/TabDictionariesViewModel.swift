@@ -104,21 +104,43 @@ final class TabDictionariesViewModel: ObservableObject {
     }
 
     func deleteDictionary(_ dictionary: DictionaryItem) {
-        // С вероятностью 10% возвращаем ошибку
-        if Int.random(in: 1...3) <= 1 {
+        Logger.debug("[TabDictionariesViewModel]: Deleting dictionary with ID \(dictionary.id)")
+
+        guard DatabaseManager.shared.isConnected else {
             let error = AppError(
                 errorType: .database,
-                errorMessage: "Failed to delete the dictionary due to database issues",
-                additionalInfo: ["Context": "TabDictionariesViewModel", "DictionaryID": "\(dictionary.id)"]
+                errorMessage: "Database is not connected",
+                additionalInfo: nil
             )
             ErrorManager.shared.setError(appError: error, tab: .dictionaries, source: .deleteDictionary)
-            Logger.debug("[DictionariesViewModel]: Failed to delete dictionary with ID \(dictionary.id) due to database issues")
             return
         }
 
-        // Логика удаления из массива
-        dictionaries.removeAll { $0.id == dictionary.id }
-        Logger.debug("[DictionariesViewModel]: Dictionary was deleted successfully")
+        do {
+            // Удаляем словарь из базы данных
+            try DatabaseManager.shared.databaseQueue?.write { db in
+                try db.execute(
+                    sql: "DELETE FROM \(DictionaryItem.databaseTableName) WHERE id = ?",
+                    arguments: [dictionary.id]
+                )
+            }
+
+            // Удаляем словарь из локального массива
+            if let index = dictionaries.firstIndex(where: { $0.id == dictionary.id }) {
+                dictionaries.remove(at: index)
+                Logger.debug("[TabDictionariesViewModel]: Dictionary with ID \(dictionary.id) was deleted successfully")
+            }
+
+            ErrorManager.shared.clearError(for: .deleteDictionary)
+        } catch {
+            Logger.debug("[TabDictionariesViewModel]: Failed to delete dictionary from database: \(error)")
+            let appError = AppError(
+                errorType: .database,
+                errorMessage: "Failed to delete dictionary from database",
+                additionalInfo: ["error": "\(error)"]
+            )
+            ErrorManager.shared.setError(appError: appError, tab: .dictionaries, source: .deleteDictionary)
+        }
     }
     
     func updateDictionary(_ updatedDictionary: DictionaryItem, completion: @escaping (Result<Void, Error>) -> Void) {
