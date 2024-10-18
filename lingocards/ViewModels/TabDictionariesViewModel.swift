@@ -119,16 +119,22 @@ final class TabDictionariesViewModel: ObservableObject {
         do {
             // Удаляем словарь из базы данных
             try DatabaseManager.shared.databaseQueue?.write { db in
+                // Удаляем запись в таблице Dictionary
                 try db.execute(
                     sql: "DELETE FROM \(DictionaryItem.databaseTableName) WHERE id = ?",
                     arguments: [dictionary.id]
+                )
+                
+                // Удаляем таблицу слов, связанную с данным словарём
+                try db.execute(
+                    sql: "DROP TABLE IF EXISTS \(dictionary.tableName)"
                 )
             }
 
             // Удаляем словарь из локального массива
             if let index = dictionaries.firstIndex(where: { $0.id == dictionary.id }) {
                 dictionaries.remove(at: index)
-                Logger.debug("[TabDictionariesViewModel]: Dictionary with ID \(dictionary.id) was deleted successfully")
+                Logger.debug("[TabDictionariesViewModel]: Dictionary with ID \(dictionary.id) was deleted successfully, along with its table \(dictionary.tableName)")
             }
 
             ErrorManager.shared.clearError(for: .deleteDictionary)
