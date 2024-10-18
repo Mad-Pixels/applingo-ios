@@ -9,7 +9,7 @@ struct TabWordsView: View {
     @State private var isShowingAddView = false
     @State private var isShowingAlert = false
     @State private var selectedWord: WordItem?
-
+    
     var body: some View {
         NavigationView {
             ZStack {
@@ -19,14 +19,18 @@ struct TabWordsView: View {
                         placeholder: languageManager.localizedString(for: "Search").capitalizedFirstLetter
                     )
                     .padding(.bottom, 10)
-
+                    .onChange(of: viewModel.searchText) { _ in
+                        viewModel.resetPagination()
+                        viewModel.getWords()
+                    }
+                    
                     if let error = errorManager.currentError, errorManager.isVisible(for: .words, source: .getWords) {
                         Text(error.errorDescription ?? "")
                             .foregroundColor(.red)
                             .padding()
                             .multilineTextAlignment(.center)
                     }
-
+                    
                     if viewModel.words.isEmpty && !errorManager.isErrorVisible {
                         Spacer()
                         Text(languageManager.localizedString(for: "NoWordsAvailable"))
@@ -42,10 +46,10 @@ struct TabWordsView: View {
                                     Text(word.frontText)
                                         .font(.headline)
                                         .frame(maxWidth: .infinity, alignment: .leading)
-
+                                    
                                     Image(systemName: "arrow.left.and.right.circle.fill")
                                         .foregroundColor(.blue)
-
+                                    
                                     Text(word.backText)
                                         .font(.headline)
                                         .frame(maxWidth: .infinity, alignment: .trailing)
@@ -56,28 +60,30 @@ struct TabWordsView: View {
                                     isShowingDetailView = true
                                     selectedWord = word
                                 }
+                                .onAppear {
+                                    viewModel.loadMoreWordsIfNeeded(currentItem: word)
+                                }
                             }
                             .onDelete(perform: deleteWord)
+                            
+                            if viewModel.isLoadingPage {
+                                ProgressView()
+                                    .frame(idealWidth: .infinity, maxWidth: .infinity, alignment: .center)
+                            }
                         }
                     }
-
-                    Spacer()
                 }
                 .navigationTitle(languageManager.localizedString(for: "Words").capitalizedFirstLetter)
                 .onAppear {
                     tabManager.setActiveTab(.words)
                     if tabManager.isActive(tab: .words) {
-                        viewModel.getWords(search: viewModel.searchText)
+                        viewModel.resetPagination()
+                        viewModel.getWords()
                     }
                 }
                 .onChange(of: tabManager.activeTab) { _, newTab in
                     if newTab != .words {
                         tabManager.deactivateTab(.words)
-                    }
-                }
-                .onChange(of: viewModel.searchText) { _, newSearchText in
-                    if tabManager.isActive(tab: .words) {
-                        viewModel.getWords(search: newSearchText)
                     }
                 }
                 .onChange(of: errorManager.currentError) { _, newError in
@@ -86,7 +92,7 @@ struct TabWordsView: View {
                     }
                 }
                 
-                // ButtonFloating overlay
+                // Кнопка добавления
                 VStack {
                     Spacer()
                     ButtonFloating(action: {
@@ -124,14 +130,14 @@ struct TabWordsView: View {
             )
         }
     }
-
+    
     private func deleteWord(at offsets: IndexSet) {
         offsets.forEach { index in
             let word = viewModel.words[index]
             viewModel.deleteWord(word)
         }
     }
-
+    
     private func addWord() {
         viewModel.getDictionaries { result in
             DispatchQueue.main.async {

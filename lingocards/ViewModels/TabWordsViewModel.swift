@@ -1,206 +1,342 @@
 import Foundation
 import Combine
+import GRDB
 
 final class TabWordsViewModel: ObservableObject {
     @Published var dictionaries: [DictionaryItem] = []
     @Published var words: [WordItem] = []
-    @Published var searchText: String = "" {
-        didSet {
-            // Вызов getWords только при изменении searchText и активной вкладке
-            if isActiveTab {
-                Logger.debug("BBBBB: getwords")
-                getWords(search: searchText)
-            }
-        }
-    }
+    @Published var searchText: String = ""
     
     private var cancellable: AnyCancellable?
-    private var errorCancellable: AnyCancellable?
     private var isActiveTab: Bool = false  // Флаг активности вкладки
-
+    
+    // Параметры пагинации
+    private var currentPage: Int = 1
+    private let itemsPerPage: Int = 30
+    var isLoadingPage: Bool = false
+    private var hasMorePages: Bool = true
+    
     init() {
         // Подписка на уведомление при выборе вкладки Words
         cancellable = NotificationCenter.default
             .publisher(for: .didSelectWordsTab)
             .sink { [weak self] _ in
                 self?.isActiveTab = true  // Устанавливаем флаг активности
-                Logger.debug("AAA: flag isActiveTab true")
-                self?.getWords(search: self?.searchText ?? "")
+                Logger.debug("[TabWordsViewModel]: Words tab selected")
+                self?.resetPagination()
+                self?.getWords()
             }
-
-        // Подписка на изменения видимости ошибки
-//        errorCancellable = ErrorManager.shared.$isErrorVisible
-//            .sink { [weak self] isVisible in
-//                // Если ошибка исчезла и вкладка активна, вызываем getWords
-//                if !isVisible, self?.isActiveTab == true {
-//                    self?.getWords(search: self?.searchText ?? "")
-//                }
-//            }
     }
-
+    
+    deinit {
+        cancellable?.cancel()
+    }
+    
+    // Метод для сброса параметров пагинации
+    func resetPagination() {
+        currentPage = 1
+        hasMorePages = true
+        words.removeAll()
+    }
+    
     // Основной метод получения данных
-    func getWords(search: String = "") {
-        // Проверяем, существует ли активная ошибка для `getWords`
-//        if let error = ErrorManager.shared.currentError, error.source == .getWords {
-//            Logger.debug("[WordsViewModel]: Cannot fetch words - an active error from getWords exists.")
-//            return
-//        }
-
-        Logger.debug("[WordsViewModel]: fetching words...")
-
-        // С вероятностью 10% возвращаем ошибку для `getWords`
-        if Int.random(in: 1...10) <= 2 {
-            Logger.debug("[WordsViewModel]: failed to fetch words")
-            self.words = []
-
+    func getWords() {
+        guard !isLoadingPage, hasMorePages else {
+            return
+        }
+        
+        Logger.debug("[TabWordsViewModel]: Fetching words from database...")
+        isLoadingPage = true
+        
+        guard DatabaseManager.shared.isConnected else {
             let error = AppError(
                 errorType: .database,
-                errorMessage: "Failed to fetch data from database",
+                errorMessage: "Database is not connected",
                 additionalInfo: nil
             )
-
-            // Создаем AppError и передаем в ErrorManager
             ErrorManager.shared.setError(
                 appError: error,
                 tab: .words,
                 source: .getWords
             )
+            isLoadingPage = false
             return
         }
-
-        // Тестовые данные для отображения
-        let testData: [WordItem] = [
-            WordItem(id: 1, hashId: 1, tableName: "table1", frontText: "Hello", backText: "Привет", description: "", hint: "", createdAt: 1633065600, salt: 1234, success: 14, fail: 5, weight: 6),
-            WordItem(id: 2, hashId: 2, tableName: "table1", frontText: "Apple", backText: "Яблоко", description: "Fruit", hint: "A type of fruit", createdAt: 1633065700, salt: 2345),
-            WordItem(id: 3, hashId: 3, tableName: "table1", frontText: "Dog", backText: "Собака", description: "Animal", hint: "A common pet", createdAt: 1633065800, salt: 3456),
-            WordItem(id: 4, hashId: 4, tableName: "table1", frontText: "Cat", backText: "Кошка", description: "Animal", hint: "A common pet", createdAt: 1633065900, salt: 4567),
-            WordItem(id: 5, hashId: 5, tableName: "table1", frontText: "Sun", backText: "Солнце", description: "Celestial Body", hint: "Appears in the sky during the day", createdAt: 1633066000, salt: 5678),
-            WordItem(id: 6, hashId: 6, tableName: "table1", frontText: "Water", backText: "Вода", description: "Liquid", hint: "Essential for life", createdAt: 1633066100, salt: 6789),
-            WordItem(id: 7, hashId: 7, tableName: "table1", frontText: "Tree", backText: "Дерево", description: "Plant", hint: "Has leaves and branches", createdAt: 1633066200, salt: 7890),
-            WordItem(id: 8, hashId: 8, tableName: "table1", frontText: "House", backText: "Дом", description: "Building", hint: "Where people live", createdAt: 1633066300, salt: 8901),
-            WordItem(id: 9, hashId: 9, tableName: "table1", frontText: "Car", backText: "Машина", description: "Vehicle", hint: "Used for transportation", createdAt: 1633066400, salt: 9012),
-            WordItem(id: 10, hashId: 10, tableName: "table1", frontText: "Book", backText: "Книга", description: "Object", hint: "Used for reading", createdAt: 1633066500, salt: 10123)
-        ]
-
-        if search.isEmpty {
-            words = testData
-        } else {
-            words = testData.filter { $0.frontText.localizedCaseInsensitiveContains(search) || $0.backText.localizedCaseInsensitiveContains(search) }
-        }
-
-        // Ошибок нет — очищаем ошибку для `getWords`
-        ErrorManager.shared.clearError(for: .getWords)
-        Logger.debug("[WordsViewModel]: Words data successfully fetched")
-    }
-
-    deinit {
-        cancellable?.cancel()
-        errorCancellable?.cancel()
-    }
-
-    func updateWord(_ updatedWord: WordItem, completion: @escaping (Result<Void, Error>) -> Void) {
-        if Int.random(in: 1...3) <= 1 {
-            let e = AppError(
-                errorType: .database,
-                errorMessage: "Failed to update word with ID \(updatedWord.id) due to database issues",
-                additionalInfo: nil
-            )
-            completion(.failure(e))
-            return
-        }
-
-        if let index = words.firstIndex(where: { $0.id == updatedWord.id }) {
-            words[index] = updatedWord
-            Logger.debug("[WordsViewModel]: Word updated successfully")
-            completion(.success(()))
-        } else {
-            let e = AppError(
-                errorType: .unknown,
-                errorMessage: "Word with ID \(updatedWord.id) not found",
-                additionalInfo: nil
-            )
-            ErrorManager.shared.setError(appError: e, tab: .words, source: .updateWord)
-            completion(.failure(e))
-        }
-    }
-
-
-    func deleteWord(_ word: WordItem) {
-        // С вероятностью 10% возвращаем ошибку
-        if Int.random(in: 1...3) <= 1 {
-            let error = AppError(
-                errorType: .database,
-                errorMessage: "Failed to delete the word due to database issues",
-                additionalInfo: ["Context": "TabWordsViewModel", "WordID": "\(word.id)"]
-            )
-            ErrorManager.shared.setError(appError: error, tab: .words, source: .deleteWord)
-            Logger.debug("[WordsViewModel]: Failed to delete word with ID \(word.id) due to database issues")
-            return
-        }
-
-        // Логика удаления из массива
-        words.removeAll { $0.id == word.id }
-        Logger.debug("[WordsViewModel]: Word was deleted successfully")
-    }
-    
-    func saveWord(_ word: WordItem, completion: @escaping (Result<Void, Error>) -> Void) {
-        DispatchQueue.global().async {
-            // С вероятностью 20% возвращаем ошибку
-            if Int.random(in: 1...5) == 1 {
-                Logger.debug("[WordsViewModel]: Failed to save word")
-
-                let error = AppError(
-                    errorType: .database,
-                    errorMessage: "Failed to save word due to database issues",
-                    additionalInfo: ["WordID": "\(word.id)"]
-                )
-
-                // Устанавливаем ошибку в ErrorManager
-                DispatchQueue.main.async {
-                    ErrorManager.shared.setError(appError: error, tab: .words, source: .saveWord)
-                    completion(.failure(error))  // Возвращаем ошибку через completion
-                }
-                return
-            }
-
-            // Добавляем слово в массив
-            DispatchQueue.main.async {
-                self.words.append(word)
-                Logger.debug("[WordsViewModel]: Word saved successfully")
-                completion(.success(()))  // Сообщаем об успешном завершении через completion
-            }
-        }
-    }
-    
-    
-    func getDictionaries(completion: @escaping (Result<[DictionaryItem], Error>) -> Void) {
-        DispatchQueue.global().async {
-                    // С вероятностью 10% возвращаем ошибку
-                    if Int.random(in: 1...10) <= 1 {
-                        let error = AppError(
-                            errorType: .database,
-                            errorMessage: "Failed to fetch dictionaries due to database issues",
-                            additionalInfo: nil
-                        )
+        
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let self = self else { return }
+            do {
+                var fetchedWords: [WordItem] = []
+                try DatabaseManager.shared.databaseQueue?.read { db in
+                    // Получаем активные словари
+                    let activeDictionaries = try DictionaryItem
+                        .filter(Column("isActive") == true)
+                        .fetchAll(db)
+                    
+                    // Если нет активных словарей
+                    if activeDictionaries.isEmpty {
                         DispatchQueue.main.async {
-                            completion(.failure(error))
+                            self.hasMorePages = false
+                            self.isLoadingPage = false
+                            self.words = []
                         }
                         return
                     }
-
-                    // Генерация тестовых данных для словарей
-            let testData: [DictionaryItem] = [
-                DictionaryItem(id: 1, hashId: 101, displayName: "English Words", tableName: "english_words", description: "Basic English vocabulary", category: "Language", subcategory: "en-en", author: "Author1", createdAt: 1633065600, isPrivate: false, isActive: true),
-                DictionaryItem(id: 2, hashId: 102, displayName: "French Words", tableName: "french_words", description: "Basic French vocabulary", category: "Language", subcategory: "en-en", author: "Author2", createdAt: 1633065700, isPrivate: false, isActive: true),
-                DictionaryItem(id: 3, hashId: 103, displayName: "Spanish Words", tableName: "spanish_words", description: "Basic Spanish vocabulary", category: "Language", subcategory: "en-en", author: "Author3", createdAt: 1633065800, isPrivate: false, isActive: true),
-                DictionaryItem(id: 4, hashId: 104, displayName: "German Words", tableName: "german_words", description: "Basic German vocabulary", category: "Language", subcategory: "en-en", author: "Author4", createdAt: 1633065900, isPrivate: false, isActive: true),
-                DictionaryItem(id: 5, hashId: 105, displayName: "Russian Words", tableName: "russian_words", description: "Basic Russian vocabulary", category: "Language", subcategory: "en-en", author: "Author5", createdAt: 1633066000, isPrivate: false, isActive: true)
-            ]
-
-                    DispatchQueue.main.async {
-                        self.dictionaries = testData  // Обновляем Published переменную
-                        completion(.success(testData))
+                    
+                    // Собираем SQL-запрос для объединения таблиц слов
+                    var unionQueries: [String] = []
+                    var arguments: [DatabaseValueConvertible] = []
+                    for dictionary in activeDictionaries {
+                        let tableName = dictionary.tableName
+                        var query = "SELECT *, '\(tableName)' AS tableName FROM \(tableName)"
+                        
+                        // Фильтрация по поисковому запросу
+                        if !self.searchText.isEmpty {
+                            query += " WHERE frontText LIKE ? OR backText LIKE ?"
+                            let searchQuery = "%\(self.searchText)%"
+                            arguments.append(contentsOf: [searchQuery, searchQuery])
+                        }
+                        
+                        unionQueries.append(query)
                     }
+                    
+                    // Объединяем запросы через UNION ALL
+                    let combinedSQL = unionQueries.joined(separator: " UNION ALL ")
+                    
+                    // Добавляем ORDER BY и LIMIT с OFFSET для пагинации
+                    let finalSQL = combinedSQL + " ORDER BY createdAt DESC LIMIT ? OFFSET ?"
+                    arguments.append(contentsOf: [self.itemsPerPage, (self.currentPage - 1) * self.itemsPerPage])
+                    
+                    // Выполняем финальный SQL-запрос
+                    let finalRequest = SQLRequest<WordItem>(sql: finalSQL, arguments: StatementArguments(arguments))
+                    let pageWords = try finalRequest.fetchAll(db)
+                    
+                    if pageWords.count < self.itemsPerPage {
+                        self.hasMorePages = false
+                    }
+                    
+                    fetchedWords = pageWords
                 }
+                
+                DispatchQueue.main.async {
+                    self.words.append(contentsOf: fetchedWords)
+                    self.currentPage += 1
+                    self.isLoadingPage = false
+                    ErrorManager.shared.clearError(for: .getWords)
+                    Logger.debug("[TabWordsViewModel]: Words data successfully fetched from database")
+                }
+            } catch {
+                DispatchQueue.main.async {
+                    self.isLoadingPage = false
+                    self.hasMorePages = false
+                    Logger.debug("[TabWordsViewModel]: Failed to fetch words from database: \(error)")
+                    let appError = AppError(
+                        errorType: .database,
+                        errorMessage: "Failed to fetch data from database",
+                        additionalInfo: ["error": "\(error)"]
+                    )
+                    ErrorManager.shared.setError(
+                        appError: appError,
+                        tab: .words,
+                        source: .getWords
+                    )
+                }
+            }
+        }
+    }
+    
+    // Метод для загрузки следующей страницы
+    func loadMoreWordsIfNeeded(currentItem word: WordItem?) {
+        guard let word = word else {
+            return
+        }
+        
+        let thresholdIndex = words.index(words.endIndex, offsetBy: -5)
+        if words.firstIndex(where: { $0.id == word.id }) == thresholdIndex {
+            getWords()
+        }
+    }
+    
+    // Метод для удаления слова
+    func deleteWord(_ word: WordItem) {
+        Logger.debug("[TabWordsViewModel]: Deleting word with ID \(word.id)")
+        
+        guard DatabaseManager.shared.isConnected else {
+            let error = AppError(
+                errorType: .database,
+                errorMessage: "Database is not connected",
+                additionalInfo: nil
+            )
+            ErrorManager.shared.setError(
+                appError: error,
+                tab: .words,
+                source: .deleteWord
+            )
+            return
+        }
+        
+        do {
+            try DatabaseManager.shared.databaseQueue?.write { db in
+                // Удаляем слово из соответствующей таблицы
+                try db.execute(
+                    sql: "DELETE FROM \(word.tableName) WHERE id = ?",
+                    arguments: [word.id]
+                )
+            }
+            
+            // Удаляем слово из локального массива
+            if let index = words.firstIndex(where: { $0.id == word.id && $0.tableName == word.tableName }) {
+                words.remove(at: index)
+                Logger.debug("[TabWordsViewModel]: Word with ID \(word.id) was deleted successfully")
+            }
+            
+            ErrorManager.shared.clearError(for: .deleteWord)
+        } catch {
+            Logger.debug("[TabWordsViewModel]: Failed to delete word from database: \(error)")
+            let appError = AppError(
+                errorType: .database,
+                errorMessage: "Failed to delete word from database",
+                additionalInfo: ["error": "\(error)"]
+            )
+            ErrorManager.shared.setError(
+                appError: appError,
+                tab: .words,
+                source: .deleteWord
+            )
+        }
+    }
+    
+    // Метод для обновления слова
+    func updateWord(_ word: WordItem, completion: @escaping (Result<Void, Error>) -> Void) {
+        Logger.debug("[TabWordsViewModel]: Updating word in database...")
+        
+        guard DatabaseManager.shared.isConnected else {
+            let error = AppError(
+                errorType: .database,
+                errorMessage: "Database is not connected",
+                additionalInfo: nil
+            )
+            completion(.failure(error))
+            return
+        }
+        
+        do {
+            try DatabaseManager.shared.databaseQueue?.write { db in
+                // Обновляем слово в базе данных
+                try db.execute(sql: """
+                    UPDATE \(word.tableName) SET
+                    frontText = ?,
+                    backText = ?,
+                    description = ?,
+                    hint = ?,
+                    success = ?,
+                    fail = ?,
+                    weight = ?,
+                    salt = ?
+                    WHERE id = ?
+                    """, arguments: [
+                        word.frontText,
+                        word.backText,
+                        word.description ?? "",
+                        word.hint ?? "",
+                        word.success,
+                        word.fail,
+                        word.weight,
+                        word.salt,
+                        word.id
+                    ])
+            }
+            
+            // Обновляем слово в локальном массиве
+            if let index = words.firstIndex(where: { $0.id == word.id && $0.tableName == word.tableName }) {
+                words[index] = word
+                Logger.debug("[TabWordsViewModel]: Word updated successfully")
+                completion(.success(()))
+            } else {
+                let error = AppError(
+                    errorType: .unknown,
+                    errorMessage: "Word not found in local list",
+                    additionalInfo: nil
+                )
+                completion(.failure(error))
+            }
+        } catch {
+            Logger.debug("[TabWordsViewModel]: Failed to update word in database: \(error)")
+            let appError = AppError(
+                errorType: .database,
+                errorMessage: "Failed to update word in database",
+                additionalInfo: ["error": "\(error)"]
+            )
+            completion(.failure(appError))
+        }
+    }
+    
+    // Метод для сохранения нового слова
+    func saveWord(_ word: WordItem, completion: @escaping (Result<Void, Error>) -> Void) {
+        Logger.debug("[TabWordsViewModel]: Saving word to database...")
+        
+        guard DatabaseManager.shared.isConnected else {
+            let error = AppError(
+                errorType: .database,
+                errorMessage: "Database is not connected",
+                additionalInfo: nil
+            )
+            completion(.failure(error))
+            return
+        }
+        
+        do {
+            try DatabaseManager.shared.databaseQueue?.write { db in
+                var newWord = word
+                try newWord.insert(db)
+            }
+            
+            // Добавляем слово в локальный массив
+            words.insert(word, at: 0)
+            Logger.debug("[TabWordsViewModel]: Word saved successfully")
+            completion(.success(()))
+        } catch {
+            Logger.debug("[TabWordsViewModel]: Failed to save word to database: \(error)")
+            let appError = AppError(
+                errorType: .database,
+                errorMessage: "Failed to save word to database",
+                additionalInfo: ["error": "\(error)"]
+            )
+            completion(.failure(appError))
+        }
+    }
+    
+    // Метод для получения списка словарей (для добавления слова)
+    func getDictionaries(completion: @escaping (Result<Void, Error>) -> Void) {
+        Logger.debug("[TabWordsViewModel]: Fetching dictionaries...")
+        
+        guard DatabaseManager.shared.isConnected else {
+            let error = AppError(
+                errorType: .database,
+                errorMessage: "Database is not connected",
+                additionalInfo: nil
+            )
+            completion(.failure(error))
+            return
+        }
+        
+        do {
+            try DatabaseManager.shared.databaseQueue?.read { db in
+                let fetchedDictionaries = try DictionaryItem.fetchAll(db)
+                DispatchQueue.main.async {
+                    self.dictionaries = fetchedDictionaries
+                    Logger.debug("[TabWordsViewModel]: Dictionaries fetched successfully")
+                    completion(.success(()))
+                }
+            }
+        } catch {
+            Logger.debug("[TabWordsViewModel]: Failed to fetch dictionaries from database: \(error)")
+            let appError = AppError(
+                errorType: .database,
+                errorMessage: "Failed to fetch dictionaries from database",
+                additionalInfo: ["error": "\(error)"]
+            )
+            completion(.failure(appError))
+        }
     }
 }
