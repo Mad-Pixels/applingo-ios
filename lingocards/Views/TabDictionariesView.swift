@@ -12,7 +12,7 @@ struct TabDictionariesView: View {
     
     var body: some View {
         NavigationView {
-            ZStack { // Используем ZStack для фиксированного расположения кнопки
+            ZStack {
                 VStack {
                     if let error = errorManager.currentError, errorManager.isVisible(for: .dictionaries, source: .getDictionaries) {
                         Text(error.errorDescription ?? "")
@@ -65,7 +65,6 @@ struct TabDictionariesView: View {
                     Spacer()
                 }
                 
-                // Фиксированная кнопка добавления в нижнем правом углу
                 ButtonFloating(action: {
                     addDictionary()
                 }, imageName: "plus")
@@ -116,7 +115,13 @@ struct TabDictionariesView: View {
     private func deleteDictionary(at offsets: IndexSet) {
         offsets.forEach { index in
             let dictionary = viewModel.dictionaries[index]
-            viewModel.deleteDictionary(dictionary)
+            
+            if dictionary.tableName != "Internal" {
+                viewModel.deleteDictionary(dictionary)
+            } else {
+                alertMessage = languageManager.localizedString(for: "CannotDeleteInternalDictionary")
+                isShowingAlert = true
+            }
         }
     }
 
