@@ -112,12 +112,12 @@ class DatabaseManager: ObservableObject {
         
         migrator.registerMigration("createDictionary") { db in
             try DictionaryItem.createTable(in: db)
-            Logger.debug("[Database]: Dictionary table created successfully")
+            Logger.debug("[Migrations]: 'Dictionary' table created successfully")
         }
         
         migrator.registerMigration("createInternal") { db in
             try WordItem.createTable(in: db, tableName: "Internal")
-            Logger.debug("[Database]: Internal table created")
+            Logger.debug("[Migrations]: 'Internal' table created")
                     
             let dictionaryItem = DictionaryItem(
                 displayName: "Internal",
@@ -130,7 +130,7 @@ class DatabaseManager: ObservableObject {
                 isActive: true
             )
             try dictionaryItem.insert(db)
-            Logger.debug("[Database]: Internal dictionary entry added")
+            Logger.debug("[Migrations]: 'Internal' dictionary entry added")
         }
         
         return migrator
