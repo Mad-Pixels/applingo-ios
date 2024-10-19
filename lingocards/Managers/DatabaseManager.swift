@@ -1,6 +1,5 @@
 import Foundation
 import Combine
-import UIKit
 import GRDB
 
 class DatabaseManager: ObservableObject {
@@ -51,7 +50,7 @@ class DatabaseManager: ObservableObject {
         }
     }
     
-    /// exec transaction fot adding data from CSV
+    /// exec transaction for adding data from CSV
     func importCSVFile(at url: URL) throws {
         guard isConnected, let dbQueue = dbQueue else {
             let appError = AppError(
@@ -80,10 +79,10 @@ class DatabaseManager: ObservableObject {
                 var dictionaryItem = DictionaryItem(
                     displayName: url.deletingPathExtension().lastPathComponent,
                     tableName: tableName,
-                    description: "Imported from local file: \(url.deletingPathExtension().lastPathComponent)",
+                    description: "Imported from local file: '\(url.deletingPathExtension().lastPathComponent).csv'",
                     category: "Local",
                     subcategory: "personal",
-                    author: UIDevice.current.name
+                    author: "local user"
                 )
                 Logger.debug("[Database]: Dictionary item created")
                 
