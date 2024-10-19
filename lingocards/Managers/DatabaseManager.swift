@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import UIKit
 import GRDB
 
 class DatabaseManager: ObservableObject {
@@ -79,10 +80,10 @@ class DatabaseManager: ObservableObject {
                 var dictionaryItem = DictionaryItem(
                     displayName: url.deletingPathExtension().lastPathComponent,
                     tableName: tableName,
-                    description: "Imported dictionary",
-                    category: "Imported",
-                    subcategory: "",
-                    author: "User"
+                    description: "Imported from local file: \(url.deletingPathExtension().lastPathComponent)",
+                    category: "Local",
+                    subcategory: "personal",
+                    author: UIDevice.current.name
                 )
                 Logger.debug("[Database]: Dictionary item created")
                 
