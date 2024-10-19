@@ -2,9 +2,8 @@ import Foundation
 import Combine
 
 final class TabManager: ObservableObject {
-    static let shared = TabManager()
-    
     @Published var activeTab: AppTab = .learn
+    static let shared = TabManager()
 
     private var cancellables = Set<AnyCancellable>()
 
