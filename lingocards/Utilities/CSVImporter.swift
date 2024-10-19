@@ -25,15 +25,11 @@ struct CSVImporter {
             let createdAt = Int(Date().timeIntervalSince1970)
             
             let wordItem = WordItem(
-                id: 0,  // ID сгенерируется в БД
-                hashId: Int.random(in: Int.min...Int.max),  // Генерация случайного хеша
                 tableName: "",  // Это будет обновлено позже
                 frontText: frontText,
                 backText: backText,
                 description: description,
-                hint: hint,
-                createdAt: createdAt,
-                salt: 0
+                hint: hint
             )
             wordItems.append(wordItem)
         }

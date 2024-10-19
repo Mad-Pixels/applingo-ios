@@ -231,8 +231,7 @@ final class TabWordsViewModel: ObservableObject {
                     hint = ?,
                     success = ?,
                     fail = ?,
-                    weight = ?,
-                    salt = ?
+                    weight = ?
                     WHERE id = ?
                     """, arguments: [
                         word.frontText,
@@ -242,7 +241,6 @@ final class TabWordsViewModel: ObservableObject {
                         word.success,
                         word.fail,
                         word.weight,
-                        word.salt,
                         word.id
                     ])
             }
