@@ -114,6 +114,25 @@ class DatabaseManager: ObservableObject {
             try DictionaryItem.createTable(in: db)
             Logger.debug("[Database]: Dictionary table created successfully")
         }
+        
+        migrator.registerMigration("createInternal") { db in
+            try WordItem.createTable(in: db, tableName: "Internal")
+            Logger.debug("[Database]: Internal table created")
+                    
+            let dictionaryItem = DictionaryItem(
+                displayName: "Internal",
+                tableName: "Internal",
+                description: "Internal app dictionary",
+                category: "System",
+                subcategory: "Internal",
+                author: "LingoCards",
+                isPrivate: false,
+                isActive: true
+            )
+            try dictionaryItem.insert(db)
+            Logger.debug("[Database]: Internal dictionary entry added")
+        }
+        
         return migrator
     }
 }
