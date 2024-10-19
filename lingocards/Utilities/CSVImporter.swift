@@ -4,32 +4,19 @@ struct CSVImporter {
     static func parseCSV(at url: URL) throws -> [WordItem] {
         var wordItems = [WordItem]()
         
-        // Читаем содержимое файла в строку
         let content = try String(contentsOf: url, encoding: .utf8)
-        
-        // Разбиваем содержимое на строки
         let lines = content.components(separatedBy: .newlines)
         
         for line in lines {
-            // Удаляем пробелы и проверяем, что строка не пустая
             let trimmedLine = line.trimmingCharacters(in: .whitespacesAndNewlines)
             guard !trimmedLine.isEmpty else {
-                continue  // Пропускаем пустые строки
+                continue
             }
             
-            // Разбиваем строку на колонки по разделителю ","
             let columns = parseCSVLine(line: trimmedLine)
-            
-            // Проверяем количество элементов в строке
             guard columns.count >= 2 else {
-                continue  // Пропускаем строки с недостаточным количеством данных
+                continue
             }
-            
-            // Индексы столбцов:
-            // 0 - front_text
-            // 1 - back_text
-            // 2 - hint (опционально)
-            // 3 - description (опционально)
             
             let frontText = columns[0]
             let backText = columns[1]
