@@ -1,10 +1,9 @@
 import Foundation
 import GRDB
 
+/// Implemantation of row in Dictionary main table.
 struct DictionaryItem: Identifiable, Codable, Equatable, Hashable {
-    var id: Int
-    var hashId: Int
-    
+    /// required fileds
     var displayName: String
     var tableName: String
     var description: String
@@ -12,41 +11,44 @@ struct DictionaryItem: Identifiable, Codable, Equatable, Hashable {
     var subcategory: String
     var author: String
     
+    /// predefined fields
     var createdAt: Int
-    
+    var id: Int
     var isPrivate: Bool
     var isActive: Bool
     
     init(
-        id: Int,
-        hashId: Int,
         displayName: String,
         tableName: String,
         description: String,
         category: String,
         subcategory: String,
         author: String,
-        createdAt: Int,
-        isPrivate: Bool,
-        isActive: Bool
+        
+        isPrivate: Bool = true,
+        isActive: Bool = true,
+        id: Int = 0
     ) {
-        self.id = id
-        self.hashId = hashId
-        self.displayName = displayName
         self.tableName = tableName
-        self.description = description
-        self.category = category
+        
+        self.displayName = Escape.word(displayName)
+        self.description = Escape.text(description)
+        self.author = Escape.word(author)
         self.subcategory = subcategory
-        self.author = author
-        self.createdAt = createdAt
+        self.category = category
+        
+        self.createdAt = Int(Date().timeIntervalSince1970)
         self.isPrivate = isPrivate
         self.isActive = isActive
+        self.id = id
     }
     
+    /// custom UI title
     var subTitle: String {
         "[\(category)] \(subcategory)"
     }
     
+    /// custom UI date format
     var formattedCreatedAt: String {
         let date = Date(timeIntervalSince1970: TimeInterval(createdAt))
         let formatter = DateFormatter()
@@ -56,17 +58,33 @@ struct DictionaryItem: Identifiable, Codable, Equatable, Hashable {
     }
 }
 
-// Реализуем протоколы для чтения и записи
 extension DictionaryItem: FetchableRecord, PersistableRecord {
     static let databaseTableName = "Dictionary"
-
+    
+    static func createTable(in db: Database) throws {
+        try db.create(table: DictionaryItem.databaseTableName, ifNotExists: true) { t in
+            t.autoIncrementedPrimaryKey("id")
+            
+            t.column("displayName", .text).notNull()
+            t.column("tableName", .text).notNull()
+            t.column("description", .text).notNull()
+            t.column("category", .text).notNull()
+            t.column("subcategory", .text).notNull()
+            t.column("author", .text).notNull()
+            t.column("createdAt", .integer).notNull()
+            
+            t.column("isPrivate", .boolean).notNull()
+            t.column("isActive", .boolean).notNull()
+        }
+    }
+    
     mutating func insert(_ db: Database) throws {
         try db.execute(sql: """
             INSERT INTO \(DictionaryItem.databaseTableName) 
-            (hashId, displayName, tableName, description, category, subcategory, author, createdAt, isPrivate, isActive)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            (displayName, tableName, description, category, subcategory, author, createdAt, isPrivate, isActive)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, arguments: [
-                hashId, displayName, tableName, description, category, subcategory, author, createdAt, isPrivate, isActive
+                displayName, tableName, description, category, subcategory, author, createdAt, isPrivate, isActive
             ])
     }
 }

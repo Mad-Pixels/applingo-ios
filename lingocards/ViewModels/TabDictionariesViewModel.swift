@@ -47,8 +47,8 @@ final class TabDictionariesViewModel: ObservableObject {
 
         // Пример данных, которые будут получены
         let remoteData: [DictionaryItem] = [
-            DictionaryItem(id: 6, hashId: 106, displayName: "Italian Words", tableName: "italian_words", description: "Basic Italian vocabulary", category: "Language", subcategory: "it-en", author: "Author6", createdAt: 1633066100, isPrivate: false, isActive: false),
-            DictionaryItem(id: 7, hashId: 107, displayName: "Japanese Words", tableName: "japanese_words", description: "Basic Japanese vocabulary", category: "Language", subcategory: "ja-en", author: "Author7", createdAt: 1633066200, isPrivate: false, isActive: false)
+            DictionaryItem(displayName: "Italian Words", tableName: "italian_words", description: "Basic Italian vocabulary", category: "Language", subcategory: "it-en", author: "Author6"),
+            DictionaryItem(displayName: "Japanese Words", tableName: "japanese_words", description: "Basic Japanese vocabulary", category: "Language", subcategory: "ja-en", author: "Author7")
         ]
 
         // Обновляем словари

@@ -32,6 +32,7 @@ class DatabaseManager: ObservableObject {
             
             if let dbQueue = dbQueue {
                 Logger.debug("[Database]: Migration started")
+                // Применяем миграции перед подключением
                 try migrator.migrate(dbQueue)
                 isConnected = true
             }
@@ -49,19 +50,8 @@ class DatabaseManager: ObservableObject {
     private var migrator: DatabaseMigrator {
         var migrator = DatabaseMigrator()
         migrator.registerMigration("createDictionary") { db in
-            try db.create(table: DictionaryItem.databaseTableName, ifNotExists: true) { t in
-                t.autoIncrementedPrimaryKey("id")
-                t.column("hashId", .integer).unique()
-                t.column("displayName", .text).notNull()
-                t.column("tableName", .text).notNull()
-                t.column("description", .text).notNull()
-                t.column("category", .text).notNull()
-                t.column("subcategory", .text).notNull()
-                t.column("author", .text).notNull()
-                t.column("createdAt", .integer).notNull()
-                t.column("isPrivate", .boolean).notNull()
-                t.column("isActive", .boolean).notNull()
-            }
+            try DictionaryItem.createTable(in: db)
+            Logger.debug("[Database]: Dictionary table created successfully")
         }
         return migrator
     }
@@ -78,18 +68,16 @@ class DatabaseManager: ObservableObject {
                 additionalInfo: nil
             )
         }
+
         let uniqueTableName = "Words_\(UUID().uuidString.replacingOccurrences(of: "-", with: "_"))"
 
         // Парсим CSV файл
         let wordItems = try CSVImporter.parseCSV(at: url, tableName: uniqueTableName)
 
-        // Генерируем уникальное имя таблицы
-        
-
         // Выполняем импорт в транзакции
         try dbQueue.write { db in
             do {
-                // Создаем новую таблицу
+                // Создаем таблицу для слов, если она не существует
                 try WordItem.createTable(in: db, tableName: uniqueTableName)
 
                 // Вставляем данные
@@ -100,17 +88,12 @@ class DatabaseManager: ObservableObject {
 
                 // Создаем запись в таблице Dictionary
                 var dictionaryItem = DictionaryItem(
-                    id: 0,
-                    hashId: Int.random(in: Int.min...Int.max),
                     displayName: url.deletingPathExtension().lastPathComponent,
                     tableName: uniqueTableName,
                     description: "Imported dictionary",
                     category: "Imported",
                     subcategory: "",
-                    author: "User",
-                    createdAt: Int(Date().timeIntervalSince1970),
-                    isPrivate: true,
-                    isActive: true
+                    author: "User"
                 )
                 try dictionaryItem.insert(db)
                 Logger.debug("[Database]: CSV file imported successfully")

@@ -2,7 +2,7 @@ import Foundation
 import GRDB
 
 /// Implemantation of row in Dictionary data table.
-struct WordItem: Identifiable, Codable, Equatable, FetchableRecord, PersistableRecord {
+struct WordItem: Identifiable, Codable, Equatable {
     /// required fileds
     var tableName: String
     var frontText: String
@@ -57,7 +57,9 @@ struct WordItem: Identifiable, Codable, Equatable, FetchableRecord, PersistableR
             hint: nil
         )
     }
-    
+}
+
+extension WordItem: FetchableRecord, PersistableRecord {
     static func createTable(in db: Database, tableName: String) throws {
         try db.create(table: tableName) { t in
             t.autoIncrementedPrimaryKey("id")
