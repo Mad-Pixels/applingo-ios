@@ -123,7 +123,7 @@ class DatabaseManager: ObservableObject {
                 displayName: "Internal",
                 tableName: "Internal",
                 description: "Internal app dictionary",
-                category: "System",
+                category: "LingoCards",
                 subcategory: "Internal",
                 author: "LingoCards",
                 isPrivate: false,
