@@ -21,6 +21,7 @@ enum ErrorSource: String {
     case getRemoteDictionaries
     case getCategories
     case initialization
+    case importCSVFile
 }
 
 struct AppError: Error, LocalizedError, Equatable, Identifiable {

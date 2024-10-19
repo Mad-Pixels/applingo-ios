@@ -1,17 +1,21 @@
 import Foundation
-import GRDB
 import Combine
+import GRDB
 
 class DatabaseManager: ObservableObject {
+    @Published private(set) var isConnected: Bool = false
     static let shared = DatabaseManager()
     
-    @Published private(set) var isConnected: Bool = false
-    private var dbQueue: DatabaseQueue?
     private let dbName = "LingocardDB.sqlite"
+    private var dbQueue: DatabaseQueue?
     private var databaseURL: URL?
-
     private init() {}
     
+    var databaseQueue: DatabaseQueue? {
+        return dbQueue
+    }
+    
+    /// global database initialization which execute on MainView
     func connect() throws {
         guard dbQueue == nil else {
             Logger.debug("[Database]: Already connected")
@@ -32,7 +36,6 @@ class DatabaseManager: ObservableObject {
             
             if let dbQueue = dbQueue {
                 Logger.debug("[Database]: Migration started")
-                // Применяем миграции перед подключением
                 try migrator.migrate(dbQueue)
                 isConnected = true
             }
@@ -47,58 +50,52 @@ class DatabaseManager: ObservableObject {
         }
     }
     
-    private var migrator: DatabaseMigrator {
-        var migrator = DatabaseMigrator()
-        migrator.registerMigration("createDictionary") { db in
-            try DictionaryItem.createTable(in: db)
-            Logger.debug("[Database]: Dictionary table created successfully")
-        }
-        return migrator
-    }
-    
-    var databaseQueue: DatabaseQueue? {
-        return dbQueue
-    }
-    
+    /// exec transaction fot adding data from CSV
     func importCSVFile(at url: URL) throws {
         guard isConnected, let dbQueue = dbQueue else {
-            throw AppError(
+            let appError = AppError(
                 errorType: .database,
-                errorMessage: "[Database]: Not connected",
-                additionalInfo: nil
+                errorMessage: "[Database]: Check database connection return false",
+                additionalInfo: ["path": "\(databaseURL!.path)"]
             )
+            ErrorManager.shared.setError(appError: appError, tab: .dictionaries, source: .importCSVFile)
+            throw appError
         }
 
-        let uniqueTableName = "Words_\(UUID().uuidString.replacingOccurrences(of: "-", with: "_"))"
+        let tableName = "words_\(UUID().uuidString.replacingOccurrences(of: "-", with: "_"))"
+        let wordItems = try CSVImporter.parseCSV(at: url, tableName: tableName)
 
-        // Парсим CSV файл
-        let wordItems = try CSVImporter.parseCSV(at: url, tableName: uniqueTableName)
-
-        // Выполняем импорт в транзакции
         try dbQueue.write { db in
             do {
-                // Создаем таблицу для слов, если она не существует
-                try WordItem.createTable(in: db, tableName: uniqueTableName)
+                try WordItem.createTable(in: db, tableName: tableName)
+                Logger.debug("[Database]: Table \(tableName) created")
 
-                // Вставляем данные
                 for var wordItem in wordItems {
-                    wordItem.tableName = uniqueTableName
+                    wordItem.tableName = tableName
                     try wordItem.insert(db)
                 }
+                Logger.debug("[Database]: \(wordItems.count) words imported")
 
-                // Создаем запись в таблице Dictionary
                 var dictionaryItem = DictionaryItem(
                     displayName: url.deletingPathExtension().lastPathComponent,
-                    tableName: uniqueTableName,
+                    tableName: tableName,
                     description: "Imported dictionary",
                     category: "Imported",
                     subcategory: "",
                     author: "User"
                 )
+                Logger.debug("[Database]: Dictionary item created")
+                
                 try dictionaryItem.insert(db)
                 Logger.debug("[Database]: CSV file imported successfully")
             } catch {
-                throw error  // В случае ошибки транзакция отменяется
+                let appError = AppError(
+                    errorType: .database,
+                    errorMessage: "[Database]: Importing CSV file failed",
+                    additionalInfo: ["error": "\(error)"]
+                )
+                ErrorManager.shared.setError(appError: appError, tab: .dictionaries, source: .importCSVFile)
+                throw appError
             }
         }
     }
@@ -107,5 +104,16 @@ class DatabaseManager: ObservableObject {
         dbQueue = nil
         isConnected = false
         Logger.debug("[Database]: Disconnected.")
+    }
+    
+    /// migration: create main Dictionary table.
+    private var migrator: DatabaseMigrator {
+        var migrator = DatabaseMigrator()
+        
+        migrator.registerMigration("createDictionary") { db in
+            try DictionaryItem.createTable(in: db)
+            Logger.debug("[Database]: Dictionary table created successfully")
+        }
+        return migrator
     }
 }
