@@ -179,32 +179,42 @@ final class TabDictionariesViewModel: ObservableObject {
         }
     
     func updateDictionaryStatus(_ dictionaryID: Int, newStatus: Bool, completion: @escaping (Result<Void, Error>) -> Void) {
-        // С вероятностью 10% возвращаем ошибку
-        if Int.random(in: 1...10) <= 1 {
+        guard DatabaseManager.shared.isConnected else {
             let error = AppError(
                 errorType: .database,
-                errorMessage: "Failed to update dictionary status with ID \(dictionaryID) due to database issues",
+                errorMessage: "Database is not connected",
                 additionalInfo: nil
             )
             completion(.failure(error))
             return
         }
 
-        // Ищем индекс словаря, который нужно обновить
-        if let index = dictionaries.firstIndex(where: { $0.id == dictionaryID }) {
-            // Обновляем только статус словаря
-            dictionaries[index].isActive = newStatus
-            Logger.debug("[TabDictionariesViewModel]: Dictionary status updated successfully")
-            completion(.success(()))
-        } else {
-            // Обрабатываем случай, когда словарь не найден
-            let error = AppError(
-                errorType: .unknown,
-                errorMessage: "Dictionary with ID \(dictionaryID) not found",
-                additionalInfo: nil
+        do {
+            try DatabaseManager.shared.databaseQueue?.write { db in
+                try DictionaryItem.updateStatus(in: db, dictionaryID: dictionaryID, newStatus: newStatus)
+            }
+
+            if let index = dictionaries.firstIndex(where: { $0.id == dictionaryID }) {
+                dictionaries[index].isActive = newStatus
+                Logger.debug("[TabDictionariesViewModel]: Dictionary status updated successfully")
+                completion(.success(()))
+            } else {
+                let error = AppError(
+                    errorType: .unknown,
+                    errorMessage: "Dictionary with ID \(dictionaryID) not found",
+                    additionalInfo: nil
+                )
+                ErrorManager.shared.setError(appError: error, tab: .dictionaries, source: .updateDictionary)
+                completion(.failure(error))
+            }
+        } catch {
+            let dbError = AppError(
+                errorType: .database,
+                errorMessage: "Failed to update dictionary status in database",
+                additionalInfo: ["error": "\(error)"]
             )
-            ErrorManager.shared.setError(appError: error, tab: .dictionaries, source: .updateDictionary)
-            completion(.failure(error))
+            ErrorManager.shared.setError(appError: dbError, tab: .dictionaries, source: .updateDictionary)
+            completion(.failure(dbError))
         }
     }
 }

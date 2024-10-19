@@ -78,6 +78,11 @@ extension DictionaryItem: FetchableRecord, PersistableRecord {
         }
     }
     
+    static func updateStatus(in db: Database, dictionaryID: Int, newStatus: Bool) throws {
+        let sql = "UPDATE \(DictionaryItem.databaseTableName) SET isActive = ? WHERE id = ?"
+        try db.execute(sql: sql, arguments: [newStatus, dictionaryID])
+    }
+    
     mutating func insert(_ db: Database) throws {
         try db.execute(sql: """
             INSERT INTO \(DictionaryItem.databaseTableName) 

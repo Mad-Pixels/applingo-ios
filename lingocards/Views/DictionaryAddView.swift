@@ -3,7 +3,7 @@ import SwiftUI
 struct DictionaryAddView: View {
     @Environment(\.presentationMode) var presentationMode
     @EnvironmentObject var languageManager: LanguageManager
-    @EnvironmentObject var databaseManager: DatabaseManager  // Добавляем доступ к DatabaseManager
+    @EnvironmentObject var databaseManager: DatabaseManager
     @Binding var isPresented: Bool
     @State private var isShowingRemoteList = false
     @State private var isShowingFileImporter = false
@@ -59,9 +59,7 @@ struct DictionaryAddView: View {
 
     private func importCSV(from url: URL) {
         do {
-            // Импортируем CSV файл в базу данных
             try databaseManager.importCSVFile(at: url)
-            Logger.debug("CSV file imported successfully")
         } catch {
             Logger.debug("Failed to import CSV file: \(error)")
         }
