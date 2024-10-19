@@ -28,10 +28,10 @@ struct WordItem: Identifiable, Codable, Equatable, FetchableRecord, PersistableR
         id: Int = 0
     ) {
         self.tableName = tableName
-        self.frontText = frontText
-        self.backText = backText
-        self.description = description
-        self.hint = hint
+        self.frontText = Escape.text(frontText)
+        self.backText = Escape.text(backText)
+        self.description = description.map { Escape.text($0) } ?? ""
+        self.hint = hint.map { Escape.text($0) } ?? ""
         self.success = success
         self.fail = fail
         self.weight = weight
@@ -49,7 +49,6 @@ struct WordItem: Identifiable, Codable, Equatable, FetchableRecord, PersistableR
         )
     }
     
-    // Метод для создания таблицы
     static func createTable(in db: Database, tableName: String) throws {
         try db.create(table: tableName) { t in
             t.autoIncrementedPrimaryKey("id")
@@ -65,7 +64,6 @@ struct WordItem: Identifiable, Codable, Equatable, FetchableRecord, PersistableR
         }
     }
     
-    // Определяем, как будет происходить вставка
     mutating func insert(_ db: Database) throws {
         try db.execute(sql: """
             INSERT INTO \(tableName) (tableName, frontText, backText, description, hint, createdAt, success, weight, fail)

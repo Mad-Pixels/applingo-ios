@@ -78,12 +78,13 @@ class DatabaseManager: ObservableObject {
                 additionalInfo: nil
             )
         }
+        let uniqueTableName = "Words_\(UUID().uuidString.replacingOccurrences(of: "-", with: "_"))"
 
         // Парсим CSV файл
-        let wordItems = try CSVImporter.parseCSV(at: url)
+        let wordItems = try CSVImporter.parseCSV(at: url, tableName: uniqueTableName)
 
         // Генерируем уникальное имя таблицы
-        let uniqueTableName = "Words_\(UUID().uuidString.replacingOccurrences(of: "-", with: "_"))"
+        
 
         // Выполняем импорт в транзакции
         try dbQueue.write { db in

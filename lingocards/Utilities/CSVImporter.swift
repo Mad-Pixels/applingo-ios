@@ -1,7 +1,7 @@
 import Foundation
 
 struct CSVImporter {
-    static func parseCSV(at url: URL) throws -> [WordItem] {
+    static func parseCSV(at url: URL, tableName: String) throws -> [WordItem] {
         var wordItems = [WordItem]()
         
         let content = try String(contentsOf: url, encoding: .utf8)
@@ -22,10 +22,9 @@ struct CSVImporter {
             let backText = columns[1]
             let hint = columns.count > 2 ? columns[2] : nil
             let description = columns.count > 3 ? columns[3] : nil
-            let createdAt = Int(Date().timeIntervalSince1970)
             
             let wordItem = WordItem(
-                tableName: "",  // Это будет обновлено позже
+                tableName: tableName,
                 frontText: frontText,
                 backText: backText,
                 description: description,
@@ -37,7 +36,6 @@ struct CSVImporter {
         return wordItems
     }
     
-    // Простой парсер строки CSV, учитывающий кавычки и запятые внутри кавычек
     static func parseCSVLine(line: String) -> [String] {
         var result: [String] = []
         var currentField = ""
@@ -48,10 +46,8 @@ struct CSVImporter {
             if char == "\"" {
                 if insideQuotes, let nextChar = iterator.next() {
                     if nextChar == "\"" {
-                        // Escaped quote
                         currentField.append("\"")
                     } else {
-                        // Toggle insideQuotes and reprocess the character
                         insideQuotes.toggle()
                         if nextChar != "," {
                             currentField.append(nextChar)
@@ -70,7 +66,6 @@ struct CSVImporter {
                 currentField.append(char)
             }
         }
-        // Добавляем последний столбец
         result.append(currentField)
         return result
     }

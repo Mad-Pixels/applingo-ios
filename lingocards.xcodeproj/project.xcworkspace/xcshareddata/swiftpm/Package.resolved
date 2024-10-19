@@ -1,5 +1,5 @@
 {
-  "originHash" : "199c3673868b4e942fc0390765cab69c9939d130b8cdf310a214e35326874cd9",
+  "originHash" : "6ee292eb3a6b2062ad2965a13f65ebc48172e071042e6b86985de3bf18c8a0f5",
   "pins" : [
     {
       "identity" : "cocoalumberjack",
@@ -31,7 +31,7 @@
     {
       "identity" : "iqkeyboardmanager",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/hackiftekhar/IQKeyboardManager",
+      "location" : "https://github.com/hackiftekhar/IQKeyboardManager.git",
       "state" : {
         "revision" : "0d9b0277275b8c5f5cd13daf52e988ff44c8f066",
         "version" : "7.2.0"
@@ -62,15 +62,6 @@
       "state" : {
         "revision" : "9cb486020ebf03bfa5b5df985387a14a98744537",
         "version" : "1.6.1"
-      }
-    },
-    {
-      "identity" : "swiftcsv",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/swiftcsv/SwiftCSV.git",
-      "state" : {
-        "revision" : "ad2042d0ba2ea260246b0e1b1d5710cbc53e2836",
-        "version" : "0.6.0"
       }
     }
   ],
