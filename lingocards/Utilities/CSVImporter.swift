@@ -1,9 +1,8 @@
+import NaturalLanguage
 import Foundation
 import CoreML
-import NaturalLanguage
 
 struct CSVImporter {
-    // Загрузка модели один раз при инициализации структуры
     static let model: ColumnClassifier = {
         let config = MLModelConfiguration()
         return try! ColumnClassifier(configuration: config)
@@ -11,38 +10,52 @@ struct CSVImporter {
     
     static func parseCSV(at url: URL, tableName: String) throws -> [WordItem] {
         var wordItems = [WordItem]()
+        
         let content = try String(contentsOf: url, encoding: .utf8)
         let lines = content.components(separatedBy: .newlines)
-        
-        // Читаем первые 10 строк для определения меток колонок
+        let sampleLines = lines.prefix(15)
         var sampleColumnsMatrix = [[String]]()
-        for line in lines.prefix(10) {
+        
+        for line in sampleLines {
             let trimmedLine = line.trimmingCharacters(in: .whitespacesAndNewlines)
             guard !trimmedLine.isEmpty else { continue }
+            
             let columns = parseCSVLine(line: trimmedLine)
             sampleColumnsMatrix.append(columns)
         }
         
-        // Определяем метки колонок с помощью модели
-        guard let columnLabels = try classifyColumns(sampleColumnsMatrix: sampleColumnsMatrix) else {
-            throw NSError(domain: "ColumnClassification", code: -1, userInfo: [NSLocalizedDescriptionKey: "Не удалось классифицировать колонки"])
+        var columnLabels: [String]
+        do {
+            if let classifiedLabels = try classifyColumns(sampleColumnsMatrix: sampleColumnsMatrix) {
+                columnLabels = classifiedLabels
+            } else {
+                Logger.warning("[CSVImporter]: Classifier failed to classify columns, using default column labels")
+                columnLabels = ["front_text", "back_text", "hint", "description"]
+            }
+        } catch {
+            Logger.warning("[CSVImporter]: Classifier encountered an error: \(error.localizedDescription), using default column labels")
+            columnLabels = ["front_text", "back_text", "hint", "description"]
         }
         
-        // Парсим остальные строки с использованием определенных меток
         for line in lines {
             let trimmedLine = line.trimmingCharacters(in: .whitespacesAndNewlines)
             guard !trimmedLine.isEmpty else { continue }
             
             let columns = parseCSVLine(line: trimmedLine)
-            if columns.count != columnLabels.count { continue }
+            if columns.isEmpty { continue }
             
+            if columns.count > columnLabels.count {
+                let additionalLabels = Array(repeating: "description", count: columns.count - columnLabels.count)
+                columnLabels.append(contentsOf: additionalLabels)
+            }
+            
+            var description: String?
             var frontText: String?
             var backText: String?
             var hint: String?
-            var description: String?
             
-            for (index, columnLabel) in columnLabels.enumerated() {
-                let value = columns[index]
+            for (index, value) in columns.enumerated() {
+                let columnLabel = index < columnLabels.count ? columnLabels[index] : "description"
                 switch columnLabel {
                 case "front_text":
                     frontText = value
@@ -57,7 +70,6 @@ struct CSVImporter {
                 }
             }
             
-            // Проверяем, что обязательные поля не пустые
             guard let ft = frontText, let bt = backText else { continue }
             
             let wordItem = WordItem(
@@ -69,12 +81,10 @@ struct CSVImporter {
             )
             wordItems.append(wordItem)
         }
-        
         return wordItems
     }
     
     static func classifyColumns(sampleColumnsMatrix: [[String]]) throws -> [String]? {
-        // Предполагаем, что во всех строках одинаковое количество колонок
         guard let numberOfColumns = sampleColumnsMatrix.first?.count else { return nil }
         var columnLabels = [String]()
         
@@ -85,32 +95,28 @@ struct CSVImporter {
                 if columnIndex >= row.count { continue }
                 let text = row[columnIndex]
                 let language = detectLanguage(for: text)
-                let length = Int64(text.count)  // Преобразуем длину текста в Int64
-                let isEmpty = text.isEmpty ? "true" : "false"  // Преобразуем булевое значение в строку
+                let length = Int64(text.count)
+                let isEmpty = text.isEmpty ? "true" : "false"
                 
-                // Создаем экземпляр ColumnClassifierInput
                 let input = ColumnClassifierInput(
                     Language: language,
                     Length: length,
-                    Column_Index: Int64(columnIndex),  // Преобразуем индекс колонки в Int64
+                    Column_Index: Int64(columnIndex),
                     Is_Empty: isEmpty
                 )
                 
-                // Получаем предсказание
                 let prediction = try model.prediction(input: input)
                 let label = prediction.Label
                 
                 predictionsCount[label, default: 0] += 1
             }
             
-            // Выбираем наиболее частую метку для данного столбца
             if let (mostFrequentLabel, _) = predictionsCount.max(by: { $0.value < $1.value }) {
                 columnLabels.append(mostFrequentLabel)
             } else {
                 return nil
             }
         }
-        
         return columnLabels
     }
     
@@ -120,17 +126,23 @@ struct CSVImporter {
         if let language = recognizer.dominantLanguage {
             let languageCode = language.rawValue
 
-            // Множество известных языков из обучающего набора данных
-            let knownLanguages: Set<String> = ["de", "en", "es", "fr", "he", "ru", "und", "zh"]
-
-            // Если язык не известен, возвращаем "und"
+            let knownLanguages: Set<String> = [
+                "de",
+                "en",
+                "es",
+                "fr",
+                "he",
+                "ru",
+                "zh",
+                "und"
+            ]
             if knownLanguages.contains(languageCode) {
                 return languageCode
             } else {
                 return "und"
             }
         }
-        return "und" // неопределенный язык
+        return "und"
     }
     
     static func parseCSVLine(line: String) -> [String] {
