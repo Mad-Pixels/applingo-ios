@@ -120,11 +120,11 @@ class DatabaseManager: ObservableObject {
             Logger.debug("[Migrations]: 'Internal' table created")
                     
             let dictionaryItem = DictionaryItem(
-                displayName: "Internal",
+                displayName: "main",
                 tableName: "Internal",
                 description: "Internal app dictionary",
                 category: "LingoCards",
-                subcategory: "Internal",
+                subcategory: "Main",
                 author: "LingoCards",
                 isPrivate: false,
                 isActive: true
