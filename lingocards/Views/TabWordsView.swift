@@ -90,16 +90,16 @@ struct TabWordsView: View {
                         viewModel.getWords()
                     }
                 }
-                .onChange(of: tabManager.activeTab) { _, newTab in
-                    if newTab != .words {
-                        tabManager.deactivateTab(.words)
+                .modifier(TabModifier(activeTab: tabManager.activeTab) { newTab in
+                    if newTab != .learn {
+                        tabManager.deactivateTab(.learn)
                     }
-                }
-                .onChange(of: errorManager.currentError) { _, newError in
+                })
+                .modifier(ErrModifier(currentError: errorManager.currentError) { newError in
                     if let error = newError, error.tab == .words, error.source == .deleteWord {
                         isShowingAlert = true
                     }
-                }
+                })
                 
                 VStack {
                     Spacer()

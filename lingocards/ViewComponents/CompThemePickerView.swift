@@ -15,11 +15,7 @@ struct CompThemePickerView: View {
                 }
             }
             .pickerStyle(SegmentedPickerStyle())
-            .onChange(of: selectedTheme) { oldValue, newValue in
-                if oldValue != newValue {
-                    onThemeChange(newValue)
-                }
-            }
+            .modifier(ThemeModifier(selectedTheme: selectedTheme, onChange: onThemeChange))
         }
     }
 }

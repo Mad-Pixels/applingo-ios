@@ -57,9 +57,9 @@ struct TabDictionariesView: View {
                                         EmptyView()
                                     }
                                     .toggleStyle(CheckboxToggleStyle())
-                                    .onChange(of: dictionary.isActive) { oldStatus, newStatus in
+                                    .modifier(StatusModifier(isActive: dictionary.isActive) { newStatus in
                                         updateDictionaryStatus(dictionary, newStatus: newStatus)
-                                    }
+                                    })
                                 }
                                 .padding(.vertical, 4)
                             }
@@ -83,17 +83,17 @@ struct TabDictionariesView: View {
                     viewModel.getDictionaries()
                 }
             }
-            .onChange(of: tabManager.activeTab) { _, newTab in
-                if newTab != .dictionaries {
-                    tabManager.deactivateTab(.dictionaries)
+            .modifier(TabModifier(activeTab: tabManager.activeTab) { newTab in
+                if newTab != .learn {
+                    tabManager.deactivateTab(.learn)
                 }
-            }
-            .onChange(of: errorManager.currentError) { _, newError in
+            })
+            .modifier(ErrModifier(currentError: errorManager.currentError) { newError in
                 if let error = newError, error.tab == .dictionaries, error.source == .deleteDictionary {
                     isShowingAlert = true
                     alertMessage = error.errorDescription ?? ""
                 }
-            }
+            })
             .alert(isPresented: $isShowingAlert) {
                 Alert(
                     title: Text(languageManager.localizedString(for: "Error")),

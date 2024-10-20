@@ -41,11 +41,11 @@ struct TabSettingsView: View {
             .onAppear {
                 tabManager.setActiveTab(.settings)
             }
-            .onChange(of: tabManager.activeTab) { oldTab, newTab in
-                if newTab != .settings {
-                    tabManager.deactivateTab(.settings)
+            .modifier(TabModifier(activeTab: tabManager.activeTab) { newTab in
+                if newTab != .learn {
+                    tabManager.deactivateTab(.learn)
                 }
-            }
+            })
         }
     }
 }

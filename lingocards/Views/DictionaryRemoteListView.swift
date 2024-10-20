@@ -100,11 +100,11 @@ struct DictionaryRemoteList: View {
                         isLoading = false
                     }
                 }
-                .onChange(of: errorManager.currentError) { _, newError in
+                .modifier(ErrModifier(currentError: errorManager.currentError) { newError in
                     if let error = newError, error.tab == .dictionaries, error.source == .getRemoteDictionaries {
                         errMessage = error.errorDescription ?? "error"
                     }
-                }
+                })
                 .overlay(
                     Group {
                         if !isLoading {

@@ -22,10 +22,10 @@ struct TabLearnView: View {
         .onAppear {
             tabManager.setActiveTab(.learn)
         }
-        .onChange(of: tabManager.activeTab) { oldTab, newTab in
+        .modifier(TabModifier(activeTab: tabManager.activeTab) { newTab in
             if newTab != .learn {
                 tabManager.deactivateTab(.learn)
             }
-        }
+        })
     }
 }

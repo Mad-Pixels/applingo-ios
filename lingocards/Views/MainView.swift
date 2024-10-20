@@ -49,9 +49,11 @@ struct MainView: View {
                 .tag(AppTab.settings)
         }
         .preferredColorScheme(themeManager.currentTheme == .dark ? .dark : .light)
-        .onChange(of: tabManager.activeTab) { oldTab, newTab in
-            Logger.debug("[MainView]: Active tab changed from \(oldTab) to \(newTab)")
-        }
+        .modifier(TabModifier(activeTab: tabManager.activeTab) { newTab in
+            if newTab != .learn {
+                tabManager.deactivateTab(.learn)
+            }
+        })
         .onAppear {
             do {
                 try DatabaseManager.shared.connect()
