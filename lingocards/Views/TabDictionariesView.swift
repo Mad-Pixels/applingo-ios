@@ -9,10 +9,14 @@ struct TabDictionariesView: View {
     @State private var alertMessage: String = ""
     @State private var isShowingAddView = false
     @State private var isShowingAlert = false
+    let theme = ThemeProvider.shared.currentTheme()
     
     var body: some View {
         NavigationView {
             ZStack {
+                theme.backgroundColor
+                    .edgesIgnoringSafeArea(.all) // Общий фон
+
                 VStack {
                     if let error = errorManager.currentError, errorManager.isVisible(for: .dictionaries, source: .getDictionaries) {
                         Text(error.errorDescription ?? "")
@@ -36,6 +40,7 @@ struct TabDictionariesView: View {
                                     VStack(alignment: .leading) {
                                         Text(dictionary.displayName)
                                             .font(.headline)
+                                            .foregroundColor(theme.textColor) // Цвет текста по теме
 
                                         Text(dictionary.subTitle)
                                             .font(.subheadline)
@@ -60,6 +65,7 @@ struct TabDictionariesView: View {
                             }
                             .onDelete(perform: deleteDictionary)
                         }
+                        .listStyle(PlainListStyle())
                     }
 
                     Spacer()
@@ -70,6 +76,7 @@ struct TabDictionariesView: View {
                 }, imageName: "plus")
             }
             .navigationTitle(languageManager.localizedString(for: "Dictionaries").capitalizedFirstLetter)
+            .navigationBarTitleDisplayMode(.large) // Единый стиль заголовка
             .onAppear {
                 tabManager.setActiveTab(.dictionaries)
                 if tabManager.isActive(tab: .dictionaries) {

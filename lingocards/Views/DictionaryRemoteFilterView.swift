@@ -10,76 +10,83 @@ struct DictionaryRemoteFilterView: View {
     // Получаем доступ к apiRequestParams из родительского View
     @Binding var apiRequestParams: DictionaryQueryRequest
 
+    let theme = ThemeProvider.shared.currentTheme() // Используем тему
+
     var body: some View {
         NavigationView {
-            VStack {
-                Form {
-                    Section(header: Text(languageManager.localizedString(for: "Dictionary")).font(.headline)) {
-                        HStack {
-                            // Picker "from"
-                            CompCategoryPickerView(
-                                selectedCategory: $selectedFrontCategory,
-                                categories: viewModel.frontCategories,
-                                title: languageManager.localizedString(for: "from")
-                            )
-                            .environmentObject(languageManager)
-                            .frame(maxWidth: .infinity)
+            ZStack {
+                theme.backgroundColor
+                    .edgesIgnoringSafeArea(.all) // Общий фон
 
-                            Image(systemName: "arrow.left.and.right.circle.fill")
-                                .resizable()
-                                .frame(width: 24, height: 24)
-                                .foregroundColor(.blue)
-                                .padding(.horizontal, 8)
+                VStack {
+                    Form {
+                        Section(header: Text(languageManager.localizedString(for: "Dictionary")).font(.headline).foregroundColor(theme.textColor)) {
+                            HStack {
+                                // Picker "from"
+                                CompCategoryPickerView(
+                                    selectedCategory: $selectedFrontCategory,
+                                    categories: viewModel.frontCategories,
+                                    title: languageManager.localizedString(for: "from")
+                                )
+                                .environmentObject(languageManager)
+                                .frame(maxWidth: .infinity)
 
-                            // Picker "to"
-                            CompCategoryPickerView(
-                                selectedCategory: $selectedBackCategory,
-                                categories: viewModel.backCategories,
-                                title: languageManager.localizedString(for: "to")
-                            )
-                            .environmentObject(languageManager)
-                            .frame(maxWidth: .infinity)
+                                Image(systemName: "arrow.left.and.right.circle.fill")
+                                    .resizable()
+                                    .frame(width: 24, height: 24)
+                                    .foregroundColor(theme.primaryButtonColor)
+                                    .padding(.horizontal, 8)
+
+                                // Picker "to"
+                                CompCategoryPickerView(
+                                    selectedCategory: $selectedBackCategory,
+                                    categories: viewModel.backCategories,
+                                    title: languageManager.localizedString(for: "to")
+                                )
+                                .environmentObject(languageManager)
+                                .frame(maxWidth: .infinity)
+                            }
                         }
                     }
-                }
 
-                Spacer()
+                    Spacer()
 
-                HStack(spacing: 20) {
-                    Button(action: {
-                        // Конкатенируем front и back категории и присваиваем в apiRequestParams
-                        let frontCategoryName = selectedFrontCategory?.name ?? ""
-                        let backCategoryName = selectedBackCategory?.name ?? ""
-                        apiRequestParams.categorySub = "\(frontCategoryName)-\(backCategoryName)".lowercased()
+                    HStack(spacing: 20) {
+                        Button(action: {
+                            // Конкатенируем front и back категории и присваиваем в apiRequestParams
+                            let frontCategoryName = selectedFrontCategory?.name ?? ""
+                            let backCategoryName = selectedBackCategory?.name ?? ""
+                            apiRequestParams.categorySub = "\(frontCategoryName)-\(backCategoryName)".lowercased()
 
-                        Logger.debug("Filters saved: \(apiRequestParams.categorySub ?? "")")
-                        presentationMode.wrappedValue.dismiss() // Закрываем окно
-                    }) {
-                        Text(languageManager.localizedString(for: "Save").capitalizedFirstLetter)
-                            .font(.title2)
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .background(Color.green)
-                            .foregroundColor(.white)
-                            .cornerRadius(10)
+                            Logger.debug("Filters saved: \(apiRequestParams.categorySub ?? "")")
+                            presentationMode.wrappedValue.dismiss() // Закрываем окно
+                        }) {
+                            Text(languageManager.localizedString(for: "Save").capitalizedFirstLetter)
+                                .font(.title2)
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                                .background(theme.primaryButtonColor)
+                                .foregroundColor(theme.textColor)
+                                .cornerRadius(10)
+                        }
+
+                        Button(action: {
+                            // Сбрасываем значение categorySub
+                            apiRequestParams.categorySub = nil
+                            Logger.debug("Filters reset: categorySub set to an empty string")
+                            presentationMode.wrappedValue.dismiss() // Закрываем окно после сброса
+                        }) {
+                            Text(languageManager.localizedString(for: "Reset").capitalizedFirstLetter)
+                                .font(.title2)
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                                .background(theme.secondaryButtonColor)
+                                .foregroundColor(theme.textColor)
+                                .cornerRadius(10)
+                        }
                     }
-
-                    Button(action: {
-                        // Сбрасываем значение categorySub
-                        apiRequestParams.categorySub = nil
-                        Logger.debug("Filters reset: categorySub set to an empty string")
-                        presentationMode.wrappedValue.dismiss() // Закрываем окно после сброса
-                    }) {
-                        Text(languageManager.localizedString(for: "Reset").capitalizedFirstLetter)
-                            .font(.title2)
-                            .padding()
-                            .frame(maxWidth: .infinity)
-                            .background(Color.orange)
-                            .foregroundColor(.white)
-                            .cornerRadius(10)
-                    }
+                    .padding(.horizontal)
                 }
-                .padding(.horizontal)
             }
             .navigationTitle(languageManager.localizedString(for: "Filter").capitalizedFirstLetter)
             .navigationBarTitleDisplayMode(.inline)

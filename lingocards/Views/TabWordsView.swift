@@ -9,11 +9,16 @@ struct TabWordsView: View {
     @State private var isShowingAddView = false
     @State private var isShowingAlert = false
     @State private var selectedWord: WordItem?
+    let theme = ThemeProvider.shared.currentTheme()
     
     var body: some View {
         NavigationView {
             ZStack {
+                theme.backgroundColor
+                    .edgesIgnoringSafeArea(.all) // Общий фон
+
                 VStack {
+                    // Поисковая строка
                     CompSearchView(
                         searchText: $viewModel.searchText,
                         placeholder: languageManager.localizedString(for: "Search").capitalizedFirstLetter
@@ -45,6 +50,7 @@ struct TabWordsView: View {
                                 HStack {
                                     Text(word.frontText)
                                         .font(.headline)
+                                        .foregroundColor(theme.textColor) // Цвет текста по теме
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                     
                                     Image(systemName: "arrow.left.and.right.circle.fill")
@@ -52,6 +58,7 @@ struct TabWordsView: View {
                                     
                                     Text(word.backText)
                                         .font(.headline)
+                                        .foregroundColor(theme.textColor) // Цвет текста по теме
                                         .frame(maxWidth: .infinity, alignment: .trailing)
                                 }
                                 .padding(.vertical, 4)
@@ -65,15 +72,17 @@ struct TabWordsView: View {
                                 }
                             }
                             .onDelete(perform: deleteWord)
-                            
+
                             if viewModel.isLoadingPage {
                                 ProgressView()
                                     .frame(idealWidth: .infinity, maxWidth: .infinity, alignment: .center)
                             }
                         }
+                        .listStyle(PlainListStyle())
                     }
                 }
                 .navigationTitle(languageManager.localizedString(for: "Words").capitalizedFirstLetter)
+                .navigationBarTitleDisplayMode(.large) // Единый стиль заголовка
                 .onAppear {
                     tabManager.setActiveTab(.words)
                     if tabManager.isActive(tab: .words) {
@@ -92,7 +101,6 @@ struct TabWordsView: View {
                     }
                 }
                 
-                // Кнопка добавления
                 VStack {
                     Spacer()
                     ButtonFloating(action: {

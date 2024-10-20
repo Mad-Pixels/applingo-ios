@@ -11,6 +11,7 @@ struct DictionaryDetailView: View {
     let onSave: (DictionaryItem, @escaping (Result<Void, Error>) -> Void) -> Void
 
     private let originalDictionary: DictionaryItem
+    let theme = ThemeProvider.shared.currentTheme() // Используем тему
 
     init(dictionary: DictionaryItem, isPresented: Binding<Bool>, onSave: @escaping (DictionaryItem, @escaping (Result<Void, Error>) -> Void) -> Void) {
         _editedDictionary = State(initialValue: dictionary)
@@ -21,48 +22,58 @@ struct DictionaryDetailView: View {
 
     var body: some View {
         NavigationView {
-            Form {
-                Section(header: Text(languageManager.localizedString(for: "Dictionary"))) {
-                    AppTextField(
-                        placeholder: languageManager.localizedString(for: "Display Name").capitalizedFirstLetter,
-                        text: $editedDictionary.displayName,
-                        isEditing: isEditing
-                    )
-                    
-                    AppTextEditor(
-                        placeholder: languageManager.localizedString(for: "Description").capitalizedFirstLetter,
-                        text: $editedDictionary.description,
-                        isEditing: isEditing
-                    )
-                    .frame(height: 150)
-                }
-                
-                Section(header: Text(languageManager.localizedString(for: "Category"))) {
-                    AppTextField(
-                        placeholder: languageManager.localizedString(for: "Category").capitalizedFirstLetter,
-                        text: $editedDictionary.category,
-                        isEditing: isEditing
-                    )
+            ZStack {
+                theme.backgroundColor
+                    .edgesIgnoringSafeArea(.all) // Применяем фон темы
 
-                    AppTextField(
-                        placeholder: languageManager.localizedString(for: "Subcategory").capitalizedFirstLetter,
-                        text: $editedDictionary.subcategory,
-                        isEditing: isEditing
-                    )
-                }
-                
-                Section(header: Text(languageManager.localizedString(for: "Additional"))) {
-                    AppTextField(
-                        placeholder: languageManager.localizedString(for: "Author").capitalizedFirstLetter,
-                        text: $editedDictionary.author,
-                        isEditing: isEditing
-                    )
-                    
-                    AppTextField(
-                        placeholder: languageManager.localizedString(for: "Created At").capitalizedFirstLetter,
-                        text: .constant(editedDictionary.formattedCreatedAt),
-                        isEditing: false
-                    )
+                VStack {
+                    Form {
+                        Section(header: Text(languageManager.localizedString(for: "Dictionary")).foregroundColor(theme.textColor)) {
+                            AppTextField(
+                                placeholder: languageManager.localizedString(for: "Display Name").capitalizedFirstLetter,
+                                text: $editedDictionary.displayName,
+                                isEditing: isEditing
+                            )
+                            
+                            AppTextEditor(
+                                placeholder: languageManager.localizedString(for: "Description").capitalizedFirstLetter,
+                                text: $editedDictionary.description,
+                                isEditing: isEditing
+                            )
+                            .frame(height: 150)
+                        }
+                        
+                        Section(header: Text(languageManager.localizedString(for: "Category")).foregroundColor(theme.textColor)) {
+                            AppTextField(
+                                placeholder: languageManager.localizedString(for: "Category").capitalizedFirstLetter,
+                                text: $editedDictionary.category,
+                                isEditing: isEditing
+                            )
+
+                            AppTextField(
+                                placeholder: languageManager.localizedString(for: "Subcategory").capitalizedFirstLetter,
+                                text: $editedDictionary.subcategory,
+                                isEditing: isEditing
+                            )
+                        }
+                        
+                        Section(header: Text(languageManager.localizedString(for: "Additional")).foregroundColor(theme.textColor)) {
+                            AppTextField(
+                                placeholder: languageManager.localizedString(for: "Author").capitalizedFirstLetter,
+                                text: $editedDictionary.author,
+                                isEditing: isEditing
+                            )
+                            
+                            AppTextField(
+                                placeholder: languageManager.localizedString(for: "Created At").capitalizedFirstLetter,
+                                text: .constant(editedDictionary.formattedCreatedAt),
+                                isEditing: false
+                            )
+                        }
+                    }
+                    .background(theme.backgroundColor)
+
+                    Spacer()
                 }
             }
             .navigationTitle(languageManager.localizedString(for: "Details").capitalizedFirstLetter)

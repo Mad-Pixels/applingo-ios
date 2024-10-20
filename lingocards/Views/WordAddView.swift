@@ -13,64 +13,75 @@ struct WordAddView: View {
     @State private var isShowingErrorAlert = false
     @State private var wordItem = WordItem.empty()
     @State private var errorMessage: String = ""
+    let theme = ThemeProvider.shared.currentTheme() // Используем текущую тему для оформления
 
     var body: some View {
         NavigationView {
-            Form {
-                Section(header: Text(languageManager.localizedString(for: "Card"))) {
-                    AppTextField(
-                        placeholder: languageManager.localizedString(for: "Word").capitalizedFirstLetter,
-                        text: $wordItem.frontText,
-                        isEditing: true
-                    )
+            ZStack {
+                theme.backgroundColor
+                    .edgesIgnoringSafeArea(.all) // Общий фон
+                
+                Form {
+                    Section(header: Text(languageManager.localizedString(for: "Card")).foregroundColor(theme.textColor)) {
+                        AppTextField(
+                            placeholder: languageManager.localizedString(for: "Word").capitalizedFirstLetter,
+                            text: $wordItem.frontText,
+                            isEditing: true
+                        )
+                        .foregroundColor(theme.textColor)
 
-                    AppTextField(
-                        placeholder: languageManager.localizedString(for: "Definition").capitalizedFirstLetter,
-                        text: $wordItem.backText,
-                        isEditing: true
-                    )
+                        AppTextField(
+                            placeholder: languageManager.localizedString(for: "Definition").capitalizedFirstLetter,
+                            text: $wordItem.backText,
+                            isEditing: true
+                        )
+                        .foregroundColor(theme.textColor)
+                        
+                        CompDictionaryPickerView(
+                            selectedDictionary: $selectedDictionary,
+                            dictionaries: dictionaries
+                        )
+                    }
                     
-                    CompDictionaryPickerView(
-                        selectedDictionary: $selectedDictionary,
-                        dictionaries: dictionaries
-                    )
+                    Section(header: Text(languageManager.localizedString(for: "Additional")).foregroundColor(theme.textColor)) {
+                        AppTextField(
+                            placeholder: languageManager.localizedString(for: "Hint").capitalizedFirstLetter,
+                            text: $wordItem.hint.unwrap(default: ""),
+                            isEditing: true
+                        )
+                        .foregroundColor(theme.textColor)
+                        
+                        AppTextEditor(
+                            placeholder: languageManager.localizedString(for: "Description").capitalizedFirstLetter,
+                            text: $wordItem.description.unwrap(default: ""),
+                            isEditing: true
+                        )
+                        .foregroundColor(theme.textColor)
+                        .frame(height: 150)
+                    }
                 }
-
-                Section(header: Text(languageManager.localizedString(for: "Additional"))) {
-                    AppTextField(
-                        placeholder: languageManager.localizedString(for: "Hint").capitalizedFirstLetter,
-                        text: $wordItem.hint.unwrap(default: ""),
-                        isEditing: true
-                    )
-                    
-                    AppTextEditor(
-                        placeholder: languageManager.localizedString(for: "Description").capitalizedFirstLetter,
-                        text: $wordItem.description.unwrap(default: ""),
-                        isEditing: true
-                    )
-                    .frame(height: 150)
-                }
-            }
-            .navigationTitle(languageManager.localizedString(for: "AddWord").capitalizedFirstLetter)
-            .navigationBarItems(
-                leading: Button(languageManager.localizedString(for: "Cancel").capitalizedFirstLetter) {
-                    presentationMode.wrappedValue.dismiss()
-                },
-                trailing: Button(languageManager.localizedString(for: "Save").capitalizedFirstLetter) {
-                    saveNewWord()
-                }
-                .disabled(isSaveDisabled)
-            )
-            .alert(isPresented: $isShowingErrorAlert) {
-                Alert(
-                    title: Text(languageManager.localizedString(for: "Error")),
-                    message: Text(errorMessage),
-                    dismissButton: .default(Text(languageManager.localizedString(for: "Close")))
+                .navigationTitle(languageManager.localizedString(for: "AddWord").capitalizedFirstLetter)
+                .navigationBarTitleDisplayMode(.inline)
+                .navigationBarItems(
+                    leading: Button(languageManager.localizedString(for: "Cancel").capitalizedFirstLetter) {
+                        presentationMode.wrappedValue.dismiss()
+                    },
+                    trailing: Button(languageManager.localizedString(for: "Save").capitalizedFirstLetter) {
+                        saveNewWord()
+                    }
+                    .disabled(isSaveDisabled)
                 )
-            }
-            .onAppear {
-                if selectedDictionary == nil, !dictionaries.isEmpty {
-                    selectedDictionary = dictionaries.first
+                .alert(isPresented: $isShowingErrorAlert) {
+                    Alert(
+                        title: Text(languageManager.localizedString(for: "Error")),
+                        message: Text(errorMessage),
+                        dismissButton: .default(Text(languageManager.localizedString(for: "Close")))
+                    )
+                }
+                .onAppear {
+                    if selectedDictionary == nil, !dictionaries.isEmpty {
+                        selectedDictionary = dictionaries.first
+                    }
                 }
             }
         }

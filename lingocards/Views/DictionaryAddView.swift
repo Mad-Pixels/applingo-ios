@@ -8,37 +8,43 @@ struct DictionaryAddView: View {
     @State private var isShowingRemoteList = false
     @State private var isShowingFileImporter = false
     @State private var selectedFileURL: URL?
-
+    let theme = ThemeProvider.shared.currentTheme() // Используем тему
+    
     var body: some View {
         NavigationView {
-            VStack(spacing: 20) {
-                Button(action: {
-                    isShowingFileImporter = true
-                }) {
-                    Text(languageManager.localizedString(for: "ImportCSV"))
-                }
-                .buttonStyle(ButtonMain())
-                .fileImporter(
-                    isPresented: $isShowingFileImporter,
-                    allowedContentTypes: [.commaSeparatedText],
-                    allowsMultipleSelection: false
-                ) { result in
-                    switch result {
-                    case .success(let urls):
-                        if let url = urls.first {
-                            importCSV(from: url)
-                        }
-                    case .failure(let error):
-                        Logger.debug("Failed to import file: \(error)")
+            ZStack {
+                theme.backgroundColor
+                    .edgesIgnoringSafeArea(.all)
+                
+                VStack(spacing: 20) {
+                    Button(action: {
+                        isShowingFileImporter = true
+                    }) {
+                        Text(languageManager.localizedString(for: "ImportCSV"))
                     }
+                    .buttonStyle(ButtonMain())
+                    .fileImporter(
+                        isPresented: $isShowingFileImporter,
+                        allowedContentTypes: [.commaSeparatedText],
+                        allowsMultipleSelection: false
+                    ) { result in
+                        switch result {
+                        case .success(let urls):
+                            if let url = urls.first {
+                                importCSV(from: url)
+                            }
+                        case .failure(let error):
+                            Logger.debug("Failed to import file: \(error)")
+                        }
+                    }
+                    
+                    Button(action: {
+                        isShowingRemoteList = true
+                    }) {
+                        Text(languageManager.localizedString(for: "Download"))
+                    }
+                    .buttonStyle(ButtonMain())
                 }
-
-                Button(action: {
-                    isShowingRemoteList = true
-                }) {
-                    Text(languageManager.localizedString(for: "Download"))
-                }
-                .buttonStyle(ButtonMain())
             }
             .fullScreenCover(isPresented: $isShowingRemoteList) {
                 DictionaryRemoteList(isPresented: $isPresented)
@@ -65,4 +71,3 @@ struct DictionaryAddView: View {
         }
     }
 }
-

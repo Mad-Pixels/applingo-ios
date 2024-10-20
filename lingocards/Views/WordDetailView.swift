@@ -11,6 +11,7 @@ struct WordDetailView: View {
     let onSave: (WordItem, @escaping (Result<Void, Error>) -> Void) -> Void
 
     private let originalWord: WordItem
+    let theme = ThemeProvider.shared.currentTheme() // Используем текущую тему для оформления
 
     init(word: WordItem, isPresented: Binding<Bool>, onSave: @escaping (WordItem, @escaping (Result<Void, Error>) -> Void) -> Void) {
         _editedWord = State(initialValue: word)
@@ -21,93 +22,103 @@ struct WordDetailView: View {
 
     var body: some View {
         NavigationView {
-            Form {
-                Section(header: Text(languageManager.localizedString(for: "Card"))) {
-                    AppTextField(
-                        placeholder: languageManager.localizedString(for: "Word").capitalizedFirstLetter,
-                        text: $editedWord.frontText,
-                        isEditing: isEditing
-                    )
+            ZStack {
+                theme.backgroundColor
+                    .edgesIgnoringSafeArea(.all) // Общий фон
 
-                    AppTextField(
-                        placeholder: languageManager.localizedString(for: "Definition").capitalizedFirstLetter,
-                        text: $editedWord.backText,
-                        isEditing: isEditing
-                    )
-                }
-
-                Section(header: Text(languageManager.localizedString(for: "Additional"))) {
-                    AppTextField(
-                        placeholder: languageManager.localizedString(for: "TableName").capitalizedFirstLetter,
-                        text: $editedWord.tableName,
-                        isEditing: false
-                    )
-
-                    AppTextField(
-                        placeholder: languageManager.localizedString(for: "Hint").capitalizedFirstLetter,
-                        text: $editedWord.hint.unwrap(default: ""),
-                        isEditing: isEditing
-                    )
-
-                    AppTextEditor(
-                        placeholder: languageManager.localizedString(for: "Description").capitalizedFirstLetter,
-                        text: $editedWord.description.unwrap(default: ""),
-                        isEditing: isEditing
-                    )
-                    .frame(height: 150)
-                }
-
-                Section(header: Text(languageManager.localizedString(for: "Statistics"))) {
-                    VStack(alignment: .leading, spacing: 16) {
-                        CompBarChartView(
-                            title: languageManager.localizedString(for: "Answers"),
-                            barData: [
-                                BarData(value: Double(editedWord.fail), label: "fail", color: .red),
-                                BarData(value: Double(editedWord.success), label: "success", color: .green)
-                            ]
+                Form {
+                    Section(header: Text(languageManager.localizedString(for: "Card")).foregroundColor(theme.textColor)) {
+                        AppTextField(
+                            placeholder: languageManager.localizedString(for: "Word").capitalizedFirstLetter,
+                            text: $editedWord.frontText,
+                            isEditing: isEditing
                         )
-                        .padding(.bottom, 4)
+                        .foregroundColor(theme.textColor)
 
-                        CompProgressChartView(
-                            value: calculateWeight(),
-                            title: languageManager.localizedString(for: "Count"),
-                            color: .blue
+                        AppTextField(
+                            placeholder: languageManager.localizedString(for: "Definition").capitalizedFirstLetter,
+                            text: $editedWord.backText,
+                            isEditing: isEditing
                         )
-                        .padding(.bottom, 0)
+                        .foregroundColor(theme.textColor)
+                    }
+
+                    Section(header: Text(languageManager.localizedString(for: "Additional")).foregroundColor(theme.textColor)) {
+                        AppTextField(
+                            placeholder: languageManager.localizedString(for: "TableName").capitalizedFirstLetter,
+                            text: $editedWord.tableName,
+                            isEditing: false
+                        )
+                        .foregroundColor(theme.textColor)
+
+                        AppTextField(
+                            placeholder: languageManager.localizedString(for: "Hint").capitalizedFirstLetter,
+                            text: $editedWord.hint.unwrap(default: ""),
+                            isEditing: isEditing
+                        )
+                        .foregroundColor(theme.textColor)
+
+                        AppTextEditor(
+                            placeholder: languageManager.localizedString(for: "Description").capitalizedFirstLetter,
+                            text: $editedWord.description.unwrap(default: ""),
+                            isEditing: isEditing
+                        )
+                        .foregroundColor(theme.textColor)
+                        .frame(height: 150)
+                    }
+
+                    Section(header: Text(languageManager.localizedString(for: "Statistics")).foregroundColor(theme.textColor)) {
+                        VStack(alignment: .leading, spacing: 16) {
+                            CompBarChartView(
+                                title: languageManager.localizedString(for: "Answers"),
+                                barData: [
+                                    BarData(value: Double(editedWord.fail), label: "fail", color: .red),
+                                    BarData(value: Double(editedWord.success), label: "success", color: .green)
+                                ]
+                            )
+                            .padding(.bottom, 4)
+
+                            CompProgressChartView(
+                                value: calculateWeight(),
+                                title: languageManager.localizedString(for: "Count"),
+                                color: .blue
+                            )
+                            .padding(.bottom, 0)
+                        }
                     }
                 }
-            }
-            .navigationTitle(languageManager.localizedString(for: "Details").capitalizedFirstLetter)
-            .navigationBarItems(
-                leading: Button(
-                    isEditing ? languageManager.localizedString(for: "Cancel").capitalizedFirstLetter :
-                        languageManager.localizedString(for: "Close").capitalizedFirstLetter
-                ) {
-                    if isEditing {
-                        isEditing = false
-                        editedWord = originalWord
-                    } else {
-                        presentationMode.wrappedValue.dismiss()
+                .navigationTitle(languageManager.localizedString(for: "Details").capitalizedFirstLetter)
+                .navigationBarItems(
+                    leading: Button(
+                        isEditing ? languageManager.localizedString(for: "Cancel").capitalizedFirstLetter :
+                            languageManager.localizedString(for: "Close").capitalizedFirstLetter
+                    ) {
+                        if isEditing {
+                            isEditing = false
+                            editedWord = originalWord
+                        } else {
+                            presentationMode.wrappedValue.dismiss()
+                        }
+                    },
+                    trailing: Button(isEditing ? languageManager.localizedString(for: "Save").capitalizedFirstLetter :
+                                        languageManager.localizedString(for: "Edit").capitalizedFirstLetter
+                    ) {
+                        if isEditing {
+                            updateWord(editedWord)
+                        } else {
+                            isEditing = true
+                        }
                     }
-                },
-                trailing: Button(isEditing ? languageManager.localizedString(for: "Save").capitalizedFirstLetter :
-                                    languageManager.localizedString(for: "Edit").capitalizedFirstLetter
-                ) {
-                    if isEditing {
-                        updateWord(editedWord)
-                    } else {
-                        isEditing = true
-                    }
-                }
-                .disabled(isEditing && isSaveDisabled)
-            )
-            .animation(.easeInOut, value: isEditing)
-            .alert(isPresented: $isShowingErrorAlert) {
-                Alert(
-                    title: Text(languageManager.localizedString(for: "Error")),
-                    message: Text("Failed to update the word due to database issues."),
-                    dismissButton: .default(Text(languageManager.localizedString(for: "Close")))
+                    .disabled(isEditing && isSaveDisabled)
                 )
+                .animation(.easeInOut, value: isEditing)
+                .alert(isPresented: $isShowingErrorAlert) {
+                    Alert(
+                        title: Text(languageManager.localizedString(for: "Error")),
+                        message: Text("Failed to update the word due to database issues."),
+                        dismissButton: .default(Text(languageManager.localizedString(for: "Close")))
+                    )
+                }
             }
         }
     }
