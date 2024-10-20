@@ -93,6 +93,7 @@ struct CSVImporter {
             
             for row in sampleColumnsMatrix {
                 if columnIndex >= row.count { continue }
+                
                 let text = row[columnIndex]
                 let language = detectLanguage(for: text)
                 let length = Int64(text.count)
