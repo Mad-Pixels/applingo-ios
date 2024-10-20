@@ -15,7 +15,6 @@ class DatabaseManager: ObservableObject {
         return dbQueue
     }
     
-    /// global database initialization which execute on MainView
     func connect() throws {
         guard dbQueue == nil else {
             Logger.debug("[Database]: Already connected")
@@ -50,7 +49,6 @@ class DatabaseManager: ObservableObject {
         }
     }
     
-    /// exec transaction for adding data from CSV
     func importCSVFile(at url: URL) throws {
         guard isConnected, let dbQueue = dbQueue else {
             let appError = AppError(
@@ -106,7 +104,6 @@ class DatabaseManager: ObservableObject {
         Logger.debug("[Database]: Disconnected.")
     }
     
-    /// migration: create main Dictionary table.
     private var migrator: DatabaseMigrator {
         var migrator = DatabaseMigrator()
         
