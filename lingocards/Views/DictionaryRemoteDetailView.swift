@@ -3,12 +3,11 @@ import SwiftUI
 struct DictionaryRemoteDetailView: View {
     @Environment(\.presentationMode) private var presentationMode
     @EnvironmentObject var languageManager: LanguageManager
+    @EnvironmentObject var themeManager: ThemeManager // Используем тему из ThemeManager
     @State private var editedDictionary: DictionaryItem
 
     @Binding var isPresented: Bool
     let onDownload: () -> Void
-
-    let theme = ThemeProvider.shared.currentTheme() // Используем тему
 
     init(dictionary: DictionaryItem, isPresented: Binding<Bool>, onDownload: @escaping () -> Void) {
         _editedDictionary = State(initialValue: dictionary)
@@ -17,6 +16,8 @@ struct DictionaryRemoteDetailView: View {
     }
 
     var body: some View {
+        let theme = themeManager.currentThemeStyle // Используем текущую тему
+
         NavigationView {
             ZStack {
                 theme.backgroundColor
@@ -24,6 +25,7 @@ struct DictionaryRemoteDetailView: View {
                 
                 VStack {
                     Form {
+                        // Секция с данными о словаре
                         Section(header: Text(languageManager.localizedString(for: "Dictionary")).foregroundColor(theme.textColor)) {
                             AppTextField(
                                 placeholder: languageManager.localizedString(for: "Display Name").capitalizedFirstLetter,
@@ -39,6 +41,7 @@ struct DictionaryRemoteDetailView: View {
                             .frame(height: 150)
                         }
                         
+                        // Секция с категориями
                         Section(header: Text(languageManager.localizedString(for: "Category")).foregroundColor(theme.textColor)) {
                             AppTextField(
                                 placeholder: languageManager.localizedString(for: "Category").capitalizedFirstLetter,
@@ -53,6 +56,7 @@ struct DictionaryRemoteDetailView: View {
                             )
                         }
                         
+                        // Дополнительная информация
                         Section(header: Text(languageManager.localizedString(for: "Additional")).foregroundColor(theme.textColor)) {
                             AppTextField(
                                 placeholder: languageManager.localizedString(for: "Author").capitalizedFirstLetter,

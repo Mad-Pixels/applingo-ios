@@ -4,13 +4,15 @@ struct DictionaryAddView: View {
     @Environment(\.presentationMode) var presentationMode
     @EnvironmentObject var languageManager: LanguageManager
     @EnvironmentObject var databaseManager: DatabaseManager
+    @EnvironmentObject var themeManager: ThemeManager // Используем тему из ThemeManager
     @Binding var isPresented: Bool
     @State private var isShowingRemoteList = false
     @State private var isShowingFileImporter = false
     @State private var selectedFileURL: URL?
-    let theme = ThemeProvider.shared.currentTheme() // Используем тему
-    
+
     var body: some View {
+        let theme = themeManager.currentThemeStyle // Используем текущую тему
+
         NavigationView {
             ZStack {
                 theme.backgroundColor

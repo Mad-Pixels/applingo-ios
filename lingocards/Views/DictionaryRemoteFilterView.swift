@@ -10,9 +10,11 @@ struct DictionaryRemoteFilterView: View {
     // Получаем доступ к apiRequestParams из родительского View
     @Binding var apiRequestParams: DictionaryQueryRequest
 
-    let theme = ThemeProvider.shared.currentTheme() // Используем тему
+    @EnvironmentObject var themeManager: ThemeManager // Используем тему из ThemeManager
 
     var body: some View {
+        let theme = themeManager.currentThemeStyle // Используем текущую тему
+
         NavigationView {
             ZStack {
                 theme.backgroundColor

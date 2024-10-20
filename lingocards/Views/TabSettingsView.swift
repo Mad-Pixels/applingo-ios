@@ -5,9 +5,10 @@ struct TabSettingsView: View {
     @EnvironmentObject var themeManager: ThemeManager
     @EnvironmentObject var tabManager: TabManager
     @ObservedObject var logHandler = LogHandler.shared
-    let theme = ThemeProvider.shared.currentTheme() // Получаем текущую тему
 
     var body: some View {
+        let theme = themeManager.currentThemeStyle
+
         NavigationView {
             ZStack {
                 theme.backgroundColor
@@ -36,7 +37,7 @@ struct TabSettingsView: View {
                     )
                 }
                 .navigationTitle(languageManager.localizedString(for: "Settings").capitalizedFirstLetter)
-                .navigationBarTitleDisplayMode(.large) // Устанавливаем единый стиль заголовка
+                .navigationBarTitleDisplayMode(.large) // Единый стиль заголовка
             }
             .onAppear {
                 tabManager.setActiveTab(.settings)

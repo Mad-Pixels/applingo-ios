@@ -3,6 +3,7 @@ import SwiftUI
 struct WordDetailView: View {
     @Environment(\.presentationMode) private var presentationMode
     @EnvironmentObject var languageManager: LanguageManager
+    @EnvironmentObject var themeManager: ThemeManager // Используем тему из ThemeManager
     @State private var editedWord: WordItem
     @State private var isShowingErrorAlert = false
     @State private var isEditing = false
@@ -11,7 +12,6 @@ struct WordDetailView: View {
     let onSave: (WordItem, @escaping (Result<Void, Error>) -> Void) -> Void
 
     private let originalWord: WordItem
-    let theme = ThemeProvider.shared.currentTheme() // Используем текущую тему для оформления
 
     init(word: WordItem, isPresented: Binding<Bool>, onSave: @escaping (WordItem, @escaping (Result<Void, Error>) -> Void) -> Void) {
         _editedWord = State(initialValue: word)
@@ -21,12 +21,15 @@ struct WordDetailView: View {
     }
 
     var body: some View {
+        let theme = themeManager.currentThemeStyle // Используем текущую тему
+
         NavigationView {
             ZStack {
                 theme.backgroundColor
                     .edgesIgnoringSafeArea(.all) // Общий фон
 
                 Form {
+                    // Секция для редактирования текста карточки
                     Section(header: Text(languageManager.localizedString(for: "Card")).foregroundColor(theme.textColor)) {
                         AppTextField(
                             placeholder: languageManager.localizedString(for: "Word").capitalizedFirstLetter,
@@ -43,6 +46,7 @@ struct WordDetailView: View {
                         .foregroundColor(theme.textColor)
                     }
 
+                    // Секция для дополнительных данных
                     Section(header: Text(languageManager.localizedString(for: "Additional")).foregroundColor(theme.textColor)) {
                         AppTextField(
                             placeholder: languageManager.localizedString(for: "TableName").capitalizedFirstLetter,
@@ -67,6 +71,7 @@ struct WordDetailView: View {
                         .frame(height: 150)
                     }
 
+                    // Секция статистики
                     Section(header: Text(languageManager.localizedString(for: "Statistics")).foregroundColor(theme.textColor)) {
                         VStack(alignment: .leading, spacing: 16) {
                             CompBarChartView(

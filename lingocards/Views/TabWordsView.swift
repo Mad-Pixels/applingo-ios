@@ -3,15 +3,17 @@ import SwiftUI
 struct TabWordsView: View {
     @EnvironmentObject var languageManager: LanguageManager
     @EnvironmentObject var tabManager: TabManager
+    @EnvironmentObject var themeManager: ThemeManager
     @StateObject private var viewModel = TabWordsViewModel()
     @StateObject private var errorManager = ErrorManager.shared
     @State private var isShowingDetailView = false
     @State private var isShowingAddView = false
     @State private var isShowingAlert = false
     @State private var selectedWord: WordItem?
-    let theme = ThemeProvider.shared.currentTheme()
-    
+
     var body: some View {
+        let theme = themeManager.currentThemeStyle
+
         NavigationView {
             ZStack {
                 theme.backgroundColor

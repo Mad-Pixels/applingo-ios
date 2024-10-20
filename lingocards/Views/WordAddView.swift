@@ -13,9 +13,12 @@ struct WordAddView: View {
     @State private var isShowingErrorAlert = false
     @State private var wordItem = WordItem.empty()
     @State private var errorMessage: String = ""
-    let theme = ThemeProvider.shared.currentTheme() // Используем текущую тему для оформления
+
+    @EnvironmentObject var themeManager: ThemeManager // Используем тему из ThemeManager
 
     var body: some View {
+        let theme = themeManager.currentThemeStyle
+
         NavigationView {
             ZStack {
                 theme.backgroundColor

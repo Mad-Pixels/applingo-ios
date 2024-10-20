@@ -14,9 +14,11 @@ struct DictionaryRemoteList: View {
     // Переменная apiRequestParams
     @State private var apiRequestParams = DictionaryQueryRequest(isPublic: true)
 
-    let theme = ThemeProvider.shared.currentTheme() // Используем тему
+    @EnvironmentObject var themeManager: ThemeManager // Используем тему из ThemeManager
 
     var body: some View {
+        let theme = themeManager.currentThemeStyle // Используем текущую тему
+
         NavigationView {
             ZStack {
                 theme.backgroundColor

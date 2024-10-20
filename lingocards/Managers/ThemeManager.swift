@@ -30,4 +30,13 @@ final class ThemeManager: ObservableObject {
     func setTheme(to theme: ThemeType) {
         self.currentTheme = theme
     }
+    
+    var currentThemeStyle: ThemeStyle {
+        switch currentTheme {
+        case .dark:
+            return ThemeDark()
+        case .light:
+            return ThemeLight()
+        }
+    }
 }

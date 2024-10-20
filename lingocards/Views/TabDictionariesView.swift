@@ -3,15 +3,17 @@ import SwiftUI
 struct TabDictionariesView: View {
     @EnvironmentObject var languageManager: LanguageManager
     @EnvironmentObject var tabManager: TabManager
+    @EnvironmentObject var themeManager: ThemeManager
     @StateObject private var viewModel = TabDictionariesViewModel()
     @StateObject private var errorManager = ErrorManager.shared
     @State private var selectedDictionary: DictionaryItem?
     @State private var alertMessage: String = ""
     @State private var isShowingAddView = false
     @State private var isShowingAlert = false
-    let theme = ThemeProvider.shared.currentTheme()
-    
+
     var body: some View {
+        let theme = themeManager.currentThemeStyle
+
         NavigationView {
             ZStack {
                 theme.backgroundColor
@@ -70,7 +72,7 @@ struct TabDictionariesView: View {
 
                     Spacer()
                 }
-                
+
                 ButtonFloating(action: {
                     addDictionary()
                 }, imageName: "plus")
@@ -116,13 +118,13 @@ struct TabDictionariesView: View {
                     viewModel.updateDictionary(updatedDictionary, completion: completion)
                 }
             )
+            .environmentObject(themeManager)
         }
     }
 
     private func deleteDictionary(at offsets: IndexSet) {
         offsets.forEach { index in
             let dictionary = viewModel.dictionaries[index]
-            
             if dictionary.tableName != "Internal" {
                 viewModel.deleteDictionary(dictionary)
             } else {

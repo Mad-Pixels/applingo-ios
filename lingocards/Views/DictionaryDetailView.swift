@@ -3,6 +3,7 @@ import SwiftUI
 struct DictionaryDetailView: View {
     @Environment(\.presentationMode) private var presentationMode
     @EnvironmentObject var languageManager: LanguageManager
+    @EnvironmentObject var themeManager: ThemeManager // Используем тему из ThemeManager
     @State private var editedDictionary: DictionaryItem
     @State private var isShowingErrorAlert = false
     @State private var isEditing = false
@@ -11,7 +12,6 @@ struct DictionaryDetailView: View {
     let onSave: (DictionaryItem, @escaping (Result<Void, Error>) -> Void) -> Void
 
     private let originalDictionary: DictionaryItem
-    let theme = ThemeProvider.shared.currentTheme() // Используем тему
 
     init(dictionary: DictionaryItem, isPresented: Binding<Bool>, onSave: @escaping (DictionaryItem, @escaping (Result<Void, Error>) -> Void) -> Void) {
         _editedDictionary = State(initialValue: dictionary)
@@ -21,6 +21,8 @@ struct DictionaryDetailView: View {
     }
 
     var body: some View {
+        let theme = themeManager.currentThemeStyle // Используем текущую тему
+
         NavigationView {
             ZStack {
                 theme.backgroundColor
