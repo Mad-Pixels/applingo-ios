@@ -22,6 +22,11 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		D85390DC2CC57AFA0053B94E /* training */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = training;
+			sourceTree = "<group>";
+		};
 		D8BD4FF02CADA16500E978AB /* lingocards */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = lingocards;
@@ -48,6 +53,7 @@
 		D8BD4FE52CADA16500E978AB = {
 			isa = PBXGroup;
 			children = (
+				D85390DC2CC57AFA0053B94E /* training */,
 				D8BD515B2CAEAA3300E978AB /* Localizable.xcstrings */,
 				D8BD4FF02CADA16500E978AB /* lingocards */,
 				D8BD502A2CADC97100E978AB /* Frameworks */,

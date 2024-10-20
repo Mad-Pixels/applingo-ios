@@ -1,0 +1,32 @@
+Text Content,Language,Length,Column Index,Is Empty,Label
+машина,ru,6,0,false,front_text
+car,en,3,1,false,back_text
+транспортное средство,ru,20,2,false,hint
+"существительное, ж/р",ru,21,3,false,description
+робот,ru,5,0,false,front_text
+robot,en,5,1,false,back_text
+,und,0,2,true,hint
+электроника,ru,11,3,false,description
+дом,ru,3,0,false,front_text
+house,en,5,1,false,back_text
+здание,ru,6,2,false,hint
+"жилое помещение",ru,15,3,false,description
+home,en,4,0,false,front_text
+дом,ru,3,1,false,back_text
+"building with windows",en,21,2,false,hint
+,und,0,3,true,description
+cat,en,3,0,false,front_text
+кошка,ru,5,1,false,back_text
+,und,0,2,true,hint
+animal,en,6,3,false,description
+hola,es,4,0,false,front_text
+hello,en,5,1,false,back_text
+salut,fr,5,0,false,front_text
+bonjour,fr,7,1,false,back_text
+hallo,de,5,0,false,front_text
+guten Tag,de,9,1,false,back_text
+你好,zh,2,0,false,front_text
+hello,en,5,1,false,back_text
+שָׁלוֹם,he,5,0,false,front_text
+hello,en,5,1,false,back_text
+сәлем,kk,5,0,false,front_text
