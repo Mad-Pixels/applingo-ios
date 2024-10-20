@@ -30,3 +30,11 @@ hello,en,5,1,false,back_text
 שָׁלוֹם,he,5,0,false,front_text
 hello,en,5,1,false,back_text
 сәлем,kk,5,0,false,front_text
+אַבָּא,he,4,1,false,front_text
+dad,en,3,0,false,back_text
+אַבָּא,he,4,false,front_text
+masculine,en,9,2,false,hint
+там,ru,3,false,front_text
+שָׁם,he,3,false,back_text
+word,en,4,false,back_text
+מִילָּה,he,4,false,front_text
