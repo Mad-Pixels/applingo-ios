@@ -17,6 +17,11 @@ struct DictionaryItem: Identifiable, Codable, Equatable, Hashable {
     var isPrivate: Bool
     var isActive: Bool
     
+    /// UI id
+    var uiID: String {
+        return "\(id)_\(createdAt)_\(UUID().uuidString)"
+    }
+    
     init(
         displayName: String,
         tableName: String,

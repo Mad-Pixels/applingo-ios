@@ -18,6 +18,11 @@ struct WordItem: Identifiable, Codable, Equatable {
     var weight: Int
     var fail: Int
     var id: Int
+    
+    /// UI id
+    var uiID: String {
+        return "\(id)_\(createdAt)_\(UUID().uuidString)"
+    }
 
     init(
         tableName: String,

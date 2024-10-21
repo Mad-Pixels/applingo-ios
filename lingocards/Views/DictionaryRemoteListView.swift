@@ -45,7 +45,7 @@ struct DictionaryRemoteList: View {
                             CompPreloaderView()
                         } else {
                             List {
-                                ForEach(viewModel.dictionaries, id: \.id) { dictionary in
+                                ForEach(viewModel.dictionaries, id: \.uiID) { dictionary in
                                     HStack {
                                         VStack(alignment: .leading) {
                                             Text(dictionary.displayName)

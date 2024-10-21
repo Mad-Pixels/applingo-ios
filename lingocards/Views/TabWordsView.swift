@@ -48,7 +48,7 @@ struct TabWordsView: View {
                         Spacer()
                     } else {
                         List {
-                            ForEach(viewModel.words) { word in
+                            ForEach(viewModel.words, id: \.uiID) { word in
                                 HStack {
                                     Text(word.frontText)
                                         .font(.headline)
