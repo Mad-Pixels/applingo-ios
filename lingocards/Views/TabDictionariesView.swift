@@ -2,118 +2,91 @@ import SwiftUI
 
 struct TabDictionariesView: View {
     @EnvironmentObject var languageManager: LanguageManager
-    @EnvironmentObject var tabManager: TabManager
     @EnvironmentObject var databaseManager: DatabaseManager
+    @EnvironmentObject var themeManager: ThemeManager
+    @EnvironmentObject var tabManager: TabManager
+    
     @StateObject private var viewModel = TabDictionariesViewModel()
     @StateObject private var errorManager = ErrorManager.shared
+
     @State private var selectedDictionary: DictionaryItem?
-    @State private var alertMessage: String = ""
-    @State private var isShowingAlert = false
     @State private var isShowingFileImporter = false
     @State private var isShowingRemoteList = false
-    
+    @State private var isShowingAlert = false
+
     var body: some View {
+        let theme = themeManager.currentThemeStyle
+
         NavigationView {
             ZStack {
+                theme.backgroundColor.edgesIgnoringSafeArea(.all)
+
                 VStack {
                     if let error = errorManager.currentError, errorManager.isVisible(for: .dictionaries, source: .getDictionaries) {
-                        Text(error.errorDescription ?? "")
-                            .foregroundColor(.red)
-                            .padding()
-                            .multilineTextAlignment(.center)
+                        CompErrorView(errorMessage: error.errorDescription ?? "", theme: theme)
                     }
-
                     if viewModel.dictionaries.isEmpty && !errorManager.isErrorVisible {
-                        Spacer()
-                        Text(languageManager.localizedString(for: "NoDictionariesAvailable"))
-                            .foregroundColor(.gray)
-                            .italic()
-                            .padding()
-                            .multilineTextAlignment(.center)
-                        Spacer()
+                        CompEmptyListView(
+                            theme: theme,
+                            message: languageManager.localizedString(for: "NoDictionariesAvailable")
+                        )
                     } else {
-                        List {
-                            ForEach(viewModel.dictionaries, id: \.uiID) { dictionary in
-                                HStack {
-                                    VStack(alignment: .leading) {
-                                        Text(dictionary.displayName)
-                                            .font(.headline)
-
-                                        Text(dictionary.subTitle)
-                                            .font(.subheadline)
-                                            .foregroundColor(.gray)
-                                    }
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                    .padding(.vertical, 4)
-                                    .contentShape(Rectangle()) // Make the entire row tappable
-                                    .onTapGesture {
-                                        selectedDictionary = dictionary
-                                    }
-
-                                    Toggle(isOn: Binding(
-                                        get: { dictionary.isActive },
-                                        set: { newStatus in
-                                            updateDictionaryStatus(dictionary, newStatus: newStatus)
-                                        })
-                                    ) {
-                                        EmptyView()
-                                    }
-                                    .toggleStyle(CheckboxToggleStyle())
-                                }
-                                .padding(.vertical, 4)
-                            }
-                            .onDelete(perform: deleteDictionary)
-                        }
+                        CompDictionaryListView(
+                            dictionaries: viewModel.dictionaries,
+                            onDictionaryTap: { dictionary in
+                                selectedDictionary = dictionary
+                            },
+                            onDelete: dictionaryDelete,
+                            onToggle: { dictionary, newStatus in
+                                dictionaryStatusUpdate(dictionary, newStatus: newStatus)
+                            },
+                            theme: theme
+                        )
                     }
-
                     Spacer()
                 }
-            }
-            .navigationTitle(languageManager.localizedString(for: "Dictionaries").capitalizedFirstLetter)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Menu {
-                        Button(action: {
-                            isShowingFileImporter = true
-                        }) {
-                            Label(languageManager.localizedString(for: "ImportCSV"), systemImage: "tray.and.arrow.down")
-                        }
-                        Button(action: {
-                            isShowingRemoteList = true
-                        }) {
-                            Label(languageManager.localizedString(for: "Download"), systemImage: "arrow.down.circle")
-                        }
-                    } label: {
-                        Image(systemName: "ellipsis.circle")
-                            .resizable()
-                            .frame(width: 24, height: 24)
+                .navigationTitle(languageManager.localizedString(for: "Dictionaries").capitalizedFirstLetter)
+                .navigationBarTitleDisplayMode(.large)
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        CompToolbarMenu(
+                            items: [
+                                CompToolbarMenu.MenuItem(title: languageManager.localizedString(for: "ImportCSV"), systemImage: "tray.and.arrow.down", action: {
+                                    isShowingFileImporter = true
+                                }),
+                                CompToolbarMenu.MenuItem(title: languageManager.localizedString(for: "Download"), systemImage: "arrow.down.circle", action: {
+                                    isShowingRemoteList = true
+                                })
+                            ],
+                            theme: theme
+                        )
                     }
                 }
-            }
-            .onAppear {
-                tabManager.setActiveTab(.dictionaries)
-                if tabManager.isActive(tab: .dictionaries) {
-                    viewModel.getDictionaries()
+                .onAppear {
+                    tabManager.setActiveTab(.dictionaries)
+                    if tabManager.isActive(tab: .dictionaries) {
+                        viewModel.getDictionaries()
+                    }
                 }
-            }
-            .onChange(of: tabManager.activeTab) { newTab in
-                if newTab != .dictionaries {
-                    tabManager.deactivateTab(.dictionaries)
-                }
-            }
-            .onChange(of: errorManager.currentError) { newError in
-                if let error = newError, error.tab == .dictionaries, error.source == .deleteDictionary {
-                    isShowingAlert = true
-                    alertMessage = error.errorDescription ?? ""
-                }
+                .modifier(TabModifier(activeTab: tabManager.activeTab) { newTab in
+                    if newTab != .dictionaries {
+                        tabManager.deactivateTab(.dictionaries)
+                    }
+                })
+                .modifier(ErrModifier(currentError: errorManager.currentError) { newError in
+                    if let error = newError, error.tab == .dictionaries, error.source == .deleteDictionary {
+                        isShowingAlert = true
+                    }
+                })
             }
             .alert(isPresented: $isShowingAlert) {
-                Alert(
-                    title: Text(languageManager.localizedString(for: "Error")),
-                    message: Text(alertMessage),
-                    dismissButton: .default(Text(languageManager.localizedString(for: "Close"))) {
+                CompAlertView(
+                    title: languageManager.localizedString(for: "Error"),
+                    message: errorManager.currentError?.errorDescription ?? "",
+                    closeAction: {
                         errorManager.clearError()
-                    }
+                    },
+                    theme: theme
                 )
             }
             .fileImporter(
@@ -124,7 +97,7 @@ struct TabDictionariesView: View {
                 switch result {
                 case .success(let urls):
                     if let url = urls.first {
-                        importCSV(from: url)
+                        dictionaryImport(from: url)
                     }
                 case .failure(let error):
                     Logger.debug("Failed to import file: \(error)")
@@ -146,38 +119,41 @@ struct TabDictionariesView: View {
         }
     }
 
-    private func deleteDictionary(at offsets: IndexSet) {
+    private func dictionaryDelete(at offsets: IndexSet) {
         offsets.forEach { index in
             let dictionary = viewModel.dictionaries[index]
-            
             if dictionary.tableName != "Internal" {
                 viewModel.deleteDictionary(dictionary)
             } else {
-                alertMessage = languageManager.localizedString(for: "CannotDeleteInternalDictionary")
+                let error = AppError(
+                    errorType: .ui,
+                    errorMessage: languageManager.localizedString(for: "CannotDeleteInternalDictionary"),
+                    additionalInfo: nil
+                )
+                ErrorManager.shared.setError(
+                    appError: error,
+                    tab: .dictionaries,
+                    source: .deleteDictionary
+                )
                 isShowingAlert = true
             }
         }
     }
 
-    private func updateDictionaryStatus(_ dictionary: DictionaryItem, newStatus: Bool) {
+    private func dictionaryStatusUpdate(_ dictionary: DictionaryItem, newStatus: Bool) {
         viewModel.updateDictionaryStatus(dictionary.id, newStatus: newStatus) { result in
             DispatchQueue.main.async {
                 switch result {
                 case .success:
                     return
-                case .failure(let error):
-                    alertMessage = error.localizedDescription
+                case .failure:
                     isShowingAlert = true
-
-                    if let index = viewModel.dictionaries.firstIndex(where: { $0.id == dictionary.id }) {
-                        viewModel.dictionaries[index].isActive.toggle()
-                    }
                 }
             }
         }
     }
 
-    private func importCSV(from url: URL) {
+    private func dictionaryImport(from url: URL) {
         do {
             try databaseManager.importCSVFile(at: url)
         } catch {

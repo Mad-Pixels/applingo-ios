@@ -2,8 +2,10 @@ import SwiftUI
 
 struct WordAddView: View {
     @Environment(\.presentationMode) private var presentationMode
+    
     @EnvironmentObject var languageManager: LanguageManager
     @EnvironmentObject var errorManager: ErrorManager
+    @EnvironmentObject var themeManager: ThemeManager
 
     let dictionaries: [DictionaryItem]
     @Binding var isPresented: Bool
@@ -12,54 +14,49 @@ struct WordAddView: View {
     @State private var selectedDictionary: DictionaryItem?
     @State private var isShowingErrorAlert = false
     @State private var wordItem = WordItem.empty()
-    @State private var errorMessage: String = ""
-
-    @EnvironmentObject var themeManager: ThemeManager // Используем тему из ThemeManager
 
     var body: some View {
         let theme = themeManager.currentThemeStyle
 
         NavigationView {
             ZStack {
-                theme.backgroundColor
-                    .edgesIgnoringSafeArea(.all) // Общий фон
-                
+                theme.backgroundColor.edgesIgnoringSafeArea(.all)
+
                 Form {
-                    Section(header: Text(languageManager.localizedString(for: "Card")).foregroundColor(theme.textColor)) {
-                        AppTextField(
+                    Section(header: Text(languageManager.localizedString(for: "Card"))
+                        .modifier(HeaderTextStyle(theme: theme))) {
+                        CompTextField(
                             placeholder: languageManager.localizedString(for: "Word").capitalizedFirstLetter,
                             text: $wordItem.frontText,
-                            isEditing: true
+                            isEditing: true,
+                            theme: theme
                         )
-                        .foregroundColor(theme.textColor)
-
-                        AppTextField(
+                        CompTextField(
                             placeholder: languageManager.localizedString(for: "Definition").capitalizedFirstLetter,
                             text: $wordItem.backText,
-                            isEditing: true
+                            isEditing: true,
+                            theme: theme
                         )
-                        .foregroundColor(theme.textColor)
-                        
                         CompDictionaryPickerView(
                             selectedDictionary: $selectedDictionary,
                             dictionaries: dictionaries
                         )
                     }
-                    
-                    Section(header: Text(languageManager.localizedString(for: "Additional")).foregroundColor(theme.textColor)) {
-                        AppTextField(
+
+                    Section(header: Text(languageManager.localizedString(for: "Additional"))
+                        .modifier(HeaderTextStyle(theme: theme))) {
+                        CompTextField(
                             placeholder: languageManager.localizedString(for: "Hint").capitalizedFirstLetter,
                             text: $wordItem.hint.unwrap(default: ""),
-                            isEditing: true
+                            isEditing: true,
+                            theme: theme
                         )
-                        .foregroundColor(theme.textColor)
-                        
-                        AppTextEditor(
+                        CompTextEditor(
                             placeholder: languageManager.localizedString(for: "Description").capitalizedFirstLetter,
                             text: $wordItem.description.unwrap(default: ""),
-                            isEditing: true
+                            isEditing: true,
+                            theme: theme
                         )
-                        .foregroundColor(theme.textColor)
                         .frame(height: 150)
                     }
                 }
@@ -70,15 +67,18 @@ struct WordAddView: View {
                         presentationMode.wrappedValue.dismiss()
                     },
                     trailing: Button(languageManager.localizedString(for: "Save").capitalizedFirstLetter) {
-                        saveNewWord()
+                        wordSave()
                     }
                     .disabled(isSaveDisabled)
                 )
                 .alert(isPresented: $isShowingErrorAlert) {
-                    Alert(
-                        title: Text(languageManager.localizedString(for: "Error")),
-                        message: Text(errorMessage),
-                        dismissButton: .default(Text(languageManager.localizedString(for: "Close")))
+                    CompAlertView(
+                        title: languageManager.localizedString(for: "Error"),
+                        message: errorManager.currentError?.errorDescription ?? "",
+                        closeAction: {
+                            errorManager.clearError()
+                        },
+                        theme: theme
                     )
                 }
                 .onAppear {
@@ -90,7 +90,7 @@ struct WordAddView: View {
         }
     }
 
-    private func saveNewWord() {
+    private func wordSave() {
         guard let selectedDictionary = selectedDictionary else {
             return
         }
@@ -102,9 +102,8 @@ struct WordAddView: View {
                 presentationMode.wrappedValue.dismiss()
             case .failure(let error):
                 if let appError = error as? AppError {
-                    ErrorManager.shared.setError(appError: appError, tab: .words, source: .saveWord)
+                    errorManager.setError(appError: appError, tab: .words, source: .saveWord)
                 }
-                errorMessage = error.localizedDescription
                 isShowingErrorAlert = true
             }
         }

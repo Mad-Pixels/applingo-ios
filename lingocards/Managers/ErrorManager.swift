@@ -38,7 +38,9 @@ final class ErrorManager: ObservableObject {
 
     func setError(appError: AppError, tab: AppTab, source: ErrorSource) {
         let error = GlobalError.custom(appError: appError, tab: tab, source: source)
-        logError(appError)
+        if appError.errorType != .ui {
+            logError(appError)
+        }
         DispatchQueue.main.async {
             self.objectWillChange.send()
             self.currentError = error

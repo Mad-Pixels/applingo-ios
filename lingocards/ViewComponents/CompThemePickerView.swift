@@ -6,16 +6,17 @@ struct CompThemePickerView: View {
     
     var supportedThemes: [ThemeType]
     var onThemeChange: (ThemeType) -> Void
+    let theme: ThemeStyle
 
     var body: some View {
-        Section(header: Text(languageManager.localizedString(for: "Theme"))) {
+        Section(header: Text(languageManager.localizedString(for: "Theme"))
+            .modifier(HeaderTextStyle(theme: theme))) {
             Picker("Select Theme", selection: $selectedTheme) {
                 ForEach(supportedThemes, id: \.self) { theme in
                     Text(theme.asString).tag(theme)
                 }
             }
             .pickerStyle(SegmentedPickerStyle())
-            .modifier(ThemeModifier(selectedTheme: selectedTheme, onChange: onThemeChange))
         }
     }
 }

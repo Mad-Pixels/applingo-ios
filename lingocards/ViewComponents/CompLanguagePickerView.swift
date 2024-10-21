@@ -6,9 +6,11 @@ struct CompLanguagePickerView: View {
 
     var supportedLanguages: [String]
     var displayName: (String) -> String
-    
+    let theme: ThemeStyle
+
     var body: some View {
-        Section(header: Text(languageManager.localizedString(for: "Language"))) {
+        Section(header: Text(languageManager.localizedString(for: "Language"))
+            .modifier(HeaderTextStyle(theme: theme))) {
             Picker("Select Language", selection: $selectedLanguage) {
                 ForEach(supportedLanguages, id: \.self) { language in
                     Text(displayName(language).capitalizedFirstLetter)

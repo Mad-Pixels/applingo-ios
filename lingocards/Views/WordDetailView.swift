@@ -2,15 +2,16 @@ import SwiftUI
 
 struct WordDetailView: View {
     @Environment(\.presentationMode) private var presentationMode
+    
     @EnvironmentObject var languageManager: LanguageManager
-    @EnvironmentObject var themeManager: ThemeManager // Используем тему из ThemeManager
+    @EnvironmentObject var themeManager: ThemeManager
+    
     @State private var editedWord: WordItem
     @State private var isShowingErrorAlert = false
     @State private var isEditing = false
 
     @Binding var isPresented: Bool
     let onSave: (WordItem, @escaping (Result<Void, Error>) -> Void) -> Void
-
     private let originalWord: WordItem
 
     init(word: WordItem, isPresented: Binding<Bool>, onSave: @escaping (WordItem, @escaping (Result<Void, Error>) -> Void) -> Void) {
@@ -21,58 +22,54 @@ struct WordDetailView: View {
     }
 
     var body: some View {
-        let theme = themeManager.currentThemeStyle // Используем текущую тему
+        let theme = themeManager.currentThemeStyle
 
         NavigationView {
             ZStack {
-                theme.backgroundColor
-                    .edgesIgnoringSafeArea(.all) // Общий фон
+                theme.backgroundColor.edgesIgnoringSafeArea(.all)
 
                 Form {
-                    // Секция для редактирования текста карточки
-                    Section(header: Text(languageManager.localizedString(for: "Card")).foregroundColor(theme.textColor)) {
-                        AppTextField(
+                    Section(header: Text(languageManager.localizedString(for: "Card"))
+                        .modifier(HeaderTextStyle(theme: theme))) {
+                        CompTextField(
                             placeholder: languageManager.localizedString(for: "Word").capitalizedFirstLetter,
                             text: $editedWord.frontText,
-                            isEditing: isEditing
+                            isEditing: isEditing,
+                            theme: theme
                         )
-                        .foregroundColor(theme.textColor)
-
-                        AppTextField(
+                        CompTextField(
                             placeholder: languageManager.localizedString(for: "Definition").capitalizedFirstLetter,
                             text: $editedWord.backText,
-                            isEditing: isEditing
+                            isEditing: isEditing,
+                            theme: theme
                         )
-                        .foregroundColor(theme.textColor)
                     }
 
-                    // Секция для дополнительных данных
-                    Section(header: Text(languageManager.localizedString(for: "Additional")).foregroundColor(theme.textColor)) {
-                        AppTextField(
+                    Section(header: Text(languageManager.localizedString(for: "Additional"))
+                        .modifier(HeaderTextStyle(theme: theme))) {
+                        CompTextField(
                             placeholder: languageManager.localizedString(for: "TableName").capitalizedFirstLetter,
                             text: $editedWord.tableName,
-                            isEditing: false
+                            isEditing: false,
+                            theme: theme
                         )
-                        .foregroundColor(theme.textColor)
-
-                        AppTextField(
+                        CompTextField(
                             placeholder: languageManager.localizedString(for: "Hint").capitalizedFirstLetter,
                             text: $editedWord.hint.unwrap(default: ""),
-                            isEditing: isEditing
+                            isEditing: isEditing,
+                            theme: theme
                         )
-                        .foregroundColor(theme.textColor)
-
-                        AppTextEditor(
+                        CompTextEditor(
                             placeholder: languageManager.localizedString(for: "Description").capitalizedFirstLetter,
                             text: $editedWord.description.unwrap(default: ""),
-                            isEditing: isEditing
+                            isEditing: isEditing,
+                            theme: theme
                         )
-                        .foregroundColor(theme.textColor)
                         .frame(height: 150)
                     }
 
-                    // Секция статистики
-                    Section(header: Text(languageManager.localizedString(for: "Statistics")).foregroundColor(theme.textColor)) {
+                    Section(header: Text(languageManager.localizedString(for: "Statistics"))
+                        .modifier(HeaderTextStyle(theme: theme))) {
                         VStack(alignment: .leading, spacing: 16) {
                             CompBarChartView(
                                 title: languageManager.localizedString(for: "Answers"),

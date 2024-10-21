@@ -4,6 +4,7 @@ struct TabSettingsView: View {
     @EnvironmentObject var languageManager: LanguageManager
     @EnvironmentObject var themeManager: ThemeManager
     @EnvironmentObject var tabManager: TabManager
+    
     @ObservedObject var logHandler = LogHandler.shared
 
     var body: some View {
@@ -11,33 +12,36 @@ struct TabSettingsView: View {
 
         NavigationView {
             ZStack {
-                theme.backgroundColor
-                    .edgesIgnoringSafeArea(.all) // Устанавливаем общий фон
+                theme.backgroundColor.edgesIgnoringSafeArea(.all)
                 
                 Form {
-                    // Выбор темы
                     CompThemePickerView(
                         selectedTheme: $themeManager.currentTheme,
                         supportedThemes: themeManager.supportedThemes,
                         onThemeChange: { newTheme in
                             themeManager.setTheme(to: newTheme)
-                        }
+                        },
+                        theme: theme
                     )
+                    .modifier(FormItemStyle(theme: theme))
                     
-                    // Выбор языка
                     CompLanguagePickerView(
                         selectedLanguage: $languageManager.currentLanguage,
                         supportedLanguages: languageManager.supportedLanguages,
-                        displayName: languageManager.displayName(for:)
+                        displayName: languageManager.displayName(for:),
+                        theme: theme
                     )
+                    .modifier(FormItemStyle(theme: theme))
                     
-                    // Переключатель отправки логов
                     CompLogSenderToggleView(
-                        sendLogs: $logHandler.sendLogs
+                        sendLogs: $logHandler.sendLogs,
+                        theme: theme
                     )
+                    .modifier(FormItemStyle(theme: theme))
                 }
                 .navigationTitle(languageManager.localizedString(for: "Settings").capitalizedFirstLetter)
-                .navigationBarTitleDisplayMode(.large) // Единый стиль заголовка
+                .navigationBarTitleDisplayMode(.large)
+                .modifier(NavigationBarStyle(theme: theme))
             }
             .onAppear {
                 tabManager.setActiveTab(.settings)

@@ -2,25 +2,25 @@ import SwiftUI
 
 struct TabWordsView: View {
     @EnvironmentObject var languageManager: LanguageManager
-    @EnvironmentObject var tabManager: TabManager
     @EnvironmentObject var themeManager: ThemeManager
+    @EnvironmentObject var tabManager: TabManager
+    
     @StateObject private var viewModel = TabWordsViewModel()
     @StateObject private var errorManager = ErrorManager.shared
+    
+    @State private var selectedWord: WordItem?
     @State private var isShowingDetailView = false
     @State private var isShowingAddView = false
     @State private var isShowingAlert = false
-    @State private var selectedWord: WordItem?
 
     var body: some View {
         let theme = themeManager.currentThemeStyle
 
         NavigationView {
             ZStack {
-                theme.backgroundColor
-                    .edgesIgnoringSafeArea(.all) // Общий фон
+                theme.backgroundColor.edgesIgnoringSafeArea(.all)
 
                 VStack {
-                    // Поисковая строка
                     CompSearchView(
                         searchText: $viewModel.searchText,
                         placeholder: languageManager.localizedString(for: "Search").capitalizedFirstLetter
@@ -30,73 +30,38 @@ struct TabWordsView: View {
                         viewModel.resetPagination()
                         viewModel.getWords()
                     }
-                    
-                    if let error = errorManager.currentError, errorManager.isVisible(for: .words, source: .getWords) {
-                        Text(error.errorDescription ?? "")
-                            .foregroundColor(.red)
-                            .padding()
-                            .multilineTextAlignment(.center)
-                    }
-                    
-                    if viewModel.words.isEmpty && !errorManager.isErrorVisible {
-                        Spacer()
-                        Text(languageManager.localizedString(for: "NoWordsAvailable"))
-                            .foregroundColor(.gray)
-                            .italic()
-                            .padding()
-                            .multilineTextAlignment(.center)
-                        Spacer()
-                    } else {
-                        List {
-                            ForEach(viewModel.words, id: \.uiID) { word in
-                                HStack {
-                                    Text(word.frontText)
-                                        .font(.headline)
-                                        .foregroundColor(theme.textColor) // Цвет текста по теме
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                    
-                                    Image(systemName: "arrow.left.and.right.circle.fill")
-                                        .foregroundColor(.blue)
-                                    
-                                    Text(word.backText)
-                                        .font(.headline)
-                                        .foregroundColor(theme.textColor) // Цвет текста по теме
-                                        .frame(maxWidth: .infinity, alignment: .trailing)
-                                }
-                                .padding(.vertical, 4)
-                                .contentShape(Rectangle())
-                                .onTapGesture {
-                                    isShowingDetailView = true
-                                    selectedWord = word
-                                }
-                                .onAppear {
-                                    viewModel.loadMoreWordsIfNeeded(currentItem: word)
-                                }
-                            }
-                            .onDelete(perform: deleteWord)
 
-                            if viewModel.isLoadingPage {
-                                ProgressView()
-                                    .frame(idealWidth: .infinity, maxWidth: .infinity, alignment: .center)
-                            }
-                        }
-                        .listStyle(PlainListStyle())
+                    if let error = errorManager.currentError, errorManager.isVisible(for: .words, source: .getWords) {
+                        CompErrorView(errorMessage: error.errorDescription ?? "", theme: theme)
+                    }
+                    if viewModel.words.isEmpty && !errorManager.isErrorVisible {
+                        CompEmptyListView(
+                            theme: theme,
+                            message: languageManager.localizedString(for: "NoWordsAvailable")
+                        )
+                    } else {
+                        CompWordListView(
+                            words: viewModel.words,
+                            onWordTap: { word in
+                                isShowingDetailView = true
+                                selectedWord = word
+                            },
+                            onDelete: wordDelete,
+                            loadMoreIfNeeded: viewModel.loadMoreWordsIfNeeded,
+                            theme: theme
+                        )
                     }
                 }
                 .navigationTitle(languageManager.localizedString(for: "Words").capitalizedFirstLetter)
-                .navigationBarTitleDisplayMode(.large) // Единый стиль заголовка
+                .navigationBarTitleDisplayMode(.large)
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
-                        Menu {
-                            Button(action: addWord) {
-                                Label(languageManager.localizedString(for: "AddNewWord"), systemImage: "plus")
-                            }
-                        } label: {
-                            Image(systemName: "ellipsis.circle")
-                                .resizable()
-                                .frame(width: 24, height: 24)
-                                .foregroundColor(theme.textColor)
-                        }
+                        CompToolbarMenu(
+                            items: [
+                                CompToolbarMenu.MenuItem(title: languageManager.localizedString(for: "AddNewWord"), systemImage: "plus", action: wordAdd)
+                            ],
+                            theme: theme
+                        )
                     }
                 }
                 .onAppear {
@@ -118,12 +83,13 @@ struct TabWordsView: View {
                 })
             }
             .alert(isPresented: $isShowingAlert) {
-                Alert(
-                    title: Text(languageManager.localizedString(for: "Error")),
-                    message: Text(errorManager.currentError?.errorDescription ?? ""),
-                    dismissButton: .default(Text(languageManager.localizedString(for: "Close"))) {
+                CompAlertView(
+                    title: languageManager.localizedString(for: "Error"),
+                    message: errorManager.currentError?.errorDescription ?? "",
+                    closeAction: {
                         errorManager.clearError()
-                    }
+                    },
+                    theme: theme
                 )
             }
         }
@@ -147,15 +113,15 @@ struct TabWordsView: View {
             )
         }
     }
-    
-    private func deleteWord(at offsets: IndexSet) {
+
+    private func wordDelete(at offsets: IndexSet) {
         offsets.forEach { index in
             let word = viewModel.words[index]
             viewModel.deleteWord(word)
         }
     }
-    
-    private func addWord() {
+
+    private func wordAdd() {
         viewModel.getDictionaries { result in
             DispatchQueue.main.async {
                 switch result {

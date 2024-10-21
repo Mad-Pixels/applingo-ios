@@ -27,47 +27,50 @@ struct DictionaryRemoteDetailView: View {
                     Form {
                         // Секция с данными о словаре
                         Section(header: Text(languageManager.localizedString(for: "Dictionary")).foregroundColor(theme.textColor)) {
-                            AppTextField(
+                            CompTextField(
                                 placeholder: languageManager.localizedString(for: "Display Name").capitalizedFirstLetter,
                                 text: .constant(editedDictionary.displayName),
-                                isEditing: false
+                                isEditing: false,
+                                theme: theme
                             )
-                            
-                            AppTextEditor(
+                            CompTextEditor(
                                 placeholder: languageManager.localizedString(for: "Description").capitalizedFirstLetter,
                                 text: .constant(editedDictionary.description),
-                                isEditing: false
+                                isEditing: false,
+                                theme: theme
                             )
                             .frame(height: 150)
                         }
                         
                         // Секция с категориями
                         Section(header: Text(languageManager.localizedString(for: "Category")).foregroundColor(theme.textColor)) {
-                            AppTextField(
+                            CompTextField(
                                 placeholder: languageManager.localizedString(for: "Category").capitalizedFirstLetter,
                                 text: .constant(editedDictionary.category),
-                                isEditing: false
+                                isEditing: false,
+                                theme: theme
                             )
-
-                            AppTextField(
+                            CompTextField(
                                 placeholder: languageManager.localizedString(for: "Subcategory").capitalizedFirstLetter,
                                 text: .constant(editedDictionary.subcategory),
-                                isEditing: false
+                                isEditing: false,
+                                theme: theme
                             )
                         }
                         
                         // Дополнительная информация
                         Section(header: Text(languageManager.localizedString(for: "Additional")).foregroundColor(theme.textColor)) {
-                            AppTextField(
+                            CompTextField(
                                 placeholder: languageManager.localizedString(for: "Author").capitalizedFirstLetter,
                                 text: .constant(editedDictionary.author),
-                                isEditing: false
+                                isEditing: false,
+                                theme: theme
                             )
-                            
-                            AppTextField(
+                            CompTextField(
                                 placeholder: languageManager.localizedString(for: "Created At").capitalizedFirstLetter,
                                 text: .constant(editedDictionary.formattedCreatedAt),
-                                isEditing: false
+                                isEditing: false,
+                                theme: theme
                             )
                         }
                     }
