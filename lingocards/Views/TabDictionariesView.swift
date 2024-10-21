@@ -3,22 +3,18 @@ import SwiftUI
 struct TabDictionariesView: View {
     @EnvironmentObject var languageManager: LanguageManager
     @EnvironmentObject var tabManager: TabManager
-    @EnvironmentObject var themeManager: ThemeManager
+    @EnvironmentObject var databaseManager: DatabaseManager
     @StateObject private var viewModel = TabDictionariesViewModel()
     @StateObject private var errorManager = ErrorManager.shared
     @State private var selectedDictionary: DictionaryItem?
     @State private var alertMessage: String = ""
-    @State private var isShowingAddView = false
     @State private var isShowingAlert = false
-
+    @State private var isShowingFileImporter = false
+    @State private var isShowingRemoteList = false
+    
     var body: some View {
-        let theme = themeManager.currentThemeStyle
-
         NavigationView {
             ZStack {
-                theme.backgroundColor
-                    .edgesIgnoringSafeArea(.all) // Общий фон
-
                 VStack {
                     if let error = errorManager.currentError, errorManager.isVisible(for: .dictionaries, source: .getDictionaries) {
                         Text(error.errorDescription ?? "")
@@ -37,12 +33,11 @@ struct TabDictionariesView: View {
                         Spacer()
                     } else {
                         List {
-                            ForEach($viewModel.dictionaries, id: \.uiID) { $dictionary in
+                            ForEach(viewModel.dictionaries, id: \.id) { dictionary in
                                 HStack {
                                     VStack(alignment: .leading) {
                                         Text(dictionary.displayName)
                                             .font(.headline)
-                                            .foregroundColor(theme.textColor) // Цвет текста по теме
 
                                         Text(dictionary.subTitle)
                                             .font(.subheadline)
@@ -50,52 +45,68 @@ struct TabDictionariesView: View {
                                     }
                                     .frame(maxWidth: .infinity, alignment: .leading)
                                     .padding(.vertical, 4)
-                                    .contentShape(Rectangle())
+                                    .contentShape(Rectangle()) // Make the entire row tappable
                                     .onTapGesture {
                                         selectedDictionary = dictionary
                                     }
 
-                                    Toggle(isOn: $dictionary.isActive) {
+                                    Toggle(isOn: Binding(
+                                        get: { dictionary.isActive },
+                                        set: { newStatus in
+                                            updateDictionaryStatus(dictionary, newStatus: newStatus)
+                                        })
+                                    ) {
                                         EmptyView()
                                     }
                                     .toggleStyle(CheckboxToggleStyle())
-                                    .modifier(StatusModifier(isActive: dictionary.isActive) { newStatus in
-                                        updateDictionaryStatus(dictionary, newStatus: newStatus)
-                                    })
                                 }
                                 .padding(.vertical, 4)
                             }
                             .onDelete(perform: deleteDictionary)
                         }
-                        .listStyle(PlainListStyle())
                     }
 
                     Spacer()
                 }
-
-                ButtonFloating(action: {
-                    addDictionary()
-                }, imageName: "plus")
             }
             .navigationTitle(languageManager.localizedString(for: "Dictionaries").capitalizedFirstLetter)
-            .navigationBarTitleDisplayMode(.large) // Единый стиль заголовка
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Menu {
+                        Button(action: {
+                            isShowingFileImporter = true
+                        }) {
+                            Label(languageManager.localizedString(for: "ImportCSV"), systemImage: "tray.and.arrow.down")
+                        }
+                        Button(action: {
+                            isShowingRemoteList = true
+                        }) {
+                            Label(languageManager.localizedString(for: "Download"), systemImage: "arrow.down.circle")
+                        }
+                    } label: {
+                        Image(systemName: "ellipsis.circle")
+                            .resizable()
+                            .frame(width: 24, height: 24)
+                    }
+                }
+            }
             .onAppear {
                 tabManager.setActiveTab(.dictionaries)
                 if tabManager.isActive(tab: .dictionaries) {
                     viewModel.getDictionaries()
                 }
             }
-            .modifier(TabModifier(activeTab: tabManager.activeTab) { newTab in
-                if newTab != .learn {
-                    tabManager.deactivateTab(.learn)
+            .onChange(of: tabManager.activeTab) { newTab in
+                if newTab != .dictionaries {
+                    tabManager.deactivateTab(.dictionaries)
                 }
-            })
-            .modifier(ErrModifier(currentError: errorManager.currentError) { newError in
+            }
+            .onChange(of: errorManager.currentError) { newError in
                 if let error = newError, error.tab == .dictionaries, error.source == .deleteDictionary {
                     isShowingAlert = true
                     alertMessage = error.errorDescription ?? ""
                 }
-            })
+            }
             .alert(isPresented: $isShowingAlert) {
                 Alert(
                     title: Text(languageManager.localizedString(for: "Error")),
@@ -105,10 +116,24 @@ struct TabDictionariesView: View {
                     }
                 )
             }
-        }
-        .sheet(isPresented: $isShowingAddView) {
-            DictionaryAddView(isPresented: $isShowingAddView)
-                .environmentObject(languageManager)
+            .fileImporter(
+                isPresented: $isShowingFileImporter,
+                allowedContentTypes: [.commaSeparatedText],
+                allowsMultipleSelection: false
+            ) { result in
+                switch result {
+                case .success(let urls):
+                    if let url = urls.first {
+                        importCSV(from: url)
+                    }
+                case .failure(let error):
+                    Logger.debug("Failed to import file: \(error)")
+                }
+            }
+            .fullScreenCover(isPresented: $isShowingRemoteList) {
+                DictionaryRemoteList(isPresented: $isShowingRemoteList)
+                    .environmentObject(languageManager)
+            }
         }
         .sheet(item: $selectedDictionary) { dictionary in
             DictionaryDetailView(
@@ -118,13 +143,13 @@ struct TabDictionariesView: View {
                     viewModel.updateDictionary(updatedDictionary, completion: completion)
                 }
             )
-            .environmentObject(themeManager)
         }
     }
 
     private func deleteDictionary(at offsets: IndexSet) {
         offsets.forEach { index in
             let dictionary = viewModel.dictionaries[index]
+            
             if dictionary.tableName != "Internal" {
                 viewModel.deleteDictionary(dictionary)
             } else {
@@ -152,7 +177,11 @@ struct TabDictionariesView: View {
         }
     }
 
-    private func addDictionary() {
-        isShowingAddView = true
+    private func importCSV(from url: URL) {
+        do {
+            try databaseManager.importCSVFile(at: url)
+        } catch {
+            Logger.debug("Failed to import CSV file: \(error)")
+        }
     }
 }

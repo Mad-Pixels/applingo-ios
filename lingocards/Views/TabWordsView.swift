@@ -85,6 +85,20 @@ struct TabWordsView: View {
                 }
                 .navigationTitle(languageManager.localizedString(for: "Words").capitalizedFirstLetter)
                 .navigationBarTitleDisplayMode(.large) // Единый стиль заголовка
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Menu {
+                            Button(action: addWord) {
+                                Label(languageManager.localizedString(for: "AddNewWord"), systemImage: "plus")
+                            }
+                        } label: {
+                            Image(systemName: "ellipsis.circle")
+                                .resizable()
+                                .frame(width: 24, height: 24)
+                                .foregroundColor(theme.textColor)
+                        }
+                    }
+                }
                 .onAppear {
                     tabManager.setActiveTab(.words)
                     if tabManager.isActive(tab: .words) {
@@ -102,13 +116,6 @@ struct TabWordsView: View {
                         isShowingAlert = true
                     }
                 })
-                
-                VStack {
-                    Spacer()
-                    ButtonFloating(action: {
-                        addWord()
-                    }, imageName: "plus")
-                }
             }
             .alert(isPresented: $isShowingAlert) {
                 Alert(
