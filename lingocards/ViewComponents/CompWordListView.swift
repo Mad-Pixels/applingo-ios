@@ -10,15 +10,19 @@ struct CompWordListView: View {
     var body: some View {
         List {
             ForEach(words, id: \.uiID) { word in
-                CompWordRowView(word: word, onTap: {
-                    onWordTap(word)
-                }, theme: theme)
+                CompWordRowView(
+                    word: word,
+                    onTap: {
+                        onWordTap(word)
+                    },
+                    theme: theme
+                )
                 .onAppear {
                     loadMoreIfNeeded(word)
                 }
+                .padding(.vertical, 2)
             }
             .onDelete(perform: onDelete)
         }
-        .listStyle(PlainListStyle())
     }
 }

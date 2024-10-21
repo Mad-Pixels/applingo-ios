@@ -3,24 +3,26 @@ import SwiftUI
 struct CompSearchView: View {
     @Binding var searchText: String
     let placeholder: String
+    let theme: ThemeStyle
 
-    init(searchText: Binding<String>, placeholder: String) {
+    init(searchText: Binding<String>, placeholder: String, theme: ThemeStyle) {
         self._searchText = searchText
         self.placeholder = placeholder
+        self.theme = theme
     }
 
     var body: some View {
         HStack {
             Image(systemName: "magnifyingglass")
-                .foregroundColor(.gray)
+                .modifier(SecondaryIconStyle(theme: theme))
 
             ZStack(alignment: .leading) {
                 if searchText.isEmpty {
                     Text(placeholder)
-                        .foregroundColor(.gray)
+                        .foregroundColor(theme.fieldTextColor)
                 }
                 TextField("", text: $searchText)
-                    .foregroundColor(.primary)
+                    .foregroundColor(.red)
             }
 
             if !searchText.isEmpty {
@@ -28,13 +30,10 @@ struct CompSearchView: View {
                     searchText = ""
                 }) {
                     Image(systemName: "xmark.circle.fill")
-                        .foregroundColor(.gray)
+                        .modifier(SecondaryIconStyle(theme: theme))
                 }
             }
         }
-        .padding()
-        .background(Color(.systemGray6))
-        .cornerRadius(10)
-        .padding(.horizontal)
+        .modifier(SearchBlockStyle(theme: theme))
     }
 }

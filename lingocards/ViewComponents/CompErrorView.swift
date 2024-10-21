@@ -6,7 +6,8 @@ struct CompErrorView: View {
 
     var body: some View {
         Text(errorMessage)
-            .foregroundColor(.red)
+            .foregroundColor(theme.errorTextColor)
+            .bold()
             .padding()
             .multilineTextAlignment(.center)
     }

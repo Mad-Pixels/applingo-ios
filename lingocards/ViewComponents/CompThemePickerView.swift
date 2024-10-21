@@ -10,13 +10,15 @@ struct CompThemePickerView: View {
 
     var body: some View {
         Section(header: Text(languageManager.localizedString(for: "Theme"))
-            .modifier(HeaderTextStyle(theme: theme))) {
-            Picker("Select Theme", selection: $selectedTheme) {
-                ForEach(supportedThemes, id: \.self) { theme in
-                    Text(theme.asString).tag(theme)
+            .modifier(HeaderBlockTextStyle(theme: theme))) {
+            
+                Picker("Select Theme", selection: $selectedTheme) {
+                    ForEach(supportedThemes, id: \.self) { themeOption in
+                        Text(themeOption.asString)
+                            .tag(themeOption)
+                    }
                 }
-            }
-            .pickerStyle(SegmentedPickerStyle())
+                .pickerStyle(SegmentedPickerStyle())
         }
     }
 }

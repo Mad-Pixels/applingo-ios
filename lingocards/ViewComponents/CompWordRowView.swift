@@ -7,19 +7,29 @@ struct CompWordRowView: View {
 
     var body: some View {
         HStack {
+            // Первая колонка: выравнивание влево
             Text(word.frontText)
-                .modifier(TitleTextStyle(theme: theme))
+                .font(.headline)
+                .foregroundColor(theme.textColor)
+                .frame(maxWidth: .infinity, alignment: .leading)
 
+            // Вторая колонка: выравнивание по центру
             Image(systemName: "arrow.left.and.right.circle.fill")
                 .foregroundColor(theme.primaryButtonColor)
+                .frame(width: 24, height: 24)
+                .frame(maxWidth: .infinity, alignment: .center)
 
+            // Третья колонка: выравнивание вправо
             Text(word.backText)
-                .modifier(SubtitleTextStyle(theme: theme))
+                .font(.subheadline)
+                .foregroundColor(.gray)
+                .frame(maxWidth: .infinity, alignment: .trailing)
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, 2)
         .contentShape(Rectangle())
         .onTapGesture {
             onTap()
         }
     }
 }
+

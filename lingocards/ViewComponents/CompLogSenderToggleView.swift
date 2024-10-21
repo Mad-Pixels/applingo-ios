@@ -8,10 +8,11 @@ struct CompLogSenderToggleView: View {
     
     var body: some View {
         Section(header: Text(languageManager.localizedString(for: "LogSettings"))
-            .modifier(HeaderTextStyle(theme: theme))) {
-            Toggle(isOn: $sendLogs) {
-                Text(languageManager.localizedString(for: "SendErrorsLogs").capitalizedFirstLetter)
-            }
+            .modifier(HeaderBlockTextStyle(theme: theme))) {
+            
+                Toggle(isOn: $sendLogs) {
+                    Text(languageManager.localizedString(for: "SendErrorsLogs").capitalizedFirstLetter)
+                }
         }
     }
 }

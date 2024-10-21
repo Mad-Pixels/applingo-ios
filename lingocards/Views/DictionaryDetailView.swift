@@ -30,7 +30,7 @@ struct DictionaryDetailView: View {
 
                 Form {
                     Section(header: Text(languageManager.localizedString(for: "Dictionary"))
-                        .modifier(HeaderTextStyle(theme: theme))) {
+                        .modifier(HeaderBlockTextStyle(theme: theme))) {
                         CompTextField(
                             placeholder: languageManager.localizedString(for: "Display Name").capitalizedFirstLetter,
                             text: $editedDictionary.displayName,
@@ -52,7 +52,7 @@ struct DictionaryDetailView: View {
                     }
 
                     Section(header: Text(languageManager.localizedString(for: "Category"))
-                        .modifier(HeaderTextStyle(theme: theme))) {
+                        .modifier(HeaderBlockTextStyle(theme: theme))) {
                         CompTextField(
                             placeholder: languageManager.localizedString(for: "Category").capitalizedFirstLetter,
                             text: $editedDictionary.category,
@@ -68,7 +68,7 @@ struct DictionaryDetailView: View {
                     }
 
                     Section(header: Text(languageManager.localizedString(for: "Additional"))
-                        .modifier(HeaderTextStyle(theme: theme))) {
+                        .modifier(HeaderBlockTextStyle(theme: theme))) {
                         CompTextField(
                             placeholder: languageManager.localizedString(for: "Author").capitalizedFirstLetter,
                             text: $editedDictionary.author,

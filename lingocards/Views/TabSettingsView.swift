@@ -12,18 +12,15 @@ struct TabSettingsView: View {
 
         NavigationView {
             ZStack {
-                theme.backgroundColor.edgesIgnoringSafeArea(.all)
+                theme.backgroundViewColor.edgesIgnoringSafeArea(.all)
                 
                 Form {
                     CompThemePickerView(
                         selectedTheme: $themeManager.currentTheme,
                         supportedThemes: themeManager.supportedThemes,
-                        onThemeChange: { newTheme in
-                            themeManager.setTheme(to: newTheme)
-                        },
+                        onThemeChange: { newTheme in themeManager.setTheme(to: newTheme) },
                         theme: theme
                     )
-                    .modifier(FormItemStyle(theme: theme))
                     
                     CompLanguagePickerView(
                         selectedLanguage: $languageManager.currentLanguage,
@@ -31,13 +28,11 @@ struct TabSettingsView: View {
                         displayName: languageManager.displayName(for:),
                         theme: theme
                     )
-                    .modifier(FormItemStyle(theme: theme))
                     
                     CompLogSenderToggleView(
                         sendLogs: $logHandler.sendLogs,
                         theme: theme
                     )
-                    .modifier(FormItemStyle(theme: theme))
                 }
                 .navigationTitle(languageManager.localizedString(for: "Settings").capitalizedFirstLetter)
                 .navigationBarTitleDisplayMode(.large)

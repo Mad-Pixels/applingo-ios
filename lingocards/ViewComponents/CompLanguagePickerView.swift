@@ -10,14 +10,15 @@ struct CompLanguagePickerView: View {
 
     var body: some View {
         Section(header: Text(languageManager.localizedString(for: "Language"))
-            .modifier(HeaderTextStyle(theme: theme))) {
-            Picker("Select Language", selection: $selectedLanguage) {
-                ForEach(supportedLanguages, id: \.self) { language in
-                    Text(displayName(language).capitalizedFirstLetter)
-                        .tag(language)
+            .modifier(HeaderBlockTextStyle(theme: theme))) {
+            
+                Picker("Select Language", selection: $selectedLanguage) {
+                    ForEach(supportedLanguages, id: \.self) { language in
+                        Text(displayName(language).capitalizedFirstLetter)
+                            .tag(language)
+                    }
                 }
-            }
-            .pickerStyle(WheelPickerStyle())
+                .pickerStyle(WheelPickerStyle())
         }
     }
 }

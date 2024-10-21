@@ -24,7 +24,7 @@ struct WordAddView: View {
 
                 Form {
                     Section(header: Text(languageManager.localizedString(for: "Card"))
-                        .modifier(HeaderTextStyle(theme: theme))) {
+                        .modifier(HeaderBlockTextStyle(theme: theme))) {
                         CompTextField(
                             placeholder: languageManager.localizedString(for: "Word").capitalizedFirstLetter,
                             text: $wordItem.frontText,
@@ -44,7 +44,7 @@ struct WordAddView: View {
                     }
 
                     Section(header: Text(languageManager.localizedString(for: "Additional"))
-                        .modifier(HeaderTextStyle(theme: theme))) {
+                        .modifier(HeaderBlockTextStyle(theme: theme))) {
                         CompTextField(
                             placeholder: languageManager.localizedString(for: "Hint").capitalizedFirstLetter,
                             text: $wordItem.hint.unwrap(default: ""),

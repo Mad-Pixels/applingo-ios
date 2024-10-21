@@ -18,14 +18,14 @@ struct TabWordsView: View {
 
         NavigationView {
             ZStack {
-                theme.backgroundColor.edgesIgnoringSafeArea(.all)
+                theme.backgroundViewColor.edgesIgnoringSafeArea(.all)
 
                 VStack {
                     CompSearchView(
                         searchText: $viewModel.searchText,
-                        placeholder: languageManager.localizedString(for: "Search").capitalizedFirstLetter
+                        placeholder: languageManager.localizedString(for: "Search").capitalizedFirstLetter,
+                        theme: theme
                     )
-                    .padding(.bottom, 10)
                     .onChange(of: viewModel.searchText) { _ in
                         viewModel.resetPagination()
                         viewModel.getWords()
