@@ -57,7 +57,7 @@ final class TabWordsViewModel: ObservableObject {
             ErrorManager.shared.setError(
                 appError: error,
                 tab: .words,
-                source: .getWords
+                source: .wordsGet
             )
             isLoadingPage = false
             return
@@ -122,7 +122,7 @@ final class TabWordsViewModel: ObservableObject {
                     self.words.append(contentsOf: fetchedWords)
                     self.currentPage += 1
                     self.isLoadingPage = false
-                    ErrorManager.shared.clearError(for: .getWords)
+                    ErrorManager.shared.clearError(for: .wordsGet)
                     Logger.debug("[TabWordsViewModel]: Words data successfully fetched from database")
                 }
             } catch {
@@ -138,7 +138,7 @@ final class TabWordsViewModel: ObservableObject {
                     ErrorManager.shared.setError(
                         appError: appError,
                         tab: .words,
-                        source: .getWords
+                        source: .wordsGet
                     )
                 }
             }
@@ -170,7 +170,7 @@ final class TabWordsViewModel: ObservableObject {
             ErrorManager.shared.setError(
                 appError: error,
                 tab: .words,
-                source: .deleteWord
+                source: .wordDelete
             )
             return
         }
@@ -190,7 +190,7 @@ final class TabWordsViewModel: ObservableObject {
                 Logger.debug("[TabWordsViewModel]: Word with ID \(word.id) was deleted successfully")
             }
             
-            ErrorManager.shared.clearError(for: .deleteWord)
+            ErrorManager.shared.clearError(for: .wordDelete)
         } catch {
             Logger.debug("[TabWordsViewModel]: Failed to delete word from database: \(error)")
             let appError = AppError(
@@ -201,7 +201,7 @@ final class TabWordsViewModel: ObservableObject {
             ErrorManager.shared.setError(
                 appError: appError,
                 tab: .words,
-                source: .deleteWord
+                source: .wordDelete
             )
         }
     }

@@ -40,7 +40,7 @@ final class TabDictionariesViewModel: ObservableObject {
             ErrorManager.shared.setError(
                 appError: error,
                 tab: .dictionaries,
-                source: .getRemoteDictionaries
+                source: .dictionariesRemoteGet
             )
             return
         }
@@ -55,7 +55,7 @@ final class TabDictionariesViewModel: ObservableObject {
         self.dictionaries = remoteData
 
         // Очищаем ошибки при успешном выполнении запроса
-        ErrorManager.shared.clearError(for: .getRemoteDictionaries)
+        ErrorManager.shared.clearError(for: .dictionariesRemoteGet)
         Logger.debug("[TabDictionariesViewModel]: Remote dictionaries data successfully fetched")
     }
 
@@ -73,7 +73,7 @@ final class TabDictionariesViewModel: ObservableObject {
             ErrorManager.shared.setError(
                 appError: error,
                 tab: .dictionaries,
-                source: .getDictionaries
+                source: .dictionariesGet
             )
             return
         }
@@ -87,7 +87,7 @@ final class TabDictionariesViewModel: ObservableObject {
                 }
             }
 
-            ErrorManager.shared.clearError(for: .getDictionaries)
+            ErrorManager.shared.clearError(for: .dictionariesGet)
         } catch {
             Logger.debug("[TabDictionariesViewModel]: Failed to fetch dictionaries from database: \(error)")
             let appError = AppError(
@@ -98,7 +98,7 @@ final class TabDictionariesViewModel: ObservableObject {
             ErrorManager.shared.setError(
                 appError: appError,
                 tab: .dictionaries,
-                source: .getDictionaries
+                source: .dictionariesGet
             )
         }
     }
@@ -112,7 +112,7 @@ final class TabDictionariesViewModel: ObservableObject {
                 errorMessage: "Database is not connected",
                 additionalInfo: nil
             )
-            ErrorManager.shared.setError(appError: error, tab: .dictionaries, source: .deleteDictionary)
+            ErrorManager.shared.setError(appError: error, tab: .dictionaries, source: .dictionaryDelete)
             return
         }
 
@@ -137,7 +137,7 @@ final class TabDictionariesViewModel: ObservableObject {
                 Logger.debug("[TabDictionariesViewModel]: Dictionary with ID \(dictionary.id) was deleted successfully, along with its table \(dictionary.tableName)")
             }
 
-            ErrorManager.shared.clearError(for: .deleteDictionary)
+            ErrorManager.shared.clearError(for: .dictionaryDelete)
         } catch {
             Logger.debug("[TabDictionariesViewModel]: Failed to delete dictionary from database: \(error)")
             let appError = AppError(
@@ -145,7 +145,7 @@ final class TabDictionariesViewModel: ObservableObject {
                 errorMessage: "Failed to delete dictionary from database",
                 additionalInfo: ["error": "\(error)"]
             )
-            ErrorManager.shared.setError(appError: appError, tab: .dictionaries, source: .deleteDictionary)
+            ErrorManager.shared.setError(appError: appError, tab: .dictionaries, source: .dictionaryDelete)
         }
     }
     
@@ -173,7 +173,7 @@ final class TabDictionariesViewModel: ObservableObject {
                     errorMessage: "Dictionary with ID \(updatedDictionary.id) not found",
                     additionalInfo: nil
                 )
-                ErrorManager.shared.setError(appError: error, tab: .dictionaries, source: .updateDictionary)
+                ErrorManager.shared.setError(appError: error, tab: .dictionaries, source: .dictionaryUpdate)
                 completion(.failure(error))
             }
         }
@@ -204,7 +204,7 @@ final class TabDictionariesViewModel: ObservableObject {
                     errorMessage: "Dictionary with ID \(dictionaryID) not found",
                     additionalInfo: nil
                 )
-                ErrorManager.shared.setError(appError: error, tab: .dictionaries, source: .updateDictionary)
+                ErrorManager.shared.setError(appError: error, tab: .dictionaries, source: .dictionaryUpdate)
                 completion(.failure(error))
             }
         } catch {
@@ -213,7 +213,7 @@ final class TabDictionariesViewModel: ObservableObject {
                 errorMessage: "Failed to update dictionary status in database",
                 additionalInfo: ["error": "\(error)"]
             )
-            ErrorManager.shared.setError(appError: dbError, tab: .dictionaries, source: .updateDictionary)
+            ErrorManager.shared.setError(appError: dbError, tab: .dictionaries, source: .dictionaryUpdate)
             completion(.failure(dbError))
         }
     }

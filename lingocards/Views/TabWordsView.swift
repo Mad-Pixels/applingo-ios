@@ -31,7 +31,7 @@ struct TabWordsView: View {
                         viewModel.getWords()
                     }
 
-                    if let error = errorManager.currentError, errorManager.isVisible(for: .words, source: .getWords) {
+                    if let error = errorManager.currentError, errorManager.isVisible(for: .words, source: .wordsGet) {
                         CompErrorView(errorMessage: error.errorDescription ?? "", theme: theme)
                     }
                     if viewModel.words.isEmpty && !errorManager.isErrorVisible {
@@ -81,7 +81,7 @@ struct TabWordsView: View {
                     }
                 })
                 .modifier(ErrModifier(currentError: errorManager.currentError) { newError in
-                    if let error = newError, error.tab == .words, error.source == .deleteWord {
+                    if let error = newError, error.tab == .words, error.source == .wordDelete {
                         isShowingAlert = true
                     }
                 })
@@ -134,7 +134,7 @@ struct TabWordsView: View {
                 case .failure(let error):
                     self.isShowingAlert = true
                     if let appError = error as? AppError {
-                        ErrorManager.shared.setError(appError: appError, tab: .words, source: .fetchData)
+                        ErrorManager.shared.setError(appError: appError, tab: .words, source: .wordAdd)
                     }
                 }
             }

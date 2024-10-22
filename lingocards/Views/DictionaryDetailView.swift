@@ -141,7 +141,7 @@ struct DictionaryDetailView: View {
                 self.presentationMode.wrappedValue.dismiss()
             case .failure(let error):
                 if let appError = error as? AppError {
-                    ErrorManager.shared.setError(appError: appError, tab: .dictionaries, source: .updateDictionary)
+                    ErrorManager.shared.setError(appError: appError, tab: .dictionaries, source: .dictionaryUpdate)
                 }
                 self.editedDictionary = previousDictionary
                 self.isShowingErrorAlert = true

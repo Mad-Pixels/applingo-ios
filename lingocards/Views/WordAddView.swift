@@ -112,7 +112,7 @@ struct WordAddView: View {
                 presentationMode.wrappedValue.dismiss()
             case .failure(let error):
                 if let appError = error as? AppError {
-                    errorManager.setError(appError: appError, tab: .words, source: .saveWord)
+                    errorManager.setError(appError: appError, tab: .words, source: .wordSave)
                 }
                 isShowingErrorAlert = true
             }

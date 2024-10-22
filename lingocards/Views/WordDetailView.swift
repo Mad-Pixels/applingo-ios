@@ -143,7 +143,7 @@ struct WordDetailView: View {
                 self.presentationMode.wrappedValue.dismiss()
             case .failure(let error):
                 if let appError = error as? AppError {
-                    ErrorManager.shared.setError(appError: appError, tab: .words, source: .updateWord)
+                    ErrorManager.shared.setError(appError: appError, tab: .words, source: .wordUpdate)
                 }
                 self.editedWord = previousWord
                 self.isShowingErrorAlert = true

@@ -25,7 +25,7 @@ struct DictionaryRemoteListView: View {
                 theme.backgroundViewColor.edgesIgnoringSafeArea(.all)
 
                 VStack {
-                    if let error = errorManager.currentError, errorManager.isVisible(for: .dictionaries, source: .getRemoteDictionaries) {
+                    if let error = errorManager.currentError, errorManager.isVisible(for: .dictionaries, source: .dictionariesRemoteGet) {
                         Text(error.errorDescription ?? "")
                             .foregroundColor(.red)
                             .padding()
@@ -106,7 +106,7 @@ struct DictionaryRemoteListView: View {
                     }
                 }
                 .modifier(ErrModifier(currentError: errorManager.currentError) { newError in
-                    if let error = newError, error.tab == .dictionaries, error.source == .getRemoteDictionaries {
+                    if let error = newError, error.tab == .dictionaries, error.source == .dictionariesRemoteGet {
                         errMessage = error.errorDescription ?? "error"
                     }
                 })

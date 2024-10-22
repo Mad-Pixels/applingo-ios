@@ -9,17 +9,16 @@ enum ErrorType: String, Codable {
 }
 
 enum ErrorSource: String {
-    case getWords
-    case fetchData
-    case saveWord
-    case unknown
-    case deleteWord
-    case updateWord
-    case getDictionaries
-    case deleteDictionary
-    case updateDictionary
-    case getRemoteDictionaries
-    case getCategories
+    case wordsGet
+    case wordAdd
+    case wordSave
+    case wordDelete
+    case wordUpdate
+    case dictionariesGet
+    case dictionaryDelete
+    case dictionaryUpdate
+    case dictionariesRemoteGet
+    case categoriesGet
     case initialization
     case importCSVFile
 }

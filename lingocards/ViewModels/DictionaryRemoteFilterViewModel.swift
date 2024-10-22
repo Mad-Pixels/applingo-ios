@@ -37,7 +37,7 @@ final class DictionaryRemoteFilterViewModel: ObservableObject {
             ErrorManager.shared.setError(
                 appError: error,
                 tab: .dictionaries,
-                source: .getCategories
+                source: .categoriesGet
             )
             return
         }
@@ -60,7 +60,7 @@ final class DictionaryRemoteFilterViewModel: ObservableObject {
         self.backCategories = backCategoryData
 
         // Очищаем ошибки при успешном получении данных
-        ErrorManager.shared.clearError(for: .getCategories)
+        ErrorManager.shared.clearError(for: .categoriesGet)
         Logger.debug("[DictionaryRemoteFilterViewModel]: Categories data successfully fetched")
     }
 }

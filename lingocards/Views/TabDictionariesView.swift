@@ -22,7 +22,7 @@ struct TabDictionariesView: View {
                 theme.backgroundViewColor.edgesIgnoringSafeArea(.all)
 
                 VStack {
-                    if let error = errorManager.currentError, errorManager.isVisible(for: .dictionaries, source: .getDictionaries) {
+                    if let error = errorManager.currentError, errorManager.isVisible(for: .dictionaries, source: .dictionariesGet) {
                         CompErrorView(errorMessage: error.errorDescription ?? "", theme: theme)
                     }
                     if viewModel.dictionaries.isEmpty && !errorManager.isErrorVisible {
@@ -74,7 +74,7 @@ struct TabDictionariesView: View {
                     }
                 })
                 .modifier(ErrModifier(currentError: errorManager.currentError) { newError in
-                    if let error = newError, error.tab == .dictionaries, error.source == .deleteDictionary {
+                    if let error = newError, error.tab == .dictionaries, error.source == .dictionaryDelete {
                         isShowingAlert = true
                     }
                 })
@@ -133,7 +133,7 @@ struct TabDictionariesView: View {
                 ErrorManager.shared.setError(
                     appError: error,
                     tab: .dictionaries,
-                    source: .deleteDictionary
+                    source: .dictionaryDelete
                 )
                 isShowingAlert = true
             }
