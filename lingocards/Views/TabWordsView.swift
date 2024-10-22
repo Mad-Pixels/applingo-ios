@@ -47,7 +47,9 @@ struct TabWordsView: View {
                                 selectedWord = word
                             },
                             onDelete: wordDelete,
-                            loadMoreIfNeeded: viewModel.loadMoreWordsIfNeeded,
+                            loadMoreIfNeeded: { word in
+                                viewModel.loadMoreWordsIfNeeded(currentItem: word)
+                            },
                             theme: theme
                         )
                     }
