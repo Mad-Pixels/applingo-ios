@@ -1,4 +1,5 @@
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct TabDictionariesView: View {
     @EnvironmentObject var languageManager: LanguageManager
@@ -154,8 +155,17 @@ struct TabDictionariesView: View {
     }
 
     private func dictionaryImport(from url: URL) {
+        let success = url.startAccessingSecurityScopedResource()
+        defer { url.stopAccessingSecurityScopedResource() }
+
+        guard success else {
+            Logger.debug("Failed to access security scoped resource")
+            return
+        }
+
         do {
             try databaseManager.importCSVFile(at: url)
+            Logger.debug("Successfully imported CSV file")
         } catch {
             Logger.debug("Failed to import CSV file: \(error)")
         }
