@@ -11,7 +11,7 @@ struct CompDictionaryRowView: View {
             VStack(alignment: .leading) {
                 Text(dictionary.displayName)
                     .font(.headline)
-                    .foregroundColor(theme.textColor)
+                    .foregroundColor(theme.baseTextColor)
 
                 Text(dictionary.subTitle)
                     .font(.subheadline)
@@ -32,7 +32,7 @@ struct CompDictionaryRowView: View {
             ) {
                 EmptyView()
             }
-            .toggleStyle(CheckboxToggleStyle())
+            .toggleStyle(BaseCheckboxStyle(theme: theme))
         }
     }
 }

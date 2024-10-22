@@ -1,6 +1,7 @@
 import SwiftUI
 
-struct InputFieldStyle: ViewModifier {
+/// Root for all fields and text areas
+struct BaseFieldStyle: ViewModifier {
     let isEditing: Bool
     let border: Bool
     let theme: ThemeStyle
@@ -10,16 +11,17 @@ struct InputFieldStyle: ViewModifier {
             .padding(10)
             .background(
                 RoundedRectangle(cornerRadius: 8)
-                    .fill(isEditing ? theme.secondaryButtonColor : theme.backgroundColor)
+                    .fill(isEditing ? theme.backgroundViewColor : theme.detailsColor)
             )
             .overlay(
                 Group {
                     if border {
                         RoundedRectangle(cornerRadius: 8)
-                            .stroke(isEditing ? theme.primaryButtonColor : Color(.systemGray4), lineWidth: isEditing ? 2 : 1)
+                            .stroke(isEditing ? theme.backgroundBlockColor : theme.detailsColor, lineWidth: isEditing ? 2 : 1)
                     }
                 }
             )
-            .animation(.easeInOut(duration: 0.2), value: isEditing)
+            .modifier(BaseTextStyle(theme: theme))
+            .animation(.easeInOut(duration: 0.4), value: isEditing)
     }
 }

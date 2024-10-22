@@ -20,44 +20,54 @@ struct WordAddView: View {
 
         NavigationView {
             ZStack {
-                theme.backgroundColor.edgesIgnoringSafeArea(.all)
+                theme.backgroundViewColor.edgesIgnoringSafeArea(.all)
 
                 Form {
                     Section(header: Text(languageManager.localizedString(for: "Card"))
                         .modifier(HeaderBlockTextStyle(theme: theme))) {
-                        CompTextField(
-                            placeholder: languageManager.localizedString(for: "Word").capitalizedFirstLetter,
-                            text: $wordItem.frontText,
-                            isEditing: true,
-                            theme: theme
-                        )
-                        CompTextField(
-                            placeholder: languageManager.localizedString(for: "Definition").capitalizedFirstLetter,
-                            text: $wordItem.backText,
-                            isEditing: true,
-                            theme: theme
-                        )
-                        CompDictionaryPickerView(
-                            selectedDictionary: $selectedDictionary,
-                            dictionaries: dictionaries
-                        )
+                            VStack {
+                                CompTextField(
+                                    placeholder: languageManager.localizedString(for: "Word").capitalizedFirstLetter,
+                                    text: $wordItem.frontText,
+                                    isEditing: true,
+                                    theme: theme,
+                                    icon: "rectangle.and.pencil.and.ellipsis"
+                                )
+                                CompTextField(
+                                    placeholder: languageManager.localizedString(for: "Definition").capitalizedFirstLetter,
+                                    text: $wordItem.backText,
+                                    isEditing: true,
+                                    theme: theme,
+                                    icon: "translate"
+                                )
+                                CompDictionaryPickerView(
+                                    selectedDictionary: $selectedDictionary,
+                                    dictionaries: dictionaries
+                                )
+                            }
+                            .padding(.vertical, 12)
                     }
 
                     Section(header: Text(languageManager.localizedString(for: "Additional"))
                         .modifier(HeaderBlockTextStyle(theme: theme))) {
-                        CompTextField(
-                            placeholder: languageManager.localizedString(for: "Hint").capitalizedFirstLetter,
-                            text: $wordItem.hint.unwrap(default: ""),
-                            isEditing: true,
-                            theme: theme
-                        )
-                        CompTextEditor(
-                            placeholder: languageManager.localizedString(for: "Description").capitalizedFirstLetter,
-                            text: $wordItem.description.unwrap(default: ""),
-                            isEditing: true,
-                            theme: theme
-                        )
-                        .frame(height: 150)
+                            VStack {
+                                CompTextField(
+                                    placeholder: languageManager.localizedString(for: "Hint").capitalizedFirstLetter,
+                                    text: $wordItem.hint.unwrap(default: ""),
+                                    isEditing: true,
+                                    theme: theme,
+                                    icon: "tag"
+                                )
+                                CompTextEditor(
+                                    placeholder: languageManager.localizedString(for: "Description").capitalizedFirstLetter,
+                                    text: $wordItem.description.unwrap(default: ""),
+                                    isEditing: true,
+                                    theme: theme,
+                                    icon: "scroll"
+                                )
+                                .frame(height: 150)
+                            }
+                            .padding(.vertical, 12)
                     }
                 }
                 .navigationTitle(languageManager.localizedString(for: "AddWord").capitalizedFirstLetter)

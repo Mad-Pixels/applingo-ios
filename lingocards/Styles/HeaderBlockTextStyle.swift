@@ -1,10 +1,13 @@
 import SwiftUI
 
+/// Header general blocks text styles
 struct HeaderBlockTextStyle: ViewModifier {
     let theme: ThemeStyle
     
     func body(content: Content) -> some View {
         content
-            .font(.headline)
+            .foregroundColor(theme.headerBlockTextColor)
+            .font(.system(size: 14))
+            .modifier(BaseTextStyle(theme: theme))
     }
 }

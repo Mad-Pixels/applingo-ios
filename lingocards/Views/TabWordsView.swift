@@ -20,7 +20,7 @@ struct TabWordsView: View {
             ZStack {
                 theme.backgroundViewColor.edgesIgnoringSafeArea(.all)
 
-                VStack {
+                VStack(spacing: 0) {
                     CompSearchView(
                         searchText: $viewModel.searchText,
                         placeholder: languageManager.localizedString(for: "Search").capitalizedFirstLetter,
@@ -53,7 +53,7 @@ struct TabWordsView: View {
                     }
                 }
                 .navigationTitle(languageManager.localizedString(for: "Words").capitalizedFirstLetter)
-                .navigationBarTitleDisplayMode(.large)
+                .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         CompToolbarMenu(

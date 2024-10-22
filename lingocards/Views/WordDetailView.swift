@@ -14,80 +14,88 @@ struct WordDetailView: View {
     let onSave: (WordItem, @escaping (Result<Void, Error>) -> Void) -> Void
     private let originalWord: WordItem
 
-    init(word: WordItem, isPresented: Binding<Bool>, onSave: @escaping (WordItem, @escaping (Result<Void, Error>) -> Void) -> Void) {
+    init(
+        word: WordItem,
+        isPresented: Binding<Bool>,
+        onSave: @escaping (WordItem, @escaping (Result<Void, Error>) -> Void) -> Void
+    ) {
         _editedWord = State(initialValue: word)
         _isPresented = isPresented
         self.onSave = onSave
         self.originalWord = word
-    }
+    } 
 
     var body: some View {
         let theme = themeManager.currentThemeStyle
 
         NavigationView {
             ZStack {
-                theme.backgroundColor.edgesIgnoringSafeArea(.all)
+                theme.backgroundViewColor.edgesIgnoringSafeArea(.all)
 
                 Form {
                     Section(header: Text(languageManager.localizedString(for: "Card"))
                         .modifier(HeaderBlockTextStyle(theme: theme))) {
-                        CompTextField(
-                            placeholder: languageManager.localizedString(for: "Word").capitalizedFirstLetter,
-                            text: $editedWord.frontText,
-                            isEditing: isEditing,
-                            theme: theme
-                        )
-                        CompTextField(
-                            placeholder: languageManager.localizedString(for: "Definition").capitalizedFirstLetter,
-                            text: $editedWord.backText,
-                            isEditing: isEditing,
-                            theme: theme
-                        )
-                    }
+                            CompTextField(
+                                placeholder: languageManager.localizedString(for: "Word").capitalizedFirstLetter,
+                                text: $editedWord.frontText,
+                                isEditing: isEditing,
+                                theme: theme,
+                                icon: "rectangle.and.pencil.and.ellipsis"
+                            )
+                            CompTextField(
+                                placeholder: languageManager.localizedString(for: "Definition").capitalizedFirstLetter,
+                                text: $editedWord.backText,
+                                isEditing: isEditing,
+                                theme: theme,
+                                icon: "translate"
+                            )
+                        }
 
                     Section(header: Text(languageManager.localizedString(for: "Additional"))
                         .modifier(HeaderBlockTextStyle(theme: theme))) {
-                        CompTextField(
-                            placeholder: languageManager.localizedString(for: "TableName").capitalizedFirstLetter,
-                            text: $editedWord.tableName,
-                            isEditing: false,
-                            theme: theme
-                        )
-                        CompTextField(
-                            placeholder: languageManager.localizedString(for: "Hint").capitalizedFirstLetter,
-                            text: $editedWord.hint.unwrap(default: ""),
-                            isEditing: isEditing,
-                            theme: theme
-                        )
-                        CompTextEditor(
-                            placeholder: languageManager.localizedString(for: "Description").capitalizedFirstLetter,
-                            text: $editedWord.description.unwrap(default: ""),
-                            isEditing: isEditing,
-                            theme: theme
-                        )
-                        .frame(height: 150)
+                            CompTextField(
+                                placeholder: languageManager.localizedString(for: "TableName").capitalizedFirstLetter,
+                                text: $editedWord.tableName,
+                                isEditing: false,
+                                theme: theme
+                            )
+                            CompTextField(
+                                placeholder: languageManager.localizedString(for: "Hint").capitalizedFirstLetter,
+                                text: $editedWord.hint.unwrap(default: ""),
+                                isEditing: isEditing,
+                                theme: theme,
+                                icon: "tag"
+                            )
+                            CompTextEditor(
+                                placeholder: languageManager.localizedString(for: "Description").capitalizedFirstLetter,
+                                text: $editedWord.description.unwrap(default: ""),
+                                isEditing: isEditing,
+                                theme: theme,
+                                icon: "scroll"
+                            )
+                            .frame(height: 150)
                     }
 
                     Section(header: Text(languageManager.localizedString(for: "Statistics"))
                         .modifier(HeaderBlockTextStyle(theme: theme))) {
-                        VStack(alignment: .leading, spacing: 16) {
-                            CompBarChartView(
-                                title: languageManager.localizedString(for: "Answers"),
-                                barData: [
-                                    BarData(value: Double(editedWord.fail), label: "fail", color: .red),
-                                    BarData(value: Double(editedWord.success), label: "success", color: .green)
-                                ]
-                            )
-                            .padding(.bottom, 4)
+                            VStack(alignment: .leading, spacing: 16) {
+                                CompBarChartView(
+                                    title: languageManager.localizedString(for: "Answers"),
+                                    barData: [
+                                        BarData(value: Double(editedWord.fail), label: "fail", color: .red),
+                                        BarData(value: Double(editedWord.success), label: "success", color: .green)
+                                    ]
+                                )
+                                .padding(.bottom, 4)
 
-                            CompProgressChartView(
-                                value: calculateWeight(),
-                                title: languageManager.localizedString(for: "Count"),
-                                color: .blue
-                            )
-                            .padding(.bottom, 0)
+                                CompProgressChartView(
+                                    value: calculateWeight(),
+                                    title: languageManager.localizedString(for: "Count"),
+                                    color: .blue
+                                )
+                                .padding(.bottom, 0)
+                            }
                         }
-                    }
                 }
                 .navigationTitle(languageManager.localizedString(for: "Details").capitalizedFirstLetter)
                 .navigationBarItems(

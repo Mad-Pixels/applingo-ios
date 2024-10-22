@@ -19,7 +19,7 @@ struct CompSearchView: View {
             ZStack(alignment: .leading) {
                 if searchText.isEmpty {
                     Text(placeholder)
-                        .foregroundColor(theme.fieldTextColor)
+                        .foregroundColor(theme.secondaryTextColor)
                 }
                 TextField("", text: $searchText)
                     .foregroundColor(.red)
@@ -34,6 +34,7 @@ struct CompSearchView: View {
                 }
             }
         }
-        .modifier(SearchBlockStyle(theme: theme))
+        .modifier(BaseSearchStyle(theme: theme))
+        .padding(.bottom, 16)
     }
 }

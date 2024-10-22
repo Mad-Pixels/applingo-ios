@@ -14,7 +14,11 @@ struct DictionaryDetailView: View {
     let onSave: (DictionaryItem, @escaping (Result<Void, Error>) -> Void) -> Void
     private let originalDictionary: DictionaryItem
 
-    init(dictionary: DictionaryItem, isPresented: Binding<Bool>, onSave: @escaping (DictionaryItem, @escaping (Result<Void, Error>) -> Void) -> Void) {
+    init(
+        dictionary: DictionaryItem,
+        isPresented: Binding<Bool>,
+        onSave: @escaping (DictionaryItem, @escaping (Result<Void, Error>) -> Void) -> Void
+    ) {
         _editedDictionary = State(initialValue: dictionary)
         _isPresented = isPresented
         self.onSave = onSave
@@ -26,64 +30,70 @@ struct DictionaryDetailView: View {
 
         NavigationView {
             ZStack {
-                theme.backgroundColor.edgesIgnoringSafeArea(.all)
+                theme.backgroundViewColor.edgesIgnoringSafeArea(.all)
 
                 Form {
                     Section(header: Text(languageManager.localizedString(for: "Dictionary"))
                         .modifier(HeaderBlockTextStyle(theme: theme))) {
-                        CompTextField(
-                            placeholder: languageManager.localizedString(for: "Display Name").capitalizedFirstLetter,
-                            text: $editedDictionary.displayName,
-                            isEditing: isEditing,
-                            theme: theme
-                        )
-                        CompTextEditor(
-                            placeholder: languageManager.localizedString(for: "Description").capitalizedFirstLetter,
-                            text: Binding<String>(
-                                get: { editedDictionary.description },
-                                set: { newValue in
-                                    editedDictionary.description = newValue.isEmpty ? "" : newValue
-                                }
-                            ),
-                            isEditing: isEditing,
-                            theme: theme
-                        )
-                        .frame(height: 150)
-                    }
+                            CompTextField(
+                                placeholder: languageManager.localizedString(for: "Display Name").capitalizedFirstLetter,
+                                text: $editedDictionary.displayName,
+                                isEditing: isEditing,
+                                theme: theme,
+                                icon: "book"
+                            )
+                            CompTextEditor(
+                                placeholder: languageManager.localizedString(for: "Description").capitalizedFirstLetter,
+                                text: Binding<String>(
+                                    get: {
+                                        editedDictionary.description
+                                    },
+                                    set: { newValue in
+                                        editedDictionary.description = newValue.isEmpty ? "" : newValue
+                                    }
+                                ),
+                                isEditing: isEditing,
+                                theme: theme,
+                                icon: "scroll"
+                            )
+                            .frame(height: 150)
+                        }
 
                     Section(header: Text(languageManager.localizedString(for: "Category"))
                         .modifier(HeaderBlockTextStyle(theme: theme))) {
-                        CompTextField(
-                            placeholder: languageManager.localizedString(for: "Category").capitalizedFirstLetter,
-                            text: $editedDictionary.category,
-                            isEditing: isEditing,
-                            theme: theme
-                        )
-                        CompTextField(
-                            placeholder: languageManager.localizedString(for: "Subcategory").capitalizedFirstLetter,
-                            text: $editedDictionary.subcategory,
-                            isEditing: isEditing,
-                            theme: theme
-                        )
-                    }
+                            CompTextField(
+                                placeholder: languageManager.localizedString(for: "Category").capitalizedFirstLetter,
+                                text: $editedDictionary.category,
+                                isEditing: isEditing,
+                                theme: theme,
+                                icon: "cube"
+                            )
+                            CompTextField(
+                                placeholder: languageManager.localizedString(for: "Subcategory").capitalizedFirstLetter,
+                                text: $editedDictionary.subcategory,
+                                isEditing: isEditing,
+                                theme: theme,
+                                icon: "square.3.layers.3d"
+                            )
+                        }
 
                     Section(header: Text(languageManager.localizedString(for: "Additional"))
                         .modifier(HeaderBlockTextStyle(theme: theme))) {
-                        CompTextField(
-                            placeholder: languageManager.localizedString(for: "Author").capitalizedFirstLetter,
-                            text: $editedDictionary.author,
-                            isEditing: isEditing,
-                            theme: theme
-                        )
-                        CompTextField(
-                            placeholder: languageManager.localizedString(for: "Created At").capitalizedFirstLetter,
-                            text: .constant(editedDictionary.formattedCreatedAt),
-                            isEditing: false,
-                            theme: theme
-                        )
-                    }
+                            CompTextField(
+                                placeholder: languageManager.localizedString(for: "Author").capitalizedFirstLetter,
+                                text: $editedDictionary.author,
+                                isEditing: isEditing,
+                                theme: theme,
+                                icon: "person"
+                            )
+                            CompTextField(
+                                placeholder: languageManager.localizedString(for: "Created At").capitalizedFirstLetter,
+                                text: .constant(editedDictionary.formattedCreatedAt),
+                                isEditing: false,
+                                theme: theme
+                            )
+                        }
                 }
-                .background(theme.backgroundColor)
                 Spacer()
             }
             .navigationTitle(languageManager.localizedString(for: "Details").capitalizedFirstLetter)

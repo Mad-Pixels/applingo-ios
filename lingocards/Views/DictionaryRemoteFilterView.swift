@@ -2,29 +2,28 @@ import SwiftUI
 
 struct DictionaryRemoteFilterView: View {
     @Environment(\.presentationMode) var presentationMode
+    
     @EnvironmentObject var languageManager: LanguageManager
+    @EnvironmentObject var themeManager: ThemeManager
+    
     @StateObject private var viewModel = DictionaryRemoteFilterViewModel()
+   
     @State private var selectedFrontCategory: CategoryItem? = nil
     @State private var selectedBackCategory: CategoryItem? = nil
     
-    // Получаем доступ к apiRequestParams из родительского View
     @Binding var apiRequestParams: DictionaryQueryRequest
 
-    @EnvironmentObject var themeManager: ThemeManager // Используем тему из ThemeManager
-
     var body: some View {
-        let theme = themeManager.currentThemeStyle // Используем текущую тему
+        let theme = themeManager.currentThemeStyle
 
         NavigationView {
             ZStack {
-                theme.backgroundColor
-                    .edgesIgnoringSafeArea(.all) // Общий фон
+                theme.backgroundViewColor.edgesIgnoringSafeArea(.all)
 
                 VStack {
                     Form {
-                        Section(header: Text(languageManager.localizedString(for: "Dictionary")).font(.headline).foregroundColor(theme.textColor)) {
+                        Section(header: Text(languageManager.localizedString(for: "Dictionary")).font(.headline).foregroundColor(theme.baseTextColor)) {
                             HStack {
-                                // Picker "from"
                                 CompCategoryPickerView(
                                     selectedCategory: $selectedFrontCategory,
                                     categories: viewModel.frontCategories,
@@ -36,10 +35,9 @@ struct DictionaryRemoteFilterView: View {
                                 Image(systemName: "arrow.left.and.right.circle.fill")
                                     .resizable()
                                     .frame(width: 24, height: 24)
-                                    .foregroundColor(theme.primaryButtonColor)
                                     .padding(.horizontal, 8)
-
-                                // Picker "to"
+                                    .modifier(MainIconStyle(theme: theme))
+                                
                                 CompCategoryPickerView(
                                     selectedCategory: $selectedBackCategory,
                                     categories: viewModel.backCategories,
@@ -50,52 +48,50 @@ struct DictionaryRemoteFilterView: View {
                             }
                         }
                     }
-
                     Spacer()
 
-                    HStack(spacing: 20) {
-                        Button(action: {
-                            // Конкатенируем front и back категории и присваиваем в apiRequestParams
-                            let frontCategoryName = selectedFrontCategory?.name ?? ""
-                            let backCategoryName = selectedBackCategory?.name ?? ""
-                            apiRequestParams.categorySub = "\(frontCategoryName)-\(backCategoryName)".lowercased()
+                    HStack {
+                        CompButtonAction(
+                            title: languageManager.localizedString(for: "Save").capitalizedFirstLetter,
+                            action: {
+                                let frontCategoryName = selectedFrontCategory?.name ?? ""
+                                let backCategoryName = selectedBackCategory?.name ?? ""
+                                apiRequestParams.categorySub = "\(frontCategoryName)-\(backCategoryName)".lowercased()
 
-                            Logger.debug("Filters saved: \(apiRequestParams.categorySub ?? "")")
-                            presentationMode.wrappedValue.dismiss() // Закрываем окно
-                        }) {
-                            Text(languageManager.localizedString(for: "Save").capitalizedFirstLetter)
-                                .font(.title2)
-                                .padding()
-                                .frame(maxWidth: .infinity)
-                                .background(theme.primaryButtonColor)
-                                .foregroundColor(theme.textColor)
-                                .cornerRadius(10)
-                        }
+                                Logger.debug("Filters saved: \(apiRequestParams.categorySub ?? "")")
+                                presentationMode.wrappedValue.dismiss()
+                            },
+                            theme: theme
+                        )
 
-                        Button(action: {
-                            // Сбрасываем значение categorySub
-                            apiRequestParams.categorySub = nil
-                            Logger.debug("Filters reset: categorySub set to an empty string")
-                            presentationMode.wrappedValue.dismiss() // Закрываем окно после сброса
-                        }) {
-                            Text(languageManager.localizedString(for: "Reset").capitalizedFirstLetter)
-                                .font(.title2)
-                                .padding()
-                                .frame(maxWidth: .infinity)
-                                .background(theme.secondaryButtonColor)
-                                .foregroundColor(theme.textColor)
-                                .cornerRadius(10)
-                        }
+                        CompButtonCancel(
+                            title: languageManager.localizedString(for: "Reset").capitalizedFirstLetter,
+                            action: {
+                                apiRequestParams.categorySub = nil
+                                Logger.debug("Filters reset: categorySub set to an empty string")
+                                presentationMode.wrappedValue.dismiss()
+                            },
+                            theme: theme
+                        )
                     }
                     .padding(.horizontal)
+                    .padding(.vertical, 10)
                 }
+                .background(theme.detailsColor)
             }
             .navigationTitle(languageManager.localizedString(for: "Filter").capitalizedFirstLetter)
             .navigationBarTitleDisplayMode(.inline)
+            .navigationBarItems(
+                trailing: Button(action: {
+                    presentationMode.wrappedValue.dismiss()
+                }) {
+                    Text(languageManager.localizedString(for: "Close").capitalizedFirstLetter)
+                        .foregroundColor(theme.accentColor)
+                }
+            )
             .onAppear {
                 viewModel.getCategories()
 
-                // Устанавливаем начальные значения для Picker
                 if let firstFrontCategory = viewModel.frontCategories.first {
                     selectedFrontCategory = firstFrontCategory
                 }

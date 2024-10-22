@@ -1,28 +1,28 @@
 import SwiftUI
 
-struct DictionaryRemoteList: View {
+struct DictionaryRemoteListView: View {
     @EnvironmentObject var languageManager: LanguageManager
+    @EnvironmentObject var themeManager: ThemeManager
+    
     @Environment(\.presentationMode) var presentationMode
+    
     @StateObject private var viewModel = TabDictionariesViewModel()
     @StateObject private var errorManager = ErrorManager.shared
+    
+    @State private var apiRequestParams = DictionaryQueryRequest(isPublic: true)
     @State private var selectedDictionary: DictionaryItem?
     @State private var isShowingFilterView = false
     @State private var isLoading: Bool = true
     @State private var errMessage: String = ""
+    
     @Binding var isPresented: Bool
     
-    // Переменная apiRequestParams
-    @State private var apiRequestParams = DictionaryQueryRequest(isPublic: true)
-
-    @EnvironmentObject var themeManager: ThemeManager // Используем тему из ThemeManager
-
     var body: some View {
-        let theme = themeManager.currentThemeStyle // Используем текущую тему
+        let theme = themeManager.currentThemeStyle
 
         NavigationView {
             ZStack {
-                theme.backgroundColor
-                    .edgesIgnoringSafeArea(.all) // Общий фон
+                theme.backgroundViewColor.edgesIgnoringSafeArea(.all)
 
                 VStack {
                     if let error = errorManager.currentError, errorManager.isVisible(for: .dictionaries, source: .getRemoteDictionaries) {
@@ -50,7 +50,7 @@ struct DictionaryRemoteList: View {
                                         VStack(alignment: .leading) {
                                             Text(dictionary.displayName)
                                                 .font(.headline)
-                                                .foregroundColor(theme.textColor) // Цвет текста
+                                                .foregroundColor(theme.baseTextColor)
 
                                             Text(dictionary.subTitle)
                                                 .font(.subheadline)
@@ -66,7 +66,6 @@ struct DictionaryRemoteList: View {
                                 }
                             }
                             .listStyle(PlainListStyle())
-                            .background(theme.backgroundColor) // Фон списка
                         }
                     }
 
@@ -77,18 +76,22 @@ struct DictionaryRemoteList: View {
                     presentationMode.wrappedValue.dismiss()
                 }) {
                     Text(languageManager.localizedString(for: "Back").capitalizedFirstLetter)
-                        .foregroundColor(theme.primaryButtonColor) // Цвет кнопки "Back"
-                },
-                trailing: Button(action: {
-                    isPresented = false
-                    presentationMode.wrappedValue.dismiss()
-                }) {
-                    Text(languageManager.localizedString(for: "Close").capitalizedFirstLetter)
-                        .foregroundColor(theme.primaryButtonColor) // Цвет кнопки "Close"
+                        .foregroundColor(theme.accentColor)
                 })
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        CompToolbarMenu(
+                            items: [
+                                CompToolbarMenu.MenuItem(title: languageManager.localizedString(for: "Filter"), systemImage: "line.horizontal.3.decrease.circle", action: {
+                                    isShowingFilterView = true
+                                })
+                            ],
+                            theme: theme
+                        )
+                    }
+                }
                 .onAppear {
                     isLoading = true
-                    // Передаем apiRequestParams в метод getRemoteDictionaries
                     viewModel.getRemoteDictionaries(query: apiRequestParams)
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                         isLoading = false
@@ -107,16 +110,6 @@ struct DictionaryRemoteList: View {
                         errMessage = error.errorDescription ?? "error"
                     }
                 })
-                .overlay(
-                    Group {
-                        if !isLoading {
-                            ButtonFloating(action: {
-                                isShowingFilterView = true
-                            }, imageName: "line.horizontal.3.decrease.circle")
-                        }
-                    }
-                )
-                // Передаем Binding на apiRequestParams в DictionaryRemoteFilterView
                 .sheet(isPresented: $isShowingFilterView) {
                     DictionaryRemoteFilterView(apiRequestParams: $apiRequestParams)
                         .environmentObject(languageManager)

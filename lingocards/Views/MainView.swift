@@ -4,6 +4,7 @@ struct MainView: View {
     @EnvironmentObject var databaseManager: DatabaseManager
     @EnvironmentObject var languageManager: LanguageManager
     @EnvironmentObject var themeManager: ThemeManager
+    
     @StateObject private var tabManager = TabManager.shared
 
     var body: some View {

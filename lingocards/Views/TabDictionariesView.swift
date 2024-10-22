@@ -19,7 +19,7 @@ struct TabDictionariesView: View {
 
         NavigationView {
             ZStack {
-                theme.backgroundColor.edgesIgnoringSafeArea(.all)
+                theme.backgroundViewColor.edgesIgnoringSafeArea(.all)
 
                 VStack {
                     if let error = errorManager.currentError, errorManager.isVisible(for: .dictionaries, source: .getDictionaries) {
@@ -104,7 +104,7 @@ struct TabDictionariesView: View {
                 }
             }
             .fullScreenCover(isPresented: $isShowingRemoteList) {
-                DictionaryRemoteList(isPresented: $isShowingRemoteList)
+                DictionaryRemoteListView(isPresented: $isShowingRemoteList)
                     .environmentObject(languageManager)
             }
         }

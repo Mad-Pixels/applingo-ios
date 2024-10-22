@@ -36,7 +36,7 @@ struct TabSettingsView: View {
                 }
                 .navigationTitle(languageManager.localizedString(for: "Settings").capitalizedFirstLetter)
                 .navigationBarTitleDisplayMode(.large)
-                .modifier(NavigationBarStyle(theme: theme))
+                .modifier(BaseNavigationStyle(theme: theme))
             }
             .onAppear {
                 tabManager.setActiveTab(.settings)

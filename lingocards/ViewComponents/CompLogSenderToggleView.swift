@@ -12,6 +12,7 @@ struct CompLogSenderToggleView: View {
             
                 Toggle(isOn: $sendLogs) {
                     Text(languageManager.localizedString(for: "SendErrorsLogs").capitalizedFirstLetter)
+                        .modifier(BaseTextStyle(theme: theme))
                 }
         }
     }
