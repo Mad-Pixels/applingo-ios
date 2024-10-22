@@ -69,9 +69,7 @@ final class TabWordsViewModel: ObservableObject {
                 var fetchedWords: [WordItem] = []
                 try DatabaseManager.shared.databaseQueue?.read { db in
                     // Получаем активные словари
-                    let activeDictionaries = try DictionaryItem
-                        .filter(Column("isActive") == true)
-                        .fetchAll(db)
+                    let activeDictionaries = try DictionaryItem.fetchActiveDictionaries(in: db)
                     
                     // Если нет активных словарей
                     if activeDictionaries.isEmpty {
@@ -83,39 +81,22 @@ final class TabWordsViewModel: ObservableObject {
                         return
                     }
                     
-                    // Собираем SQL-запрос для объединения таблиц слов
-                    var unionQueries: [String] = []
-                    var arguments: [DatabaseValueConvertible] = []
+                    // Обрабатываем слова из всех активных словарей
                     for dictionary in activeDictionaries {
-                        let tableName = dictionary.tableName
-                        var query = "SELECT *, '\(tableName)' AS tableName FROM \(tableName)"
-                        
-                        // Фильтрация по поисковому запросу
-                        if !self.searchText.isEmpty {
-                            query += " WHERE frontText LIKE ? OR backText LIKE ?"
-                            let searchQuery = "%\(self.searchText)%"
-                            arguments.append(contentsOf: [searchQuery, searchQuery])
-                        }
-                        
-                        unionQueries.append(query)
+                        let pageWords = try WordItem.fetchWords(
+                            in: db,
+                            fromTable: dictionary.tableName,
+                            searchText: self.searchText,
+                            itemsPerPage: self.itemsPerPage,
+                            offset: (self.currentPage - 1) * self.itemsPerPage
+                        )
+                        fetchedWords.append(contentsOf: pageWords)
                     }
                     
-                    // Объединяем запросы через UNION ALL
-                    let combinedSQL = unionQueries.joined(separator: " UNION ALL ")
-                    
-                    // Добавляем ORDER BY и LIMIT с OFFSET для пагинации
-                    let finalSQL = combinedSQL + " ORDER BY createdAt DESC LIMIT ? OFFSET ?"
-                    arguments.append(contentsOf: [self.itemsPerPage, (self.currentPage - 1) * self.itemsPerPage])
-                    
-                    // Выполняем финальный SQL-запрос
-                    let finalRequest = SQLRequest<WordItem>(sql: finalSQL, arguments: StatementArguments(arguments))
-                    let pageWords = try finalRequest.fetchAll(db)
-                    
-                    if pageWords.count < self.itemsPerPage {
+                    // Проверяем, если на текущей странице меньше элементов, чем itemsPerPage
+                    if fetchedWords.count < self.itemsPerPage {
                         self.hasMorePages = false
                     }
-                    
-                    fetchedWords = pageWords
                 }
                 
                 DispatchQueue.main.async {
@@ -177,11 +158,7 @@ final class TabWordsViewModel: ObservableObject {
         
         do {
             try DatabaseManager.shared.databaseQueue?.write { db in
-                // Удаляем слово из соответствующей таблицы
-                try db.execute(
-                    sql: "DELETE FROM \(word.tableName) WHERE id = ?",
-                    arguments: [word.id]
-                )
+                try WordItem.deleteWord(in: db, fromTable: word.tableName, wordID: word.id)
             }
             
             // Удаляем слово из локального массива
@@ -222,27 +199,7 @@ final class TabWordsViewModel: ObservableObject {
         
         do {
             try DatabaseManager.shared.databaseQueue?.write { db in
-                // Обновляем слово в базе данных
-                try db.execute(sql: """
-                    UPDATE \(word.tableName) SET
-                    frontText = ?,
-                    backText = ?,
-                    description = ?,
-                    hint = ?,
-                    success = ?,
-                    fail = ?,
-                    weight = ?
-                    WHERE id = ?
-                    """, arguments: [
-                        word.frontText,
-                        word.backText,
-                        word.description ?? "",
-                        word.hint ?? "",
-                        word.success,
-                        word.fail,
-                        word.weight,
-                        word.id
-                    ])
+                try WordItem.updateWord(in: db, word: word)
             }
             
             // Обновляем слово в локальном массиве

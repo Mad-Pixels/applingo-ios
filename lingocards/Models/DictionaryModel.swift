@@ -97,4 +97,10 @@ extension DictionaryItem: FetchableRecord, PersistableRecord {
                 displayName, tableName, description, category, subcategory, author, createdAt, isPrivate, isActive
             ])
     }
+    
+    static func fetchActiveDictionaries(in db: Database) throws -> [DictionaryItem] {
+            return try DictionaryItem
+                .filter(Column("isActive") == true)
+                .fetchAll(db)
+        }
 }

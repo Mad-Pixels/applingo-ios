@@ -91,4 +91,62 @@ extension WordItem: FetchableRecord, PersistableRecord {
                 tableName, frontText, backText, description ?? "", hint ?? "", createdAt, success, weight, fail
             ])
     }
+    
+    static func fetchWords(
+        in db: Database,
+        fromTable tableName: String,
+        searchText: String,
+        itemsPerPage: Int,
+        offset: Int
+    ) throws -> [WordItem] {
+        var query = "SELECT *, '\(tableName)' AS tableName FROM \(tableName)"
+        var arguments: [DatabaseValueConvertible] = []
+            
+        if !searchText.isEmpty {
+            query += " WHERE frontText LIKE ? OR backText LIKE ?"
+            let searchQuery = "%\(searchText)%"
+            arguments.append(contentsOf: [searchQuery, searchQuery])
+        }
+            
+        query += " ORDER BY createdAt DESC LIMIT ? OFFSET ?"
+        arguments.append(contentsOf: [itemsPerPage, offset])
+        
+        let finalRequest = SQLRequest<WordItem>(sql: query, arguments: StatementArguments(arguments))
+        return try finalRequest.fetchAll(db)
+    }
+    
+    static func deleteWord(
+        in db: Database,
+        fromTable tableName: String,
+        wordID: Int
+    ) throws {
+        let sql = "DELETE FROM \(tableName) WHERE id = ?"
+        try db.execute(sql: sql, arguments: [wordID])
+    }
+    
+    static func updateWord(
+        in db: Database,
+        word: WordItem
+    ) throws {
+        try db.execute(sql: """
+            UPDATE \(word.tableName) SET
+            frontText = ?,
+            backText = ?,
+            description = ?,
+            hint = ?,
+            success = ?,
+            fail = ?,
+            weight = ?
+            WHERE id = ?
+            """, arguments: [
+                word.frontText,
+                word.backText,
+                word.description ?? "",
+                word.hint ?? "",
+                word.success,
+                word.fail,
+                word.weight,
+                word.id
+            ])
+    }
 }
