@@ -4,7 +4,7 @@ struct CompWordListView: View {
     let words: [WordItem]
     let onWordTap: (WordItem) -> Void
     let onDelete: (IndexSet) -> Void
-    let loadMoreIfNeeded: (WordItem) -> Void
+    let loadMoreIfNeeded: (WordItem) -> Void  // Принимает текущий элемент
     let theme: ThemeStyle
 
     var body: some View {
@@ -18,7 +18,7 @@ struct CompWordListView: View {
                     theme: theme
                 )
                 .onAppear {
-                    loadMoreIfNeeded(word)
+                    loadMoreIfNeeded(word)  // Передаем текущий элемент
                 }
                 .padding(.vertical, 2)
             }

@@ -47,11 +47,13 @@ struct TabWordsView: View {
                                 selectedWord = word
                             },
                             onDelete: wordDelete,
-                            loadMoreIfNeeded: { word in
+                            loadMoreIfNeeded: { word in  // Передаем текущий элемент для подгрузки
                                 viewModel.loadMoreWordsIfNeeded(currentItem: word)
                             },
                             theme: theme
                         )
+
+
                     }
                 }
                 .navigationTitle(languageManager.localizedString(for: "Words").capitalizedFirstLetter)
