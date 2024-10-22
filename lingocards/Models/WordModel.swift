@@ -81,6 +81,10 @@ extension WordItem: FetchableRecord, PersistableRecord {
             t.column("description", .text)
             t.column("hint", .text)
         }
+        
+        try db.create(index: "\(tableName)_createdAt_idx", on: tableName, columns: ["createdAt"])
+        try db.create(index: "\(tableName)_frontText_idx", on: tableName, columns: ["frontText"])
+        try db.create(index: "\(tableName)_backText_idx", on: tableName, columns: ["backText"])
     }
     
     mutating func insert(_ db: Database) throws {
@@ -90,29 +94,6 @@ extension WordItem: FetchableRecord, PersistableRecord {
             """, arguments: [
                 tableName, frontText, backText, description ?? "", hint ?? "", createdAt, success, weight, fail
             ])
-    }
-    
-    static func fetchWords(
-        in db: Database,
-        fromTable tableName: String,
-        searchText: String,
-        itemsPerPage: Int,
-        offset: Int
-    ) throws -> [WordItem] {
-        var query = "SELECT *, '\(tableName)' AS tableName FROM \(tableName)"
-        var arguments: [DatabaseValueConvertible] = []
-            
-        if !searchText.isEmpty {
-            query += " WHERE frontText LIKE ? OR backText LIKE ?"
-            let searchQuery = "%\(searchText)%"
-            arguments.append(contentsOf: [searchQuery, searchQuery])
-        }
-            
-        query += " ORDER BY createdAt DESC LIMIT ? OFFSET ?"
-        arguments.append(contentsOf: [itemsPerPage, offset])
-        
-        let finalRequest = SQLRequest<WordItem>(sql: query, arguments: StatementArguments(arguments))
-        return try finalRequest.fetchAll(db)
     }
     
     static func deleteWord(

@@ -81,6 +81,9 @@ extension DictionaryItem: FetchableRecord, PersistableRecord {
             t.column("isPrivate", .boolean).notNull()
             t.column("isActive", .boolean).notNull()
         }
+        
+        // Добавляем индекс на поле createdAt
+        try db.create(index: "Dictionary_createdAt_idx", on: databaseTableName, columns: ["createdAt"])
     }
     
     static func updateStatus(in db: Database, dictionaryID: Int, newStatus: Bool) throws {
