@@ -58,7 +58,11 @@ struct TabWordsView: View {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         CompToolbarMenu(
                             items: [
-                                CompToolbarMenu.MenuItem(title: languageManager.localizedString(for: "AddNewWord"), systemImage: "plus", action: wordAdd)
+                                CompToolbarMenu.MenuItem(
+                                    title: languageManager.localizedString(for: "AddWord"),
+                                    systemImage: "plus.circle",
+                                    action: wordAdd
+                                )
                             ],
                             theme: theme
                         )
