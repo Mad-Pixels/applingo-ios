@@ -6,6 +6,7 @@ struct TabWordsView: View {
     @EnvironmentObject var tabManager: TabManager
     
     @StateObject private var viewModel = TabWordsViewModel()
+    @StateObject private var wordsGetter = WordsGetterViewModel()
     @StateObject private var errorManager = ErrorManager.shared
     
     @State private var selectedWord: WordItem?
@@ -22,38 +23,36 @@ struct TabWordsView: View {
 
                 VStack(spacing: 0) {
                     CompSearchView(
-                        searchText: $viewModel.searchText,
+                        searchText: $wordsGetter.searchText,
                         placeholder: languageManager.localizedString(for: "Search").capitalizedFirstLetter,
                         theme: theme
                     )
-                    .onChange(of: viewModel.searchText) { _ in
-                        viewModel.resetPagination()
-                        viewModel.getWords()
+                    .onChange(of: wordsGetter.searchText) { _ in
+                        wordsGetter.resetPagination()
+                        wordsGetter.get()
                     }
 
                     if let error = errorManager.currentError, errorManager.isVisible(for: .words, source: .wordsGet) {
                         CompErrorView(errorMessage: error.errorDescription ?? "", theme: theme)
                     }
-                    if viewModel.words.isEmpty && !errorManager.isErrorVisible {
+                    if wordsGetter.words.isEmpty && !errorManager.isErrorVisible {
                         CompEmptyListView(
                             theme: theme,
                             message: languageManager.localizedString(for: "NoWordsAvailable")
                         )
                     } else {
                         CompWordListView(
-                            words: viewModel.words,
+                            words: wordsGetter.words,
                             onWordTap: { word in
                                 isShowingDetailView = true
                                 selectedWord = word
                             },
                             onDelete: wordDelete,
-                            loadMoreIfNeeded: { word in  // Передаем текущий элемент для подгрузки
-                                viewModel.loadMoreWordsIfNeeded(currentItem: word)
+                            loadMoreIfNeeded: { word in
+                                wordsGetter.loadMoreWordsIfNeeded(currentItem: word)
                             },
                             theme: theme
                         )
-
-
                     }
                 }
                 .navigationTitle(languageManager.localizedString(for: "Words").capitalizedFirstLetter)
@@ -75,8 +74,8 @@ struct TabWordsView: View {
                 .onAppear {
                     tabManager.setActiveTab(.words)
                     if tabManager.isActive(tab: .words) {
-                        viewModel.resetPagination()
-                        viewModel.getWords()
+                        wordsGetter.resetPagination()
+                        wordsGetter.get()
                     }
                 }
                 .modifier(TabModifier(activeTab: tabManager.activeTab) { newTab in
@@ -107,7 +106,16 @@ struct TabWordsView: View {
                 dictionaries: viewModel.dictionaries,
                 isPresented: $isShowingAddView,
                 onSave: { word, completion in
-                    viewModel.saveWord(word, completion: completion)
+                    viewModel.saveWord(word) { result in
+                        switch result {
+                        case .success:
+                            wordsGetter.resetPagination()
+                            wordsGetter.get()
+                            completion(.success(()))
+                        case .failure(let error):
+                            completion(.failure(error))
+                        }
+                    }
                 }
             )
         }
@@ -116,7 +124,16 @@ struct TabWordsView: View {
                 word: word,
                 isPresented: $isShowingDetailView,
                 onSave: { updatedWord, completion in
-                    viewModel.updateWord(updatedWord, completion: completion)
+                    viewModel.updateWord(updatedWord) { result in
+                        switch result {
+                        case .success:
+                            wordsGetter.resetPagination()
+                            wordsGetter.get()
+                            completion(.success(()))
+                        case .failure(let error):
+                            completion(.failure(error))
+                        }
+                    }
                 }
             )
         }
@@ -124,8 +141,16 @@ struct TabWordsView: View {
 
     private func wordDelete(at offsets: IndexSet) {
         offsets.forEach { index in
-            let word = viewModel.words[index]
-            viewModel.deleteWord(word)
+            let word = wordsGetter.words[index]
+            viewModel.deleteWord(word) { result in
+                switch result {
+                case .success:
+                    wordsGetter.words.remove(at: index)
+                case .failure(let error):
+                    // Обработка ошибки удаления
+                    print("Ошибка при удалении слова: \(error)")
+                }
+            }
         }
     }
 
