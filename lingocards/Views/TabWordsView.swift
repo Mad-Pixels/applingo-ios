@@ -4,11 +4,11 @@ struct TabWordsView: View {
     @EnvironmentObject var languageManager: LanguageManager
     @EnvironmentObject var themeManager: ThemeManager
     @EnvironmentObject var tabManager: TabManager
-    
-    @StateObject private var viewModel = TabWordsViewModel()
+
+    @StateObject private var actionViewModel = WordsActionViewModel()
     @StateObject private var wordsGetter = WordsGetterViewModel()
     @StateObject private var errorManager = ErrorManager.shared
-    
+
     @State private var selectedWord: WordItem?
     @State private var isShowingDetailView = false
     @State private var isShowingAddView = false
@@ -29,12 +29,12 @@ struct TabWordsView: View {
                     )
                     .onChange(of: wordsGetter.searchText) { _ in
                         wordsGetter.resetPagination()
-                        wordsGetter.get()
                     }
 
                     if let error = errorManager.currentError, errorManager.isVisible(for: .words, source: .wordsGet) {
                         CompErrorView(errorMessage: error.errorDescription ?? "", theme: theme)
                     }
+
                     if wordsGetter.words.isEmpty && !errorManager.isErrorVisible {
                         CompEmptyListView(
                             theme: theme,
@@ -75,7 +75,6 @@ struct TabWordsView: View {
                     tabManager.setActiveTab(.words)
                     if tabManager.isActive(tab: .words) {
                         wordsGetter.resetPagination()
-                        wordsGetter.get()
                     }
                 }
                 .modifier(TabModifier(activeTab: tabManager.activeTab) { newTab in
@@ -103,14 +102,13 @@ struct TabWordsView: View {
         .ignoresSafeArea(.keyboard, edges: .bottom)
         .sheet(isPresented: $isShowingAddView) {
             WordAddView(
-                dictionaries: viewModel.dictionaries,
+                dictionaries: actionViewModel.dictionaries,
                 isPresented: $isShowingAddView,
                 onSave: { word, completion in
-                    viewModel.saveWord(word) { result in
+                    actionViewModel.saveWord(word) { result in
                         switch result {
                         case .success:
                             wordsGetter.resetPagination()
-                            wordsGetter.get()
                             completion(.success(()))
                         case .failure(let error):
                             completion(.failure(error))
@@ -124,11 +122,10 @@ struct TabWordsView: View {
                 word: word,
                 isPresented: $isShowingDetailView,
                 onSave: { updatedWord, completion in
-                    viewModel.updateWord(updatedWord) { result in
+                    actionViewModel.updateWord(updatedWord) { result in
                         switch result {
                         case .success:
                             wordsGetter.resetPagination()
-                            wordsGetter.get()
                             completion(.success(()))
                         case .failure(let error):
                             completion(.failure(error))
@@ -142,7 +139,7 @@ struct TabWordsView: View {
     private func wordDelete(at offsets: IndexSet) {
         offsets.forEach { index in
             let word = wordsGetter.words[index]
-            viewModel.deleteWord(word) { result in
+            actionViewModel.deleteWord(word) { result in
                 switch result {
                 case .success:
                     wordsGetter.words.remove(at: index)
@@ -155,7 +152,7 @@ struct TabWordsView: View {
     }
 
     private func wordAdd() {
-        viewModel.getDictionaries { result in
+        actionViewModel.getDictionaries { result in
             DispatchQueue.main.async {
                 switch result {
                 case .success:

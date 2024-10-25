@@ -9,7 +9,7 @@ struct CompDictionaryListView: View {
 
     var body: some View {
         List {
-            ForEach(dictionaries, id: \.uiID) { dictionary in
+            ForEach(dictionaries, id: \.id) { dictionary in
                 CompDictionaryRowView(
                     dictionary: dictionary,
                     onTap: {

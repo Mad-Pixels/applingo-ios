@@ -6,8 +6,9 @@ struct TabDictionariesView: View {
     @EnvironmentObject var databaseManager: DatabaseManager
     @EnvironmentObject var themeManager: ThemeManager
     @EnvironmentObject var tabManager: TabManager
-    
-    @StateObject private var viewModel = TabDictionariesViewModel()
+
+    @StateObject private var actionViewModel = DictionaryActionViewModel()
+    @StateObject private var dictionariesGetter = DictionaryGetterViewModel()
     @StateObject private var errorManager = ErrorManager.shared
 
     @State private var selectedDictionary: DictionaryItem?
@@ -26,14 +27,14 @@ struct TabDictionariesView: View {
                     if let error = errorManager.currentError, errorManager.isVisible(for: .dictionaries, source: .dictionariesGet) {
                         CompErrorView(errorMessage: error.errorDescription ?? "", theme: theme)
                     }
-                    if viewModel.dictionaries.isEmpty && !errorManager.isErrorVisible {
+                    if dictionariesGetter.dictionaries.isEmpty && !errorManager.isErrorVisible {
                         CompEmptyListView(
                             theme: theme,
                             message: languageManager.localizedString(for: "NoDictionariesAvailable")
                         )
                     } else {
                         CompDictionaryListView(
-                            dictionaries: viewModel.dictionaries,
+                            dictionaries: dictionariesGetter.dictionaries,
                             onDictionaryTap: { dictionary in
                                 selectedDictionary = dictionary
                             },
@@ -66,7 +67,7 @@ struct TabDictionariesView: View {
                 .onAppear {
                     tabManager.setActiveTab(.dictionaries)
                     if tabManager.isActive(tab: .dictionaries) {
-                        viewModel.getDictionaries()
+                        dictionariesGetter.resetPagination()
                     }
                 }
                 .modifier(TabModifier(activeTab: tabManager.activeTab) { newTab in
@@ -101,7 +102,7 @@ struct TabDictionariesView: View {
                         dictionaryImport(from: url)
                     }
                 case .failure(let error):
-                    Logger.debug("Failed to import file: \(error)")
+                    print("Failed to import file: \(error)")
                 }
             }
             .fullScreenCover(isPresented: $isShowingRemoteList) {
@@ -114,7 +115,15 @@ struct TabDictionariesView: View {
                 dictionary: dictionary,
                 isPresented: .constant(true),
                 onSave: { updatedDictionary, completion in
-                    viewModel.updateDictionary(updatedDictionary, completion: completion)
+                    actionViewModel.updateDictionary(updatedDictionary) { result in
+                        switch result {
+                        case .success:
+                            dictionariesGetter.resetPagination()
+                            completion(.success(()))
+                        case .failure(let error):
+                            completion(.failure(error))
+                        }
+                    }
                 }
             )
         }
@@ -122,9 +131,16 @@ struct TabDictionariesView: View {
 
     private func dictionaryDelete(at offsets: IndexSet) {
         offsets.forEach { index in
-            let dictionary = viewModel.dictionaries[index]
+            let dictionary = dictionariesGetter.dictionaries[index]
             if dictionary.tableName != "Internal" {
-                viewModel.deleteDictionary(dictionary)
+                actionViewModel.deleteDictionary(dictionary) { result in
+                    switch result {
+                    case .success:
+                        dictionariesGetter.dictionaries.remove(at: index)
+                    case .failure(let error):
+                        print("Ошибка при удалении словаря: \(error)")
+                    }
+                }
             } else {
                 let error = AppError(
                     errorType: .ui,
@@ -142,12 +158,13 @@ struct TabDictionariesView: View {
     }
 
     private func dictionaryStatusUpdate(_ dictionary: DictionaryItem, newStatus: Bool) {
-        viewModel.updateDictionaryStatus(dictionary.id, newStatus: newStatus) { result in
+        actionViewModel.updateDictionaryStatus(dictionaryID: dictionary.id, newStatus: newStatus) { result in
             DispatchQueue.main.async {
                 switch result {
                 case .success:
-                    return
-                case .failure:
+                    dictionariesGetter.resetPagination()
+                case .failure(let error):
+                    print("Ошибка при обновлении статуса словаря: \(error)")
                     isShowingAlert = true
                 }
             }
@@ -159,15 +176,16 @@ struct TabDictionariesView: View {
         defer { url.stopAccessingSecurityScopedResource() }
 
         guard success else {
-            Logger.debug("Failed to access security scoped resource")
+            print("Failed to access security scoped resource")
             return
         }
 
         do {
             try databaseManager.importCSVFile(at: url)
-            Logger.debug("Successfully imported CSV file")
+            dictionariesGetter.resetPagination()
+            print("Successfully imported CSV file")
         } catch {
-            Logger.debug("Failed to import CSV file: \(error)")
+            print("Failed to import CSV file: \(error)")
         }
     }
 }

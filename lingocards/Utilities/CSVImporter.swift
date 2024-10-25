@@ -1,95 +1,7 @@
-import SwiftUI
-import UniformTypeIdentifiers
+import Foundation
 import NaturalLanguage
 import CoreML
-import UIKit
-
-struct DocumentPicker: UIViewControllerRepresentable {
-    func makeCoordinator() -> Coordinator {
-        Coordinator(self)
-    }
-
-    func makeUIViewController(context: Context) -> UIDocumentPickerViewController {
-        let documentPicker = UIDocumentPickerViewController(forOpeningContentTypes: [UTType.commaSeparatedText])
-        documentPicker.delegate = context.coordinator
-        documentPicker.allowsMultipleSelection = false
-        documentPicker.modalPresentationStyle = .fullScreen
-        return documentPicker
-    }
-
-    func updateUIViewController(_ uiViewController: UIDocumentPickerViewController, context: Context) {}
-
-    class Coordinator: NSObject, UIDocumentPickerDelegate {
-        var parent: DocumentPicker
-
-        init(_ parent: DocumentPicker) {
-            self.parent = parent
-        }
-
-        func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
-            guard let pickedURL = urls.first else { return }
-
-            // Начинаем доступ к защищённому ресурсу
-            let success = pickedURL.startAccessingSecurityScopedResource()
-            if success {
-                defer { pickedURL.stopAccessingSecurityScopedResource() }
-
-                do {
-                    // Координируем доступ к файлу
-                    let fileCoordinator = NSFileCoordinator()
-                    var error: NSError?
-                    var fileData: Data?
-
-                    fileCoordinator.coordinate(readingItemAt: pickedURL, options: [], error: &error) { (newURL) in
-                        do {
-                            fileData = try Data(contentsOf: newURL)
-                        } catch {
-                            print("Ошибка при чтении данных файла: \(error.localizedDescription)")
-                        }
-                    }
-
-                    if let coordError = error {
-                        print("Ошибка координации доступа к файлу: \(coordError.localizedDescription)")
-                    }
-
-                    guard let data = fileData else {
-                        print("Не удалось прочитать данные файла")
-                        return
-                    }
-
-                    // Копируем файл в директорию приложения
-                    let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-                    let destURL = documentDirectory.appendingPathComponent(pickedURL.lastPathComponent)
-                    
-                    do {
-                        try data.write(to: destURL)
-                        print("Файл сохранён в: \(destURL.path)")
-                    } catch {
-                        print("Ошибка при сохранении файла: \(error.localizedDescription)")
-                    }
-                    
-                    // Продолжаем обработку файла
-                    do {
-                        let wordItems = try CSVImporter.parseCSV(at: destURL, tableName: "your_table_name")
-                        // Дальнейшая обработка wordItems
-                        print("Импортировано \(wordItems.count) слов")
-                    } catch {
-                        print("Ошибка при парсинге CSV: \(error.localizedDescription)")
-                    }
-
-                } catch {
-                    print("Ошибка при доступе к файлу: \(error.localizedDescription)")
-                }
-            } else {
-                print("Не удалось получить доступ к защищённому ресурсу")
-            }
-        }
-
-        func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
-            print("Отмена выбора документа")
-        }
-    }
-}
+import GRDB
 
 struct CSVImporter {
     static let model: ColumnClassifier = {
@@ -97,6 +9,7 @@ struct CSVImporter {
         return try! ColumnClassifier(configuration: config)
     }()
 
+    // Полный метод parseCSV с использованием tableName
     static func parseCSV(at url: URL, tableName: String) throws -> [WordItem] {
         var wordItems = [WordItem]()
         
@@ -178,6 +91,7 @@ struct CSVImporter {
         }
     }
 
+    // Метод для классификации колонок
     static func classifyColumns(sampleColumnsMatrix: [[String]]) throws -> [String]? {
         guard let numberOfColumns = sampleColumnsMatrix.first?.count else { return nil }
         var columnLabels = [String]()
@@ -215,6 +129,7 @@ struct CSVImporter {
         return columnLabels
     }
 
+    // Метод для определения языка текста
     static func detectLanguage(for text: String) -> String {
         let recognizer = NLLanguageRecognizer()
         recognizer.processString(text)
@@ -222,14 +137,14 @@ struct CSVImporter {
             let languageCode = language.rawValue
 
             let knownLanguages: Set<String> = [
-                "de",
-                "en",
-                "es",
-                "fr",
-                "he",
-                "ru",
-                "zh",
-                "und"
+                "de", // Немецкий
+                "en", // Английский
+                "es", // Испанский
+                "fr", // Французский
+                "he", // Иврит
+                "ru", // Русский
+                "zh", // Китайский
+                "und" // Неопределенный
             ]
             if knownLanguages.contains(languageCode) {
                 return languageCode
@@ -240,6 +155,7 @@ struct CSVImporter {
         return "und"
     }
 
+    // Метод для парсинга строки CSV
     static func parseCSVLine(line: String) -> [String] {
         var result: [String] = []
         var currentField = ""

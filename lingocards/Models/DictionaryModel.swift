@@ -1,27 +1,23 @@
 import Foundation
 import GRDB
 
-/// Implemantation of row in Dictionary main table.
+/// Модель для представления информации о словаре.
 struct DictionaryItem: Identifiable, Codable, Equatable, Hashable {
-    /// required fileds
+    /// Обязательные поля.
     var displayName: String
     var tableName: String
     var description: String
     var category: String
     var subcategory: String
     var author: String
-    
-    /// predefined fields
+
+    /// Предопределённые поля.
     var createdAt: Int
     var id: Int
     var isPrivate: Bool
     var isActive: Bool
-    
-    /// UI id
-    var uiID: String {
-        return "\(id)_\(createdAt)_\(UUID().uuidString)"
-    }
-    
+
+    /// Инициализатор.
     init(
         displayName: String,
         tableName: String,
@@ -29,31 +25,28 @@ struct DictionaryItem: Identifiable, Codable, Equatable, Hashable {
         category: String,
         subcategory: String,
         author: String,
-        
+        createdAt: Int = Int(Date().timeIntervalSince1970),
+        id: Int = 0,
         isPrivate: Bool = true,
-        isActive: Bool = true,
-        id: Int = 0
+        isActive: Bool = true
     ) {
+        self.displayName = displayName
         self.tableName = tableName
-        
-        self.displayName = Escape.word(displayName)
-        self.description = Escape.text(description)
-        self.author = Escape.word(author)
-        self.subcategory = subcategory
+        self.description = description
         self.category = category
-        
-        self.createdAt = Int(Date().timeIntervalSince1970)
+        self.subcategory = subcategory
+        self.author = author
+        self.createdAt = createdAt
+        self.id = id
         self.isPrivate = isPrivate
         self.isActive = isActive
-        self.id = id
     }
-    
-    /// custom UI title
+
+    /// Дополнительные вычисляемые свойства.
     var subTitle: String {
         "[\(category)] \(subcategory)"
     }
-    
-    /// custom UI date format
+
     var formattedCreatedAt: String {
         let date = Date(timeIntervalSince1970: TimeInterval(createdAt))
         let formatter = DateFormatter()
@@ -65,11 +58,10 @@ struct DictionaryItem: Identifiable, Codable, Equatable, Hashable {
 
 extension DictionaryItem: FetchableRecord, PersistableRecord {
     static let databaseTableName = "Dictionary"
-    
+
     static func createTable(in db: Database) throws {
-        try db.create(table: DictionaryItem.databaseTableName, ifNotExists: true) { t in
+        try db.create(table: databaseTableName, ifNotExists: true) { t in
             t.autoIncrementedPrimaryKey("id")
-            
             t.column("displayName", .text).notNull()
             t.column("tableName", .text).notNull()
             t.column("description", .text).notNull()
@@ -77,23 +69,20 @@ extension DictionaryItem: FetchableRecord, PersistableRecord {
             t.column("subcategory", .text).notNull()
             t.column("author", .text).notNull()
             t.column("createdAt", .integer).notNull()
-            
             t.column("isPrivate", .boolean).notNull()
             t.column("isActive", .boolean).notNull()
         }
-        
-        // Добавляем индекс на поле createdAt
         try db.create(index: "Dictionary_createdAt_idx", on: databaseTableName, columns: ["createdAt"])
     }
-    
+
     static func updateStatus(in db: Database, dictionaryID: Int, newStatus: Bool) throws {
-        let sql = "UPDATE \(DictionaryItem.databaseTableName) SET isActive = ? WHERE id = ?"
+        let sql = "UPDATE \(databaseTableName) SET isActive = ? WHERE id = ?"
         try db.execute(sql: sql, arguments: [newStatus, dictionaryID])
     }
-    
+
     mutating func insert(_ db: Database) throws {
         try db.execute(sql: """
-            INSERT INTO \(DictionaryItem.databaseTableName) 
+            INSERT INTO \(DictionaryItem.databaseTableName)
             (displayName, tableName, description, category, subcategory, author, createdAt, isPrivate, isActive)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, arguments: [
@@ -101,9 +90,11 @@ extension DictionaryItem: FetchableRecord, PersistableRecord {
             ])
     }
     
+
+
     static func fetchActiveDictionaries(in db: Database) throws -> [DictionaryItem] {
-            return try DictionaryItem
-                .filter(Column("isActive") == true)
-                .fetchAll(db)
-        }
+        return try DictionaryItem
+            .filter(Column("isActive") == true)
+            .fetchAll(db)
+    }
 }

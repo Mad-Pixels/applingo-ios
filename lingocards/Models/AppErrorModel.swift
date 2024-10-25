@@ -17,6 +17,7 @@ enum ErrorSource: String {
     case dictionariesGet
     case dictionaryDelete
     case dictionaryUpdate
+    case dictionarySave
     case dictionariesRemoteGet
     case categoriesGet
     case initialization
