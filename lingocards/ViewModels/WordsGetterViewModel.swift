@@ -6,31 +6,20 @@ final class WordsGetterViewModel: ObservableObject {
     @Published var words: [WordItem] = []
     @Published var searchText: String = ""
     
-    private let windowSize: Int = 1000  // Увеличим размер окна, чтобы избежать частого удаления элементов
-    private let itemsPerPage: Int = 50  // Увеличим размер страницы для более эффективной загрузки
+    private var inProgress: Bool = false
+    private var last: Bool = false
+    private let offset: Int = 50
     
-    private var isLoadingPage = false
-    private var hasMorePagesUp = true
-    private var hasMorePagesDown = true
-    
-    enum LoadDirection {
-        case up
-        case down
-    }
-    
-    // Сброс пагинации
     func resetPagination() {
         words.removeAll()
-        isLoadingPage = false
-        hasMorePagesUp = true
-        hasMorePagesDown = true
-        get(direction: .down)  // Начинаем загрузку с последней страницы
+        inProgress = false
+        last = false
+        get()
     }
     
-    // Получение слов из базы данных
-    func get(direction: LoadDirection = .down) {
-        guard !isLoadingPage else { return }
-        isLoadingPage = true
+    func get() {
+        guard !inProgress else { return }
+        inProgress = true
         
         performDatabaseOperation(
             { db -> [WordItem] in
@@ -52,21 +41,12 @@ final class WordsGetterViewModel: ObservableObject {
                     whereClauses.append("LOWER(word) LIKE '%\(search)%'")
                 }
                 
-                switch direction {
-                case .down:
-                    if let lastWord = self.words.last {
-                        whereClauses.append("id < \(lastWord.id)")
-                    }
-                    query += whereClauses.isEmpty ? "" : " WHERE " + whereClauses.joined(separator: " AND ")
-                    query += " ORDER BY id DESC LIMIT \(self.itemsPerPage)"
-                    
-                case .up:
-                    if let firstWord = self.words.first {
-                        whereClauses.append("id > \(firstWord.id)")
-                    }
-                    query += whereClauses.isEmpty ? "" : " WHERE " + whereClauses.joined(separator: " AND ")
-                    query += " ORDER BY id ASC LIMIT \(self.itemsPerPage)"
+                if let lastWord = self.words.last {
+                    whereClauses.append("id < \(lastWord.id)")
                 }
+                
+                query += whereClauses.isEmpty ? "" : " WHERE " + whereClauses.joined(separator: " AND ")
+                query += " ORDER BY id DESC LIMIT \(self.offset)"
                 
                 print("📝 Выполняется запрос: \(query)")
                 let fetchedWords = try WordItem.fetchAll(db, sql: query)
@@ -77,87 +57,45 @@ final class WordsGetterViewModel: ObservableObject {
                 guard let self = self else { return }
                 
                 DispatchQueue.main.async {
-                    self.updateWords(with: fetchedWords, direction: direction)
-                    self.isLoadingPage = false
+                    self.updateWords(with: fetchedWords)
+                    self.inProgress = false
                 }
             },
             errorHandler: { [weak self] error in
                 print("❌ Ошибка при загрузке слов: \(error)")
                 DispatchQueue.main.async {
-                    self?.isLoadingPage = false
+                    self?.inProgress = false
                 }
             }
         )
     }
     
-    // Обновление массива `words` с новыми данными
-    private func updateWords(with fetchedWords: [WordItem], direction: LoadDirection) {
+    private func updateWords(with fetchedWords: [WordItem]) {
         if fetchedWords.isEmpty {
-            switch direction {
-            case .down:
-                hasMorePagesDown = false
-            case .up:
-                hasMorePagesUp = false
-            }
-            print("⚠️ Больше нет данных для загрузки в направлении \(direction).")
+            last = true
+            print("⚠️ Больше нет данных для загрузки.")
             return
         }
         
-        switch direction {
-        case .down:
-            // Проверяем на дублирование ID
-            let newWords = fetchedWords.filter { newWord in
-                !self.words.contains(where: { $0.id == newWord.id })
-            }
-            // Добавляем новые слова в конец списка
-            withAnimation {
-                self.words.append(contentsOf: newWords)
-            }
-            
-        case .up:
-            // Проверяем на дублирование ID
-            let newWords = fetchedWords.filter { newWord in
-                !self.words.contains(where: { $0.id == newWord.id })
-            }
-            // Добавляем новые слова в начало списка
-            withAnimation {
-                self.words.insert(contentsOf: newWords, at: 0)
-            }
+        let newWords = fetchedWords.filter { newWord in
+            !self.words.contains(where: { $0.id == newWord.id })
         }
         
-        // Ограничиваем размер массива `words`
-        if words.count > windowSize {
-            let removeCount = words.count - windowSize
-            if direction == .down {
-                // Удаляем элементы из начала массива
-                words.removeFirst(removeCount)
-                print("🗑 Удалено \(removeCount) слов из начала массива.")
-            } else {
-                // Удаляем элементы из конца массива
-                words.removeLast(removeCount)
-                print("🗑 Удалено \(removeCount) слов из конца массива.")
-            }
+        withAnimation {
+            self.words.append(contentsOf: newWords)
         }
         
         print("✅ Массив words обновлен. Текущее количество слов: \(words.count)")
     }
     
-    // Загрузка дополнительных слов при необходимости
     func loadMoreWordsIfNeeded(currentItem word: WordItem?) {
-        guard let word = word else { return }
+        guard let word = word,
+              let index = words.firstIndex(where: { $0.id == word.id }),
+              index >= words.count - 5 && !last && !inProgress else { return }
         
-        if let index = words.firstIndex(where: { $0.id == word.id }) {
-            if index <= 5 && hasMorePagesUp && !isLoadingPage {
-                // Загрузить больше данных вверх
-                get(direction: .up)
-            } else if index >= words.count - 5 && hasMorePagesDown && !isLoadingPage {
-                // Загрузить больше данных вниз
-                get(direction: .down)
-            }
-        }
+        get()
     }
     
-    // Хелпер для операций с базой данных
     private func performDatabaseOperation<T>(
         _ operation: @escaping (Database) throws -> T,
         successHandler: @escaping (T) -> Void,
