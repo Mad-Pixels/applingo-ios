@@ -460,9 +460,6 @@
         }
       }
     },
-    "OK" : {
-
-    },
     "Save" : {
       "extractionState" : "stale",
       "localizations" : {

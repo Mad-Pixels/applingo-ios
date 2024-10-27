@@ -11,7 +11,6 @@ final class DictionaryLocalGetterViewModel: BaseDatabaseViewModel {
     init(repository: DictionaryRepositoryProtocol) {
         self.repository = repository
         super.init()
-        resetPagination()
     }
 
     func resetPagination() {

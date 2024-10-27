@@ -76,6 +76,10 @@ struct TabDictionariesView: View {
                 }
                 .onAppear {
                     tabManager.setActiveTab(.dictionaries)
+                    if tabManager.isActive(tab: .dictionaries) {
+                        dictionariesGetter.resetPagination()
+                        dictionariesGetter.get()
+                    }
                 }
                 .onChange(of: tabManager.activeTab) { newTab in
                     if newTab == .dictionaries {

@@ -2,18 +2,18 @@ import SwiftUI
 
 struct TabWordsView: View {
     @EnvironmentObject var languageManager: LanguageManager
-    @EnvironmentObject var themeManager: ThemeManager
     @EnvironmentObject var tabManager: TabManager
+    @EnvironmentObject var themeManager: ThemeManager
     @EnvironmentObject var errorManager: ErrorManager
 
     @StateObject private var actionViewModel: WordsLocalActionViewModel
     @StateObject private var wordsGetter: WordsLocalGetterViewModel
     @StateObject private var actionDictionaryViewModel: DictionaryLocalGetterViewModel
 
-    @State private var selectedWord: WordItem?
     @State private var isShowingDetailView = false
     @State private var isShowingAddView = false
     @State private var isShowingAlert = false
+    @State private var selectedWord: WordItem?
 
     init() {
         guard let dbQueue = DatabaseManager.shared.databaseQueue else {
@@ -35,16 +35,20 @@ struct TabWordsView: View {
                 theme.backgroundViewColor.edgesIgnoringSafeArea(.all)
 
                 VStack(spacing: 0) {
+                    // Поисковая строка
                     CompSearchView(
                         searchText: $wordsGetter.searchText,
                         placeholder: languageManager.localizedString(for: "Search").capitalizedFirstLetter,
                         theme: theme
                     )
+                    .padding(.bottom, 10)
 
+                    // Отображение ошибки, если есть
                     if let error = errorManager.currentError, errorManager.isVisible(for: .words, source: .wordsGet) {
                         CompErrorView(errorMessage: error.errorDescription ?? "", theme: theme)
                     }
 
+                    // Основное содержимое: пустой вид или список слов
                     if wordsGetter.words.isEmpty && !errorManager.isErrorVisible {
                         CompEmptyListView(
                             theme: theme,
@@ -66,7 +70,7 @@ struct TabWordsView: View {
                     }
                 }
                 .navigationTitle(languageManager.localizedString(for: "Words").capitalizedFirstLetter)
-                .navigationBarTitleDisplayMode(.inline)
+                .navigationBarTitleDisplayMode(.large)
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         CompToolbarMenu(
@@ -83,16 +87,18 @@ struct TabWordsView: View {
                 }
                 .onAppear {
                     tabManager.setActiveTab(.words)
+                    if tabManager.isActive(tab: .words) {
+                        wordsGetter.resetPagination()
+                        wordsGetter.get()
+                    }
                 }
                 .onChange(of: tabManager.activeTab) { newTab in
-//                    wordsGetter.get()
-//                    actionDictionaryViewModel.get()
                     if newTab == .words {
                         wordsGetter.get()
                         actionDictionaryViewModel.get()
                     } else {
-                       wordsGetter.clear()
-//                        actionDictionaryViewModel.clear()
+                        wordsGetter.clear()
+                        actionDictionaryViewModel.clear()
                     }
                 }
                 .modifier(ErrModifier(currentError: errorManager.currentError) { newError in
@@ -105,7 +111,7 @@ struct TabWordsView: View {
                 Alert(
                     title: Text(languageManager.localizedString(for: "Error")),
                     message: Text(errorManager.currentError?.errorDescription ?? ""),
-                    dismissButton: .default(Text("OK")) {
+                    dismissButton: .default(Text(languageManager.localizedString(for: "Close"))) {
                         errorManager.clearError()
                     }
                 )
@@ -121,6 +127,7 @@ struct TabWordsView: View {
                         switch result {
                         case .success:
                             wordsGetter.resetPagination()
+                            wordsGetter.get()
                             completion(.success(()))
                         case .failure(let error):
                             completion(.failure(error))
@@ -138,6 +145,7 @@ struct TabWordsView: View {
                         switch result {
                         case .success:
                             wordsGetter.resetPagination()
+                            wordsGetter.get()
                             completion(.success(()))
                         case .failure(let error):
                             completion(.failure(error))
