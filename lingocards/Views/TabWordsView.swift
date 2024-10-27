@@ -89,12 +89,12 @@ struct TabWordsView: View {
                     tabManager.setActiveTab(.words)
                     if tabManager.isActive(tab: .words) {
                         wordsGetter.resetPagination()
-                        wordsGetter.get()
+                        //wordsGetter.get()
                     }
                 }
                 .onChange(of: tabManager.activeTab) { newTab in
                     if newTab == .words {
-                        wordsGetter.get()
+                        //wordsGetter.get()
                         actionDictionaryViewModel.get()
                     } else {
                         wordsGetter.clear()

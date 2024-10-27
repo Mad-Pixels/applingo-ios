@@ -31,7 +31,7 @@ class RepositoryWord: WordRepositoryProtocol {
                 allArguments.append("%\(searchText.lowercased())%")
             }
             if let lastItem = lastItem {
-                conditions.append("id < ?")
+                conditions.append("id > ?")
                 allArguments.append(lastItem.id)
             }
             if !conditions.isEmpty {

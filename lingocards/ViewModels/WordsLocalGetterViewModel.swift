@@ -45,6 +45,7 @@ final class WordsLocalGetterViewModel: BaseDatabaseViewModel {
         performDatabaseOperation(
             { try self.repository.fetch(searchText: self.searchText, lastItem: self.words.last, limit: self.itemsPerPage) },
             successHandler: { [weak self] fetchedWords in
+                print("📥 Загружены уникальные элементы с ID: \(fetchedWords.map { $0.id })")
                 self?.processFetchedWords(fetchedWords)
                 self?.isLoadingPage = false
             },
@@ -58,6 +59,8 @@ final class WordsLocalGetterViewModel: BaseDatabaseViewModel {
             }
         )
     }
+
+
     
     func loadMoreWordsIfNeeded(currentItem word: WordItem?) {
         guard
@@ -71,10 +74,14 @@ final class WordsLocalGetterViewModel: BaseDatabaseViewModel {
     }
 
     private func processFetchedWords(_ fetchedWords: [WordItem]) {
-        if fetchedWords.isEmpty {
+        let newUniqueWords = fetchedWords.filter { newWord in
+            !words.contains(where: { $0.id == newWord.id })
+        }
+
+        if newUniqueWords.isEmpty {
             hasMorePages = false
         } else {
-            words.append(contentsOf: fetchedWords)
+            words.append(contentsOf: newUniqueWords)
         }
     }
 

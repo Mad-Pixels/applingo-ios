@@ -8,26 +8,24 @@ struct CompWordListView: View {
     let theme: ThemeStyle
 
     var body: some View {
-        ScrollView {
-            LazyVStack {
-                ForEach(words, id: \.id) { word in
-                    CompWordRowView(
-                        word: word,
-                        onTap: {
-                            onWordTap(word)
-                        },
-                        theme: theme
-                    )
-                    .onAppear {
-                        // Отладочное сообщение
-                        print("👀 Появился элемент с id: \(word.id)")
-                        loadMoreIfNeeded(word)  // Передаем текущий элемент
+        List {
+                    ForEach(words, id: \.id) { word in
+                        CompWordRowView(
+                            word: word,
+                            onTap: {
+                                onWordTap(word)
+                            },
+                            theme: theme
+                        )
+                        .onAppear {
+                            // Отладочное сообщение
+                            print("👀 Появился элемент с id: \(word.id)")
+                            loadMoreIfNeeded(word)  // Передаем текущий элемент
+                        }
                     }
-                    .padding(.vertical, 2)
+                    .onDelete(perform: onDelete)
                 }
-                .onDelete(perform: onDelete)
-            }
-        }
+                .listStyle(PlainListStyle())
     }
 }
 
