@@ -81,13 +81,6 @@ struct TabDictionariesView: View {
                         dictionariesGetter.get()
                     }
                 }
-                .onChange(of: tabManager.activeTab) { newTab in
-                    if newTab == .dictionaries {
-                        dictionariesGetter.get()
-                    } else {
-                        dictionariesGetter.clear()
-                    }
-                }
                 .modifier(ErrModifier(currentError: errorManager.currentError) { newError in
                     if let error = newError, error.tab == .dictionaries, error.source == .dictionaryDelete {
                         isShowingAlert = true

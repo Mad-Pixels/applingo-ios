@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// Style for icon with accent color
 struct MainIconStyle: ViewModifier {
     let theme: ThemeStyle
 

@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// Tabs styles
 struct BaseNavigationStyle: ViewModifier {
     let theme: ThemeStyle
     

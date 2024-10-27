@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// Style for icon as secondary object
 struct SecondaryIconStyle: ViewModifier {
     let theme: ThemeStyle
 

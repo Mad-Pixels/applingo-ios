@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// Root for all buttons in app
 struct BaseButtonStyle: ButtonStyle {
     let theme: ThemeStyle
     let backgroundColor: Color

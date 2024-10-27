@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// Root for all checkboxes in app
 struct BaseCheckboxStyle: ToggleStyle {
     let theme: ThemeStyle
 

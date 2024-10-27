@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// Header general blocks text styles
 struct HeaderBlockTextStyle: ViewModifier {
     let theme: ThemeStyle
     

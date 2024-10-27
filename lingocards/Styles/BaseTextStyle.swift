@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// Root for all text in app
 struct BaseTextStyle: ViewModifier {
     let theme: ThemeStyle
 

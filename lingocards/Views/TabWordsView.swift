@@ -6,9 +6,9 @@ struct TabWordsView: View {
     @EnvironmentObject var themeManager: ThemeManager
     @EnvironmentObject var errorManager: ErrorManager
 
-    @StateObject private var actionViewModel: WordsLocalActionViewModel
+    @StateObject private var dictionaryGetter: DictionaryLocalGetterViewModel
     @StateObject private var wordsGetter: WordsLocalGetterViewModel
-    @StateObject private var actionDictionaryViewModel: DictionaryLocalGetterViewModel
+    @StateObject private var wordsAction: WordsLocalActionViewModel
 
     @State private var isShowingDetailView = false
     @State private var isShowingAddView = false
@@ -22,9 +22,9 @@ struct TabWordsView: View {
 
         let wordRepository = RepositoryWord(dbQueue: dbQueue)
         let dictionaryRepository = RepositoryDictionary(dbQueue: dbQueue)
-        _actionViewModel = StateObject(wrappedValue: WordsLocalActionViewModel(repository: wordRepository))
+        _dictionaryGetter = StateObject(wrappedValue: DictionaryLocalGetterViewModel(repository: dictionaryRepository))
+        _wordsAction = StateObject(wrappedValue: WordsLocalActionViewModel(repository: wordRepository))
         _wordsGetter = StateObject(wrappedValue: WordsLocalGetterViewModel(repository: wordRepository))
-        _actionDictionaryViewModel = StateObject(wrappedValue: DictionaryLocalGetterViewModel(repository: dictionaryRepository))
     }
 
     var body: some View {
@@ -35,7 +35,6 @@ struct TabWordsView: View {
                 theme.backgroundViewColor.edgesIgnoringSafeArea(.all)
 
                 VStack(spacing: 0) {
-                    // Поисковая строка
                     CompSearchView(
                         searchText: $wordsGetter.searchText,
                         placeholder: languageManager.localizedString(for: "Search").capitalizedFirstLetter,
@@ -43,12 +42,9 @@ struct TabWordsView: View {
                     )
                     .padding(.bottom, 10)
 
-                    // Отображение ошибки, если есть
                     if let error = errorManager.currentError, errorManager.isVisible(for: .words, source: .wordsGet) {
                         CompErrorView(errorMessage: error.errorDescription ?? "", theme: theme)
                     }
-
-                    // Основное содержимое: пустой вид или список слов
                     if wordsGetter.words.isEmpty && !errorManager.isErrorVisible {
                         CompEmptyListView(
                             theme: theme,
@@ -89,17 +85,10 @@ struct TabWordsView: View {
                     tabManager.setActiveTab(.words)
                     if tabManager.isActive(tab: .words) {
                         wordsGetter.resetPagination()
-                        //wordsGetter.get()
                     }
                 }
-                .onChange(of: tabManager.activeTab) { newTab in
-                    if newTab == .words {
-                        //wordsGetter.get()
-                        actionDictionaryViewModel.get()
-                    } else {
-                        wordsGetter.clear()
-                        actionDictionaryViewModel.clear()
-                    }
+                .onDisappear {
+                    wordsGetter.clear()
                 }
                 .modifier(ErrModifier(currentError: errorManager.currentError) { newError in
                     if let error = newError, error.tab == .words, error.source == .wordDelete {
@@ -120,10 +109,10 @@ struct TabWordsView: View {
         .ignoresSafeArea(.keyboard, edges: .bottom)
         .sheet(isPresented: $isShowingAddView) {
             WordAddView(
-                dictionaries: actionDictionaryViewModel.dictionaries,
+                dictionaries: dictionaryGetter.dictionaries,
                 isPresented: $isShowingAddView,
                 onSave: { word, completion in
-                    actionViewModel.save(word) { result in
+                    wordsAction.save(word) { result in
                         switch result {
                         case .success:
                             wordsGetter.resetPagination()
@@ -141,7 +130,7 @@ struct TabWordsView: View {
                 word: word,
                 isPresented: $isShowingDetailView,
                 onSave: { updatedWord, completion in
-                    actionViewModel.update(updatedWord) { result in
+                    wordsAction.update(updatedWord) { result in
                         switch result {
                         case .success:
                             wordsGetter.resetPagination()
@@ -159,7 +148,7 @@ struct TabWordsView: View {
     private func wordDelete(at offsets: IndexSet) {
         offsets.forEach { index in
             let word = wordsGetter.words[index]
-            actionViewModel.delete(word) { result in
+            wordsAction.delete(word) { result in
                 switch result {
                 case .success:
                     wordsGetter.words.remove(at: index)
@@ -179,7 +168,7 @@ struct TabWordsView: View {
     }
 
     private func wordAdd() {
-        actionDictionaryViewModel.get()
+        dictionaryGetter.get()
         isShowingAddView = true
     }
 }

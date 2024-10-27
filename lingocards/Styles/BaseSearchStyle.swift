@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// Root search object style
 struct BaseSearchStyle: ViewModifier {
     let theme: ThemeStyle
 

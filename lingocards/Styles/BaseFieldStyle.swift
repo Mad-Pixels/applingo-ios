@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// Root for all fields and text areas
 struct BaseFieldStyle: ViewModifier {
     let isEditing: Bool
     let border: Bool
