@@ -34,14 +34,15 @@ class DatabaseManager: ObservableObject {
             dbQueue = try DatabaseQueue(path: databaseURL!.path, configuration: config)
             
             if let dbQueue = dbQueue {
-                Logger.debug("[Database]: Migration started")
+                Logger.debug("[DatabaseManager]: Migration started at path: \(databaseURL!.path)")
                 try migrator.migrate(dbQueue)
                 isConnected = true
+                Logger.debug("[DatabaseManager]: Connection established")
             }
         } catch {
             let appError = AppError(
                 errorType: .database,
-                errorMessage: "[Database]: Connection failed",
+                errorMessage: "Connection failed",
                 additionalInfo: ["path": "\(databaseURL!.path)", "error": "\(error.localizedDescription)"]
             )
             ErrorManager.shared.setError(appError: appError, tab: .main, source: .initialization)
@@ -52,27 +53,27 @@ class DatabaseManager: ObservableObject {
     func disconnect() {
         dbQueue = nil
         isConnected = false
-        Logger.debug("[Database]: Disconnected.")
+        Logger.debug("[DatabaseManager]: Disconnected")
     }
     
     func importCSVFile(at url: URL) throws {
         guard isConnected, let dbQueue = databaseQueue else {
             let appError = AppError(
                 errorType: .database,
-                errorMessage: "[Database]: Check database connection return false",
+                errorMessage: "Connection not established",
                 additionalInfo: ["path": "\(databaseURL!.path)"]
             )
             ErrorManager.shared.setError(appError: appError, tab: .dictionaries, source: .importCSVFile)
             throw appError
         }
 
-        let tableName = UUID().uuidString.replacingOccurrences(of: "-", with: "_")
+        let tableName = url.deletingPathExtension().lastPathComponent
         let wordItems = try CSVImporter.parseCSV(at: url, tableName: tableName)
-
+        
         let dictionaryItem = DictionaryItem(
-            displayName: url.deletingPathExtension().lastPathComponent,
+            displayName: tableName,
             tableName: tableName,
-            description: "Imported from local file: '\(url.deletingPathExtension().lastPathComponent).csv'",
+            description: "Imported from local file: '\(tableName).csv'",
             category: "Local",
             subcategory: "personal",
             author: "local user"
@@ -80,25 +81,43 @@ class DatabaseManager: ObservableObject {
 
         try dbQueue.write { db in
             try dictionaryItem.insert(db)
-
+            
             for var wordItem in wordItems {
                 wordItem.tableName = tableName
                 try wordItem.insert(db)
             }
+            Logger.debug("[Database]: Inserted \(wordItems.count) word items for table \(tableName)")
         }
     }
-
+    
     private var migrator: DatabaseMigrator {
         var migrator = DatabaseMigrator()
         
         migrator.registerMigration("createDictionary") { db in
             try DictionaryItem.createTable(in: db)
-            Logger.debug("[Migrations]: 'Dictionary' table created successfully")
+            Logger.debug("[DatabaseManager]: 'Dictionary' table created successfully")
+            
+            let internalDictionary = DictionaryItem(
+                displayName: "Main",
+                tableName: "Internal",
+                description: "LingoCards default dictionary",
+                category: "LingoCards",
+                subcategory: "internal",
+                author: "LingoCards"
+            )
+            if try DictionaryItem
+                .filter(Column("displayName") == internalDictionary.displayName)
+                .fetchOne(db) == nil {
+                try internalDictionary.insert(db)
+                Logger.debug("[DatabaseManager]: 'Internal' dictionary entry added successfully")
+            } else {
+                Logger.debug("[DatabaseManager]: 'Internal' dictionary entry already exists")
+            }
         }
         
         migrator.registerMigration("createWords") { db in
             try WordItem.createTable(in: db)
-            Logger.debug("[Migrations]: 'Words' table created successfully")
+            Logger.debug("[DatabaseManager]: 'Words' table created successfully")
         }
         
         return migrator

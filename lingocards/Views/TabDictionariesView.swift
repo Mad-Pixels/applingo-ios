@@ -6,15 +6,25 @@ struct TabDictionariesView: View {
     @EnvironmentObject var databaseManager: DatabaseManager
     @EnvironmentObject var themeManager: ThemeManager
     @EnvironmentObject var tabManager: TabManager
+    @EnvironmentObject var errorManager: ErrorManager
 
-    @StateObject private var actionViewModel = DictionaryLocalActionViewModel()
-    @StateObject private var dictionariesGetter = DictionaryLocalGetterViewModel()
-    @StateObject private var errorManager = ErrorManager.shared
+    @StateObject private var actionViewModel: DictionaryLocalActionViewModel
+    @StateObject private var dictionariesGetter: DictionaryLocalGetterViewModel
 
     @State private var selectedDictionary: DictionaryItem?
     @State private var isShowingFileImporter = false
     @State private var isShowingRemoteList = false
     @State private var isShowingAlert = false
+
+    init() {
+        guard let dbQueue = DatabaseManager.shared.databaseQueue else {
+            fatalError("Database is not connected")
+        }
+
+        let repository = RepositoryDictionary(dbQueue: dbQueue)
+        _actionViewModel = StateObject(wrappedValue: DictionaryLocalActionViewModel(repository: repository))
+        _dictionariesGetter = StateObject(wrappedValue: DictionaryLocalGetterViewModel(repository: repository))
+    }
 
     var body: some View {
         let theme = themeManager.currentThemeStyle
@@ -66,15 +76,14 @@ struct TabDictionariesView: View {
                 }
                 .onAppear {
                     tabManager.setActiveTab(.dictionaries)
-                    if tabManager.isActive(tab: .dictionaries) {
-                        dictionariesGetter.resetPagination()
+                }
+                .onChange(of: tabManager.activeTab) { newTab in
+                    if newTab == .dictionaries {
+                        dictionariesGetter.get()
+                    } else {
+                        dictionariesGetter.clear()
                     }
                 }
-                .modifier(TabModifier(activeTab: tabManager.activeTab) { newTab in
-                    if newTab != .dictionaries {
-                        tabManager.deactivateTab(.dictionaries)
-                    }
-                })
                 .modifier(ErrModifier(currentError: errorManager.currentError) { newError in
                     if let error = newError, error.tab == .dictionaries, error.source == .dictionaryDelete {
                         isShowingAlert = true
@@ -115,7 +124,7 @@ struct TabDictionariesView: View {
                 dictionary: dictionary,
                 isPresented: .constant(true),
                 onSave: { updatedDictionary, completion in
-                    actionViewModel.updateDictionary(updatedDictionary) { result in
+                    actionViewModel.update(updatedDictionary) { result in
                         switch result {
                         case .success:
                             dictionariesGetter.resetPagination()
@@ -133,12 +142,20 @@ struct TabDictionariesView: View {
         offsets.forEach { index in
             let dictionary = dictionariesGetter.dictionaries[index]
             if dictionary.tableName != "Internal" {
-                actionViewModel.deleteDictionary(dictionary) { result in
+                actionViewModel.delete(dictionary) { result in
                     switch result {
                     case .success:
                         dictionariesGetter.dictionaries.remove(at: index)
                     case .failure(let error):
-                        print("Ошибка при удалении словаря: \(error)")
+                        errorManager.setError(
+                            appError: AppError(
+                                errorType: .database,
+                                errorMessage: "Failed to delete dictionary",
+                                additionalInfo: ["error": "\(error)"]
+                            ),
+                            tab: .dictionaries,
+                            source: .dictionaryDelete
+                        )
                     }
                 }
             } else {
@@ -147,7 +164,7 @@ struct TabDictionariesView: View {
                     errorMessage: languageManager.localizedString(for: "CannotDeleteInternalDictionary"),
                     additionalInfo: nil
                 )
-                ErrorManager.shared.setError(
+                errorManager.setError(
                     appError: error,
                     tab: .dictionaries,
                     source: .dictionaryDelete
@@ -158,15 +175,25 @@ struct TabDictionariesView: View {
     }
 
     private func dictionaryStatusUpdate(_ dictionary: DictionaryItem, newStatus: Bool) {
-        actionViewModel.updateDictionaryStatus(dictionaryID: dictionary.id, newStatus: newStatus) { result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success:
-                    dictionariesGetter.resetPagination()
-                case .failure(let error):
-                    print("Ошибка при обновлении статуса словаря: \(error)")
-                    isShowingAlert = true
-                }
+        guard let dictionaryID = dictionary.id else {
+            print("Error: Dictionary ID is missing.")
+            return
+        }
+
+        actionViewModel.updateStatus(dictionaryID: dictionaryID, newStatus: newStatus) { result in
+            switch result {
+            case .success:
+                dictionariesGetter.resetPagination()
+            case .failure(let error):
+                errorManager.setError(
+                    appError: AppError(
+                        errorType: .database,
+                        errorMessage: "Failed to update dictionary status",
+                        additionalInfo: ["error": "\(error)"]
+                    ),
+                    tab: .dictionaries,
+                    source: .dictionaryUpdate
+                )
             }
         }
     }

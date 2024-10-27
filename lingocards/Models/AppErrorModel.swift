@@ -14,10 +14,12 @@ enum ErrorSource: String {
     case wordSave
     case wordDelete
     case wordUpdate
+    case wordsClear
     case dictionariesGet
     case dictionaryDelete
     case dictionaryUpdate
     case dictionarySave
+    case dictionariesClear
     case dictionariesRemoteGet
     case categoriesGet
     case initialization

@@ -1,127 +1,84 @@
-import SwiftUI
+import Foundation
 import Combine
-import GRDB
 
-final class WordsLocalGetterViewModel: ObservableObject {
+final class WordsLocalGetterViewModel: BaseDatabaseViewModel {
     @Published var words: [WordItem] = []
-    @Published var searchText: String = ""
-    
-    private var inProgress: Bool = false
-    private var last: Bool = false
-    private let offset: Int = 50
-    
-    func resetPagination() {
-        words.removeAll()
-        inProgress = false
-        last = false
-        get()
+    @Published var searchText: String = "" {
+        didSet {
+            setupSearchTextSubscription()
+        }
     }
     
+    private let repository: WordRepositoryProtocol
+    private let itemsPerPage: Int = 50
+    
+    private var isLoadingPage = false
+    private var hasMorePages = true
+    private var cancellables = Set<AnyCancellable>()
+    
+    init(repository: WordRepositoryProtocol) {
+        self.repository = repository
+        super.init()
+        resetPagination()
+    }
+    
+    private func setupSearchTextSubscription() {
+        $searchText
+            .debounce(for: .milliseconds(300), scheduler: RunLoop.main)
+            .sink { [weak self] _ in
+                self?.resetPagination()
+            }
+            .store(in: &cancellables)
+    }
+
+    func resetPagination() {
+        words.removeAll()
+        isLoadingPage = false
+        hasMorePages = true
+        get()
+    }
+
     func get() {
-        guard !inProgress else { return }
-        inProgress = true
-        
+        guard !isLoadingPage, hasMorePages else { return }
+        isLoadingPage = true
+
         performDatabaseOperation(
-            { db -> [WordItem] in
-                let activeDictionaries = try DictionaryItem.fetchActiveDictionaries(in: db)
-                guard let selectedDictionary = activeDictionaries.first else {
-                    print("⚠️ Не найден активный словарь.")
-                    return []
-                }
-                
-                let tableName = selectedDictionary.tableName
-                var query = """
-                    SELECT *, '\(tableName)' AS tableName 
-                    FROM \(tableName)
-                """
-                
-                var whereClauses: [String] = []
-                if !self.searchText.isEmpty {
-                    let search = self.searchText.lowercased()
-                    whereClauses.append("LOWER(word) LIKE '%\(search)%'")
-                }
-                
-                if let lastWord = self.words.last {
-                    whereClauses.append("id < \(lastWord.id)")
-                }
-                
-                query += whereClauses.isEmpty ? "" : " WHERE " + whereClauses.joined(separator: " AND ")
-                query += " ORDER BY id DESC LIMIT \(self.offset)"
-                
-                print("📝 Выполняется запрос: \(query)")
-                let fetchedWords = try WordItem.fetchAll(db, sql: query)
-                print("📊 Получено \(fetchedWords.count) слов из базы данных.")
-                return fetchedWords
-            },
+            { try self.repository.fetch(searchText: self.searchText, lastItem: self.words.last, limit: self.itemsPerPage) },
             successHandler: { [weak self] fetchedWords in
-                guard let self = self else { return }
-                
-                DispatchQueue.main.async {
-                    self.updateWords(with: fetchedWords)
-                    self.inProgress = false
-                }
+                self?.processFetchedWords(fetchedWords)
+                self?.isLoadingPage = false
             },
-            errorHandler: { [weak self] error in
-                print("❌ Ошибка при загрузке слов: \(error)")
-                DispatchQueue.main.async {
-                    self?.inProgress = false
+            errorSource: .wordsGet,
+            errorMessage: "Failed to fetch words",
+            tab: .words,
+            completion: { [weak self] result in
+                if case .failure = result {
+                    self?.isLoadingPage = false
                 }
             }
         )
     }
     
-    private func updateWords(with fetchedWords: [WordItem]) {
-        if fetchedWords.isEmpty {
-            last = true
-            print("⚠️ Больше нет данных для загрузки.")
-            return
-        }
-        
-        let newWords = fetchedWords.filter { newWord in
-            !self.words.contains(where: { $0.id == newWord.id })
-        }
-        
-        withAnimation {
-            self.words.append(contentsOf: newWords)
-        }
-        
-        print("✅ Массив words обновлен. Текущее количество слов: \(words.count)")
-    }
-    
     func loadMoreWordsIfNeeded(currentItem word: WordItem?) {
-        guard let word = word,
-              let index = words.firstIndex(where: { $0.id == word.id }),
-              index >= words.count - 5 && !last && !inProgress else { return }
-        
+        guard
+            let word = word,
+            let index = words.firstIndex(where: { $0.id == word.id }),
+            index >= words.count - 5,
+            hasMorePages,
+            !isLoadingPage
+        else { return }
         get()
     }
-    
-    private func performDatabaseOperation<T>(
-        _ operation: @escaping (Database) throws -> T,
-        successHandler: @escaping (T) -> Void,
-        errorHandler: @escaping (Error) -> Void
-    ) {
-        guard DatabaseManager.shared.isConnected else {
-            let error = AppError(
-                errorType: .database,
-                errorMessage: "База данных не подключена",
-                additionalInfo: nil
-            )
-            errorHandler(error)
-            return
+
+    private func processFetchedWords(_ fetchedWords: [WordItem]) {
+        if fetchedWords.isEmpty {
+            hasMorePages = false
+        } else {
+            words.append(contentsOf: fetchedWords)
         }
-        
-        DispatchQueue.global(qos: .userInitiated).async {
-            do {
-                let result = try DatabaseManager.shared.databaseQueue?.read { db in
-                    try operation(db)
-                }
-                if let result = result {
-                    successHandler(result)
-                }
-            } catch {
-                errorHandler(error)
-            }
-        }
+    }
+
+    func clear() {
+        words = []
     }
 }

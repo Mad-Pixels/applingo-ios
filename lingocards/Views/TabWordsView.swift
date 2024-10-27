@@ -4,15 +4,28 @@ struct TabWordsView: View {
     @EnvironmentObject var languageManager: LanguageManager
     @EnvironmentObject var themeManager: ThemeManager
     @EnvironmentObject var tabManager: TabManager
+    @EnvironmentObject var errorManager: ErrorManager
 
-    @StateObject private var actionViewModel = WordsLocalActionViewModel()
-    @StateObject private var wordsGetter = WordsLocalGetterViewModel()
-    @StateObject private var errorManager = ErrorManager.shared
+    @StateObject private var actionViewModel: WordsLocalActionViewModel
+    @StateObject private var wordsGetter: WordsLocalGetterViewModel
+    @StateObject private var actionDictionaryViewModel: DictionaryLocalGetterViewModel
 
     @State private var selectedWord: WordItem?
     @State private var isShowingDetailView = false
     @State private var isShowingAddView = false
     @State private var isShowingAlert = false
+
+    init() {
+        guard let dbQueue = DatabaseManager.shared.databaseQueue else {
+            fatalError("Database is not connected")
+        }
+
+        let wordRepository = RepositoryWord(dbQueue: dbQueue)
+        let dictionaryRepository = RepositoryDictionary(dbQueue: dbQueue)
+        _actionViewModel = StateObject(wrappedValue: WordsLocalActionViewModel(repository: wordRepository))
+        _wordsGetter = StateObject(wrappedValue: WordsLocalGetterViewModel(repository: wordRepository))
+        _actionDictionaryViewModel = StateObject(wrappedValue: DictionaryLocalGetterViewModel(repository: dictionaryRepository))
+    }
 
     var body: some View {
         let theme = themeManager.currentThemeStyle
@@ -27,9 +40,6 @@ struct TabWordsView: View {
                         placeholder: languageManager.localizedString(for: "Search").capitalizedFirstLetter,
                         theme: theme
                     )
-                    .onChange(of: wordsGetter.searchText) { _ in
-                        wordsGetter.resetPagination()
-                    }
 
                     if let error = errorManager.currentError, errorManager.isVisible(for: .words, source: .wordsGet) {
                         CompErrorView(errorMessage: error.errorDescription ?? "", theme: theme)
@@ -73,15 +83,18 @@ struct TabWordsView: View {
                 }
                 .onAppear {
                     tabManager.setActiveTab(.words)
-                    if tabManager.isActive(tab: .words) {
-                        wordsGetter.resetPagination()
+                }
+                .onChange(of: tabManager.activeTab) { newTab in
+//                    wordsGetter.get()
+//                    actionDictionaryViewModel.get()
+                    if newTab == .words {
+                        wordsGetter.get()
+                        actionDictionaryViewModel.get()
+                    } else {
+                       wordsGetter.clear()
+//                        actionDictionaryViewModel.clear()
                     }
                 }
-                .modifier(TabModifier(activeTab: tabManager.activeTab) { newTab in
-                    if newTab != .learn {
-                        tabManager.deactivateTab(.learn)
-                    }
-                })
                 .modifier(ErrModifier(currentError: errorManager.currentError) { newError in
                     if let error = newError, error.tab == .words, error.source == .wordDelete {
                         isShowingAlert = true
@@ -89,23 +102,22 @@ struct TabWordsView: View {
                 })
             }
             .alert(isPresented: $isShowingAlert) {
-                CompAlertView(
-                    title: languageManager.localizedString(for: "Error"),
-                    message: errorManager.currentError?.errorDescription ?? "",
-                    closeAction: {
+                Alert(
+                    title: Text(languageManager.localizedString(for: "Error")),
+                    message: Text(errorManager.currentError?.errorDescription ?? ""),
+                    dismissButton: .default(Text("OK")) {
                         errorManager.clearError()
-                    },
-                    theme: theme
+                    }
                 )
             }
         }
         .ignoresSafeArea(.keyboard, edges: .bottom)
         .sheet(isPresented: $isShowingAddView) {
             WordAddView(
-                dictionaries: actionViewModel.dictionaries,
+                dictionaries: actionDictionaryViewModel.dictionaries,
                 isPresented: $isShowingAddView,
                 onSave: { word, completion in
-                    actionViewModel.saveWord(word) { result in
+                    actionViewModel.save(word) { result in
                         switch result {
                         case .success:
                             wordsGetter.resetPagination()
@@ -122,7 +134,7 @@ struct TabWordsView: View {
                 word: word,
                 isPresented: $isShowingDetailView,
                 onSave: { updatedWord, completion in
-                    actionViewModel.updateWord(updatedWord) { result in
+                    actionViewModel.update(updatedWord) { result in
                         switch result {
                         case .success:
                             wordsGetter.resetPagination()
@@ -139,31 +151,27 @@ struct TabWordsView: View {
     private func wordDelete(at offsets: IndexSet) {
         offsets.forEach { index in
             let word = wordsGetter.words[index]
-            actionViewModel.deleteWord(word) { result in
+            actionViewModel.delete(word) { result in
                 switch result {
                 case .success:
                     wordsGetter.words.remove(at: index)
                 case .failure(let error):
-                    // Обработка ошибки удаления
-                    print("Ошибка при удалении слова: \(error)")
+                    errorManager.setError(
+                        appError: AppError(
+                            errorType: .database,
+                            errorMessage: "Failed to delete word",
+                            additionalInfo: ["error": "\(error)"]
+                        ),
+                        tab: .words,
+                        source: .wordDelete
+                    )
                 }
             }
         }
     }
 
     private func wordAdd() {
-        actionViewModel.getDictionaries { result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success:
-                    self.isShowingAddView = true
-                case .failure(let error):
-                    self.isShowingAlert = true
-                    if let appError = error as? AppError {
-                        ErrorManager.shared.setError(appError: appError, tab: .words, source: .wordAdd)
-                    }
-                }
-            }
-        }
+        actionDictionaryViewModel.get()
+        isShowingAddView = true
     }
 }

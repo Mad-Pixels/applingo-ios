@@ -9,7 +9,7 @@ struct CSVImporter {
         return try! ColumnClassifier(configuration: config)
     }()
 
-    // Полный метод parseCSV с использованием tableName
+    // Метод parseCSV для обработки CSV-файла и создания WordItem
     static func parseCSV(at url: URL, tableName: String) throws -> [WordItem] {
         var wordItems = [WordItem]()
         
@@ -27,18 +27,8 @@ struct CSVImporter {
                 sampleColumnsMatrix.append(columns)
             }
             
-            var columnLabels: [String]
-            do {
-                if let classifiedLabels = try classifyColumns(sampleColumnsMatrix: sampleColumnsMatrix) {
-                    columnLabels = classifiedLabels
-                } else {
-                    print("[CSVImporter]: Classifier failed to classify columns, using default column labels")
-                    columnLabels = ["front_text", "back_text", "hint", "description"]
-                }
-            } catch {
-                print("[CSVImporter]: Classifier encountered an error: \(error.localizedDescription), using default column labels")
-                columnLabels = ["front_text", "back_text", "hint", "description"]
-            }
+            var columnLabels = try classifyColumns(sampleColumnsMatrix: sampleColumnsMatrix) ??
+                ["front_text", "back_text", "hint", "description"]
             
             for line in lines {
                 let trimmedLine = line.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -91,7 +81,7 @@ struct CSVImporter {
         }
     }
 
-    // Метод для классификации колонок
+    // Метод для классификации колонок с использованием модели
     static func classifyColumns(sampleColumnsMatrix: [[String]]) throws -> [String]? {
         guard let numberOfColumns = sampleColumnsMatrix.first?.count else { return nil }
         var columnLabels = [String]()
@@ -135,22 +125,8 @@ struct CSVImporter {
         recognizer.processString(text)
         if let language = recognizer.dominantLanguage {
             let languageCode = language.rawValue
-
-            let knownLanguages: Set<String> = [
-                "de", // Немецкий
-                "en", // Английский
-                "es", // Испанский
-                "fr", // Французский
-                "he", // Иврит
-                "ru", // Русский
-                "zh", // Китайский
-                "und" // Неопределенный
-            ]
-            if knownLanguages.contains(languageCode) {
-                return languageCode
-            } else {
-                return "und"
-            }
+            let knownLanguages: Set<String> = ["de", "en", "es", "fr", "he", "ru", "zh", "und"]
+            return knownLanguages.contains(languageCode) ? languageCode : "und"
         }
         return "und"
     }

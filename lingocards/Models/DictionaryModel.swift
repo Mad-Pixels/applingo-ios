@@ -1,9 +1,10 @@
 import Foundation
 import GRDB
 
-/// Модель для представления информации о словаре.
 struct DictionaryItem: Identifiable, Codable, Equatable, Hashable {
-    /// Обязательные поля.
+    static let databaseTableName = "Dictionary"
+    
+    var id: Int?
     var displayName: String
     var tableName: String
     var description: String
@@ -11,14 +12,12 @@ struct DictionaryItem: Identifiable, Codable, Equatable, Hashable {
     var subcategory: String
     var author: String
 
-    /// Предопределённые поля.
     var createdAt: Int
-    var id: Int
     var isPrivate: Bool
     var isActive: Bool
 
-    /// Инициализатор.
     init(
+        id: Int? = nil,
         displayName: String,
         tableName: String,
         description: String,
@@ -26,10 +25,10 @@ struct DictionaryItem: Identifiable, Codable, Equatable, Hashable {
         subcategory: String,
         author: String,
         createdAt: Int = Int(Date().timeIntervalSince1970),
-        id: Int = 0,
         isPrivate: Bool = true,
         isActive: Bool = true
     ) {
+        self.id = id
         self.displayName = displayName
         self.tableName = tableName
         self.description = description
@@ -37,12 +36,10 @@ struct DictionaryItem: Identifiable, Codable, Equatable, Hashable {
         self.subcategory = subcategory
         self.author = author
         self.createdAt = createdAt
-        self.id = id
         self.isPrivate = isPrivate
         self.isActive = isActive
     }
 
-    /// Дополнительные вычисляемые свойства.
     var subTitle: String {
         "[\(category)] \(subcategory)"
     }
@@ -57,11 +54,9 @@ struct DictionaryItem: Identifiable, Codable, Equatable, Hashable {
 }
 
 extension DictionaryItem: FetchableRecord, PersistableRecord {
-    static let databaseTableName = "Dictionary"
-
     static func createTable(in db: Database) throws {
         try db.create(table: databaseTableName, ifNotExists: true) { t in
-            t.autoIncrementedPrimaryKey("id")
+            t.autoIncrementedPrimaryKey("id").unique()
             t.column("displayName", .text).notNull()
             t.column("tableName", .text).notNull()
             t.column("description", .text).notNull()
@@ -73,28 +68,5 @@ extension DictionaryItem: FetchableRecord, PersistableRecord {
             t.column("isActive", .boolean).notNull()
         }
         try db.create(index: "Dictionary_createdAt_idx", on: databaseTableName, columns: ["createdAt"])
-    }
-
-    static func updateStatus(in db: Database, dictionaryID: Int, newStatus: Bool) throws {
-        let sql = "UPDATE \(databaseTableName) SET isActive = ? WHERE id = ?"
-        try db.execute(sql: sql, arguments: [newStatus, dictionaryID])
-    }
-
-    mutating func insert(_ db: Database) throws {
-        try db.execute(sql: """
-            INSERT INTO \(DictionaryItem.databaseTableName)
-            (displayName, tableName, description, category, subcategory, author, createdAt, isPrivate, isActive)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, arguments: [
-                displayName, tableName, description, category, subcategory, author, createdAt, isPrivate, isActive
-            ])
-    }
-    
-
-
-    static func fetchActiveDictionaries(in db: Database) throws -> [DictionaryItem] {
-        return try DictionaryItem
-            .filter(Column("isActive") == true)
-            .fetchAll(db)
     }
 }

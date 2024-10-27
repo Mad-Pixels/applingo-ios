@@ -50,17 +50,10 @@ struct MainView: View {
                 .tag(AppTab.settings)
         }
         .preferredColorScheme(themeManager.currentTheme == .dark ? .dark : .light)
-        .modifier(TabModifier(activeTab: tabManager.activeTab) { newTab in
-            if newTab != .learn {
-                tabManager.deactivateTab(.learn)
-            }
-        })
-        .onAppear {
-            do {
-                try DatabaseManager.shared.connect()
-            } catch {
-                Logger.debug("Failed to connect to the database: \(error)")
-            }
-        }
+                .modifier(TabModifier(activeTab: tabManager.activeTab) { newTab in
+                    if newTab != .learn {
+                        tabManager.deactivateTab(.learn)
+                    }
+                })
     }
 }

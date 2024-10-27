@@ -13,6 +13,11 @@ struct LingocardApp: App {
         IQKeyboardManager.shared.enable = true
 
         Logger.initializeLogger()
+        do {
+            try DatabaseManager.shared.connect()
+        } catch {
+            fatalError("Не удалось подключиться к базе данных: \(error)")
+        }
     }
 
     var body: some Scene {
