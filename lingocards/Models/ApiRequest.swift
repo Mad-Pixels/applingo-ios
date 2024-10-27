@@ -10,7 +10,16 @@ struct DictionaryQueryRequest: Codable, Equatable {
     var code: String?
     var lastEvaluated: String?
 
-    init(id: String? = nil, name: String? = nil, categoryMain: String? = nil, categorySub: String? = nil, author: String? = nil, isPublic: Bool? = nil, code: String? = nil, lastEvaluated: String? = nil) {
+    init(
+        id: String? = nil,
+        name: String? = nil,
+        categoryMain: String? = nil,
+        categorySub: String? = nil,
+        author: String? = nil,
+        isPublic: Bool? = nil,
+        code: String? = nil,
+        lastEvaluated: String? = nil
+    ) {
         self.id = id
         self.name = name
         self.categoryMain = categoryMain

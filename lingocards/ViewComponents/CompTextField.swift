@@ -1,8 +1,5 @@
 import SwiftUI
 
-/// Main text field component, support:
-///  - icons
-///  - editable mode
 struct CompTextField: View {
     @Binding var text: String
 

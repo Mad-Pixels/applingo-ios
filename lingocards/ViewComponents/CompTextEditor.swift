@@ -1,8 +1,5 @@
 import SwiftUI
 
-/// Main text editor component, support:
-///  - icons
-///  - editable mode
 struct CompTextEditor: View {
     @Binding var text: String
     let placeholder: String

@@ -20,7 +20,6 @@ struct TabDictionariesView: View {
         guard let dbQueue = DatabaseManager.shared.databaseQueue else {
             fatalError("Database is not connected")
         }
-
         let repository = RepositoryDictionary(dbQueue: dbQueue)
         _dictionaryAction = StateObject(wrappedValue: DictionaryLocalActionViewModel(repository: repository))
         _dictionaryGetter = StateObject(wrappedValue: DictionaryLocalGetterViewModel(repository: repository))

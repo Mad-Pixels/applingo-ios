@@ -4,28 +4,26 @@ struct CompWordListView: View {
     let words: [WordItem]
     let onWordTap: (WordItem) -> Void
     let onDelete: (IndexSet) -> Void
-    let loadMoreIfNeeded: (WordItem) -> Void  // Принимает текущий элемент
+    let loadMoreIfNeeded: (WordItem) -> Void
     let theme: ThemeStyle
 
     var body: some View {
         List {
-                    ForEach(words, id: \.id) { word in
-                        CompWordRowView(
-                            word: word,
-                            onTap: {
-                                onWordTap(word)
-                            },
-                            theme: theme
-                        )
-                        .onAppear {
-                            // Отладочное сообщение
-                            print("👀 Появился элемент с id: \(word.id)")
-                            loadMoreIfNeeded(word)  // Передаем текущий элемент
-                        }
-                    }
-                    .onDelete(perform: onDelete)
+            ForEach(words, id: \.id) { word in
+                CompWordRowView(
+                    word: word,
+                    onTap: {
+                        onWordTap(word)
+                    },
+                    theme: theme
+                )
+                .onAppear {
+                    loadMoreIfNeeded(word)
                 }
-                .listStyle(PlainListStyle())
+            }
+            .onDelete(perform: onDelete)
+        }
+        //.listStyle(PlainListStyle())
+        //.padding(.horizontal, 16)
     }
 }
-
