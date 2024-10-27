@@ -19,7 +19,6 @@ final class WordsLocalGetterViewModel: BaseDatabaseViewModel {
     init(repository: WordRepositoryProtocol) {
         self.repository = repository
         super.init()
-        //resetPagination()
     }
     
     private func setupSearchTextSubscription() {
@@ -59,8 +58,6 @@ final class WordsLocalGetterViewModel: BaseDatabaseViewModel {
             }
         )
     }
-
-
     
     func loadMoreWordsIfNeeded(currentItem word: WordItem?) {
         guard

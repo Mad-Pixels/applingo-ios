@@ -8,8 +8,8 @@ struct TabDictionariesView: View {
     @EnvironmentObject var tabManager: TabManager
     @EnvironmentObject var errorManager: ErrorManager
 
-    @StateObject private var actionViewModel: DictionaryLocalActionViewModel
-    @StateObject private var dictionariesGetter: DictionaryLocalGetterViewModel
+    @StateObject private var dictionaryAction: DictionaryLocalActionViewModel
+    @StateObject private var dictionaryGetter: DictionaryLocalGetterViewModel
 
     @State private var selectedDictionary: DictionaryItem?
     @State private var isShowingFileImporter = false
@@ -22,8 +22,8 @@ struct TabDictionariesView: View {
         }
 
         let repository = RepositoryDictionary(dbQueue: dbQueue)
-        _actionViewModel = StateObject(wrappedValue: DictionaryLocalActionViewModel(repository: repository))
-        _dictionariesGetter = StateObject(wrappedValue: DictionaryLocalGetterViewModel(repository: repository))
+        _dictionaryAction = StateObject(wrappedValue: DictionaryLocalActionViewModel(repository: repository))
+        _dictionaryGetter = StateObject(wrappedValue: DictionaryLocalGetterViewModel(repository: repository))
     }
 
     var body: some View {
@@ -37,14 +37,14 @@ struct TabDictionariesView: View {
                     if let error = errorManager.currentError, errorManager.isVisible(for: .dictionaries, source: .dictionariesGet) {
                         CompErrorView(errorMessage: error.errorDescription ?? "", theme: theme)
                     }
-                    if dictionariesGetter.dictionaries.isEmpty && !errorManager.isErrorVisible {
+                    if dictionaryGetter.dictionaries.isEmpty && !errorManager.isErrorVisible {
                         CompEmptyListView(
                             theme: theme,
                             message: languageManager.localizedString(for: "NoDictionariesAvailable")
                         )
                     } else {
                         CompDictionaryListView(
-                            dictionaries: dictionariesGetter.dictionaries,
+                            dictionaries: dictionaryGetter.dictionaries,
                             onDictionaryTap: { dictionary in
                                 selectedDictionary = dictionary
                             },
@@ -77,9 +77,12 @@ struct TabDictionariesView: View {
                 .onAppear {
                     tabManager.setActiveTab(.dictionaries)
                     if tabManager.isActive(tab: .dictionaries) {
-                        dictionariesGetter.resetPagination()
-                        dictionariesGetter.get()
+                        dictionaryGetter.resetPagination()
+                        dictionaryGetter.get()
                     }
+                }
+                .onDisappear {
+                    dictionaryGetter.clear()
                 }
                 .modifier(ErrModifier(currentError: errorManager.currentError) { newError in
                     if let error = newError, error.tab == .dictionaries, error.source == .dictionaryDelete {
@@ -121,10 +124,10 @@ struct TabDictionariesView: View {
                 dictionary: dictionary,
                 isPresented: .constant(true),
                 onSave: { updatedDictionary, completion in
-                    actionViewModel.update(updatedDictionary) { result in
+                    dictionaryAction.update(updatedDictionary) { result in
                         switch result {
                         case .success:
-                            dictionariesGetter.resetPagination()
+                            dictionaryGetter.resetPagination()
                             completion(.success(()))
                         case .failure(let error):
                             completion(.failure(error))
@@ -137,12 +140,12 @@ struct TabDictionariesView: View {
 
     private func dictionaryDelete(at offsets: IndexSet) {
         offsets.forEach { index in
-            let dictionary = dictionariesGetter.dictionaries[index]
+            let dictionary = dictionaryGetter.dictionaries[index]
             if dictionary.tableName != "Internal" {
-                actionViewModel.delete(dictionary) { result in
+                dictionaryAction.delete(dictionary) { result in
                     switch result {
                     case .success:
-                        dictionariesGetter.dictionaries.remove(at: index)
+                        dictionaryGetter.dictionaries.remove(at: index)
                     case .failure(let error):
                         errorManager.setError(
                             appError: AppError(
@@ -177,10 +180,10 @@ struct TabDictionariesView: View {
             return
         }
 
-        actionViewModel.updateStatus(dictionaryID: dictionaryID, newStatus: newStatus) { result in
+        dictionaryAction.updateStatus(dictionaryID: dictionaryID, newStatus: newStatus) { result in
             switch result {
             case .success:
-                dictionariesGetter.resetPagination()
+                dictionaryGetter.resetPagination()
             case .failure(let error):
                 errorManager.setError(
                     appError: AppError(
@@ -206,7 +209,7 @@ struct TabDictionariesView: View {
 
         do {
             try databaseManager.importCSVFile(at: url)
-            dictionariesGetter.resetPagination()
+            dictionaryGetter.resetPagination()
             print("Successfully imported CSV file")
         } catch {
             print("Failed to import CSV file: \(error)")

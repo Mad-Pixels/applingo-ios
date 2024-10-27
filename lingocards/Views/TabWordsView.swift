@@ -88,6 +88,7 @@ struct TabWordsView: View {
                     }
                 }
                 .onDisappear {
+                    dictionaryGetter.clear()
                     wordsGetter.clear()
                 }
                 .modifier(ErrModifier(currentError: errorManager.currentError) { newError in
