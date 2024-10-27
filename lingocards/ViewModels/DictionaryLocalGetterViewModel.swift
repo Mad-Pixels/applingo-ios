@@ -2,7 +2,7 @@ import SwiftUI
 import Combine
 import GRDB
 
-final class DictionaryGetterViewModel: ObservableObject {
+final class DictionaryLocalGetterViewModel: ObservableObject {
     @Published var dictionaries: [DictionaryItem] = []
     @Published var searchText: String = ""
     

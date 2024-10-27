@@ -3,10 +3,9 @@ import SwiftUI
 struct DictionaryRemoteListView: View {
     @EnvironmentObject var languageManager: LanguageManager
     @EnvironmentObject var themeManager: ThemeManager
-    
     @Environment(\.presentationMode) var presentationMode
     
-    @StateObject private var viewModel = TabDictionariesViewModel()
+    @StateObject private var viewModel = DictionaryRemoteGetterViewModel()
     @StateObject private var errorManager = ErrorManager.shared
     
     @State private var apiRequestParams = DictionaryQueryRequest(isPublic: true)

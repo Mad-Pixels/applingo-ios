@@ -2,99 +2,120 @@ import Foundation
 import Combine
 import GRDB
 
-final class WordsActionViewModel: ObservableObject {
-    @Published var dictionaries: [DictionaryItem] = []
-    
-    // Сохранение слова в базу данных
-    func saveWord(_ word: WordItem, completion: @escaping (Result<Void, Error>) -> Void) {
+final class DictionaryLocalActionViewModel: ObservableObject {
+    // Сохранение словаря в базу данных
+    func saveDictionary(_ dictionary: DictionaryItem, completion: @escaping (Result<Void, Error>) -> Void) {
         performDatabaseOperation(
             { db in
-                var newWord = word
-                try newWord.insert(db)
+                var newDictionary = dictionary
+                try newDictionary.insert(db)
             },
             successHandler: { _ in
-                print("[WordsActionViewModel]: Слово успешно сохранено")
+                print("[DictionaryActionViewModel]: Словарь успешно сохранён")
                 completion(.success(()))
             },
             errorHandler: { error in
                 self.handleError(
                     error: error,
-                    source: .wordSave,
-                    message: "Не удалось сохранить слово в базу данных",
-                    tab: .words
+                    source: .dictionarySave,
+                    message: "Не удалось сохранить словарь в базу данных",
+                    tab: .dictionaries
                 )
                 completion(.failure(error))
             }
         )
     }
-    
-    // Обновление слова в базе данных
-    func updateWord(_ word: WordItem, completion: @escaping (Result<Void, Error>) -> Void) {
+
+    // Обновление словаря в базе данных
+    func updateDictionary(_ dictionary: DictionaryItem, completion: @escaping (Result<Void, Error>) -> Void) {
         performDatabaseOperation(
             { db in
-                try word.update(db)
+                try dictionary.update(db)
             },
             successHandler: { _ in
-                print("[WordsActionViewModel]: Слово успешно обновлено")
+                print("[DictionaryActionViewModel]: Словарь успешно обновлён")
                 completion(.success(()))
             },
             errorHandler: { error in
                 self.handleError(
                     error: error,
-                    source: .wordUpdate,
-                    message: "Не удалось обновить слово в базе данных",
-                    tab: .words
+                    source: .dictionaryUpdate,
+                    message: "Не удалось обновить словарь в базе данных",
+                    tab: .dictionaries
                 )
                 completion(.failure(error))
             }
         )
     }
-    
-    // Удаление слова из базы данных
-    func deleteWord(_ word: WordItem, completion: @escaping (Result<Void, Error>) -> Void) {
+
+    // Удаление словаря из базы данных
+    func deleteDictionary(_ dictionary: DictionaryItem, completion: @escaping (Result<Void, Error>) -> Void) {
         performDatabaseOperation(
             { db in
-                try word.delete(db)
+                try dictionary.delete(db)
+                let deleteWordsSQL = "DELETE FROM Words WHERE dictionaryName = ?"
+                try db.execute(sql: deleteWordsSQL, arguments: [dictionary.tableName])
             },
             successHandler: { _ in
-                print("[WordsActionViewModel]: Слово с ID \(word.id) успешно удалено")
+                print("[DictionaryActionViewModel]: Словарь успешно удалён")
                 completion(.success(()))
             },
             errorHandler: { error in
                 self.handleError(
                     error: error,
-                    source: .wordDelete,
-                    message: "Не удалось удалить слово из базы данных",
-                    tab: .words
+                    source: .dictionaryDelete,
+                    message: "Не удалось удалить словарь из базы данных",
+                    tab: .dictionaries
                 )
                 completion(.failure(error))
             }
         )
     }
-    
+
     // Получение списка словарей из базы данных
-    func getDictionaries(completion: @escaping (Result<Void, Error>) -> Void) {
+    func getDictionaries(completion: @escaping (Result<[DictionaryItem], Error>) -> Void) {
         performDatabaseOperation(
             { db in
                 return try DictionaryItem.fetchAll(db)
             },
             successHandler: { fetchedDictionaries in
-                self.dictionaries = fetchedDictionaries
-                print("[WordsActionViewModel]: Словари успешно получены")
-                completion(.success(()))
+                print("[DictionaryActionViewModel]: Словари успешно получены")
+                completion(.success(fetchedDictionaries))
             },
             errorHandler: { error in
                 self.handleError(
                     error: error,
                     source: .dictionariesGet,
                     message: "Не удалось получить словари из базы данных",
-                    tab: .words
+                    tab: .dictionaries
                 )
                 completion(.failure(error))
             }
         )
     }
-    
+
+    // Обновление статуса активности словаря
+    func updateDictionaryStatus(dictionaryID: Int, newStatus: Bool, completion: @escaping (Result<Void, Error>) -> Void) {
+        performDatabaseOperation(
+            { db in
+                try DictionaryItem.updateStatus(in: db, dictionaryID: dictionaryID, newStatus: newStatus)
+            },
+            successHandler: { _ in
+                print("[DictionaryActionViewModel]: Статус словаря успешно обновлен")
+                completion(.success(()))
+            },
+            errorHandler: { error in
+                self.handleError(
+                    error: error,
+                    source: .dictionaryUpdate,
+                    message: "Не удалось обновить статус словаря в базе данных",
+                    tab: .dictionaries
+                )
+                completion(.failure(error))
+            }
+        )
+    }
+
     // Хелпер для операций с базой данных
     private func performDatabaseOperation<T>(
         _ operation: @escaping (Database) throws -> T,
@@ -110,7 +131,7 @@ final class WordsActionViewModel: ObservableObject {
             errorHandler(error)
             return
         }
-        
+
         DispatchQueue.global(qos: .userInitiated).async {
             do {
                 let result = try DatabaseManager.shared.databaseQueue?.write { db in
@@ -128,7 +149,7 @@ final class WordsActionViewModel: ObservableObject {
             }
         }
     }
-    
+
     // Обработка ошибок
     private func handleError(
         error: Error,
@@ -136,7 +157,7 @@ final class WordsActionViewModel: ObservableObject {
         message: String,
         tab: AppTab
     ) {
-        print("[WordsActionViewModel]: \(message): \(error)")
+        print("[DictionaryActionViewModel]: \(message): \(error)")
         let appError = AppError(
             errorType: .database,
             errorMessage: message,

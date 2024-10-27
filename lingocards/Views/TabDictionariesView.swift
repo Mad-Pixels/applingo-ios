@@ -7,8 +7,8 @@ struct TabDictionariesView: View {
     @EnvironmentObject var themeManager: ThemeManager
     @EnvironmentObject var tabManager: TabManager
 
-    @StateObject private var actionViewModel = DictionaryActionViewModel()
-    @StateObject private var dictionariesGetter = DictionaryGetterViewModel()
+    @StateObject private var actionViewModel = DictionaryLocalActionViewModel()
+    @StateObject private var dictionariesGetter = DictionaryLocalGetterViewModel()
     @StateObject private var errorManager = ErrorManager.shared
 
     @State private var selectedDictionary: DictionaryItem?

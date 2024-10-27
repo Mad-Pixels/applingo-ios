@@ -5,8 +5,8 @@ struct TabWordsView: View {
     @EnvironmentObject var themeManager: ThemeManager
     @EnvironmentObject var tabManager: TabManager
 
-    @StateObject private var actionViewModel = WordsActionViewModel()
-    @StateObject private var wordsGetter = WordsGetterViewModel()
+    @StateObject private var actionViewModel = WordsLocalActionViewModel()
+    @StateObject private var wordsGetter = WordsLocalGetterViewModel()
     @StateObject private var errorManager = ErrorManager.shared
 
     @State private var selectedWord: WordItem?

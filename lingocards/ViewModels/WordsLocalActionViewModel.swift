@@ -2,40 +2,21 @@ import Foundation
 import Combine
 import GRDB
 
-final class TabWordsViewModel: ObservableObject {
+final class WordsLocalActionViewModel: ObservableObject {
     @Published var dictionaries: [DictionaryItem] = []
-    
-    private var cancellable: AnyCancellable?
-    private var isActiveTab: Bool = false
-    
-    init() {
-        cancellable = NotificationCenter.default
-            .publisher(for: .didSelectWordsTab)
-            .sink { [weak self] _ in
-                self?.isActiveTab = true
-                Logger.debug("[TabWordsViewModel]: Выбрана вкладка 'Слова'")
-            }
-    }
-    
-    deinit {
-        cancellable?.cancel()
-    }
     
     // Сохранение слова в базу данных
     func saveWord(_ word: WordItem, completion: @escaping (Result<Void, Error>) -> Void) {
-        Logger.debug("[TabWordsViewModel]: Сохранение слова в базу данных...")
-        
         performDatabaseOperation(
             { db in
                 var newWord = word
                 try newWord.insert(db)
             },
             successHandler: { _ in
-                Logger.debug("[TabWordsViewModel]: Слово успешно сохранено")
+                print("[WordsActionViewModel]: Слово успешно сохранено")
                 completion(.success(()))
             },
-            errorHandler: { [weak self] error in
-                guard let self = self else { return }
+            errorHandler: { error in
                 self.handleError(
                     error: error,
                     source: .wordSave,
@@ -48,26 +29,61 @@ final class TabWordsViewModel: ObservableObject {
     }
     
     // Обновление слова в базе данных
-    
+    func updateWord(_ word: WordItem, completion: @escaping (Result<Void, Error>) -> Void) {
+        performDatabaseOperation(
+            { db in
+                try word.update(db)
+            },
+            successHandler: { _ in
+                print("[WordsActionViewModel]: Слово успешно обновлено")
+                completion(.success(()))
+            },
+            errorHandler: { error in
+                self.handleError(
+                    error: error,
+                    source: .wordUpdate,
+                    message: "Не удалось обновить слово в базе данных",
+                    tab: .words
+                )
+                completion(.failure(error))
+            }
+        )
+    }
     
     // Удаление слова из базы данных
+    func deleteWord(_ word: WordItem, completion: @escaping (Result<Void, Error>) -> Void) {
+        performDatabaseOperation(
+            { db in
+                try word.delete(db)
+            },
+            successHandler: { _ in
+                print("[WordsActionViewModel]: Слово с ID \(word.id) успешно удалено")
+                completion(.success(()))
+            },
+            errorHandler: { error in
+                self.handleError(
+                    error: error,
+                    source: .wordDelete,
+                    message: "Не удалось удалить слово из базы данных",
+                    tab: .words
+                )
+                completion(.failure(error))
+            }
+        )
+    }
     
-    
-    // Получение словарей из базы данных
+    // Получение списка словарей из базы данных
     func getDictionaries(completion: @escaping (Result<Void, Error>) -> Void) {
-        Logger.debug("[TabWordsViewModel]: Получение словарей...")
-        
         performDatabaseOperation(
             { db in
                 return try DictionaryItem.fetchAll(db)
             },
-            successHandler: { [weak self] fetchedDictionaries in
-                self?.dictionaries = fetchedDictionaries
-                Logger.debug("[TabWordsViewModel]: Словари успешно получены")
+            successHandler: { fetchedDictionaries in
+                self.dictionaries = fetchedDictionaries
+                print("[WordsActionViewModel]: Словари успешно получены")
                 completion(.success(()))
             },
-            errorHandler: { [weak self] error in
-                guard let self = self else { return }
+            errorHandler: { error in
                 self.handleError(
                     error: error,
                     source: .dictionariesGet,
@@ -97,7 +113,7 @@ final class TabWordsViewModel: ObservableObject {
         
         DispatchQueue.global(qos: .userInitiated).async {
             do {
-                let result = try DatabaseManager.shared.databaseQueue?.read { db in
+                let result = try DatabaseManager.shared.databaseQueue?.write { db in
                     try operation(db)
                 }
                 DispatchQueue.main.async {
@@ -120,7 +136,7 @@ final class TabWordsViewModel: ObservableObject {
         message: String,
         tab: AppTab
     ) {
-        Logger.debug("[TabWordsViewModel]: \(message): \(error)")
+        print("[WordsActionViewModel]: \(message): \(error)")
         let appError = AppError(
             errorType: .database,
             errorMessage: message,

@@ -2,7 +2,7 @@ import SwiftUI
 import Combine
 import GRDB
 
-final class WordsGetterViewModel: ObservableObject {
+final class WordsLocalGetterViewModel: ObservableObject {
     @Published var words: [WordItem] = []
     @Published var searchText: String = ""
     
