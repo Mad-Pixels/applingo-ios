@@ -8,10 +8,10 @@ protocol DictionaryRepositoryProtocol {
 
 protocol WordRepositoryProtocol {
     func fetch(
-        searchText: String?,
-        lastItem: WordItem?,
-        limit: Int
-    ) throws -> [WordItem]
+            searchText: String?,
+            offset: Int,
+            limit: Int
+        ) throws -> [WordItem]
     func save(_ word: WordItem) throws
     func update(_ word: WordItem) throws
     func delete(_ word: WordItem) throws

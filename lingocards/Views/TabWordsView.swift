@@ -117,8 +117,7 @@ struct TabWordsView: View {
                     wordsAction.save(word) { result in
                         switch result {
                         case .success:
-                            wordsGetter.resetPagination()
-                            wordsGetter.get()
+                            wordsGetter.resetPagination()  // Убираем дублирующий вызов `get`
                             completion(.success(()))
                         case .failure(let error):
                             completion(.failure(error))
@@ -135,8 +134,7 @@ struct TabWordsView: View {
                     wordsAction.update(updatedWord) { result in
                         switch result {
                         case .success:
-                            wordsGetter.resetPagination()
-                            wordsGetter.get()
+                            wordsGetter.resetPagination()  // Убираем дублирующий вызов `get`
                             completion(.success(()))
                         case .failure(let error):
                             completion(.failure(error))
