@@ -35,35 +35,36 @@ struct TabWordsView: View {
                 theme.backgroundViewColor.edgesIgnoringSafeArea(.all)
 
                 VStack(spacing: 0) {
-                    CompSearchView(
-                        searchText: $wordsGetter.searchText,
-                        placeholder: languageManager.localizedString(for: "Search").capitalizedFirstLetter,
-                        theme: theme
+                    List {
+                        if let error = errorManager.currentError, errorManager.isVisible(for: .words, source: .wordsGet) {
+                            CompErrorView(errorMessage: error.errorDescription ?? "", theme: theme)
+                        }
+                        if wordsGetter.words.isEmpty && !errorManager.isErrorVisible {
+                            CompEmptyListView(
+                                theme: theme,
+                                message: languageManager.localizedString(for: "NoWordsAvailable")
+                            )
+                        } else {
+                            ForEach(wordsGetter.words) { word in
+                                CompWordRowView(
+                                    word: word,
+                                    onTap: {
+                                        selectedWord = word
+                                        isShowingDetailView = true
+                                    },
+                                    theme: theme
+                                )
+                                .onAppear {
+                                    wordsGetter.loadMoreWordsIfNeeded(currentItem: word)
+                                }
+                            }
+                        }
+                    }
+                    .searchable(
+                        text: $wordsGetter.searchText,
+                        placement: .navigationBarDrawer(displayMode: .always),
+                        prompt: languageManager.localizedString(for: "Search").capitalizedFirstLetter
                     )
-                    .padding(.bottom, 10)
-
-                    if let error = errorManager.currentError, errorManager.isVisible(for: .words, source: .wordsGet) {
-                        CompErrorView(errorMessage: error.errorDescription ?? "", theme: theme)
-                    }
-                    if wordsGetter.words.isEmpty && !errorManager.isErrorVisible {
-                        CompEmptyListView(
-                            theme: theme,
-                            message: languageManager.localizedString(for: "NoWordsAvailable")
-                        )
-                    } else {
-                        CompWordListView(
-                            words: wordsGetter.words,
-                            onWordTap: { word in
-                                isShowingDetailView = true
-                                selectedWord = word
-                            },
-                            onDelete: wordDelete,
-                            loadMoreIfNeeded: { word in
-                                wordsGetter.loadMoreWordsIfNeeded(currentItem: word)
-                            },
-                            theme: theme
-                        )
-                    }
                 }
                 .navigationTitle(languageManager.localizedString(for: "Words").capitalizedFirstLetter)
                 .navigationBarTitleDisplayMode(.large)
@@ -146,24 +147,23 @@ struct TabWordsView: View {
         }
     }
 
-    private func wordDelete(at offsets: IndexSet) {
-        offsets.forEach { index in
-            let word = wordsGetter.words[index]
-            wordsAction.delete(word) { result in
-                switch result {
-                case .success:
+    private func wordDelete(word: WordItem) {
+        wordsAction.delete(word) { result in
+            switch result {
+            case .success:
+                if let index = wordsGetter.words.firstIndex(of: word) {
                     wordsGetter.words.remove(at: index)
-                case .failure(let error):
-                    errorManager.setError(
-                        appError: AppError(
-                            errorType: .database,
-                            errorMessage: "Failed to delete word",
-                            additionalInfo: ["error": "\(error)"]
-                        ),
-                        tab: .words,
-                        source: .wordDelete
-                    )
                 }
+            case .failure(let error):
+                errorManager.setError(
+                    appError: AppError(
+                        errorType: .database,
+                        errorMessage: "Failed to delete word",
+                        additionalInfo: ["error": "\(error)"]
+                    ),
+                    tab: .words,
+                    source: .wordDelete
+                )
             }
         }
     }
