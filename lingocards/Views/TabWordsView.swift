@@ -46,18 +46,19 @@ struct TabWordsView: View {
                             )
                         } else {
                             ForEach(wordsGetter.words) { word in
-                                CompWordRowView(
-                                    word: word,
-                                    onTap: {
-                                        selectedWord = word
-                                        isShowingDetailView = true
-                                    },
-                                    theme: theme
-                                )
-                                .onAppear {
-                                    wordsGetter.loadMoreWordsIfNeeded(currentItem: word)
-                                }
-                            }
+                                        CompWordRowView(
+                                            word: word,
+                                            onTap: {
+                                                selectedWord = word
+                                                isShowingDetailView = true
+                                            },
+                                            theme: theme
+                                        )
+                                        .onAppear {
+                                            wordsGetter.loadMoreWordsIfNeeded(currentItem: word)
+                                        }
+                                    }
+                                    .onDelete(perform: deleteWords)
                         }
                     }
                     .searchable(
@@ -80,6 +81,7 @@ struct TabWordsView: View {
                             ],
                             theme: theme
                         )
+                        
                     }
                 }
                 .onAppear {
@@ -145,6 +147,13 @@ struct TabWordsView: View {
         }
     }
 
+    private func deleteWords(at offsets: IndexSet) {
+        offsets.forEach { index in
+            let word = wordsGetter.words[index]
+            wordDelete(word: word)  // Удаляем объект из базы данных
+        }
+    }
+    
     private func wordDelete(word: WordItem) {
         wordsAction.delete(word) { result in
             switch result {
