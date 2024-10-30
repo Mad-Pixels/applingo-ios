@@ -5,17 +5,16 @@ final class WordsLocalGetterViewModel: BaseDatabaseViewModel {
     @Published var words: [WordItem] = []
     @Published var searchText: String = "" {
         didSet {
-            // Только при изменении `searchText` вызываем сброс пагинации
             if searchText != oldValue {
                 resetPagination()
             }
         }
     }
+    @Published var isLoadingPage = false  // Теперь обновляется без задержек
 
     private let repository: WordRepositoryProtocol
     private let itemsPerPage: Int = 50
 
-    private var isLoadingPage = false
     private var hasMorePages = true
     private var cancellables = Set<AnyCancellable>()
     private var currentPage = 0  // Начальная страница
@@ -26,18 +25,18 @@ final class WordsLocalGetterViewModel: BaseDatabaseViewModel {
     }
 
     /// Сброс состояния пагинации и очистка списка
-     func resetPagination() {
-        words.removeAll()         // Полностью очищаем массив при новом поиске
-        currentPage = 0           // Возвращаемся к первой странице
-        hasMorePages = true       // Разрешаем подгрузку страниц
-        isLoadingPage = false     // Готовимся к новому запросу
-        get()                     // Начинаем новый запрос
+    func resetPagination() {
+        words.removeAll()
+        currentPage = 0
+        hasMorePages = true
+        isLoadingPage = false
+        get()  // Начинаем новый запрос
     }
 
     /// Запрос данных с контролем загрузки
     func get() {
         guard !isLoadingPage, hasMorePages else { return }
-        isLoadingPage = true      // Начинаем загрузку и блокируем повторные вызовы
+        isLoadingPage = true  // Устанавливаем сразу при начале загрузки
 
         performDatabaseOperation(
             { try self.repository.fetch(
@@ -47,15 +46,15 @@ final class WordsLocalGetterViewModel: BaseDatabaseViewModel {
             ) },
             successHandler: { [weak self] fetchedWords in
                 guard let self = self else { return }
-                self.isLoadingPage = false
                 self.processFetchedWords(fetchedWords)
+                self.isLoadingPage = false  // Сбрасываем после обработки данных
             },
             errorSource: .wordsGet,
             errorMessage: "Не удалось загрузить слова",
             tab: .words,
             completion: { [weak self] result in
                 if case .failure = result {
-                    self?.isLoadingPage = false
+                    self?.isLoadingPage = false  // Сбрасываем при ошибке
                 }
             }
         )
@@ -78,12 +77,12 @@ final class WordsLocalGetterViewModel: BaseDatabaseViewModel {
         if fetchedWords.isEmpty {
             hasMorePages = false  // Достигли конца данных
         } else {
-            currentPage += 1      // Переходим к следующей странице
-            words.append(contentsOf: fetchedWords)  // Добавляем только уникальные данные
+            currentPage += 1
+            words.append(contentsOf: fetchedWords)
         }
     }
 
     func clear() {
-        words = []  // Очищаем данные
+        words = []
     }
 }
