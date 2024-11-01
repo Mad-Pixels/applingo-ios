@@ -34,75 +34,40 @@ struct TabWordsView: View {
             ZStack {
                 theme.backgroundViewColor.edgesIgnoringSafeArea(.all)
 
-                VStack(spacing: 0) {
-                    List {
-                        if let error = errorManager.currentError, errorManager.isVisible(for: .words, source: .wordsGet) {
-                            CompErrorView(errorMessage: error.errorDescription ?? "", theme: theme)
-                        }
-
-                        if wordsGetter.words.isEmpty {
-                            if wordsGetter.isLoadingPage {
-                                // Показываем прелоадер, если идет загрузка и список пуст
-                                HStack {
-                                    Spacer()
-                                    ProgressView()
-                                        .progressViewStyle(CircularProgressViewStyle())
-                                        .scaleEffect(1.5)
-                                        .padding()
-                                    Spacer()
-                                }
-                            } else {
-                                // Показываем CompEmptyListView только если загрузка завершена и список пуст
-                                CompEmptyListView(
-                                    theme: theme,
-                                    message: languageManager.localizedString(for: "NoWordsAvailable")
-                                )
-                            }
-                        } else {
-                            // Отображение списка элементов, если данные уже загружены
-                            ForEach(wordsGetter.words) { word in
-                                CompWordRowView(
-                                    word: word,
-                                    onTap: {
-                                        selectedWord = word
-                                        isShowingDetailView = true
-                                    },
-                                    theme: theme
-                                )
-                                .onAppear {
-                                    wordsGetter.loadMoreWordsIfNeeded(currentItem: word)
-                                }
-                            }
-                            .onDelete(perform: deleteWords)
-                            
-                            // Прелоадер внизу списка при подгрузке данных
-                            if wordsGetter.isLoadingPage {
-                                HStack {
-                                    Spacer()
-                                    ProgressView()
-                                        .progressViewStyle(CircularProgressViewStyle())
-                                        .padding()
-                                    Spacer()
-                                }
-                            }
-                        }
+                CompItemListView(
+                    items: $wordsGetter.words,
+                    isLoadingPage: wordsGetter.isLoadingPage,
+                    error: errorManager.currentError,
+                    onItemAppear: { word in
+                        wordsGetter.loadMoreWordsIfNeeded(currentItem: word)
+                    },
+                    onDelete: deleteWords,
+                    onItemTap: { word in
+                        selectedWord = word
+                        isShowingDetailView = true
+                    },
+                    emptyListView: AnyView(
+                        CompEmptyListView(
+                            theme: theme,
+                            message: languageManager.localizedString(for: "NoWordsAvailable")
+                        )
+                    ),
+                    rowContent: { word in
+                        CompWordRowView(
+                            word: word,
+                            onTap: {
+                                selectedWord = word
+                                isShowingDetailView = true
+                            },
+                            theme: theme
+                        )
                     }
-                    .overlay( // Прелоадер как подложка списка
-                        Group {
-                            if wordsGetter.isLoadingPage {
-                                ProgressView()
-                                    .progressViewStyle(CircularProgressViewStyle())
-                                    .scaleEffect(1.5)
-                                    .padding()
-                            }
-                        }, alignment: .center
-                    )
-                    .searchable(
-                        text: $wordsGetter.searchText,
-                        placement: .navigationBarDrawer(displayMode: .always),
-                        prompt: languageManager.localizedString(for: "Search").capitalizedFirstLetter
-                    )
-                }
+                )
+                .searchable(
+                    text: $wordsGetter.searchText,
+                    placement: .navigationBarDrawer(displayMode: .always),
+                    prompt: languageManager.localizedString(for: "Search").capitalizedFirstLetter
+                )
                 .navigationTitle(languageManager.localizedString(for: "Words").capitalizedFirstLetter)
                 .navigationBarTitleDisplayMode(.large)
                 .toolbar {
@@ -188,7 +153,7 @@ struct TabWordsView: View {
             wordDelete(word: word)
         }
     }
-    
+
     private func wordDelete(word: WordItem) {
         wordsAction.delete(word) { result in
             switch result {

@@ -3,18 +3,27 @@ import Combine
 
 final class DictionaryLocalGetterViewModel: BaseDatabaseViewModel {
     @Published var dictionaries: [DictionaryItem] = []
+    @Published var searchText: String = "" {
+        didSet {
+            filterDictionaries()
+        }
+    }
     
-    private let repository: DictionaryRepositoryProtocol
-    private var isLoadingPage = false
+    var isLoadingPage = false
+    
     private var hasMorePages = true
+    private var allDictionaries: [DictionaryItem] = []
+    private let repository: DictionaryRepositoryProtocol
 
     init(repository: DictionaryRepositoryProtocol) {
         self.repository = repository
         super.init()
+        get()
     }
 
     func resetPagination() {
         dictionaries.removeAll()
+        allDictionaries.removeAll()
         isLoadingPage = false
         hasMorePages = true
         get()
@@ -40,16 +49,37 @@ final class DictionaryLocalGetterViewModel: BaseDatabaseViewModel {
             }
         )
     }
-    
+
     private func processFetchedDictionaries(_ fetchedDictionaries: [DictionaryItem]) {
         if fetchedDictionaries.isEmpty {
             hasMorePages = false
         } else {
-            dictionaries.append(contentsOf: fetchedDictionaries)
+            allDictionaries.append(contentsOf: fetchedDictionaries)
+            filterDictionaries()
+        }
+    }
+    
+    func loadMoreDictionariesIfNeeded(currentItem: DictionaryItem?) {
+        guard let currentItem = currentItem else { return }
+        let thresholdIndex = dictionaries.index(dictionaries.endIndex, offsetBy: -5)
+        
+        if dictionaries.firstIndex(where: { $0.id == currentItem.id }) == thresholdIndex {
+            get()
+        }
+    }
+
+    private func filterDictionaries() {
+        if searchText.isEmpty {
+            dictionaries = allDictionaries
+        } else {
+            dictionaries = allDictionaries.filter { dictionary in
+                dictionary.displayName.localizedCaseInsensitiveContains(searchText)
+            }
         }
     }
 
     func clear() {
         dictionaries = []
+        allDictionaries = []
     }
 }

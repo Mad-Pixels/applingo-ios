@@ -32,30 +32,41 @@ struct TabDictionariesView: View {
             ZStack {
                 theme.backgroundViewColor.edgesIgnoringSafeArea(.all)
 
-                VStack {
-                    if let error = errorManager.currentError, errorManager.isVisible(for: .dictionaries, source: .dictionariesGet) {
-                        CompErrorView(errorMessage: error.errorDescription ?? "", theme: theme)
-                    }
-                    if dictionaryGetter.dictionaries.isEmpty && !errorManager.isErrorVisible {
+                CompItemListView(
+                    items: $dictionaryGetter.dictionaries,
+                    isLoadingPage: dictionaryGetter.isLoadingPage,
+                    error: errorManager.currentError,
+                    onItemAppear: { dictionary in
+                        dictionaryGetter.loadMoreDictionariesIfNeeded(currentItem: dictionary)
+                    },
+                    onDelete: dictionaryDelete,
+                    onItemTap: { dictionary in
+                        selectedDictionary = dictionary
+                    },
+                    emptyListView: AnyView(
                         CompEmptyListView(
                             theme: theme,
                             message: languageManager.localizedString(for: "NoDictionariesAvailable")
                         )
-                    } else {
-                        CompDictionaryListView(
-                            dictionaries: dictionaryGetter.dictionaries,
-                            onDictionaryTap: { dictionary in
+                    ),
+                    rowContent: { dictionary in
+                        CompDictionaryRowView(
+                            dictionary: dictionary,
+                            onTap: {
                                 selectedDictionary = dictionary
                             },
-                            onDelete: dictionaryDelete,
-                            onToggle: { dictionary, newStatus in
+                            onToggle: { newStatus in
                                 dictionaryStatusUpdate(dictionary, newStatus: newStatus)
                             },
                             theme: theme
                         )
                     }
-                    Spacer()
-                }
+                )
+                .searchable(
+                    text: $dictionaryGetter.searchText,
+                    placement: .navigationBarDrawer(displayMode: .always),
+                    prompt: languageManager.localizedString(for: "Search").capitalizedFirstLetter
+                )
                 .navigationTitle(languageManager.localizedString(for: "Dictionaries").capitalizedFirstLetter)
                 .navigationBarTitleDisplayMode(.large)
                 .toolbar {

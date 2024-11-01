@@ -312,6 +312,9 @@
         }
       }
     },
+    "Error: %@" : {
+
+    },
     "Failed to update the dictionary due to database issues." : {
 
     },
