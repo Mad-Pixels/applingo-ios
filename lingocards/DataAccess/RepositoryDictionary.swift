@@ -31,15 +31,21 @@ class RepositoryDictionary: DictionaryRepositoryProtocol {
     }
     
     func save(_ dictionary: DictionaryItem) throws {
+        var fmtDictionary = dictionary
+        fmtDictionary.fmt()
+        
         try dbQueue.write { db in
-            try dictionary.insert(db)
+            try fmtDictionary.insert(db)
         }
         Logger.debug("[RepositoryDictionary]: save - \(dictionary.displayName) with ID \(dictionary.id ?? -1)")
     }
     
     func update(_ dictionary: DictionaryItem) throws {
+        var fmtDictionary = dictionary
+        fmtDictionary.fmt()
+        
         try dbQueue.write { db in
-            try dictionary.update(db)
+            try fmtDictionary.update(db)
         }
         Logger.debug("[RepositoryDictionary]: update - \(dictionary.displayName) with ID \(dictionary.id ?? -1)")
     }

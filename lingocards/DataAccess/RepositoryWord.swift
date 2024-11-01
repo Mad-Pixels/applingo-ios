@@ -70,15 +70,21 @@ class RepositoryWord: WordRepositoryProtocol {
     }
 
     func save(_ word: WordItem) throws {
+        var fmtWord = word
+        fmtWord.fmt()
+        
         try dbQueue.write { db in
-            try word.insert(db)
+            try fmtWord.insert(db)
         }
         Logger.debug("[RepositoryWord]: save - \(word)")
     }
     
     func update(_ word: WordItem) throws {
+        var fmtWord = word
+        fmtWord.fmt()
+        
         try dbQueue.write { db in
-            try word.update(db)
+            try fmtWord.update(db)
         }
         Logger.debug("[RepositoryWord]: update - \(word)")
     }

@@ -37,6 +37,8 @@ struct WordItem: Identifiable, Codable, Equatable {
         self.success = success
         self.weight = weight
         self.fail = fail
+        
+        self.fmt()
     }
     
     static func empty() -> WordItem {
@@ -45,6 +47,14 @@ struct WordItem: Identifiable, Codable, Equatable {
             frontText: "",
             backText: ""
         )
+    }
+    
+    mutating func fmt() {
+        self.frontText = frontText.trimmedTrailingWhitespace.lowercased()
+        self.backText = backText.trimmedTrailingWhitespace.lowercased()
+        self.hint = hint?.trimmedTrailingWhitespace.lowercased()
+        
+        self.description = description?.trimmedTrailingWhitespace
     }
 }
 

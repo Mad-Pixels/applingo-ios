@@ -38,6 +38,8 @@ struct DictionaryItem: Identifiable, Codable, Equatable, Hashable {
         self.createdAt = createdAt
         self.isPrivate = isPrivate
         self.isActive = isActive
+        
+        self.fmt()
     }
 
     var subTitle: String {
@@ -50,6 +52,14 @@ struct DictionaryItem: Identifiable, Codable, Equatable, Hashable {
         formatter.dateStyle = .medium
         formatter.timeStyle = .short
         return formatter.string(from: date)
+    }
+    
+    mutating func fmt() {
+        self.displayName = displayName.trimmedTrailingWhitespace
+        self.description = description.trimmedTrailingWhitespace
+        self.subcategory = subcategory.trimmedTrailingWhitespace
+        self.category = category.trimmedTrailingWhitespace
+        self.author = author.trimmedTrailingWhitespace
     }
 }
 
