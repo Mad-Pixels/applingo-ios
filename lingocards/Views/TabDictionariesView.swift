@@ -20,6 +20,7 @@ struct TabDictionariesView: View {
         guard let dbQueue = DatabaseManager.shared.databaseQueue else {
             fatalError("Database is not connected")
         }
+
         let repository = RepositoryDictionary(dbQueue: dbQueue)
         _dictionaryAction = StateObject(wrappedValue: DictionaryLocalActionViewModel(repository: repository))
         _dictionaryGetter = StateObject(wrappedValue: DictionaryLocalGetterViewModel(repository: repository))
@@ -39,7 +40,7 @@ struct TabDictionariesView: View {
                     onItemAppear: { dictionary in
                         dictionaryGetter.loadMoreDictionariesIfNeeded(currentItem: dictionary)
                     },
-                    onDelete: dictionaryDelete,
+                    onDelete: delete,
                     onItemTap: { dictionary in
                         selectedDictionary = dictionary
                     },
@@ -56,7 +57,7 @@ struct TabDictionariesView: View {
                                 selectedDictionary = dictionary
                             },
                             onToggle: { newStatus in
-                                dictionaryStatusUpdate(dictionary, newStatus: newStatus)
+                                updateStatus(dictionary, newStatus: newStatus)
                             },
                             theme: theme
                         )
@@ -87,14 +88,10 @@ struct TabDictionariesView: View {
                 .onAppear {
                     tabManager.setActiveTab(.dictionaries)
                     if tabManager.isActive(tab: .dictionaries) {
-                        print("[TabDictionariesView]: Activating and loading dictionaries.")
                         dictionaryGetter.resetPagination()
-                    } else {
-                        print("[TabDictionariesView]: Tab is not active.")
                     }
                 }
                 .onDisappear {
-                    print("[TabDictionariesView]: Clearing dictionaries on disappear.")
                     dictionaryGetter.clear()
                 }
                 .modifier(ErrModifier(currentError: errorManager.currentError) { newError in
@@ -118,13 +115,8 @@ struct TabDictionariesView: View {
                 allowedContentTypes: [.commaSeparatedText],
                 allowsMultipleSelection: false
             ) { result in
-                switch result {
-                case .success(let urls):
-                    if let url = urls.first {
-                        dictionaryImport(from: url)
-                    }
-                case .failure(let error):
-                    print("Failed to import file: \(error)")
+                if case .success(let urls) = result, let url = urls.first {
+                    dictionaryImport(from: url)
                 }
             }
             .fullScreenCover(isPresented: $isShowingRemoteList) {
@@ -138,37 +130,23 @@ struct TabDictionariesView: View {
                 isPresented: .constant(true),
                 onSave: { updatedDictionary, completion in
                     dictionaryAction.update(updatedDictionary) { result in
-                        switch result {
-                        case .success:
+                        if case .success = result {
                             dictionaryGetter.resetPagination()
-                            completion(.success(()))
-                        case .failure(let error):
-                            completion(.failure(error))
                         }
+                        completion(result)
                     }
                 }
             )
         }
     }
 
-    private func dictionaryDelete(at offsets: IndexSet) {
+    private func delete(at offsets: IndexSet) {
         offsets.forEach { index in
             let dictionary = dictionaryGetter.dictionaries[index]
             if dictionary.tableName != "Internal" {
                 dictionaryAction.delete(dictionary) { result in
-                    switch result {
-                    case .success:
+                    if case .success = result {
                         dictionaryGetter.dictionaries.remove(at: index)
-                    case .failure(let error):
-                        errorManager.setError(
-                            appError: AppError(
-                                errorType: .database,
-                                errorMessage: "Failed to delete dictionary",
-                                additionalInfo: ["error": "\(error)"]
-                            ),
-                            tab: .dictionaries,
-                            source: .dictionaryDelete
-                        )
                     }
                 }
             } else {
@@ -187,26 +165,13 @@ struct TabDictionariesView: View {
         }
     }
 
-    private func dictionaryStatusUpdate(_ dictionary: DictionaryItem, newStatus: Bool) {
+    private func updateStatus(_ dictionary: DictionaryItem, newStatus: Bool) {
         guard let dictionaryID = dictionary.id else {
-            print("Error: Dictionary ID is missing.")
             return
         }
-
         dictionaryAction.updateStatus(dictionaryID: dictionaryID, newStatus: newStatus) { result in
-            switch result {
-            case .success:
+            if case .success = result {
                 dictionaryGetter.resetPagination()
-            case .failure(let error):
-                errorManager.setError(
-                    appError: AppError(
-                        errorType: .database,
-                        errorMessage: "Failed to update dictionary status",
-                        additionalInfo: ["error": "\(error)"]
-                    ),
-                    tab: .dictionaries,
-                    source: .dictionaryUpdate
-                )
             }
         }
     }
