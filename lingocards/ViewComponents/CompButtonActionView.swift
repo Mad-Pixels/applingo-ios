@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct CompButtonCancel: View {
+struct CompButtonActionView: View {
     let title: String
     let action: () -> Void
     let theme: ThemeStyle

@@ -35,14 +35,14 @@ struct DictionaryDetailView: View {
                 Form {
                     Section(header: Text(languageManager.localizedString(for: "Dictionary"))
                         .modifier(HeaderBlockTextStyle(theme: theme))) {
-                            CompTextField(
+                            CompTextFieldView(
                                 placeholder: languageManager.localizedString(for: "Display Name").capitalizedFirstLetter,
                                 text: $editedDictionary.displayName,
                                 isEditing: isEditing,
                                 theme: theme,
                                 icon: "book"
                             )
-                            CompTextEditor(
+                            CompTextEditorView(
                                 placeholder: languageManager.localizedString(for: "Description").capitalizedFirstLetter,
                                 text: Binding<String>(
                                     get: {
@@ -61,14 +61,14 @@ struct DictionaryDetailView: View {
 
                     Section(header: Text(languageManager.localizedString(for: "Category"))
                         .modifier(HeaderBlockTextStyle(theme: theme))) {
-                            CompTextField(
+                            CompTextFieldView(
                                 placeholder: languageManager.localizedString(for: "Category").capitalizedFirstLetter,
                                 text: $editedDictionary.category,
                                 isEditing: isEditing,
                                 theme: theme,
                                 icon: "cube"
                             )
-                            CompTextField(
+                            CompTextFieldView(
                                 placeholder: languageManager.localizedString(for: "Subcategory").capitalizedFirstLetter,
                                 text: $editedDictionary.subcategory,
                                 isEditing: isEditing,
@@ -79,14 +79,14 @@ struct DictionaryDetailView: View {
 
                     Section(header: Text(languageManager.localizedString(for: "Additional"))
                         .modifier(HeaderBlockTextStyle(theme: theme))) {
-                            CompTextField(
+                            CompTextFieldView(
                                 placeholder: languageManager.localizedString(for: "Author").capitalizedFirstLetter,
                                 text: $editedDictionary.author,
                                 isEditing: isEditing,
                                 theme: theme,
                                 icon: "person"
                             )
-                            CompTextField(
+                            CompTextFieldView(
                                 placeholder: languageManager.localizedString(for: "Created At").capitalizedFirstLetter,
                                 text: .constant(editedDictionary.formattedCreatedAt),
                                 isEditing: false,

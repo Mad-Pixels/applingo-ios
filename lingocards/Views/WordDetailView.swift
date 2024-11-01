@@ -36,14 +36,14 @@ struct WordDetailView: View {
                 Form {
                     Section(header: Text(languageManager.localizedString(for: "Card"))
                         .modifier(HeaderBlockTextStyle(theme: theme))) {
-                            CompTextField(
+                            CompTextFieldView(
                                 placeholder: languageManager.localizedString(for: "Word").capitalizedFirstLetter,
                                 text: $editedWord.frontText,
                                 isEditing: isEditing,
                                 theme: theme,
                                 icon: "rectangle.and.pencil.and.ellipsis"
                             )
-                            CompTextField(
+                            CompTextFieldView(
                                 placeholder: languageManager.localizedString(for: "Definition").capitalizedFirstLetter,
                                 text: $editedWord.backText,
                                 isEditing: isEditing,
@@ -54,20 +54,20 @@ struct WordDetailView: View {
 
                     Section(header: Text(languageManager.localizedString(for: "Additional"))
                         .modifier(HeaderBlockTextStyle(theme: theme))) {
-                            CompTextField(
+                            CompTextFieldView(
                                 placeholder: languageManager.localizedString(for: "TableName").capitalizedFirstLetter,
                                 text: $editedWord.tableName,
                                 isEditing: false,
                                 theme: theme
                             )
-                            CompTextField(
+                            CompTextFieldView(
                                 placeholder: languageManager.localizedString(for: "Hint").capitalizedFirstLetter,
                                 text: $editedWord.hint.unwrap(default: ""),
                                 isEditing: isEditing,
                                 theme: theme,
                                 icon: "tag"
                             )
-                            CompTextEditor(
+                            CompTextEditorView(
                                 placeholder: languageManager.localizedString(for: "Description").capitalizedFirstLetter,
                                 text: $editedWord.description.unwrap(default: ""),
                                 isEditing: isEditing,

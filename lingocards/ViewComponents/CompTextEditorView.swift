@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct CompTextEditor: View {
+struct CompTextEditorView: View {
     @Binding var text: String
     let placeholder: String
     let minHeight: CGFloat

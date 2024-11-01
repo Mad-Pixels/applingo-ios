@@ -27,14 +27,14 @@ struct DictionaryRemoteDetailView: View {
                 VStack {
                     Form {
                         Section(header: Text(languageManager.localizedString(for: "Dictionary")).foregroundColor(theme.baseTextColor)) {
-                            CompTextField(
+                            CompTextFieldView(
                                 placeholder: languageManager.localizedString(for: "Display Name").capitalizedFirstLetter,
                                 text: .constant(editedDictionary.displayName),
                                 isEditing: false,
                                 theme: theme,
                                 icon: "book"
                             )
-                            CompTextEditor(
+                            CompTextEditorView(
                                 placeholder: languageManager.localizedString(for: "Description").capitalizedFirstLetter,
                                 text: .constant(editedDictionary.description),
                                 isEditing: false,
@@ -45,14 +45,14 @@ struct DictionaryRemoteDetailView: View {
                         }
 
                         Section(header: Text(languageManager.localizedString(for: "Category")).foregroundColor(theme.baseTextColor)) {
-                            CompTextField(
+                            CompTextFieldView(
                                 placeholder: languageManager.localizedString(for: "Category").capitalizedFirstLetter,
                                 text: .constant(editedDictionary.category),
                                 isEditing: false,
                                 theme: theme,
                                 icon: "cube"
                             )
-                            CompTextField(
+                            CompTextFieldView(
                                 placeholder: languageManager.localizedString(for: "Subcategory").capitalizedFirstLetter,
                                 text: .constant(editedDictionary.subcategory),
                                 isEditing: false,
@@ -62,14 +62,14 @@ struct DictionaryRemoteDetailView: View {
                         }
 
                         Section(header: Text(languageManager.localizedString(for: "Additional")).foregroundColor(theme.baseTextColor)) {
-                            CompTextField(
+                            CompTextFieldView(
                                 placeholder: languageManager.localizedString(for: "Author").capitalizedFirstLetter,
                                 text: .constant(editedDictionary.author),
                                 isEditing: false,
                                 theme: theme,
                                 icon: "person"
                             )
-                            CompTextField(
+                            CompTextFieldView(
                                 placeholder: languageManager.localizedString(for: "Created At").capitalizedFirstLetter,
                                 text: .constant(editedDictionary.formattedCreatedAt),
                                 isEditing: false,
@@ -79,7 +79,7 @@ struct DictionaryRemoteDetailView: View {
                     }
                     Spacer()
 
-                    CompButtonAction(
+                    CompButtonActionView(
                         title: languageManager.localizedString(for: "Download").capitalizedFirstLetter,
                         action: onDownload,
                         theme: theme

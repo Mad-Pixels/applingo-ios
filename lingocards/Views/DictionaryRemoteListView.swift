@@ -73,9 +73,9 @@ struct DictionaryRemoteListView: View {
                 })
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
-                        CompToolbarMenu(
+                        CompToolbarMenuView(
                             items: [
-                                CompToolbarMenu.MenuItem(title: languageManager.localizedString(for: "Filter"), systemImage: "line.horizontal.3.decrease.circle", action: {
+                                CompToolbarMenuView.MenuItem(title: languageManager.localizedString(for: "Filter"), systemImage: "line.horizontal.3.decrease.circle", action: {
                                     isShowingFilterView = true
                                 })
                             ],

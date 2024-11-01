@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct CompToolbarMenu: View {
+struct CompToolbarMenuView: View {
     struct MenuItem {
         let title: String
         let systemImage: String

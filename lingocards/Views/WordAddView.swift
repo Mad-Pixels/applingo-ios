@@ -26,14 +26,14 @@ struct WordAddView: View {
                     Section(header: Text(languageManager.localizedString(for: "Card"))
                         .modifier(HeaderBlockTextStyle(theme: theme))) {
                             VStack {
-                                CompTextField(
+                                CompTextFieldView(
                                     placeholder: languageManager.localizedString(for: "Word").capitalizedFirstLetter,
                                     text: $wordItem.frontText,
                                     isEditing: true,
                                     theme: theme,
                                     icon: "rectangle.and.pencil.and.ellipsis"
                                 )
-                                CompTextField(
+                                CompTextFieldView(
                                     placeholder: languageManager.localizedString(for: "Definition").capitalizedFirstLetter,
                                     text: $wordItem.backText,
                                     isEditing: true,
@@ -55,14 +55,14 @@ struct WordAddView: View {
                     Section(header: Text(languageManager.localizedString(for: "Additional"))
                         .modifier(HeaderBlockTextStyle(theme: theme))) {
                             VStack {
-                                CompTextField(
+                                CompTextFieldView(
                                     placeholder: languageManager.localizedString(for: "Hint").capitalizedFirstLetter,
                                     text: $wordItem.hint.unwrap(default: ""),
                                     isEditing: true,
                                     theme: theme,
                                     icon: "tag"
                                 )
-                                CompTextEditor(
+                                CompTextEditorView(
                                     placeholder: languageManager.localizedString(for: "Description").capitalizedFirstLetter,
                                     text: $wordItem.description.unwrap(default: ""),
                                     isEditing: true,

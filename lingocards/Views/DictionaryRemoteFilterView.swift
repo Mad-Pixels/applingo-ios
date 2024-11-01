@@ -55,7 +55,7 @@ struct DictionaryRemoteFilterView: View {
                     Spacer()
 
                     HStack {
-                        CompButtonAction(
+                        CompButtonActionView(
                             title: languageManager.localizedString(for: "Save").capitalizedFirstLetter,
                             action: {
                                 let frontCategoryName = selectedFrontCategory?.name ?? ""
@@ -68,7 +68,7 @@ struct DictionaryRemoteFilterView: View {
                             theme: theme
                         )
 
-                        CompButtonCancel(
+                        CompButtonCancelView(
                             title: languageManager.localizedString(for: "Reset").capitalizedFirstLetter,
                             action: {
                                 apiRequestParams.categorySub = nil

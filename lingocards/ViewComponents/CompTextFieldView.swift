@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct CompTextField: View {
+struct CompTextFieldView: View {
     @Binding var text: String
 
     let placeholder: String

@@ -72,12 +72,12 @@ struct TabDictionariesView: View {
                 .navigationBarTitleDisplayMode(.large)
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
-                        CompToolbarMenu(
+                        CompToolbarMenuView(
                             items: [
-                                CompToolbarMenu.MenuItem(title: languageManager.localizedString(for: "ImportCSV"), systemImage: "tray.and.arrow.down", action: {
+                                CompToolbarMenuView.MenuItem(title: languageManager.localizedString(for: "ImportCSV"), systemImage: "tray.and.arrow.down", action: {
                                     isShowingFileImporter = true
                                 }),
-                                CompToolbarMenu.MenuItem(title: languageManager.localizedString(for: "Download"), systemImage: "arrow.down.circle", action: {
+                                CompToolbarMenuView.MenuItem(title: languageManager.localizedString(for: "Download"), systemImage: "arrow.down.circle", action: {
                                     isShowingRemoteList = true
                                 })
                             ],
