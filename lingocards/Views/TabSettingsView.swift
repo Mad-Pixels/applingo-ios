@@ -21,14 +21,14 @@ struct TabSettingsView: View {
                         onThemeChange: { newTheme in themeManager.setTheme(to: newTheme) },
                         theme: theme
                     )
-                    
-                    CompLanguagePickerView(
-                        selectedLanguage: $languageManager.currentLanguage,
-                        supportedLanguages: languageManager.supportedLanguages,
-                        displayName: languageManager.displayName(for:),
+                    CompPickerView(
+                        selectedValue: $languageManager.currentLanguage,
+                        items: languageManager.supportedLanguages,
+                        title: languageManager.localizedString(for: "Language"),
                         theme: theme
-                    )
-                    
+                    ) { language in
+                        Text(languageManager.displayName(for: language).capitalizedFirstLetter)
+                    }
                     CompLogSenderToggleView(
                         sendLogs: $logHandler.sendLogs,
                         theme: theme

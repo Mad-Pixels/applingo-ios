@@ -24,26 +24,30 @@ struct DictionaryRemoteFilterView: View {
                     Form {
                         Section(header: Text(languageManager.localizedString(for: "Dictionary")).font(.headline).foregroundColor(theme.baseTextColor)) {
                             HStack {
-                                CompCategoryPickerView(
-                                    selectedCategory: $selectedFrontCategory,
-                                    categories: viewModel.frontCategories,
-                                    title: languageManager.localizedString(for: "from")
-                                )
-                                .environmentObject(languageManager)
+                                CompPickerView(
+                                    selectedValue: $selectedFrontCategory,
+                                    items: viewModel.frontCategories,
+                                    title: "",
+                                    theme: theme
+                                ) { category in
+                                    Text(category!.name)
+                                }
                                 .frame(maxWidth: .infinity)
-
+                                
                                 Image(systemName: "arrow.left.and.right.circle.fill")
                                     .resizable()
                                     .frame(width: 24, height: 24)
                                     .padding(.horizontal, 8)
                                     .modifier(MainIconStyle(theme: theme))
                                 
-                                CompCategoryPickerView(
-                                    selectedCategory: $selectedBackCategory,
-                                    categories: viewModel.backCategories,
-                                    title: languageManager.localizedString(for: "to")
-                                )
-                                .environmentObject(languageManager)
+                                CompPickerView(
+                                    selectedValue: $selectedBackCategory,
+                                    items: viewModel.backCategories,
+                                    title: "",
+                                    theme: theme
+                                ) { category in
+                                    Text(category!.name)
+                                }
                                 .frame(maxWidth: .infinity)
                             }
                         }

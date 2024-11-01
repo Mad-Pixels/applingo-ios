@@ -40,10 +40,14 @@ struct WordAddView: View {
                                     theme: theme,
                                     icon: "translate"
                                 )
-                                CompDictionaryPickerView(
-                                    selectedDictionary: $selectedDictionary,
-                                    dictionaries: dictionaries
-                                )
+                                CompPickerView(
+                                    selectedValue: $selectedDictionary,
+                                    items: dictionaries,
+                                    title: "",
+                                    theme: theme
+                                ) { dictionary in
+                                    Text(dictionary!.displayName)
+                                }
                             }
                             .padding(.vertical, 12)
                     }
