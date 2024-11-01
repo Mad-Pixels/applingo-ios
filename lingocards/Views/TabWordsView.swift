@@ -41,7 +41,7 @@ struct TabWordsView: View {
                     onItemAppear: { word in
                         wordsGetter.loadMoreWordsIfNeeded(currentItem: word)
                     },
-                    onDelete: deleteWords,
+                    onDelete: delete,
                     onItemTap: { word in
                         selectedWord = word
                         isShowingDetailView = true
@@ -77,7 +77,7 @@ struct TabWordsView: View {
                                 CompToolbarMenu.MenuItem(
                                     title: languageManager.localizedString(for: "AddWord"),
                                     systemImage: "plus.circle",
-                                    action: wordAdd
+                                    action: add
                                 )
                             ],
                             theme: theme
@@ -117,13 +117,10 @@ struct TabWordsView: View {
                 isPresented: $isShowingAddView,
                 onSave: { word, completion in
                     wordsAction.save(word) { result in
-                        switch result {
-                        case .success:
+                        if case .success = result {
                             wordsGetter.resetPagination()
-                            completion(.success(()))
-                        case .failure(let error):
-                            completion(.failure(error))
                         }
+                        completion(result)
                     }
                 }
             )
@@ -134,48 +131,30 @@ struct TabWordsView: View {
                 isPresented: $isShowingDetailView,
                 onSave: { updatedWord, completion in
                     wordsAction.update(updatedWord) { result in
-                        switch result {
-                        case .success:
+                        if case .success = result {
                             wordsGetter.resetPagination()
-                            completion(.success(()))
-                        case .failure(let error):
-                            completion(.failure(error))
                         }
+                        completion(result)
                     }
                 }
             )
         }
     }
 
-    private func deleteWords(at offsets: IndexSet) {
+    private func delete(at offsets: IndexSet) {
         offsets.forEach { index in
             let word = wordsGetter.words[index]
-            wordDelete(word: word)
-        }
-    }
-
-    private func wordDelete(word: WordItem) {
-        wordsAction.delete(word) { result in
-            switch result {
-            case .success:
-                if let index = wordsGetter.words.firstIndex(of: word) {
-                    wordsGetter.words.remove(at: index)
+            wordsAction.delete(word) { result in
+                if case .success = result {
+                    if let index = wordsGetter.words.firstIndex(of: word) {
+                        wordsGetter.words.remove(at: index)
+                    }
                 }
-            case .failure(let error):
-                errorManager.setError(
-                    appError: AppError(
-                        errorType: .database,
-                        errorMessage: "Failed to delete word",
-                        additionalInfo: ["error": "\(error)"]
-                    ),
-                    tab: .words,
-                    source: .wordDelete
-                )
             }
         }
     }
 
-    private func wordAdd() {
+    private func add() {
         dictionaryGetter.get()
         isShowingAddView = true
     }
