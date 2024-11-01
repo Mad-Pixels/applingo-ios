@@ -18,54 +18,43 @@ class RepositoryWord: WordRepositoryProtocol {
         return try dbQueue.read { db -> [WordItem] in
             var sql: String
             var allArguments: [DatabaseValueConvertible] = []
-            
             var conditions: [String] = []
             
-            // Добавляем условия фильтрации по активным словарям
             if !activeDisplayNames.isEmpty {
                 let placeholders = activeDisplayNames.map { _ in "?" }.joined(separator: ", ")
                 conditions.append("tableName IN (\(placeholders))")
                 allArguments.append(contentsOf: activeDisplayNames)
             }
             
-            // Добавляем условие поиска по тексту
-            if let searchText = searchText, !searchText.isEmpty {
-                // Если есть поисковый текст, добавляем условия для релевантности
-                sql = "SELECT *, CASE" +
-                    " WHEN LOWER(frontText) = LOWER(?) THEN 1" +
-                    " WHEN LOWER(frontText) LIKE LOWER(? || '%') THEN 2" +
-                    " WHEN LOWER(frontText) LIKE LOWER('%' || ? || '%') THEN 3" +
-                    " ELSE 4 END AS relevance" +
-                    " FROM \(WordItem.databaseTableName)"
+            let trimmedSearchText = searchText?.trimmingCharacters(in: .whitespacesAndNewlines)
+            let hasSearchText = !(trimmedSearchText?.isEmpty ?? true)
+            
+            if hasSearchText, let searchText = trimmedSearchText {
+                sql = """
+                SELECT *, CASE
+                    WHEN LOWER(frontText) = LOWER(?) THEN 1
+                    WHEN LOWER(frontText) LIKE LOWER(? || '%') THEN 2
+                    WHEN LOWER(frontText) LIKE LOWER('%' || ? || '%') THEN 3
+                    ELSE 4 END AS relevance
+                FROM \(WordItem.databaseTableName)
+                """
                 
-                var relevanceArguments: [DatabaseValueConvertible] = []
-                relevanceArguments.append(searchText)
-                relevanceArguments.append(searchText)
-                relevanceArguments.append(searchText)
+                let relevanceArguments: [DatabaseValueConvertible] = [searchText, searchText, searchText]
+                allArguments = relevanceArguments + allArguments  // Combine arguments
                 
-                // Добавляем условие поиска по тексту
                 conditions.append("LOWER(frontText) LIKE ?")
                 allArguments.append("%\(searchText.lowercased())%")
-                
-                allArguments = relevanceArguments + allArguments  // Собираем все аргументы
             } else {
-                // Если поискового текста нет, не добавляем CASE и условия поиска
                 sql = "SELECT * FROM \(WordItem.databaseTableName)"
             }
-            
-            // Добавляем условия в запрос
             if !conditions.isEmpty {
                 sql += " WHERE " + conditions.joined(separator: " AND ")
             }
-            
-            // Добавляем сортировку
-            if let searchText = searchText, !searchText.isEmpty {
+            if hasSearchText {
                 sql += " ORDER BY relevance ASC, id ASC"
             } else {
                 sql += " ORDER BY id ASC"
             }
-            
-            // Добавляем ограничения по лимиту и смещению
             sql += " LIMIT ? OFFSET ?"
             allArguments.append(limit)
             allArguments.append(offset)
@@ -80,8 +69,6 @@ class RepositoryWord: WordRepositoryProtocol {
         }
     }
 
-
-    
     func save(_ word: WordItem) throws {
         try dbQueue.write { db in
             try word.insert(db)

@@ -1,11 +1,6 @@
-import Foundation
 import SwiftUI
 
-protocol ListItemProtocol: Identifiable, Equatable {
-    var listId: Int { get }
-}
-
-struct CompItemListView<Item: ListItemProtocol, RowContent: View>: View {
+struct CompItemListView<Item: Identifiable & Equatable, RowContent: View>: View {
     @Binding var items: [Item]
     
     var isLoadingPage: Bool
@@ -23,11 +18,10 @@ struct CompItemListView<Item: ListItemProtocol, RowContent: View>: View {
                     Text("Error: \(error.localizedDescription)")
                         .foregroundColor(.red)
                 }
-
                 if items.isEmpty && !isLoadingPage {
                     emptyListView
                 } else if !items.isEmpty {
-                    ForEach(items, id: \.listId) { item in
+                    ForEach(items) { item in
                         rowContent(item)
                             .onTapGesture {
                                 onItemTap?(item)

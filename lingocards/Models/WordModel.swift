@@ -48,12 +48,6 @@ struct WordItem: Identifiable, Codable, Equatable {
     }
 }
 
-extension WordItem: ListItemProtocol {
-    var listId: Int {
-        return self.id ?? -1
-    }
-}
-
 extension WordItem: FetchableRecord, PersistableRecord {
     static func createTable(in db: Database) throws {
         try db.create(table: databaseTableName, ifNotExists: true) { t in

@@ -7,11 +7,26 @@ class RepositoryDictionary: DictionaryRepositoryProtocol {
         self.dbQueue = dbQueue
     }
     
-    func fetch() throws -> [DictionaryItem] {
+    func fetch(
+        searchText: String?,
+        offset: Int,
+        limit: Int
+    ) throws -> [DictionaryItem] {
         return try dbQueue.read { db in
-            let sql = "SELECT * FROM \(DictionaryItem.databaseTableName) ORDER BY id ASC"
-            Logger.debug("[RepositoryDictionary]: fetch - \(sql)")
-            return try DictionaryItem.fetchAll(db, sql: sql)
+            var sql = "SELECT * FROM \(DictionaryItem.databaseTableName)"
+            var arguments: [DatabaseValueConvertible] = []
+            
+            if let searchText = searchText, !searchText.isEmpty {
+                sql += " WHERE displayName LIKE ?"
+                arguments.append("%\(searchText)%")
+            }
+            
+            sql += " ORDER BY id ASC LIMIT ? OFFSET ?"
+            arguments.append(limit)
+            arguments.append(offset)
+            
+            Logger.debug("[RepositoryDictionary]: fetch - SQL: \(sql), Arguments: \(arguments)")
+            return try DictionaryItem.fetchAll(db, sql: sql, arguments: StatementArguments(arguments))
         }
     }
     

@@ -87,11 +87,14 @@ struct TabDictionariesView: View {
                 .onAppear {
                     tabManager.setActiveTab(.dictionaries)
                     if tabManager.isActive(tab: .dictionaries) {
+                        print("[TabDictionariesView]: Activating and loading dictionaries.")
                         dictionaryGetter.resetPagination()
-                        dictionaryGetter.get()
+                    } else {
+                        print("[TabDictionariesView]: Tab is not active.")
                     }
                 }
                 .onDisappear {
+                    print("[TabDictionariesView]: Clearing dictionaries on disappear.")
                     dictionaryGetter.clear()
                 }
                 .modifier(ErrModifier(currentError: errorManager.currentError) { newError in

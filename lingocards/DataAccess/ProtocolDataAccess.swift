@@ -1,5 +1,9 @@
 protocol DictionaryRepositoryProtocol {
-    func fetch() throws -> [DictionaryItem]
+    func fetch(
+            searchText: String?,
+            offset: Int,
+            limit: Int
+        ) throws -> [DictionaryItem]
     func save(_ dictionary: DictionaryItem) throws
     func update(_ dictionary: DictionaryItem) throws
     func updateStatus(dictionaryID: Int, newStatus: Bool) throws

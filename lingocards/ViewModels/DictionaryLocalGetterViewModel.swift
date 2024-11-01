@@ -3,48 +3,69 @@ import Combine
 
 final class DictionaryLocalGetterViewModel: BaseDatabaseViewModel {
     @Published var dictionaries: [DictionaryItem] = []
+    @Published var isLoadingPage = false
     @Published var searchText: String = "" {
         didSet {
-            filterDictionaries()
+            if searchText != oldValue {
+                resetPagination()
+            }
         }
     }
-    
-    var isLoadingPage = false
-    
-    private var hasMorePages = true
-    private var allDictionaries: [DictionaryItem] = []
+
+    private var cancellables = Set<AnyCancellable>()
     private let repository: DictionaryRepositoryProtocol
+    private var cancellationToken = UUID()
+    private let itemsPerPage: Int = 50
+    private var hasMorePages = true
+    private var currentPage = 0
 
     init(repository: DictionaryRepositoryProtocol) {
         self.repository = repository
         super.init()
-        get()
     }
 
     func resetPagination() {
         dictionaries.removeAll()
-        allDictionaries.removeAll()
-        isLoadingPage = false
+        currentPage = 0
         hasMorePages = true
+        isLoadingPage = false
+        cancellationToken = UUID()
         get()
     }
 
     func get() {
-        guard !isLoadingPage, hasMorePages else { return }
+        guard !isLoadingPage, hasMorePages else {
+            return
+        }
+        let currentToken = cancellationToken
         isLoadingPage = true
 
         performDatabaseOperation(
-            { try self.repository.fetch() },
+            { try self.repository.fetch(
+                searchText: self.searchText,
+                offset: self.currentPage * self.itemsPerPage,
+                limit: self.itemsPerPage
+            ) },
             successHandler: { [weak self] fetchedDictionaries in
-                self?.processFetchedDictionaries(fetchedDictionaries)
-                self?.isLoadingPage = false
+                guard let self = self else { return }
+                guard currentToken == self.cancellationToken else {
+                    self.isLoadingPage = false
+                    return
+                }
+                self.processFetchedDictionaries(fetchedDictionaries)
+                self.isLoadingPage = false
             },
             errorSource: .dictionariesGet,
-            errorMessage: "Failed to fetch dictionaries",
+            errorMessage: "Failed load dictionaries",
             tab: .dictionaries,
             completion: { [weak self] result in
+                guard let self = self else { return }
+                guard currentToken == self.cancellationToken else {
+                    self.isLoadingPage = false
+                    return
+                }
                 if case .failure = result {
-                    self?.isLoadingPage = false
+                    self.isLoadingPage = false
                 }
             }
         )
@@ -54,32 +75,24 @@ final class DictionaryLocalGetterViewModel: BaseDatabaseViewModel {
         if fetchedDictionaries.isEmpty {
             hasMorePages = false
         } else {
-            allDictionaries.append(contentsOf: fetchedDictionaries)
-            filterDictionaries()
-        }
-    }
-    
-    func loadMoreDictionariesIfNeeded(currentItem: DictionaryItem?) {
-        guard let currentItem = currentItem else { return }
-        let thresholdIndex = dictionaries.index(dictionaries.endIndex, offsetBy: -5)
-        
-        if dictionaries.firstIndex(where: { $0.id == currentItem.id }) == thresholdIndex {
-            get()
+            currentPage += 1
+            dictionaries.append(contentsOf: fetchedDictionaries)
         }
     }
 
-    private func filterDictionaries() {
-        if searchText.isEmpty {
-            dictionaries = allDictionaries
-        } else {
-            dictionaries = allDictionaries.filter { dictionary in
-                dictionary.displayName.localizedCaseInsensitiveContains(searchText)
-            }
-        }
+    func loadMoreDictionariesIfNeeded(currentItem: DictionaryItem?) {
+        guard
+            let dictionary = currentItem,
+            let index = dictionaries.firstIndex(where: { $0.id == dictionary.id }),
+            index >= dictionaries.count - 5,
+            hasMorePages,
+            !isLoadingPage
+        else { return }
+        
+        get()
     }
 
     func clear() {
         dictionaries = []
-        allDictionaries = []
     }
 }

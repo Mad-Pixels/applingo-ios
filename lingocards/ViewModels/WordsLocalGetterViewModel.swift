@@ -3,6 +3,7 @@ import Combine
 
 final class WordsLocalGetterViewModel: BaseDatabaseViewModel {
     @Published var words: [WordItem] = []
+    @Published var isLoadingPage = false
     @Published var searchText: String = "" {
         didSet {
             if searchText != oldValue {
@@ -10,33 +11,34 @@ final class WordsLocalGetterViewModel: BaseDatabaseViewModel {
             }
         }
     }
-    @Published var isLoadingPage = false  // Теперь обновляется без задержек
 
-    private let repository: WordRepositoryProtocol
-    private let itemsPerPage: Int = 50
-
-    private var hasMorePages = true
     private var cancellables = Set<AnyCancellable>()
-    private var currentPage = 0  // Начальная страница
+    private let repository: WordRepositoryProtocol
+    private var cancellationToken = UUID()
+    private let itemsPerPage: Int = 50
+    private var hasMorePages = true
+    private var currentPage = 0
 
     init(repository: WordRepositoryProtocol) {
         self.repository = repository
         super.init()
     }
 
-    /// Сброс состояния пагинации и очистка списка
     func resetPagination() {
         words.removeAll()
         currentPage = 0
         hasMorePages = true
         isLoadingPage = false
-        get()  // Начинаем новый запрос
+        cancellationToken = UUID()
+        get()
     }
 
-    /// Запрос данных с контролем загрузки
     func get() {
-        guard !isLoadingPage, hasMorePages else { return }
-        isLoadingPage = true  // Устанавливаем сразу при начале загрузки
+        guard !isLoadingPage, hasMorePages else {
+            return
+        }
+        let currentToken = cancellationToken
+        isLoadingPage = true
 
         performDatabaseOperation(
             { try self.repository.fetch(
@@ -46,36 +48,43 @@ final class WordsLocalGetterViewModel: BaseDatabaseViewModel {
             ) },
             successHandler: { [weak self] fetchedWords in
                 guard let self = self else { return }
+                guard currentToken == self.cancellationToken else {
+                    self.isLoadingPage = false
+                    return
+                }
                 self.processFetchedWords(fetchedWords)
-                self.isLoadingPage = false  // Сбрасываем после обработки данных
+                self.isLoadingPage = false
             },
             errorSource: .wordsGet,
-            errorMessage: "Не удалось загрузить слова",
+            errorMessage: "Failed load words",
             tab: .words,
             completion: { [weak self] result in
+                guard let self = self else { return }
+                guard currentToken == self.cancellationToken else {
+                    self.isLoadingPage = false
+                    return
+                }
                 if case .failure = result {
-                    self?.isLoadingPage = false  // Сбрасываем при ошибке
+                    self.isLoadingPage = false
                 }
             }
         )
     }
 
-    /// Подгружаем дополнительные данные при необходимости
     func loadMoreWordsIfNeeded(currentItem word: WordItem?) {
         guard
             let word = word,
-            let index = words.firstIndex(where: { $0.id == word.id }),
-            index >= words.count - 5,
-            hasMorePages,
-            !isLoadingPage
+            let index = words.firstIndex(where: { $0.id == word.id })
         else { return }
-        get()  // Подгружаем следующую страницу
+        
+        if index >= words.count - 5 && hasMorePages && !isLoadingPage {
+            get()
+        }
     }
 
-    /// Обработка загруженных данных
     private func processFetchedWords(_ fetchedWords: [WordItem]) {
         if fetchedWords.isEmpty {
-            hasMorePages = false  // Достигли конца данных
+            hasMorePages = false
         } else {
             currentPage += 1
             words.append(contentsOf: fetchedWords)
