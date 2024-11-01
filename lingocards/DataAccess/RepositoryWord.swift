@@ -8,43 +8,79 @@ class RepositoryWord: WordRepositoryProtocol {
     }
     
     func fetch(
-            searchText: String?,
-            offset: Int,
-            limit: Int
-        ) throws -> [WordItem] {
-            let activeDictionaries = try fetchActive()
-            let activeDisplayNames = activeDictionaries.map { $0.tableName } as [DatabaseValueConvertible]
+        searchText: String?,
+        offset: Int,
+        limit: Int
+    ) throws -> [WordItem] {
+        let activeDictionaries = try fetchActive()
+        let activeDisplayNames = activeDictionaries.map { $0.tableName } as [DatabaseValueConvertible]
+        
+        return try dbQueue.read { db -> [WordItem] in
+            var sql: String
+            var allArguments: [DatabaseValueConvertible] = []
             
-            return try dbQueue.read { db -> [WordItem] in
-                var sql = "SELECT * FROM \(WordItem.databaseTableName)"
-                
-                var conditions: [String] = []
-                var allArguments: [DatabaseValueConvertible] = []
-                
-                if !activeDisplayNames.isEmpty {
-                    let placeholders = activeDisplayNames.map { _ in "?" }.joined(separator: ", ")
-                    conditions.append("tableName IN (\(placeholders))")
-                    allArguments.append(contentsOf: activeDisplayNames)
-                }
-                if let searchText = searchText, !searchText.isEmpty {
-                    conditions.append("LOWER(frontText) LIKE ?")
-                    allArguments.append("%\(searchText.lowercased())%")
-                }
-                if !conditions.isEmpty {
-                    sql += " WHERE " + conditions.joined(separator: " AND ")
-                }
-                sql += " ORDER BY id ASC LIMIT ? OFFSET ?"
-                allArguments.append(limit)
-                allArguments.append(offset)
-                
-                Logger.debug("[RepositoryWord]: fetch with SQL \(sql) and arguments \(allArguments)")
-                let request = SQLRequest<WordItem>(
-                    sql: sql,
-                    arguments: StatementArguments(allArguments)
-                )
-                return try request.fetchAll(db)
+            var conditions: [String] = []
+            
+            // Добавляем условия фильтрации по активным словарям
+            if !activeDisplayNames.isEmpty {
+                let placeholders = activeDisplayNames.map { _ in "?" }.joined(separator: ", ")
+                conditions.append("tableName IN (\(placeholders))")
+                allArguments.append(contentsOf: activeDisplayNames)
             }
+            
+            // Добавляем условие поиска по тексту
+            if let searchText = searchText, !searchText.isEmpty {
+                // Если есть поисковый текст, добавляем условия для релевантности
+                sql = "SELECT *, CASE" +
+                    " WHEN LOWER(frontText) = LOWER(?) THEN 1" +
+                    " WHEN LOWER(frontText) LIKE LOWER(? || '%') THEN 2" +
+                    " WHEN LOWER(frontText) LIKE LOWER('%' || ? || '%') THEN 3" +
+                    " ELSE 4 END AS relevance" +
+                    " FROM \(WordItem.databaseTableName)"
+                
+                var relevanceArguments: [DatabaseValueConvertible] = []
+                relevanceArguments.append(searchText)
+                relevanceArguments.append(searchText)
+                relevanceArguments.append(searchText)
+                
+                // Добавляем условие поиска по тексту
+                conditions.append("LOWER(frontText) LIKE ?")
+                allArguments.append("%\(searchText.lowercased())%")
+                
+                allArguments = relevanceArguments + allArguments  // Собираем все аргументы
+            } else {
+                // Если поискового текста нет, не добавляем CASE и условия поиска
+                sql = "SELECT * FROM \(WordItem.databaseTableName)"
+            }
+            
+            // Добавляем условия в запрос
+            if !conditions.isEmpty {
+                sql += " WHERE " + conditions.joined(separator: " AND ")
+            }
+            
+            // Добавляем сортировку
+            if let searchText = searchText, !searchText.isEmpty {
+                sql += " ORDER BY relevance ASC, id ASC"
+            } else {
+                sql += " ORDER BY id ASC"
+            }
+            
+            // Добавляем ограничения по лимиту и смещению
+            sql += " LIMIT ? OFFSET ?"
+            allArguments.append(limit)
+            allArguments.append(offset)
+            
+            Logger.debug("[RepositoryWord]: fetch with SQL \(sql) and arguments \(allArguments)")
+            
+            let request = SQLRequest<WordItem>(
+                sql: sql,
+                arguments: StatementArguments(allArguments)
+            )
+            return try request.fetchAll(db)
         }
+    }
+
+
     
     func save(_ word: WordItem) throws {
         try dbQueue.write { db in
