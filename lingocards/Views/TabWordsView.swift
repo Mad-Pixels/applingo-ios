@@ -73,6 +73,7 @@ struct TabWordsView: View {
                                     wordsGetter.loadMoreWordsIfNeeded(currentItem: word)
                                 }
                             }
+                            .onDelete(perform: deleteWords)
                             
                             // Прелоадер внизу списка при подгрузке данных
                             if wordsGetter.isLoadingPage {
@@ -86,7 +87,6 @@ struct TabWordsView: View {
                             }
                         }
                     }
-
                     .overlay( // Прелоадер как подложка списка
                         Group {
                             if wordsGetter.isLoadingPage {
