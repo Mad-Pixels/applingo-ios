@@ -4,6 +4,7 @@ struct WordDetailView: View {
     @Environment(\.presentationMode) private var presentationMode
     
     @EnvironmentObject var languageManager: LanguageManager
+    @EnvironmentObject var errorManager: ErrorManager
     @EnvironmentObject var themeManager: ThemeManager
     
     @State private var editedWord: WordItem
@@ -114,7 +115,7 @@ struct WordDetailView: View {
                                         languageManager.localizedString(for: "Edit").capitalizedFirstLetter
                     ) {
                         if isEditing {
-                            updateWord(editedWord)
+                            update(editedWord)
                         } else {
                             isEditing = true
                         }
@@ -123,30 +124,28 @@ struct WordDetailView: View {
                 )
                 .animation(.easeInOut, value: isEditing)
                 .alert(isPresented: $isShowingErrorAlert) {
-                    Alert(
-                        title: Text(languageManager.localizedString(for: "Error")),
-                        message: Text("Failed to update the word due to database issues."),
-                        dismissButton: .default(Text(languageManager.localizedString(for: "Close")))
+                    CompAlertView(
+                        title: languageManager.localizedString(for: "Error"),
+                        message: errorManager.currentError?.errorDescription ?? "",
+                        closeAction: {
+                            errorManager.clearError()
+                        },
+                        theme: theme
                     )
                 }
             }
         }
     }
 
-    private func updateWord(_ word: WordItem) {
+    private func update(_ word: WordItem) {
         let previousWord = editedWord
 
         onSave(word) { result in
-            switch result {
-            case .success:
+            if case .success = result {
                 self.isEditing = false
                 self.presentationMode.wrappedValue.dismiss()
-            case .failure(let error):
-                if let appError = error as? AppError {
-                    ErrorManager.shared.setError(appError: appError, tab: .words, source: .wordUpdate)
-                }
+            } else {
                 self.editedWord = previousWord
-                self.isShowingErrorAlert = true
             }
         }
     }

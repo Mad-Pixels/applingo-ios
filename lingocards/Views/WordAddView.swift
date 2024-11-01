@@ -77,7 +77,7 @@ struct WordAddView: View {
                         presentationMode.wrappedValue.dismiss()
                     },
                     trailing: Button(languageManager.localizedString(for: "Save").capitalizedFirstLetter) {
-                        wordSave()
+                        save()
                     }
                     .disabled(isSaveDisabled)
                 )
@@ -100,21 +100,15 @@ struct WordAddView: View {
         }
     }
 
-    private func wordSave() {
+    private func save() {
         guard let selectedDictionary = selectedDictionary else {
             return
         }
         wordItem.tableName = selectedDictionary.tableName
 
         onSave(wordItem) { result in
-            switch result {
-            case .success:
+            if case .success = result {
                 presentationMode.wrappedValue.dismiss()
-            case .failure(let error):
-                if let appError = error as? AppError {
-                    errorManager.setError(appError: appError, tab: .words, source: .wordSave)
-                }
-                isShowingErrorAlert = true
             }
         }
     }
