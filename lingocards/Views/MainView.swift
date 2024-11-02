@@ -5,10 +5,10 @@ struct MainView: View {
     @EnvironmentObject var languageManager: LanguageManager
     @EnvironmentObject var themeManager: ThemeManager
     
-    @StateObject private var tabManager = TabManager.shared
+    @StateObject private var frameManager = FrameManager.shared
 
     var body: some View {
-        TabView(selection: $tabManager.activeTab) {
+        TabView(selection: $frameManager.activeFrame) {
             TabLearnView()
                 .tabItem {
                     Label {
@@ -17,7 +17,7 @@ struct MainView: View {
                         Image(systemName: "book.fill")
                     }
                 }
-                .tag(AppTab.learn)
+                .tag(AppFrameModel.learn)
 
             TabDictionariesView()
                 .tabItem {
@@ -27,7 +27,7 @@ struct MainView: View {
                         Image(systemName: "folder.fill")
                     }
                 }
-                .tag(AppTab.dictionaries)
+                .tag(AppFrameModel.tabDictionaries)
 
             TabWordsView()
                 .tabItem {
@@ -37,7 +37,7 @@ struct MainView: View {
                         Image(systemName: "textformat")
                     }
                 }
-                .tag(AppTab.words)
+                .tag(AppFrameModel.tabWords)
 
             TabSettingsView()
                 .tabItem {
@@ -47,12 +47,12 @@ struct MainView: View {
                         Image(systemName: "gearshape.fill")
                     }
                 }
-                .tag(AppTab.settings)
+                .tag(AppFrameModel.tabSettings)
         }
         .preferredColorScheme(themeManager.currentTheme == .dark ? .dark : .light)
-        .modifier(TabModifier(activeTab: tabManager.activeTab) { newTab in
-            if newTab != .learn {
-                tabManager.deactivateTab(.learn)
+        .modifier(FrameModifier(activeFrame: frameManager.activeFrame) { newFrame in
+            if newFrame != .learn {
+                frameManager.deactivateFrame(.learn)
             }
         })
     }

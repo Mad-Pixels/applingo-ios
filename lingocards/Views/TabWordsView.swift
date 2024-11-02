@@ -2,7 +2,7 @@ import SwiftUI
 
 struct TabWordsView: View {
     @EnvironmentObject var languageManager: LanguageManager
-    @EnvironmentObject var tabManager: TabManager
+    @EnvironmentObject var frameManager: FrameManager
     @EnvironmentObject var themeManager: ThemeManager
     @EnvironmentObject var errorManager: ErrorManager
 
@@ -13,7 +13,7 @@ struct TabWordsView: View {
     @State private var isShowingDetailView = false
     @State private var isShowingAddView = false
     @State private var isShowingAlert = false
-    @State private var selectedWord: WordItem?
+    @State private var selectedWord: WordItemModel?
 
     init() {
         guard let dbQueue = DatabaseManager.shared.databaseQueue else {
@@ -85,8 +85,11 @@ struct TabWordsView: View {
                     }
                 }
                 .onAppear {
-                    tabManager.setActiveTab(.words)
-                    if tabManager.isActive(tab: .words) {
+                    frameManager.setActiveFrame(.tabWords)
+                    if frameManager.isActive(frame: .tabWords) {
+                        dictionaryGetter.setFrame(.tabWords)
+                        wordsAction.setFrame(.tabWords)
+                        wordsGetter.setFrame(.tabWords)
                         wordsGetter.resetPagination()
                     }
                 }
@@ -95,7 +98,7 @@ struct TabWordsView: View {
                     wordsGetter.clear()
                 }
                 .modifier(ErrModifier(currentError: errorManager.currentError) { newError in
-                    if let error = newError, error.tab == .words, error.source == .wordDelete {
+                    if let error = newError, error.frame == .tabWords, error.source == .wordDelete {
                         isShowingAlert = true
                     }
                 })

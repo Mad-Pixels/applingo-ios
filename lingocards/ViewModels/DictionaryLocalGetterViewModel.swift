@@ -2,7 +2,7 @@ import Foundation
 import Combine
 
 final class DictionaryLocalGetterViewModel: BaseDatabaseViewModel {
-    @Published var dictionaries: [DictionaryItem] = []
+    @Published var dictionaries: [DictionaryItemModel] = []
     @Published var isLoadingPage = false
     @Published var searchText: String = "" {
         didSet {
@@ -15,6 +15,7 @@ final class DictionaryLocalGetterViewModel: BaseDatabaseViewModel {
     private var cancellables = Set<AnyCancellable>()
     private let repository: DictionaryRepositoryProtocol
     private var cancellationToken = UUID()
+    private var frame: AppFrameModel = .main
     private let itemsPerPage: Int = 50
     private var hasMorePages = true
     private var currentPage = 0
@@ -57,7 +58,7 @@ final class DictionaryLocalGetterViewModel: BaseDatabaseViewModel {
             },
             errorSource: .dictionariesGet,
             errorMessage: "Failed load dictionaries",
-            tab: .dictionaries,
+            frame: frame,
             completion: { [weak self] result in
                 guard let self = self else { return }
                 guard currentToken == self.cancellationToken else {
@@ -70,17 +71,8 @@ final class DictionaryLocalGetterViewModel: BaseDatabaseViewModel {
             }
         )
     }
-
-    private func processFetchedDictionaries(_ fetchedDictionaries: [DictionaryItem]) {
-        if fetchedDictionaries.isEmpty {
-            hasMorePages = false
-        } else {
-            currentPage += 1
-            dictionaries.append(contentsOf: fetchedDictionaries)
-        }
-    }
-
-    func loadMoreDictionariesIfNeeded(currentItem: DictionaryItem?) {
+    
+    func loadMoreDictionariesIfNeeded(currentItem: DictionaryItemModel?) {
         guard
             let dictionary = currentItem,
             let index = dictionaries.firstIndex(where: { $0.id == dictionary.id }),
@@ -94,5 +86,18 @@ final class DictionaryLocalGetterViewModel: BaseDatabaseViewModel {
 
     func clear() {
         dictionaries = []
+    }
+    
+    func setFrame(_ newFrame: AppFrameModel) {
+        self.frame = newFrame
+    }
+    
+    private func processFetchedDictionaries(_ fetchedDictionaries: [DictionaryItemModel]) {
+        if fetchedDictionaries.isEmpty {
+            hasMorePages = false
+        } else {
+            currentPage += 1
+            dictionaries.append(contentsOf: fetchedDictionaries)
+        }
     }
 }

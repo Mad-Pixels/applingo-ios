@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct CompWordRowView: View {
-    let word: WordItem
+    let word: WordItemModel
     let onTap: () -> Void
     let theme: ThemeStyle
 

@@ -11,9 +11,9 @@ class RepositoryDictionary: DictionaryRepositoryProtocol {
         searchText: String?,
         offset: Int,
         limit: Int
-    ) throws -> [DictionaryItem] {
+    ) throws -> [DictionaryItemModel] {
         return try dbQueue.read { db in
-            var sql = "SELECT * FROM \(DictionaryItem.databaseTableName)"
+            var sql = "SELECT * FROM \(DictionaryItemModel.databaseTableName)"
             var arguments: [DatabaseValueConvertible] = []
             
             if let searchText = searchText, !searchText.isEmpty {
@@ -26,11 +26,11 @@ class RepositoryDictionary: DictionaryRepositoryProtocol {
             arguments.append(offset)
             
             Logger.debug("[RepositoryDictionary]: fetch - SQL: \(sql), Arguments: \(arguments)")
-            return try DictionaryItem.fetchAll(db, sql: sql, arguments: StatementArguments(arguments))
+            return try DictionaryItemModel.fetchAll(db, sql: sql, arguments: StatementArguments(arguments))
         }
     }
     
-    func save(_ dictionary: DictionaryItem) throws {
+    func save(_ dictionary: DictionaryItemModel) throws {
         var fmtDictionary = dictionary
         fmtDictionary.fmt()
         
@@ -40,7 +40,7 @@ class RepositoryDictionary: DictionaryRepositoryProtocol {
         Logger.debug("[RepositoryDictionary]: save - \(dictionary.displayName) with ID \(dictionary.id ?? -1)")
     }
     
-    func update(_ dictionary: DictionaryItem) throws {
+    func update(_ dictionary: DictionaryItemModel) throws {
         var fmtDictionary = dictionary
         fmtDictionary.fmt()
         
@@ -53,16 +53,16 @@ class RepositoryDictionary: DictionaryRepositoryProtocol {
     func updateStatus(dictionaryID: Int, newStatus: Bool) throws {
         try dbQueue.write { db in
             try db.execute(
-                sql: "UPDATE \(DictionaryItem.databaseTableName) SET isActive = ? WHERE id = ?",
+                sql: "UPDATE \(DictionaryItemModel.databaseTableName) SET isActive = ? WHERE id = ?",
                 arguments: [newStatus, dictionaryID]
             )
         }
         Logger.debug("[RepositoryDictionary]: updateStatus - ID \(dictionaryID) set to isActive = \(newStatus)")
     }
     
-    func delete(_ dictionary: DictionaryItem) throws {
+    func delete(_ dictionary: DictionaryItemModel) throws {
         try dbQueue.write { db in
-            let wordsDeleteSQL = "DELETE FROM \(WordItem.databaseTableName) WHERE tableName = ?"
+            let wordsDeleteSQL = "DELETE FROM \(WordItemModel.databaseTableName) WHERE tableName = ?"
             try db.execute(sql: wordsDeleteSQL, arguments: [dictionary.tableName])
             Logger.debug("[RepositoryDictionary]: delete - associated words for tableName \(dictionary.tableName)")
             

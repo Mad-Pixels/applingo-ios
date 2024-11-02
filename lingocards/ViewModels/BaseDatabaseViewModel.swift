@@ -6,9 +6,9 @@ class BaseDatabaseViewModel: BaseViewModel, ObservableObject {
     func performDatabaseOperation<T>(
         _ operation: @escaping () throws -> T,
         successHandler: @escaping (T) -> Void,
-        errorSource: ErrorSource,
+        errorSource: ErrorSourceModel,
         errorMessage: String,
-        tab: AppTab,
+        frame: AppFrameModel,
         completion: ((Result<Void, Error>) -> Void)? = nil
     ) {
         DispatchQueue.global(qos: .userInitiated).async {
@@ -24,7 +24,7 @@ class BaseDatabaseViewModel: BaseViewModel, ObservableObject {
                         error: error,
                         source: errorSource,
                         message: errorMessage,
-                        tab: tab,
+                        frame: frame,
                         completion: completion
                     )
                 }

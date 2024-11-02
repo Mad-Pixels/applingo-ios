@@ -5,19 +5,20 @@ struct DictionaryDetailView: View {
     
     @EnvironmentObject var languageManager: LanguageManager
     @EnvironmentObject var themeManager: ThemeManager
+    @EnvironmentObject var frameManager: FrameManager
     
-    @State private var editedDictionary: DictionaryItem
+    @State private var editedDictionary: DictionaryItemModel
     @State private var isShowingErrorAlert = false
     @State private var isEditing = false
 
     @Binding var isPresented: Bool
-    let onSave: (DictionaryItem, @escaping (Result<Void, Error>) -> Void) -> Void
-    private let originalDictionary: DictionaryItem
+    let onSave: (DictionaryItemModel, @escaping (Result<Void, Error>) -> Void) -> Void
+    private let originalDictionary: DictionaryItemModel
 
     init(
-        dictionary: DictionaryItem,
+        dictionary: DictionaryItemModel,
         isPresented: Binding<Bool>,
-        onSave: @escaping (DictionaryItem, @escaping (Result<Void, Error>) -> Void) -> Void
+        onSave: @escaping (DictionaryItemModel, @escaping (Result<Void, Error>) -> Void) -> Void
     ) {
         _editedDictionary = State(initialValue: dictionary)
         _isPresented = isPresented
@@ -96,6 +97,9 @@ struct DictionaryDetailView: View {
                 }
                 Spacer()
             }
+            .onAppear {
+                frameManager.setActiveFrame(.dictionaryDetail)
+            }
             .navigationTitle(languageManager.localizedString(for: "Details").capitalizedFirstLetter)
             .navigationBarItems(
                 leading: Button(
@@ -131,7 +135,7 @@ struct DictionaryDetailView: View {
         }
     }
 
-    private func updateDictionary(_ dictionary: DictionaryItem) {
+    private func updateDictionary(_ dictionary: DictionaryItemModel) {
         let previousDictionary = editedDictionary
 
         onSave(dictionary) { result in
@@ -140,8 +144,8 @@ struct DictionaryDetailView: View {
                 self.isEditing = false
                 self.presentationMode.wrappedValue.dismiss()
             case .failure(let error):
-                if let appError = error as? AppError {
-                    ErrorManager.shared.setError(appError: appError, tab: .dictionaries, source: .dictionaryUpdate)
+                if let appError = error as? AppErrorModel {
+                    ErrorManager.shared.setError(appError: appError, frame: .dictionaryDetail, source: .dictionaryUpdate)
                 }
                 self.editedDictionary = previousDictionary
                 self.isShowingErrorAlert = true

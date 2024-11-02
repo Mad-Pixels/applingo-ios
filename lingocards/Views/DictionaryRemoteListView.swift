@@ -1,15 +1,17 @@
 import SwiftUI
 
 struct DictionaryRemoteListView: View {
+    @Environment(\.presentationMode) var presentationMode
+    
     @EnvironmentObject var languageManager: LanguageManager
     @EnvironmentObject var themeManager: ThemeManager
-    @Environment(\.presentationMode) var presentationMode
+    @EnvironmentObject var frameManager: FrameManager
 
     @StateObject private var viewModel = DictionaryRemoteGetterViewModel()
     @StateObject private var errorManager = ErrorManager.shared
 
-    @State private var apiRequestParams = DictionaryQueryRequest(isPublic: true)
-    @State private var selectedDictionary: DictionaryItem?
+    @State private var apiRequestParams = DictionaryQueryRequest(is_public: true)
+    @State private var selectedDictionary: DictionaryItemModel?
     @State private var isShowingFilterView = false
     @State private var errMessage: String = ""
 
@@ -46,7 +48,7 @@ struct DictionaryRemoteListView: View {
                                     .font(.headline)
                                     .foregroundColor(theme.baseTextColor)
 
-                                Text(dictionary.subTitle ?? "")
+                                Text(dictionary.subTitle)
                                     .font(.subheadline)
                                     .foregroundColor(.gray)
                             }
@@ -84,13 +86,17 @@ struct DictionaryRemoteListView: View {
                     }
                 }
                 .onAppear {
-                    viewModel.resetPagination()
+                    frameManager.setActiveFrame(.dictionaryRemoteList)
+                    if frameManager.isActive(frame: .dictionaryRemoteList) {
+                        viewModel.resetPagination()
+                    }
                 }
                 .onChange(of: apiRequestParams) { newParams in
-                    viewModel.getRemoteDictionaries(query: newParams)
+                    viewModel.resetPagination()
+                    viewModel.get(queryRequest: newParams)
                 }
                 .modifier(ErrModifier(currentError: errorManager.currentError) { newError in
-                    if let error = newError, error.tab == .dictionaries, error.source == .dictionariesRemoteGet {
+                    if let error = newError, error.frame == .dictionaryRemoteList, error.source == .dictionariesRemoteGet {
                         errMessage = error.errorDescription ?? "error"
                     }
                 })

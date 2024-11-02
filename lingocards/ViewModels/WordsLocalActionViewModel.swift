@@ -2,6 +2,7 @@ import Foundation
 import Combine
 
 final class WordsLocalActionViewModel: BaseDatabaseViewModel {
+    private var frame: AppFrameModel = .main
     private let repository: WordRepositoryProtocol
     private let dictionaryRepository: DictionaryRepositoryProtocol
 
@@ -14,36 +15,40 @@ final class WordsLocalActionViewModel: BaseDatabaseViewModel {
         }
     }
 
-    func save(_ word: WordItem, completion: @escaping (Result<Void, Error>) -> Void) {
+    func save(_ word: WordItemModel, completion: @escaping (Result<Void, Error>) -> Void) {
         performDatabaseOperation(
             { try self.repository.save(word) },
             successHandler: { _ in },
             errorSource: .wordSave,
             errorMessage: "Failed to save word",
-            tab: .words,
+            frame: frame,
             completion: completion
         )
     }
 
-    func update(_ word: WordItem, completion: @escaping (Result<Void, Error>) -> Void) {
+    func update(_ word: WordItemModel, completion: @escaping (Result<Void, Error>) -> Void) {
         performDatabaseOperation(
             { try self.repository.update(word) },
             successHandler: { _ in },
             errorSource: .wordUpdate,
             errorMessage: "Failed to update word",
-            tab: .words,
+            frame: frame,
             completion: completion
         )
     }
 
-    func delete(_ word: WordItem, completion: @escaping (Result<Void, Error>) -> Void) {
+    func delete(_ word: WordItemModel, completion: @escaping (Result<Void, Error>) -> Void) {
         performDatabaseOperation(
             { try self.repository.delete(word) },
             successHandler: { _ in },
             errorSource: .wordDelete,
             errorMessage: "Failed to delete word",
-            tab: .words,
+            frame: frame,
             completion: completion
         )
+    }
+    
+    func setFrame(_ newFrame: AppFrameModel) {
+        self.frame = newFrame
     }
 }

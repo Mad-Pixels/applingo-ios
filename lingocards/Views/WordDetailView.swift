@@ -6,19 +6,20 @@ struct WordDetailView: View {
     @EnvironmentObject var languageManager: LanguageManager
     @EnvironmentObject var errorManager: ErrorManager
     @EnvironmentObject var themeManager: ThemeManager
+    @EnvironmentObject var frameManager: FrameManager
     
-    @State private var editedWord: WordItem
+    @State private var editedWord: WordItemModel
     @State private var isShowingErrorAlert = false
     @State private var isEditing = false
 
     @Binding var isPresented: Bool
-    let onSave: (WordItem, @escaping (Result<Void, Error>) -> Void) -> Void
-    private let originalWord: WordItem
+    let onSave: (WordItemModel, @escaping (Result<Void, Error>) -> Void) -> Void
+    private let originalWord: WordItemModel
 
     init(
-        word: WordItem,
+        word: WordItemModel,
         isPresented: Binding<Bool>,
-        onSave: @escaping (WordItem, @escaping (Result<Void, Error>) -> Void) -> Void
+        onSave: @escaping (WordItemModel, @escaping (Result<Void, Error>) -> Void) -> Void
     ) {
         _editedWord = State(initialValue: word)
         _isPresented = isPresented
@@ -98,6 +99,9 @@ struct WordDetailView: View {
                             }
                         }
                 }
+                .onAppear {
+                    frameManager.setActiveFrame(.wordDetail)
+                }
                 .navigationTitle(languageManager.localizedString(for: "Details").capitalizedFirstLetter)
                 .navigationBarItems(
                     leading: Button(
@@ -137,7 +141,7 @@ struct WordDetailView: View {
         }
     }
 
-    private func update(_ word: WordItem) {
+    private func update(_ word: WordItemModel) {
         let previousWord = editedWord
 
         onSave(word) { result in

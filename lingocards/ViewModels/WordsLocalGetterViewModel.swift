@@ -2,7 +2,7 @@ import Foundation
 import Combine
 
 final class WordsLocalGetterViewModel: BaseDatabaseViewModel {
-    @Published var words: [WordItem] = []
+    @Published var words: [WordItemModel] = []
     @Published var isLoadingPage = false
     @Published var searchText: String = "" {
         didSet {
@@ -15,6 +15,7 @@ final class WordsLocalGetterViewModel: BaseDatabaseViewModel {
     private var cancellables = Set<AnyCancellable>()
     private let repository: WordRepositoryProtocol
     private var cancellationToken = UUID()
+    private var frame: AppFrameModel = .main
     private let itemsPerPage: Int = 50
     private var hasMorePages = true
     private var currentPage = 0
@@ -57,7 +58,7 @@ final class WordsLocalGetterViewModel: BaseDatabaseViewModel {
             },
             errorSource: .wordsGet,
             errorMessage: "Failed load words",
-            tab: .words,
+            frame: frame,
             completion: { [weak self] result in
                 guard let self = self else { return }
                 guard currentToken == self.cancellationToken else {
@@ -71,7 +72,7 @@ final class WordsLocalGetterViewModel: BaseDatabaseViewModel {
         )
     }
 
-    func loadMoreWordsIfNeeded(currentItem word: WordItem?) {
+    func loadMoreWordsIfNeeded(currentItem word: WordItemModel?) {
         guard
             let word = word,
             let index = words.firstIndex(where: { $0.id == word.id })
@@ -81,17 +82,21 @@ final class WordsLocalGetterViewModel: BaseDatabaseViewModel {
             get()
         }
     }
+    
+    func clear() {
+        words = []
+    }
+    
+    func setFrame(_ newFrame: AppFrameModel) {
+        self.frame = newFrame
+    }
 
-    private func processFetchedWords(_ fetchedWords: [WordItem]) {
+    private func processFetchedWords(_ fetchedWords: [WordItemModel]) {
         if fetchedWords.isEmpty {
             hasMorePages = false
         } else {
             currentPage += 1
             words.append(contentsOf: fetchedWords)
         }
-    }
-
-    func clear() {
-        words = []
     }
 }

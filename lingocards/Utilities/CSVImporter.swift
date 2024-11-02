@@ -10,8 +10,8 @@ struct CSVImporter {
     }()
 
     // Метод parseCSV для обработки CSV-файла и создания WordItem
-    static func parseCSV(at url: URL, tableName: String) throws -> [WordItem] {
-        var wordItems = [WordItem]()
+    static func parseCSV(at url: URL, tableName: String) throws -> [WordItemModel] {
+        var wordItems = [WordItemModel]()
         
         do {
             let content = try String(contentsOf: url, encoding: .utf8)
@@ -65,7 +65,7 @@ struct CSVImporter {
                 
                 guard let ft = frontText, let bt = backText else { continue }
                 
-                let wordItem = WordItem(
+                let wordItem = WordItemModel(
                     tableName: tableName,
                     frontText: ft,
                     backText: bt,

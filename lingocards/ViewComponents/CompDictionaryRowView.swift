@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct CompDictionaryRowView: View {
-    let dictionary: DictionaryItem
+    let dictionary: DictionaryItemModel
     let onTap: () -> Void
     let onToggle: (Bool) -> Void
     let theme: ThemeStyle

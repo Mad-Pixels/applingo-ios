@@ -4,7 +4,7 @@ import Combine
 enum GlobalError: Error, LocalizedError, Identifiable, Equatable {
     var id: UUID { UUID() }
 
-    case custom(appError: AppError, tab: AppTab, source: ErrorSource)
+    case custom(appError: AppErrorModel, frame: AppFrameModel, source: ErrorSourceModel)
     
     var errorDescription: String? {
         switch self {
@@ -13,14 +13,14 @@ enum GlobalError: Error, LocalizedError, Identifiable, Equatable {
         }
     }
 
-    var tab: AppTab {
+    var frame: AppFrameModel {
         switch self {
         case .custom(_, let context, _):
             return context
         }
     }
     
-    var source: ErrorSource {
+    var source: ErrorSourceModel {
         switch self {
         case .custom(_, _, let source):
             return source
@@ -36,8 +36,8 @@ final class ErrorManager: ObservableObject {
 
     private init() {}
 
-    func setError(appError: AppError, tab: AppTab, source: ErrorSource) {
-        let error = GlobalError.custom(appError: appError, tab: tab, source: source)
+    func setError(appError: AppErrorModel, frame: AppFrameModel, source: ErrorSourceModel) {
+        let error = GlobalError.custom(appError: appError, frame: frame, source: source)
         if appError.errorType != .ui {
             logError(appError)
         }
@@ -57,7 +57,7 @@ final class ErrorManager: ObservableObject {
         }
     }
 
-    func clearError(for source: ErrorSource) {
+    func clearError(for source: ErrorSourceModel) {
         DispatchQueue.main.async {
             if let currentError = self.currentError, currentError.source == source {
                 self.currentError = nil
@@ -67,20 +67,20 @@ final class ErrorManager: ObservableObject {
         }
     }
 
-    func clearErrors(for tab: AppTab) {
+    func clearErrors(for frame: AppFrameModel) {
         DispatchQueue.main.async {
-            if let currentError = self.currentError, currentError.tab == tab {
+            if let currentError = self.currentError, currentError.frame == frame {
                 self.currentError = nil
                 self.isErrorVisible = false
             }
         }
     }
     
-    func isVisible(for tab: AppTab, source: ErrorSource) -> Bool {
-        return isErrorVisible && currentError?.tab == tab && currentError?.source == source
+    func isVisible(for frame: AppFrameModel, source: ErrorSourceModel) -> Bool {
+        return isErrorVisible && currentError?.frame == frame && currentError?.source == source
     }
     
-    private func logError(_ appError: AppError) {
+    private func logError(_ appError: AppErrorModel) {
         LogHandler.shared.sendError(appError.errorMessage, type: appError.errorType, additionalInfo: appError.additionalInfo)
     }
 }

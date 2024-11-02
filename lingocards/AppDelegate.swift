@@ -6,7 +6,7 @@ struct LingocardApp: App {
     @StateObject private var languageManager = LanguageManager()
     @StateObject private var themeManager = ThemeManager()
     @StateObject private var errorManager = ErrorManager.shared
-    @StateObject private var tabManager = TabManager.shared
+    @StateObject private var frameManager = FrameManager.shared
 
     init() {
         IQKeyboardManager.shared.resignOnTouchOutside = true
@@ -18,6 +18,7 @@ struct LingocardApp: App {
         } catch {
             fatalError("Не удалось подключиться к базе данных: \(error)")
         }
+        APIManager.configure(baseURL: "https://lingocards-api.madpixels.io", token: "t9DbIipRtzPBVXYLoXxc6KSn")
     }
 
     var body: some Scene {
@@ -26,7 +27,7 @@ struct LingocardApp: App {
                 .environmentObject(languageManager)
                 .environmentObject(errorManager)
                 .environmentObject(themeManager)
-                .environmentObject(tabManager)
+                .environmentObject(frameManager)
                 .environmentObject(DatabaseManager.shared)
         }
     }

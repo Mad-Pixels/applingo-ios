@@ -3,7 +3,7 @@ import Combine
 import UIKit
 
 struct ErrorLog: Codable {
-    let errorType: ErrorType
+    let errorType: ErrorTypeModel
     let errorMessage: String
     let appVersion: String
     let osVersion: String
@@ -22,7 +22,7 @@ struct ErrorLog: Codable {
     }
 
     init(
-        errorType: ErrorType,
+        errorType: ErrorTypeModel,
         errorMessage: String,
         additionalInfo: [String: String]? = nil
     ) {
@@ -104,7 +104,7 @@ final class LogHandler: ObservableObject {
         }
     }
     
-    func sendError(_ message: String, type: ErrorType, additionalInfo: [String: String]? = nil) {
+    func sendError(_ message: String, type: ErrorTypeModel, additionalInfo: [String: String]? = nil) {
         let log = ErrorLog(
             errorType: type,
             errorMessage: message,

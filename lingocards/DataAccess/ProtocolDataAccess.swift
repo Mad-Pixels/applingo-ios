@@ -3,11 +3,11 @@ protocol DictionaryRepositoryProtocol {
             searchText: String?,
             offset: Int,
             limit: Int
-        ) throws -> [DictionaryItem]
-    func save(_ dictionary: DictionaryItem) throws
-    func update(_ dictionary: DictionaryItem) throws
+        ) throws -> [DictionaryItemModel]
+    func save(_ dictionary: DictionaryItemModel) throws
+    func update(_ dictionary: DictionaryItemModel) throws
     func updateStatus(dictionaryID: Int, newStatus: Bool) throws
-    func delete(_ dictionary: DictionaryItem) throws
+    func delete(_ dictionary: DictionaryItemModel) throws
 }
 
 protocol WordRepositoryProtocol {
@@ -15,8 +15,8 @@ protocol WordRepositoryProtocol {
             searchText: String?,
             offset: Int,
             limit: Int
-        ) throws -> [WordItem]
-    func save(_ word: WordItem) throws
-    func update(_ word: WordItem) throws
-    func delete(_ word: WordItem) throws
+        ) throws -> [WordItemModel]
+    func save(_ word: WordItemModel) throws
+    func update(_ word: WordItemModel) throws
+    func delete(_ word: WordItemModel) throws
 }

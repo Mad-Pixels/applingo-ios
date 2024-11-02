@@ -5,13 +5,14 @@ struct DictionaryRemoteDetailView: View {
     
     @EnvironmentObject var languageManager: LanguageManager
     @EnvironmentObject var themeManager: ThemeManager
+    @EnvironmentObject var frameManager: FrameManager
     
-    @State private var editedDictionary: DictionaryItem
+    @State private var editedDictionary: DictionaryItemModel
 
     @Binding var isPresented: Bool
     let onDownload: () -> Void
 
-    init(dictionary: DictionaryItem, isPresented: Binding<Bool>, onDownload: @escaping () -> Void) {
+    init(dictionary: DictionaryItemModel, isPresented: Binding<Bool>, onDownload: @escaping () -> Void) {
         _editedDictionary = State(initialValue: dictionary)
         _isPresented = isPresented
         self.onDownload = onDownload
@@ -87,6 +88,9 @@ struct DictionaryRemoteDetailView: View {
                     .padding()
                 }
                 .background(theme.detailsColor)
+            }
+            .onAppear {
+                frameManager.setActiveFrame(.dictionaryRemoteDetail)
             }
             .navigationTitle(languageManager.localizedString(for: "Details").capitalizedFirstLetter)
             .navigationBarTitleDisplayMode(.inline)

@@ -5,13 +5,13 @@ struct TabDictionariesView: View {
     @EnvironmentObject var languageManager: LanguageManager
     @EnvironmentObject var databaseManager: DatabaseManager
     @EnvironmentObject var themeManager: ThemeManager
-    @EnvironmentObject var tabManager: TabManager
+    @EnvironmentObject var frameManager: FrameManager
     @EnvironmentObject var errorManager: ErrorManager
 
     @StateObject private var dictionaryAction: DictionaryLocalActionViewModel
     @StateObject private var dictionaryGetter: DictionaryLocalGetterViewModel
 
-    @State private var selectedDictionary: DictionaryItem?
+    @State private var selectedDictionary: DictionaryItemModel?
     @State private var isShowingFileImporter = false
     @State private var isShowingRemoteList = false
     @State private var isShowingAlert = false
@@ -86,8 +86,10 @@ struct TabDictionariesView: View {
                     }
                 }
                 .onAppear {
-                    tabManager.setActiveTab(.dictionaries)
-                    if tabManager.isActive(tab: .dictionaries) {
+                    frameManager.setActiveFrame(.tabDictionaries)
+                    if frameManager.isActive(frame: .tabDictionaries) {
+                        dictionaryAction.setFrame(.tabDictionaries)
+                        dictionaryGetter.setFrame(.tabDictionaries)
                         dictionaryGetter.resetPagination()
                     }
                 }
@@ -95,7 +97,7 @@ struct TabDictionariesView: View {
                     dictionaryGetter.clear()
                 }
                 .modifier(ErrModifier(currentError: errorManager.currentError) { newError in
-                    if let error = newError, error.tab == .dictionaries, error.source == .dictionaryDelete {
+                    if let error = newError, error.frame == .tabDictionaries, error.source == .dictionaryDelete {
                         isShowingAlert = true
                     }
                 })
@@ -150,14 +152,14 @@ struct TabDictionariesView: View {
                     }
                 }
             } else {
-                let error = AppError(
+                let error = AppErrorModel(
                     errorType: .ui,
                     errorMessage: languageManager.localizedString(for: "CannotDeleteInternalDictionary"),
                     additionalInfo: nil
                 )
                 errorManager.setError(
                     appError: error,
-                    tab: .dictionaries,
+                    frame: .tabDictionaries,
                     source: .dictionaryDelete
                 )
                 isShowingAlert = true
@@ -165,7 +167,7 @@ struct TabDictionariesView: View {
         }
     }
 
-    private func updateStatus(_ dictionary: DictionaryItem, newStatus: Bool) {
+    private func updateStatus(_ dictionary: DictionaryItemModel, newStatus: Bool) {
         guard let dictionaryID = dictionary.id else {
             return
         }

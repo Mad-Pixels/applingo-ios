@@ -6,6 +6,7 @@ final class DictionaryRemoteFilterViewModel: ObservableObject {
     @Published var backCategories: [CategoryItem] = []
     
     private var cancellable: AnyCancellable?
+    private var frame: AppFrameModel = .main
 
     init() {
         Logger.debug("[DictionaryRemoteFilterViewModel]: ViewModel initialized")
@@ -27,7 +28,7 @@ final class DictionaryRemoteFilterViewModel: ObservableObject {
             self.frontCategories = []
             self.backCategories = []
 
-            let error = AppError(
+            let error = AppErrorModel(
                 errorType: .network,
                 errorMessage: "Failed to fetch categories from the remote server",
                 additionalInfo: nil
@@ -36,7 +37,7 @@ final class DictionaryRemoteFilterViewModel: ObservableObject {
             // Передаем ошибку в ErrorManager
             ErrorManager.shared.setError(
                 appError: error,
-                tab: .dictionaries,
+                frame: frame,
                 source: .categoriesGet
             )
             return
@@ -62,5 +63,9 @@ final class DictionaryRemoteFilterViewModel: ObservableObject {
         // Очищаем ошибки при успешном получении данных
         ErrorManager.shared.clearError(for: .categoriesGet)
         Logger.debug("[DictionaryRemoteFilterViewModel]: Categories data successfully fetched")
+    }
+    
+    func setFrame(_ newFrame: AppFrameModel) {
+        self.frame = newFrame
     }
 }

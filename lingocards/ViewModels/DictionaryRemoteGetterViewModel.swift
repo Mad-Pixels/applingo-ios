@@ -2,88 +2,116 @@ import Foundation
 import Combine
 
 final class DictionaryRemoteGetterViewModel: ObservableObject {
-    @Published var dictionaries: [DictionaryItem] = []
+    @Published var dictionaries: [DictionaryItemModel] = []
     @Published var searchText: String = "" {
         didSet {
-            resetPagination()  // Перезагружаем данные при изменении текста поиска
+            if searchText != oldValue {
+                resetPagination()
+            }
         }
     }
     @Published var isLoadingPage = false
 
-    private var hasMorePagesUp = true
-    private var hasMorePagesDown = true
+    private var hasMorePages = true
+    private var lastEvaluated: String?
+    private var frame: AppFrameModel = .main
+    private var cancellationToken = UUID()
 
-    enum LoadDirection {
-        case up
-        case down
-    }
-
-    // Сброс пагинации
     func resetPagination() {
         dictionaries.removeAll()
+        hasMorePages = true
         isLoadingPage = false
-        hasMorePagesUp = true
-        hasMorePagesDown = true
-        getRemoteDictionaries(query: DictionaryQueryRequest(isPublic: true), direction: .down)
+        lastEvaluated = nil
+        cancellationToken = UUID()
+        get()
     }
 
-    // Получение словарей с удаленного сервера с учетом поиска
-    func getRemoteDictionaries(query: DictionaryQueryRequest, direction: LoadDirection = .down) {
-        guard !isLoadingPage else { return }
+    func get(queryRequest: DictionaryQueryRequest? = nil) {
+        guard !isLoadingPage, hasMorePages else {
+            return
+        }
+
+        let currentToken = cancellationToken
         isLoadingPage = true
 
-        Logger.debug("[DictionaryRemoteViewModel]: Fetching remote dictionaries with query parameters: \(query)")
+        var request = queryRequest ?? DictionaryQueryRequest()
+        request.is_public = true
+        request.last_evaluated = self.lastEvaluated
+        request.limit = 20
 
-        DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + 1.0) {
-            DispatchQueue.main.async {
-                if Int.random(in: 1...10) <= 1 {
-                    Logger.debug("[DictionaryRemoteViewModel]: Failed to fetch remote dictionaries")
-                    self.dictionaries = []
-                    ErrorManager.shared.setError(
-                        appError: AppError(
-                            errorType: .network,
-                            errorMessage: "Failed to fetch data from remote server",
-                            additionalInfo: nil
-                        ),
-                        tab: .dictionaries,
-                        source: .dictionariesRemoteGet
-                    )
+        if !searchText.isEmpty {
+            request.name = searchText
+        }
+
+        Task {
+            do {
+                let bodyData = try JSONEncoder().encode(request)
+                let data = try await APIManager.shared.request(
+                    endpoint: "/device/v1/dictionary/query",
+                    method: .post,
+                    body: bodyData
+                )
+
+                let response = try JSONDecoder().decode(DictionaryQueryResponse.self, from: data)
+
+                guard currentToken == self.cancellationToken else {
                     self.isLoadingPage = false
                     return
                 }
 
-                var remoteData: [DictionaryItem] = [
-                    DictionaryItem(displayName: "Italian Words", tableName: "italian_words", description: "Basic Italian vocabulary", category: "Language", subcategory: "it-en", author: "Author6"),
-                    DictionaryItem(displayName: "Japanese Words", tableName: "japanese_words", description: "Basic Japanese vocabulary", category: "Language", subcategory: "ja-en", author: "Author7")
-                ]
+                let fetchedDictionaries = response.data.items.map { $0.toDictionaryItem() }
 
-                if !self.searchText.isEmpty {
-                    remoteData = remoteData.filter { $0.displayName.lowercased().contains(self.searchText.lowercased()) }
+                await MainActor.run {
+                    self.processFetchedDictionaries(fetchedDictionaries, lastEvaluated: response.last_evaluated)
+                    self.isLoadingPage = false
+                }
+            } catch {
+                guard currentToken == self.cancellationToken else {
+                    self.isLoadingPage = false
+                    return
                 }
 
-                switch direction {
-                case .down:
-                    self.dictionaries.append(contentsOf: remoteData)
-                case .up:
-                    self.dictionaries.insert(contentsOf: remoteData, at: 0)
+                let appError = AppErrorModel(errorType: .api, errorMessage: error.localizedDescription, additionalInfo: nil)
+                ErrorManager.shared.setError(appError: appError, frame: frame, source: .dictionariesRemoteGet)
+
+                await MainActor.run {
+                    self.isLoadingPage = false
                 }
-
-                ErrorManager.shared.clearError(for: .dictionariesRemoteGet)
-                Logger.debug("[DictionaryRemoteViewModel]: Remote dictionaries data successfully fetched")
-
-                self.isLoadingPage = false
             }
         }
     }
 
-    // Загрузка дополнительных данных при необходимости
-    func loadMoreDictionariesIfNeeded(currentItem dictionary: DictionaryItem?) {
-        guard let dictionary = dictionary, let index = dictionaries.firstIndex(where: { $0.id == dictionary.id }) else { return }
+    func loadMoreDictionariesIfNeeded(currentItem: DictionaryItemModel?) {
+        guard
+            let currentItem = currentItem,
+            let index = dictionaries.firstIndex(where: { $0.id == currentItem.id }),
+            index >= dictionaries.count - 5,
+            hasMorePages,
+            !isLoadingPage
+        else {
+            return
+        }
 
-        if index <= 5 && hasMorePagesUp && !isLoadingPage {
-            getRemoteDictionaries(query: DictionaryQueryRequest(isPublic: true), direction: .up)
-        } else if index >= dictionaries.count - 5 && hasMorePagesDown && !isLoadingPage {
-            getRemoteDictionaries(query: DictionaryQueryRequest(isPublic: true), direction: .down)
+        get()
+    }
+
+    func clear() {
+        dictionaries = []
+        lastEvaluated = nil
+        hasMorePages = true
+    }
+    
+    func setFrame(_ newFrame: AppFrameModel) {
+        self.frame = newFrame
+    }
+    
+    private func processFetchedDictionaries(_ fetchedDictionaries: [DictionaryItemModel], lastEvaluated: String?) {
+        if fetchedDictionaries.isEmpty {
+            hasMorePages = false
+        } else {
+            dictionaries.append(contentsOf: fetchedDictionaries)
+            self.lastEvaluated = lastEvaluated
+            hasMorePages = (lastEvaluated != nil)
         }
     }
 }

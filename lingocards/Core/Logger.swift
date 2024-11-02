@@ -24,7 +24,7 @@ struct Logger {
 
     static func log(_ message: @autoclosure () -> String,
                     level: LogLevel = .info,
-                    errorType: ErrorType? = nil,
+                    errorType: ErrorTypeModel? = nil,
                     additionalInfo: [String: String]? = nil) {
         let messageString = message()
 
@@ -53,7 +53,7 @@ struct Logger {
     }
 
     static func error(_ message: @autoclosure () -> String,
-                      type: ErrorType,
+                      type: ErrorTypeModel,
                       additionalInfo: [String: String]? = nil) {
         log(message(), level: .error, errorType: type, additionalInfo: additionalInfo)
     }

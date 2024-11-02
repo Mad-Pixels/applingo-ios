@@ -3,17 +3,17 @@ import Foundation
 class BaseViewModel {
     func handleError(
         error: Error,
-        source: ErrorSource,
+        source: ErrorSourceModel,
         message: String,
-        tab: AppTab,
+        frame: AppFrameModel,
         completion: ((Result<Void, Error>) -> Void)? = nil
     ) {
-        let appError = AppError(
+        let appError = AppErrorModel(
             errorType: .database,
             errorMessage: message,
             additionalInfo: ["error": "\(error)"]
         )
-        ErrorManager.shared.setError(appError: appError, tab: tab, source: source)
+        ErrorManager.shared.setError(appError: appError, frame: frame, source: source)
         completion?(.failure(appError))
     }
 }

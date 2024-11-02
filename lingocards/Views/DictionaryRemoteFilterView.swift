@@ -5,8 +5,9 @@ struct DictionaryRemoteFilterView: View {
     
     @EnvironmentObject var languageManager: LanguageManager
     @EnvironmentObject var themeManager: ThemeManager
+    @EnvironmentObject var frameManager: FrameManager
     
-    @StateObject private var viewModel = DictionaryRemoteFilterViewModel()
+    @StateObject private var categoriesGetter = DictionaryRemoteFilterViewModel()
    
     @State private var selectedFrontCategory: CategoryItem? = nil
     @State private var selectedBackCategory: CategoryItem? = nil
@@ -26,7 +27,7 @@ struct DictionaryRemoteFilterView: View {
                             HStack {
                                 CompPickerView(
                                     selectedValue: $selectedFrontCategory,
-                                    items: viewModel.frontCategories,
+                                    items: categoriesGetter.frontCategories,
                                     title: "",
                                     theme: theme
                                 ) { category in
@@ -42,7 +43,7 @@ struct DictionaryRemoteFilterView: View {
                                 
                                 CompPickerView(
                                     selectedValue: $selectedBackCategory,
-                                    items: viewModel.backCategories,
+                                    items: categoriesGetter.backCategories,
                                     title: "",
                                     theme: theme
                                 ) { category in
@@ -60,9 +61,9 @@ struct DictionaryRemoteFilterView: View {
                             action: {
                                 let frontCategoryName = selectedFrontCategory?.name ?? ""
                                 let backCategoryName = selectedBackCategory?.name ?? ""
-                                apiRequestParams.categorySub = "\(frontCategoryName)-\(backCategoryName)".lowercased()
+                                apiRequestParams.category_sub = "\(frontCategoryName)-\(backCategoryName)".lowercased()
 
-                                Logger.debug("Filters saved: \(apiRequestParams.categorySub ?? "")")
+                                Logger.debug("Filters saved: \(apiRequestParams.category_sub ?? "")")
                                 presentationMode.wrappedValue.dismiss()
                             },
                             theme: theme
@@ -71,7 +72,7 @@ struct DictionaryRemoteFilterView: View {
                         CompButtonCancelView(
                             title: languageManager.localizedString(for: "Reset").capitalizedFirstLetter,
                             action: {
-                                apiRequestParams.categorySub = nil
+                                apiRequestParams.category_sub = nil
                                 Logger.debug("Filters reset: categorySub set to an empty string")
                                 presentationMode.wrappedValue.dismiss()
                             },
@@ -94,12 +95,16 @@ struct DictionaryRemoteFilterView: View {
                 }
             )
             .onAppear {
-                viewModel.getCategories()
-
-                if let firstFrontCategory = viewModel.frontCategories.first {
+                frameManager.setActiveFrame(.dictionaryRemoteFilter)
+                if frameManager.isActive(frame: .dictionaryRemoteFilter) {
+                    categoriesGetter.setFrame(.dictionaryRemoteFilter)
+                }
+                
+                categoriesGetter.getCategories()
+                if let firstFrontCategory = categoriesGetter.frontCategories.first {
                     selectedFrontCategory = firstFrontCategory
                 }
-                if let firstBackCategory = viewModel.backCategories.first {
+                if let firstBackCategory = categoriesGetter.backCategories.first {
                     selectedBackCategory = firstBackCategory
                 }
             }

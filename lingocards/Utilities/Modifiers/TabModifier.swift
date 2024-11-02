@@ -1,18 +1,18 @@
 import SwiftUI
 
-struct TabModifier: ViewModifier {
-    let activeTab: AppTab
-    let onChange: (AppTab) -> Void
+struct FrameModifier: ViewModifier {
+    let activeFrame: AppFrameModel
+    let onChange: (AppFrameModel) -> Void
     
     func body(content: Content) -> some View {
         if #available(iOS 17.0, *) {
-            content.onChange(of: activeTab) { oldValue, newValue in
+            content.onChange(of: activeFrame) { oldValue, newValue in
                 if oldValue != newValue {
                     onChange(newValue)
                 }
             }
         } else {
-            content.onChange(of: activeTab) { newValue in
+            content.onChange(of: activeFrame) { newValue in
                 onChange(newValue)
             }
         }

@@ -1,6 +1,6 @@
 import Foundation
 
-enum ErrorType: String, Codable {
+enum ErrorTypeModel: String, Codable {
     case database
     case network
     case unknown
@@ -8,7 +8,7 @@ enum ErrorType: String, Codable {
     case ui
 }
 
-enum ErrorSource: String {
+enum ErrorSourceModel: String {
     case wordsGet
     case wordAdd
     case wordSave
@@ -26,9 +26,9 @@ enum ErrorSource: String {
     case importCSVFile
 }
 
-struct AppError: Error, LocalizedError, Equatable, Identifiable {
+struct AppErrorModel: Error, LocalizedError, Equatable, Identifiable {
     let id: UUID = UUID()
-    let errorType: ErrorType
+    let errorType: ErrorTypeModel
     let errorMessage: String
     let additionalInfo: [String: String]?
 
@@ -36,7 +36,7 @@ struct AppError: Error, LocalizedError, Equatable, Identifiable {
         errorMessage
     }
     
-    static func ==(lhs: AppError, rhs: AppError) -> Bool {
+    static func ==(lhs: AppErrorModel, rhs: AppErrorModel) -> Bool {
         return lhs.errorMessage == rhs.errorMessage && lhs.errorType == rhs.errorType && lhs.additionalInfo == rhs.additionalInfo
     }
 }

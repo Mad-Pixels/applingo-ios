@@ -1,7 +1,7 @@
 import Foundation
 import GRDB
 
-struct WordItem: Identifiable, Codable, Equatable {
+struct WordItemModel: Identifiable, Codable, Equatable {
     static let databaseTableName = "Words"
     
     var id: Int?
@@ -41,8 +41,8 @@ struct WordItem: Identifiable, Codable, Equatable {
         self.fmt()
     }
     
-    static func empty() -> WordItem {
-        return WordItem(
+    static func empty() -> WordItemModel {
+        return WordItemModel(
             tableName: "",
             frontText: "",
             backText: ""
@@ -58,7 +58,7 @@ struct WordItem: Identifiable, Codable, Equatable {
     }
 }
 
-extension WordItem: FetchableRecord, PersistableRecord {
+extension WordItemModel: FetchableRecord, PersistableRecord {
     static func createTable(in db: Database) throws {
         try db.create(table: databaseTableName, ifNotExists: true) { t in
             t.autoIncrementedPrimaryKey("id").unique()

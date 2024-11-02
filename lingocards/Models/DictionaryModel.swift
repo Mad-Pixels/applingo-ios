@@ -1,7 +1,7 @@
 import Foundation
 import GRDB
 
-struct DictionaryItem: Identifiable, Codable, Equatable, Hashable {
+struct DictionaryItemModel: Identifiable, Codable, Equatable, Hashable {
     static let databaseTableName = "Dictionary"
     
     var id: Int?
@@ -15,6 +15,20 @@ struct DictionaryItem: Identifiable, Codable, Equatable, Hashable {
     var createdAt: Int
     var isPrivate: Bool
     var isActive: Bool
+    
+    // Связь между свойствами структуры и ключами JSON
+//    enum CodingKeys: String, CodingKey {
+//        case id
+//        case displayName = "name"
+//        case tableName = "dictionary_key"
+//        case description
+//        case category = "category_main"
+//        case subcategory = "category_sub"
+//        case author
+//        case createdAt
+//        case isPrivate
+//        case isActive
+//    }
 
     init(
         id: Int? = nil,
@@ -63,7 +77,7 @@ struct DictionaryItem: Identifiable, Codable, Equatable, Hashable {
     }
 }
 
-extension DictionaryItem: FetchableRecord, PersistableRecord {
+extension DictionaryItemModel: FetchableRecord, PersistableRecord {
     static func createTable(in db: Database) throws {
         try db.create(table: databaseTableName, ifNotExists: true) { t in
             t.autoIncrementedPrimaryKey("id").unique()

@@ -6,14 +6,15 @@ struct WordAddView: View {
     @EnvironmentObject var languageManager: LanguageManager
     @EnvironmentObject var errorManager: ErrorManager
     @EnvironmentObject var themeManager: ThemeManager
+    @EnvironmentObject var frameManager: FrameManager
 
-    let dictionaries: [DictionaryItem]
+    let dictionaries: [DictionaryItemModel]
     @Binding var isPresented: Bool
-    let onSave: (WordItem, @escaping (Result<Void, Error>) -> Void) -> Void
+    let onSave: (WordItemModel, @escaping (Result<Void, Error>) -> Void) -> Void
 
-    @State private var selectedDictionary: DictionaryItem?
+    @State private var selectedDictionary: DictionaryItemModel?
     @State private var isShowingErrorAlert = false
-    @State private var wordItem = WordItem.empty()
+    @State private var wordItem = WordItemModel.empty()
 
     var body: some View {
         let theme = themeManager.currentThemeStyle
@@ -73,6 +74,9 @@ struct WordAddView: View {
                             }
                             .padding(.vertical, 12)
                     }
+                }
+                .onAppear {
+                    frameManager.setActiveFrame(.wordAdd)
                 }
                 .navigationTitle(languageManager.localizedString(for: "AddWord").capitalizedFirstLetter)
                 .navigationBarTitleDisplayMode(.inline)

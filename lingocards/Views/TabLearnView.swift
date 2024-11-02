@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct TabLearnView: View {
-    @EnvironmentObject var tabManager: TabManager
+    @EnvironmentObject var frameManager: FrameManager
     @EnvironmentObject var themeManager: ThemeManager
     
     var body: some View {
@@ -30,11 +30,11 @@ struct TabLearnView: View {
         .background(theme.backgroundViewColor) // Фон по теме
         .edgesIgnoringSafeArea(.all)
         .onAppear {
-            tabManager.setActiveTab(.learn)
+            frameManager.setActiveFrame(.learn)
         }
-        .modifier(TabModifier(activeTab: tabManager.activeTab) { newTab in
-            if newTab != .learn {
-                tabManager.deactivateTab(.learn)
+        .modifier(FrameModifier(activeFrame: frameManager.activeFrame) { newFrame in
+            if newFrame != .learn {
+                frameManager.deactivateFrame(.learn)
             }
         })
     }
