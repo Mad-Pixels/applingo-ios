@@ -7,7 +7,7 @@ struct DictionaryRemoteListView: View {
     @EnvironmentObject var themeManager: ThemeManager
     @EnvironmentObject var frameManager: FrameManager
 
-    @StateObject private var viewModel = DictionaryRemoteGetterViewModel()
+    @StateObject private var viewModel: DictionaryRemoteGetterViewModel
     @StateObject private var errorManager = ErrorManager.shared
 
     @State private var apiRequestParams = DictionaryQueryRequest(isPrivate: false)
@@ -16,6 +16,11 @@ struct DictionaryRemoteListView: View {
     @State private var errMessage: String = ""
 
     @Binding var isPresented: Bool
+
+    init(isPresented: Binding<Bool>) {
+        self._isPresented = isPresented
+        _viewModel = StateObject(wrappedValue: DictionaryRemoteGetterViewModel())
+    }
 
     var body: some View {
         let theme = themeManager.currentThemeStyle

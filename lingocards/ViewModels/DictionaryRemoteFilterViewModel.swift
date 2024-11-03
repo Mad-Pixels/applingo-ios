@@ -16,15 +16,12 @@ final class DictionaryRemoteFilterViewModel: ObservableObject {
         cancellable?.cancel()
     }
 
-    // Метод для получения списка категорий с 10% шансом возврата ошибки
     func getCategories() {
         Logger.debug("[DictionaryRemoteFilterViewModel]: Fetching categories...")
 
-        // 10% шанс вернуть ошибку
         if Int.random(in: 1...10) <= 1 {
             Logger.debug("[DictionaryRemoteFilterViewModel]: Failed to fetch categories")
 
-            // Очищаем текущие данные
             self.frontCategories = []
             self.backCategories = []
 
@@ -34,7 +31,6 @@ final class DictionaryRemoteFilterViewModel: ObservableObject {
                 additionalInfo: nil
             )
 
-            // Передаем ошибку в ErrorManager
             ErrorManager.shared.setError(
                 appError: error,
                 frame: frame,
@@ -43,7 +39,6 @@ final class DictionaryRemoteFilterViewModel: ObservableObject {
             return
         }
 
-        // Пример данных для front_text и back_text категорий
         let frontCategoryData: [CategoryItem] = [
             CategoryItem(name: "Language"),
             CategoryItem(name: "Technology"),
@@ -56,11 +51,9 @@ final class DictionaryRemoteFilterViewModel: ObservableObject {
             CategoryItem(name: "Culture")
         ]
 
-        // Обновляем Published переменные
         self.frontCategories = frontCategoryData
         self.backCategories = backCategoryData
 
-        // Очищаем ошибки при успешном получении данных
         ErrorManager.shared.clearError(for: .categoriesGet)
         Logger.debug("[DictionaryRemoteFilterViewModel]: Categories data successfully fetched")
     }

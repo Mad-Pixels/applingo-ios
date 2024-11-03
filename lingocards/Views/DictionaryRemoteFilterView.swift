@@ -7,12 +7,16 @@ struct DictionaryRemoteFilterView: View {
     @EnvironmentObject var themeManager: ThemeManager
     @EnvironmentObject var frameManager: FrameManager
     
-    @StateObject private var categoriesGetter = DictionaryRemoteFilterViewModel()
-   
+    @StateObject private var categoriesGetter: DictionaryRemoteFilterViewModel
     @State private var selectedFrontCategory: CategoryItem? = nil
     @State private var selectedBackCategory: CategoryItem? = nil
     
     @Binding var apiRequestParams: DictionaryQueryRequest
+
+    init(apiRequestParams: Binding<DictionaryQueryRequest>) {
+        self._apiRequestParams = apiRequestParams
+        _categoriesGetter = StateObject(wrappedValue: DictionaryRemoteFilterViewModel())
+    }
 
     var body: some View {
         let theme = themeManager.currentThemeStyle
