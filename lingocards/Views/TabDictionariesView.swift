@@ -86,10 +86,8 @@ struct TabDictionariesView: View {
                     }
                 }
                 .onAppear {
-                    FrameManager.shared.setActiveFrame(.tabDictionaries)
-                    print(frameManager.isActive(frame: .tabDictionaries))
-                    print(FrameManager.shared.isActive(frame: .tabDictionaries))
-                    if FrameManager.shared.isActive(frame: .tabDictionaries) {
+                    frameManager.setActiveFrame(.tabDictionaries)
+                    if frameManager.isActive(frame: .tabDictionaries) {
                         dictionaryAction.setFrame(.tabDictionaries)
                         dictionaryGetter.setFrame(.tabDictionaries)
                         dictionaryGetter.resetPagination()

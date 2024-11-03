@@ -1,11 +1,8 @@
 import SwiftUI
 
 struct MainView: View {
-    @EnvironmentObject var databaseManager: DatabaseManager
     @EnvironmentObject var languageManager: LanguageManager
     @EnvironmentObject var themeManager: ThemeManager
-    
-    @StateObject private var frameManager = FrameManager.shared
 
     var body: some View {
         TabView {
@@ -18,9 +15,6 @@ struct MainView: View {
                     }
                 }
                 .tag(AppFrameModel.learn)
-//                .onAppear {
-//                    frameManager.setActiveFrame(.learn)
-//                }
 
             TabDictionariesView()
                 .tabItem {
@@ -31,9 +25,6 @@ struct MainView: View {
                     }
                 }
                 .tag(AppFrameModel.tabDictionaries)
-//                .onAppear {
-//                    frameManager.setActiveFrame(.tabDictionaries)
-//                }
 
             TabWordsView()
                 .tabItem {
@@ -44,9 +35,6 @@ struct MainView: View {
                     }
                 }
                 .tag(AppFrameModel.tabWords)
-//                .onAppear {
-//                    frameManager.setActiveFrame(.tabWords)
-//                }
 
             TabSettingsView()
                 .tabItem {
@@ -57,16 +45,7 @@ struct MainView: View {
                     }
                 }
                 .tag(AppFrameModel.tabSettings)
-//                .onAppear {
-//                    frameManager.setActiveFrame(.tabSettings)
-//                }
         }
-
         .preferredColorScheme(themeManager.currentTheme == .dark ? .dark : .light)
-//        .modifier(FrameModifier(activeFrame: frameManager.activeFrame) { newFrame in
-//            if newFrame != .learn {
-//                frameManager.deactivateFrame(.learn)
-//            }
-//        })
     }
 }
