@@ -8,25 +8,21 @@ struct WordDetailView: View {
     @State private var isShowingAlert = false
     @State private var isEditing = false
 
-    @Binding var isPresented: Bool
+    @Binding var isPresented: Bool 
     let refresh: () -> Void
     private let originalWord: WordItemModel
 
-    init(
-        word: WordItemModel,
-        isPresented: Binding<Bool>,
-        refresh: @escaping () -> Void
-    ) {
-        _editedWord = State(initialValue: word)
-        _isPresented = isPresented
-        self.originalWord = word
-        self.refresh = refresh
-        
+    init(word: WordItemModel, isPresented: Binding<Bool>, refresh: @escaping () -> Void) {
         guard let dbQueue = DatabaseManager.shared.databaseQueue else {
             fatalError("Database is not connected")
         }
         let wordRepository = RepositoryWord(dbQueue: dbQueue)
         _wordsAction = StateObject(wrappedValue: WordsLocalActionViewModel(repository: wordRepository))
+        
+        _editedWord = State(initialValue: word)
+        _isPresented = isPresented
+        self.originalWord = word
+        self.refresh = refresh
     }
 
     var body: some View {
@@ -107,13 +103,6 @@ struct WordDetailView: View {
                 .onAppear {
                     FrameManager.shared.setActiveFrame(.wordDetail)
                     wordsAction.setFrame(.wordDetail)
-                    
-//                    NotificationCenter.default.addObserver(forName: .errorVisibilityChanged, object: nil, queue: .main) { _ in
-//                        if let error = ErrorManager.shared.currentError,
-//                           error.frame == .wordDetail {
-//                            isShowingAlert = true
-//                        }
-//                    }
                 }
                 .onDisappear {
                     NotificationCenter.default.removeObserver(self, name: .errorVisibilityChanged, object: nil)
@@ -151,7 +140,9 @@ struct WordDetailView: View {
                 .animation(.easeInOut, value: isEditing)
                 .alert(isPresented: $isShowingAlert) {
                     CompAlertView(
-                        title: LanguageManager.shared.localizedString(for: "Error"),
+                        title: LanguageManager.shared.localizedString(
+                            for: "Error"
+                        ),
                         message: LanguageManager.shared.localizedString(
                             for: "ErrorDatabaseUpdateWord"
                         ).capitalizedFirstLetter,
@@ -171,7 +162,7 @@ struct WordDetailView: View {
                 self.isEditing = false
                 refresh()
             } else {
-                print("GOT IT")
+                isShowingAlert = true
             }
         }
     }

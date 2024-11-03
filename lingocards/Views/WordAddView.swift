@@ -2,24 +2,27 @@ import SwiftUI
 
 struct WordAddView: View {
     @Environment(\.presentationMode) private var presentationMode
+    @StateObject private var wordsAction: WordsLocalActionViewModel
     @StateObject private var dictionaryGetter: DictionaryLocalGetterViewModel
     
     @Binding var isPresented: Bool
-    let onSave: (WordItemModel, @escaping (Result<Void, Error>) -> Void) -> Void
+    let refresh: () -> Void
     
     @State private var selectedDictionary: DictionaryItemModel?
-    @State private var isShowingErrorAlert = false
     @State private var wordItem = WordItemModel.empty()
-
-    init(isPresented: Binding<Bool>, onSave: @escaping (WordItemModel, @escaping (Result<Void, Error>) -> Void) -> Void) {
-        self._isPresented = isPresented
-        self.onSave = onSave
-        
+    @State private var isShowingAlert = false
+    
+    init(isPresented: Binding<Bool>, refresh: @escaping () -> Void) {
         guard let dbQueue = DatabaseManager.shared.databaseQueue else {
             fatalError("Database is not connected")
         }
-        let repository = RepositoryDictionary(dbQueue: dbQueue)
-        _dictionaryGetter = StateObject(wrappedValue: DictionaryLocalGetterViewModel(repository: repository))
+        let dictionaryRepository = RepositoryDictionary(dbQueue: dbQueue)
+        _dictionaryGetter = StateObject(wrappedValue: DictionaryLocalGetterViewModel(repository: dictionaryRepository))
+        let wordRepository = RepositoryWord(dbQueue: dbQueue)
+        _wordsAction = StateObject(wrappedValue: WordsLocalActionViewModel(repository: wordRepository))
+        
+        _isPresented = isPresented
+        self.refresh = refresh
     }
     
     var body: some View {
@@ -87,6 +90,7 @@ struct WordAddView: View {
                 .onAppear {
                     FrameManager.shared.setActiveFrame(.wordAdd)
                     dictionaryGetter.setFrame(.wordAdd)
+                    wordsAction.setFrame(.wordAdd)
                     dictionaryGetter.get()
                     
                     if selectedDictionary == nil, !dictionaryGetter.dictionaries.isEmpty {
@@ -104,10 +108,14 @@ struct WordAddView: View {
                     }
                     .disabled(isSaveDisabled)
                 )
-                .alert(isPresented: $isShowingErrorAlert) {
+                .alert(isPresented: $isShowingAlert) {
                     CompAlertView(
-                        title: LanguageManager.shared.localizedString(for: "Error"),
-                        message: ErrorManager.shared.currentError?.errorDescription ?? "",
+                        title: LanguageManager.shared.localizedString(
+                            for: "Error"
+                        ),
+                        message: LanguageManager.shared.localizedString(
+                            for: "ErrorDatabaseAddWord"
+                        ),
                         closeAction: {
                             ErrorManager.shared.clearError()
                         }
@@ -123,9 +131,11 @@ struct WordAddView: View {
         }
         wordItem.tableName = selectedDictionary.tableName
         
-        onSave(wordItem) { result in
+        wordsAction.save(wordItem) { result in
             if case .success = result {
                 presentationMode.wrappedValue.dismiss()
+            } else {
+                isShowingAlert = true
             }
         }
     }

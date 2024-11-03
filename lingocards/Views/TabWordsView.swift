@@ -104,23 +104,14 @@ struct TabWordsView: View {
         .sheet(isPresented: $isShowingAddView) {
             WordAddView(
                 isPresented: $isShowingAddView,
-                onSave: { word, completion in
-                    wordsAction.save(word) { result in
-                        if case .success = result {
-                            wordsGetter.resetPagination()
-                        }
-                        completion(result)
-                    }
-                }
+                refresh: { wordsGetter.resetPagination() }
             )
         }
         .sheet(item: $selectedWord) { word in
             WordDetailView(
                 word: word,
                 isPresented: $isShowingDetailView,
-                refresh: {
-                    wordsGetter.resetPagination()
-                }
+                refresh: { wordsGetter.resetPagination() }
             )
         }
     }
