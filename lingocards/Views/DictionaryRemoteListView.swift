@@ -2,18 +2,19 @@ import SwiftUI
 
 struct DictionaryRemoteListView: View {
     @Environment(\.presentationMode) var presentationMode
-    @StateObject private var viewModel: DictionaryRemoteGetterViewModel
 
+    @StateObject private var dictionaryGetter: DictionaryRemoteGetterViewModel
     @State private var apiRequestParams = DictionaryQueryRequest(isPrivate: false)
     @State private var selectedDictionary: DictionaryItemModel?
     @State private var isShowingFilterView = false
+    @State private var isShowingAlert = false
     @State private var errMessage: String = ""
 
     @Binding var isPresented: Bool
 
     init(isPresented: Binding<Bool>) {
         self._isPresented = isPresented
-        _viewModel = StateObject(wrappedValue: DictionaryRemoteGetterViewModel())
+        _dictionaryGetter = StateObject(wrappedValue: DictionaryRemoteGetterViewModel())
     }
 
     var body: some View {
@@ -24,11 +25,11 @@ struct DictionaryRemoteListView: View {
                 theme.backgroundViewColor.edgesIgnoringSafeArea(.all)
 
                 CompItemListView(
-                    items: $viewModel.dictionaries,
-                    isLoadingPage: viewModel.isLoadingPage,
+                    items: $dictionaryGetter.dictionaries,
+                    isLoadingPage: dictionaryGetter.isLoadingPage,
                     error: ErrorManager.shared.currentError,
                     onItemAppear: { dictionary in
-                        viewModel.loadMoreDictionariesIfNeeded(currentItem: dictionary)
+                        dictionaryGetter.loadMoreDictionariesIfNeeded(currentItem: dictionary)
                     },
                     onItemTap: { dictionary in
                         selectedDictionary = dictionary
@@ -61,7 +62,7 @@ struct DictionaryRemoteListView: View {
                     }
                 )
                 .searchable(
-                    text: $viewModel.searchText,
+                    text: $dictionaryGetter.searchText,
                     placement: .navigationBarDrawer(displayMode: .always),
                     prompt: LanguageManager.shared.localizedString(for: "Search").capitalizedFirstLetter
                 )
@@ -89,22 +90,38 @@ struct DictionaryRemoteListView: View {
                 .onAppear {
                     FrameManager.shared.setActiveFrame(.dictionaryRemoteList)
                     if FrameManager.shared.isActive(frame: .dictionaryRemoteList) {
-                        viewModel.setFrame(.dictionaryRemoteList)
-                        viewModel.resetPagination()
+                        dictionaryGetter.setFrame(.dictionaryRemoteList)
+                        dictionaryGetter.resetPagination()
                     }
+
+                    // Подписка на уведомление об изменении видимости ошибки
+                    NotificationCenter.default.addObserver(forName: .errorVisibilityChanged, object: nil, queue: .main) { _ in
+                        if let error = ErrorManager.shared.currentError,
+                           error.frame == .dictionaryRemoteList, // Условие для frame
+                           error.source == .dictionariesRemoteGet { // Условие для source
+                            isShowingAlert = true
+                            errMessage = error.errorDescription ?? ""
+                        }
+                    }
+                }
+                .onDisappear {
+                    NotificationCenter.default.removeObserver(self, name: .errorVisibilityChanged, object: nil)
                 }
                 .onChange(of: apiRequestParams) { newParams in
-                    viewModel.resetPagination()
-                    viewModel.get(queryRequest: newParams)
+                    dictionaryGetter.resetPagination()
+                    dictionaryGetter.get(queryRequest: newParams)
                 }
-                .modifier(ErrModifier(currentError: ErrorManager.shared.currentError) { newError in
-                    if let error = newError, error.frame == .dictionaryRemoteList, error.source == .dictionariesRemoteGet {
-                        errMessage = error.errorDescription ?? "error"
-                    }
-                })
+                .alert(isPresented: $isShowingAlert) {
+                    Alert(
+                        title: Text(LanguageManager.shared.localizedString(for: "Error")),
+                        message: Text(errMessage),
+                        dismissButton: .default(Text(LanguageManager.shared.localizedString(for: "Close"))) {
+                            ErrorManager.shared.clearError()
+                        }
+                    )
+                }
                 .sheet(isPresented: $isShowingFilterView) {
                     DictionaryRemoteFilterView(apiRequestParams: $apiRequestParams)
-                        .environmentObject(LanguageManager.shared)
                 }
                 .sheet(item: $selectedDictionary) { dictionary in
                     DictionaryRemoteDetailView(

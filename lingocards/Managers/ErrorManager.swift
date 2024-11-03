@@ -32,7 +32,7 @@ final class ErrorManager: ObservableObject {
     static let shared = ErrorManager()
     
     @Published var currentError: GlobalError?
-    @Published var isErrorVisible: Bool = false
+    private(set) var isErrorVisible: Bool = false
 
     private init() {}
 
@@ -42,10 +42,10 @@ final class ErrorManager: ObservableObject {
             logError(appError)
         }
         DispatchQueue.main.async {
-            self.objectWillChange.send()
             self.currentError = error
             self.isErrorVisible = true
             Logger.debug("[ErrorManager]: Error set: \(appError.errorMessage), isVisible: \(self.isErrorVisible)")
+            NotificationCenter.default.post(name: .errorVisibilityChanged, object: nil)
         }
     }
 
@@ -54,6 +54,7 @@ final class ErrorManager: ObservableObject {
             self.currentError = nil
             self.isErrorVisible = false
             Logger.debug("[ErrorManager]: Error cleared, isVisible: \(self.isErrorVisible)")
+            NotificationCenter.default.post(name: .errorVisibilityChanged, object: nil)
         }
     }
 
@@ -63,6 +64,7 @@ final class ErrorManager: ObservableObject {
                 self.currentError = nil
                 self.isErrorVisible = false
                 Logger.debug("[ErrorManager]: Error for source \(source) cleared")
+                NotificationCenter.default.post(name: .errorVisibilityChanged, object: nil)
             }
         }
     }
@@ -72,15 +74,17 @@ final class ErrorManager: ObservableObject {
             if let currentError = self.currentError, currentError.frame == frame {
                 self.currentError = nil
                 self.isErrorVisible = false
+                Logger.debug("[ErrorManager]: Errors for frame \(frame) cleared")
+                NotificationCenter.default.post(name: .errorVisibilityChanged, object: nil)
             }
         }
     }
-    
-    func isVisible(for frame: AppFrameModel, source: ErrorSourceModel) -> Bool {
-        return isErrorVisible && currentError?.frame == frame && currentError?.source == source
-    }
-    
+
     private func logError(_ appError: AppErrorModel) {
         LogHandler.shared.sendError(appError.errorMessage, type: appError.errorType, additionalInfo: appError.additionalInfo)
     }
+}
+
+extension Notification.Name {
+    static let errorVisibilityChanged = Notification.Name("errorVisibilityChanged")
 }
