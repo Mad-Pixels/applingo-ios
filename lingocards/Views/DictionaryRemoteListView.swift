@@ -8,7 +8,6 @@ struct DictionaryRemoteListView: View {
     @EnvironmentObject var frameManager: FrameManager
 
     @StateObject private var viewModel: DictionaryRemoteGetterViewModel
-    @StateObject private var errorManager = ErrorManager.shared
 
     @State private var apiRequestParams = DictionaryQueryRequest(isPrivate: false)
     @State private var selectedDictionary: DictionaryItemModel?
@@ -32,7 +31,7 @@ struct DictionaryRemoteListView: View {
                 CompItemListView(
                     items: $viewModel.dictionaries,
                     isLoadingPage: viewModel.isLoadingPage,
-                    error: errorManager.currentError,
+                    error: ErrorManager.shared.currentError,
                     onItemAppear: { dictionary in
                         viewModel.loadMoreDictionariesIfNeeded(currentItem: dictionary)
                     },
@@ -100,7 +99,7 @@ struct DictionaryRemoteListView: View {
                     viewModel.resetPagination()
                     viewModel.get(queryRequest: newParams)
                 }
-                .modifier(ErrModifier(currentError: errorManager.currentError) { newError in
+                .modifier(ErrModifier(currentError: ErrorManager.shared.currentError) { newError in
                     if let error = newError, error.frame == .dictionaryRemoteList, error.source == .dictionariesRemoteGet {
                         errMessage = error.errorDescription ?? "error"
                     }
