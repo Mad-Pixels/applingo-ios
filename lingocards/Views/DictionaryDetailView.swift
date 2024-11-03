@@ -2,8 +2,7 @@ import SwiftUI
 
 struct DictionaryDetailView: View {
     @Environment(\.presentationMode) private var presentationMode
-    
-    
+
     @State private var editedDictionary: DictionaryItemModel
     @State private var isShowingErrorAlert = false
     @State private var isEditing = false
@@ -34,14 +33,18 @@ struct DictionaryDetailView: View {
                     Section(header: Text(LanguageManager.shared.localizedString(for: "Dictionary"))
                         .modifier(HeaderBlockTextStyle(theme: theme))) {
                             CompTextFieldView(
-                                placeholder: LanguageManager.shared.localizedString(for: "Display Name").capitalizedFirstLetter,
+                                placeholder: LanguageManager.shared.localizedString(
+                                    for: "Display Name"
+                                ).capitalizedFirstLetter,
                                 text: $editedDictionary.displayName,
                                 isEditing: isEditing,
                                 theme: theme,
                                 icon: "book"
                             )
                             CompTextEditorView(
-                                placeholder: LanguageManager.shared.localizedString(for: "Description").capitalizedFirstLetter,
+                                placeholder: LanguageManager.shared.localizedString(
+                                    for: "Description"
+                                ).capitalizedFirstLetter,
                                 text: Binding<String>(
                                     get: {
                                         editedDictionary.description
@@ -60,14 +63,18 @@ struct DictionaryDetailView: View {
                     Section(header: Text(LanguageManager.shared.localizedString(for: "Category"))
                         .modifier(HeaderBlockTextStyle(theme: theme))) {
                             CompTextFieldView(
-                                placeholder: LanguageManager.shared.localizedString(for: "Category").capitalizedFirstLetter,
+                                placeholder: LanguageManager.shared.localizedString(
+                                    for: "Category"
+                                ).capitalizedFirstLetter,
                                 text: $editedDictionary.category,
                                 isEditing: isEditing,
                                 theme: theme,
                                 icon: "cube"
                             )
                             CompTextFieldView(
-                                placeholder: LanguageManager.shared.localizedString(for: "Subcategory").capitalizedFirstLetter,
+                                placeholder: LanguageManager.shared.localizedString(
+                                    for: "Subcategory"
+                                ).capitalizedFirstLetter,
                                 text: $editedDictionary.subcategory,
                                 isEditing: isEditing,
                                 theme: theme,
@@ -78,14 +85,18 @@ struct DictionaryDetailView: View {
                     Section(header: Text(LanguageManager.shared.localizedString(for: "Additional"))
                         .modifier(HeaderBlockTextStyle(theme: theme))) {
                             CompTextFieldView(
-                                placeholder: LanguageManager.shared.localizedString(for: "Author").capitalizedFirstLetter,
+                                placeholder: LanguageManager.shared.localizedString(
+                                    for: "Author"
+                                ).capitalizedFirstLetter,
                                 text: $editedDictionary.author,
                                 isEditing: isEditing,
                                 theme: theme,
                                 icon: "person"
                             )
                             CompTextFieldView(
-                                placeholder: LanguageManager.shared.localizedString(for: "Created At").capitalizedFirstLetter,
+                                placeholder: LanguageManager.shared.localizedString(
+                                    for: "Created At"
+                                ).capitalizedFirstLetter,
                                 text: .constant(editedDictionary.formattedCreatedAt),
                                 isEditing: false,
                                 theme: theme
@@ -100,8 +111,11 @@ struct DictionaryDetailView: View {
             .navigationTitle(LanguageManager.shared.localizedString(for: "Details").capitalizedFirstLetter)
             .navigationBarItems(
                 leading: Button(
-                    isEditing ? LanguageManager.shared.localizedString(for: "Cancel").capitalizedFirstLetter :
-                        LanguageManager.shared.localizedString(for: "Close").capitalizedFirstLetter
+                    isEditing ? LanguageManager.shared.localizedString(
+                        for: "Cancel"
+                    ).capitalizedFirstLetter : LanguageManager.shared.localizedString(
+                        for: "Close"
+                    ).capitalizedFirstLetter
                 ) {
                     if isEditing {
                         isEditing = false
@@ -110,8 +124,12 @@ struct DictionaryDetailView: View {
                         presentationMode.wrappedValue.dismiss()
                     }
                 },
-                trailing: Button(isEditing ? LanguageManager.shared.localizedString(for: "Save").capitalizedFirstLetter :
-                                    LanguageManager.shared.localizedString(for: "Edit").capitalizedFirstLetter
+                trailing: Button(
+                    isEditing ? LanguageManager.shared.localizedString(
+                        for: "Save"
+                    ).capitalizedFirstLetter : LanguageManager.shared.localizedString(
+                        for: "Edit"
+                    ).capitalizedFirstLetter
                 ) {
                     if isEditing {
                         updateDictionary(editedDictionary)

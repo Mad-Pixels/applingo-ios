@@ -1,8 +1,6 @@
 import SwiftUI
 
 struct TabWordsView: View {
-
-    
     @StateObject private var wordsGetter: WordsLocalGetterViewModel
     @StateObject private var wordsAction: WordsLocalActionViewModel
 

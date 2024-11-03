@@ -2,8 +2,6 @@ import SwiftUI
 
 struct WordAddView: View {
     @Environment(\.presentationMode) private var presentationMode
-    
-    
     @StateObject private var dictionaryGetter: DictionaryLocalGetterViewModel
     
     @Binding var isPresented: Bool
@@ -36,14 +34,18 @@ struct WordAddView: View {
                         .modifier(HeaderBlockTextStyle(theme: theme))) {
                             VStack {
                                 CompTextFieldView(
-                                    placeholder: LanguageManager.shared.localizedString(for: "Word").capitalizedFirstLetter,
+                                    placeholder: LanguageManager.shared.localizedString(
+                                        for: "Word"
+                                    ).capitalizedFirstLetter,
                                     text: $wordItem.frontText,
                                     isEditing: true,
                                     theme: theme,
                                     icon: "rectangle.and.pencil.and.ellipsis"
                                 )
                                 CompTextFieldView(
-                                    placeholder: LanguageManager.shared.localizedString(for: "Definition").capitalizedFirstLetter,
+                                    placeholder: LanguageManager.shared.localizedString(
+                                        for: "Definition"
+                                    ).capitalizedFirstLetter,
                                     text: $wordItem.backText,
                                     isEditing: true,
                                     theme: theme,
@@ -65,14 +67,18 @@ struct WordAddView: View {
                         .modifier(HeaderBlockTextStyle(theme: theme))) {
                             VStack {
                                 CompTextFieldView(
-                                    placeholder: LanguageManager.shared.localizedString(for: "Hint").capitalizedFirstLetter,
+                                    placeholder: LanguageManager.shared.localizedString(
+                                        for: "Hint"
+                                    ).capitalizedFirstLetter,
                                     text: $wordItem.hint.unwrap(default: ""),
                                     isEditing: true,
                                     theme: theme,
                                     icon: "tag"
                                 )
                                 CompTextEditorView(
-                                    placeholder: LanguageManager.shared.localizedString(for: "Description").capitalizedFirstLetter,
+                                    placeholder: LanguageManager.shared.localizedString(
+                                        for: "Description"
+                                    ).capitalizedFirstLetter,
                                     text: $wordItem.description.unwrap(default: ""),
                                     isEditing: true,
                                     theme: theme,

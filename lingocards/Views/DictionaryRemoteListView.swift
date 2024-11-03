@@ -2,8 +2,6 @@ import SwiftUI
 
 struct DictionaryRemoteListView: View {
     @Environment(\.presentationMode) var presentationMode
-    
-
     @StateObject private var viewModel: DictionaryRemoteGetterViewModel
 
     @State private var apiRequestParams = DictionaryQueryRequest(isPrivate: false)
@@ -78,7 +76,9 @@ struct DictionaryRemoteListView: View {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         CompToolbarMenuView(
                             items: [
-                                CompToolbarMenuView.MenuItem(title: LanguageManager.shared.localizedString(for: "Filter"), systemImage: "line.horizontal.3.decrease.circle", action: {
+                                CompToolbarMenuView.MenuItem(title: LanguageManager.shared.localizedString(
+                                    for: "Filter"
+                                ), systemImage: "line.horizontal.3.decrease.circle", action: {
                                     isShowingFilterView = true
                                 })
                             ],

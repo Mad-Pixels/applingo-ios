@@ -3,7 +3,6 @@ import UniformTypeIdentifiers
 
 struct TabDictionariesView: View {
     @EnvironmentObject var databaseManager: DatabaseManager
-
     @StateObject private var dictionaryAction: DictionaryLocalActionViewModel
     @StateObject private var dictionaryGetter: DictionaryLocalGetterViewModel
 
@@ -70,10 +69,14 @@ struct TabDictionariesView: View {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         CompToolbarMenuView(
                             items: [
-                                CompToolbarMenuView.MenuItem(title: LanguageManager.shared.localizedString(for: "ImportCSV"), systemImage: "tray.and.arrow.down", action: {
+                                CompToolbarMenuView.MenuItem(title: LanguageManager.shared.localizedString(
+                                    for: "ImportCSV"
+                                ), systemImage: "tray.and.arrow.down", action: {
                                     isShowingFileImporter = true
                                 }),
-                                CompToolbarMenuView.MenuItem(title: LanguageManager.shared.localizedString(for: "Download"), systemImage: "arrow.down.circle", action: {
+                                CompToolbarMenuView.MenuItem(title: LanguageManager.shared.localizedString(
+                                    for: "Download"
+                                ), systemImage: "arrow.down.circle", action: {
                                     isShowingRemoteList = true
                                 })
                             ],

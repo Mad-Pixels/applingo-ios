@@ -3,7 +3,6 @@ import SwiftUI
 struct WordDetailView: View {
     @Environment(\.presentationMode) private var presentationMode
     
-    
     @State private var editedWord: WordItemModel
     @State private var isShowingErrorAlert = false
     @State private var isEditing = false
@@ -34,14 +33,18 @@ struct WordDetailView: View {
                     Section(header: Text(LanguageManager.shared.localizedString(for: "Card"))
                         .modifier(HeaderBlockTextStyle(theme: theme))) {
                             CompTextFieldView(
-                                placeholder: LanguageManager.shared.localizedString(for: "Word").capitalizedFirstLetter,
+                                placeholder: LanguageManager.shared.localizedString(
+                                    for: "Word"
+                                ).capitalizedFirstLetter,
                                 text: $editedWord.frontText,
                                 isEditing: isEditing,
                                 theme: theme,
                                 icon: "rectangle.and.pencil.and.ellipsis"
                             )
                             CompTextFieldView(
-                                placeholder: LanguageManager.shared.localizedString(for: "Definition").capitalizedFirstLetter,
+                                placeholder: LanguageManager.shared.localizedString(
+                                    for: "Definition"
+                                ).capitalizedFirstLetter,
                                 text: $editedWord.backText,
                                 isEditing: isEditing,
                                 theme: theme,
@@ -52,7 +55,9 @@ struct WordDetailView: View {
                     Section(header: Text(LanguageManager.shared.localizedString(for: "Additional"))
                         .modifier(HeaderBlockTextStyle(theme: theme))) {
                             CompTextFieldView(
-                                placeholder: LanguageManager.shared.localizedString(for: "TableName").capitalizedFirstLetter,
+                                placeholder: LanguageManager.shared.localizedString(
+                                    for: "TableName"
+                                ).capitalizedFirstLetter,
                                 text: $editedWord.tableName,
                                 isEditing: false,
                                 theme: theme
@@ -65,7 +70,9 @@ struct WordDetailView: View {
                                 icon: "tag"
                             )
                             CompTextEditorView(
-                                placeholder: LanguageManager.shared.localizedString(for: "Description").capitalizedFirstLetter,
+                                placeholder: LanguageManager.shared.localizedString(
+                                    for: "Description"
+                                ).capitalizedFirstLetter,
                                 text: $editedWord.description.unwrap(default: ""),
                                 isEditing: isEditing,
                                 theme: theme,
@@ -101,8 +108,11 @@ struct WordDetailView: View {
                 .navigationTitle(LanguageManager.shared.localizedString(for: "Details").capitalizedFirstLetter)
                 .navigationBarItems(
                     leading: Button(
-                        isEditing ? LanguageManager.shared.localizedString(for: "Cancel").capitalizedFirstLetter :
-                            LanguageManager.shared.localizedString(for: "Close").capitalizedFirstLetter
+                        isEditing ? LanguageManager.shared.localizedString(
+                            for: "Cancel"
+                        ).capitalizedFirstLetter : LanguageManager.shared.localizedString(
+                            for: "Close"
+                        ).capitalizedFirstLetter
                     ) {
                         if isEditing {
                             isEditing = false
@@ -111,8 +121,11 @@ struct WordDetailView: View {
                             presentationMode.wrappedValue.dismiss()
                         }
                     },
-                    trailing: Button(isEditing ? LanguageManager.shared.localizedString(for: "Save").capitalizedFirstLetter :
-                                        LanguageManager.shared.localizedString(for: "Edit").capitalizedFirstLetter
+                    trailing: Button(isEditing ? LanguageManager.shared.localizedString(
+                        for: "Save"
+                    ).capitalizedFirstLetter : LanguageManager.shared.localizedString(
+                        for: "Edit"
+                    ).capitalizedFirstLetter
                     ) {
                         if isEditing {
                             update(editedWord)
