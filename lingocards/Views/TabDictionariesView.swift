@@ -186,7 +186,7 @@ struct TabDictionariesView: View {
         }
 
         do {
-            try databaseManager.importCSVFile(at: url)
+            try DatabaseManager.shared.importCSVFile(at: url)
             dictionaryGetter.resetPagination()
             print("Successfully imported CSV file")
         } catch {
