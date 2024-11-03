@@ -2,25 +2,32 @@ import SwiftUI
 
 struct WordDetailView: View {
     @Environment(\.presentationMode) private var presentationMode
-    
+    @StateObject private var wordsAction: WordsLocalActionViewModel
+
     @State private var editedWord: WordItemModel
-    @State private var isShowingErrorAlert = false
+    @State private var isShowingAlert = false
     @State private var isEditing = false
 
     @Binding var isPresented: Bool
-    let onSave: (WordItemModel, @escaping (Result<Void, Error>) -> Void) -> Void
+    let onSave: () -> Void
     private let originalWord: WordItemModel
 
     init(
         word: WordItemModel,
         isPresented: Binding<Bool>,
-        onSave: @escaping (WordItemModel, @escaping (Result<Void, Error>) -> Void) -> Void
+        onSave: @escaping () -> Void
     ) {
         _editedWord = State(initialValue: word)
         _isPresented = isPresented
-        self.onSave = onSave
         self.originalWord = word
-    } 
+        self.onSave = onSave
+        
+        guard let dbQueue = DatabaseManager.shared.databaseQueue else {
+            fatalError("Database is not connected")
+        }
+        let wordRepository = RepositoryWord(dbQueue: dbQueue)
+        _wordsAction = StateObject(wrappedValue: WordsLocalActionViewModel(repository: wordRepository))
+    }
 
     var body: some View {
         let theme = ThemeManager.shared.currentThemeStyle
@@ -104,6 +111,17 @@ struct WordDetailView: View {
                 }
                 .onAppear {
                     FrameManager.shared.setActiveFrame(.wordDetail)
+                    wordsAction.setFrame(.wordDetail)
+                    
+                    NotificationCenter.default.addObserver(forName: .errorVisibilityChanged, object: nil, queue: .main) { _ in
+                        if let error = ErrorManager.shared.currentError,
+                           error.frame == .wordDetail {
+                            isShowingAlert = true
+                        }
+                    }
+                }
+                .onDisappear {
+                    NotificationCenter.default.removeObserver(self, name: .errorVisibilityChanged, object: nil)
                 }
                 .navigationTitle(LanguageManager.shared.localizedString(for: "Details").capitalizedFirstLetter)
                 .navigationBarItems(
@@ -136,10 +154,12 @@ struct WordDetailView: View {
                     .disabled(isEditing && isSaveDisabled)
                 )
                 .animation(.easeInOut, value: isEditing)
-                .alert(isPresented: $isShowingErrorAlert) {
+                .alert(isPresented: $isShowingAlert) {
                     CompAlertView(
                         title: LanguageManager.shared.localizedString(for: "Error"),
-                        message: ErrorManager.shared.currentError?.errorDescription ?? "",
+                        message: LanguageManager.shared.localizedString(
+                            for: "ErrorDatabaseUpdateWord"
+                        ).capitalizedFirstLetter,
                         closeAction: {
                             ErrorManager.shared.clearError()
                         },
@@ -151,14 +171,11 @@ struct WordDetailView: View {
     }
 
     private func update(_ word: WordItemModel) {
-        let previousWord = editedWord
-
-        onSave(word) { result in
+        wordsAction.update(word) { result in
             if case .success = result {
                 self.isEditing = false
                 self.presentationMode.wrappedValue.dismiss()
-            } else {
-                self.editedWord = previousWord
+                onSave()
             }
         }
     }
