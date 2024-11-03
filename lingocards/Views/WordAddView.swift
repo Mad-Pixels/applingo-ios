@@ -92,9 +92,10 @@ struct WordAddView: View {
                     dictionaryGetter.setFrame(.wordAdd)
                     wordsAction.setFrame(.wordAdd)
                     dictionaryGetter.get()
-                    
-                    if selectedDictionary == nil, !dictionaryGetter.dictionaries.isEmpty {
-                        selectedDictionary = dictionaryGetter.dictionaries.first
+                }
+                .onChange(of: dictionaryGetter.dictionaries) { dictionaries in
+                    if selectedDictionary == nil, let firstDictionary = dictionaries.first {
+                        selectedDictionary = firstDictionary
                     }
                 }
                 .navigationTitle(LanguageManager.shared.localizedString(for: "AddWord").capitalizedFirstLetter)
