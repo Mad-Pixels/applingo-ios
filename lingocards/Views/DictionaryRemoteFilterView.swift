@@ -3,9 +3,6 @@ import SwiftUI
 struct DictionaryRemoteFilterView: View {
     @Environment(\.presentationMode) var presentationMode
     
-    @EnvironmentObject var languageManager: LanguageManager
-    @EnvironmentObject var themeManager: ThemeManager
-    @EnvironmentObject var frameManager: FrameManager
     
     @StateObject private var categoriesGetter: DictionaryRemoteFilterViewModel
     @State private var selectedFrontCategory: CategoryItem? = nil
@@ -19,7 +16,7 @@ struct DictionaryRemoteFilterView: View {
     }
 
     var body: some View {
-        let theme = themeManager.currentThemeStyle
+        let theme = ThemeManager.shared.currentThemeStyle
 
         NavigationView {
             ZStack {
@@ -27,7 +24,7 @@ struct DictionaryRemoteFilterView: View {
 
                 VStack {
                     Form {
-                        Section(header: Text(languageManager.localizedString(for: "Dictionary")).font(.headline).foregroundColor(theme.baseTextColor)) {
+                        Section(header: Text(LanguageManager.shared.localizedString(for: "Dictionary")).font(.headline).foregroundColor(theme.baseTextColor)) {
                             HStack {
                                 CompPickerView(
                                     selectedValue: $selectedFrontCategory,
@@ -61,7 +58,7 @@ struct DictionaryRemoteFilterView: View {
 
                     HStack {
                         CompButtonActionView(
-                            title: languageManager.localizedString(for: "Save").capitalizedFirstLetter,
+                            title: LanguageManager.shared.localizedString(for: "Save").capitalizedFirstLetter,
                             action: {
                                 let frontCategoryName = selectedFrontCategory?.name ?? ""
                                 let backCategoryName = selectedBackCategory?.name ?? ""
@@ -74,7 +71,7 @@ struct DictionaryRemoteFilterView: View {
                         )
 
                         CompButtonCancelView(
-                            title: languageManager.localizedString(for: "Reset").capitalizedFirstLetter,
+                            title: LanguageManager.shared.localizedString(for: "Reset").capitalizedFirstLetter,
                             action: {
                                 apiRequestParams.subcategory = nil
                                 Logger.debug("Filters reset: categorySub set to an empty string")
@@ -88,19 +85,19 @@ struct DictionaryRemoteFilterView: View {
                 }
                 .background(theme.detailsColor)
             }
-            .navigationTitle(languageManager.localizedString(for: "Filter").capitalizedFirstLetter)
+            .navigationTitle(LanguageManager.shared.localizedString(for: "Filter").capitalizedFirstLetter)
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarItems(
                 trailing: Button(action: {
                     presentationMode.wrappedValue.dismiss()
                 }) {
-                    Text(languageManager.localizedString(for: "Close").capitalizedFirstLetter)
+                    Text(LanguageManager.shared.localizedString(for: "Close").capitalizedFirstLetter)
                         .foregroundColor(theme.accentColor)
                 }
             )
             .onAppear {
-                frameManager.setActiveFrame(.dictionaryRemoteFilter)
-                if frameManager.isActive(frame: .dictionaryRemoteFilter) {
+                FrameManager.shared.setActiveFrame(.dictionaryRemoteFilter)
+                if FrameManager.shared.isActive(frame: .dictionaryRemoteFilter) {
                     categoriesGetter.setFrame(.dictionaryRemoteFilter)
                 }
                 

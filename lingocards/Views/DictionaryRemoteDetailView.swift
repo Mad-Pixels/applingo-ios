@@ -3,9 +3,6 @@ import SwiftUI
 struct DictionaryRemoteDetailView: View {
     @Environment(\.presentationMode) private var presentationMode
     
-    @EnvironmentObject var languageManager: LanguageManager
-    @EnvironmentObject var themeManager: ThemeManager
-    @EnvironmentObject var frameManager: FrameManager
     
     @State private var editedDictionary: DictionaryItemModel
 
@@ -19,7 +16,7 @@ struct DictionaryRemoteDetailView: View {
     }
 
     var body: some View {
-        let theme = themeManager.currentThemeStyle
+        let theme = ThemeManager.shared.currentThemeStyle
 
         NavigationView {
             ZStack {
@@ -27,16 +24,16 @@ struct DictionaryRemoteDetailView: View {
                 
                 VStack {
                     Form {
-                        Section(header: Text(languageManager.localizedString(for: "Dictionary")).foregroundColor(theme.baseTextColor)) {
+                        Section(header: Text(LanguageManager.shared.localizedString(for: "Dictionary")).foregroundColor(theme.baseTextColor)) {
                             CompTextFieldView(
-                                placeholder: languageManager.localizedString(for: "Display Name").capitalizedFirstLetter,
+                                placeholder: LanguageManager.shared.localizedString(for: "Display Name").capitalizedFirstLetter,
                                 text: .constant(editedDictionary.displayName),
                                 isEditing: false,
                                 theme: theme,
                                 icon: "book"
                             )
                             CompTextEditorView(
-                                placeholder: languageManager.localizedString(for: "Description").capitalizedFirstLetter,
+                                placeholder: LanguageManager.shared.localizedString(for: "Description").capitalizedFirstLetter,
                                 text: .constant(editedDictionary.description),
                                 isEditing: false,
                                 theme: theme,
@@ -45,16 +42,16 @@ struct DictionaryRemoteDetailView: View {
                             .frame(height: 150)
                         }
 
-                        Section(header: Text(languageManager.localizedString(for: "Category")).foregroundColor(theme.baseTextColor)) {
+                        Section(header: Text(LanguageManager.shared.localizedString(for: "Category")).foregroundColor(theme.baseTextColor)) {
                             CompTextFieldView(
-                                placeholder: languageManager.localizedString(for: "Category").capitalizedFirstLetter,
+                                placeholder: LanguageManager.shared.localizedString(for: "Category").capitalizedFirstLetter,
                                 text: .constant(editedDictionary.category),
                                 isEditing: false,
                                 theme: theme,
                                 icon: "cube"
                             )
                             CompTextFieldView(
-                                placeholder: languageManager.localizedString(for: "Subcategory").capitalizedFirstLetter,
+                                placeholder: LanguageManager.shared.localizedString(for: "Subcategory").capitalizedFirstLetter,
                                 text: .constant(editedDictionary.subcategory),
                                 isEditing: false,
                                 theme: theme,
@@ -62,16 +59,16 @@ struct DictionaryRemoteDetailView: View {
                             )
                         }
 
-                        Section(header: Text(languageManager.localizedString(for: "Additional")).foregroundColor(theme.baseTextColor)) {
+                        Section(header: Text(LanguageManager.shared.localizedString(for: "Additional")).foregroundColor(theme.baseTextColor)) {
                             CompTextFieldView(
-                                placeholder: languageManager.localizedString(for: "Author").capitalizedFirstLetter,
+                                placeholder: LanguageManager.shared.localizedString(for: "Author").capitalizedFirstLetter,
                                 text: .constant(editedDictionary.author),
                                 isEditing: false,
                                 theme: theme,
                                 icon: "person"
                             )
                             CompTextFieldView(
-                                placeholder: languageManager.localizedString(for: "Created At").capitalizedFirstLetter,
+                                placeholder: LanguageManager.shared.localizedString(for: "Created At").capitalizedFirstLetter,
                                 text: .constant(editedDictionary.formattedCreatedAt),
                                 isEditing: false,
                                 theme: theme
@@ -81,7 +78,7 @@ struct DictionaryRemoteDetailView: View {
                     Spacer()
 
                     CompButtonActionView(
-                        title: languageManager.localizedString(for: "Download").capitalizedFirstLetter,
+                        title: LanguageManager.shared.localizedString(for: "Download").capitalizedFirstLetter,
                         action: onDownload,
                         theme: theme
                     )
@@ -90,15 +87,15 @@ struct DictionaryRemoteDetailView: View {
                 .background(theme.detailsColor)
             }
             .onAppear {
-                frameManager.setActiveFrame(.dictionaryRemoteDetail)
+                FrameManager.shared.setActiveFrame(.dictionaryRemoteDetail)
             }
-            .navigationTitle(languageManager.localizedString(for: "Details").capitalizedFirstLetter)
+            .navigationTitle(LanguageManager.shared.localizedString(for: "Details").capitalizedFirstLetter)
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarItems(
                 trailing: Button(action: {
                     presentationMode.wrappedValue.dismiss()
                 }) {
-                    Text(languageManager.localizedString(for: "Close").capitalizedFirstLetter)
+                    Text(LanguageManager.shared.localizedString(for: "Close").capitalizedFirstLetter)
                         .foregroundColor(theme.accentColor)
                 }
             )

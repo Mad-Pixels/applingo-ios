@@ -1,10 +1,6 @@
 import SwiftUI
 
 struct TabWordsView: View {
-    @EnvironmentObject var languageManager: LanguageManager
-    @EnvironmentObject var frameManager: FrameManager
-    @EnvironmentObject var themeManager: ThemeManager
-    @EnvironmentObject var errorManager: ErrorManager
 
     
     @StateObject private var wordsGetter: WordsLocalGetterViewModel
@@ -26,7 +22,7 @@ struct TabWordsView: View {
     }
 
     var body: some View {
-        let theme = themeManager.currentThemeStyle
+        let theme = ThemeManager.shared.currentThemeStyle
 
         NavigationView {
             ZStack {
@@ -35,7 +31,7 @@ struct TabWordsView: View {
                 CompItemListView(
                     items: $wordsGetter.words,
                     isLoadingPage: wordsGetter.isLoadingPage,
-                    error: errorManager.currentError,
+                    error: ErrorManager.shared.currentError,
                     onItemAppear: { word in
                         wordsGetter.loadMoreWordsIfNeeded(currentItem: word)
                     },
@@ -47,7 +43,7 @@ struct TabWordsView: View {
                     emptyListView: AnyView(
                         CompEmptyListView(
                             theme: theme,
-                            message: languageManager.localizedString(for: "NoWordsAvailable")
+                            message: LanguageManager.shared.localizedString(for: "NoWordsAvailable")
                         )
                     ),
                     rowContent: { word in
@@ -64,16 +60,16 @@ struct TabWordsView: View {
                 .searchable(
                     text: $wordsGetter.searchText,
                     placement: .navigationBarDrawer(displayMode: .always),
-                    prompt: languageManager.localizedString(for: "Search").capitalizedFirstLetter
+                    prompt: LanguageManager.shared.localizedString(for: "Search").capitalizedFirstLetter
                 )
-                .navigationTitle(languageManager.localizedString(for: "Words").capitalizedFirstLetter)
+                .navigationTitle(LanguageManager.shared.localizedString(for: "Words").capitalizedFirstLetter)
                 .navigationBarTitleDisplayMode(.large)
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         CompToolbarMenuView(
                             items: [
                                 CompToolbarMenuView.MenuItem(
-                                    title: languageManager.localizedString(for: "AddWord"),
+                                    title: LanguageManager.shared.localizedString(for: "AddWord"),
                                     systemImage: "plus.circle",
                                     action: add
                                 )
@@ -83,8 +79,8 @@ struct TabWordsView: View {
                     }
                 }
                 .onAppear {
-                    frameManager.setActiveFrame(.tabWords)
-                    if frameManager.isActive(frame: .tabWords) {
+                    FrameManager.shared.setActiveFrame(.tabWords)
+                    if FrameManager.shared.isActive(frame: .tabWords) {
                         wordsAction.setFrame(.tabWords)
                         wordsGetter.setFrame(.tabWords)
                         wordsGetter.resetPagination()
@@ -93,7 +89,7 @@ struct TabWordsView: View {
                 .onDisappear {
                     wordsGetter.clear()
                 }
-                .modifier(ErrModifier(currentError: errorManager.currentError) { newError in
+                .modifier(ErrModifier(currentError: ErrorManager.shared.currentError) { newError in
                     if let error = newError, error.frame == .tabWords, error.source == .wordDelete {
                         isShowingAlert = true
                     }
@@ -101,10 +97,10 @@ struct TabWordsView: View {
             }
             .alert(isPresented: $isShowingAlert) {
                 Alert(
-                    title: Text(languageManager.localizedString(for: "Error")),
-                    message: Text(errorManager.currentError?.errorDescription ?? ""),
-                    dismissButton: .default(Text(languageManager.localizedString(for: "Close"))) {
-                        errorManager.clearError()
+                    title: Text(LanguageManager.shared.localizedString(for: "Error")),
+                    message: Text(ErrorManager.shared.currentError?.errorDescription ?? ""),
+                    dismissButton: .default(Text(LanguageManager.shared.localizedString(for: "Close"))) {
+                        ErrorManager.shared.clearError()
                     }
                 )
             }

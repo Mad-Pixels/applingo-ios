@@ -3,9 +3,6 @@ import SwiftUI
 struct DictionaryRemoteListView: View {
     @Environment(\.presentationMode) var presentationMode
     
-    @EnvironmentObject var languageManager: LanguageManager
-    @EnvironmentObject var themeManager: ThemeManager
-    @EnvironmentObject var frameManager: FrameManager
 
     @StateObject private var viewModel: DictionaryRemoteGetterViewModel
 
@@ -22,7 +19,7 @@ struct DictionaryRemoteListView: View {
     }
 
     var body: some View {
-        let theme = themeManager.currentThemeStyle
+        let theme = ThemeManager.shared.currentThemeStyle
 
         NavigationView {
             ZStack {
@@ -39,7 +36,7 @@ struct DictionaryRemoteListView: View {
                         selectedDictionary = dictionary
                     },
                     emptyListView: AnyView(
-                        Text(languageManager.localizedString(for: "NoDictionariesAvailable"))
+                        Text(LanguageManager.shared.localizedString(for: "NoDictionariesAvailable"))
                             .foregroundColor(.gray)
                             .italic()
                             .padding()
@@ -68,20 +65,20 @@ struct DictionaryRemoteListView: View {
                 .searchable(
                     text: $viewModel.searchText,
                     placement: .navigationBarDrawer(displayMode: .always),
-                    prompt: languageManager.localizedString(for: "Search").capitalizedFirstLetter
+                    prompt: LanguageManager.shared.localizedString(for: "Search").capitalizedFirstLetter
                 )
-                .navigationTitle(languageManager.localizedString(for: "Dictionaries").capitalizedFirstLetter)
+                .navigationTitle(LanguageManager.shared.localizedString(for: "Dictionaries").capitalizedFirstLetter)
                 .navigationBarItems(leading: Button(action: {
                     presentationMode.wrappedValue.dismiss()
                 }) {
-                    Text(languageManager.localizedString(for: "Back").capitalizedFirstLetter)
+                    Text(LanguageManager.shared.localizedString(for: "Back").capitalizedFirstLetter)
                         .foregroundColor(theme.accentColor)
                 })
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         CompToolbarMenuView(
                             items: [
-                                CompToolbarMenuView.MenuItem(title: languageManager.localizedString(for: "Filter"), systemImage: "line.horizontal.3.decrease.circle", action: {
+                                CompToolbarMenuView.MenuItem(title: LanguageManager.shared.localizedString(for: "Filter"), systemImage: "line.horizontal.3.decrease.circle", action: {
                                     isShowingFilterView = true
                                 })
                             ],
@@ -90,8 +87,8 @@ struct DictionaryRemoteListView: View {
                     }
                 }
                 .onAppear {
-                    frameManager.setActiveFrame(.dictionaryRemoteList)
-                    if frameManager.isActive(frame: .dictionaryRemoteList) {
+                    FrameManager.shared.setActiveFrame(.dictionaryRemoteList)
+                    if FrameManager.shared.isActive(frame: .dictionaryRemoteList) {
                         viewModel.setFrame(.dictionaryRemoteList)
                         viewModel.resetPagination()
                     }
@@ -107,7 +104,7 @@ struct DictionaryRemoteListView: View {
                 })
                 .sheet(isPresented: $isShowingFilterView) {
                     DictionaryRemoteFilterView(apiRequestParams: $apiRequestParams)
-                        .environmentObject(languageManager)
+                        .environmentObject(LanguageManager.shared)
                 }
                 .sheet(item: $selectedDictionary) { dictionary in
                     DictionaryRemoteDetailView(

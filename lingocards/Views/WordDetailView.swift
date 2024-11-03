@@ -3,10 +3,6 @@ import SwiftUI
 struct WordDetailView: View {
     @Environment(\.presentationMode) private var presentationMode
     
-    @EnvironmentObject var languageManager: LanguageManager
-    @EnvironmentObject var errorManager: ErrorManager
-    @EnvironmentObject var themeManager: ThemeManager
-    @EnvironmentObject var frameManager: FrameManager
     
     @State private var editedWord: WordItemModel
     @State private var isShowingErrorAlert = false
@@ -28,24 +24,24 @@ struct WordDetailView: View {
     } 
 
     var body: some View {
-        let theme = themeManager.currentThemeStyle
+        let theme = ThemeManager.shared.currentThemeStyle
 
         NavigationView {
             ZStack {
                 theme.backgroundViewColor.edgesIgnoringSafeArea(.all)
 
                 Form {
-                    Section(header: Text(languageManager.localizedString(for: "Card"))
+                    Section(header: Text(LanguageManager.shared.localizedString(for: "Card"))
                         .modifier(HeaderBlockTextStyle(theme: theme))) {
                             CompTextFieldView(
-                                placeholder: languageManager.localizedString(for: "Word").capitalizedFirstLetter,
+                                placeholder: LanguageManager.shared.localizedString(for: "Word").capitalizedFirstLetter,
                                 text: $editedWord.frontText,
                                 isEditing: isEditing,
                                 theme: theme,
                                 icon: "rectangle.and.pencil.and.ellipsis"
                             )
                             CompTextFieldView(
-                                placeholder: languageManager.localizedString(for: "Definition").capitalizedFirstLetter,
+                                placeholder: LanguageManager.shared.localizedString(for: "Definition").capitalizedFirstLetter,
                                 text: $editedWord.backText,
                                 isEditing: isEditing,
                                 theme: theme,
@@ -53,23 +49,23 @@ struct WordDetailView: View {
                             )
                         }
 
-                    Section(header: Text(languageManager.localizedString(for: "Additional"))
+                    Section(header: Text(LanguageManager.shared.localizedString(for: "Additional"))
                         .modifier(HeaderBlockTextStyle(theme: theme))) {
                             CompTextFieldView(
-                                placeholder: languageManager.localizedString(for: "TableName").capitalizedFirstLetter,
+                                placeholder: LanguageManager.shared.localizedString(for: "TableName").capitalizedFirstLetter,
                                 text: $editedWord.tableName,
                                 isEditing: false,
                                 theme: theme
                             )
                             CompTextFieldView(
-                                placeholder: languageManager.localizedString(for: "Hint").capitalizedFirstLetter,
+                                placeholder: LanguageManager.shared.localizedString(for: "Hint").capitalizedFirstLetter,
                                 text: $editedWord.hint.unwrap(default: ""),
                                 isEditing: isEditing,
                                 theme: theme,
                                 icon: "tag"
                             )
                             CompTextEditorView(
-                                placeholder: languageManager.localizedString(for: "Description").capitalizedFirstLetter,
+                                placeholder: LanguageManager.shared.localizedString(for: "Description").capitalizedFirstLetter,
                                 text: $editedWord.description.unwrap(default: ""),
                                 isEditing: isEditing,
                                 theme: theme,
@@ -78,11 +74,11 @@ struct WordDetailView: View {
                             .frame(height: 150)
                     }
 
-                    Section(header: Text(languageManager.localizedString(for: "Statistics"))
+                    Section(header: Text(LanguageManager.shared.localizedString(for: "Statistics"))
                         .modifier(HeaderBlockTextStyle(theme: theme))) {
                             VStack(alignment: .leading, spacing: 16) {
                                 CompBarChartView(
-                                    title: languageManager.localizedString(for: "Answers"),
+                                    title: LanguageManager.shared.localizedString(for: "Answers"),
                                     barData: [
                                         BarData(value: Double(editedWord.fail), label: "fail", color: .red),
                                         BarData(value: Double(editedWord.success), label: "success", color: .green)
@@ -92,7 +88,7 @@ struct WordDetailView: View {
 
                                 CompProgressChartView(
                                     value: calculateWeight(),
-                                    title: languageManager.localizedString(for: "Count"),
+                                    title: LanguageManager.shared.localizedString(for: "Count"),
                                     color: .blue
                                 )
                                 .padding(.bottom, 0)
@@ -100,13 +96,13 @@ struct WordDetailView: View {
                         }
                 }
                 .onAppear {
-                    frameManager.setActiveFrame(.wordDetail)
+                    FrameManager.shared.setActiveFrame(.wordDetail)
                 }
-                .navigationTitle(languageManager.localizedString(for: "Details").capitalizedFirstLetter)
+                .navigationTitle(LanguageManager.shared.localizedString(for: "Details").capitalizedFirstLetter)
                 .navigationBarItems(
                     leading: Button(
-                        isEditing ? languageManager.localizedString(for: "Cancel").capitalizedFirstLetter :
-                            languageManager.localizedString(for: "Close").capitalizedFirstLetter
+                        isEditing ? LanguageManager.shared.localizedString(for: "Cancel").capitalizedFirstLetter :
+                            LanguageManager.shared.localizedString(for: "Close").capitalizedFirstLetter
                     ) {
                         if isEditing {
                             isEditing = false
@@ -115,8 +111,8 @@ struct WordDetailView: View {
                             presentationMode.wrappedValue.dismiss()
                         }
                     },
-                    trailing: Button(isEditing ? languageManager.localizedString(for: "Save").capitalizedFirstLetter :
-                                        languageManager.localizedString(for: "Edit").capitalizedFirstLetter
+                    trailing: Button(isEditing ? LanguageManager.shared.localizedString(for: "Save").capitalizedFirstLetter :
+                                        LanguageManager.shared.localizedString(for: "Edit").capitalizedFirstLetter
                     ) {
                         if isEditing {
                             update(editedWord)
@@ -129,10 +125,10 @@ struct WordDetailView: View {
                 .animation(.easeInOut, value: isEditing)
                 .alert(isPresented: $isShowingErrorAlert) {
                     CompAlertView(
-                        title: languageManager.localizedString(for: "Error"),
-                        message: errorManager.currentError?.errorDescription ?? "",
+                        title: LanguageManager.shared.localizedString(for: "Error"),
+                        message: ErrorManager.shared.currentError?.errorDescription ?? "",
                         closeAction: {
-                            errorManager.clearError()
+                            ErrorManager.shared.clearError()
                         },
                         theme: theme
                     )

@@ -3,7 +3,6 @@ import SwiftUI
 struct TabSettingsView: View {
     @EnvironmentObject var languageManager: LanguageManager
     @EnvironmentObject var themeManager: ThemeManager
-    @EnvironmentObject var frameManager: FrameManager
     
     @ObservedObject var logHandler = LogHandler.shared
 
@@ -39,13 +38,8 @@ struct TabSettingsView: View {
                 .modifier(BaseNavigationStyle(theme: theme))
             }
             .onAppear {
-                frameManager.setActiveFrame(.tabSettings)
+                FrameManager.shared.setActiveFrame(.tabSettings)
             }
-//            .modifier(FrameModifier(activeFrame: frameManager.activeFrame) { newFrame in
-//                if newFrame != .learn {
-//                    frameManager.deactivateFrame(.learn)
-//                }
-//            })
         }
     }
 }

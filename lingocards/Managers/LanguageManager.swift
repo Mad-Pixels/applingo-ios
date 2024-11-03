@@ -3,6 +3,8 @@ import Combine
 import SwiftUI
 
 final class LanguageManager: ObservableObject {
+    static let shared = LanguageManager()
+    
     @Published var currentLanguage: String {
         didSet {
             Defaults.appLanguage = currentLanguage

@@ -3,9 +3,6 @@ import SwiftUI
 struct DictionaryDetailView: View {
     @Environment(\.presentationMode) private var presentationMode
     
-    @EnvironmentObject var languageManager: LanguageManager
-    @EnvironmentObject var themeManager: ThemeManager
-    @EnvironmentObject var frameManager: FrameManager
     
     @State private var editedDictionary: DictionaryItemModel
     @State private var isShowingErrorAlert = false
@@ -27,24 +24,24 @@ struct DictionaryDetailView: View {
     }
 
     var body: some View {
-        let theme = themeManager.currentThemeStyle
+        let theme = ThemeManager.shared.currentThemeStyle
 
         NavigationView {
             ZStack {
                 theme.backgroundViewColor.edgesIgnoringSafeArea(.all)
 
                 Form {
-                    Section(header: Text(languageManager.localizedString(for: "Dictionary"))
+                    Section(header: Text(LanguageManager.shared.localizedString(for: "Dictionary"))
                         .modifier(HeaderBlockTextStyle(theme: theme))) {
                             CompTextFieldView(
-                                placeholder: languageManager.localizedString(for: "Display Name").capitalizedFirstLetter,
+                                placeholder: LanguageManager.shared.localizedString(for: "Display Name").capitalizedFirstLetter,
                                 text: $editedDictionary.displayName,
                                 isEditing: isEditing,
                                 theme: theme,
                                 icon: "book"
                             )
                             CompTextEditorView(
-                                placeholder: languageManager.localizedString(for: "Description").capitalizedFirstLetter,
+                                placeholder: LanguageManager.shared.localizedString(for: "Description").capitalizedFirstLetter,
                                 text: Binding<String>(
                                     get: {
                                         editedDictionary.description
@@ -60,17 +57,17 @@ struct DictionaryDetailView: View {
                             .frame(height: 150)
                         }
 
-                    Section(header: Text(languageManager.localizedString(for: "Category"))
+                    Section(header: Text(LanguageManager.shared.localizedString(for: "Category"))
                         .modifier(HeaderBlockTextStyle(theme: theme))) {
                             CompTextFieldView(
-                                placeholder: languageManager.localizedString(for: "Category").capitalizedFirstLetter,
+                                placeholder: LanguageManager.shared.localizedString(for: "Category").capitalizedFirstLetter,
                                 text: $editedDictionary.category,
                                 isEditing: isEditing,
                                 theme: theme,
                                 icon: "cube"
                             )
                             CompTextFieldView(
-                                placeholder: languageManager.localizedString(for: "Subcategory").capitalizedFirstLetter,
+                                placeholder: LanguageManager.shared.localizedString(for: "Subcategory").capitalizedFirstLetter,
                                 text: $editedDictionary.subcategory,
                                 isEditing: isEditing,
                                 theme: theme,
@@ -78,17 +75,17 @@ struct DictionaryDetailView: View {
                             )
                         }
 
-                    Section(header: Text(languageManager.localizedString(for: "Additional"))
+                    Section(header: Text(LanguageManager.shared.localizedString(for: "Additional"))
                         .modifier(HeaderBlockTextStyle(theme: theme))) {
                             CompTextFieldView(
-                                placeholder: languageManager.localizedString(for: "Author").capitalizedFirstLetter,
+                                placeholder: LanguageManager.shared.localizedString(for: "Author").capitalizedFirstLetter,
                                 text: $editedDictionary.author,
                                 isEditing: isEditing,
                                 theme: theme,
                                 icon: "person"
                             )
                             CompTextFieldView(
-                                placeholder: languageManager.localizedString(for: "Created At").capitalizedFirstLetter,
+                                placeholder: LanguageManager.shared.localizedString(for: "Created At").capitalizedFirstLetter,
                                 text: .constant(editedDictionary.formattedCreatedAt),
                                 isEditing: false,
                                 theme: theme
@@ -98,13 +95,13 @@ struct DictionaryDetailView: View {
                 Spacer()
             }
             .onAppear {
-                frameManager.setActiveFrame(.dictionaryDetail)
+                FrameManager.shared.setActiveFrame(.dictionaryDetail)
             }
-            .navigationTitle(languageManager.localizedString(for: "Details").capitalizedFirstLetter)
+            .navigationTitle(LanguageManager.shared.localizedString(for: "Details").capitalizedFirstLetter)
             .navigationBarItems(
                 leading: Button(
-                    isEditing ? languageManager.localizedString(for: "Cancel").capitalizedFirstLetter :
-                        languageManager.localizedString(for: "Close").capitalizedFirstLetter
+                    isEditing ? LanguageManager.shared.localizedString(for: "Cancel").capitalizedFirstLetter :
+                        LanguageManager.shared.localizedString(for: "Close").capitalizedFirstLetter
                 ) {
                     if isEditing {
                         isEditing = false
@@ -113,8 +110,8 @@ struct DictionaryDetailView: View {
                         presentationMode.wrappedValue.dismiss()
                     }
                 },
-                trailing: Button(isEditing ? languageManager.localizedString(for: "Save").capitalizedFirstLetter :
-                                    languageManager.localizedString(for: "Edit").capitalizedFirstLetter
+                trailing: Button(isEditing ? LanguageManager.shared.localizedString(for: "Save").capitalizedFirstLetter :
+                                    LanguageManager.shared.localizedString(for: "Edit").capitalizedFirstLetter
                 ) {
                     if isEditing {
                         updateDictionary(editedDictionary)
@@ -127,9 +124,9 @@ struct DictionaryDetailView: View {
             .animation(.easeInOut, value: isEditing)
             .alert(isPresented: $isShowingErrorAlert) {
                 Alert(
-                    title: Text(languageManager.localizedString(for: "Error")),
+                    title: Text(LanguageManager.shared.localizedString(for: "Error")),
                     message: Text("Failed to update the dictionary due to database issues."),
-                    dismissButton: .default(Text(languageManager.localizedString(for: "Close")))
+                    dismissButton: .default(Text(LanguageManager.shared.localizedString(for: "Close")))
                 )
             }
         }

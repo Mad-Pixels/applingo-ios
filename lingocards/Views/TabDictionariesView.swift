@@ -2,11 +2,7 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 struct TabDictionariesView: View {
-    @EnvironmentObject var languageManager: LanguageManager
     @EnvironmentObject var databaseManager: DatabaseManager
-    @EnvironmentObject var themeManager: ThemeManager
-    @EnvironmentObject var frameManager: FrameManager
-    @EnvironmentObject var errorManager: ErrorManager
 
     @StateObject private var dictionaryAction: DictionaryLocalActionViewModel
     @StateObject private var dictionaryGetter: DictionaryLocalGetterViewModel
@@ -27,7 +23,7 @@ struct TabDictionariesView: View {
     }
 
     var body: some View {
-        let theme = themeManager.currentThemeStyle
+        let theme = ThemeManager.shared.currentThemeStyle
 
         NavigationView {
             ZStack {
@@ -36,7 +32,7 @@ struct TabDictionariesView: View {
                 CompItemListView(
                     items: $dictionaryGetter.dictionaries,
                     isLoadingPage: dictionaryGetter.isLoadingPage,
-                    error: errorManager.currentError,
+                    error: ErrorManager.shared.currentError,
                     onItemAppear: { dictionary in
                         dictionaryGetter.loadMoreDictionariesIfNeeded(currentItem: dictionary)
                     },
@@ -47,7 +43,7 @@ struct TabDictionariesView: View {
                     emptyListView: AnyView(
                         CompEmptyListView(
                             theme: theme,
-                            message: languageManager.localizedString(for: "NoDictionariesAvailable")
+                            message: LanguageManager.shared.localizedString(for: "NoDictionariesAvailable")
                         )
                     ),
                     rowContent: { dictionary in
@@ -66,18 +62,18 @@ struct TabDictionariesView: View {
                 .searchable(
                     text: $dictionaryGetter.searchText,
                     placement: .navigationBarDrawer(displayMode: .always),
-                    prompt: languageManager.localizedString(for: "Search").capitalizedFirstLetter
+                    prompt: LanguageManager.shared.localizedString(for: "Search").capitalizedFirstLetter
                 )
-                .navigationTitle(languageManager.localizedString(for: "Dictionaries").capitalizedFirstLetter)
+                .navigationTitle(LanguageManager.shared.localizedString(for: "Dictionaries").capitalizedFirstLetter)
                 .navigationBarTitleDisplayMode(.large)
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         CompToolbarMenuView(
                             items: [
-                                CompToolbarMenuView.MenuItem(title: languageManager.localizedString(for: "ImportCSV"), systemImage: "tray.and.arrow.down", action: {
+                                CompToolbarMenuView.MenuItem(title: LanguageManager.shared.localizedString(for: "ImportCSV"), systemImage: "tray.and.arrow.down", action: {
                                     isShowingFileImporter = true
                                 }),
-                                CompToolbarMenuView.MenuItem(title: languageManager.localizedString(for: "Download"), systemImage: "arrow.down.circle", action: {
+                                CompToolbarMenuView.MenuItem(title: LanguageManager.shared.localizedString(for: "Download"), systemImage: "arrow.down.circle", action: {
                                     isShowingRemoteList = true
                                 })
                             ],
@@ -86,8 +82,8 @@ struct TabDictionariesView: View {
                     }
                 }
                 .onAppear {
-                    frameManager.setActiveFrame(.tabDictionaries)
-                    if frameManager.isActive(frame: .tabDictionaries) {
+                    FrameManager.shared.setActiveFrame(.tabDictionaries)
+                    if FrameManager.shared.isActive(frame: .tabDictionaries) {
                         dictionaryAction.setFrame(.tabDictionaries)
                         dictionaryGetter.setFrame(.tabDictionaries)
                         dictionaryGetter.resetPagination()
@@ -96,7 +92,7 @@ struct TabDictionariesView: View {
                 .onDisappear {
                     dictionaryGetter.clear()
                 }
-                .modifier(ErrModifier(currentError: errorManager.currentError) { newError in
+                .modifier(ErrModifier(currentError: ErrorManager.shared.currentError) { newError in
                     if let error = newError, error.frame == .tabDictionaries, error.source == .dictionaryDelete {
                         isShowingAlert = true
                     }
@@ -104,10 +100,10 @@ struct TabDictionariesView: View {
             }
             .alert(isPresented: $isShowingAlert) {
                 CompAlertView(
-                    title: languageManager.localizedString(for: "Error"),
-                    message: errorManager.currentError?.errorDescription ?? "",
+                    title: LanguageManager.shared.localizedString(for: "Error"),
+                    message: ErrorManager.shared.currentError?.errorDescription ?? "",
                     closeAction: {
-                        errorManager.clearError()
+                        ErrorManager.shared.clearError()
                     },
                     theme: theme
                 )
@@ -123,7 +119,7 @@ struct TabDictionariesView: View {
             }
             .fullScreenCover(isPresented: $isShowingRemoteList) {
                 DictionaryRemoteListView(isPresented: $isShowingRemoteList)
-                    .environmentObject(languageManager)
+                    .environmentObject(LanguageManager.shared)
             }
         }
         .sheet(item: $selectedDictionary) { dictionary in
@@ -154,10 +150,10 @@ struct TabDictionariesView: View {
             } else {
                 let error = AppErrorModel(
                     errorType: .ui,
-                    errorMessage: languageManager.localizedString(for: "CannotDeleteInternalDictionary"),
+                    errorMessage: LanguageManager.shared.localizedString(for: "CannotDeleteInternalDictionary"),
                     additionalInfo: nil
                 )
-                errorManager.setError(
+                ErrorManager.shared.setError(
                     appError: error,
                     frame: .tabDictionaries,
                     source: .dictionaryDelete

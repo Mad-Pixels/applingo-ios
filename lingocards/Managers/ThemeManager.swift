@@ -1,6 +1,8 @@
 import Combine
 
 final class ThemeManager: ObservableObject {
+    static let shared = ThemeManager()
+    
     @Published var currentTheme: ThemeType {
         didSet {
             if Defaults.appTheme != currentTheme.rawValue {

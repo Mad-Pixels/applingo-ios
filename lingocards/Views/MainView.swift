@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct MainView: View {
-    @EnvironmentObject var languageManager: LanguageManager
     @EnvironmentObject var themeManager: ThemeManager
 
     var body: some View {
@@ -9,7 +8,7 @@ struct MainView: View {
             TabLearnView()
                 .tabItem {
                     Label {
-                        Text(languageManager.localizedString(for: "Learn").capitalizedFirstLetter)
+                        Text(LanguageManager.shared.localizedString(for: "Learn").capitalizedFirstLetter)
                     } icon: {
                         Image(systemName: "book.fill")
                     }
@@ -19,7 +18,7 @@ struct MainView: View {
             TabDictionariesView()
                 .tabItem {
                     Label {
-                        Text(languageManager.localizedString(for: "Dictionaries").capitalizedFirstLetter)
+                        Text(LanguageManager.shared.localizedString(for: "Dictionaries").capitalizedFirstLetter)
                     } icon: {
                         Image(systemName: "folder.fill")
                     }
@@ -29,7 +28,7 @@ struct MainView: View {
             TabWordsView()
                 .tabItem {
                     Label {
-                        Text(languageManager.localizedString(for: "Words").capitalizedFirstLetter)
+                        Text(LanguageManager.shared.localizedString(for: "Words").capitalizedFirstLetter)
                     } icon: {
                         Image(systemName: "textformat")
                     }
@@ -39,7 +38,7 @@ struct MainView: View {
             TabSettingsView()
                 .tabItem {
                     Label {
-                        Text(languageManager.localizedString(for: "Settings").capitalizedFirstLetter)
+                        Text(LanguageManager.shared.localizedString(for: "Settings").capitalizedFirstLetter)
                     } icon: {
                         Image(systemName: "gearshape.fill")
                     }

@@ -3,10 +3,6 @@ import SwiftUI
 struct WordAddView: View {
     @Environment(\.presentationMode) private var presentationMode
     
-    @EnvironmentObject var languageManager: LanguageManager
-    @EnvironmentObject var errorManager: ErrorManager
-    @EnvironmentObject var themeManager: ThemeManager
-    @EnvironmentObject var frameManager: FrameManager
     
     @StateObject private var dictionaryGetter: DictionaryLocalGetterViewModel
     
@@ -29,25 +25,25 @@ struct WordAddView: View {
     }
     
     var body: some View {
-        let theme = themeManager.currentThemeStyle
+        let theme = ThemeManager.shared.currentThemeStyle
         
         NavigationView {
             ZStack {
                 theme.backgroundViewColor.edgesIgnoringSafeArea(.all)
                 
                 Form {
-                    Section(header: Text(languageManager.localizedString(for: "Card"))
+                    Section(header: Text(LanguageManager.shared.localizedString(for: "Card"))
                         .modifier(HeaderBlockTextStyle(theme: theme))) {
                             VStack {
                                 CompTextFieldView(
-                                    placeholder: languageManager.localizedString(for: "Word").capitalizedFirstLetter,
+                                    placeholder: LanguageManager.shared.localizedString(for: "Word").capitalizedFirstLetter,
                                     text: $wordItem.frontText,
                                     isEditing: true,
                                     theme: theme,
                                     icon: "rectangle.and.pencil.and.ellipsis"
                                 )
                                 CompTextFieldView(
-                                    placeholder: languageManager.localizedString(for: "Definition").capitalizedFirstLetter,
+                                    placeholder: LanguageManager.shared.localizedString(for: "Definition").capitalizedFirstLetter,
                                     text: $wordItem.backText,
                                     isEditing: true,
                                     theme: theme,
@@ -65,18 +61,18 @@ struct WordAddView: View {
                             .padding(.vertical, 12)
                     }
                     
-                    Section(header: Text(languageManager.localizedString(for: "Additional"))
+                    Section(header: Text(LanguageManager.shared.localizedString(for: "Additional"))
                         .modifier(HeaderBlockTextStyle(theme: theme))) {
                             VStack {
                                 CompTextFieldView(
-                                    placeholder: languageManager.localizedString(for: "Hint").capitalizedFirstLetter,
+                                    placeholder: LanguageManager.shared.localizedString(for: "Hint").capitalizedFirstLetter,
                                     text: $wordItem.hint.unwrap(default: ""),
                                     isEditing: true,
                                     theme: theme,
                                     icon: "tag"
                                 )
                                 CompTextEditorView(
-                                    placeholder: languageManager.localizedString(for: "Description").capitalizedFirstLetter,
+                                    placeholder: LanguageManager.shared.localizedString(for: "Description").capitalizedFirstLetter,
                                     text: $wordItem.description.unwrap(default: ""),
                                     isEditing: true,
                                     theme: theme,
@@ -88,7 +84,7 @@ struct WordAddView: View {
                     }
                 }
                 .onAppear {
-                    frameManager.setActiveFrame(.wordAdd)
+                    FrameManager.shared.setActiveFrame(.wordAdd)
                     dictionaryGetter.setFrame(.wordAdd)
                     dictionaryGetter.get()
                     
@@ -96,23 +92,23 @@ struct WordAddView: View {
                         selectedDictionary = dictionaryGetter.dictionaries.first
                     }
                 }
-                .navigationTitle(languageManager.localizedString(for: "AddWord").capitalizedFirstLetter)
+                .navigationTitle(LanguageManager.shared.localizedString(for: "AddWord").capitalizedFirstLetter)
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationBarItems(
-                    leading: Button(languageManager.localizedString(for: "Cancel").capitalizedFirstLetter) {
+                    leading: Button(LanguageManager.shared.localizedString(for: "Cancel").capitalizedFirstLetter) {
                         presentationMode.wrappedValue.dismiss()
                     },
-                    trailing: Button(languageManager.localizedString(for: "Save").capitalizedFirstLetter) {
+                    trailing: Button(LanguageManager.shared.localizedString(for: "Save").capitalizedFirstLetter) {
                         save()
                     }
                     .disabled(isSaveDisabled)
                 )
                 .alert(isPresented: $isShowingErrorAlert) {
                     CompAlertView(
-                        title: languageManager.localizedString(for: "Error"),
-                        message: errorManager.currentError?.errorDescription ?? "",
+                        title: LanguageManager.shared.localizedString(for: "Error"),
+                        message: ErrorManager.shared.currentError?.errorDescription ?? "",
                         closeAction: {
-                            errorManager.clearError()
+                            ErrorManager.shared.clearError()
                         },
                         theme: theme
                     )
