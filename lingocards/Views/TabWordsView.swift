@@ -21,7 +21,6 @@ struct TabWordsView: View {
         }
 
         let wordRepository = RepositoryWord(dbQueue: dbQueue)
-        let dictionaryRepository = RepositoryDictionary(dbQueue: dbQueue)
         _wordsAction = StateObject(wrappedValue: WordsLocalActionViewModel(repository: wordRepository))
         _wordsGetter = StateObject(wrappedValue: WordsLocalGetterViewModel(repository: wordRepository))
     }
