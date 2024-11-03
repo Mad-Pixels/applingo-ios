@@ -26,16 +26,36 @@ final class WordsLocalActionViewModel: BaseDatabaseViewModel {
         )
     }
 
+//    func update(_ word: WordItemModel, completion: @escaping (Result<Void, Error>) -> Void) {
+//        performDatabaseOperation(
+//            { try self.repository.update(word) },
+//            successHandler: { _ in },
+//            errorSource: .wordUpdate,
+//            errorMessage: "Failed update word",
+//            frame: frame,
+//            completion: completion
+//        )
+//    }
+    
     func update(_ word: WordItemModel, completion: @escaping (Result<Void, Error>) -> Void) {
-        performDatabaseOperation(
-            { try self.repository.update(word) },
-            successHandler: { _ in },
-            errorSource: .wordUpdate,
-            errorMessage: "Failed update word",
-            frame: frame,
-            completion: completion
+        // Создаем тестовую ошибку
+        let testError = AppErrorModel(
+            errorType: .database,
+            errorMessage: "Test Error: Failed to update word item.",
+            additionalInfo: ["word": word.frontText]
+        )
+        
+        // Возвращаем тестовую ошибку через completion
+        completion(.failure(testError))
+        
+        // Также устанавливаем ошибку в ErrorManager, чтобы отобразить её в интерфейсе
+        ErrorManager.shared.setError(
+            appError: testError,
+            frame: .wordDetail,
+            source: .wordUpdate
         )
     }
+
 
     func delete(_ word: WordItemModel, completion: @escaping (Result<Void, Error>) -> Void) {
         performDatabaseOperation(

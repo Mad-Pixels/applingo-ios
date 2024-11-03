@@ -113,12 +113,12 @@ struct WordDetailView: View {
                     FrameManager.shared.setActiveFrame(.wordDetail)
                     wordsAction.setFrame(.wordDetail)
                     
-                    NotificationCenter.default.addObserver(forName: .errorVisibilityChanged, object: nil, queue: .main) { _ in
-                        if let error = ErrorManager.shared.currentError,
-                           error.frame == .wordDetail {
-                            isShowingAlert = true
-                        }
-                    }
+//                    NotificationCenter.default.addObserver(forName: .errorVisibilityChanged, object: nil, queue: .main) { _ in
+//                        if let error = ErrorManager.shared.currentError,
+//                           error.frame == .wordDetail {
+//                            isShowingAlert = true
+//                        }
+//                    }
                 }
                 .onDisappear {
                     NotificationCenter.default.removeObserver(self, name: .errorVisibilityChanged, object: nil)
@@ -176,6 +176,8 @@ struct WordDetailView: View {
                 self.presentationMode.wrappedValue.dismiss()
                 self.isEditing = false
                 refresh()
+            } else {
+                print("GOT IT")
             }
         }
     }
