@@ -7,22 +7,34 @@ struct WordAddView: View {
     @EnvironmentObject var errorManager: ErrorManager
     @EnvironmentObject var themeManager: ThemeManager
     @EnvironmentObject var frameManager: FrameManager
-
-    let dictionaries: [DictionaryItemModel]
+    
+    @StateObject private var dictionaryGetter: DictionaryLocalGetterViewModel
+    
     @Binding var isPresented: Bool
     let onSave: (WordItemModel, @escaping (Result<Void, Error>) -> Void) -> Void
-
+    
     @State private var selectedDictionary: DictionaryItemModel?
     @State private var isShowingErrorAlert = false
     @State private var wordItem = WordItemModel.empty()
 
+    init(isPresented: Binding<Bool>, onSave: @escaping (WordItemModel, @escaping (Result<Void, Error>) -> Void) -> Void) {
+        self._isPresented = isPresented
+        self.onSave = onSave
+        
+        guard let dbQueue = DatabaseManager.shared.databaseQueue else {
+            fatalError("Database is not connected")
+        }
+        let repository = RepositoryDictionary(dbQueue: dbQueue)
+        _dictionaryGetter = StateObject(wrappedValue: DictionaryLocalGetterViewModel(repository: repository))
+    }
+    
     var body: some View {
         let theme = themeManager.currentThemeStyle
-
+        
         NavigationView {
             ZStack {
                 theme.backgroundViewColor.edgesIgnoringSafeArea(.all)
-
+                
                 Form {
                     Section(header: Text(languageManager.localizedString(for: "Card"))
                         .modifier(HeaderBlockTextStyle(theme: theme))) {
@@ -43,7 +55,7 @@ struct WordAddView: View {
                                 )
                                 CompPickerView(
                                     selectedValue: $selectedDictionary,
-                                    items: dictionaries,
+                                    items: dictionaryGetter.dictionaries,
                                     title: "",
                                     theme: theme
                                 ) { dictionary in
@@ -52,7 +64,7 @@ struct WordAddView: View {
                             }
                             .padding(.vertical, 12)
                     }
-
+                    
                     Section(header: Text(languageManager.localizedString(for: "Additional"))
                         .modifier(HeaderBlockTextStyle(theme: theme))) {
                             VStack {
@@ -77,6 +89,12 @@ struct WordAddView: View {
                 }
                 .onAppear {
                     frameManager.setActiveFrame(.wordAdd)
+                    dictionaryGetter.setFrame(.wordAdd)
+                    dictionaryGetter.get()
+                    
+                    if selectedDictionary == nil, !dictionaryGetter.dictionaries.isEmpty {
+                        selectedDictionary = dictionaryGetter.dictionaries.first
+                    }
                 }
                 .navigationTitle(languageManager.localizedString(for: "AddWord").capitalizedFirstLetter)
                 .navigationBarTitleDisplayMode(.inline)
@@ -99,31 +117,25 @@ struct WordAddView: View {
                         theme: theme
                     )
                 }
-                .onAppear {
-                    if selectedDictionary == nil, !dictionaries.isEmpty {
-                        selectedDictionary = dictionaries.first
-                    }
-                }
             }
         }
     }
-
+    
     private func save() {
         guard let selectedDictionary = selectedDictionary else {
             return
         }
         wordItem.tableName = selectedDictionary.tableName
-
+        
         onSave(wordItem) { result in
             if case .success = result {
                 presentationMode.wrappedValue.dismiss()
             }
         }
     }
-
+    
     private var isSaveDisabled: Bool {
         wordItem.frontText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ||
-        wordItem.backText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ||
-        selectedDictionary == nil
+        wordItem.backText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 }

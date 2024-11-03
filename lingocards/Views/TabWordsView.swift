@@ -6,7 +6,7 @@ struct TabWordsView: View {
     @EnvironmentObject var themeManager: ThemeManager
     @EnvironmentObject var errorManager: ErrorManager
 
-    @StateObject private var dictionaryGetter: DictionaryLocalGetterViewModel
+    
     @StateObject private var wordsGetter: WordsLocalGetterViewModel
     @StateObject private var wordsAction: WordsLocalActionViewModel
 
@@ -22,7 +22,6 @@ struct TabWordsView: View {
 
         let wordRepository = RepositoryWord(dbQueue: dbQueue)
         let dictionaryRepository = RepositoryDictionary(dbQueue: dbQueue)
-        _dictionaryGetter = StateObject(wrappedValue: DictionaryLocalGetterViewModel(repository: dictionaryRepository))
         _wordsAction = StateObject(wrappedValue: WordsLocalActionViewModel(repository: wordRepository))
         _wordsGetter = StateObject(wrappedValue: WordsLocalGetterViewModel(repository: wordRepository))
     }
@@ -87,14 +86,12 @@ struct TabWordsView: View {
                 .onAppear {
                     frameManager.setActiveFrame(.tabWords)
                     if frameManager.isActive(frame: .tabWords) {
-                        dictionaryGetter.setFrame(.tabWords)
                         wordsAction.setFrame(.tabWords)
                         wordsGetter.setFrame(.tabWords)
                         wordsGetter.resetPagination()
                     }
                 }
                 .onDisappear {
-                    dictionaryGetter.clear()
                     wordsGetter.clear()
                 }
                 .modifier(ErrModifier(currentError: errorManager.currentError) { newError in
@@ -116,7 +113,6 @@ struct TabWordsView: View {
         .ignoresSafeArea(.keyboard, edges: .bottom)
         .sheet(isPresented: $isShowingAddView) {
             WordAddView(
-                dictionaries: dictionaryGetter.dictionaries,
                 isPresented: $isShowingAddView,
                 onSave: { word, completion in
                     wordsAction.save(word) { result in
@@ -158,7 +154,6 @@ struct TabWordsView: View {
     }
 
     private func add() {
-        dictionaryGetter.get()
         isShowingAddView = true
     }
 }
