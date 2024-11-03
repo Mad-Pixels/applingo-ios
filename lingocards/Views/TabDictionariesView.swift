@@ -2,7 +2,6 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 struct TabDictionariesView: View {
-    @EnvironmentObject var databaseManager: DatabaseManager
     @StateObject private var dictionaryAction: DictionaryLocalActionViewModel
     @StateObject private var dictionaryGetter: DictionaryLocalGetterViewModel
 
