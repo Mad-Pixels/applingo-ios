@@ -9,18 +9,18 @@ struct WordDetailView: View {
     @State private var isEditing = false
 
     @Binding var isPresented: Bool
-    let onSave: () -> Void
+    let refresh: () -> Void
     private let originalWord: WordItemModel
 
     init(
         word: WordItemModel,
         isPresented: Binding<Bool>,
-        onSave: @escaping () -> Void
+        refresh: @escaping () -> Void
     ) {
         _editedWord = State(initialValue: word)
         _isPresented = isPresented
         self.originalWord = word
-        self.onSave = onSave
+        self.refresh = refresh
         
         guard let dbQueue = DatabaseManager.shared.databaseQueue else {
             fatalError("Database is not connected")
@@ -173,9 +173,9 @@ struct WordDetailView: View {
     private func update(_ word: WordItemModel) {
         wordsAction.update(word) { result in
             if case .success = result {
-                self.isEditing = false
                 self.presentationMode.wrappedValue.dismiss()
-                onSave()
+                self.isEditing = false
+                refresh()
             }
         }
     }

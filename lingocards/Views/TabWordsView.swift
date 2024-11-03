@@ -121,7 +121,7 @@ struct TabWordsView: View {
             WordDetailView(
                 word: word,
                 isPresented: $isShowingDetailView,
-                onSave: {
+                refresh: {
                     wordsGetter.resetPagination()
                 }
             )
