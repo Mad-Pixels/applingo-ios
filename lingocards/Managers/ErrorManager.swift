@@ -26,6 +26,13 @@ enum GlobalError: Error, LocalizedError, Identifiable, Equatable {
             return source
         }
     }
+    
+    var localizedMessage: String {
+        switch self {
+        case .custom(let appError, _, _):
+            return appError.localizedMessage
+        }
+    }
 }
 
 final class ErrorManager: ObservableObject {

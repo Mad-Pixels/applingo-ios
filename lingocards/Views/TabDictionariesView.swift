@@ -6,6 +6,7 @@ struct TabDictionariesView: View {
     @StateObject private var dictionaryGetter: DictionaryLocalGetterViewModel
 
     @State private var selectedDictionary: DictionaryItemModel?
+    @State private var errorMessage: String = ""
     @State private var isShowingFileImporter = false
     @State private var isShowingRemoteList = false
     @State private var isShowingAlert = false
@@ -14,7 +15,6 @@ struct TabDictionariesView: View {
         guard let dbQueue = DatabaseManager.shared.databaseQueue else {
             fatalError("Database is not connected")
         }
-
         let repository = RepositoryDictionary(dbQueue: dbQueue)
         _dictionaryAction = StateObject(wrappedValue: DictionaryLocalActionViewModel(repository: repository))
         _dictionaryGetter = StateObject(wrappedValue: DictionaryLocalGetterViewModel(repository: repository))
@@ -82,10 +82,15 @@ struct TabDictionariesView: View {
                 }
                 .onAppear {
                     FrameManager.shared.setActiveFrame(.tabDictionaries)
-                    if FrameManager.shared.isActive(frame: .tabDictionaries) {
-                        dictionaryAction.setFrame(.tabDictionaries)
-                        dictionaryGetter.setFrame(.tabDictionaries)
-                        dictionaryGetter.resetPagination()
+                    dictionaryAction.setFrame(.tabDictionaries)
+                    dictionaryGetter.setFrame(.tabDictionaries)
+                    dictionaryGetter.resetPagination()
+                }
+                .onReceive(NotificationCenter.default.publisher(for: .errorVisibilityChanged)) { _ in
+                    if let error = ErrorManager.shared.currentError,
+                       error.frame == .tabDictionaries {
+                        errorMessage = error.localizedMessage
+                        isShowingAlert = true
                     }
                 }
                 .onDisappear {
@@ -146,17 +151,16 @@ struct TabDictionariesView: View {
                     }
                 }
             } else {
-                let error = AppErrorModel(
-                    errorType: .ui,
-                    errorMessage: LanguageManager.shared.localizedString(for: "CannotDeleteInternalDictionary"),
-                    additionalInfo: nil
-                )
                 ErrorManager.shared.setError(
-                    appError: error,
+                    appError: AppErrorModel(
+                        errorType: .ui,
+                        errorMessage: LanguageManager.shared.localizedString(for: "CannotDeleteInternalDictionary"),
+                        localizedMessage: "asd",
+                        additionalInfo: nil
+                    ),
                     frame: .tabDictionaries,
                     source: .dictionaryDelete
                 )
-                isShowingAlert = true
             }
         }
     }

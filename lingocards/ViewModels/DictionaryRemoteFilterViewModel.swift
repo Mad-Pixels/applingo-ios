@@ -28,6 +28,7 @@ final class DictionaryRemoteFilterViewModel: ObservableObject {
             let error = AppErrorModel(
                 errorType: .network,
                 errorMessage: "Failed to fetch categories from the remote server",
+                localizedMessage: "asd",
                 additionalInfo: nil
             )
 

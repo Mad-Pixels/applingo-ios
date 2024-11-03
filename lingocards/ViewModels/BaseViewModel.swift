@@ -12,6 +12,7 @@ class BaseViewModel {
         let appError = AppErrorModel(
             errorType: errorType,
             errorMessage: message,
+            localizedMessage: "asd",
             additionalInfo: ["error": "\(error)"]
         )
         ErrorManager.shared.setError(appError: appError, frame: frame, source: source)

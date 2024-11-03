@@ -4,6 +4,7 @@ struct TabWordsView: View {
     @StateObject private var wordsGetter: WordsLocalGetterViewModel
     @StateObject private var wordsAction: WordsLocalActionViewModel
 
+    @State private var errorMessage: String = ""
     @State private var isShowingDetailView = false
     @State private var isShowingAddView = false
     @State private var isShowingAlert = false
@@ -13,7 +14,6 @@ struct TabWordsView: View {
         guard let dbQueue = DatabaseManager.shared.databaseQueue else {
             fatalError("Database is not connected")
         }
-
         let wordRepository = RepositoryWord(dbQueue: dbQueue)
         _wordsAction = StateObject(wrappedValue: WordsLocalActionViewModel(repository: wordRepository))
         _wordsGetter = StateObject(wrappedValue: WordsLocalGetterViewModel(repository: wordRepository))
@@ -29,7 +29,7 @@ struct TabWordsView: View {
                 CompItemListView(
                     items: $wordsGetter.words,
                     isLoadingPage: wordsGetter.isLoadingPage,
-                    error: ErrorManager.shared.currentError,
+                    error: nil,
                     onItemAppear: { word in
                         wordsGetter.loadMoreWordsIfNeeded(currentItem: word)
                     },
@@ -81,6 +81,13 @@ struct TabWordsView: View {
                         wordsGetter.resetPagination()
                     }
                 }
+                .onReceive(NotificationCenter.default.publisher(for: .errorVisibilityChanged)) { _ in
+                    if let error = ErrorManager.shared.currentError,
+                       error.frame == .tabWords {
+                        errorMessage = error.localizedMessage
+                        isShowingAlert = true
+                    }
+                }
                 .onDisappear {
                     wordsGetter.clear()
                 }
@@ -91,10 +98,10 @@ struct TabWordsView: View {
                 })
             }
             .alert(isPresented: $isShowingAlert) {
-                Alert(
-                    title: Text(LanguageManager.shared.localizedString(for: "Error")),
-                    message: Text(ErrorManager.shared.currentError?.errorDescription ?? ""),
-                    dismissButton: .default(Text(LanguageManager.shared.localizedString(for: "Close"))) {
+                CompAlertView(
+                    title: LanguageManager.shared.localizedString(for: "Error"),
+                    message: ErrorManager.shared.currentError?.errorDescription ?? "",
+                    closeAction: {
                         ErrorManager.shared.clearError()
                     }
                 )

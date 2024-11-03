@@ -10,8 +10,9 @@ struct WordAddView: View {
     
     @State private var selectedDictionary: DictionaryItemModel?
     @State private var wordItem = WordItemModel.empty()
+    @State private var errorMessage: String = ""
     @State private var isShowingAlert = false
-    
+
     init(isPresented: Binding<Bool>, refresh: @escaping () -> Void) {
         guard let dbQueue = DatabaseManager.shared.databaseQueue else {
             fatalError("Database is not connected")
@@ -93,6 +94,16 @@ struct WordAddView: View {
                     wordsAction.setFrame(.wordAdd)
                     dictionaryGetter.get()
                 }
+                .onDisappear {
+                    dictionaryGetter.clear()
+                }
+                .onReceive(NotificationCenter.default.publisher(for: .errorVisibilityChanged)) { _ in
+                    if let error = ErrorManager.shared.currentError,
+                       error.frame == .wordAdd {
+                        errorMessage = error.localizedMessage
+                        isShowingAlert = true
+                    }
+                }
                 .onChange(of: dictionaryGetter.dictionaries) { dictionaries in
                     if selectedDictionary == nil, let firstDictionary = dictionaries.first {
                         selectedDictionary = firstDictionary
@@ -111,12 +122,8 @@ struct WordAddView: View {
                 )
                 .alert(isPresented: $isShowingAlert) {
                     CompAlertView(
-                        title: LanguageManager.shared.localizedString(
-                            for: "Error"
-                        ),
-                        message: LanguageManager.shared.localizedString(
-                            for: "ErrorDatabaseAddWord"
-                        ),
+                        title: LanguageManager.shared.localizedString(for: "Error"),
+                        message: errorMessage,
                         closeAction: {
                             ErrorManager.shared.clearError()
                         }
@@ -131,12 +138,10 @@ struct WordAddView: View {
             return
         }
         wordItem.tableName = selectedDictionary.tableName
-        
         wordsAction.save(wordItem) { result in
             if case .success = result {
                 presentationMode.wrappedValue.dismiss()
-            } else {
-                isShowingAlert = true
+                refresh()
             }
         }
     }

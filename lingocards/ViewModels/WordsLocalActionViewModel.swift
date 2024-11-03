@@ -16,15 +16,35 @@ final class WordsLocalActionViewModel: BaseDatabaseViewModel {
     }
 
     func save(_ word: WordItemModel, completion: @escaping (Result<Void, Error>) -> Void) {
-        performDatabaseOperation(
-            { try self.repository.save(word) },
-            successHandler: { _ in },
-            errorSource: .wordSave,
-            errorMessage: "Failed save word",
+        // Создаем тестовую ошибку
+        let testError = AppErrorModel(
+            errorType: .database,
+            errorMessage: "Test Error: Failed to save word item.",
+            localizedMessage: "Не удалось сохранить слово.",
+            additionalInfo: ["word": word.frontText]
+        )
+        
+        // Возвращаем тестовую ошибку через completion
+        completion(.failure(testError))
+        
+        // Также устанавливаем ошибку в ErrorManager, чтобы отобразить её в интерфейсе
+        ErrorManager.shared.setError(
+            appError: testError,
             frame: frame,
-            completion: completion
+            source: .wordSave
         )
     }
+    
+//    func save(_ word: WordItemModel, completion: @escaping (Result<Void, Error>) -> Void) {
+//        performDatabaseOperation(
+//            { try self.repository.save(word) },
+//            successHandler: { _ in },
+//            errorSource: .wordSave,
+//            errorMessage: "Failed save word",
+//            frame: frame,
+//            completion: completion
+//        )
+//    }
 
 //    func update(_ word: WordItemModel, completion: @escaping (Result<Void, Error>) -> Void) {
 //        performDatabaseOperation(
@@ -42,6 +62,7 @@ final class WordsLocalActionViewModel: BaseDatabaseViewModel {
         let testError = AppErrorModel(
             errorType: .database,
             errorMessage: "Test Error: Failed to update word item.",
+            localizedMessage: "asd",
             additionalInfo: ["word": word.frontText]
         )
         

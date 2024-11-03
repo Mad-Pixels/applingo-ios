@@ -30,13 +30,16 @@ struct AppErrorModel: Error, LocalizedError, Equatable, Identifiable {
     let id: UUID = UUID()
     let errorType: ErrorTypeModel
     let errorMessage: String
+    let localizedMessage: String  // Добавляем поле
     let additionalInfo: [String: String]?
 
     var errorDescription: String? {
         errorMessage
     }
-    
+
     static func ==(lhs: AppErrorModel, rhs: AppErrorModel) -> Bool {
-        return lhs.errorMessage == rhs.errorMessage && lhs.errorType == rhs.errorType && lhs.additionalInfo == rhs.additionalInfo
+        return lhs.errorMessage == rhs.errorMessage &&
+               lhs.errorType == rhs.errorType &&
+               lhs.additionalInfo == rhs.additionalInfo
     }
 }

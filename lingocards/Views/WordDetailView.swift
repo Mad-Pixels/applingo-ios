@@ -5,10 +5,11 @@ struct WordDetailView: View {
     @StateObject private var wordsAction: WordsLocalActionViewModel
 
     @State private var editedWord: WordItemModel
+    @State private var errorMessage: String = ""
     @State private var isShowingAlert = false
     @State private var isEditing = false
 
-    @Binding var isPresented: Bool 
+    @Binding var isPresented: Bool
     let refresh: () -> Void
     private let originalWord: WordItemModel
 
@@ -104,8 +105,12 @@ struct WordDetailView: View {
                     FrameManager.shared.setActiveFrame(.wordDetail)
                     wordsAction.setFrame(.wordDetail)
                 }
-                .onDisappear {
-                    NotificationCenter.default.removeObserver(self, name: .errorVisibilityChanged, object: nil)
+                .onReceive(NotificationCenter.default.publisher(for: .errorVisibilityChanged)) { _ in
+                    if let error = ErrorManager.shared.currentError,
+                       error.frame == .wordDetail {
+                        errorMessage = error.localizedMessage
+                        isShowingAlert = true
+                    }
                 }
                 .navigationTitle(LanguageManager.shared.localizedString(for: "Details").capitalizedFirstLetter)
                 .navigationBarItems(
@@ -140,12 +145,8 @@ struct WordDetailView: View {
                 .animation(.easeInOut, value: isEditing)
                 .alert(isPresented: $isShowingAlert) {
                     CompAlertView(
-                        title: LanguageManager.shared.localizedString(
-                            for: "Error"
-                        ),
-                        message: LanguageManager.shared.localizedString(
-                            for: "ErrorDatabaseUpdateWord"
-                        ).capitalizedFirstLetter,
+                        title: LanguageManager.shared.localizedString(for: "Error"),
+                        message: errorMessage,
                         closeAction: {
                             ErrorManager.shared.clearError()
                         }
@@ -161,8 +162,6 @@ struct WordDetailView: View {
                 self.presentationMode.wrappedValue.dismiss()
                 self.isEditing = false
                 refresh()
-            } else {
-                isShowingAlert = true
             }
         }
     }

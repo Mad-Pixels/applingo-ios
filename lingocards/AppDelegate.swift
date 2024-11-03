@@ -23,6 +23,7 @@ struct LingocardApp: App {
             let appError = AppErrorModel(
                 errorType: .database,
                 errorMessage: "Failed connect to database",
+                localizedMessage: "asd",
                 additionalInfo: ["error": "\(error.localizedDescription)"]
             )
             ErrorManager.shared.setError(appError: appError, frame: .main, source: .initialization)
