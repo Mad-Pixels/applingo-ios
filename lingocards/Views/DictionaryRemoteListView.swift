@@ -82,8 +82,7 @@ struct DictionaryRemoteListView: View {
                                 ), systemImage: "line.horizontal.3.decrease.circle", action: {
                                     isShowingFilterView = true
                                 })
-                            ],
-                            theme: theme
+                            ]
                         )
                     }
                 }

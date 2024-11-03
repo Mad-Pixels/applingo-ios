@@ -7,7 +7,7 @@ struct CompWordRowView: View {
     var body: some View {
         HStack {
             Text(word.frontText)
-                .foregroundColor(ThemeManager().currentThemeStyle.baseTextColor)
+                .foregroundColor(ThemeManager.shared.currentThemeStyle.baseTextColor)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .modifier(BaseTextStyle())
             Image(systemName: "arrow.left.and.right")
@@ -15,7 +15,7 @@ struct CompWordRowView: View {
                 .modifier(MainIconStyle())
             Text(word.backText)
                 .font(.subheadline)
-                .foregroundColor(ThemeManager().currentThemeStyle.secondaryTextColor)
+                .foregroundColor(ThemeManager.shared.currentThemeStyle.secondaryTextColor)
                 .frame(maxWidth: .infinity, alignment: .trailing)
                 .modifier(BaseTextStyle())
         }

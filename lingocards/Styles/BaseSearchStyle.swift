@@ -4,7 +4,7 @@ struct BaseSearchStyle: ViewModifier {
     func body(content: Content) -> some View {
         content
             .padding()
-            .background(ThemeManager().currentThemeStyle.backgroundBlockColor)
+            .background(ThemeManager.shared.currentThemeStyle.backgroundBlockColor)
             .cornerRadius(10)
             .padding(.horizontal)
     }

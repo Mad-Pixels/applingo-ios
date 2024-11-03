@@ -40,15 +40,15 @@ struct CompTextEditorView: View {
                     .background(
                         RoundedRectangle(cornerRadius: 8)
                             .fill(isEditing ?
-                                  ThemeManager().currentThemeStyle.backgroundViewColor :
-                                    ThemeManager().currentThemeStyle.detailsColor)
+                                  ThemeManager.shared.currentThemeStyle.backgroundViewColor :
+                                    ThemeManager.shared.currentThemeStyle.detailsColor)
                     )
                     .overlay(
                         Group {
                             if border {
                                 RoundedRectangle(cornerRadius: 8)
                                     .stroke(isEditing ?
-                                            ThemeManager().currentThemeStyle.accentColor :
+                                            ThemeManager.shared.currentThemeStyle.accentColor :
                                                 Color(.systemGray4), lineWidth: isEditing ? 2 : 1)
                             }
                         }
@@ -60,7 +60,7 @@ struct CompTextEditorView: View {
                 if text.isEmpty {
                     Text(placeholder)
                         .modifier(BaseTextStyle())
-                        .foregroundColor(ThemeManager().currentThemeStyle.baseTextColor.opacity(0.5))
+                        .foregroundColor(ThemeManager.shared.currentThemeStyle.baseTextColor.opacity(0.5))
                         .padding(EdgeInsets(top: 14, leading: 12, bottom: 0, trailing: 6))
                         .allowsHitTesting(false)
                 }

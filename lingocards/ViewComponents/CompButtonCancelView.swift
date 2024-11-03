@@ -14,8 +14,8 @@ struct CompButtonCancelView: View {
         }
         .buttonStyle(
             BaseButtonStyle(
-                backgroundColor: ThemeManager().currentThemeStyle.accentColor,
-                textColor: ThemeManager().currentThemeStyle.baseTextColor
+                backgroundColor: ThemeManager.shared.currentThemeStyle.accentColor,
+                textColor: ThemeManager.shared.currentThemeStyle.baseTextColor
             )
         )
     }

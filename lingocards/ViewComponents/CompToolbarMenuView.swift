@@ -19,7 +19,7 @@ struct CompToolbarMenuView: View {
             Image(systemName: "ellipsis.circle")
                 .resizable()
                 .frame(width: 24, height: 24)
-                .foregroundColor(ThemeManager().currentThemeStyle.accentColor)
+                .foregroundColor(ThemeManager.shared.currentThemeStyle.accentColor)
         }
     }
 }

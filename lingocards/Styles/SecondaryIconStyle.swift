@@ -3,6 +3,6 @@ import SwiftUI
 struct SecondaryIconStyle: ViewModifier {
     func body(content: Content) -> some View {
         content
-            .foregroundColor(ThemeManager().currentThemeStyle.secondaryIconColor)
+            .foregroundColor(ThemeManager.shared.currentThemeStyle.secondaryIconColor)
     }
 }

@@ -9,8 +9,8 @@ struct BaseCheckboxStyle: ToggleStyle {
                 .resizable()
                 .frame(width: 28, height: 28)
                 .foregroundColor(configuration.isOn ?
-                                 ThemeManager().currentThemeStyle.accentColor :
-                                    ThemeManager().currentThemeStyle.secondaryIconColor)
+                                 ThemeManager.shared.currentThemeStyle.accentColor :
+                                    ThemeManager.shared.currentThemeStyle.secondaryIconColor)
                 .onTapGesture {
                     configuration.isOn.toggle()
                 }
