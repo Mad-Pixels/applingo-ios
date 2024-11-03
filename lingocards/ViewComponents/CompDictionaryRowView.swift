@@ -4,14 +4,13 @@ struct CompDictionaryRowView: View {
     let dictionary: DictionaryItemModel
     let onTap: () -> Void
     let onToggle: (Bool) -> Void
-    let theme: ThemeStyle
 
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
                 Text(dictionary.displayName)
                     .font(.headline)
-                    .foregroundColor(theme.baseTextColor)
+                    .foregroundColor(ThemeManager().currentThemeStyle.baseTextColor)
 
                 Text(dictionary.subTitle)
                     .font(.subheadline)
@@ -32,7 +31,7 @@ struct CompDictionaryRowView: View {
             ) {
                 EmptyView()
             }
-            .toggleStyle(BaseCheckboxStyle(theme: theme))
+            .toggleStyle(BaseCheckboxStyle())
         }
     }
 }

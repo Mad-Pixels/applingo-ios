@@ -1,10 +1,8 @@
 import SwiftUI
 
 struct MainIconStyle: ViewModifier {
-    let theme: ThemeStyle
-
     func body(content: Content) -> some View {
         content
-            .foregroundColor(theme.accentColor)
+            .foregroundColor(ThemeManager().currentThemeStyle.accentColor)
     }
 }

@@ -29,7 +29,6 @@ struct DictionaryRemoteDetailView: View {
                                 ).capitalizedFirstLetter,
                                 text: .constant(editedDictionary.displayName),
                                 isEditing: false,
-                                theme: theme,
                                 icon: "book"
                             )
                             CompTextEditorView(
@@ -38,7 +37,6 @@ struct DictionaryRemoteDetailView: View {
                                 ).capitalizedFirstLetter,
                                 text: .constant(editedDictionary.description),
                                 isEditing: false,
-                                theme: theme,
                                 icon: "scroll"
                             )
                             .frame(height: 150)
@@ -51,7 +49,6 @@ struct DictionaryRemoteDetailView: View {
                                 ).capitalizedFirstLetter,
                                 text: .constant(editedDictionary.category),
                                 isEditing: false,
-                                theme: theme,
                                 icon: "cube"
                             )
                             CompTextFieldView(
@@ -60,7 +57,6 @@ struct DictionaryRemoteDetailView: View {
                                 ).capitalizedFirstLetter,
                                 text: .constant(editedDictionary.subcategory),
                                 isEditing: false,
-                                theme: theme,
                                 icon: "square.3.layers.3d"
                             )
                         }
@@ -72,7 +68,6 @@ struct DictionaryRemoteDetailView: View {
                                 ).capitalizedFirstLetter,
                                 text: .constant(editedDictionary.author),
                                 isEditing: false,
-                                theme: theme,
                                 icon: "person"
                             )
                             CompTextFieldView(
@@ -80,8 +75,7 @@ struct DictionaryRemoteDetailView: View {
                                     for: "Created At"
                                 ).capitalizedFirstLetter,
                                 text: .constant(editedDictionary.formattedCreatedAt),
-                                isEditing: false,
-                                theme: theme
+                                isEditing: false
                             )
                         }
                     }
@@ -91,8 +85,7 @@ struct DictionaryRemoteDetailView: View {
                         title: LanguageManager.shared.localizedString(
                             for: "Download"
                         ).capitalizedFirstLetter,
-                        action: onDownload,
-                        theme: theme
+                        action: onDownload
                     )
                     .padding()
                 }

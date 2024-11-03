@@ -38,14 +38,13 @@ struct WordDetailView: View {
 
                 Form {
                     Section(header: Text(LanguageManager.shared.localizedString(for: "Card"))
-                        .modifier(HeaderBlockTextStyle(theme: theme))) {
+                        .modifier(HeaderBlockTextStyle())) {
                             CompTextFieldView(
                                 placeholder: LanguageManager.shared.localizedString(
                                     for: "Word"
                                 ).capitalizedFirstLetter,
                                 text: $editedWord.frontText,
                                 isEditing: isEditing,
-                                theme: theme,
                                 icon: "rectangle.and.pencil.and.ellipsis"
                             )
                             CompTextFieldView(
@@ -54,26 +53,23 @@ struct WordDetailView: View {
                                 ).capitalizedFirstLetter,
                                 text: $editedWord.backText,
                                 isEditing: isEditing,
-                                theme: theme,
                                 icon: "translate"
                             )
                         }
 
                     Section(header: Text(LanguageManager.shared.localizedString(for: "Additional"))
-                        .modifier(HeaderBlockTextStyle(theme: theme))) {
+                        .modifier(HeaderBlockTextStyle())) {
                             CompTextFieldView(
                                 placeholder: LanguageManager.shared.localizedString(
                                     for: "TableName"
                                 ).capitalizedFirstLetter,
                                 text: $editedWord.tableName,
-                                isEditing: false,
-                                theme: theme
+                                isEditing: false
                             )
                             CompTextFieldView(
                                 placeholder: LanguageManager.shared.localizedString(for: "Hint").capitalizedFirstLetter,
                                 text: $editedWord.hint.unwrap(default: ""),
                                 isEditing: isEditing,
-                                theme: theme,
                                 icon: "tag"
                             )
                             CompTextEditorView(
@@ -82,14 +78,13 @@ struct WordDetailView: View {
                                 ).capitalizedFirstLetter,
                                 text: $editedWord.description.unwrap(default: ""),
                                 isEditing: isEditing,
-                                theme: theme,
                                 icon: "scroll"
                             )
                             .frame(height: 150)
                     }
 
                     Section(header: Text(LanguageManager.shared.localizedString(for: "Statistics"))
-                        .modifier(HeaderBlockTextStyle(theme: theme))) {
+                        .modifier(HeaderBlockTextStyle())) {
                             VStack(alignment: .leading, spacing: 16) {
                                 CompBarChartView(
                                     title: LanguageManager.shared.localizedString(for: "Answers"),
@@ -162,8 +157,7 @@ struct WordDetailView: View {
                         ).capitalizedFirstLetter,
                         closeAction: {
                             ErrorManager.shared.clearError()
-                        },
-                        theme: theme
+                        }
                     )
                 }
             }

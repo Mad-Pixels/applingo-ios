@@ -17,25 +17,22 @@ struct TabSettingsView: View {
                     CompThemePickerView(
                         selectedTheme: $themeManager.currentTheme,
                         supportedThemes: themeManager.supportedThemes,
-                        onThemeChange: { newTheme in themeManager.setTheme(to: newTheme) },
-                        theme: theme
+                        onThemeChange: { newTheme in themeManager.setTheme(to: newTheme) }
                     )
                     CompPickerView(
                         selectedValue: $languageManager.currentLanguage,
                         items: languageManager.supportedLanguages,
-                        title: languageManager.localizedString(for: "Language"),
-                        theme: theme
+                        title: languageManager.localizedString(for: "Language")
                     ) { language in
                         Text(languageManager.displayName(for: language).capitalizedFirstLetter)
                     }
                     CompLogSenderToggleView(
-                        sendLogs: $logHandler.sendLogs,
-                        theme: theme
+                        sendLogs: $logHandler.sendLogs
                     )
                 }
                 .navigationTitle(languageManager.localizedString(for: "Settings").capitalizedFirstLetter)
                 .navigationBarTitleDisplayMode(.large)
-                .modifier(BaseNavigationStyle(theme: theme))
+                .modifier(BaseNavigationStyle())
             }
             .onAppear {
                 FrameManager.shared.setActiveFrame(.tabSettings)

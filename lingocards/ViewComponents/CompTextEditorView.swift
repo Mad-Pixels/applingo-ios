@@ -6,14 +6,12 @@ struct CompTextEditorView: View {
     let minHeight: CGFloat
     let isEditing: Bool
     let border: Bool
-    let theme: ThemeStyle
     let icon: String?
 
     init(
         placeholder: String,
         text: Binding<String>,
         isEditing: Bool,
-        theme: ThemeStyle,
         border: Bool = false,
         minHeight: CGFloat = 156,
         icon: String? = nil
@@ -23,7 +21,6 @@ struct CompTextEditorView: View {
         self.border = border
         self._text = text
         self.minHeight = minHeight
-        self.theme = theme
         self.icon = icon
     }
 
@@ -31,7 +28,7 @@ struct CompTextEditorView: View {
         HStack(alignment: .top) {
             if let iconName = icon {
                 Image(systemName: iconName)
-                    .modifier(SecondaryIconStyle(theme: theme))
+                    .modifier(SecondaryIconStyle())
                     .padding(.top, 15)
             }
 
@@ -42,29 +39,33 @@ struct CompTextEditorView: View {
                     .scrollContentBackground(.hidden)
                     .background(
                         RoundedRectangle(cornerRadius: 8)
-                            .fill(isEditing ? theme.backgroundViewColor : theme.detailsColor)
+                            .fill(isEditing ?
+                                  ThemeManager().currentThemeStyle.backgroundViewColor :
+                                    ThemeManager().currentThemeStyle.detailsColor)
                     )
                     .overlay(
                         Group {
                             if border {
                                 RoundedRectangle(cornerRadius: 8)
-                                    .stroke(isEditing ? theme.accentColor : Color(.systemGray4), lineWidth: isEditing ? 2 : 1)
+                                    .stroke(isEditing ?
+                                            ThemeManager().currentThemeStyle.accentColor :
+                                                Color(.systemGray4), lineWidth: isEditing ? 2 : 1)
                             }
                         }
                     )
-                    .modifier(BaseTextStyle(theme: theme))
+                    .modifier(BaseTextStyle())
                     .frame(minHeight: minHeight)
                     .animation(.easeInOut(duration: 0.4), value: isEditing)
 
                 if text.isEmpty {
                     Text(placeholder)
-                        .modifier(BaseTextStyle(theme: theme))
-                        .foregroundColor(theme.baseTextColor.opacity(0.5))
+                        .modifier(BaseTextStyle())
+                        .foregroundColor(ThemeManager().currentThemeStyle.baseTextColor.opacity(0.5))
                         .padding(EdgeInsets(top: 14, leading: 12, bottom: 0, trailing: 6))
                         .allowsHitTesting(false)
                 }
             }
-            .modifier(BaseTextStyle(theme: theme))
+            .modifier(BaseTextStyle())
         }
     }
 }

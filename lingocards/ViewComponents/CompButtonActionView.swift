@@ -3,21 +3,19 @@ import SwiftUI
 struct CompButtonActionView: View {
     let title: String
     let action: () -> Void
-    let theme: ThemeStyle
 
     var body: some View {
         Button(action: action) {
             Text(title)
-                .modifier(BaseTextStyle(theme: theme))
+                .modifier(BaseTextStyle())
                 .padding()
                 .frame(maxWidth: .infinity, maxHeight: 15)
                 .bold()
         }
         .buttonStyle(
             BaseButtonStyle(
-                theme: theme,
-                backgroundColor: theme.accentColor,
-                textColor: theme.baseTextColor
+                backgroundColor: ThemeManager().currentThemeStyle.accentColor,
+                textColor: ThemeManager().currentThemeStyle.baseTextColor
             )
         )
     }

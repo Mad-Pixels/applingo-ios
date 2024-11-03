@@ -4,15 +4,13 @@ struct CompLogSenderToggleView: View {
     @EnvironmentObject var languageManager: LanguageManager
     @Binding var sendLogs: Bool
     
-    let theme: ThemeStyle
-    
     var body: some View {
         Section(header: Text(languageManager.localizedString(for: "LogSettings"))
-            .modifier(HeaderBlockTextStyle(theme: theme))) {
+            .modifier(HeaderBlockTextStyle())) {
             
                 Toggle(isOn: $sendLogs) {
                     Text(languageManager.localizedString(for: "SendErrorsLogs").capitalizedFirstLetter)
-                        .modifier(BaseTextStyle(theme: theme))
+                        .modifier(BaseTextStyle())
                 }
         }
     }

@@ -3,9 +3,7 @@ import SwiftUI
 func CompAlertView(
     title: String,
     message: String,
-    closeAction: @escaping () -> Void,
-    theme: ThemeStyle
-    
+    closeAction: @escaping () -> Void
 ) -> Alert {
     return Alert(
         title: Text(title),

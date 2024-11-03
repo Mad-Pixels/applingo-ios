@@ -1,12 +1,10 @@
 import SwiftUI
 
 struct BaseSearchStyle: ViewModifier {
-    let theme: ThemeStyle
-
     func body(content: Content) -> some View {
         content
             .padding()
-            .background(theme.backgroundBlockColor)
+            .background(ThemeManager().currentThemeStyle.backgroundBlockColor)
             .cornerRadius(10)
             .padding(.horizontal)
     }

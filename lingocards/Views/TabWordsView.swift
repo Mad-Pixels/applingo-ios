@@ -40,7 +40,6 @@ struct TabWordsView: View {
                     },
                     emptyListView: AnyView(
                         CompEmptyListView(
-                            theme: theme,
                             message: LanguageManager.shared.localizedString(for: "NoWordsAvailable")
                         )
                     ),
@@ -50,8 +49,7 @@ struct TabWordsView: View {
                             onTap: {
                                 selectedWord = word
                                 isShowingDetailView = true
-                            },
-                            theme: theme
+                            }
                         )
                     }
                 )
@@ -71,8 +69,7 @@ struct TabWordsView: View {
                                     systemImage: "plus.circle",
                                     action: add
                                 )
-                            ],
-                            theme: theme
+                            ]
                         )
                     }
                 }

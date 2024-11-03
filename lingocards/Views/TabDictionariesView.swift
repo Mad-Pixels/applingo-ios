@@ -40,7 +40,6 @@ struct TabDictionariesView: View {
                     },
                     emptyListView: AnyView(
                         CompEmptyListView(
-                            theme: theme,
                             message: LanguageManager.shared.localizedString(for: "NoDictionariesAvailable")
                         )
                     ),
@@ -52,8 +51,7 @@ struct TabDictionariesView: View {
                             },
                             onToggle: { newStatus in
                                 updateStatus(dictionary, newStatus: newStatus)
-                            },
-                            theme: theme
+                            }
                         )
                     }
                 )
@@ -78,8 +76,7 @@ struct TabDictionariesView: View {
                                 ), systemImage: "arrow.down.circle", action: {
                                     isShowingRemoteList = true
                                 })
-                            ],
-                            theme: theme
+                            ]
                         )
                     }
                 }
@@ -106,8 +103,7 @@ struct TabDictionariesView: View {
                     message: ErrorManager.shared.currentError?.errorDescription ?? "",
                     closeAction: {
                         ErrorManager.shared.clearError()
-                    },
-                    theme: theme
+                    }
                 )
             }
             .fileImporter(

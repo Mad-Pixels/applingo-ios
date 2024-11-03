@@ -3,22 +3,21 @@ import SwiftUI
 struct CompWordRowView: View {
     let word: WordItemModel
     let onTap: () -> Void
-    let theme: ThemeStyle
 
     var body: some View {
         HStack {
             Text(word.frontText)
-                .foregroundColor(theme.baseTextColor)
+                .foregroundColor(ThemeManager().currentThemeStyle.baseTextColor)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .modifier(BaseTextStyle(theme: theme))
+                .modifier(BaseTextStyle())
             Image(systemName: "arrow.left.and.right")
                 .frame(maxWidth: .infinity, alignment: .center)
-                .modifier(MainIconStyle(theme: theme))
+                .modifier(MainIconStyle())
             Text(word.backText)
                 .font(.subheadline)
-                .foregroundColor(theme.secondaryTextColor)
+                .foregroundColor(ThemeManager().currentThemeStyle.secondaryTextColor)
                 .frame(maxWidth: .infinity, alignment: .trailing)
-                .modifier(BaseTextStyle(theme: theme))
+                .modifier(BaseTextStyle())
         }
         .contentShape(Rectangle())
         .onTapGesture {

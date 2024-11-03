@@ -31,14 +31,13 @@ struct DictionaryDetailView: View {
 
                 Form {
                     Section(header: Text(LanguageManager.shared.localizedString(for: "Dictionary"))
-                        .modifier(HeaderBlockTextStyle(theme: theme))) {
+                        .modifier(HeaderBlockTextStyle())) {
                             CompTextFieldView(
                                 placeholder: LanguageManager.shared.localizedString(
                                     for: "Display Name"
                                 ).capitalizedFirstLetter,
                                 text: $editedDictionary.displayName,
                                 isEditing: isEditing,
-                                theme: theme,
                                 icon: "book"
                             )
                             CompTextEditorView(
@@ -54,21 +53,19 @@ struct DictionaryDetailView: View {
                                     }
                                 ),
                                 isEditing: isEditing,
-                                theme: theme,
                                 icon: "scroll"
                             )
                             .frame(height: 150)
                         }
 
                     Section(header: Text(LanguageManager.shared.localizedString(for: "Category"))
-                        .modifier(HeaderBlockTextStyle(theme: theme))) {
+                        .modifier(HeaderBlockTextStyle())) {
                             CompTextFieldView(
                                 placeholder: LanguageManager.shared.localizedString(
                                     for: "Category"
                                 ).capitalizedFirstLetter,
                                 text: $editedDictionary.category,
                                 isEditing: isEditing,
-                                theme: theme,
                                 icon: "cube"
                             )
                             CompTextFieldView(
@@ -77,20 +74,18 @@ struct DictionaryDetailView: View {
                                 ).capitalizedFirstLetter,
                                 text: $editedDictionary.subcategory,
                                 isEditing: isEditing,
-                                theme: theme,
                                 icon: "square.3.layers.3d"
                             )
                         }
 
                     Section(header: Text(LanguageManager.shared.localizedString(for: "Additional"))
-                        .modifier(HeaderBlockTextStyle(theme: theme))) {
+                        .modifier(HeaderBlockTextStyle())) {
                             CompTextFieldView(
                                 placeholder: LanguageManager.shared.localizedString(
                                     for: "Author"
                                 ).capitalizedFirstLetter,
                                 text: $editedDictionary.author,
                                 isEditing: isEditing,
-                                theme: theme,
                                 icon: "person"
                             )
                             CompTextFieldView(
@@ -98,8 +93,7 @@ struct DictionaryDetailView: View {
                                     for: "Created At"
                                 ).capitalizedFirstLetter,
                                 text: .constant(editedDictionary.formattedCreatedAt),
-                                isEditing: false,
-                                theme: theme
+                                isEditing: false
                             )
                         }
                 }

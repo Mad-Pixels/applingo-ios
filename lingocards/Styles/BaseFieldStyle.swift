@@ -3,24 +3,27 @@ import SwiftUI
 struct BaseFieldStyle: ViewModifier {
     let isEditing: Bool
     let border: Bool
-    let theme: ThemeStyle
 
     func body(content: Content) -> some View {
         content
             .padding(10)
             .background(
                 RoundedRectangle(cornerRadius: 8)
-                    .fill(isEditing ? theme.backgroundViewColor : theme.detailsColor)
+                    .fill(isEditing ?
+                          ThemeManager().currentThemeStyle.backgroundViewColor :
+                            ThemeManager().currentThemeStyle.detailsColor)
             )
             .overlay(
                 Group {
                     if border {
                         RoundedRectangle(cornerRadius: 8)
-                            .stroke(isEditing ? theme.backgroundBlockColor : theme.detailsColor, lineWidth: isEditing ? 2 : 1)
+                            .stroke(isEditing ?
+                                    ThemeManager().currentThemeStyle.backgroundBlockColor :
+                                        ThemeManager().currentThemeStyle.detailsColor, lineWidth: isEditing ? 2 : 1)
                     }
                 }
             )
-            .modifier(BaseTextStyle(theme: theme))
+            .modifier(BaseTextStyle())
             .animation(.easeInOut(duration: 0.4), value: isEditing)
     }
 }

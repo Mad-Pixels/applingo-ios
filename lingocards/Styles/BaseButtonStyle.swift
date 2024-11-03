@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct BaseButtonStyle: ButtonStyle {
-    let theme: ThemeStyle
     let backgroundColor: Color
     let textColor: Color
 

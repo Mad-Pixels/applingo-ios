@@ -6,9 +6,7 @@ struct CompToolbarMenuView: View {
         let systemImage: String
         let action: () -> Void
     }
-    
     let items: [MenuItem]
-    let theme: ThemeStyle
 
     var body: some View {
         Menu {
@@ -21,7 +19,7 @@ struct CompToolbarMenuView: View {
             Image(systemName: "ellipsis.circle")
                 .resizable()
                 .frame(width: 24, height: 24)
-                .foregroundColor(theme.accentColor)
+                .foregroundColor(ThemeManager().currentThemeStyle.accentColor)
         }
     }
 }

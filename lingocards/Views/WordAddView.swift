@@ -31,7 +31,7 @@ struct WordAddView: View {
                 
                 Form {
                     Section(header: Text(LanguageManager.shared.localizedString(for: "Card"))
-                        .modifier(HeaderBlockTextStyle(theme: theme))) {
+                        .modifier(HeaderBlockTextStyle())) {
                             VStack {
                                 CompTextFieldView(
                                     placeholder: LanguageManager.shared.localizedString(
@@ -39,7 +39,6 @@ struct WordAddView: View {
                                     ).capitalizedFirstLetter,
                                     text: $wordItem.frontText,
                                     isEditing: true,
-                                    theme: theme,
                                     icon: "rectangle.and.pencil.and.ellipsis"
                                 )
                                 CompTextFieldView(
@@ -48,14 +47,12 @@ struct WordAddView: View {
                                     ).capitalizedFirstLetter,
                                     text: $wordItem.backText,
                                     isEditing: true,
-                                    theme: theme,
                                     icon: "translate"
                                 )
                                 CompPickerView(
                                     selectedValue: $selectedDictionary,
                                     items: dictionaryGetter.dictionaries,
-                                    title: "",
-                                    theme: theme
+                                    title: ""
                                 ) { dictionary in
                                     Text(dictionary!.displayName)
                                 }
@@ -64,7 +61,7 @@ struct WordAddView: View {
                     }
                     
                     Section(header: Text(LanguageManager.shared.localizedString(for: "Additional"))
-                        .modifier(HeaderBlockTextStyle(theme: theme))) {
+                        .modifier(HeaderBlockTextStyle())) {
                             VStack {
                                 CompTextFieldView(
                                     placeholder: LanguageManager.shared.localizedString(
@@ -72,7 +69,6 @@ struct WordAddView: View {
                                     ).capitalizedFirstLetter,
                                     text: $wordItem.hint.unwrap(default: ""),
                                     isEditing: true,
-                                    theme: theme,
                                     icon: "tag"
                                 )
                                 CompTextEditorView(
@@ -81,7 +77,6 @@ struct WordAddView: View {
                                     ).capitalizedFirstLetter,
                                     text: $wordItem.description.unwrap(default: ""),
                                     isEditing: true,
-                                    theme: theme,
                                     icon: "scroll"
                                 )
                                 .frame(height: 150)
@@ -115,8 +110,7 @@ struct WordAddView: View {
                         message: ErrorManager.shared.currentError?.errorDescription ?? "",
                         closeAction: {
                             ErrorManager.shared.clearError()
-                        },
-                        theme: theme
+                        }
                     )
                 }
             }

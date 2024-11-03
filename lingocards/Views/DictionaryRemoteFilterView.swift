@@ -29,8 +29,7 @@ struct DictionaryRemoteFilterView: View {
                                 CompPickerView(
                                     selectedValue: $selectedFrontCategory,
                                     items: categoriesGetter.frontCategories,
-                                    title: "",
-                                    theme: theme
+                                    title: ""
                                 ) { category in
                                     Text(category!.name)
                                 }
@@ -40,13 +39,12 @@ struct DictionaryRemoteFilterView: View {
                                     .resizable()
                                     .frame(width: 24, height: 24)
                                     .padding(.horizontal, 8)
-                                    .modifier(MainIconStyle(theme: theme))
+                                    .modifier(MainIconStyle())
                                 
                                 CompPickerView(
                                     selectedValue: $selectedBackCategory,
                                     items: categoriesGetter.backCategories,
-                                    title: "",
-                                    theme: theme
+                                    title: ""
                                 ) { category in
                                     Text(category!.name)
                                 }
@@ -66,8 +64,7 @@ struct DictionaryRemoteFilterView: View {
 
                                 Logger.debug("Filters saved: \(apiRequestParams.subcategory ?? "")")
                                 presentationMode.wrappedValue.dismiss()
-                            },
-                            theme: theme
+                            }
                         )
 
                         CompButtonCancelView(
@@ -76,8 +73,7 @@ struct DictionaryRemoteFilterView: View {
                                 apiRequestParams.subcategory = nil
                                 Logger.debug("Filters reset: categorySub set to an empty string")
                                 presentationMode.wrappedValue.dismiss()
-                            },
-                            theme: theme
+                            }
                         )
                     }
                     .padding(.horizontal)
