@@ -10,7 +10,7 @@ struct DictionaryRemoteListView: View {
     @StateObject private var viewModel = DictionaryRemoteGetterViewModel()
     @StateObject private var errorManager = ErrorManager.shared
 
-    @State private var apiRequestParams = DictionaryQueryRequest(is_public: true)
+    @State private var apiRequestParams = DictionaryQueryRequest(isPrivate: false)
     @State private var selectedDictionary: DictionaryItemModel?
     @State private var isShowingFilterView = false
     @State private var errMessage: String = ""

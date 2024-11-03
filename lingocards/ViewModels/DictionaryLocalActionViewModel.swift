@@ -15,7 +15,7 @@ final class DictionaryLocalActionViewModel: BaseDatabaseViewModel {
             { try self.repository.save(dictionary) },
             successHandler: { _ in },
             errorSource: .dictionarySave,
-            errorMessage: "Failed to save dictionary",
+            errorMessage: "Failed save dictionary",
             frame: frame,
             completion: completion
         )
@@ -26,7 +26,7 @@ final class DictionaryLocalActionViewModel: BaseDatabaseViewModel {
             { try self.repository.update(dictionary) },
             successHandler: { _ in },
             errorSource: .dictionaryUpdate,
-            errorMessage: "Failed to update dictionary",
+            errorMessage: "Failed update dictionary",
             frame: frame,
             completion: completion
         )
@@ -37,7 +37,7 @@ final class DictionaryLocalActionViewModel: BaseDatabaseViewModel {
             { try self.repository.delete(dictionary) },
             successHandler: { _ in },
             errorSource: .dictionaryDelete,
-            errorMessage: "Failed to delete dictionary",
+            errorMessage: "Failed delete dictionary",
             frame: frame,
             completion: completion
         )
@@ -48,7 +48,7 @@ final class DictionaryLocalActionViewModel: BaseDatabaseViewModel {
             { try self.repository.updateStatus(dictionaryID: dictionaryID, newStatus: newStatus) },
             successHandler: { _ in },
             errorSource: .dictionaryUpdate,
-            errorMessage: "Failed to update dictionary status",
+            errorMessage: "Failed update dictionary status",
             frame: frame,
             completion: completion
         )

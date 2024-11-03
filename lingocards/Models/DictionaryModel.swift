@@ -16,20 +16,6 @@ struct DictionaryItemModel: Identifiable, Codable, Equatable, Hashable {
     var isPrivate: Bool
     var isActive: Bool
     
-    // Связь между свойствами структуры и ключами JSON
-//    enum CodingKeys: String, CodingKey {
-//        case id
-//        case displayName = "name"
-//        case tableName = "dictionary_key"
-//        case description
-//        case category = "category_main"
-//        case subcategory = "category_sub"
-//        case author
-//        case createdAt
-//        case isPrivate
-//        case isActive
-//    }
-
     init(
         id: Int? = nil,
         displayName: String,

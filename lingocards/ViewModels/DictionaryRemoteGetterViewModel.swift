@@ -1,8 +1,9 @@
 import Foundation
 import Combine
 
-final class DictionaryRemoteGetterViewModel: ObservableObject {
+final class DictionaryRemoteGetterViewModel: BaseApiViewModel {
     @Published var dictionaries: [DictionaryItemModel] = []
+    @Published var isLoadingPage = false
     @Published var searchText: String = "" {
         didSet {
             if searchText != oldValue {
@@ -10,7 +11,6 @@ final class DictionaryRemoteGetterViewModel: ObservableObject {
             }
         }
     }
-    @Published var isLoadingPage = false
 
     private var hasMorePages = true
     private var lastEvaluated: String?
@@ -35,50 +35,43 @@ final class DictionaryRemoteGetterViewModel: ObservableObject {
         isLoadingPage = true
 
         var request = queryRequest ?? DictionaryQueryRequest()
-        request.is_public = true
-        request.last_evaluated = self.lastEvaluated
-        request.limit = 20
+        request.isPrivate = false
+        request.lastEvaluated = self.lastEvaluated
 
         if !searchText.isEmpty {
             request.name = searchText
         }
 
-        Task {
-            do {
+        performApiOperation(
+            {
                 let bodyData = try JSONEncoder().encode(request)
                 let data = try await APIManager.shared.request(
                     endpoint: "/device/v1/dictionary/query",
                     method: .post,
                     body: bodyData
                 )
-
                 let response = try JSONDecoder().decode(DictionaryQueryResponse.self, from: data)
-
+                return response
+            },
+            successHandler: { [weak self] response in
+                guard let self = self else { return }
                 guard currentToken == self.cancellationToken else {
                     self.isLoadingPage = false
                     return
                 }
-
-                let fetchedDictionaries = response.data.items.map { $0.toDictionaryItem() }
-
-                await MainActor.run {
-                    self.processFetchedDictionaries(fetchedDictionaries, lastEvaluated: response.last_evaluated)
-                    self.isLoadingPage = false
-                }
-            } catch {
-                guard currentToken == self.cancellationToken else {
-                    self.isLoadingPage = false
-                    return
-                }
-
-                let appError = AppErrorModel(errorType: .api, errorMessage: error.localizedDescription, additionalInfo: nil)
-                ErrorManager.shared.setError(appError: appError, frame: frame, source: .dictionariesRemoteGet)
-
-                await MainActor.run {
-                    self.isLoadingPage = false
-                }
+                let fetchedDictionaries = response.data.items
+                self.processFetchedDictionaries(fetchedDictionaries, lastEvaluated: response.lastEvaluated)
+                self.isLoadingPage = false
+            },
+            errorType: .api,
+            errorSource: .dictionariesRemoteGet,
+            errorMessage: "Failed load remote dictionaries",
+            frame: frame,
+            completion: { [weak self] result in
+                guard let self = self else { return }
+                self.isLoadingPage = false
             }
-        }
+        )
     }
 
     func loadMoreDictionariesIfNeeded(currentItem: DictionaryItemModel?) {

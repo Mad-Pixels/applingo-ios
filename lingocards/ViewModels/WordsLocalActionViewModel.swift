@@ -20,7 +20,7 @@ final class WordsLocalActionViewModel: BaseDatabaseViewModel {
             { try self.repository.save(word) },
             successHandler: { _ in },
             errorSource: .wordSave,
-            errorMessage: "Failed to save word",
+            errorMessage: "Failed save word",
             frame: frame,
             completion: completion
         )
@@ -31,7 +31,7 @@ final class WordsLocalActionViewModel: BaseDatabaseViewModel {
             { try self.repository.update(word) },
             successHandler: { _ in },
             errorSource: .wordUpdate,
-            errorMessage: "Failed to update word",
+            errorMessage: "Failed update word",
             frame: frame,
             completion: completion
         )
@@ -42,7 +42,7 @@ final class WordsLocalActionViewModel: BaseDatabaseViewModel {
             { try self.repository.delete(word) },
             successHandler: { _ in },
             errorSource: .wordDelete,
-            errorMessage: "Failed to delete word",
+            errorMessage: "Failed delete word",
             frame: frame,
             completion: completion
         )

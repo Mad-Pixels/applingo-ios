@@ -61,9 +61,9 @@ struct DictionaryRemoteFilterView: View {
                             action: {
                                 let frontCategoryName = selectedFrontCategory?.name ?? ""
                                 let backCategoryName = selectedBackCategory?.name ?? ""
-                                apiRequestParams.category_sub = "\(frontCategoryName)-\(backCategoryName)".lowercased()
+                                apiRequestParams.subcategory = "\(frontCategoryName)-\(backCategoryName)".lowercased()
 
-                                Logger.debug("Filters saved: \(apiRequestParams.category_sub ?? "")")
+                                Logger.debug("Filters saved: \(apiRequestParams.subcategory ?? "")")
                                 presentationMode.wrappedValue.dismiss()
                             },
                             theme: theme
@@ -72,7 +72,7 @@ struct DictionaryRemoteFilterView: View {
                         CompButtonCancelView(
                             title: languageManager.localizedString(for: "Reset").capitalizedFirstLetter,
                             action: {
-                                apiRequestParams.category_sub = nil
+                                apiRequestParams.subcategory = nil
                                 Logger.debug("Filters reset: categorySub set to an empty string")
                                 presentationMode.wrappedValue.dismiss()
                             },

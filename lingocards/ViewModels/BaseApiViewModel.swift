@@ -1,28 +1,28 @@
 import Foundation
-import GRDB
 import Combine
 
-class BaseDatabaseViewModel: BaseViewModel, ObservableObject {    
-    func performDatabaseOperation<T>(
-        _ operation: @escaping () throws -> T,
+class BaseApiViewModel: BaseViewModel, ObservableObject {
+    func performApiOperation<T>(
+        _ operation: @escaping () async throws -> T,
         successHandler: @escaping (T) -> Void,
+        errorType: ErrorTypeModel,
         errorSource: ErrorSourceModel,
         errorMessage: String,
         frame: AppFrameModel,
         completion: ((Result<Void, Error>) -> Void)? = nil
     ) {
-        DispatchQueue.global(qos: .userInitiated).async {
+        Task {
             do {
-                let result = try operation()
-                DispatchQueue.main.async {
+                let result = try await operation()
+                await MainActor.run {
                     successHandler(result)
                     completion?(.success(()))
                 }
             } catch {
-                DispatchQueue.main.async {
+                await MainActor.run {
                     self.handleError(
                         error: error,
-                        errorType: .database,
+                        errorType: errorType,
                         source: errorSource,
                         message: errorMessage,
                         frame: frame,
@@ -30,6 +30,6 @@ class BaseDatabaseViewModel: BaseViewModel, ObservableObject {
                     )
                 }
             }
-        } 
+        }
     }
 }
