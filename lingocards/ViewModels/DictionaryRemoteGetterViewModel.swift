@@ -27,12 +27,16 @@ final class DictionaryRemoteGetterViewModel: BaseApiViewModel {
     }
 
     func get(queryRequest: DictionaryQueryRequest? = nil) {
+        print("Attempting to start `get` function")  // Отладочный вывод
+
         guard !isLoadingPage, hasMorePages else {
+            print("get() exited early: isLoadingPage = \(isLoadingPage), hasMorePages = \(hasMorePages)")
             return
         }
 
         let currentToken = cancellationToken
         isLoadingPage = true
+        print("Starting `get` with query: \(queryRequest?.name ?? "No query")")
 
         var request = queryRequest ?? DictionaryQueryRequest()
         request.isPrivate = false
@@ -54,8 +58,10 @@ final class DictionaryRemoteGetterViewModel: BaseApiViewModel {
                 return response
             },
             successHandler: { [weak self] response in
+                print("`get` successHandler called")
                 guard let self = self else { return }
                 guard currentToken == self.cancellationToken else {
+                    print("Cancellation token mismatch")
                     self.isLoadingPage = false
                     return
                 }
@@ -65,14 +71,16 @@ final class DictionaryRemoteGetterViewModel: BaseApiViewModel {
             },
             errorType: .api,
             errorSource: .dictionariesRemoteGet,
-            errorMessage: "Failed load remote dictionaries",
+            errorMessage: "Failed to load remote dictionaries",
             frame: frame,
             completion: { [weak self] result in
+                print("Completion handler in `get` called with result: \(result)")
                 guard let self = self else { return }
                 self.isLoadingPage = false
             }
         )
     }
+
 
     func loadMoreDictionariesIfNeeded(currentItem: DictionaryItemModel?) {
         guard

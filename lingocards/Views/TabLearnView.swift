@@ -32,10 +32,10 @@ struct TabLearnView: View {
         .onAppear {
             frameManager.setActiveFrame(.learn)
         }
-        .modifier(FrameModifier(activeFrame: frameManager.activeFrame) { newFrame in
-            if newFrame != .learn {
-                frameManager.deactivateFrame(.learn)
-            }
-        })
+//        .modifier(FrameModifier(activeFrame: frameManager.activeFrame) { newFrame in
+//            if newFrame != .learn {
+//                frameManager.deactivateFrame(.learn)
+//            }
+//        })
     }
 }

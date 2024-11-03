@@ -12,20 +12,20 @@ final class FrameManager: ObservableObject {
     }
 
     func setActiveFrame(_ frame: AppFrameModel) {
-        DispatchQueue.main.async {
-            self.activeFrame = frame
-            Logger.debug("[FrameManager]: Activate frame \(frame.rawValue)")
+        // Убираем async и делаем обновление напрямую
+        if activeFrame != frame {
+            activeFrame = frame
+            Logger.debug("[FrameManager]: Activated frame \(frame.rawValue)")
         }
     }
     
     func deactivateFrame(_ frame: AppFrameModel) {
         if activeFrame == frame {
-            DispatchQueue.main.async {
-                self.activeFrame = .learn
-                Logger.debug("[FrameManager]: Deactivate frame \(frame.rawValue)")
-                
-                self.clearErrors(for: frame)
-            }
+            // Убираем DispatchQueue и обновляем активный фрейм напрямую
+            self.activeFrame = .learn
+            Logger.debug("[FrameManager]: Deactivated frame \(frame.rawValue)")
+            
+            self.clearErrors(for: frame)
         }
     }
     

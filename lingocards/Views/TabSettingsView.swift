@@ -41,11 +41,11 @@ struct TabSettingsView: View {
             .onAppear {
                 frameManager.setActiveFrame(.tabSettings)
             }
-            .modifier(FrameModifier(activeFrame: frameManager.activeFrame) { newFrame in
-                if newFrame != .learn {
-                    frameManager.deactivateFrame(.learn)
-                }
-            })
+//            .modifier(FrameModifier(activeFrame: frameManager.activeFrame) { newFrame in
+//                if newFrame != .learn {
+//                    frameManager.deactivateFrame(.learn)
+//                }
+//            })
         }
     }
 }

@@ -92,6 +92,7 @@ struct DictionaryRemoteListView: View {
                 .onAppear {
                     frameManager.setActiveFrame(.dictionaryRemoteList)
                     if frameManager.isActive(frame: .dictionaryRemoteList) {
+                        viewModel.setFrame(.dictionaryRemoteList)
                         viewModel.resetPagination()
                     }
                 }
