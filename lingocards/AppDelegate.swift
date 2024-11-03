@@ -7,18 +7,27 @@ struct LingocardApp: App {
     @StateObject private var themeManager = ThemeManager.shared
     @StateObject private var errorManager = ErrorManager.shared
     @StateObject private var frameManager = FrameManager.shared
+    
+    private let apiUrl = "https://lingocards-api.madpixels.io"
+    private let apiToken = "t9DbIipRtzPBVXYLoXxc6KSn"
+    private let dbName = "LingocardDB.sqlite"
 
     init() {
+        Logger.initializeLogger()
         IQKeyboardManager.shared.resignOnTouchOutside = true
         IQKeyboardManager.shared.enable = true
 
-        Logger.initializeLogger()
         do {
-            try DatabaseManager.shared.connect()
+            try DatabaseManager.shared.connect(dbName: "LingocardDB.sqlite")
         } catch {
-            fatalError("Не удалось подключиться к базе данных: \(error)")
+            let appError = AppErrorModel(
+                errorType: .database,
+                errorMessage: "Failed connect to database",
+                additionalInfo: ["error": "\(error.localizedDescription)"]
+            )
+            ErrorManager.shared.setError(appError: appError, frame: .main, source: .initialization)
         }
-        APIManager.configure(baseURL: "https://lingocards-api.madpixels.io", token: "t9DbIipRtzPBVXYLoXxc6KSn")
+        APIManager.configure(baseURL: apiUrl, token: apiToken)
     }
 
     var body: some Scene {

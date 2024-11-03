@@ -2,11 +2,33 @@ import Foundation
 import Combine
 import GRDB
 
+enum DatabaseError: Error, LocalizedError {
+    case alreadyConnected
+    case connectionFailed(String)
+    case migrationFailed(String)
+    case connectionNotEstablished
+    case csvImportFailed(String)
+    
+    var errorDescription: String? {
+        switch self {
+        case .alreadyConnected:
+            return "Database is already connected."
+        case .connectionFailed(let details):
+            return "Failed to connect to the database. Details: \(details)"
+        case .migrationFailed(let details):
+            return "Migration failed. Details: \(details)"
+        case .connectionNotEstablished:
+            return "Database connection is not established."
+        case .csvImportFailed(let details):
+            return "CSV import failed. Details: \(details)"
+        }
+    }
+}
+
 class DatabaseManager: ObservableObject {
     @Published private(set) var isConnected: Bool = false
     static let shared = DatabaseManager()
     
-    private let dbName = "LingocardDB.sqlite"
     private var dbQueue: DatabaseQueue?
     private var databaseURL: URL?
     private init() {}
@@ -15,10 +37,10 @@ class DatabaseManager: ObservableObject {
         return dbQueue
     }
     
-    func connect() throws {
+    func connect(dbName: String) throws {
         guard dbQueue == nil else {
             Logger.debug("[Database]: Already connected")
-            return
+            throw DatabaseError.alreadyConnected
         }
         
         databaseURL = FileManager.default
@@ -35,18 +57,16 @@ class DatabaseManager: ObservableObject {
             
             if let dbQueue = dbQueue {
                 Logger.debug("[DatabaseManager]: Migration started at path: \(databaseURL!.path)")
-                try migrator.migrate(dbQueue)
-                isConnected = true
-                Logger.debug("[DatabaseManager]: Connection established")
+                do {
+                    try migrator.migrate(dbQueue)
+                    isConnected = true
+                    Logger.debug("[DatabaseManager]: Connection established")
+                } catch {
+                    throw DatabaseError.migrationFailed(error.localizedDescription)
+                }
             }
         } catch {
-            let appError = AppErrorModel(
-                errorType: .database,
-                errorMessage: "Connection failed",
-                additionalInfo: ["path": "\(databaseURL!.path)", "error": "\(error.localizedDescription)"]
-            )
-            ErrorManager.shared.setError(appError: appError, frame: .main, source: .initialization)
-            throw appError
+            throw DatabaseError.connectionFailed(error.localizedDescription)
         }
     }
     
@@ -58,35 +78,33 @@ class DatabaseManager: ObservableObject {
     
     func importCSVFile(at url: URL) throws {
         guard isConnected, let dbQueue = databaseQueue else {
-            let appError = AppErrorModel(
-                errorType: .database,
-                errorMessage: "Connection not established",
-                additionalInfo: ["path": "\(databaseURL!.path)"]
-            )
-            ErrorManager.shared.setError(appError: appError, frame: .main, source: .importCSVFile)
-            throw appError
+            throw DatabaseError.connectionNotEstablished
         }
 
         let tableName = url.deletingPathExtension().lastPathComponent
-        let wordItems = try CSVImporter.parseCSV(at: url, tableName: tableName)
-        
-        let dictionaryItem = DictionaryItemModel(
-            displayName: tableName,
-            tableName: tableName,
-            description: "Imported from local file: '\(tableName).csv'",
-            category: "Local",
-            subcategory: "personal",
-            author: "local user"
-        )
-
-        try dbQueue.write { db in
-            try dictionaryItem.insert(db)
+        do {
+            let wordItems = try CSVImporter.parseCSV(at: url, tableName: tableName)
             
-            for var wordItem in wordItems {
-                wordItem.tableName = tableName
-                try wordItem.insert(db)
+            let dictionaryItem = DictionaryItemModel(
+                displayName: tableName,
+                tableName: tableName,
+                description: "Imported from local file: '\(tableName).csv'",
+                category: "Local",
+                subcategory: "personal",
+                author: "local user"
+            )
+
+            try dbQueue.write { db in
+                try dictionaryItem.insert(db)
+                
+                for var wordItem in wordItems {
+                    wordItem.tableName = tableName
+                    try wordItem.insert(db)
+                }
+                Logger.debug("[Database]: Inserted \(wordItems.count) word items for table \(tableName)")
             }
-            Logger.debug("[Database]: Inserted \(wordItems.count) word items for table \(tableName)")
+        } catch {
+            throw DatabaseError.csvImportFailed(error.localizedDescription)
         }
     }
     
@@ -114,12 +132,10 @@ class DatabaseManager: ObservableObject {
                 Logger.debug("[DatabaseManager]: 'Internal' dictionary entry already exists")
             }
         }
-        
         migrator.registerMigration("createWords") { db in
             try WordItemModel.createTable(in: db)
             Logger.debug("[DatabaseManager]: 'Words' table created successfully")
         }
-        
         return migrator
     }
 }
