@@ -54,6 +54,22 @@ struct DictionaryItemModel: Identifiable, Codable, Equatable, Hashable {
         return formatter.string(from: date)
     }
     
+    func toString() -> String {
+        """
+        DictionaryItemModel:
+        - ID: \(id ?? -1)
+        - Display Name: \(displayName)
+        - Table Name: \(tableName)
+        - Description: \(description)
+        - Category: \(category)
+        - Subcategory: \(subcategory)
+        - Author: \(author)
+        - Created At: \(formattedCreatedAt)
+        - Private: \(isPrivate ? "Yes" : "No")
+        - Active: \(isActive ? "Yes" : "No")
+        """
+    }
+    
     mutating func fmt() {
         self.displayName = displayName.trimmedTrailingWhitespace
         self.description = description.trimmedTrailingWhitespace

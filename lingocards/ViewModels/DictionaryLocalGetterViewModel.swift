@@ -56,9 +56,10 @@ final class DictionaryLocalGetterViewModel: BaseDatabaseViewModel {
                 self.processFetchedDictionaries(fetchedDictionaries)
                 self.isLoadingPage = false
             },
-            errorSource: .dictionariesGet,
-            errorMessage: "Failed load dictionaries",
+            source: .dictionariesGet,
             frame: frame,
+            message: "Failed to load dictionaries",
+            additionalInfo: ["searchText": searchText],
             completion: { [weak self] result in
                 guard let self = self else { return }
                 guard currentToken == self.cancellationToken else {
@@ -80,7 +81,6 @@ final class DictionaryLocalGetterViewModel: BaseDatabaseViewModel {
             hasMorePages,
             !isLoadingPage
         else { return }
-        
         get()
     }
 

@@ -19,6 +19,7 @@ final class DictionaryRemoteFilterViewModel: ObservableObject {
     func getCategories() {
         Logger.debug("[DictionaryRemoteFilterViewModel]: Fetching categories...")
 
+        // Симулируем случайную ошибку в 10% случаев
         if Int.random(in: 1...10) <= 1 {
             Logger.debug("[DictionaryRemoteFilterViewModel]: Failed to fetch categories")
 
@@ -26,10 +27,11 @@ final class DictionaryRemoteFilterViewModel: ObservableObject {
             self.backCategories = []
 
             let error = AppErrorModel(
-                errorType: .network,
-                errorMessage: "Failed to fetch categories from the remote server",
-                localizedMessage: "asd",
-                additionalInfo: nil
+                type: .network,
+                message: "Failed to fetch categories from the remote server",
+                localized: LanguageManager.shared.localizedString(for: "ErrFetchCategories").capitalizedFirstLetter,
+                original: nil,
+                additional: ["function": "getCategories"]
             )
 
             ErrorManager.shared.setError(
@@ -40,6 +42,7 @@ final class DictionaryRemoteFilterViewModel: ObservableObject {
             return
         }
 
+        // Данные категорий, если ошибка не возникла
         let frontCategoryData: [CategoryItem] = [
             CategoryItem(name: "Language"),
             CategoryItem(name: "Technology"),

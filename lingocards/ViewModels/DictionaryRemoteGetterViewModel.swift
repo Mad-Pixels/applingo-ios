@@ -39,6 +39,7 @@ final class DictionaryRemoteGetterViewModel: BaseApiViewModel {
         if !searchText.isEmpty {
             request.name = searchText
         }
+
         performApiOperation(
             {
                 let bodyData = try JSONEncoder().encode(request)
@@ -60,10 +61,10 @@ final class DictionaryRemoteGetterViewModel: BaseApiViewModel {
                 self.processFetchedDictionaries(fetchedDictionaries, lastEvaluated: response.lastEvaluated)
                 self.isLoadingPage = false
             },
-            errorType: .api,
-            errorSource: .dictionariesRemoteGet,
-            errorMessage: "Failed to load remote dictionaries",
+            source: .dictionariesRemoteGet,
             frame: frame,
+            message: "Failed to load remote dictionaries",
+            additionalInfo: ["query": "\(queryRequest?.name ?? "")"],
             completion: { [weak self] result in
                 guard let self = self else { return }
                 self.isLoadingPage = false

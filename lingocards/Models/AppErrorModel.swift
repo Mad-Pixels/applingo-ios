@@ -28,18 +28,21 @@ enum ErrorSourceModel: String {
 
 struct AppErrorModel: Error, LocalizedError, Equatable, Identifiable {
     let id: UUID = UUID()
-    let errorType: ErrorTypeModel
-    let errorMessage: String
-    let localizedMessage: String  // Добавляем поле
-    let additionalInfo: [String: String]?
-
+    let type: ErrorTypeModel
+    let message: String
+    let localized: String
+    let original: Error?
+    let additional: [String: String]?
+    
     var errorDescription: String? {
-        errorMessage
+        message
     }
 
     static func ==(lhs: AppErrorModel, rhs: AppErrorModel) -> Bool {
-        return lhs.errorMessage == rhs.errorMessage &&
-               lhs.errorType == rhs.errorType &&
-               lhs.additionalInfo == rhs.additionalInfo
+        return lhs.message == rhs.message &&
+               lhs.type == rhs.type &&
+               lhs.additional == rhs.additional &&
+               ((lhs.original?.localizedDescription == rhs.original?.localizedDescription) ||
+                (lhs.original == nil && rhs.original == nil))
     }
 }

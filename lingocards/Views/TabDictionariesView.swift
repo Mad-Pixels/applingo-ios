@@ -151,13 +151,15 @@ struct TabDictionariesView: View {
                     }
                 }
             } else {
+                let appError = AppErrorModel(
+                    type: .ui,
+                    message: LanguageManager.shared.localizedString(for: "ErrDeleteInternalDictionary"),
+                    localized: LanguageManager.shared.localizedString(for: "ErrDeleteInternalDictionary"),
+                    original: nil,
+                    additional: nil
+                )
                 ErrorManager.shared.setError(
-                    appError: AppErrorModel(
-                        errorType: .ui,
-                        errorMessage: LanguageManager.shared.localizedString(for: "CannotDeleteInternalDictionary"),
-                        localizedMessage: "asd",
-                        additionalInfo: nil
-                    ),
+                    appError: appError,
                     frame: .tabDictionaries,
                     source: .dictionaryDelete
                 )

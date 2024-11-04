@@ -30,7 +30,7 @@ enum GlobalError: Error, LocalizedError, Identifiable, Equatable {
     var localizedMessage: String {
         switch self {
         case .custom(let appError, _, _):
-            return appError.localizedMessage
+            return appError.localized
         }
     }
 }
@@ -45,13 +45,13 @@ final class ErrorManager: ObservableObject {
 
     func setError(appError: AppErrorModel, frame: AppFrameModel, source: ErrorSourceModel) {
         let error = GlobalError.custom(appError: appError, frame: frame, source: source)
-        if appError.errorType != .ui {
+        if appError.type != .ui {
             logError(appError)
         }
         DispatchQueue.main.async {
             self.currentError = error
             self.isErrorVisible = true
-            Logger.debug("[ErrorManager]: Error set: \(appError.errorMessage), isVisible: \(self.isErrorVisible)")
+            Logger.debug("[ErrorManager]: Error set: \(appError.message), isVisible: \(self.isErrorVisible)")
             NotificationCenter.default.post(name: .errorVisibilityChanged, object: nil)
         }
     }
@@ -88,7 +88,7 @@ final class ErrorManager: ObservableObject {
     }
 
     private func logError(_ appError: AppErrorModel) {
-        LogHandler.shared.sendError(appError.errorMessage, type: appError.errorType, additionalInfo: appError.additionalInfo)
+        LogHandler.shared.sendError(appError.message, type: appError.type, additionalInfo: appError.additional)
     }
 }
 

@@ -21,10 +21,11 @@ struct LingocardApp: App {
             try DatabaseManager.shared.connect(dbName: "LingocardDB.sqlite")
         } catch {
             let appError = AppErrorModel(
-                errorType: .database,
-                errorMessage: "Failed connect to database",
-                localizedMessage: "asd",
-                additionalInfo: ["error": "\(error.localizedDescription)"]
+                type: .database,
+                message: "Failed to connect to database",
+                localized: LanguageManager.shared.localizedString(for: "ErrMain").capitalizedFirstLetter,
+                original: error,
+                additional: ["error": error.localizedDescription]
             )
             ErrorManager.shared.setError(appError: appError, frame: .main, source: .initialization)
         }

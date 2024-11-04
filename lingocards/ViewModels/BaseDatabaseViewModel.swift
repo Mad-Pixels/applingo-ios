@@ -2,13 +2,17 @@ import Foundation
 import GRDB
 import Combine
 
-class BaseDatabaseViewModel: BaseViewModel, ObservableObject {    
+class BaseDatabaseViewModel: BaseViewModel, ObservableObject {
     func performDatabaseOperation<T>(
         _ operation: @escaping () throws -> T,
         successHandler: @escaping (T) -> Void,
-        errorSource: ErrorSourceModel,
-        errorMessage: String,
+        
+        source: ErrorSourceModel,
         frame: AppFrameModel,
+        message: String,
+        localized: String = LanguageManager.shared.localizedString(for: "ErrDatabaseDefault").capitalizedFirstLetter,
+        
+        additionalInfo: [String: String] = [:],
         completion: ((Result<Void, Error>) -> Void)? = nil
     ) {
         DispatchQueue.global(qos: .userInitiated).async {
@@ -21,15 +25,17 @@ class BaseDatabaseViewModel: BaseViewModel, ObservableObject {
             } catch {
                 DispatchQueue.main.async {
                     self.handleError(
-                        error: error,
-                        errorType: .database,
-                        source: errorSource,
-                        message: errorMessage,
+                        type: .database,
+                        source: source,
+                        message: message,
+                        localized: localized,
+                        original: error,
+                        additional: additionalInfo,
                         frame: frame,
                         completion: completion
                     )
                 }
             }
-        } 
+        }
     }
 }

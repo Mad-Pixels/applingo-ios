@@ -14,81 +14,44 @@ final class WordsLocalActionViewModel: BaseDatabaseViewModel {
             fatalError("Database is not connected")
         }
     }
-
+    
     func save(_ word: WordItemModel, completion: @escaping (Result<Void, Error>) -> Void) {
-        // Создаем тестовую ошибку
-        let testError = AppErrorModel(
-            errorType: .database,
-            errorMessage: "Test Error: Failed to save word item.",
-            localizedMessage: "Не удалось сохранить слово.",
-            additionalInfo: ["word": word.frontText]
-        )
-        
-        // Возвращаем тестовую ошибку через completion
-        completion(.failure(testError))
-        
-        // Также устанавливаем ошибку в ErrorManager, чтобы отобразить её в интерфейсе
-        ErrorManager.shared.setError(
-            appError: testError,
+        performDatabaseOperation(
+            { try self.repository.save(word) },
+            successHandler: { _ in },
+            source: .wordSave,
             frame: frame,
-            source: .wordSave
+            message: "Failed to save word",
+            additionalInfo: ["word": word.toString()],
+            completion: completion
         )
     }
-    
-//    func save(_ word: WordItemModel, completion: @escaping (Result<Void, Error>) -> Void) {
-//        performDatabaseOperation(
-//            { try self.repository.save(word) },
-//            successHandler: { _ in },
-//            errorSource: .wordSave,
-//            errorMessage: "Failed save word",
-//            frame: frame,
-//            completion: completion
-//        )
-//    }
 
-//    func update(_ word: WordItemModel, completion: @escaping (Result<Void, Error>) -> Void) {
-//        performDatabaseOperation(
-//            { try self.repository.update(word) },
-//            successHandler: { _ in },
-//            errorSource: .wordUpdate,
-//            errorMessage: "Failed update word",
-//            frame: frame,
-//            completion: completion
-//        )
-//    }
-    
     func update(_ word: WordItemModel, completion: @escaping (Result<Void, Error>) -> Void) {
-        // Создаем тестовую ошибку
-        let testError = AppErrorModel(
-            errorType: .database,
-            errorMessage: "Test Error: Failed to update word item.",
-            localizedMessage: "asd",
-            additionalInfo: ["word": word.frontText]
-        )
-        
-        // Возвращаем тестовую ошибку через completion
-        completion(.failure(testError))
-        
-        // Также устанавливаем ошибку в ErrorManager, чтобы отобразить её в интерфейсе
-        ErrorManager.shared.setError(
-            appError: testError,
-            frame: .wordDetail,
-            source: .wordUpdate
+        performDatabaseOperation(
+            { try self.repository.update(word) },
+            successHandler: { _ in },
+            source: .wordUpdate,
+            frame: frame,
+            message: "Failed to update word",
+            additionalInfo: ["word": word.toString()],
+            completion: completion
         )
     }
 
-
+    
     func delete(_ word: WordItemModel, completion: @escaping (Result<Void, Error>) -> Void) {
         performDatabaseOperation(
             { try self.repository.delete(word) },
             successHandler: { _ in },
-            errorSource: .wordDelete,
-            errorMessage: "Failed delete word",
+            source: .wordDelete,
             frame: frame,
+            message: "Failed to delete word",
+            additionalInfo: ["word": word.toString()],
             completion: completion
         )
     }
-    
+
     func setFrame(_ newFrame: AppFrameModel) {
         self.frame = newFrame
     }

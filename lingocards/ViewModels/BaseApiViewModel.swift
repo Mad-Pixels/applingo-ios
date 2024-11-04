@@ -5,10 +5,13 @@ class BaseApiViewModel: BaseViewModel, ObservableObject {
     func performApiOperation<T>(
         _ operation: @escaping () async throws -> T,
         successHandler: @escaping (T) -> Void,
-        errorType: ErrorTypeModel,
-        errorSource: ErrorSourceModel,
-        errorMessage: String,
+        
+        source: ErrorSourceModel,
         frame: AppFrameModel,
+        message: String,
+        localized: String = LanguageManager.shared.localizedString(for: "ErrApiDefault").capitalizedFirstLetter,
+        
+        additionalInfo: [String: String] = [:],
         completion: ((Result<Void, Error>) -> Void)? = nil
     ) {
         Task {
@@ -21,10 +24,12 @@ class BaseApiViewModel: BaseViewModel, ObservableObject {
             } catch {
                 await MainActor.run {
                     self.handleError(
-                        error: error,
-                        errorType: errorType,
-                        source: errorSource,
-                        message: errorMessage,
+                        type: .api,
+                        source: source,
+                        message: message,
+                        localized: localized,
+                        original: error,
+                        additional: additionalInfo,
                         frame: frame,
                         completion: completion
                     )

@@ -56,9 +56,10 @@ final class WordsLocalGetterViewModel: BaseDatabaseViewModel {
                 self.processFetchedWords(fetchedWords)
                 self.isLoadingPage = false
             },
-            errorSource: .wordsGet,
-            errorMessage: "Failed load words",
+            source: .wordsGet,
             frame: frame,
+            message: "Failed to load words",
+            additionalInfo: ["searchText": searchText],
             completion: { [weak self] result in
                 guard let self = self else { return }
                 guard currentToken == self.cancellationToken else {

@@ -14,9 +14,10 @@ final class DictionaryLocalActionViewModel: BaseDatabaseViewModel {
         performDatabaseOperation(
             { try self.repository.save(dictionary) },
             successHandler: { _ in },
-            errorSource: .dictionarySave,
-            errorMessage: "Failed save dictionary",
+            source: .dictionarySave,
             frame: frame,
+            message: "Save dictionary failed",
+            additionalInfo: ["dictionary": dictionary.toString()],
             completion: completion
         )
     }
@@ -25,9 +26,10 @@ final class DictionaryLocalActionViewModel: BaseDatabaseViewModel {
         performDatabaseOperation(
             { try self.repository.update(dictionary) },
             successHandler: { _ in },
-            errorSource: .dictionaryUpdate,
-            errorMessage: "Failed update dictionary",
+            source: .dictionaryUpdate,
             frame: frame,
+            message: "Update dictionary failed",
+            additionalInfo: ["dictionary": dictionary.toString()],
             completion: completion
         )
     }
@@ -36,24 +38,26 @@ final class DictionaryLocalActionViewModel: BaseDatabaseViewModel {
         performDatabaseOperation(
             { try self.repository.delete(dictionary) },
             successHandler: { _ in },
-            errorSource: .dictionaryDelete,
-            errorMessage: "Failed delete dictionary",
+            source: .dictionaryDelete,
             frame: frame,
+            message: "Delete dictionary failed",
+            additionalInfo: ["dictionary": dictionary.toString()],
             completion: completion
         )
     }
+
 
     func updateStatus(dictionaryID: Int, newStatus: Bool, completion: @escaping (Result<Void, Error>) -> Void) {
         performDatabaseOperation(
             { try self.repository.updateStatus(dictionaryID: dictionaryID, newStatus: newStatus) },
             successHandler: { _ in },
-            errorSource: .dictionaryUpdate,
-            errorMessage: "Failed update dictionary status",
+            source: .dictionaryUpdate,
             frame: frame,
+            message: "Update dictionary status failed",
             completion: completion
         )
     }
-    
+
     func setFrame(_ newFrame: AppFrameModel) {
         self.frame = newFrame
     }

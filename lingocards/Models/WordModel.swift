@@ -49,6 +49,30 @@ struct WordItemModel: Identifiable, Codable, Equatable {
         )
     }
     
+    var formattedCreatedAt: String {
+        let date = Date(timeIntervalSince1970: TimeInterval(createdAt))
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .short
+        return formatter.string(from: date)
+    }
+    
+    func toString() -> String {
+        """
+        WordItemModel:
+        - ID: \(id ?? -1)
+        - Table Name: \(tableName)
+        - Front Text: \(frontText)
+        - Back Text: \(backText)
+        - Description: \(description ?? "None")
+        - Hint: \(hint ?? "None")
+        - Created At: \(formattedCreatedAt)
+        - Success Count: \(success)
+        - Weight: \(weight)
+        - Fail Count: \(fail)
+        """
+    }
+    
     mutating func fmt() {
         self.frontText = frontText.trimmedTrailingWhitespace.lowercased()
         self.backText = backText.trimmedTrailingWhitespace.lowercased()
