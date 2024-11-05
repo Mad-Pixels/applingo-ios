@@ -2,8 +2,8 @@ import Foundation
 import Combine
 
 final class DictionaryRemoteFilterViewModel: ObservableObject {
-    @Published var frontCategories: [CategoryItem] = []
-    @Published var backCategories: [CategoryItem] = []
+    @Published var frontCategories: [CategoryItemModel] = []
+    @Published var backCategories: [CategoryItemModel] = []
     
     private var cancellable: AnyCancellable?
     private var frame: AppFrameModel = .main
@@ -43,16 +43,16 @@ final class DictionaryRemoteFilterViewModel: ObservableObject {
         }
 
         // Данные категорий, если ошибка не возникла
-        let frontCategoryData: [CategoryItem] = [
-            CategoryItem(name: "Language"),
-            CategoryItem(name: "Technology"),
-            CategoryItem(name: "Science")
+        let frontCategoryData: [CategoryItemModel] = [
+            CategoryItemModel(name: "Language"),
+            CategoryItemModel(name: "Technology"),
+            CategoryItemModel(name: "Science")
         ]
         
-        let backCategoryData: [CategoryItem] = [
-            CategoryItem(name: "History"),
-            CategoryItem(name: "Geography"),
-            CategoryItem(name: "Culture")
+        let backCategoryData: [CategoryItemModel] = [
+            CategoryItemModel(name: "History"),
+            CategoryItemModel(name: "Geography"),
+            CategoryItemModel(name: "Culture")
         ]
 
         self.frontCategories = frontCategoryData

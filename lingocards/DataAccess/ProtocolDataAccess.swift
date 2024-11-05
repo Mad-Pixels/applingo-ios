@@ -20,3 +20,11 @@ protocol WordRepositoryProtocol {
     func update(_ word: WordItemModel) throws
     func delete(_ word: WordItemModel) throws
 }
+
+protocol APIRepositoryProtocol {
+    func getDictionaries(
+        request: DictionaryQueryRequest
+    ) async throws -> [DictionaryItemModel]
+    func getCategories() async throws -> [CategoryItemModel]
+    func download(dictionaryID: String) async throws -> String
+}

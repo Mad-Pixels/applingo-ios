@@ -3,10 +3,9 @@ import SwiftUI
 struct DictionaryRemoteFilterView: View {
     @Environment(\.presentationMode) var presentationMode
     
-    
     @StateObject private var categoriesGetter: DictionaryRemoteFilterViewModel
-    @State private var selectedFrontCategory: CategoryItem? = nil
-    @State private var selectedBackCategory: CategoryItem? = nil
+    @State private var selectedFrontCategory: CategoryItemModel? = nil
+    @State private var selectedBackCategory: CategoryItemModel? = nil
     
     @Binding var apiRequestParams: DictionaryQueryRequest
 

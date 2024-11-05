@@ -1,6 +1,6 @@
 import Foundation
 
-struct CategoryItem: Codable, Equatable, Hashable {
+struct CategoryItemModel: Codable, Equatable, Hashable {
     var name: String
     
     init(name: String) {
