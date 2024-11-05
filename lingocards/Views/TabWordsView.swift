@@ -75,11 +75,9 @@ struct TabWordsView: View {
                 }
                 .onAppear {
                     FrameManager.shared.setActiveFrame(.tabWords)
-                    if FrameManager.shared.isActive(frame: .tabWords) {
-                        wordsAction.setFrame(.tabWords)
-                        wordsGetter.setFrame(.tabWords)
-                        wordsGetter.resetPagination()
-                    }
+                    wordsAction.setFrame(.tabWords)
+                    wordsGetter.setFrame(.tabWords)
+                    wordsGetter.resetPagination()
                 }
                 .onReceive(NotificationCenter.default.publisher(for: .errorVisibilityChanged)) { _ in
                     if let error = ErrorManager.shared.currentError,

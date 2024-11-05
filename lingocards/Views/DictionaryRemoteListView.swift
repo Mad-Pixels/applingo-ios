@@ -88,10 +88,8 @@ struct DictionaryRemoteListView: View {
                 }
                 .onAppear {
                     FrameManager.shared.setActiveFrame(.dictionaryRemoteList)
-                    if FrameManager.shared.isActive(frame: .dictionaryRemoteList) {
-                        dictionaryGetter.setFrame(.dictionaryRemoteList)
-                        dictionaryGetter.resetPagination()
-                    }
+                    dictionaryGetter.setFrame(.dictionaryRemoteList)
+                    dictionaryGetter.resetPagination()
 
                     // Подписка на уведомление об изменении видимости ошибки
                     NotificationCenter.default.addObserver(forName: .errorVisibilityChanged, object: nil, queue: .main) { _ in

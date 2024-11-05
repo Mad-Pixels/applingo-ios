@@ -2,16 +2,19 @@ import SwiftUI
 
 struct DictionaryRemoteFilterView: View {
     @Environment(\.presentationMode) var presentationMode
-    
+
     @StateObject private var categoryGetter: CategoryRemoteGetterViewModel
-    @State private var selectedFrontCategory: CategoryItemModel? = nil
-    @State private var selectedBackCategory: CategoryItemModel? = nil
-    
+    @State private var selectedFrontCategory: CategoryItem? = nil
+    @State private var selectedBackCategory: CategoryItem? = nil
+
     @Binding var apiRequestParams: DictionaryQueryRequest
+    
+    @State private var errorMessage: String = ""
+    @State private var isShowingAlert = false
 
     init(apiRequestParams: Binding<DictionaryQueryRequest>) {
         self._apiRequestParams = apiRequestParams
-        _categoryGetter = StateObject(wrappedValue: CategoryRemoteGetterViewModel())
+        _categoryGetter = StateObject(wrappedValue: CategoryRemoteGetterViewModel(repository: RepositoryAPI()))
     }
 
     var body: some View {
@@ -23,31 +26,45 @@ struct DictionaryRemoteFilterView: View {
 
                 VStack {
                     Form {
-                        Section(header: Text(LanguageManager.shared.localizedString(for: "Dictionary")).font(.headline).foregroundColor(theme.baseTextColor)) {
-                            HStack {
-                                CompPickerView(
-                                    selectedValue: $selectedFrontCategory,
-                                    items: categoryGetter.frontCategories,
-                                    title: ""
-                                ) { category in
-                                    Text(category!.name)
+                        Section(header: Text(LanguageManager.shared.localizedString(
+                            for: "Dictionary"
+                        )).font(.headline).foregroundColor(theme.baseTextColor)) {
+                            ZStack {
+                                if !categoryGetter.isLoadingPage {
+                                    HStack {
+                                        CompPickerView(
+                                            selectedValue: $selectedFrontCategory,
+                                            items: categoryGetter.frontCategories,
+                                            title: ""
+                                        ) { category in
+                                            Text(category?.name ?? "")
+                                        }
+                                        .frame(maxWidth: .infinity)
+
+                                        Image(systemName: "arrow.left.and.right.circle.fill")
+                                            .resizable()
+                                            .frame(width: 24, height: 24)
+                                            .padding(.horizontal, 8)
+                                            .modifier(MainIconStyle())
+
+                                        CompPickerView(
+                                            selectedValue: $selectedBackCategory,
+                                            items: categoryGetter.backCategories,
+                                            title: ""
+                                        ) { category in
+                                            Text(category?.name ?? "")
+                                        }
+                                        .frame(maxWidth: .infinity)
+                                    }
+                                } else {
+                                    VStack {
+                                        ProgressView()
+                                            .progressViewStyle(CircularProgressViewStyle())
+                                            .scaleEffect(1.5)
+                                            .padding()
+                                    }
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                                 }
-                                .frame(maxWidth: .infinity)
-                                
-                                Image(systemName: "arrow.left.and.right.circle.fill")
-                                    .resizable()
-                                    .frame(width: 24, height: 24)
-                                    .padding(.horizontal, 8)
-                                    .modifier(MainIconStyle())
-                                
-                                CompPickerView(
-                                    selectedValue: $selectedBackCategory,
-                                    items: categoryGetter.backCategories,
-                                    title: ""
-                                ) { category in
-                                    Text(category!.name)
-                                }
-                                .frame(maxWidth: .infinity)
                             }
                         }
                     }
@@ -92,17 +109,37 @@ struct DictionaryRemoteFilterView: View {
             )
             .onAppear {
                 FrameManager.shared.setActiveFrame(.dictionaryRemoteFilter)
-                if FrameManager.shared.isActive(frame: .dictionaryRemoteFilter) {
-                    categoryGetter.setFrame(.dictionaryRemoteFilter)
+                categoryGetter.setFrame(.dictionaryRemoteFilter)
+                categoryGetter.get { _ in }
+            }
+            .onDisappear() {
+                categoryGetter.clear()
+            }
+            .onReceive(NotificationCenter.default.publisher(for: .errorVisibilityChanged)) { _ in
+                if let error = ErrorManager.shared.currentError,
+                   error.frame == .dictionaryRemoteFilter {
+                    errorMessage = error.localizedMessage
+                    isShowingAlert = true
                 }
-                
-                categoryGetter.get()
-                if let firstFrontCategory = categoryGetter.frontCategories.first {
-                    selectedFrontCategory = firstFrontCategory
+            }
+            .onChange(of: categoryGetter.frontCategories) { frontCategories in
+                if selectedFrontCategory == nil, let firstCategory = frontCategories.first {
+                    selectedFrontCategory = firstCategory
                 }
-                if let firstBackCategory = categoryGetter.backCategories.first {
-                    selectedBackCategory = firstBackCategory
+            }
+            .onChange(of: categoryGetter.backCategories) { backCategories in
+                if selectedBackCategory == nil, let firstCategory = backCategories.first {
+                    selectedBackCategory = firstCategory
                 }
+            }
+            .alert(isPresented: $isShowingAlert) {
+                CompAlertView(
+                    title: LanguageManager.shared.localizedString(for: "Error"),
+                    message: errorMessage,
+                    closeAction: {
+                        ErrorManager.shared.clearError()
+                    }
+                )
             }
         }
     }
