@@ -48,15 +48,17 @@ final class DictionaryRemoteGetterViewModel: BaseApiViewModel {
 
         performApiOperation(
             {
-                return try await self.repository.getDictionaries()
+                return try await self.repository.getDictionaries(request: request)
             },
-            successHandler: { [weak self] fetchedDictionaries in
+            successHandler: { [weak self] result in
                 guard let self = self else { return }
                 guard currentToken == self.cancellationToken else {
                     self.isLoadingPage = false
                     return
                 }
-                self.processFetchedDictionaries(fetchedDictionaries)
+                
+                let (fetchedDictionaries, newLastEvaluated) = result
+                self.processFetchedDictionaries(fetchedDictionaries, lastEvaluated: newLastEvaluated)
                 self.isLoadingPage = false
             },
             source: .dictionariesRemoteGet,
@@ -92,12 +94,12 @@ final class DictionaryRemoteGetterViewModel: BaseApiViewModel {
         self.frame = newFrame
     }
     
-    private func processFetchedDictionaries(_ fetchedDictionaries: [DictionaryItemModel]) {
+    private func processFetchedDictionaries(_ fetchedDictionaries: [DictionaryItemModel], lastEvaluated: String?) {
         if fetchedDictionaries.isEmpty {
             hasMorePages = false
         } else {
             dictionaries.append(contentsOf: fetchedDictionaries)
-            self.lastEvaluated = fetchedDictionaries.last?.id.map { "\($0)" }
+            self.lastEvaluated = lastEvaluated
             hasMorePages = (lastEvaluated != nil)
         }
     }
