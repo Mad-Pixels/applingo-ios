@@ -3,7 +3,7 @@ import Combine
 
 final class CategoryRemoteGetterViewModel: ObservableObject {
     @Published var frontCategories: [CategoryItemModel] = []
-    @Published var backCategories: [CategoryItemModel] = []
+    @Published var backCategories: [CategoryItemModel] = [] 
     
     private var cancellable: AnyCancellable?
     private var frame: AppFrameModel = .main
