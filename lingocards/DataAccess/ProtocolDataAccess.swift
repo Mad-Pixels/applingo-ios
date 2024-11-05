@@ -22,5 +22,6 @@ protocol WordRepositoryProtocol {
 }
 
 protocol APIRepositoryProtocol {
+    func getDictionaries() async throws -> [DictionaryItemModel]
     func getCategories() async throws -> CategoryItemModel
 }

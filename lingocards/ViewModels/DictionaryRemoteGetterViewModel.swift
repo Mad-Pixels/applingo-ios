@@ -15,7 +15,12 @@ final class DictionaryRemoteGetterViewModel: BaseApiViewModel {
     private var hasMorePages = true
     private var lastEvaluated: String?
     private var frame: AppFrameModel = .main
+    private let repository: APIRepositoryProtocol
     private var cancellationToken = UUID()
+
+    init(repository: APIRepositoryProtocol) {
+        self.repository = repository
+    }
 
     func resetPagination() {
         dictionaries.removeAll()
@@ -30,6 +35,7 @@ final class DictionaryRemoteGetterViewModel: BaseApiViewModel {
         guard !isLoadingPage, hasMorePages else {
             return
         }
+        
         let currentToken = cancellationToken
         isLoadingPage = true
 
@@ -42,23 +48,15 @@ final class DictionaryRemoteGetterViewModel: BaseApiViewModel {
 
         performApiOperation(
             {
-                let bodyData = try JSONEncoder().encode(request)
-                let data = try await APIManager.shared.request(
-                    endpoint: "/device/v1/dictionary/query",
-                    method: .post,
-                    body: bodyData
-                )
-                let response = try JSONDecoder().decode(DictionaryQueryResponse.self, from: data)
-                return response
+                return try await self.repository.getDictionaries()
             },
-            successHandler: { [weak self] response in
+            successHandler: { [weak self] fetchedDictionaries in
                 guard let self = self else { return }
                 guard currentToken == self.cancellationToken else {
                     self.isLoadingPage = false
                     return
                 }
-                let fetchedDictionaries = response.data.items
-                self.processFetchedDictionaries(fetchedDictionaries, lastEvaluated: response.lastEvaluated)
+                self.processFetchedDictionaries(fetchedDictionaries)
                 self.isLoadingPage = false
             },
             source: .dictionariesRemoteGet,
@@ -66,8 +64,7 @@ final class DictionaryRemoteGetterViewModel: BaseApiViewModel {
             message: "Failed to load remote dictionaries",
             additionalInfo: ["query": "\(queryRequest?.name ?? "")"],
             completion: { [weak self] result in
-                guard let self = self else { return }
-                self.isLoadingPage = false
+                self?.isLoadingPage = false
             }
         )
     }
@@ -95,12 +92,12 @@ final class DictionaryRemoteGetterViewModel: BaseApiViewModel {
         self.frame = newFrame
     }
     
-    private func processFetchedDictionaries(_ fetchedDictionaries: [DictionaryItemModel], lastEvaluated: String?) {
+    private func processFetchedDictionaries(_ fetchedDictionaries: [DictionaryItemModel]) {
         if fetchedDictionaries.isEmpty {
             hasMorePages = false
         } else {
             dictionaries.append(contentsOf: fetchedDictionaries)
-            self.lastEvaluated = lastEvaluated
+            self.lastEvaluated = fetchedDictionaries.last?.id.map { "\($0)" }
             hasMorePages = (lastEvaluated != nil)
         }
     }

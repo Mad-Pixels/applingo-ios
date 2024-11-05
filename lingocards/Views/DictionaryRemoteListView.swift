@@ -14,7 +14,7 @@ struct DictionaryRemoteListView: View {
 
     init(isPresented: Binding<Bool>) {
         self._isPresented = isPresented
-        _dictionaryGetter = StateObject(wrappedValue: DictionaryRemoteGetterViewModel())
+        _dictionaryGetter = StateObject(wrappedValue: DictionaryRemoteGetterViewModel(repository: RepositoryAPI()))
     }
 
     var body: some View {
@@ -91,11 +91,10 @@ struct DictionaryRemoteListView: View {
                     dictionaryGetter.setFrame(.dictionaryRemoteList)
                     dictionaryGetter.resetPagination()
 
-                    // Подписка на уведомление об изменении видимости ошибки
                     NotificationCenter.default.addObserver(forName: .errorVisibilityChanged, object: nil, queue: .main) { _ in
                         if let error = ErrorManager.shared.currentError,
-                           error.frame == .dictionaryRemoteList, // Условие для frame
-                           error.source == .dictionariesRemoteGet { // Условие для source
+                           error.frame == .dictionaryRemoteList,
+                           error.source == .dictionariesRemoteGet {
                             isShowingAlert = true
                             errMessage = error.errorDescription ?? ""
                         }
