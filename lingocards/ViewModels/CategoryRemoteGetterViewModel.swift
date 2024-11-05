@@ -1,7 +1,7 @@
 import Foundation
 import Combine
 
-final class DictionaryRemoteFilterViewModel: ObservableObject {
+final class CategoryRemoteGetterViewModel: ObservableObject {
     @Published var frontCategories: [CategoryItemModel] = []
     @Published var backCategories: [CategoryItemModel] = []
     
@@ -16,7 +16,7 @@ final class DictionaryRemoteFilterViewModel: ObservableObject {
         cancellable?.cancel()
     }
 
-    func getCategories() {
+    func get() {
         Logger.debug("[DictionaryRemoteFilterViewModel]: Fetching categories...")
 
         // Симулируем случайную ошибку в 10% случаев

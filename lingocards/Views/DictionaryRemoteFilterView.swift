@@ -3,7 +3,7 @@ import SwiftUI
 struct DictionaryRemoteFilterView: View {
     @Environment(\.presentationMode) var presentationMode
     
-    @StateObject private var categoriesGetter: DictionaryRemoteFilterViewModel
+    @StateObject private var categoryGetter: CategoryRemoteGetterViewModel
     @State private var selectedFrontCategory: CategoryItemModel? = nil
     @State private var selectedBackCategory: CategoryItemModel? = nil
     
@@ -11,7 +11,7 @@ struct DictionaryRemoteFilterView: View {
 
     init(apiRequestParams: Binding<DictionaryQueryRequest>) {
         self._apiRequestParams = apiRequestParams
-        _categoriesGetter = StateObject(wrappedValue: DictionaryRemoteFilterViewModel())
+        _categoryGetter = StateObject(wrappedValue: CategoryRemoteGetterViewModel())
     }
 
     var body: some View {
@@ -27,7 +27,7 @@ struct DictionaryRemoteFilterView: View {
                             HStack {
                                 CompPickerView(
                                     selectedValue: $selectedFrontCategory,
-                                    items: categoriesGetter.frontCategories,
+                                    items: categoryGetter.frontCategories,
                                     title: ""
                                 ) { category in
                                     Text(category!.name)
@@ -42,7 +42,7 @@ struct DictionaryRemoteFilterView: View {
                                 
                                 CompPickerView(
                                     selectedValue: $selectedBackCategory,
-                                    items: categoriesGetter.backCategories,
+                                    items: categoryGetter.backCategories,
                                     title: ""
                                 ) { category in
                                     Text(category!.name)
@@ -93,14 +93,14 @@ struct DictionaryRemoteFilterView: View {
             .onAppear {
                 FrameManager.shared.setActiveFrame(.dictionaryRemoteFilter)
                 if FrameManager.shared.isActive(frame: .dictionaryRemoteFilter) {
-                    categoriesGetter.setFrame(.dictionaryRemoteFilter)
+                    categoryGetter.setFrame(.dictionaryRemoteFilter)
                 }
                 
-                categoriesGetter.getCategories()
-                if let firstFrontCategory = categoriesGetter.frontCategories.first {
+                categoryGetter.get()
+                if let firstFrontCategory = categoryGetter.frontCategories.first {
                     selectedFrontCategory = firstFrontCategory
                 }
-                if let firstBackCategory = categoriesGetter.backCategories.first {
+                if let firstBackCategory = categoryGetter.backCategories.first {
                     selectedBackCategory = firstBackCategory
                 }
             }
