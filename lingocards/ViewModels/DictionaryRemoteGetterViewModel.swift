@@ -12,6 +12,7 @@ final class DictionaryRemoteGetterViewModel: BaseApiViewModel {
         }
     }
 
+    private var currentRequest: DictionaryQueryRequest?
     private var hasMorePages = true
     private var lastEvaluated: String?
     private var frame: AppFrameModel = .main
@@ -22,7 +23,10 @@ final class DictionaryRemoteGetterViewModel: BaseApiViewModel {
         self.repository = repository
     }
 
-    func resetPagination() {
+    func resetPagination(with request: DictionaryQueryRequest? = nil) {
+        if let request = request {
+            currentRequest = request
+        }
         dictionaries.removeAll()
         hasMorePages = true
         isLoadingPage = false
@@ -39,12 +43,15 @@ final class DictionaryRemoteGetterViewModel: BaseApiViewModel {
         let currentToken = cancellationToken
         isLoadingPage = true
 
-        var request = queryRequest ?? DictionaryQueryRequest()
+        var request = queryRequest ?? currentRequest ?? DictionaryQueryRequest()
+        Logger.debug("\(request.toDictionary())")
         request.isPrivate = false
         request.lastEvaluated = self.lastEvaluated
         if !searchText.isEmpty {
             request.name = searchText
         }
+
+        Logger.debug("[DictionaryRemoteGetterViewModel] Making request with params: name: \(request.name ?? "nil"), subcategory: \(request.subcategory ?? "nil")")
 
         performApiOperation(
             {
@@ -64,7 +71,7 @@ final class DictionaryRemoteGetterViewModel: BaseApiViewModel {
             source: .dictionariesRemoteGet,
             frame: frame,
             message: "Failed to load remote dictionaries",
-            additionalInfo: ["query": "\(queryRequest?.name ?? "")"],
+            additionalInfo: ["query": "\(request.name ?? "")", "subcategory": "\(request.subcategory ?? "")"],
             completion: { [weak self] result in
                 self?.isLoadingPage = false
             }

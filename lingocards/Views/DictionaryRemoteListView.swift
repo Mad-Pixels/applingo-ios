@@ -90,6 +90,7 @@ struct DictionaryRemoteListView: View {
                     FrameManager.shared.setActiveFrame(.dictionaryRemoteList)
                     dictionaryGetter.setFrame(.dictionaryRemoteList)
                     dictionaryGetter.resetPagination()
+                    dictionaryGetter.resetPagination(with: apiRequestParams)
 
                     NotificationCenter.default.addObserver(forName: .errorVisibilityChanged, object: nil, queue: .main) { _ in
                         if let error = ErrorManager.shared.currentError,
@@ -104,8 +105,7 @@ struct DictionaryRemoteListView: View {
                     NotificationCenter.default.removeObserver(self, name: .errorVisibilityChanged, object: nil)
                 }
                 .onChange(of: apiRequestParams) { newParams in
-                    dictionaryGetter.resetPagination()
-                    dictionaryGetter.get(queryRequest: newParams)
+                    dictionaryGetter.resetPagination(with: newParams)
                 }
                 .alert(isPresented: $isShowingAlert) {
                     Alert(

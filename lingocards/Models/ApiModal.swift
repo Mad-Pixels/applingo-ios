@@ -47,10 +47,10 @@ struct DictionaryQueryRequest: Codable, Equatable {
                 dict["name"] = name
             }
             if let category = category {
-                dict["category"] = category
+                dict["category_main"] = category
             }
             if let subcategory = subcategory {
-                dict["subcategory"] = subcategory
+                dict["category_sub"] = subcategory
             }
             if let author = author {
                 dict["author"] = author
@@ -91,7 +91,6 @@ struct ApiDictionaryResponseModel: Codable {
     
     struct DictionaryItem: Codable {
         let name: String
-        let categoryMain: String
         let categorySub: String
         let author: String
         let dictionaryKey: String
@@ -99,7 +98,6 @@ struct ApiDictionaryResponseModel: Codable {
         
         enum CodingKeys: String, CodingKey {
             case name
-            case categoryMain = "category_main"
             case categorySub = "category_sub"
             case author
             case dictionaryKey = "dictionary_key"

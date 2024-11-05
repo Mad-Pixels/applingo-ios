@@ -22,6 +22,7 @@ class BaseApiViewModel: BaseViewModel, ObservableObject {
                     completion?(.success(()))
                 }
             } catch {
+                Logger.debug("Error: \(error)")
                 await MainActor.run {
                     self.handleError(
                         type: .api,

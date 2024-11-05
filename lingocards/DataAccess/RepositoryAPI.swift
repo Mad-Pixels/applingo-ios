@@ -41,7 +41,7 @@ class RepositoryAPI: APIRepositoryProtocol {
                 displayName: dictionaryItem.name,
                 tableName: dictionaryItem.dictionaryKey,
                 description: dictionaryItem.description,
-                category: dictionaryItem.categoryMain,
+                category: dictionaryItem.categorySub,
                 subcategory: dictionaryItem.categorySub,
                 author: dictionaryItem.author,
                 createdAt: Int(Date().timeIntervalSince1970)
