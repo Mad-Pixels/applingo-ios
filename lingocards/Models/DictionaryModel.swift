@@ -13,7 +13,7 @@ struct DictionaryItemModel: Identifiable, Codable, Equatable, Hashable {
     var author: String
 
     var createdAt: Int
-    var isPrivate: Bool
+    var isPublic: Bool
     var isActive: Bool
     
     init(
@@ -25,7 +25,7 @@ struct DictionaryItemModel: Identifiable, Codable, Equatable, Hashable {
         subcategory: String,
         author: String,
         createdAt: Int = Int(Date().timeIntervalSince1970),
-        isPrivate: Bool = true,
+        isPublic: Bool = true,
         isActive: Bool = true
     ) {
         self.id = id
@@ -36,7 +36,7 @@ struct DictionaryItemModel: Identifiable, Codable, Equatable, Hashable {
         self.subcategory = subcategory
         self.author = author
         self.createdAt = createdAt
-        self.isPrivate = isPrivate
+        self.isPublic = isPublic
         self.isActive = isActive
         
         self.fmt()
@@ -65,7 +65,7 @@ struct DictionaryItemModel: Identifiable, Codable, Equatable, Hashable {
         - Subcategory: \(subcategory)
         - Author: \(author)
         - Created At: \(formattedCreatedAt)
-        - Private: \(isPrivate ? "Yes" : "No")
+        - Public: \(isPublic ? "Yes" : "No")
         - Active: \(isActive ? "Yes" : "No")
         """
     }
