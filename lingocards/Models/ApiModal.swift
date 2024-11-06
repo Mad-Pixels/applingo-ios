@@ -5,71 +5,53 @@ struct APIErrorMessage: Decodable {
 }
 
 struct DictionaryQueryRequest: Codable, Equatable {
-    var id: String?
-    var name: String?
-    var category: String?
     var subcategory: String?
-    var author: String?
-    var isPrivate: Bool?
-    var code: String?
+    var isPublic: Bool?
+    var sortBy: String?
     var lastEvaluated: String?
-    var dictionaryKey: String?
+    
+    enum SortBy: String {
+        case date = "date"
+        case rating = "rating"
+    }
     
     init(
-        id: String? = nil,
-        name: String? = nil,
-        category: String? = nil,
         subcategory: String? = nil,
-        author: String? = nil,
-        isPrivate: Bool? = nil,
-        code: String? = nil,
-        lastEvaluated: String? = nil,
-        dictionaryKey: String? = nil
+        isPublic: Bool? = nil,
+        sortBy: SortBy? = nil,
+        lastEvaluated: String? = nil
     ) {
-        self.id = id
-        self.name = name
-        self.category = category
         self.subcategory = subcategory
-        self.author = author
-        self.isPrivate = isPrivate
-        self.code = code
+        self.isPublic = isPublic
+        self.sortBy = sortBy?.rawValue
         self.lastEvaluated = lastEvaluated
-        self.dictionaryKey = dictionaryKey
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case subcategory
+        case isPublic = "is_public"
+        case sortBy = "sort_by"
+        case lastEvaluated = "last_evaluated"
     }
     
     func toDictionary() -> [String: Any] {
-            var dict: [String: Any] = [:]
-            
-            if let id = id {
-                dict["id"] = id
-            }
-            if let name = name {
-                dict["name"] = name
-            }
-            if let category = category {
-                dict["category_main"] = category
-            }
-            if let subcategory = subcategory {
-                dict["category_sub"] = subcategory
-            }
-            if let author = author {
-                dict["author"] = author
-            }
-            if let isPrivate = isPrivate {
-                dict["is_private"] = isPrivate
-            }
-            if let code = code {
-                dict["code"] = code
-            }
-            if let lastEvaluated = lastEvaluated {
-                dict["last_evaluated"] = lastEvaluated
-            }
-            if let dictionaryKey = dictionaryKey {
-                dict["dictionary_key"] = dictionaryKey
-            }
-            
-            return dict
+        var dict: [String: Any] = [:]
+        
+        if let subcategory = subcategory {
+            dict["subcategory"] = subcategory
         }
+        if let isPublic = isPublic {
+            dict["is_public"] = isPublic
+        }
+        if let sortBy = sortBy {
+            dict["sort_by"] = sortBy
+        }
+        if let lastEvaluated = lastEvaluated {
+            dict["last_evaluated"] = lastEvaluated
+        }
+        
+        return dict
+    }
 }
 
 struct ApiCategoryResponseModel: Codable {
