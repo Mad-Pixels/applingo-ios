@@ -5,6 +5,7 @@ import UIKit
 struct ErrorLog: Codable {
     let errorType: ErrorTypeModel
     let errorMessage: String
+    let errorOriginal: String
     let appVersion: String
     let osVersion: String
     let device: String
@@ -13,6 +14,7 @@ struct ErrorLog: Codable {
     
     enum CodingKeys: String, CodingKey {
         case additionalInfo = "additional_info"
+        case errorOriginal = "error_original"
         case errorMessage = "error_message"
         case appVersion = "app_version"
         case osVersion = "os_version"
@@ -24,6 +26,7 @@ struct ErrorLog: Codable {
     init(
         errorType: ErrorTypeModel,
         errorMessage: String,
+        errorOriginal: Error?,
         additionalInfo: [String: String]? = nil
     ) {
         self.appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown"
@@ -34,6 +37,7 @@ struct ErrorLog: Codable {
         self.errorType = errorType
         self.additionalInfo = additionalInfo
         self.errorMessage = errorMessage
+        self.errorOriginal = errorOriginal.map { String(describing: $0) } ?? "unknown"
     }
 
     func toJSON() -> String? {
@@ -104,10 +108,16 @@ final class LogHandler: ObservableObject {
         }
     }
     
-    func sendError(_ message: String, type: ErrorTypeModel, additionalInfo: [String: String]? = nil) {
+    func sendError(
+        _ message: String,
+        type: ErrorTypeModel,
+        original: Error?,
+        additionalInfo: [String: String]? = nil
+    ) {
         let log = ErrorLog(
             errorType: type,
             errorMessage: message,
+            errorOriginal: original,
             additionalInfo: additionalInfo
         )
         sendLog(log)

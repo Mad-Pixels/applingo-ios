@@ -25,6 +25,7 @@ struct Logger {
     static func log(_ message: @autoclosure () -> String,
                     level: LogLevel = .info,
                     errorType: ErrorTypeModel? = nil,
+                    original: Error? = nil,
                     additionalInfo: [String: String]? = nil) {
         let messageString = message()
 
@@ -47,6 +48,7 @@ struct Logger {
             LogHandler.shared.sendError(
                 messageString,
                 type: errorType,
+                original: original,
                 additionalInfo: additionalInfo
             )
         }
@@ -54,8 +56,9 @@ struct Logger {
 
     static func error(_ message: @autoclosure () -> String,
                       type: ErrorTypeModel,
+                      original: Error? = nil,
                       additionalInfo: [String: String]? = nil) {
-        log(message(), level: .error, errorType: type, additionalInfo: additionalInfo)
+        log(message(), level: .error, errorType: type, original: original, additionalInfo: additionalInfo)
     }
 
     static func info(_ message: @autoclosure () -> String) {

@@ -88,7 +88,12 @@ final class ErrorManager: ObservableObject {
     }
 
     private func logError(_ appError: AppErrorModel) {
-        LogHandler.shared.sendError(appError.message, type: appError.type, additionalInfo: appError.additional)
+        LogHandler.shared.sendError(
+            appError.message,
+            type: appError.type,
+            original: appError.original,
+            additionalInfo: appError.additional
+        )
     }
 }
 
