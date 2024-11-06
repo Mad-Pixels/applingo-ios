@@ -4,7 +4,7 @@ struct DictionaryRemoteListView: View {
     @Environment(\.presentationMode) var presentationMode
 
     @StateObject private var dictionaryGetter: DictionaryRemoteGetterViewModel
-    @State private var apiRequestParams = DictionaryQueryRequest(isPrivate: false)
+    @State private var apiRequestParams = DictionaryQueryRequest()
     @State private var selectedDictionary: DictionaryItemModel?
     @State private var isShowingFilterView = false
     @State private var isShowingAlert = false

@@ -45,13 +45,14 @@ final class DictionaryRemoteGetterViewModel: BaseApiViewModel {
 
         var request = queryRequest ?? currentRequest ?? DictionaryQueryRequest()
         Logger.debug("\(request.toDictionary())")
-        request.isPrivate = false
+        request.isPublic = true
+        //request.sortBy = "date"
         request.lastEvaluated = self.lastEvaluated
-        if !searchText.isEmpty {
-            request.name = searchText
-        }
+//        if !searchText.isEmpty {
+//            request.name = searchText
+//        }
 
-        Logger.debug("[DictionaryRemoteGetterViewModel] Making request with params: name: \(request.name ?? "nil"), subcategory: \(request.subcategory ?? "nil")")
+        Logger.debug("[DictionaryRemoteGetterViewModel] Making request with params: name: \(request.subcategory ?? "nil"), subcategory: \(request.subcategory ?? "nil")")
 
         performApiOperation(
             {
@@ -71,7 +72,7 @@ final class DictionaryRemoteGetterViewModel: BaseApiViewModel {
             source: .dictionariesRemoteGet,
             frame: frame,
             message: "Failed to load remote dictionaries",
-            additionalInfo: ["query": "\(request.name ?? "")", "subcategory": "\(request.subcategory ?? "")"],
+            additionalInfo: ["query": "\(request.lastEvaluated ?? "")", "subcategory": "\(request.subcategory ?? "")"],
             completion: { [weak self] result in
                 self?.isLoadingPage = false
             }

@@ -49,7 +49,6 @@ struct DictionaryQueryRequest: Codable, Equatable {
         if let lastEvaluated = lastEvaluated {
             dict["last_evaluated"] = lastEvaluated
         }
-        
         return dict
     }
 }
@@ -73,17 +72,26 @@ struct ApiDictionaryResponseModel: Codable {
     
     struct DictionaryItem: Codable {
         let name: String
-        let categorySub: String
+        let category: String
+        let subcategory: String
         let author: String
-        let dictionaryKey: String
+        let dictionary: String
         let description: String
+        let createdAt: Int
+        let rating: Int
+        let isPublic: Int
         
         enum CodingKeys: String, CodingKey {
-            case name
-            case categorySub = "category_sub"
-            case author
-            case dictionaryKey = "dictionary_key"
             case description
+            case subcategory
+            case dictionary
+            case category
+            case author
+            case rating
+            case name
+            case createdAt = "created_at"
+            case isPublic = "is_public"
+            
         }
     }
 }

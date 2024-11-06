@@ -90,7 +90,7 @@ extension DictionaryItemModel: FetchableRecord, PersistableRecord {
             t.column("subcategory", .text).notNull()
             t.column("author", .text).notNull()
             t.column("createdAt", .integer).notNull()
-            t.column("isPrivate", .boolean).notNull()
+            t.column("isPublic", .boolean).notNull()
             t.column("isActive", .boolean).notNull()
         }
         try db.create(index: "Dictionary_createdAt_idx", on: databaseTableName, columns: ["createdAt"])

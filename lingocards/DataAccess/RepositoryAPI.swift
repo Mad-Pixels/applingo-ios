@@ -33,18 +33,19 @@ class RepositoryAPI: APIRepositoryProtocol {
             body: body
         )
         let response = try JSONDecoder().decode(ApiDictionaryResponseModel.self, from: data)
-        Logger.debug("[RepositoryAPI]: getDictionaries - fetched")
+        Logger.debug("[RepositoryAPI]: getDictionaries - \(request)")
 
         let dictionaries = response.data.items.map { dictionaryItem in
             DictionaryItemModel(
                 id: UUID().hashValue,
                 displayName: dictionaryItem.name,
-                tableName: dictionaryItem.dictionaryKey,
+                tableName: dictionaryItem.dictionary,
                 description: dictionaryItem.description,
-                category: dictionaryItem.categorySub,
-                subcategory: dictionaryItem.categorySub,
+                category: dictionaryItem.category,
+                subcategory: dictionaryItem.subcategory,
                 author: dictionaryItem.author,
-                createdAt: Int(Date().timeIntervalSince1970)
+                createdAt: dictionaryItem.createdAt,
+                isPublic: (dictionaryItem.isPublic != 0)
             )
         }
         return (dictionaries: dictionaries, lastEvaluated: response.data.lastEvaluated)
