@@ -80,10 +80,9 @@ final class RepositoryCache: APIRepositoryProtocol {
         return (dictionaries: dictionaries, lastEvaluated: lastEvaluated)
     }
     
-    func downloadDictionary(_ dictionary: DictionaryItemModel) async throws {
-            // Загрузка словаря не кешируется, просто проксируем запрос
-            try await repository.downloadDictionary(dictionary)
-        }
+    func downloadDictionary(_ dictionary: DictionaryItemModel) async throws -> URL {
+        return try await repository.downloadDictionary(dictionary)
+    }
     
     func clearCache() {
         categoriesCache = nil

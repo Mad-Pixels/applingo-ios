@@ -75,39 +75,7 @@ class DatabaseManager: ObservableObject {
         isConnected = false
         Logger.debug("[DatabaseManager]: Disconnected")
     }
-    
-    func importCSVFile(at url: URL) throws {
-        guard isConnected, let dbQueue = databaseQueue else {
-            throw DatabaseError.connectionNotEstablished
-        }
 
-        let tableName = url.deletingPathExtension().lastPathComponent
-        do {
-            let wordItems = try CSVImporter.parseCSV(at: url, tableName: tableName)
-            
-            let dictionaryItem = DictionaryItemModel(
-                displayName: tableName,
-                tableName: tableName,
-                description: "Imported from local file: '\(tableName).csv'",
-                category: "Local",
-                subcategory: "personal",
-                author: "local user"
-            )
-
-            try dbQueue.write { db in
-                try dictionaryItem.insert(db)
-                
-                for var wordItem in wordItems {
-                    wordItem.tableName = tableName
-                    try wordItem.insert(db)
-                }
-                Logger.debug("[Database]: Inserted \(wordItems.count) word items for table \(tableName)")
-            }
-        } catch {
-            throw DatabaseError.csvImportFailed(error.localizedDescription)
-        }
-    }
-    
     private var migrator: DatabaseMigrator {
         var migrator = DatabaseMigrator()
         

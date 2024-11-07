@@ -1,16 +1,74 @@
-import Foundation
 import NaturalLanguage
+import Foundation
+import Combine
 import CoreML
 import GRDB
 
-struct CSVImporter {
-    static let model: ColumnClassifier = {
+enum CSVManagerError: Error, LocalizedError {
+    case databaseConnectionNotEstablished
+    case csvReadFailed(String)
+    case modelPredictionFailed(String)
+    case csvImportFailed(String)
+    
+    var errorDescription: String? {
+        switch self {
+        case .databaseConnectionNotEstablished:
+            return "Database connection is not established."
+        case .csvReadFailed(let details):
+            return "Failed to read CSV file. Details: \(details)"
+        case .modelPredictionFailed(let details):
+            return "Model prediction failed. Details: \(details)"
+        case .csvImportFailed(let details):
+            return "CSV import failed. Details: \(details)"
+        }
+    }
+}
+
+class CSVManager {
+    static let shared = CSVManager()
+    private init() {}
+    
+    private let model: ColumnClassifier = {
         let config = MLModelConfiguration()
         return try! ColumnClassifier(configuration: config)
     }()
-
-    // Метод parseCSV для обработки CSV-файла и создания WordItem
-    static func parseCSV(at url: URL, tableName: String) throws -> [WordItemModel] {
+    
+    func parse(url: URL, dictionaryItem: DictionaryItemModel? = nil) throws -> (dictionary: DictionaryItemModel, words: [WordItemModel]) {
+        let tableName = dictionaryItem?.tableName ?? generateTableName()
+        
+        let dictionary = dictionaryItem ?? DictionaryItemModel(
+            displayName: tableName,
+            tableName: generateTableName(),
+            description: "Imported from local file: '\(tableName).csv'",
+            category: "Local",
+            subcategory: "personal",
+            author: "local user"
+        )
+        
+        let words = try parseCSV(at: url, tableName: tableName)
+        Logger.debug("[CSVManager]: Parsed \(words.count) words from CSV")
+        
+        return (dictionary, words)
+    }
+    
+    func saveToDatabase(dictionary: DictionaryItemModel, words: [WordItemModel]) throws {
+        guard let dbQueue = DatabaseManager.shared.databaseQueue else {
+            throw CSVManagerError.databaseConnectionNotEstablished
+        }
+        
+        try dbQueue.write { db in
+            try dictionary.insert(db)
+            Logger.debug("[CSVManager]: Created dictionary entry: \(dictionary.tableName)")
+            
+            for var wordItem in words {
+                wordItem.tableName = dictionary.tableName
+                try wordItem.insert(db)
+            }
+            Logger.debug("[CSVManager]: Inserted \(words.count) word items for table \(dictionary.tableName)")
+        }
+    }
+    
+    private func parseCSV(at url: URL, tableName: String) throws -> [WordItemModel] {
         var wordItems = [WordItemModel]()
         
         do {
@@ -76,13 +134,11 @@ struct CSVImporter {
             }
             return wordItems
         } catch {
-            print("Ошибка при чтении файла CSV: \(error.localizedDescription)")
-            throw error
+            throw CSVManagerError.csvReadFailed(error.localizedDescription)
         }
     }
-
-    // Метод для классификации колонок с использованием модели
-    static func classifyColumns(sampleColumnsMatrix: [[String]]) throws -> [String]? {
+    
+    private func classifyColumns(sampleColumnsMatrix: [[String]]) throws -> [String]? {
         guard let numberOfColumns = sampleColumnsMatrix.first?.count else { return nil }
         var columnLabels = [String]()
         
@@ -104,10 +160,13 @@ struct CSVImporter {
                     Is_Empty: isEmpty
                 )
                 
-                let prediction = try model.prediction(input: input)
-                let label = prediction.Label
-                
-                predictionsCount[label, default: 0] += 1
+                do {
+                    let prediction = try model.prediction(input: input)
+                    let label = prediction.Label
+                    predictionsCount[label, default: 0] += 1
+                } catch {
+                    throw CSVManagerError.modelPredictionFailed(error.localizedDescription)
+                }
             }
             
             if let (mostFrequentLabel, _) = predictionsCount.max(by: { $0.value < $1.value }) {
@@ -118,9 +177,8 @@ struct CSVImporter {
         }
         return columnLabels
     }
-
-    // Метод для определения языка текста
-    static func detectLanguage(for text: String) -> String {
+    
+    private func detectLanguage(for text: String) -> String {
         let recognizer = NLLanguageRecognizer()
         recognizer.processString(text)
         if let language = recognizer.dominantLanguage {
@@ -130,9 +188,8 @@ struct CSVImporter {
         }
         return "und"
     }
-
-    // Метод для парсинга строки CSV
-    static func parseCSVLine(line: String) -> [String] {
+    
+    private func parseCSVLine(line: String) -> [String] {
         var result: [String] = []
         var currentField = ""
         var insideQuotes = false
@@ -168,5 +225,9 @@ struct CSVImporter {
         }
         result.append(currentField)
         return result
+    }
+    
+    private func generateTableName() -> String {
+        return "dict-\(UUID().uuidString.prefix(8))"
     }
 }

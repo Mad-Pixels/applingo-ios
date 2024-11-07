@@ -183,16 +183,36 @@ struct TabDictionariesView: View {
         defer { url.stopAccessingSecurityScopedResource() }
 
         guard success else {
-            print("Failed to access security scoped resource")
+            print("[TabDictionariesView]: Failed to access security scoped resource")
+            let appError = AppErrorModel(
+                type: .ui,
+                message: LanguageManager.shared.localizedString(for: "ErrFileAccess"),
+                localized: LanguageManager.shared.localizedString(for: "ErrFileAccess"),
+                original: nil,
+                additional: ["url": url.absoluteString]
+            )
+            ErrorManager.shared.setError(appError: appError, frame: .tabDictionaries, source: .dictionaryImport)
             return
         }
 
         do {
-            try DatabaseManager.shared.importCSVFile(at: url)
+            // Используем CSVManager для парсинга и сохранения
+            let (dictionary, words) = try CSVManager.shared.parse(url: url)
+            try CSVManager.shared.saveToDatabase(dictionary: dictionary, words: words)
+            
+            // Обновляем UI
             dictionaryGetter.resetPagination()
-            print("Successfully imported CSV file")
+            Logger.debug("[TabDictionariesView]: Successfully imported CSV file with \(words.count) words")
         } catch {
-            print("Failed to import CSV file: \(error)")
+            print("[TabDictionariesView]: Failed to import CSV file: \(error)")
+            let appError = AppErrorModel(
+                type: .database,
+                message: error.localizedDescription,
+                localized: LanguageManager.shared.localizedString(for: "ErrImportCSV"),
+                original: error,
+                additional: ["url": url.absoluteString]
+            )
+            ErrorManager.shared.setError(appError: appError, frame: .tabDictionaries, source: .dictionaryImport)
         }
     }
 }

@@ -57,6 +57,33 @@ class APIManager {
         shared.token = token
     }
     
+    func downloadS3(from urlString: String) async throws -> URL {
+        guard let url = URL(string: urlString) else {
+            throw APIError.invalidEndpointURL(endpoint: urlString)
+        }
+        
+        let (localURL, urlResponse) = try await session.download(from: url)
+        
+        if let httpResponse = urlResponse as? HTTPURLResponse,
+           !(200...299).contains(httpResponse.statusCode) {
+            throw APIError.httpError(statusCode: httpResponse.statusCode)
+        }
+
+        let firstBytes = try String(contentsOf: localURL, encoding: .utf8).prefix(1000)
+        if firstBytes.contains("<Error>") {
+            if firstBytes.contains("NoSuchBucket") {
+                throw APIError.s3Error(message: "S3 bucket does not exist")
+            } else if firstBytes.contains("AccessDenied") {
+                throw APIError.s3Error(message: "Access denied to S3 bucket")
+            } else if firstBytes.contains("NoSuchKey") {
+                throw APIError.s3Error(message: "File not found in S3 bucket")
+            } else {
+                throw APIError.s3Error(message: "Unknown S3 error")
+            }
+        }
+        return localURL
+    }
+    
     func request(endpoint: String, method: HTTPMethod, body: Data? = nil) async throws -> Data {
         guard !baseURL.isEmpty else {
             throw APIError.baseURLNotConfigured

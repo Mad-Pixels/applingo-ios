@@ -20,10 +20,10 @@ enum ErrorSourceModel: String {
     case dictionaryUpdate
     case dictionarySave
     case dictionariesClear
+    case dictionaryImport
     case dictionariesRemoteGet
     case categoriesGet
     case initialization
-    case importCSVFile
 }
 
 struct AppErrorModel: Error, LocalizedError, Equatable, Identifiable {

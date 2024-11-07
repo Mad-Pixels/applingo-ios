@@ -1,3 +1,5 @@
+import Foundation
+
 protocol DictionaryRepositoryProtocol {
     func fetch(
             searchText: String?,
@@ -22,7 +24,11 @@ protocol WordRepositoryProtocol {
 }
 
 protocol APIRepositoryProtocol {
-    func getDictionaries(request: ApiDictionaryQueryRequestModel?) async throws -> (dictionaries: [DictionaryItemModel], lastEvaluated: String?)
-    func downloadDictionary(_ dictionary: DictionaryItemModel) async throws
+    func getDictionaries(
+        request: ApiDictionaryQueryRequestModel?
+    ) async throws -> (
+        dictionaries: [DictionaryItemModel], lastEvaluated: String?
+    )
+    func downloadDictionary(_ dictionary: DictionaryItemModel) async throws -> URL
     func getCategories() async throws -> CategoryItemModel
 }
