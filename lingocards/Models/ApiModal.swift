@@ -53,6 +53,21 @@ struct DictionaryQueryRequest: Codable, Equatable {
     }
 }
 
+extension DictionaryQueryRequest.SortBy {
+    var displayName: String {
+        switch self {
+        case .date:
+            return LanguageManager.shared.localizedString(for: "DateCreated")
+        case .rating:
+            return LanguageManager.shared.localizedString(for: "Rating")
+        }
+    }
+    
+    static var allCases: [DictionaryQueryRequest.SortBy] {
+        [.date, .rating]
+    }
+}
+
 struct ApiCategoryResponseModel: Codable {
     let data: CategoryItemModel
 }

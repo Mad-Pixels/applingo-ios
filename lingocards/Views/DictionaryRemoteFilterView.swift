@@ -6,6 +6,7 @@ struct DictionaryRemoteFilterView: View {
     @StateObject private var categoryGetter: CategoryRemoteGetterViewModel
     @State private var selectedFrontCategory: CategoryItem? = nil
     @State private var selectedBackCategory: CategoryItem? = nil
+    @State private var selectedSortBy: DictionaryQueryRequest.SortBy = .date
 
     @Binding var apiRequestParams: DictionaryQueryRequest
     
@@ -15,6 +16,10 @@ struct DictionaryRemoteFilterView: View {
     init(apiRequestParams: Binding<DictionaryQueryRequest>) {
         self._apiRequestParams = apiRequestParams
         _categoryGetter = StateObject(wrappedValue: CategoryRemoteGetterViewModel())
+        
+        if let sortBy = apiRequestParams.wrappedValue.sortBy {
+            _selectedSortBy = State(initialValue: sortBy == "rating" ? .rating : .date)
+        }
     }
 
     var body: some View {
@@ -67,6 +72,15 @@ struct DictionaryRemoteFilterView: View {
                                 }
                             }
                         }
+                        
+                        CompSelectView(
+                            selectedValue: $selectedSortBy,
+                            items: DictionaryQueryRequest.SortBy.allCases,
+                            title: LanguageManager.shared.localizedString(for: "SortBy"),
+                            style: .segmented
+                        ) { sortBy in
+                            Text(sortBy.displayName)
+                        }
                     }
                     Spacer()
 
@@ -77,8 +91,9 @@ struct DictionaryRemoteFilterView: View {
                                 let frontCategoryName = selectedFrontCategory?.name ?? ""
                                 let backCategoryName = selectedBackCategory?.name ?? ""
                                 apiRequestParams.subcategory = "\(frontCategoryName)-\(backCategoryName)".lowercased()
-
-                                Logger.debug("Filters saved: \(apiRequestParams.subcategory ?? "")")
+                                apiRequestParams.sortBy = selectedSortBy.rawValue
+                                
+                                Logger.debug("Filters saved: subcategory: \(apiRequestParams.subcategory ?? ""), sortBy: \(apiRequestParams.sortBy ?? "")")
                                 presentationMode.wrappedValue.dismiss()
                             }
                         )
@@ -87,7 +102,8 @@ struct DictionaryRemoteFilterView: View {
                             title: LanguageManager.shared.localizedString(for: "Reset").capitalizedFirstLetter,
                             action: {
                                 apiRequestParams.subcategory = nil
-                                Logger.debug("Filters reset: categorySub set to an empty string")
+                                apiRequestParams.sortBy = nil
+                                Logger.debug("Filters reset: all parameters cleared")
                                 presentationMode.wrappedValue.dismiss()
                             }
                         )
