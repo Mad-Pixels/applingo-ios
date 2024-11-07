@@ -14,11 +14,17 @@ struct TabSettingsView: View {
                 theme.backgroundViewColor.edgesIgnoringSafeArea(.all)
                 
                 Form {
-                    CompThemePickerView(
-                        selectedTheme: $themeManager.currentTheme,
-                        supportedThemes: themeManager.supportedThemes,
-                        onThemeChange: { newTheme in themeManager.setTheme(to: newTheme) }
-                    )
+                    CompSelectView(
+                        selectedValue: $themeManager.currentTheme,
+                        items: themeManager.supportedThemes,
+                        title: languageManager.localizedString(for: "Theme"),
+                        style: .segmented,
+                        onChange: { newTheme in
+                            themeManager.setTheme(to: newTheme)
+                        }
+                    ) { theme in
+                        Text(theme.asString)
+                    }
                     CompPickerView(
                         selectedValue: $languageManager.currentLanguage,
                         items: languageManager.supportedLanguages,
