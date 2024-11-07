@@ -128,36 +128,25 @@ struct DictionaryRemoteDetailView: View {
     
     private func downloadDictionary() {
         isDownloading = true
-        Logger.debug("[DictionaryRemoteDetailView]: Starting download for dictionary \(editedDictionary.tableName)")
         
         Task {
             do {
-                // Скачиваем файл
                 let fileURL = try await RepositoryCache.shared.downloadDictionary(editedDictionary)
-                Logger.debug("[DictionaryRemoteDetailView]: File downloaded to: \(fileURL.path)")
-                
-                // Парсим и сохраняем в базу
                 let (dictionary, words) = try CSVManager.shared.parse(
                     url: fileURL,
                     dictionaryItem: editedDictionary
                 )
                 try CSVManager.shared.saveToDatabase(dictionary: dictionary, words: words)
-                Logger.debug("[DictionaryRemoteDetailView]: Imported \(words.count) words")
-                
-                // Удаляем временный файл
                 try? FileManager.default.removeItem(at: fileURL)
                 
                 await MainActor.run {
                     isDownloading = false
-                    Logger.debug("[DictionaryRemoteDetailView]: Dictionary downloaded and imported successfully")
                     presentationMode.wrappedValue.dismiss()
                 }
             } catch {
-                print("[DictionaryRemoteDetailView]: Download/Import failed - \(error.localizedDescription)")
-                
                 await MainActor.run {
-                    isDownloading = false
                     errorMessage = error.localizedDescription
+                    isDownloading = false
                     showError = true
                 }
             }

@@ -8,8 +8,8 @@ protocol DictionaryRepositoryProtocol {
         ) throws -> [DictionaryItemModel]
     func save(_ dictionary: DictionaryItemModel) throws
     func update(_ dictionary: DictionaryItemModel) throws
-    func updateStatus(dictionaryID: Int, newStatus: Bool) throws
     func delete(_ dictionary: DictionaryItemModel) throws
+    func updateStatus(dictionaryID: Int, newStatus: Bool) throws
 }
 
 protocol WordRepositoryProtocol {
