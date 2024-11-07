@@ -96,3 +96,16 @@ extension DictionaryItemModel: FetchableRecord, PersistableRecord {
         try db.create(index: "Dictionary_createdAt_idx", on: databaseTableName, columns: ["createdAt"])
     }
 }
+
+extension DictionaryItemModel {
+    var searchableText: String {
+        return [displayName, author, description]
+            .map { $0.lowercased() }
+            .joined(separator: " ")
+    }
+    
+    func matches(searchText: String) -> Bool {
+        if searchText.isEmpty { return true }
+        return searchableText.contains(searchText.lowercased())
+    }
+}

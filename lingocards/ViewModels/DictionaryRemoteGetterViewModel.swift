@@ -6,34 +6,37 @@ final class DictionaryRemoteGetterViewModel: BaseApiViewModel {
     @Published var isLoadingPage = false
     @Published var searchText: String = "" {
         didSet {
-            if searchText != oldValue {
-                resetPagination()
+            updateFilteredDictionaries()
+            if !searchText.isEmpty && dictionaries.count < 5 && hasMorePages {
+                get()
             }
         }
     }
-
+    
+    private var allDictionaries: [DictionaryItemModel] = []
     private var currentRequest: DictionaryQueryRequest?
     private var hasMorePages = true
     private var lastEvaluated: String?
     private var frame: AppFrameModel = .main
     private var cancellationToken = UUID()
-
+    
     override init() {
         super.init()
     }
-
+    
     func resetPagination(with request: DictionaryQueryRequest? = nil) {
         if let request = request {
             currentRequest = request
         }
-        dictionaries.removeAll()
+        allDictionaries.removeAll()
+        updateFilteredDictionaries()
         hasMorePages = true
         isLoadingPage = false
         lastEvaluated = nil
         cancellationToken = UUID()
         get()
     }
-
+    
     func get(queryRequest: DictionaryQueryRequest? = nil) {
         guard !isLoadingPage, hasMorePages else {
             return
@@ -41,12 +44,12 @@ final class DictionaryRemoteGetterViewModel: BaseApiViewModel {
         
         let currentToken = cancellationToken
         isLoadingPage = true
-
+        
         var request = queryRequest ?? currentRequest ?? DictionaryQueryRequest()
         request.isPublic = true
         request.lastEvaluated = self.lastEvaluated
         
-        Logger.debug("[DictionaryRemoteGetterViewModel] Making request with params: name: \(request)")
+        Logger.debug("[DictionaryRemoteGetterViewModel] Making request with params: \(request)")
         performApiOperation(
             {
                 return try await RepositoryCache.shared.getDictionaries(request: request)
@@ -60,33 +63,38 @@ final class DictionaryRemoteGetterViewModel: BaseApiViewModel {
                 
                 let (fetchedDictionaries, newLastEvaluated) = result
                 self.processFetchedDictionaries(fetchedDictionaries, lastEvaluated: newLastEvaluated)
+                
+                // Если идет поиск и результатов все еще мало, загружаем следующую страницу
+                if !self.searchText.isEmpty && self.dictionaries.count < 5 && self.hasMorePages {
+                    self.get()
+                }
+                
                 self.isLoadingPage = false
             },
             source: .dictionariesRemoteGet,
             frame: frame,
             message: "Failed to load remote dictionaries",
-            additionalInfo: ["query": "\(request)"],
+            additionalInfo: ["query": "\(request)", "searchText": searchText],
             completion: { [weak self] result in
                 self?.isLoadingPage = false
             }
         )
     }
-
+    
     func loadMoreDictionariesIfNeeded(currentItem: DictionaryItemModel?) {
-        guard
-            let currentItem = currentItem,
-            let index = dictionaries.firstIndex(where: { $0.id == currentItem.id }),
-            index >= dictionaries.count - 5,
-            hasMorePages,
-            !isLoadingPage
-        else {
+        guard let currentItem = currentItem,
+              let index = dictionaries.firstIndex(where: { $0.id == currentItem.id }),
+              index >= dictionaries.count - 5,
+              hasMorePages,
+              !isLoadingPage else {
             return
         }
         get()
     }
-
+    
     func clear() {
-        dictionaries = []
+        allDictionaries = []
+        updateFilteredDictionaries()
         lastEvaluated = nil
         hasMorePages = true
     }
@@ -99,9 +107,21 @@ final class DictionaryRemoteGetterViewModel: BaseApiViewModel {
         if fetchedDictionaries.isEmpty {
             hasMorePages = false
         } else {
-            dictionaries.append(contentsOf: fetchedDictionaries)
+            allDictionaries.append(contentsOf: fetchedDictionaries)
             self.lastEvaluated = lastEvaluated
             hasMorePages = (lastEvaluated != nil)
+            updateFilteredDictionaries()
+        }
+        
+        Logger.debug("[DictionaryRemoteGetterViewModel] Processed dictionaries - total: \(allDictionaries.count), filtered: \(dictionaries.count), hasMore: \(hasMorePages), searchText: '\(searchText)'")
+    }
+    
+    private func updateFilteredDictionaries() {
+        if searchText.isEmpty {
+            dictionaries = allDictionaries
+        } else {
+            dictionaries = allDictionaries.filter { $0.matches(searchText: searchText) }
+            Logger.debug("[DictionaryRemoteGetterViewModel] Filtered dictionaries - search: '\(searchText)', results: \(dictionaries.count), total: \(allDictionaries.count)")
         }
     }
 }
