@@ -64,11 +64,9 @@ final class DictionaryRemoteGetterViewModel: BaseApiViewModel {
                 let (fetchedDictionaries, newLastEvaluated) = result
                 self.processFetchedDictionaries(fetchedDictionaries, lastEvaluated: newLastEvaluated)
                 
-                // Если идет поиск и результатов все еще мало, загружаем следующую страницу
                 if !self.searchText.isEmpty && self.dictionaries.count < 5 && self.hasMorePages {
                     self.get()
                 }
-                
                 self.isLoadingPage = false
             },
             source: .dictionariesRemoteGet,
