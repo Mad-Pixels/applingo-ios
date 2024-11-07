@@ -23,7 +23,7 @@ protocol WordRepositoryProtocol {
     func delete(_ word: WordItemModel) throws
 }
 
-protocol APIRepositoryProtocol {
+protocol ApiRepositoryProtocol {
     func getDictionaries(
         request: ApiDictionaryQueryRequestModel?
     ) async throws -> (

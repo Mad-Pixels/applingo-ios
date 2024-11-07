@@ -22,7 +22,7 @@ private struct DictionaryCacheEntry {
     }
 }
 
-final class RepositoryCache: APIRepositoryProtocol {
+final class RepositoryCache: ApiRepositoryProtocol {
     static let shared = RepositoryCache()
     
     private let categoriesTTL: TimeInterval = 1500 // 25 minutes

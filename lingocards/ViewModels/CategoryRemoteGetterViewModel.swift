@@ -7,9 +7,9 @@ final class CategoryRemoteGetterViewModel: BaseApiViewModel {
     @Published var isLoadingPage = false
     
     private var frame: AppFrameModel = .main
-    private let repository: APIRepositoryProtocol
+    private let repository: ApiRepositoryProtocol
     
-    init(repository: APIRepositoryProtocol = RepositoryCache.shared) {
+    init(repository: ApiRepositoryProtocol = RepositoryCache.shared) {
         self.repository = repository
         super.init()
     }
