@@ -16,11 +16,10 @@ final class DictionaryRemoteGetterViewModel: BaseApiViewModel {
     private var hasMorePages = true
     private var lastEvaluated: String?
     private var frame: AppFrameModel = .main
-    private let repository: APIRepositoryProtocol
     private var cancellationToken = UUID()
 
-    init(repository: APIRepositoryProtocol) {
-        self.repository = repository
+    override init() {
+        super.init()
     }
 
     func resetPagination(with request: DictionaryQueryRequest? = nil) {
@@ -44,19 +43,13 @@ final class DictionaryRemoteGetterViewModel: BaseApiViewModel {
         isLoadingPage = true
 
         var request = queryRequest ?? currentRequest ?? DictionaryQueryRequest()
-        Logger.debug("\(request.toDictionary())")
         request.isPublic = true
-        //request.sortBy = "date"
         request.lastEvaluated = self.lastEvaluated
-//        if !searchText.isEmpty {
-//            request.name = searchText
-//        }
-
-        Logger.debug("[DictionaryRemoteGetterViewModel] Making request with params: name: \(request.subcategory ?? "nil"), subcategory: \(request.subcategory ?? "nil")")
-
+        
+        Logger.debug("[DictionaryRemoteGetterViewModel] Making request with params: name: \(request)")
         performApiOperation(
             {
-                return try await self.repository.getDictionaries(request: request)
+                return try await RepositoryCache.shared.getDictionaries(request: request)
             },
             successHandler: { [weak self] result in
                 guard let self = self else { return }
@@ -72,7 +65,7 @@ final class DictionaryRemoteGetterViewModel: BaseApiViewModel {
             source: .dictionariesRemoteGet,
             frame: frame,
             message: "Failed to load remote dictionaries",
-            additionalInfo: ["query": "\(request.lastEvaluated ?? "")", "subcategory": "\(request.subcategory ?? "")"],
+            additionalInfo: ["query": "\(request)"],
             completion: { [weak self] result in
                 self?.isLoadingPage = false
             }

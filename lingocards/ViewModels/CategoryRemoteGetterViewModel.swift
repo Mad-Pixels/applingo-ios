@@ -9,13 +9,17 @@ final class CategoryRemoteGetterViewModel: BaseApiViewModel {
     private var frame: AppFrameModel = .main
     private let repository: APIRepositoryProtocol
     
-    init(repository: APIRepositoryProtocol) {
+    init(repository: APIRepositoryProtocol = RepositoryCache.shared) {
         self.repository = repository
+        super.init()
     }
     
-    func get(completion: @escaping (Result<Void, Error>) -> Void) {
+    func get(forceFetch: Bool = false, completion: @escaping (Result<Void, Error>) -> Void) {
         self.isLoadingPage = true
         
+        if forceFetch {
+            (repository as? RepositoryCache)?.clearCache()
+        }
         performApiOperation(
             {
                 return try await self.repository.getCategories()
@@ -25,11 +29,15 @@ final class CategoryRemoteGetterViewModel: BaseApiViewModel {
                 self.frontCategories = categoryItemModel.frontCategory
                 self.backCategories = categoryItemModel.backCategory
                 ErrorManager.shared.clearError(for: .categoriesGet)
+                Logger.debug("[CategoryRemoteGetterViewModel]: Categories updated - front: \(categoryItemModel.frontCategory.count), back: \(categoryItemModel.backCategory.count)")
             },
             source: .categoriesGet,
             frame: frame,
             message: "Failed to fetch categories from api request",
-            additionalInfo: ["function": "getCategories"],
+            additionalInfo: [
+                "function": "getCategories",
+                "forceFetch": "\(forceFetch)"
+            ],
             completion: { [weak self] result in
                 self?.isLoadingPage = false
                 completion(result)

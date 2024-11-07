@@ -33,7 +33,6 @@ class RepositoryAPI: APIRepositoryProtocol {
             body: body
         )
         let response = try JSONDecoder().decode(ApiDictionaryResponseModel.self, from: data)
-        Logger.debug("[RepositoryAPI]: getDictionaries - \(request)")
 
         let dictionaries = response.data.items.map { dictionaryItem in
             DictionaryItemModel(

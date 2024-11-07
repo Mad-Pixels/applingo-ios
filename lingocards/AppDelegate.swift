@@ -30,6 +30,7 @@ struct LingocardApp: App {
             ErrorManager.shared.setError(appError: appError, frame: .main, source: .initialization)
         }
         APIManager.configure(baseURL: apiUrl, token: apiToken)
+        _ = RepositoryCache.shared
     }
 
     var body: some Scene {

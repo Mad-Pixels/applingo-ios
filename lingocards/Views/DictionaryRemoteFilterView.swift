@@ -14,7 +14,7 @@ struct DictionaryRemoteFilterView: View {
 
     init(apiRequestParams: Binding<DictionaryQueryRequest>) {
         self._apiRequestParams = apiRequestParams
-        _categoryGetter = StateObject(wrappedValue: CategoryRemoteGetterViewModel(repository: RepositoryAPI()))
+        _categoryGetter = StateObject(wrappedValue: CategoryRemoteGetterViewModel())
     }
 
     var body: some View {

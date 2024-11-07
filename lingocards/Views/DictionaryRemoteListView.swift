@@ -14,7 +14,7 @@ struct DictionaryRemoteListView: View {
 
     init(isPresented: Binding<Bool>) {
         self._isPresented = isPresented
-        _dictionaryGetter = StateObject(wrappedValue: DictionaryRemoteGetterViewModel(repository: RepositoryAPI()))
+        _dictionaryGetter = StateObject(wrappedValue: DictionaryRemoteGetterViewModel())
     }
 
     var body: some View {
