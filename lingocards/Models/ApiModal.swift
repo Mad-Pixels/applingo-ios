@@ -110,3 +110,24 @@ struct ApiDictionaryResponseModel: Codable {
         }
     }
 }
+
+struct DictionaryDownloadRequest: Codable, Equatable {
+    let dictionary: String
+    
+    enum CodingKeys: String, CodingKey {
+        case dictionary
+    }
+    
+    func toDictionary() -> [String: Any] {
+        return ["dictionary": dictionary]
+    }
+}
+
+// Ответ с pre-signed URL от S3
+struct ApiDownloadResponseModel: Codable {
+    let data: DownloadData
+    
+    struct DownloadData: Codable {
+        let url: String
+    }
+}

@@ -6,13 +6,39 @@ enum HTTPMethod: String {
     case post = "POST"
 }
 
-enum APIError: Error {
+enum APIError: Error, LocalizedError {
     case baseURLNotConfigured
     case invalidBaseURL(url: String)
     case invalidEndpointURL(endpoint: String)
     case invalidAPIResponse
     case apiErrorMessage(message: String, statusCode: Int)
     case httpError(statusCode: Int)
+    case s3Error(message: String)
+    case emptyDictionary
+    case invalidCSVFormat(message: String)
+    
+    var errorDescription: String? {
+        switch self {
+        case .baseURLNotConfigured:
+            return "API base URL is not configured"
+        case .invalidBaseURL(let url):
+            return "Invalid base URL: \(url)"
+        case .invalidEndpointURL(let endpoint):
+            return "Invalid endpoint URL: \(endpoint)"
+        case .invalidAPIResponse:
+            return "Invalid API response"
+        case .apiErrorMessage(let message, let statusCode):
+            return "API error (\(statusCode)): \(message)"
+        case .httpError(let statusCode):
+            return "HTTP error: \(statusCode)"
+        case .s3Error(let message):
+            return "Failed to download dictionary: \(message)"
+        case .emptyDictionary:
+            return "Dictionary is empty or contains no valid words"
+        case .invalidCSVFormat(let message):
+            return "Invalid CSV format: \(message)"
+        }
+    }
 }
 
 class APIManager {

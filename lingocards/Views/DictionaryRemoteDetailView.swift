@@ -3,14 +3,15 @@ import SwiftUI
 struct DictionaryRemoteDetailView: View {
     @Environment(\.presentationMode) private var presentationMode
     @State private var editedDictionary: DictionaryItemModel
+    @State private var isDownloading = false
+    @State private var showError = false
+    @State private var errorMessage = ""
 
     @Binding var isPresented: Bool
-    let onDownload: () -> Void
-
-    init(dictionary: DictionaryItemModel, isPresented: Binding<Bool>, onDownload: @escaping () -> Void) {
+    
+    init(dictionary: DictionaryItemModel, isPresented: Binding<Bool>, onDownload: @escaping () -> Void = {}) {
         _editedDictionary = State(initialValue: dictionary)
         _isPresented = isPresented
-        self.onDownload = onDownload
     }
 
     var body: some View {
@@ -81,15 +82,22 @@ struct DictionaryRemoteDetailView: View {
                     }
                     Spacer()
 
-                    CompButtonActionView(
-                        title: LanguageManager.shared.localizedString(
-                            for: "Download"
-                        ).capitalizedFirstLetter,
-                        action: onDownload
-                    )
-                    .padding()
+                    if isDownloading {
+                        ProgressView(LanguageManager.shared.localizedString(for: "Downloading"))
+                            .progressViewStyle(CircularProgressViewStyle())
+                            .padding()
+                    } else {
+                        CompButtonActionView(
+                            title: LanguageManager.shared.localizedString(
+                                for: "Download"
+                            ).capitalizedFirstLetter,
+                            action: downloadDictionary
+                        )
+                        .padding()
+                    }
                 }
                 .background(theme.detailsColor)
+                .disabled(isDownloading)
             }
             .onAppear {
                 FrameManager.shared.setActiveFrame(.dictionaryRemoteDetail)
@@ -108,6 +116,37 @@ struct DictionaryRemoteDetailView: View {
                         .foregroundColor(theme.accentColor)
                 }
             )
+            .alert(isPresented: $showError) {
+                Alert(
+                    title: Text(LanguageManager.shared.localizedString(for: "Error")),
+                    message: Text(errorMessage),
+                    dismissButton: .default(Text(LanguageManager.shared.localizedString(for: "OK")))
+                )
+            }
+        }
+    }
+    
+    private func downloadDictionary() {
+        isDownloading = true
+        Logger.debug("[DictionaryRemoteDetailView]: Starting download for dictionary \(editedDictionary.tableName)")
+        
+        Task {
+            do {
+                try await RepositoryCache.shared.downloadDictionary(editedDictionary)
+                
+                await MainActor.run {
+                    isDownloading = false
+                    Logger.debug("[DictionaryRemoteDetailView]: Dictionary downloaded successfully")
+                    presentationMode.wrappedValue.dismiss()
+                }
+            } catch {
+                await MainActor.run {
+                    isDownloading = false
+                    errorMessage = error.localizedDescription
+                    showError = true
+                    print("[DictionaryRemoteDetailView]: Download failed - \(error.localizedDescription)")
+                }
+            }
         }
     }
 }

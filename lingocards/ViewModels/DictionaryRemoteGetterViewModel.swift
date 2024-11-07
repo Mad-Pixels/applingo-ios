@@ -110,7 +110,6 @@ final class DictionaryRemoteGetterViewModel: BaseApiViewModel {
             hasMorePages = (lastEvaluated != nil)
             updateFilteredDictionaries()
         }
-        
         Logger.debug("[DictionaryRemoteGetterViewModel] Processed dictionaries - total: \(allDictionaries.count), filtered: \(dictionaries.count), hasMore: \(hasMorePages), searchText: '\(searchText)'")
     }
     
