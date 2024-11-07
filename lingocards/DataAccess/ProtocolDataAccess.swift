@@ -22,7 +22,7 @@ protocol WordRepositoryProtocol {
 }
 
 protocol APIRepositoryProtocol {
-    func getDictionaries(request: DictionaryQueryRequest?) async throws -> (dictionaries: [DictionaryItemModel], lastEvaluated: String?)
+    func getDictionaries(request: ApiDictionaryQueryRequestModel?) async throws -> (dictionaries: [DictionaryItemModel], lastEvaluated: String?)
     func downloadDictionary(_ dictionary: DictionaryItemModel) async throws
     func getCategories() async throws -> CategoryItemModel
 }

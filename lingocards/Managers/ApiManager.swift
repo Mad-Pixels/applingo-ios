@@ -84,7 +84,7 @@ class APIManager {
         }
 
         guard httpResponse.statusCode == 200 else {
-            if let apiErrorMessage = try? JSONDecoder().decode(APIErrorMessage.self, from: data) {
+            if let apiErrorMessage = try? JSONDecoder().decode(ApiErrorMessageModel.self, from: data) {
                 throw APIError.apiErrorMessage(message: apiErrorMessage.message, statusCode: httpResponse.statusCode)
             } else {
                 throw APIError.httpError(statusCode: httpResponse.statusCode)

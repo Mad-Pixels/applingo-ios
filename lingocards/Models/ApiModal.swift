@@ -1,10 +1,10 @@
 import Foundation
 
-struct APIErrorMessage: Decodable {
+struct ApiErrorMessageModel: Decodable {
     let message: String
 }
 
-struct DictionaryQueryRequest: Codable, Equatable {
+struct ApiDictionaryQueryRequestModel: Codable, Equatable {
     var subcategory: String?
     var isPublic: Bool?
     var sortBy: String?
@@ -53,7 +53,7 @@ struct DictionaryQueryRequest: Codable, Equatable {
     }
 }
 
-extension DictionaryQueryRequest.SortBy {
+extension ApiDictionaryQueryRequestModel.SortBy {
     var displayName: String {
         switch self {
         case .date:
@@ -63,20 +63,32 @@ extension DictionaryQueryRequest.SortBy {
         }
     }
     
-    static var allCases: [DictionaryQueryRequest.SortBy] {
+    static var allCases: [ApiDictionaryQueryRequestModel.SortBy] {
         [.date, .rating]
     }
 }
 
-struct ApiCategoryResponseModel: Codable {
+struct ApiDictionaryDownloadRequestModel: Codable, Equatable {
+    let dictionary: String
+    
+    enum CodingKeys: String, CodingKey {
+        case dictionary
+    }
+    
+    func toDictionary() -> [String: Any] {
+        return ["dictionary": dictionary]
+    }
+}
+
+struct ApiCategoryGetResponseModel: Codable {
     let data: CategoryItemModel
 }
 
-struct ApiDictionaryResponseModel: Codable {
+struct ApiDictionaryQueryResponseModel: Codable {
     let data: DataContainer
     
     struct DataContainer: Codable {
-        let items: [DictionaryItem]
+        let items: [DictionaryResponseItemModel]
         let lastEvaluated: String?
         
         enum CodingKeys: String, CodingKey {
@@ -85,7 +97,7 @@ struct ApiDictionaryResponseModel: Codable {
         }
     }
     
-    struct DictionaryItem: Codable {
+    struct DictionaryResponseItemModel: Codable {
         let name: String
         let category: String
         let subcategory: String
@@ -111,20 +123,7 @@ struct ApiDictionaryResponseModel: Codable {
     }
 }
 
-struct DictionaryDownloadRequest: Codable, Equatable {
-    let dictionary: String
-    
-    enum CodingKeys: String, CodingKey {
-        case dictionary
-    }
-    
-    func toDictionary() -> [String: Any] {
-        return ["dictionary": dictionary]
-    }
-}
-
-// Ответ с pre-signed URL от S3
-struct ApiDownloadResponseModel: Codable {
+struct ApiDictionaryDownloadResponseModel: Codable {
     let data: DownloadData
     
     struct DownloadData: Codable {

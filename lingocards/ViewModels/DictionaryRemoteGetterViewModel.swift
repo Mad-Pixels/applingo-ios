@@ -14,7 +14,7 @@ final class DictionaryRemoteGetterViewModel: BaseApiViewModel {
     }
     
     private var allDictionaries: [DictionaryItemModel] = []
-    private var currentRequest: DictionaryQueryRequest?
+    private var currentRequest: ApiDictionaryQueryRequestModel?
     private var hasMorePages = true
     private var lastEvaluated: String?
     private var frame: AppFrameModel = .main
@@ -24,7 +24,7 @@ final class DictionaryRemoteGetterViewModel: BaseApiViewModel {
         super.init()
     }
     
-    func resetPagination(with request: DictionaryQueryRequest? = nil) {
+    func resetPagination(with request: ApiDictionaryQueryRequestModel? = nil) {
         if let request = request {
             currentRequest = request
         }
@@ -37,7 +37,7 @@ final class DictionaryRemoteGetterViewModel: BaseApiViewModel {
         get()
     }
     
-    func get(queryRequest: DictionaryQueryRequest? = nil) {
+    func get(queryRequest: ApiDictionaryQueryRequestModel? = nil) {
         guard !isLoadingPage, hasMorePages else {
             return
         }
@@ -45,7 +45,7 @@ final class DictionaryRemoteGetterViewModel: BaseApiViewModel {
         let currentToken = cancellationToken
         isLoadingPage = true
         
-        var request = queryRequest ?? currentRequest ?? DictionaryQueryRequest()
+        var request = queryRequest ?? currentRequest ?? ApiDictionaryQueryRequestModel()
         request.isPublic = true
         request.lastEvaluated = self.lastEvaluated
         

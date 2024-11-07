@@ -6,14 +6,14 @@ struct DictionaryRemoteFilterView: View {
     @StateObject private var categoryGetter: CategoryRemoteGetterViewModel
     @State private var selectedFrontCategory: CategoryItem? = nil
     @State private var selectedBackCategory: CategoryItem? = nil
-    @State private var selectedSortBy: DictionaryQueryRequest.SortBy = .date
+    @State private var selectedSortBy: ApiDictionaryQueryRequestModel.SortBy = .date
 
-    @Binding var apiRequestParams: DictionaryQueryRequest
+    @Binding var apiRequestParams: ApiDictionaryQueryRequestModel
     
     @State private var errorMessage: String = ""
     @State private var isShowingAlert = false
 
-    init(apiRequestParams: Binding<DictionaryQueryRequest>) {
+    init(apiRequestParams: Binding<ApiDictionaryQueryRequestModel>) {
         self._apiRequestParams = apiRequestParams
         _categoryGetter = StateObject(wrappedValue: CategoryRemoteGetterViewModel())
         
@@ -75,7 +75,7 @@ struct DictionaryRemoteFilterView: View {
                         
                         CompSelectView(
                             selectedValue: $selectedSortBy,
-                            items: DictionaryQueryRequest.SortBy.allCases,
+                            items: ApiDictionaryQueryRequestModel.SortBy.allCases,
                             title: LanguageManager.shared.localizedString(for: "SortBy"),
                             style: .segmented
                         ) { sortBy in

@@ -13,7 +13,7 @@ private struct CacheEntry<T> {
 private struct DictionaryCacheEntry {
     let items: [DictionaryItemModel]
     let lastEvaluated: String?
-    let request: DictionaryQueryRequest?
+    let request: ApiDictionaryQueryRequestModel?
     let timestamp: Date
     let ttl: TimeInterval
     
@@ -57,7 +57,7 @@ final class RepositoryCache: APIRepositoryProtocol {
         return categories
     }
     
-    func getDictionaries(request: DictionaryQueryRequest? = nil) async throws -> (dictionaries: [DictionaryItemModel], lastEvaluated: String?) {
+    func getDictionaries(request: ApiDictionaryQueryRequestModel? = nil) async throws -> (dictionaries: [DictionaryItemModel], lastEvaluated: String?) {
         if let cacheEntry = findValidDictionaryCacheEntry(for: request) {
             Logger.debug("[RepositoryCache]: getDictionaries - returned from cache for request: \(String(describing: request))")
             return (dictionaries: cacheEntry.items, lastEvaluated: cacheEntry.lastEvaluated)
@@ -91,7 +91,7 @@ final class RepositoryCache: APIRepositoryProtocol {
         Logger.debug("[RepositoryCache]: cache cleared")
     }
     
-    private func findValidDictionaryCacheEntry(for request: DictionaryQueryRequest?) -> DictionaryCacheEntry? {
+    private func findValidDictionaryCacheEntry(for request: ApiDictionaryQueryRequestModel?) -> DictionaryCacheEntry? {
         return dictionariesCache.first { entry in
             entry.isValid && entry.request == request
         }
