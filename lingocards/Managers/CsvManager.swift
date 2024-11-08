@@ -72,55 +72,88 @@ class CSVManager {
         var wordItems = [WordItemModel]()
         
         do {
+            // Читаем содержимое файла
             let content = try String(contentsOf: url, encoding: .utf8)
-            let lines = content.components(separatedBy: .newlines)
-            let sampleLines = lines.prefix(15)
-            var sampleColumnsMatrix = [[String]]()
             
-            for line in sampleLines {
-                let trimmedLine = line.trimmingCharacters(in: .whitespacesAndNewlines)
-                guard !trimmedLine.isEmpty else { continue }
-                
-                let columns = parseCSVLine(line: trimmedLine)
-                sampleColumnsMatrix.append(columns)
+            // Определяем разделитель на основе содержимого
+            let separator = detectSeparator(in: content)
+            Logger.debug("[CSVManager]: Detected separator: \(separator)")
+            
+            // Разбиваем на строки и очищаем от пустых
+            let lines = content.components(separatedBy: .newlines)
+                .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+                .filter { !$0.isEmpty }
+            
+            // Проверяем минимальное количество строк
+            guard !lines.isEmpty else {
+                throw CSVManagerError.csvReadFailed("File is empty")
             }
             
+            // Берем первые строки для анализа (пропускаем первую если это заголовок)
+            let startIndex = lines[0].lowercased().contains("front") ||
+                            lines[0].lowercased().contains("text") ? 1 : 0
+            let sampleLines = Array(lines[startIndex..<min(startIndex + 15, lines.count)])
+            
+            // Создаем матрицу значений для анализа
+            var sampleColumnsMatrix = [[String]]()
+            for line in sampleLines {
+                let columns = parseCSVLine(line: line, separator: separator)
+                if !columns.isEmpty {
+                    sampleColumnsMatrix.append(columns)
+                }
+            }
+            
+            // Проверяем что у нас есть данные для анализа
+            guard !sampleColumnsMatrix.isEmpty else {
+                throw CSVManagerError.csvReadFailed("No valid data found for analysis")
+            }
+            
+            // Определяем типы колонок через модель
             var columnLabels = try classifyColumns(sampleColumnsMatrix: sampleColumnsMatrix) ??
                 ["front_text", "back_text", "hint", "description"]
             
-            for line in lines {
-                let trimmedLine = line.trimmingCharacters(in: .whitespacesAndNewlines)
-                guard !trimmedLine.isEmpty else { continue }
-                
-                let columns = parseCSVLine(line: trimmedLine)
+            // Обрабатываем все строки файла
+            for line in lines[startIndex...] {
+                let columns = parseCSVLine(line: line, separator: separator)
                 if columns.isEmpty { continue }
                 
+                // Если колонок больше чем меток, добавляем метки description
                 if columns.count > columnLabels.count {
                     let additionalLabels = Array(repeating: "description", count: columns.count - columnLabels.count)
                     columnLabels.append(contentsOf: additionalLabels)
                 }
                 
+                // Маппим значения в соответствующие поля
                 var description: String?
                 var frontText: String?
                 var backText: String?
                 var hint: String?
                 
                 for (index, value) in columns.enumerated() {
+                    let trimmedValue = value.trimmingCharacters(in: .whitespacesAndNewlines)
+                    guard !trimmedValue.isEmpty else { continue }
+                    
                     let columnLabel = index < columnLabels.count ? columnLabels[index] : "description"
                     switch columnLabel {
                     case "front_text":
-                        frontText = value
+                        frontText = trimmedValue
                     case "back_text":
-                        backText = value
+                        backText = trimmedValue
                     case "hint":
-                        hint = value
+                        hint = trimmedValue
                     case "description":
-                        description = value
+                        // Если description уже есть, добавляем новое значение через разделитель
+                        if let existingDescription = description {
+                            description = existingDescription + " | " + trimmedValue
+                        } else {
+                            description = trimmedValue
+                        }
                     default:
                         break
                     }
                 }
                 
+                // Создаем WordItem только если есть обязательные поля
                 guard let ft = frontText, let bt = backText else { continue }
                 
                 let wordItem = WordItemModel(
@@ -132,7 +165,10 @@ class CSVManager {
                 )
                 wordItems.append(wordItem)
             }
+            
+            Logger.debug("[CSVManager]: Successfully parsed \(wordItems.count) items")
             return wordItems
+            
         } catch {
             throw CSVManagerError.csvReadFailed(error.localizedDescription)
         }
@@ -189,7 +225,7 @@ class CSVManager {
         return "und"
     }
     
-    private func parseCSVLine(line: String) -> [String] {
+    private func parseCSVLine(line: String, separator: String) -> [String] {
         var result: [String] = []
         var currentField = ""
         var insideQuotes = false
@@ -203,7 +239,8 @@ class CSVManager {
                             currentField.append("\"")
                         } else {
                             insideQuotes = false
-                            if nextChar != "," {
+                            // Используем переданный разделитель
+                            if String(nextChar) != separator {
                                 currentField.append(nextChar)
                             } else {
                                 result.append(currentField)
@@ -216,7 +253,7 @@ class CSVManager {
                 } else {
                     insideQuotes = true
                 }
-            } else if char == "," && !insideQuotes {
+            } else if String(char) == separator && !insideQuotes {
                 result.append(currentField)
                 currentField = ""
             } else {
@@ -229,5 +266,47 @@ class CSVManager {
     
     private func generateTableName() -> String {
         return "dict-\(UUID().uuidString.prefix(8))"
+    }
+    
+    //
+    ///
+    ///
+    ///
+    ///
+    ///
+    ///
+    ///
+    ///
+    
+    private func detectSeparator(in content: String) -> String {
+        // Возможные разделители
+        let possibleSeparators = [",", ";", "\t", "|"]
+        
+        // Берем первые несколько строк для анализа
+        let lines = content.components(separatedBy: .newlines)
+            .prefix(10)
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { !$0.isEmpty }
+        
+        var separatorScores: [String: Int] = [:]
+        
+        // Для каждого возможного разделителя
+        for separator in possibleSeparators {
+            for line in lines {
+                let components = line.components(separatedBy: separator)
+                // Если строка разбивается на 2-4 части - это хороший кандидат
+                if (2...4).contains(components.count) {
+                    separatorScores[separator, default: 0] += 1
+                }
+            }
+        }
+        
+        // Выбираем разделитель который сработал для большинства строк
+        if let (bestSeparator, _) = separatorScores.max(by: { $0.value < $1.value }) {
+            return bestSeparator
+        }
+        
+        // Если не смогли определить, используем запятую по умолчанию
+        return ","
     }
 }
