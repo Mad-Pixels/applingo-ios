@@ -20,7 +20,6 @@ class RepositoryDictionary: DictionaryRepositoryProtocol {
                 sql += " WHERE displayName LIKE ?"
                 arguments.append("%\(searchText)%")
             }
-            
             sql += " ORDER BY id ASC LIMIT ? OFFSET ?"
             arguments.append(limit)
             arguments.append(offset)

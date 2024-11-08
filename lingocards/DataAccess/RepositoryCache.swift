@@ -57,7 +57,12 @@ final class RepositoryCache: ApiRepositoryProtocol {
         return categories
     }
     
-    func getDictionaries(request: ApiDictionaryQueryRequestModel? = nil) async throws -> (dictionaries: [DictionaryItemModel], lastEvaluated: String?) {
+    func getDictionaries(
+        request: ApiDictionaryQueryRequestModel? = nil
+    ) async throws -> (
+        dictionaries: [DictionaryItemModel],
+        lastEvaluated: String?
+    ) {
         if let cacheEntry = findValidDictionaryCacheEntry(for: request) {
             Logger.debug("[RepositoryCache]: getDictionaries - returned from cache for request: \(String(describing: request))")
             return (dictionaries: cacheEntry.items, lastEvaluated: cacheEntry.lastEvaluated)
@@ -72,7 +77,6 @@ final class RepositoryCache: ApiRepositoryProtocol {
             timestamp: Date(),
             ttl: dictionariesTTL
         )
-        
         dictionariesCache.removeAll { $0.request == request }
         dictionariesCache.append(entry)
         
