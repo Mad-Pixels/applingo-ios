@@ -5,49 +5,62 @@ import CoreML
 import GRDB
 
 enum CSVManagerError: Error, LocalizedError {
-    case databaseConnectionNotEstablished
-    case csvReadFailed(String)
-    case modelPredictionFailed(String)
-    case csvImportFailed(String)
-    
-    var errorDescription: String? {
-        switch self {
-        case .databaseConnectionNotEstablished:
-            return "Database connection is not established."
-        case .csvReadFailed(let details):
-            return "Failed to read CSV file. Details: \(details)"
-        case .modelPredictionFailed(let details):
-            return "Model prediction failed. Details: \(details)"
-        case .csvImportFailed(let details):
-            return "CSV import failed. Details: \(details)"
-        }
-    }
+   case databaseConnectionNotEstablished
+   case csvReadFailed(String)
+   case modelPredictionFailed(String)
+   case csvImportFailed(String)
+   case notEnoughColumns
+   
+   var errorDescription: String? {
+       switch self {
+       case .databaseConnectionNotEstablished:
+           return "Database connection is not established."
+       case .csvReadFailed(let details):
+           return "Failed to read CSV file. Details: \(details)"
+       case .modelPredictionFailed(let details):
+           return "Model prediction failed. Details: \(details)"
+       case .csvImportFailed(let details):
+           return "CSV import failed. Details: \(details)"
+       case .notEnoughColumns:
+           return "CSV must contain at least 2 columns (front_text, back_text)"
+       }
+   }
 }
 
 class CSVManager {
     static let shared = CSVManager()
     private init() {}
-    
+   
     private let model: ColumnClassifier = {
         let config = MLModelConfiguration()
         return try! ColumnClassifier(configuration: config)
     }()
-    
+   
     func parse(url: URL, dictionaryItem: DictionaryItemModel? = nil) throws -> (dictionary: DictionaryItemModel, words: [WordItemModel]) {
-        let tableName = dictionaryItem?.tableName ?? generateTableName()
+        let tableName = generateTableName()
         
-        let dictionary = dictionaryItem ?? DictionaryItemModel(
-            displayName: tableName,
-            tableName: generateTableName(),
-            description: "Imported from local file: '\(tableName).csv'",
-            category: "Local",
-            subcategory: "personal",
-            author: "local user"
-        )
-        
+        let dictionary: DictionaryItemModel
+        if let existingDictionary = dictionaryItem {
+            dictionary = DictionaryItemModel(
+                displayName: existingDictionary.displayName,
+                tableName: tableName, // Новый tableName
+                description: existingDictionary.description,
+                category: existingDictionary.category,
+                subcategory: existingDictionary.subcategory,
+                author: existingDictionary.author
+            )
+        } else {
+            dictionary = DictionaryItemModel(
+                displayName: url.deletingPathExtension().lastPathComponent,
+                tableName: tableName,
+                description: "Imported from local file: '\(url.lastPathComponent)'",
+                category: "Local",
+                subcategory: "personal",
+                author: "local user"
+            )
+        }
         let words = try parseCSV(at: url, tableName: tableName)
         Logger.debug("[CSVManager]: Parsed \(words.count) words from CSV")
-        
         return (dictionary, words)
     }
     
@@ -55,11 +68,10 @@ class CSVManager {
         guard let dbQueue = DatabaseManager.shared.databaseQueue else {
             throw CSVManagerError.databaseConnectionNotEstablished
         }
-        
         try dbQueue.write { db in
             try dictionary.insert(db)
             Logger.debug("[CSVManager]: Created dictionary entry: \(dictionary.tableName)")
-            
+           
             for var wordItem in words {
                 wordItem.tableName = dictionary.tableName
                 try wordItem.insert(db)
@@ -68,245 +80,108 @@ class CSVManager {
         }
     }
     
-    private func parseCSV(at url: URL, tableName: String) throws -> [WordItemModel] {
-        var wordItems = [WordItemModel]()
-        
-        do {
-            // Читаем содержимое файла
-            let content = try String(contentsOf: url, encoding: .utf8)
-            
-            // Определяем разделитель на основе содержимого
-            let separator = detectSeparator(in: content)
-            Logger.debug("[CSVManager]: Detected separator: \(separator)")
-            
-            // Разбиваем на строки и очищаем от пустых
-            let lines = content.components(separatedBy: .newlines)
-                .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-                .filter { !$0.isEmpty }
-            
-            // Проверяем минимальное количество строк
-            guard !lines.isEmpty else {
-                throw CSVManagerError.csvReadFailed("File is empty")
-            }
-            
-            // Берем первые строки для анализа (пропускаем первую если это заголовок)
-            let startIndex = lines[0].lowercased().contains("front") ||
-                            lines[0].lowercased().contains("text") ? 1 : 0
-            let sampleLines = Array(lines[startIndex..<min(startIndex + 15, lines.count)])
-            
-            // Создаем матрицу значений для анализа
-            var sampleColumnsMatrix = [[String]]()
-            for line in sampleLines {
-                let columns = parseCSVLine(line: line, separator: separator)
-                if !columns.isEmpty {
-                    sampleColumnsMatrix.append(columns)
-                }
-            }
-            
-            // Проверяем что у нас есть данные для анализа
-            guard !sampleColumnsMatrix.isEmpty else {
-                throw CSVManagerError.csvReadFailed("No valid data found for analysis")
-            }
-            
-            // Определяем типы колонок через модель
-            var columnLabels = try classifyColumns(sampleColumnsMatrix: sampleColumnsMatrix) ??
-                ["front_text", "back_text", "hint", "description"]
-            
-            // Обрабатываем все строки файла
-            for line in lines[startIndex...] {
-                let columns = parseCSVLine(line: line, separator: separator)
-                if columns.isEmpty { continue }
-                
-                // Если колонок больше чем меток, добавляем метки description
-                if columns.count > columnLabels.count {
-                    let additionalLabels = Array(repeating: "description", count: columns.count - columnLabels.count)
-                    columnLabels.append(contentsOf: additionalLabels)
-                }
-                
-                // Маппим значения в соответствующие поля
-                var description: String?
-                var frontText: String?
-                var backText: String?
-                var hint: String?
-                
-                for (index, value) in columns.enumerated() {
-                    let trimmedValue = value.trimmingCharacters(in: .whitespacesAndNewlines)
-                    guard !trimmedValue.isEmpty else { continue }
-                    
-                    let columnLabel = index < columnLabels.count ? columnLabels[index] : "description"
-                    switch columnLabel {
-                    case "front_text":
-                        frontText = trimmedValue
-                    case "back_text":
-                        backText = trimmedValue
-                    case "hint":
-                        hint = trimmedValue
-                    case "description":
-                        // Если description уже есть, добавляем новое значение через разделитель
-                        if let existingDescription = description {
-                            description = existingDescription + " | " + trimmedValue
-                        } else {
-                            description = trimmedValue
-                        }
-                    default:
-                        break
-                    }
-                }
-                
-                // Создаем WordItem только если есть обязательные поля
-                guard let ft = frontText, let bt = backText else { continue }
-                
-                let wordItem = WordItemModel(
-                    tableName: tableName,
-                    frontText: ft,
-                    backText: bt,
-                    description: description,
-                    hint: hint
-                )
-                wordItems.append(wordItem)
-            }
-            
-            Logger.debug("[CSVManager]: Successfully parsed \(wordItems.count) items")
-            return wordItems
-            
-        } catch {
-            throw CSVManagerError.csvReadFailed(error.localizedDescription)
+    private struct ColumnsStructure {
+        let columnTypes: [String]
+        let hasRequiredColumns: Bool
+       
+        init(columnTypes: [String]) {
+            self.columnTypes = columnTypes
+            self.hasRequiredColumns = columnTypes.contains("front_text") && columnTypes.contains("back_text")
         }
     }
     
-    private func classifyColumns(sampleColumnsMatrix: [[String]]) throws -> [String]? {
-        guard let numberOfColumns = sampleColumnsMatrix.first?.count else { return nil }
-        var columnLabels = [String]()
-        
-        for columnIndex in 0..<numberOfColumns {
-            var predictionsCount = [String: Int]()
-            
-            for row in sampleColumnsMatrix {
-                if columnIndex >= row.count { continue }
-                
-                let text = row[columnIndex]
-                let language = detectLanguage(for: text)
-                let length = Int64(text.count)
-                let isEmpty = text.isEmpty ? "true" : "false"
-                
-                let input = ColumnClassifierInput(
-                    Language: language,
-                    Length: length,
-                    Column_Index: Int64(columnIndex),
-                    Is_Empty: isEmpty
-                )
-                
-                do {
-                    let prediction = try model.prediction(input: input)
-                    let label = prediction.Label
-                    predictionsCount[label, default: 0] += 1
-                } catch {
-                    throw CSVManagerError.modelPredictionFailed(error.localizedDescription)
-                }
-            }
-            
-            if let (mostFrequentLabel, _) = predictionsCount.max(by: { $0.value < $1.value }) {
-                columnLabels.append(mostFrequentLabel)
-            } else {
-                return nil
-            }
+    private func analyzeColumnsStructure(_ sampleData: [[String]]) throws -> ColumnsStructure {
+        guard let numberOfColumns = sampleData.first?.count else {
+            throw CSVManagerError.csvReadFailed("No columns found in sample data")
         }
-        return columnLabels
-    }
-    
-    private func detectLanguage(for text: String) -> String {
-        let recognizer = NLLanguageRecognizer()
-        recognizer.processString(text)
-        if let language = recognizer.dominantLanguage {
-            let languageCode = language.rawValue
-            let knownLanguages: Set<String> = ["de", "en", "es", "fr", "he", "ru", "zh", "und"]
-            return knownLanguages.contains(languageCode) ? languageCode : "und"
-        }
-        return "und"
-    }
-    
-    private func parseCSVLine(line: String, separator: String) -> [String] {
-        var result: [String] = []
-        var currentField = ""
-        var insideQuotes = false
-        var iterator = line.makeIterator()
-        
-        while let char = iterator.next() {
-            if char == "\"" {
-                if insideQuotes {
-                    if let nextChar = iterator.next() {
-                        if nextChar == "\"" {
-                            currentField.append("\"")
-                        } else {
-                            insideQuotes = false
-                            // Используем переданный разделитель
-                            if String(nextChar) != separator {
-                                currentField.append(nextChar)
-                            } else {
-                                result.append(currentField)
-                                currentField = ""
-                            }
-                        }
-                    } else {
-                        insideQuotes = false
-                    }
-                } else {
-                    insideQuotes = true
-                }
-            } else if String(char) == separator && !insideQuotes {
-                result.append(currentField)
-                currentField = ""
-            } else {
-                currentField.append(char)
-            }
-        }
-        result.append(currentField)
-        return result
-    }
-    
-    private func generateTableName() -> String {
-        return "dict-\(UUID().uuidString.prefix(8))"
-    }
-    
-    //
-    ///
-    ///
-    ///
-    ///
-    ///
-    ///
-    ///
-    ///
-    
-    private func detectSeparator(in content: String) -> String {
-        // Возможные разделители
-        let possibleSeparators = [",", ";", "\t", "|"]
-        
-        // Берем первые несколько строк для анализа
-        let lines = content.components(separatedBy: .newlines)
-            .prefix(10)
-            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-            .filter { !$0.isEmpty }
-        
-        var separatorScores: [String: Int] = [:]
-        
-        // Для каждого возможного разделителя
-        for separator in possibleSeparators {
-            for line in lines {
-                let components = line.components(separatedBy: separator)
-                // Если строка разбивается на 2-4 части - это хороший кандидат
-                if (2...4).contains(components.count) {
-                    separatorScores[separator, default: 0] += 1
-                }
-            }
-        }
-        
-        // Выбираем разделитель который сработал для большинства строк
-        if let (bestSeparator, _) = separatorScores.max(by: { $0.value < $1.value }) {
-            return bestSeparator
-        }
-        
-        // Если не смогли определить, используем запятую по умолчанию
-        return ","
-    }
+       
+       // Формируем данные для модели из всех sample строк
+       var columnTypes = [String]()
+       
+       for columnIndex in 0..<numberOfColumns {
+           // Собираем данные по колонке
+           var values = [String]()
+           var totalLength: Int64 = 0
+           var emptyCount = 0
+           
+           for row in sampleData {
+               guard columnIndex < row.count else { continue }
+               let value = row[columnIndex]
+               values.append(value)
+               
+               totalLength += Int64(value.count)
+               if value.isEmpty {
+                   emptyCount += 1
+               }
+           }
+           
+           // Определяем основные характеристики колонки
+           let avgLength = totalLength / Int64(max(1, values.count))
+           let language = detectCsvLanguage(for: values.joined(separator: " "))
+           let isEmpty = emptyCount > values.count / 2 ? "true" : "false"
+           
+           // Получаем предсказание от модели
+           let input = ColumnClassifierInput(
+               Language: language,
+               Length: avgLength,
+               Column_Index: Int64(columnIndex),
+               Is_Empty: isEmpty
+           )
+           
+           do {
+               let prediction = try model.prediction(input: input)
+               columnTypes.append(prediction.Label)
+           } catch {
+               throw CSVManagerError.modelPredictionFailed(error.localizedDescription)
+           }
+       }
+       
+       return ColumnsStructure(columnTypes: columnTypes)
+   }
+   
+   private func parseCSV(at url: URL, tableName: String) throws -> [WordItemModel] {
+       // Читаем файл
+       let content = try String(contentsOf: url, encoding: .utf8)
+       
+       // Определяем разделитель
+       let separator = detectCsvSeparator(in: content)
+       Logger.debug("[CSVManager]: Detected separator: \(separator)")
+       
+       // Получаем строки
+       let lines = content.components(separatedBy: .newlines)
+           .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+           .filter { !$0.isEmpty }
+       
+       guard !lines.isEmpty else {
+           throw CSVManagerError.csvReadFailed("File is empty")
+       }
+       
+       // Определяем начало данных (пропускаем заголовок если есть)
+       let startIndex = lines[0].lowercased().contains("front") ||
+                       lines[0].lowercased().contains("text") ? 1 : 0
+       
+       // Берем sample для анализа
+       let sampleSize = 30
+       let sampleLines = Array(lines[startIndex..<min(startIndex + sampleSize, lines.count)])
+           .map { parseCsvLine(line: $0, separator: separator) }
+       
+       // Получаем структуру колонок от модели
+       let structure = try analyzeColumnsStructure(sampleLines)
+       
+       guard structure.hasRequiredColumns else {
+           throw CSVManagerError.notEnoughColumns
+       }
+       
+       // Парсим все строки согласно определенной структуре
+       return try parseCsvLines(
+           lines: Array(lines[startIndex...]),
+           columnTypes: structure.columnTypes,
+           separator: separator,
+           tableName: tableName
+       )
+   }
+   
+   private func generateTableName() -> String {
+       return "dict-\(UUID().uuidString.prefix(8))"
+   }
 }
