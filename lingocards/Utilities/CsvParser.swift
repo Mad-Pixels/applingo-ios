@@ -111,3 +111,7 @@ func detectCsvLanguage(for text: String) -> String {
     recognizer.processString(text)
     return recognizer.dominantLanguage?.rawValue ?? "und"
 }
+
+func generateTableName() -> String {
+    return "dict-\(UUID().uuidString.prefix(8))"
+}
