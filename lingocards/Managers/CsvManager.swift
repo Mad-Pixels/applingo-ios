@@ -9,14 +9,14 @@ enum CSVManagerError: Error, LocalizedError {
     
     var errorDescription: String? {
         switch self {
-        case .databaseConnectionNotEstablished:
-            return "Database connection is not established"
+        case .notEnoughColumns:
+            return "CSV must contain at least 2 columns (front_text, back_text)"
         case .csvReadFailed(let details):
             return "Failed to read CSV file. Details: \(details)"
         case .csvImportFailed(let details):
             return "CSV import failed. Details: \(details)"
-        case .notEnoughColumns:
-            return "CSV must contain at least 2 columns (front_text, back_text)"
+        case .databaseConnectionNotEstablished:
+            return "Database connection is not established"
         }
     }
 }

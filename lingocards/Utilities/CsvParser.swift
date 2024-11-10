@@ -50,15 +50,12 @@ func parseCsvLines(
         let columns = parseCsvLine(line: line, separator: separator)
         guard columns.count >= 2 else { continue }
         
-        // Фиксированный порядок колонок: front_text, back_text, hint, description
         let frontText = columns[0]
         let backText = columns[1]
         let hint = columns.count > 2 ? columns[2] : nil
         let description = columns.count > 3 ? columns[3] : nil
         
-        // Пропускаем строку если нет обязательных полей
         guard !frontText.isEmpty && !backText.isEmpty else { continue }
-        
         let wordItem = WordItemModel(
             tableName: tableName,
             frontText: frontText,
@@ -68,11 +65,9 @@ func parseCsvLines(
         )
         wordItems.append(wordItem)
     }
-    
     guard !wordItems.isEmpty else {
         throw CSVManagerError.csvImportFailed("No valid word pairs found in CSV")
     }
-    
     return wordItems
 }
 
@@ -95,4 +90,3 @@ func detectCsvSeparator(in content: String) -> String {
     }
     return separatorScores.max(by: { $0.value < $1.value })?.key ?? ","
 }
-
