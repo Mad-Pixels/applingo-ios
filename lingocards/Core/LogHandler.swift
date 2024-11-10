@@ -95,16 +95,30 @@ final class LogHandler: ObservableObject {
     }
 
     func sendLog(_ log: ErrorLog) {
-        if sendLogs {
-            print("Log ready to send: \(log.description)")
+        guard sendLogs else {
+            Logger.debug("[LogHandler]: Log sending is disabled. Log content: \(log.description)")
+            return
+        }
 
-            if let jsonData = try? JSONEncoder().encode(log),
-               let jsonString = String(data: jsonData, encoding: .utf8) {
-                print("Sending log to server: \(jsonString)")
-                // Здесь можно реализовать HTTP-запрос для отправки логов на сервер.
+        Logger.debug("[LogHandler]: Log ready to send: \(log.description)")
+        Task {
+            do {
+                let endpoint = "/device/v1/errors/put"
+                let body = try JSONEncoder().encode(log)
+                    
+                _ = try await APIManager.shared.request(
+                    endpoint: endpoint,
+                    method: .post,
+                    body: body
+                )
+                Logger.debug("[LogHandler]: Log sent successfully")
+            } catch {
+                Logger.debug("[LogHandler]: Failed to send log - Error: \(error.localizedDescription)")
+                if let jsonData = try? JSONEncoder().encode(log),
+                   let jsonString = String(data: jsonData, encoding: .utf8) {
+                    Logger.debug("[LogHandler]: Failed log content: \(jsonString)")
+                }
             }
-        } else {
-            print("DEBUG: Log sending is disabled. Log content: \(log.description)")
         }
     }
     

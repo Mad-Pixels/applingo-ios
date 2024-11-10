@@ -21,7 +21,7 @@ class RepositoryAPI: ApiRepositoryProtocol {
         dictionaries: [DictionaryItemModel],
         lastEvaluated: String?
     ) {
-        let endpoint = "/device/v1/dictionary/query"
+        let endpoint = "/device/v1/dictionary/querys"
         let body = try? JSONSerialization.data(withJSONObject: request?.toDictionary() ?? [:])
             
         let data = try await APIManager.shared.request(
