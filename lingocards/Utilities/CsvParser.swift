@@ -41,7 +41,6 @@ func parseCsvLine(line: String, separator: String) -> [String] {
 
 func parseCsvLines(
     lines: [String],
-    columnTypes: [String],
     separator: String,
     tableName: String
 ) throws -> [WordItemModel] {
@@ -49,41 +48,31 @@ func parseCsvLines(
     
     for line in lines {
         let columns = parseCsvLine(line: line, separator: separator)
-        guard !columns.isEmpty else { continue }
+        guard columns.count >= 2 else { continue }
         
-        var frontText: String?
-        var backText: String?
-        var hint: String?
-        var description: String?
+        // Фиксированный порядок колонок: front_text, back_text, hint, description
+        let frontText = columns[0]
+        let backText = columns[1]
+        let hint = columns.count > 2 ? columns[2] : nil
+        let description = columns.count > 3 ? columns[3] : nil
         
-        for (index, value) in columns.enumerated() {
-            guard index < columnTypes.count else { break }
-            guard !value.isEmpty else { continue }
-            
-            switch columnTypes[index] {
-            case "front_text":
-                frontText = value
-            case "back_text":
-                backText = value
-            case "hint":
-                hint = value
-            case "description":
-                description = value
-            default:
-                continue
-            }
-        }
+        // Пропускаем строку если нет обязательных полей
+        guard !frontText.isEmpty && !backText.isEmpty else { continue }
         
-        guard let ft = frontText, let bt = backText else { continue }
         let wordItem = WordItemModel(
             tableName: tableName,
-            frontText: ft,
-            backText: bt,
+            frontText: frontText,
+            backText: backText,
             description: description,
             hint: hint
         )
         wordItems.append(wordItem)
     }
+    
+    guard !wordItems.isEmpty else {
+        throw CSVManagerError.csvImportFailed("No valid word pairs found in CSV")
+    }
+    
     return wordItems
 }
 
@@ -107,12 +96,3 @@ func detectCsvSeparator(in content: String) -> String {
     return separatorScores.max(by: { $0.value < $1.value })?.key ?? ","
 }
 
-func detectCsvLanguage(for text: String) -> String {
-    let recognizer = NLLanguageRecognizer()
-    recognizer.processString(text)
-    return recognizer.dominantLanguage?.rawValue ?? "und"
-}
-
-func generateTableName() -> String {
-    return "dict-\(UUID().uuidString.prefix(8))"
-}

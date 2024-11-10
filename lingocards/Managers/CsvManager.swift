@@ -1,5 +1,4 @@
 import Foundation
-import NaturalLanguage
 import GRDB
 
 enum CSVManagerError: Error, LocalizedError {
@@ -7,7 +6,6 @@ enum CSVManagerError: Error, LocalizedError {
     case csvReadFailed(String)
     case csvImportFailed(String)
     case notEnoughColumns
-    case invalidColumnStructure
     
     var errorDescription: String? {
         switch self {
@@ -19,8 +17,6 @@ enum CSVManagerError: Error, LocalizedError {
             return "CSV import failed. Details: \(details)"
         case .notEnoughColumns:
             return "CSV must contain at least 2 columns (front_text, back_text)"
-        case .invalidColumnStructure:
-            return "Invalid column structure: unable to identify required columns"
         }
     }
 }
@@ -29,8 +25,11 @@ final class CSVManager {
     static let shared = CSVManager()
     private init() {}
     
-    func parse(url: URL, dictionaryItem: DictionaryItemModel? = nil) throws -> (dictionary: DictionaryItemModel, words: [WordItemModel]) {
-        let tableName = generateTableName()
+    func parse(
+        url: URL,
+        dictionaryItem: DictionaryItemModel? = nil
+    ) throws -> (dictionary: DictionaryItemModel, words: [WordItemModel]) {
+        let tableName = "dict-\(UUID().uuidString.prefix(8))"
         
         let dictionary = dictionaryItem.map { existing in
             DictionaryItemModel(
@@ -84,19 +83,8 @@ final class CSVManager {
         guard !lines.isEmpty else {
             throw CSVManagerError.csvReadFailed("File is empty")
         }
-        let startIndex = lines[0].lowercased().contains("front") ||
-                        lines[0].lowercased().contains("text") ? 1 : 0
-        let sampleLines = Array(lines[startIndex..<min(startIndex + 30, lines.count)])
-            .map { parseCsvLine(line: $0, separator: separator) }
-        let classifier = CsvColumnClassifier(sampleData: sampleLines)
-        let columnTypes = classifier.classifyColumns()
-        
-        guard columnTypes.contains("front_text") && columnTypes.contains("back_text") else {
-            throw CSVManagerError.notEnoughColumns
-        }
         return try parseCsvLines(
-            lines: Array(lines[startIndex...]),
-            columnTypes: columnTypes,
+            lines: Array(lines),
             separator: separator,
             tableName: tableName
         )
