@@ -23,135 +23,108 @@ final class CsvColumnClassifier {
     
     private struct ColumnCharacteristics {
         let values: [String]
-        let latinRatio: Double
-        let nonLatinRatio: Double
-        let avgWordLength: Double
-        let emptyRatio: Double
-        let specialCharRatio: Double
         let position: Int
+        
+        // Основные метрики
+        let avgLength: Double
+        let lengthDeviation: Double  // Стандартное отклонение длины
+        let uniqueRatio: Double      // Процент уникальных значений
+        let wordCount: Double        // Среднее количество слов
+        let maxWordLength: Double    // Максимальная длина слова
+        let emptyRatio: Double
         let multilineRatio: Double
-        let uniqueValuesRatio: Double
-        let wordCount: Double  // Среднее количество слов в значении
+        let specialCharRatio: Double
         
-        var isMainlyLatin: Bool {
-            return latinRatio > 0.7
-        }
+        // Паттерны значений
+        let hasRepetitiveValues: Bool    // Есть ли частые повторы значений
+        let consistentWordCount: Bool    // Одинаковое ли количество слов
+        let containsUrls: Bool           // Есть ли URL'ы
+        let containsPunctuation: Bool    // Есть ли знаки препинания
         
-        var isMainlyNonLatin: Bool {
-            return nonLatinRatio > 0.7
+        init(values: [String], position: Int) {
+            self.values = values
+            self.position = position
+            
+            // Вычисляем базовые метрики длины
+            let lengths = values.map { $0.count }
+            let totalLength = lengths.reduce(0, +)
+            let avg = Double(totalLength) / Double(max(1, values.count))
+            self.avgLength = avg
+            
+            // Вычисляем стандартное отклонение
+            let variance = lengths.map {
+                let diff = Double($0) - avg
+                return diff * diff
+            }.reduce(0, +) / Double(max(1, values.count))
+            let deviation = sqrt(variance)
+            self.lengthDeviation = deviation
+            
+            // Уникальность
+            let uniqueCount = Set(values).count
+            self.uniqueRatio = Double(uniqueCount) / Double(max(1, values.count))
+            
+            // Анализ слов
+            let wordCounts = values.map { $0.split(separator: " ").count }
+            self.wordCount = Double(wordCounts.reduce(0, +)) / Double(max(1, values.count))
+            self.maxWordLength = Double(values.flatMap { $0.split(separator: " ") }.map { $0.count }.max() ?? 0)
+            
+            // Специальные характеристики
+            self.emptyRatio = Double(values.filter { $0.isEmpty }.count) / Double(max(1, values.count))
+            self.multilineRatio = Double(values.filter { $0.contains("\n") }.count) / Double(max(1, values.count))
+            
+            // Специальные символы (исключая пробелы и базовую пунктуацию)
+            let specialChars = values.joined().unicodeScalars.filter { scalar in
+                !CharacterSet.letters.contains(scalar) &&
+                !CharacterSet.whitespaces.contains(scalar) &&
+                !CharacterSet.punctuationCharacters.contains(scalar)
+            }.count
+            self.specialCharRatio = Double(specialChars) / Double(max(1, values.joined().count))
+            
+            // Анализ паттернов
+            let valueCounts = Dictionary(grouping: values) { $0 }.mapValues { $0.count }
+            self.hasRepetitiveValues = valueCounts.values.contains { $0 > values.count / 3 }
+            self.consistentWordCount = Set(wordCounts).count <= 2
+            self.containsUrls = values.contains { $0.contains("http") || $0.contains("www.") }
+            self.containsPunctuation = values.contains { $0.contains { $0.isPunctuation } }
         }
     }
     
     func classifyColumns() -> [String] {
         guard columns.count >= 2 else { return [] }
         
-        let columnAnalyses = columns.enumerated().map { index, column in
-            analyzeColumn(column, at: index)
+        let analyses = columns.enumerated().map { index, column in
+            ColumnCharacteristics(values: column.values, position: index)
         }
         
-        // 1. Сначала ищем наиболее вероятную пару front_text/back_text
-        let (frontIndex, backIndex) = findBestTranslationPair(analyses: columnAnalyses)
+        // 1. Находим наиболее вероятную пару translation columns
+        let (frontIndex, backIndex) = findTranslationPair(analyses: analyses)
         
         var result = [String?](repeating: nil, count: columns.count)
         if let frontIdx = frontIndex, let backIdx = backIndex {
             result[frontIdx] = "front_text"
             result[backIdx] = "back_text"
             
-            // 2. Из оставшихся колонок выбираем hint и description
+            // 2. Определяем hint и description среди оставшихся
             let remainingIndices = Set(0..<columns.count)
                 .subtracting([frontIdx, backIdx])
             
-            // Анализируем оставшиеся колонки
-            var bestHintScore = -Double.infinity
-            var hintIndex: Int?
-            
             for index in remainingIndices {
-                let score = scoreForHint(analysis: columnAnalyses[index])
-                if score > bestHintScore {
-                    bestHintScore = score
-                    hintIndex = index
-                }
-            }
-            
-            // Присваиваем оставшимся колонкам их типы
-            for index in remainingIndices {
-                if index == hintIndex {
-                    result[index] = "hint"
-                } else {
-                    result[index] = "description"
-                }
+                let isHint = scoreForHint(col: analyses[index]) > scoreForDescription(col: analyses[index])
+                result[index] = isHint ? "hint" : "description"
             }
         }
         
         return result.map { $0 ?? "unknown" }
     }
     
-    private func analyzeColumn(_ column: CsvColumnAnalysis, at position: Int) -> ColumnCharacteristics {
-        let values = column.values.filter { !$0.isEmpty }
-        guard !values.isEmpty else {
-            return ColumnCharacteristics(
-                values: [],
-                latinRatio: 0,
-                nonLatinRatio: 0,
-                avgWordLength: 0,
-                emptyRatio: 1.0,
-                specialCharRatio: 0,
-                position: position,
-                multilineRatio: 0,
-                uniqueValuesRatio: 0,
-                wordCount: 0
-            )
-        }
-        
-        var latinCharCount = 0
-        var nonLatinCharCount = 0
-        var totalChars = 0
-        let multilineCount = values.filter { $0.contains("\n") }.count
-        let uniqueCount = Set(values).count
-        
-        // Подсчет среднего количества слов
-        let avgWordCount = values.reduce(0.0) { sum, value in
-            sum + Double(value.split(separator: " ").count)
-        } / Double(values.count)
-        
-        for value in values {
-            for scalar in value.unicodeScalars {
-                totalChars += 1
-                if CharacterSet.latinLetters.contains(scalar) {
-                    latinCharCount += 1
-                } else if !CharacterSet.whitespaces.contains(scalar) &&
-                          !CharacterSet.punctuationCharacters.contains(scalar) {
-                    nonLatinCharCount += 1
-                }
-            }
-        }
-        
-        return ColumnCharacteristics(
-            values: values,
-            latinRatio: Double(latinCharCount) / Double(max(1, totalChars)),
-            nonLatinRatio: Double(nonLatinCharCount) / Double(max(1, totalChars)),
-            avgWordLength: column.avgLength,
-            emptyRatio: column.emptyRatio,
-            specialCharRatio: column.specialCharRatio,
-            position: position,
-            multilineRatio: Double(multilineCount) / Double(values.count),
-            uniqueValuesRatio: Double(uniqueCount) / Double(values.count),
-            wordCount: avgWordCount
-        )
-    }
-    
-    private func findBestTranslationPair(analyses: [ColumnCharacteristics]) -> (Int?, Int?) {
+    private func findTranslationPair(analyses: [ColumnCharacteristics]) -> (Int?, Int?) {
         var bestScore = -Double.infinity
         var frontIndex: Int?
         var backIndex: Int?
         
         for i in 0..<analyses.count {
-            for j in 0..<analyses.count where i != j {
-                let score = scoreTranslationPair(
-                    potential_front: analyses[i],
-                    potential_back: analyses[j]
-                )
-                
+            for j in i+1..<analyses.count {
+                let score = scoreTranslationPair(col1: analyses[i], col2: analyses[j])
                 if score > bestScore {
                     bestScore = score
                     frontIndex = i
@@ -163,68 +136,129 @@ final class CsvColumnClassifier {
         return (frontIndex, backIndex)
     }
     
-    private func scoreTranslationPair(potential_front: ColumnCharacteristics, potential_back: ColumnCharacteristics) -> Double {
+    private func scoreTranslationPair(col1: ColumnCharacteristics, col2: ColumnCharacteristics) -> Double {
         var score = 0.0
         
-        // 1. Разные системы письма (самый важный фактор)
-        if potential_front.isMainlyLatin && potential_back.isMainlyNonLatin {
-            score += 15.0
-        }
+        // 1. Сходство паттернов между колонками
+        score += similarityScore(col1: col1, col2: col2) * 5.0
         
-        // 2. Похожая структура данных
-        // - Похожее количество уникальных значений
-        let uniquenessDiff = abs(potential_front.uniqueValuesRatio - potential_back.uniqueValuesRatio)
-        score -= uniquenessDiff * 5.0
+        // 2. Характеристики, типичные для пар перевода
+        let translationPairScore = translationColumnScore(col: col1) +
+                                 translationColumnScore(col: col2)
+        score += translationPairScore
         
-        // - Похожий процент пустых значений
-        let emptyDiff = abs(potential_front.emptyRatio - potential_back.emptyRatio)
-        score -= emptyDiff * 5.0
-        
-        // 3. Характеристики текста перевода
-        // - Обычно это одиночные слова или короткие фразы
-        if potential_front.wordCount < 3 && potential_back.wordCount < 3 {
-            score += 3.0
-        }
-        
-        // - Редко содержат переносы строк
-        score -= (potential_front.multilineRatio + potential_back.multilineRatio) * 5.0
-        
-        // 4. Позиционный фактор (небольшой бонус если колонки рядом)
-        let positionDiff = abs(potential_front.position - potential_back.position)
-        score += 1.0 / Double(positionDiff + 1)
+        // 3. Штрафы за нежелательные характеристики
+        let penalties = calculatePenalties(col1: col1, col2: col2)
+        score -= penalties
         
         return score
     }
     
-    private func scoreForHint(analysis: ColumnCharacteristics) -> Double {
+    private func similarityScore(col1: ColumnCharacteristics, col2: ColumnCharacteristics) -> Double {
         var score = 0.0
         
-        // Hint обычно содержит короткие фразы
-        if analysis.avgWordLength < 30 {
-            score += 3.0
-        }
+        // Похожая средняя длина (с учетом возможной разницы в языках)
+        let lengthRatio = min(col1.avgLength, col2.avgLength) / max(col1.avgLength, col2.avgLength)
+        score += lengthRatio * 2.0
         
-        // Hint может иметь повторяющиеся значения
-        if analysis.uniqueValuesRatio < 0.8 {
-            score += 2.0
-        }
+        // Похожее количество уникальных значений
+        let uniqueRatio = min(col1.uniqueRatio, col2.uniqueRatio) / max(col1.uniqueRatio, col2.uniqueRatio)
+        score += uniqueRatio * 3.0
         
-        // Hint редко содержит переносы строк
-        score -= analysis.multilineRatio * 5.0
-        
-        // Hint обычно содержит одно-два слова
-        if analysis.wordCount <= 2 {
+        // Похожая структура слов
+        if col1.consistentWordCount && col2.consistentWordCount {
             score += 2.0
         }
         
         return score
     }
-}
-
-extension CharacterSet {
-    static let latinLetters: CharacterSet = {
-        var chars = CharacterSet.lowercaseLetters
-        chars.insert(charactersIn: "A"..."Z")
-        return chars
-    }()
+    
+    private func translationColumnScore(col: ColumnCharacteristics) -> Double {
+        var score = 0.0
+        
+        // Высокая уникальность значений
+        if col.uniqueRatio > 0.9 {
+            score += 3.0
+        }
+        
+        // Короткие значения
+        if col.avgLength < 30 {
+            score += 2.0
+        }
+        
+        // Консистентное количество слов
+        if col.consistentWordCount {
+            score += 2.0
+        }
+        
+        // Отсутствие специальных символов
+        if col.specialCharRatio < 0.1 {
+            score += 1.0
+        }
+        
+        return score
+    }
+    
+    private func calculatePenalties(col1: ColumnCharacteristics, col2: ColumnCharacteristics) -> Double {
+        var penalties = 0.0
+        
+        // Штраф за URLs
+        if col1.containsUrls || col2.containsUrls {
+            penalties += 10.0
+        }
+        
+        // Штраф за мультистрочность
+        penalties += (col1.multilineRatio + col2.multilineRatio) * 5.0
+        
+        // Штраф за пустые значения
+        penalties += (col1.emptyRatio + col2.emptyRatio) * 5.0
+        
+        // Штраф за большое расхождение в структуре
+        let lengthDeviationDiff = abs(col1.lengthDeviation - col2.lengthDeviation)
+        penalties += lengthDeviationDiff * 2.0
+        
+        return penalties
+    }
+    
+    private func scoreForHint(col: ColumnCharacteristics) -> Double {
+        var score = 0.0
+        
+        // Обычно короче description
+        if col.avgLength < 30 {
+            score += 2.0
+        }
+        
+        // Может иметь повторяющиеся значения
+        if col.hasRepetitiveValues {
+            score += 2.0
+        }
+        
+        // Обычно одно-два слова
+        if col.wordCount <= 2 {
+            score += 1.0
+        }
+        
+        return score
+    }
+    
+    private func scoreForDescription(col: ColumnCharacteristics) -> Double {
+        var score = 0.0
+        
+        // Обычно длиннее hint
+        if col.avgLength > 30 {
+            score += 2.0
+        }
+        
+        // Больше уникальных значений
+        if col.uniqueRatio > 0.9 {
+            score += 1.0
+        }
+        
+        // Может содержать знаки препинания
+        if col.containsPunctuation {
+            score += 1.0
+        }
+        
+        return score
+    }
 }
