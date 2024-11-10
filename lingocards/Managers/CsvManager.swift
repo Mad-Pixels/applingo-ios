@@ -113,17 +113,27 @@ class CSVManager {
             let columnLanguage = detectCsvLanguage(for: columnValues.joined(separator: " "))
             let columnIsEmpty = columnEmptyCount > columnValues.count / 2 ? "true" : "false"
             let columnAvgLength = columnTotalLength / Int64(max(1, columnValues.count))
-            
-            let input = ColumnClassifierInput(
-                Language: columnLanguage,
-                Length: columnAvgLength,
-                Column_Index: Int64(columnIndex),
-                Is_Empty: columnIsEmpty
-            )
+            let relativePosition = Double(columnIndex) / Double(max(1, numberOfColumns - 1))
+
             do {
-                let columnType = try model.prediction(input: input)
-                columnTypes.append(columnType.Label)
+                Logger.debug("[CSVManager]: Creating input - Language: \(columnLanguage), Length: \(columnAvgLength), Column_Index: \(columnIndex), Relative_Position: \(relativePosition), Is_Empty: \(columnIsEmpty)")
+                
+                let input = ColumnClassifierInput(
+                    Language: columnLanguage,
+                    Length: columnAvgLength,
+                    Column_Index: Int64(columnIndex),
+                    Relative_Position: relativePosition,
+                    Is_Empty: columnIsEmpty
+                )
+                
+                Logger.debug("[CSVManager]: Created input successfully")
+                let prediction = try model.prediction(input: input)
+                Logger.debug("[CSVManager]: Got prediction: \(prediction.Label)")
+                
+                columnTypes.append(prediction.Label)
             } catch {
+                print("[CSVManager]: Failed to create prediction - Error: \(error)")
+                print("[CSVManager]: Input values - Language: \(columnLanguage), Length: \(columnAvgLength), Column_Index: \(columnIndex), Relative_Position: \(relativePosition), Is_Empty: \(columnIsEmpty)")
                 throw CSVManagerError.modelPredictionFailed(error.localizedDescription)
             }
         }

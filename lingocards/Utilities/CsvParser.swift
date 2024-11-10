@@ -109,7 +109,20 @@ func detectCsvSeparator(in content: String) -> String {
 func detectCsvLanguage(for text: String) -> String {
     let recognizer = NLLanguageRecognizer()
     recognizer.processString(text)
-    return recognizer.dominantLanguage?.rawValue ?? "und"
+    
+    if let language = recognizer.dominantLanguage?.rawValue {
+        // Список языков, которые знает модель
+        let knownLanguages: Set<String> = [
+            "de", "en", "es", "fr", "he",
+            "it", "ja", "ko", "mul", "ru",
+            "und", "zh"
+        ]
+        
+        // Если язык известен модели - возвращаем его, иначе und
+        return knownLanguages.contains(language) ? language : "und"
+    }
+    
+    return "und"
 }
 
 func generateTableName() -> String {
