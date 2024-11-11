@@ -28,10 +28,13 @@ struct BaseGameView<Content: View>: View {
     var body: some View {
         let theme = ThemeManager.shared.currentThemeStyle
         
-        ZStack {
+        ZStack(alignment: .top) {
+            // Фон
             theme.backgroundViewColor.edgesIgnoringSafeArea(.all)
             
+            // Основной контейнер
             VStack(spacing: 0) {
+                // Кнопка закрытия
                 HStack {
                     Spacer()
                     Button(action: {
@@ -42,8 +45,10 @@ struct BaseGameView<Content: View>: View {
                             .font(.title)
                             .foregroundColor(theme.baseTextColor)
                     }
-                    .padding()
                 }
+                .padding()
+                
+                // Контент по центру
                 if viewModel.isLoadingCache {
                     Spacer()
                     CompPreloaderView()
@@ -53,7 +58,10 @@ struct BaseGameView<Content: View>: View {
                     CompGameStateView()
                     Spacer()
                 } else {
-                    content.environmentObject(viewModel)
+                    Spacer() // Добавляем отступ сверху
+                    content
+                        .environmentObject(viewModel)
+                    Spacer() // Добавляем отступ снизу
                 }
             }
         }
