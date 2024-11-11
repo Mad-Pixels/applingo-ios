@@ -7,23 +7,20 @@ struct TabLearnView: View {
                 CompBackgroundWordsView().edgesIgnoringSafeArea(.all)
                 
                 VStack(spacing: 20) {
-                    MenuButton(
-                        "Learn",
+                    CompButtonGameMenuView(
+                        LanguageManager.shared.localizedString(for: "Learn").capitalizedFirstLetter,
                         icon: "book.fill"
                     )
-                    
-                    MenuButton(
-                        "Quiz",
+                    CompButtonGameMenuView(
+                        LanguageManager.shared.localizedString(for: "Quiz").capitalizedFirstLetter,
                         icon: "questionmark.circle.fill"
                     )
-                    
-                    MenuButton(
-                        "Shuffle",
+                    CompButtonGameMenuView(
+                        LanguageManager.shared.localizedString(for: "MatchHunt").capitalizedFirstLetter,
                         icon: "arrow.2.squarepath"
                     )
-                    
-                    MenuButton(
-                        "TrueOrFalse",
+                    CompButtonGameMenuView(
+                        LanguageManager.shared.localizedString(for: "VerifyIt").capitalizedFirstLetter,
                         icon: "checkmark.circle.fill"
                     )
                 }

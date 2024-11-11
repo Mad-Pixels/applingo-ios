@@ -423,6 +423,23 @@
         }
       }
     },
+    "MatchHunt" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "match hunt"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "найди совпадение"
+          }
+        }
+      }
+    },
     "NoDictionariesAvailable" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -453,6 +470,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "список пуст"
+          }
+        }
+      }
+    },
+    "Quiz" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "quiz"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "квиз"
           }
         }
       }
@@ -558,6 +592,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "тема"
+          }
+        }
+      }
+    },
+    "VerifyIt" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "verify it"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "правда или ложь"
           }
         }
       }
