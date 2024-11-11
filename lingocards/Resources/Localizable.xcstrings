@@ -7,6 +7,9 @@
     "%lld" : {
 
     },
+    "%lld%%" : {
+
+    },
     "AddDictionary" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -492,6 +495,9 @@
         }
       }
     },
+    "Practice" : {
+
+    },
     "Quiz" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -546,6 +552,9 @@
     "Select" : {
 
     },
+    "Select Game Mode" : {
+
+    },
     "SendErrorsLogs" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -597,6 +606,12 @@
         }
       }
     },
+    "Streak: %lld" : {
+
+    },
+    "Survival" : {
+
+    },
     "Theme" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -613,6 +628,9 @@
           }
         }
       }
+    },
+    "Time Attack" : {
+
     },
     "Total items: %lld" : {
 

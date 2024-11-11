@@ -12,12 +12,14 @@ struct GameVerifyItView: View {
 
 struct GameVerifyItContent: View {
     @EnvironmentObject var viewModel: GameViewModel
-    
-    @State private var currentCard: VerifyCard?
-    @State private var showAnswerFeedback = false
-    @State private var isCorrectAnswer = false
-    @State private var cardOffset: CGFloat = 0
-    @State private var cardRotation: Double = 0
+        @EnvironmentObject var gameHandler: GameHandler // Добавим для обработки результатов
+        
+        @State private var currentCard: VerifyCard?
+        @State private var showAnswerFeedback = false
+        @State private var isCorrectAnswer = false
+        @State private var cardOffset: CGFloat = 0
+        @State private var cardRotation: Double = 0
+        @State private var startTime: TimeInterval = 0
     
     var body: some View {
         ZStack {
@@ -78,6 +80,14 @@ struct GameVerifyItContent: View {
         guard let card = currentCard else { return }
                 
         isCorrectAnswer = isRight == card.isMatch
+        
+        let result = VerifyGameResult(
+            wordId: card.frontWord.id ??  0,
+                    isCorrect: isCorrectAnswer,
+                    responseTime: Date().timeIntervalSince1970 - startTime
+                )
+        gameHandler.handleGameResult(result)
+        
         withAnimation {
             showAnswerFeedback = true
             cardOffset = isRight ? 1000 : -1000
@@ -253,4 +263,11 @@ struct VerifyCard: Equatable, Identifiable {
     static func == (lhs: VerifyCard, rhs: VerifyCard) -> Bool {
         lhs.id == rhs.id
     }
+}
+
+
+struct VerifyGameResult: GameResult {
+    let wordId: Int
+    let isCorrect: Bool
+    let responseTime: TimeInterval
 }
