@@ -11,5 +11,6 @@ enum AppFrameModel: String, Codable {
     case wordDetail
     case wordAdd
     case learn
+    case game
     case main
 }

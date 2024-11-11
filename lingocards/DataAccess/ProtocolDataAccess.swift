@@ -18,6 +18,9 @@ protocol WordRepositoryProtocol {
         offset: Int,
         limit: Int
     ) throws -> [WordItemModel]
+    func fetchCache(
+        count: Int
+    ) throws -> [WordItemModel]
     func save(_ word: WordItemModel) throws
     func update(_ word: WordItemModel) throws
     func delete(_ word: WordItemModel) throws

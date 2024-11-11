@@ -109,6 +109,9 @@
         }
       }
     },
+    "Cache Status:" : {
+
+    },
     "Cancel" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -278,6 +281,9 @@
         }
       }
     },
+    "Dictionary: %@" : {
+
+    },
     "Download" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -316,9 +322,6 @@
 
     },
     "Failed to update the dictionary due to database issues." : {
-
-    },
-    "Hello World from Learn!" : {
 
     },
     "Hello World from Match Hunt!" : {
@@ -608,6 +611,9 @@
         }
       }
     },
+    "Total items: %lld" : {
+
+    },
     "VerifyIt" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -624,6 +630,9 @@
           }
         }
       }
+    },
+    "Weight: %lld" : {
+
     },
     "Word" : {
       "extractionState" : "stale",

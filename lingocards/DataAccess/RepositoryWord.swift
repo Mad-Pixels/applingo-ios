@@ -68,6 +68,41 @@ class RepositoryWord: WordRepositoryProtocol {
             return try request.fetchAll(db)
         }
     }
+    
+    func fetchCache(count: Int) throws -> [WordItemModel] {
+        let activeDictionaries = try fetchActive()
+        guard !activeDictionaries.isEmpty else { return [] }
+            
+        let activeDisplayNames = activeDictionaries.map { $0.tableName }
+        let randomCount = Int(Double(count) * 0.6)
+        let weightedCount = count - randomCount
+            
+        return try dbQueue.read { db -> [WordItemModel] in
+            let baseSQL = """
+                FROM \(WordItemModel.databaseTableName)
+                WHERE tableName IN (\(activeDisplayNames.map { "'\($0)'" }.joined(separator: ",")))
+            """
+            let randomSQL = """
+                SELECT *
+                \(baseSQL)
+                ORDER BY RANDOM()
+                LIMIT \(randomCount)
+            """
+            let weightedSQL = """
+                SELECT *
+                \(baseSQL)
+                ORDER BY weight ASC
+                LIMIT \(weightedCount)
+            """
+
+            Logger.debug("[RepositoryWord]: fetchCache - Random SQL: \(randomSQL)")
+            Logger.debug("[RepositoryWord]: fetchCache - Weighted SQL: \(weightedSQL)")
+                
+            var result = try WordItemModel.fetchAll(db, sql: randomSQL)
+            result.append(contentsOf: try WordItemModel.fetchAll(db, sql: weightedSQL))
+            return result.shuffled()
+        }
+    }
 
     func save(_ word: WordItemModel) throws {
         var fmtWord = word
