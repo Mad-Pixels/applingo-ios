@@ -1,8 +1,10 @@
 import SwiftUI
 
 struct TabLearnView: View {
+    @ObservedObject private var themeManager = ThemeManager.shared
+    
     var body: some View {
-        let theme = ThemeManager.shared.currentThemeStyle
+        let theme = themeManager.currentThemeStyle
         
         NavigationView {
             ZStack {
@@ -13,7 +15,6 @@ struct TabLearnView: View {
                 
                 VStack {
                     Spacer()
-                    
                     VStack(spacing: 20) {
                         MenuButton(
                             "Learn",
@@ -42,12 +43,9 @@ struct TabLearnView: View {
                             .fill(.regularMaterial)
                     }
                     .padding(.horizontal, 24)
-                    
                     Spacer()
                 }
             }
-            .navigationTitle(LanguageManager.shared.localizedString(for: "Learn").capitalizedFirstLetter)
-            .navigationBarTitleDisplayMode(.large)
             .onAppear {
                 FrameManager.shared.setActiveFrame(.learn)
             }
