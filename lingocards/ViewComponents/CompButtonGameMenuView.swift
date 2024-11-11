@@ -5,15 +5,18 @@ struct CompButtonGameMenuView: View {
     
     let title: String
     let icon: String
+    let color: Color
     let action: () -> Void
     
     init(
         _ title: String,
         icon: String,
+        color: Color = ThemeManager.shared.currentThemeStyle.accentColor,
         action: @escaping () -> Void = {}
     ) {
         self.title = title
         self.icon = icon
+        self.color = color
         self.action = action
     }
     
@@ -25,7 +28,7 @@ struct CompButtonGameMenuView: View {
                 Image(systemName: icon)
                     .font(.system(size: 100))
                     .rotationEffect(.degrees(45))
-                    .foregroundColor(theme.accentColor.opacity(0.7))
+                    .foregroundColor(color.opacity(0.7))
                     .frame(width: 100)
                     .offset(x: 20)
 
@@ -40,9 +43,9 @@ struct CompButtonGameMenuView: View {
                 .foregroundColor(theme.baseTextColor)
             }
             .frame(maxWidth: .infinity)
-            .frame(height: 50)
+            .frame(height: 70)
             .contentShape(Rectangle())
         }
-        .buttonStyle(GameMenuButtonStyle())
+        .buttonStyle(GameMenuButtonStyle(color: color))
     }
 }

@@ -9,6 +9,10 @@ struct ThemeDark: ThemeStyle {
     var secondaryIconColor:Color = Color(red: 155 / 255, green: 155 / 255, blue: 150 / 255)
     var baseTextColor:Color = Color(red: 205 / 255, green: 205 / 255, blue: 200 / 255)
     var secondaryTextColor:Color = Color(red: 105 / 255, green: 105 / 255, blue: 100 / 255)
-    var accentColor:Color = .blue
+    var accentColor:Color = Color(red: 52 / 255, green: 120 / 255, blue: 246 / 255)
+    var secondatyAccentColor1:Color = Color(red: 106 / 255, green: 94 / 255, blue: 161 / 255)
+    var secondatyAccentColor2:Color = Color(red: 240 / 255, green: 160 / 255, blue: 67 / 255)
+    var secondatyAccentColor3:Color = Color(red: 73 / 255, green: 138 / 255, blue: 83 / 255)
+    var secondatyAccentColor4:Color = Color(red: 66 / 255, green: 130 / 255, blue: 181 / 255)
     var detailsColor: Color = Color(red: 44 / 255, green: 44 / 255, blue: 46 / 255)
 }

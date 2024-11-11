@@ -10,5 +10,9 @@ protocol ThemeStyle {
     var baseTextColor: Color { get }
     var secondaryTextColor: Color { get }
     var accentColor: Color { get }
+    var secondatyAccentColor1: Color { get }
+    var secondatyAccentColor2: Color { get }
+    var secondatyAccentColor3: Color { get }
+    var secondatyAccentColor4: Color { get }
     var detailsColor: Color { get }
 }
