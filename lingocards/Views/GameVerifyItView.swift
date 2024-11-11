@@ -20,8 +20,6 @@ struct GameVerifyItContent: View {
     @State private var cardRotation: Double = 0
     
     var body: some View {
-        let theme = ThemeManager.shared.currentThemeStyle
-        
         ZStack {
             if viewModel.isLoadingCache {
                 CompPreloaderView()
@@ -59,12 +57,11 @@ struct GameVerifyItContent: View {
         guard viewModel.cache.count >= 8 else {
             return
         }
-        
         let shouldUseSameWord = Bool.random()
         let firstWord = viewModel.cache.randomElement()!
-        let secondWord = shouldUseSameWord ? firstWord : viewModel.cache.filter { $0.id != firstWord.id }.randomElement()!
-        
-        print("Generating new card: same word = \(shouldUseSameWord)")
+        let secondWord = shouldUseSameWord ? firstWord : viewModel.cache.filter {
+            $0.id != firstWord.id
+        }.randomElement()!
         
         withAnimation {
             currentCard = VerifyCard(
@@ -79,19 +76,14 @@ struct GameVerifyItContent: View {
     
     private func handleSwipe(isRight: Bool) {
         guard let card = currentCard else { return }
-        
-        print("Handling swipe: right = \(isRight), isMatch = \(card.isMatch)")
-        
+                
         isCorrectAnswer = isRight == card.isMatch
-        
         withAnimation {
             showAnswerFeedback = true
             cardOffset = isRight ? 1000 : -1000
             cardRotation = isRight ? 20 : -20
         }
-        
         viewModel.removeFromCache(card.frontWord)
-        print("Removed word from cache. New count: \(viewModel.cache.count)")
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             withAnimation {
@@ -131,9 +123,7 @@ struct CardView: View {
         let theme = ThemeManager.shared.currentThemeStyle
         
         ZStack {
-            // Карточка
             VStack(spacing: 0) {
-                // Верхняя часть с front_text
                 VStack {
                     Text("Front")
                         .font(.caption)
@@ -148,13 +138,11 @@ struct CardView: View {
                 .frame(maxWidth: .infinity)
                 .background(theme.backgroundBlockColor)
                 
-                // Разделитель
                 Rectangle()
                     .fill(theme.accentColor)
                     .frame(height: 2)
                     .padding(.horizontal, 20)
                 
-                // Нижняя часть с back_text
                 VStack {
                     Text("Back")
                         .font(.caption)
@@ -178,9 +166,7 @@ struct CardView: View {
             )
             .shadow(color: theme.accentColor.opacity(0.1), radius: 10, x: 0, y: 5)
             
-            // Индикаторы свайпа
             ZStack {
-                // "FALSE" индикатор
                 VStack {
                     Text("FALSE")
                         .font(.system(size: 48, weight: .heavy))
@@ -194,7 +180,6 @@ struct CardView: View {
                 .rotationEffect(.degrees(-30))
                 .opacity(dragState.translation.width < 0 ? dragPercentage : 0)
                 
-                // "TRUE" индикатор
                 VStack {
                     Text("TRUE")
                         .font(.system(size: 48, weight: .heavy))
@@ -258,8 +243,6 @@ enum DragState {
         }
     }
 }
-
-
 
 struct VerifyCard: Equatable, Identifiable {
     let id = UUID()

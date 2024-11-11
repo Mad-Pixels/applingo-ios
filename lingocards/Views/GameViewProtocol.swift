@@ -29,12 +29,9 @@ struct BaseGameView<Content: View>: View {
         let theme = ThemeManager.shared.currentThemeStyle
         
         ZStack(alignment: .top) {
-            // Фон
             theme.backgroundViewColor.edgesIgnoringSafeArea(.all)
             
-            // Основной контейнер
             VStack(spacing: 0) {
-                // Кнопка закрытия
                 HStack {
                     Spacer()
                     Button(action: {
@@ -48,7 +45,6 @@ struct BaseGameView<Content: View>: View {
                 }
                 .padding()
                 
-                // Контент по центру
                 if viewModel.isLoadingCache {
                     Spacer()
                     CompPreloaderView()
@@ -58,10 +54,9 @@ struct BaseGameView<Content: View>: View {
                     CompGameStateView()
                     Spacer()
                 } else {
-                    Spacer() // Добавляем отступ сверху
-                    content
-                        .environmentObject(viewModel)
-                    Spacer() // Добавляем отступ снизу
+                    Spacer()
+                    content.environmentObject(viewModel)
+                    Spacer()
                 }
             }
         }
