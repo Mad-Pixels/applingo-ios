@@ -8,9 +8,15 @@ struct BaseGameView<Content: View>: View {
     @StateObject private var viewModel: GameViewModel
     let isPresented: Binding<Bool>
     let content: Content
+    let minimumWordsRequired: Int
     
-    init(isPresented: Binding<Bool>, @ViewBuilder content: () -> Content) {
+    init(
+        isPresented: Binding<Bool>,
+        minimumWordsRequired: Int = 12,
+        @ViewBuilder content: () -> Content
+    ) {
         self.isPresented = isPresented
+        self.minimumWordsRequired = minimumWordsRequired
         guard let dbQueue = DatabaseManager.shared.databaseQueue else {
             fatalError("Database is not connected")
         }
@@ -20,11 +26,12 @@ struct BaseGameView<Content: View>: View {
     }
     
     var body: some View {
+        let theme = ThemeManager.shared.currentThemeStyle
+        
         ZStack {
-            ThemeManager.shared.currentThemeStyle.backgroundViewColor
-                .edgesIgnoringSafeArea(.all)
+            theme.backgroundViewColor.edgesIgnoringSafeArea(.all)
             
-            VStack {
+            VStack(spacing: 0) {
                 HStack {
                     Spacer()
                     Button(action: {
@@ -33,17 +40,22 @@ struct BaseGameView<Content: View>: View {
                     }) {
                         Image(systemName: "xmark.circle.fill")
                             .font(.title)
-                            .foregroundColor(ThemeManager.shared.currentThemeStyle.baseTextColor)
+                            .foregroundColor(theme.baseTextColor)
                     }
                     .padding()
                 }
-                
-                content
-                    .environmentObject(viewModel)
-                
-                Spacer()
+                if viewModel.isLoadingCache {
+                    Spacer()
+                    CompPreloaderView()
+                    Spacer()
+                } else if viewModel.cache.count < minimumWordsRequired {
+                    Spacer()
+                    CompGameStateView()
+                    Spacer()
+                } else {
+                    content.environmentObject(viewModel)
+                }
             }
-            .environmentObject(viewModel)
         }
         .onAppear {
             FrameManager.shared.setActiveFrame(.game)

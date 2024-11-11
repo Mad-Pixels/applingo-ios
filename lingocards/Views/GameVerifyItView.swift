@@ -25,8 +25,6 @@ struct GameVerifyItContent: View {
             if viewModel.isLoadingCache {
                 ProgressView("Loading words...")
                     .progressViewStyle(CircularProgressViewStyle())
-            } else if viewModel.cache.count < 8 {
-                EmptyStateView()
             } else {
                 if let card = currentCard {
                     CardView(
@@ -195,27 +193,6 @@ enum DragState {
 }
 
 
-struct EmptyStateView: View {
-    var body: some View {
-        let theme = ThemeManager.shared.currentThemeStyle
-        
-        VStack(spacing: 20) {
-            Image(systemName: "text.book.closed.fill")
-                .font(.system(size: 60))
-                .foregroundColor(theme.accentColor)
-            
-            Text("Not Enough Words")
-                .font(.title2)
-                .fontWeight(.bold)
-            
-            Text("Please add more words to your dictionaries or activate additional dictionaries to play")
-                .multilineTextAlignment(.center)
-                .font(.body)
-                .foregroundColor(theme.secondaryTextColor)
-        }
-        .padding()
-    }
-}
 
 struct VerifyCard: Equatable, Identifiable {
     let id = UUID()

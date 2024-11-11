@@ -11,9 +11,3 @@ struct CompPreloaderView: View {
         }
     }
 }
-
-struct CompPreloaderView_Previews: PreviewProvider {
-    static var previews: some View {
-        CompPreloaderView()
-    }
-}

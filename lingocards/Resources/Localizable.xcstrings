@@ -475,9 +475,6 @@
         }
       }
     },
-    "Not Enough Words" : {
-
-    },
     "NoWordsAvailable" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -494,9 +491,6 @@
           }
         }
       }
-    },
-    "Please add more words to your dictionaries or activate additional dictionaries to play" : {
-
     },
     "Quiz" : {
       "extractionState" : "manual",
