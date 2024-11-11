@@ -324,13 +324,13 @@
     "Failed to update the dictionary due to database issues." : {
 
     },
+    "Generating new card..." : {
+
+    },
     "Hello World from Match Hunt!" : {
 
     },
     "Hello World from Quiz!" : {
-
-    },
-    "Hello World from Verify It!" : {
 
     },
     "Hint" : {
@@ -418,6 +418,9 @@
         }
       }
     },
+    "Loading words..." : {
+
+    },
     "Loading..." : {
 
     },
@@ -472,6 +475,9 @@
         }
       }
     },
+    "Not Enough Words" : {
+
+    },
     "NoWordsAvailable" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -488,6 +494,9 @@
           }
         }
       }
+    },
+    "Please add more words to your dictionaries or activate additional dictionaries to play" : {
+
     },
     "Quiz" : {
       "extractionState" : "manual",
