@@ -406,9 +406,6 @@
     "Loading..." : {
 
     },
-    "Log Error" : {
-
-    },
     "LogSettings" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -548,9 +545,6 @@
         }
       }
     },
-    "testLearn" : {
-
-    },
     "Theme" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -567,9 +561,6 @@
           }
         }
       }
-    },
-    "This is the Learn View" : {
-
     },
     "Word" : {
       "extractionState" : "stale",
