@@ -324,9 +324,6 @@
     "Failed to update the dictionary due to database issues." : {
 
     },
-    "Generating new card..." : {
-
-    },
     "Hello World from Match Hunt!" : {
 
     },
@@ -417,9 +414,6 @@
           }
         }
       }
-    },
-    "Loading words..." : {
-
     },
     "Loading..." : {
 

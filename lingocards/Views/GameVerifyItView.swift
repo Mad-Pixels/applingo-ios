@@ -12,6 +12,7 @@ struct GameVerifyItView: View {
 
 struct GameVerifyItContent: View {
     @EnvironmentObject var viewModel: GameViewModel
+    
     @State private var currentCard: VerifyCard?
     @State private var showAnswerFeedback = false
     @State private var isCorrectAnswer = false
@@ -23,8 +24,7 @@ struct GameVerifyItContent: View {
         
         ZStack {
             if viewModel.isLoadingCache {
-                ProgressView("Loading words...")
-                    .progressViewStyle(CircularProgressViewStyle())
+                CompPreloaderView()
             } else {
                 if let card = currentCard {
                     CardView(
@@ -35,15 +35,7 @@ struct GameVerifyItContent: View {
                             handleSwipe(isRight: isRight)
                         }
                     )
-                } else {
-                    // Если карточки нет, но слов достаточно - генерируем новую
-                    Text("Generating new card...")
-                        .foregroundColor(theme.baseTextColor)
-                        .onAppear {
-                            generateNewCard()
-                        }
                 }
-                
                 if showAnswerFeedback {
                     VStack {
                         Image(systemName: isCorrectAnswer ? "checkmark.circle.fill" : "x.circle.fill")
@@ -55,8 +47,7 @@ struct GameVerifyItContent: View {
             }
         }
         .onAppear {
-            // Даем немного времени на заполнение кэша
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                 if viewModel.cache.count >= 8 {
                     generateNewCard()
                 }
@@ -66,7 +57,6 @@ struct GameVerifyItContent: View {
     
     private func generateNewCard() {
         guard viewModel.cache.count >= 8 else {
-            print("Not enough words in cache: \(viewModel.cache.count)")
             return
         }
         
@@ -103,7 +93,7 @@ struct GameVerifyItContent: View {
         viewModel.removeFromCache(card.frontWord)
         print("Removed word from cache. New count: \(viewModel.cache.count)")
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             withAnimation {
                 showAnswerFeedback = false
                 currentCard = nil
@@ -115,8 +105,6 @@ struct GameVerifyItContent: View {
         }
     }
 }
-
-
 
 struct CardView: View {
     let card: VerifyCard
