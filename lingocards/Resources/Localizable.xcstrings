@@ -318,6 +318,18 @@
     "Failed to update the dictionary due to database issues." : {
 
     },
+    "Hello World from Learn!" : {
+
+    },
+    "Hello World from Match Hunt!" : {
+
+    },
+    "Hello World from Quiz!" : {
+
+    },
+    "Hello World from Verify It!" : {
+
+    },
     "Hint" : {
       "extractionState" : "stale",
       "localizations" : {
