@@ -115,15 +115,6 @@ struct CardView: View {
     @GestureState private var dragState = DragState.inactive
     @State private var swipeStatus: SwipeStatus = .none
     
-    // Вычисляем цвет индикатора свайпа
-    private var overlayColor: Color {
-        switch swipeStatus {
-        case .none: return .clear
-        case .left: return .red.opacity(0.3)
-        case .right: return .green.opacity(0.3)
-        }
-    }
-    
     private var cardRotation: Double {
         let dragRotation = Double(dragState.translation.width / 300) * 20
         let totalRotation = rotation + dragRotation
@@ -147,13 +138,12 @@ struct CardView: View {
                     Text("Front")
                         .font(.caption)
                         .foregroundColor(theme.secondaryTextColor)
-                        .padding(.top, 8)
+                        .padding(.top, 16)
                     
                     Text(card.frontWord.frontText)
-                        .font(.title)
-                        .fontWeight(.bold)
+                        .font(.system(size: 32, weight: .bold))
                         .multilineTextAlignment(.center)
-                        .padding(.vertical, 20)
+                        .padding(.vertical, 40)
                 }
                 .frame(maxWidth: .infinity)
                 .background(theme.backgroundBlockColor)
@@ -169,18 +159,17 @@ struct CardView: View {
                     Text("Back")
                         .font(.caption)
                         .foregroundColor(theme.secondaryTextColor)
-                        .padding(.top, 8)
+                        .padding(.top, 16)
                     
                     Text(card.backText)
-                        .font(.title)
-                        .fontWeight(.bold)
+                        .font(.system(size: 32, weight: .bold))
                         .multilineTextAlignment(.center)
-                        .padding(.vertical, 20)
+                        .padding(.vertical, 40)
                 }
                 .frame(maxWidth: .infinity)
                 .background(theme.backgroundBlockColor)
             }
-            .frame(width: UIScreen.main.bounds.width - 40, height: 300)
+            .frame(width: UIScreen.main.bounds.width - 40, height: 480) // Увеличенная высота
             .background(theme.backgroundBlockColor)
             .clipShape(RoundedRectangle(cornerRadius: 20))
             .overlay(
@@ -191,20 +180,32 @@ struct CardView: View {
             
             // Индикаторы свайпа
             ZStack {
-                // "Wrong" индикатор
+                // "FALSE" индикатор
                 VStack {
-                    Image(systemName: "x.circle.fill")
-                        .font(.system(size: 100))
+                    Text("FALSE")
+                        .font(.system(size: 48, weight: .heavy))
                         .foregroundColor(.red)
+                        .padding(20)
+                        .background(
+                            RoundedRectangle(cornerRadius: 15)
+                                .fill(Color.red.opacity(0.15))
+                        )
                 }
+                .rotationEffect(.degrees(-30))
                 .opacity(dragState.translation.width < 0 ? dragPercentage : 0)
                 
-                // "Correct" индикатор
+                // "TRUE" индикатор
                 VStack {
-                    Image(systemName: "checkmark.circle.fill")
-                        .font(.system(size: 100))
+                    Text("TRUE")
+                        .font(.system(size: 48, weight: .heavy))
                         .foregroundColor(.green)
+                        .padding(20)
+                        .background(
+                            RoundedRectangle(cornerRadius: 15)
+                                .fill(Color.green.opacity(0.15))
+                        )
                 }
+                .rotationEffect(.degrees(30))
                 .opacity(dragState.translation.width > 0 ? dragPercentage : 0)
             }
         }
@@ -215,7 +216,6 @@ struct CardView: View {
                 .updating($dragState) { drag, state, _ in
                     state = .dragging(translation: drag.translation)
                     
-                    // Обновляем статус свайпа
                     if drag.translation.width > 50 {
                         swipeStatus = .right
                     } else if drag.translation.width < -50 {
