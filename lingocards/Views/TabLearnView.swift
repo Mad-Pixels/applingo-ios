@@ -31,9 +31,8 @@ struct TabLearnView: View {
                 .padding(.horizontal, 16)
                 .glassBackground()
                 .padding(.horizontal, 24)
-                    
-                    Spacer()
                 
+                Spacer()
             }
             .onAppear {
                 FrameManager.shared.setActiveFrame(.learn)
