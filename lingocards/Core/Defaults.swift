@@ -2,6 +2,7 @@ import Foundation
 
 struct Defaults {
     enum Keys {
+        static let replicaID = "replicaID"
         static let sendLogs = "sendLogs"
         static let language = "language"
         static let theme = "theme"
@@ -38,6 +39,20 @@ struct Defaults {
         set {
             UserDefaults.standard.set(newValue, forKey: Keys.sendLogs)
             Logger.debug("[Defaults]: Setting sendLogs to \(newValue) in UserDefaults")
+        }
+    }
+    
+    static var appReplicaID: String {
+        get {
+            if let existingID = UserDefaults.standard.string(forKey: Keys.replicaID) {
+                Logger.debug("[Defaults]: Reading existing replicaID from UserDefaults")
+                return existingID
+            } else {
+                let newID = UUID().uuidString
+                UserDefaults.standard.set(newID, forKey: Keys.replicaID)
+                Logger.debug("[Defaults]: Generated and saved new replicaID to UserDefaults")
+                return newID
+            }
         }
     }
 }

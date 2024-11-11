@@ -8,6 +8,7 @@ struct ErrorLog: Codable {
     let errorOriginal: String
     let appVersion: String
     let osVersion: String
+    let replicaID: String
     let device: String
     let timestamp: Int
     let additionalInfo: [String: String]?
@@ -17,6 +18,7 @@ struct ErrorLog: Codable {
         case errorOriginal = "error_original"
         case errorMessage = "error_message"
         case appVersion = "app_version"
+        case replicaID = "replica_id"
         case osVersion = "os_version"
         case errorType = "error_type"
         case timestamp
@@ -38,6 +40,7 @@ struct ErrorLog: Codable {
         self.additionalInfo = additionalInfo
         self.errorMessage = errorMessage
         self.errorOriginal = errorOriginal.map { String(describing: $0) } ?? "unknown"
+        self.replicaID = Defaults.appReplicaID
     }
 
     func toJSON() -> String? {
@@ -61,6 +64,7 @@ struct ErrorLog: Codable {
         App Version: \(appVersion)
         Error Type: \(errorType.rawValue)
         Error Message: \(errorMessage)
+        Replica ID: \(replicaID)
         Additional Info: \(additionalInfoString)
         """
     }
