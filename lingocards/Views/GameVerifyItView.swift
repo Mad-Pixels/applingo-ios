@@ -21,6 +21,7 @@ struct GameVerifyItContent: View {
     @State private var cardRotation: Double = 0
     @State private var startTime: TimeInterval = 0
     @StateObject private var feedbackHandler = GameFeedbackHandler()
+    @State private var hintPenalty: Int = 0
     
     var body: some View {
         ZStack {
@@ -34,6 +35,9 @@ struct GameVerifyItContent: View {
                         rotation: cardRotation,
                         onSwipe: { isRight in
                             handleSwipe(isRight: isRight)
+                        },
+                        onHintUsed: {
+                            hintPenalty = 5
                         }
                     )
                     .shake(isShaking: feedbackHandler.isShaking)
@@ -135,10 +139,13 @@ struct CardView: View {
     let offset: CGFloat
     let rotation: Double
     let onSwipe: (Bool) -> Void
+    let onHintUsed: () -> Void
     
     @GestureState private var dragState = DragStateModel.inactive
     @State private var swipeStatus: SwipeStatusModel = .none
     @State private var showSuccessEffect: Bool = false
+    @State private var showHint: Bool = false
+    @State private var hintWasUsed: Bool = false
     
     private var cardRotation: Double {
         let dragRotation = Double(dragState.translation.width / 300) * 20
@@ -158,10 +165,53 @@ struct CardView: View {
         ZStack {
             VStack(spacing: 0) {
                 VStack {
-                    Text("Front")
-                        .font(.caption)
-                        .foregroundColor(theme.secondaryTextColor)
-                        .padding(.top, 16)
+                    HStack {
+                        Text("Front")
+                            .font(.caption)
+                            .foregroundColor(theme.secondaryTextColor)
+                            .padding(.top, 16)
+                        
+                        Spacer()
+                        
+                        if let hint = card.frontWord.hint, !hint.isEmpty {
+                            Button(action: {
+                                withAnimation(.spring()) {
+                                    if !hintWasUsed {
+                                        hintWasUsed = true
+                                        onHintUsed()
+                                    }
+                                    showHint.toggle()
+                                }
+                            }) {
+                                Image(systemName: "lightbulb.fill")
+                                    .font(.title3)
+                                    .foregroundColor(showHint ? .yellow : theme.accentColor)
+                            }
+                            .padding(.top, 16)
+                        }
+                    }
+                    .padding(.horizontal, 24)
+                    
+                    if showHint, let hint = card.frontWord.hint {
+                        VStack(spacing: 4) {
+                            Text("-5 points")
+                                .font(.caption2)
+                                .foregroundColor(theme.secondaryTextColor)
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 2)
+                                .background(
+                                    Capsule()
+                                        .fill(Color.yellow.opacity(0.1))
+                                )
+                            
+                            Text(hint)
+                                .font(.system(size: 14))
+                                .foregroundColor(theme.secondaryTextColor)
+                                .multilineTextAlignment(.center)
+                        }
+                        .padding(.top, 8)
+                        .transition(.move(edge: .top).combined(with: .opacity))
+                    }
                     
                     Text(card.frontWord.frontText)
                         .font(.system(size: 32, weight: .bold))
@@ -251,7 +301,6 @@ struct CardView: View {
                     if abs(gesture.translation.width) > swipeThreshold {
                         let isRight = gesture.translation.width > 0
                         
-                        // Активируем эффект при правильном ответе на золотую карточку
                         if card.isGolden && isRight == card.isMatch {
                             showSuccessEffect = true
                         }
