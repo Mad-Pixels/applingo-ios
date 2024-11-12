@@ -40,9 +40,16 @@ struct GameVerifyItContent: View {
                 }
                 if showAnswerFeedback {
                     VStack {
-                        Image(systemName: isCorrectAnswer ? "checkmark.circle.fill" : "x.circle.fill")
-                            .foregroundColor(isCorrectAnswer ? .green : .red)
-                            .font(.system(size: 60))
+                        if currentCard?.isGolden == true && isCorrectAnswer {
+                            Image(systemName: "star.circle.fill")
+                                .foregroundColor(.yellow)
+                                .font(.system(size: 80))
+                                .transition(.scale.combined(with: .opacity))
+                        } else {
+                            Image(systemName: isCorrectAnswer ? "checkmark.circle.fill" : "x.circle.fill")
+                                .foregroundColor(isCorrectAnswer ? .green : .red)
+                                .font(.system(size: 60))
+                        }
                     }
                     .zIndex(1)
                 }
@@ -82,25 +89,36 @@ struct GameVerifyItContent: View {
         guard let card = currentCard else { return }
         isCorrectAnswer = isRight == card.isMatch
         
+        // Базовые очки за правильный ответ
+        let baseScore = isCorrectAnswer ? 10 : 0
+        
+        // Применяем бонус за золотую карточку
+        let finalScore = GoldenCardService.shared.calculateBonusScore(
+            baseScore: baseScore,
+            isGolden: card.isGolden
+        )
+        
         if !isCorrectAnswer {
-                    feedbackHandler.provideFeedbackForWrongAnswer()
-                }
-
+            feedbackHandler.provideFeedbackForWrongAnswer()
+        }
+        
         let result = VerifyGameResultModel(
             word: card.frontWord,
             isCorrect: isCorrectAnswer,
-            responseTime: Date().timeIntervalSince1970 - startTime
+            score: finalScore,
+            responseTime: Date().timeIntervalSince1970 - startTime,
+            isGolden: card.isGolden
         )
         gameAction.handleGameResult(result)
         
-        withAnimation {
+        withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
             showAnswerFeedback = true
             cardOffset = isRight ? 1000 : -1000
             cardRotation = isRight ? 20 : -20
         }
         cacheGetter.removeFromCache(card.frontWord)
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             withAnimation {
                 showAnswerFeedback = false
                 currentCard = nil
@@ -120,6 +138,7 @@ struct CardView: View {
     
     @GestureState private var dragState = DragStateModel.inactive
     @State private var swipeStatus: SwipeStatusModel = .none
+    @State private var showSuccessEffect: Bool = false
     
     private var cardRotation: Double {
         let dragRotation = Double(dragState.translation.width / 300) * 20
@@ -171,7 +190,7 @@ struct CardView: View {
                 .frame(maxWidth: .infinity)
                 .background(theme.backgroundBlockColor)
             }
-            .frame(width: UIScreen.main.bounds.width - 40, height: 480) // Увеличенная высота
+            .frame(width: UIScreen.main.bounds.width - 40, height: 480)
             .background(theme.backgroundBlockColor)
             .clipShape(RoundedRectangle(cornerRadius: 20))
             .overlay(
@@ -179,6 +198,9 @@ struct CardView: View {
                     .stroke(theme.accentColor.opacity(0.2), lineWidth: 1)
             )
             .shadow(color: theme.accentColor.opacity(0.1), radius: 10, x: 0, y: 5)
+            .goldenCard(isGolden: card.isGolden)
+            .goldenCardSuccessEffect(isActive: showSuccessEffect)
+            .goldenCardAppearance(isGolden: card.isGolden)
             
             ZStack {
                 VStack {
@@ -228,6 +250,12 @@ struct CardView: View {
                     
                     if abs(gesture.translation.width) > swipeThreshold {
                         let isRight = gesture.translation.width > 0
+                        
+                        // Активируем эффект при правильном ответе на золотую карточку
+                        if card.isGolden && isRight == card.isMatch {
+                            showSuccessEffect = true
+                        }
+                        
                         onSwipe(isRight)
                     }
                     

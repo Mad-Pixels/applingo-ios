@@ -100,17 +100,17 @@ class GameFeedbackHandler: ObservableObject {
         // Тактильный отклик
         HapticManager.shared.playErrorFeedback()
         
-        // Анимация тряски
-        withAnimation(.default) {
-            isShaking = true
-        }
-        
-        // Сброс состояния тряски
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            withAnimation(.default) {
-                self.isShaking = false
-            }
-        }
+//        // Анимация тряски
+//        withAnimation(.default) {
+//            isShaking = true
+//        }
+//        
+//        // Сброс состояния тряски
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+//            withAnimation(.default) {
+//                self.isShaking = false
+//            }
+//        }
     }
 }
 
