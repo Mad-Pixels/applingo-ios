@@ -13,19 +13,15 @@ struct CompToolbarGame: View {
                 ScoreIndicator(score: stats.score)
                 StreakIndicator(streak: stats.streak)
             }
-
             Spacer(minLength: 8)
-
             switch gameMode {
             case .practice:
                 AccuracyView(stats: stats)
-
             case .timeAttack:
                 HStack(spacing: 6) {
                     TimeIndicator(timeRemaining: stats.timeRemaining)
                     AccuracyView(stats: stats)
                 }
-
             case .survival:
                 HStack(spacing: 6) {
                     LivesIndicator(lives: stats.lives)
@@ -70,7 +66,6 @@ private struct StreakIndicator: View {
                 .imageScale(.medium)
                 .scaleEffect(streak > 0 ? 1.1 : 1.0)
                 .animation(.easeInOut(duration: 0.2), value: streak)
-
             Text(formatLargeNumber(streak, maxValue: 999))
                 .font(.system(.title3, design: .rounded))
                 .fontWeight(.bold)
