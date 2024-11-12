@@ -1,12 +1,12 @@
 import SwiftUI
 
 struct CompProgressChartView: View {
-    let value: Double
+    let value: Int
     let title: String
     let color: Color
     var height: CGFloat = 15
-    let minValue: Double = -1000
-    let maxValue: Double = 1000
+    let centerValue: Int = 5
+    let maxValue: Int = 10
 
     var body: some View {
         VStack(alignment: .center, spacing: 8) {
@@ -21,7 +21,7 @@ struct CompProgressChartView: View {
                     .padding(.trailing, 4)
 
                 GeometryReader { geometry in
-                    ZStack {
+                    ZStack(alignment: .center) {
                         Rectangle()
                             .fill(Color.gray.opacity(0.3))
                             .cornerRadius(10)
@@ -29,7 +29,8 @@ struct CompProgressChartView: View {
                         Rectangle()
                             .fill(color)
                             .cornerRadius(10)
-                            .frame(width: calculateWidth(for: geometry.size.width), alignment: value >= 0 ? .leading : .trailing)
+                            .frame(width: calculateWidth(for: geometry.size.width))
+                            .offset(x: calculateOffset(for: geometry.size.width))
                             .animation(.easeInOut(duration: 0.5), value: value)
                     }
                 }
@@ -42,7 +43,7 @@ struct CompProgressChartView: View {
             }
             .frame(maxWidth: .infinity)
 
-            Text(String(format: "%.2f", value))
+            Text("\(centeredValue)")
                 .multilineTextAlignment(.center)
                 .foregroundColor(color)
                 .font(.subheadline)
@@ -51,9 +52,20 @@ struct CompProgressChartView: View {
         .frame(maxWidth: .infinity)
     }
 
+    private var centeredValue: Int {
+        return value - centerValue
+    }
+
     private func calculateWidth(for totalWidth: CGFloat) -> CGFloat {
-        let zeroPosition = totalWidth / 2
-        let percentage = CGFloat(value) / CGFloat(maxValue - minValue)
-        return zeroPosition * abs(percentage) * 2
+        let range = CGFloat(maxValue - centerValue)
+        let deviation = CGFloat(abs(value - centerValue))
+        return totalWidth * (deviation / range) / 2
+    }
+
+    private func calculateOffset(for totalWidth: CGFloat) -> CGFloat {
+        let range = CGFloat(maxValue - centerValue)
+        let direction: CGFloat = value < centerValue ? -1 : 1
+        let deviation = CGFloat(abs(value - centerValue))
+        return direction * (totalWidth / 4) * (deviation / range)
     }
 }

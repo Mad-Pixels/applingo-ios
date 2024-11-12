@@ -166,10 +166,9 @@ struct WordDetailView: View {
         }
     }
 
-    private func calculateWeight() -> Double {
-        let total = Double(editedWord.success + editedWord.fail)
-        guard total > 0 else { return 0 }
-        return Double(editedWord.fail) / total
+    private func calculateWeight() -> Int {
+        let normalizedWeight = Double(editedWord.weight) / 100.0
+        return Int(floor(normalizedWeight))
     }
     
     private var isSaveDisabled: Bool {
