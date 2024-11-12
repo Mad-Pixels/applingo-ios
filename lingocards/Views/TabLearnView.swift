@@ -14,30 +14,30 @@ struct TabLearnView: View {
                 VStack(spacing: 20) {
                     CompButtonGameMenuView(
                         LanguageManager.shared.localizedString(for: "Learn").capitalizedFirstLetter,
-                        icon: "book.fill",
+                        icon: "book",
                         color: ThemeManager.shared.currentThemeStyle.secondatyAccentColor1,
                         action: { showLearnGame = true }
                     )
                     CompButtonGameMenuView(
                         LanguageManager.shared.localizedString(for: "Quiz").capitalizedFirstLetter,
-                        icon: "questionmark.circle.fill",
+                        icon: "laser.burst",
                         color: ThemeManager.shared.currentThemeStyle.secondatyAccentColor2,
                         action: { showQuizGame = true }
                     )
                     CompButtonGameMenuView(
                         LanguageManager.shared.localizedString(for: "MatchHunt").capitalizedFirstLetter,
-                        icon: "arrow.2.squarepath",
+                        icon: "puzzlepiece",
                         color: ThemeManager.shared.currentThemeStyle.secondatyAccentColor3,
                         action: { showMatchHuntGame = true }
                     )
                     CompButtonGameMenuView(
                         LanguageManager.shared.localizedString(for: "VerifyIt").capitalizedFirstLetter,
-                        icon: "checkmark.circle.fill",
+                        icon: "number",
                         color: ThemeManager.shared.currentThemeStyle.secondatyAccentColor4,
                         action: { showVerifyItGame = true }
                     )
                 }
-                .padding(.vertical, 24)
+                .padding(.vertical, 32)
                 .padding(.horizontal, 16)
                 .glassBackground()
                 .padding(.horizontal, 24)

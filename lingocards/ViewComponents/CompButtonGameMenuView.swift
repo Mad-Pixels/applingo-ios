@@ -26,16 +26,17 @@ struct CompButtonGameMenuView: View {
         Button(action: action) {
             ZStack(alignment: .trailing) {
                 Image(systemName: icon)
-                    .font(.system(size: 100))
+                    .font(.system(size: 75))
                     .rotationEffect(.degrees(45))
                     .foregroundColor(color.opacity(0.7))
                     .frame(width: 100)
-                    .offset(x: 20)
+                    .offset(x: 25)
 
                 HStack {
-                    Text(title)
+                    Text(title.uppercased())
                         .font(.body)
-                        .fontWeight(.medium)
+                        .foregroundColor(theme.baseTextColor)
+                        .fontWeight(.bold)
                     Spacer()
                 }
                 .padding(.horizontal, 20)

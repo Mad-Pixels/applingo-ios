@@ -4,7 +4,7 @@ struct GlassBackgroundModifier: ViewModifier {
     let cornerRadius: CGFloat
     let opacity: CGFloat
     
-    init(cornerRadius: CGFloat = 16, opacity: CGFloat = 0.75) {
+    init(cornerRadius: CGFloat = 16, opacity: CGFloat = 0.9) {
         self.cornerRadius = cornerRadius
         self.opacity = opacity
     }
@@ -33,7 +33,7 @@ struct GlassBackgroundModifier: ViewModifier {
 extension View {
     func glassBackground(
         cornerRadius: CGFloat = 16,
-        opacity: CGFloat = 0.75
+        opacity: CGFloat = 0.85
     ) -> some View {
         modifier(GlassBackgroundModifier(
             cornerRadius: cornerRadius,
