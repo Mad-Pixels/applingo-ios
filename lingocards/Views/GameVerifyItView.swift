@@ -11,19 +11,19 @@ struct GameVerifyItView: View {
 }
 
 struct GameVerifyItContent: View {
-    @EnvironmentObject var viewModel: GameViewModel
-        @EnvironmentObject var gameHandler: GameHandler // Добавим для обработки результатов
-        
-        @State private var currentCard: VerifyCard?
-        @State private var showAnswerFeedback = false
-        @State private var isCorrectAnswer = false
-        @State private var cardOffset: CGFloat = 0
-        @State private var cardRotation: Double = 0
-        @State private var startTime: TimeInterval = 0
+    @EnvironmentObject var cacheGetter: GameCacheGetterViewModel
+    @EnvironmentObject var gameAction: GameActionViewModel
+    
+    @State private var currentCard: VerifyCardModel?
+    @State private var showAnswerFeedback = false
+    @State private var isCorrectAnswer = false
+    @State private var cardOffset: CGFloat = 0
+    @State private var cardRotation: Double = 0
+    @State private var startTime: TimeInterval = 0
     
     var body: some View {
         ZStack {
-            if viewModel.isLoadingCache {
+            if cacheGetter.isLoadingCache {
                 CompPreloaderView()
             } else {
                 if let card = currentCard {
@@ -48,7 +48,7 @@ struct GameVerifyItContent: View {
         }
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                if viewModel.cache.count >= 8 {
+                if cacheGetter.cache.count >= 8 {
                     generateNewCard()
                 }
             }
@@ -56,17 +56,17 @@ struct GameVerifyItContent: View {
     }
     
     private func generateNewCard() {
-        guard viewModel.cache.count >= 8 else {
-            return
-        }
+        guard cacheGetter.cache.count >= 8 else { return }
+        
         let shouldUseSameWord = Bool.random()
-        let firstWord = viewModel.cache.randomElement()!
-        let secondWord = shouldUseSameWord ? firstWord : viewModel.cache.filter {
+        let firstWord = cacheGetter.cache.randomElement()!
+        let secondWord = shouldUseSameWord ? firstWord : cacheGetter.cache.filter {
             $0.id != firstWord.id
         }.randomElement()!
         
+        startTime = Date().timeIntervalSince1970
         withAnimation {
-            currentCard = VerifyCard(
+            currentCard = VerifyCardModel(
                 frontWord: firstWord,
                 backText: secondWord.backText,
                 isMatch: shouldUseSameWord
@@ -78,29 +78,27 @@ struct GameVerifyItContent: View {
     
     private func handleSwipe(isRight: Bool) {
         guard let card = currentCard else { return }
-                
         isCorrectAnswer = isRight == card.isMatch
-        
-        let result = VerifyGameResult(
-            wordId: card.frontWord.id ??  0,
-                    isCorrect: isCorrectAnswer,
-                    responseTime: Date().timeIntervalSince1970 - startTime
-                )
-        gameHandler.handleGameResult(result)
+
+        let result = VerifyGameResultModel(
+            word: card.frontWord,
+            isCorrect: isCorrectAnswer,
+            responseTime: Date().timeIntervalSince1970 - startTime
+        )
+        gameAction.handleGameResult(result)
         
         withAnimation {
             showAnswerFeedback = true
             cardOffset = isRight ? 1000 : -1000
             cardRotation = isRight ? 20 : -20
         }
-        viewModel.removeFromCache(card.frontWord)
+        cacheGetter.removeFromCache(card.frontWord)
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
             withAnimation {
                 showAnswerFeedback = false
                 currentCard = nil
             }
-            
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                 generateNewCard()
             }
@@ -109,13 +107,13 @@ struct GameVerifyItContent: View {
 }
 
 struct CardView: View {
-    let card: VerifyCard
+    let card: VerifyCardModel
     let offset: CGFloat
     let rotation: Double
     let onSwipe: (Bool) -> Void
     
-    @GestureState private var dragState = DragState.inactive
-    @State private var swipeStatus: SwipeStatus = .none
+    @GestureState private var dragState = DragStateModel.inactive
+    @State private var swipeStatus: SwipeStatusModel = .none
     
     private var cardRotation: Double {
         let dragRotation = Double(dragState.translation.width / 300) * 20
@@ -234,40 +232,4 @@ struct CardView: View {
     }
 }
 
-enum SwipeStatus {
-    case none
-    case left
-    case right
-}
 
-enum DragState {
-    case inactive
-    case dragging(translation: CGSize)
-    
-    var translation: CGSize {
-        switch self {
-        case .inactive:
-            return .zero
-        case .dragging(let translation):
-            return translation
-        }
-    }
-}
-
-struct VerifyCard: Equatable, Identifiable {
-    let id = UUID()
-    let frontWord: WordItemModel
-    let backText: String
-    let isMatch: Bool
-    
-    static func == (lhs: VerifyCard, rhs: VerifyCard) -> Bool {
-        lhs.id == rhs.id
-    }
-}
-
-
-struct VerifyGameResult: GameResult {
-    let wordId: Int
-    let isCorrect: Bool
-    let responseTime: TimeInterval
-}

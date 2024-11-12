@@ -11,7 +11,7 @@ struct GameLearnView: View {
 }
 
 struct GameLearnContent: View {
-    @EnvironmentObject var viewModel: GameViewModel
+    @EnvironmentObject var viewModel: GameCacheGetterViewModel
     
     var body: some View {
         VStack(spacing: 20) {

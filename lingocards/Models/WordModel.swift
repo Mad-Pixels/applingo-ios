@@ -24,7 +24,7 @@ struct WordItemModel: Identifiable, Codable, Equatable {
         hint: String? = nil,
         createdAt: Int = Int(Date().timeIntervalSince1970),
         success: Int = 0,
-        weight: Int = 0,
+        weight: Int = 500,
         fail: Int = 0
     ) {
         self.id = id

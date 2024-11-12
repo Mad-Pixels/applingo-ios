@@ -1,17 +1,17 @@
 import Foundation
 import Combine
 
-final class GameViewModel: BaseDatabaseViewModel {
+final class GameCacheGetterViewModel: BaseDatabaseViewModel {
     @Published private(set) var cache: [WordItemModel] = []
     @Published private(set) var isLoadingCache = false
     
-    private var cancellables = Set<AnyCancellable>()
     private let repository: WordRepositoryProtocol
-    private var cancellationToken = UUID()
-    private var frame: AppFrameModel = .main
-    
-    private let cacheSize: Int = 100
     private let cacheThreshold: Int = 20
+    private let cacheSize: Int = 100
+    
+    private var cancellables = Set<AnyCancellable>()
+    private var frame: AppFrameModel = .main
+    private var cancellationToken = UUID()
     
     init(repository: WordRepositoryProtocol) {
         self.repository = repository

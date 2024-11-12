@@ -373,6 +373,9 @@
         }
       }
     },
+    "Key" : {
+      "extractionState" : "manual"
+    },
     "Language" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -498,6 +501,17 @@
     "Practice" : {
 
     },
+    "PracticeDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "practice without limits"
+          }
+        }
+      }
+    },
     "Quiz" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -550,9 +564,6 @@
       }
     },
     "Select" : {
-
-    },
-    "Select Game Mode" : {
 
     },
     "SendErrorsLogs" : {
@@ -612,6 +623,17 @@
     "Survival" : {
 
     },
+    "SurvivalDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3 lives, how far you can go?"
+          }
+        }
+      }
+    },
     "Theme" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -631,6 +653,17 @@
     },
     "Time Attack" : {
 
+    },
+    "TimeAttackDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "race against time!"
+          }
+        }
+      }
     },
     "Total items: %lld" : {
 

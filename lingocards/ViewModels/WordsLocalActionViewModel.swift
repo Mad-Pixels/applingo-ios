@@ -2,9 +2,9 @@ import Foundation
 import Combine
 
 final class WordsLocalActionViewModel: BaseDatabaseViewModel {
-    private var frame: AppFrameModel = .main
-    private let repository: WordRepositoryProtocol
     private let dictionaryRepository: DictionaryRepositoryProtocol
+    private let repository: WordRepositoryProtocol
+    private var frame: AppFrameModel = .main
 
     init(repository: WordRepositoryProtocol) {
         self.repository = repository
