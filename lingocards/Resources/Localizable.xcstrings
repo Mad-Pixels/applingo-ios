@@ -5,10 +5,24 @@
 
     },
     "%lld" : {
-
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld"
+          }
+        }
+      }
     },
     "%lld%%" : {
-
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld%%"
+          }
+        }
+      }
     },
     "AddDictionary" : {
       "extractionState" : "manual",
@@ -40,23 +54,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "дополнительно"
-          }
-        }
-      }
-    },
-    "Additional Information" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "shit"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "123"
           }
         }
       }
@@ -322,7 +319,14 @@
       }
     },
     "Error: %@" : {
-
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ошибка: %@"
+          }
+        }
+      }
     },
     "Failed to update the dictionary due to database issues." : {
 
