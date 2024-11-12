@@ -14,7 +14,6 @@ struct CompButtonGameModeView: View {
                 Image(systemName: icon)
                     .font(.title2)
                     .frame(width: 30)
-                
                 VStack(alignment: .leading) {
                     Text(title)
                         .font(.headline)
@@ -22,9 +21,7 @@ struct CompButtonGameModeView: View {
                         .font(.caption)
                         .foregroundColor(theme.secondaryTextColor)
                 }
-                
                 Spacer()
-                
                 Image(systemName: "chevron.right")
                     .font(.caption)
                     .foregroundColor(theme.secondaryTextColor)

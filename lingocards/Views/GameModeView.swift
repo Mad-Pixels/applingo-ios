@@ -10,7 +10,7 @@ struct GameModeView: View {
         let theme = ThemeManager.shared.currentThemeStyle
         
         VStack(spacing: 20) {            
-            Text(LanguageManager.shared.displayName(for: "SelectGameMode").capitalizedFirstLetter)
+            Text(LanguageManager.shared.displayName(for: "SelectGameMode").uppercased())
                 .font(.title)
                 .foregroundColor(theme.baseTextColor)
             
@@ -24,14 +24,12 @@ struct GameModeView: View {
                         for: "PracticeDescription"
                     ),
                     action: {
-                        print("[GameModeView] Selecting Practice mode")
                         selectedMode = .practice
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                             startGame()
                         }
                     }
                 )
-                
                 CompButtonGameModeView(
                     title: LanguageManager.shared.displayName(
                         for: "Survival"
@@ -41,14 +39,12 @@ struct GameModeView: View {
                         for: "SurvivalDescription"
                     ),
                     action: {
-                        print("[GameModeView] Selecting Survival mode")
                         selectedMode = .survival
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                             startGame()
                         }
                     }
                 )
-                
                 CompButtonGameModeView(
                     title: LanguageManager.shared.displayName(
                         for: "TimeAttack"
