@@ -327,8 +327,22 @@
     "Failed to update the dictionary due to database issues." : {
 
     },
-    "FALSE" : {
-
+    "False" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "false"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "неверно"
+          }
+        }
+      }
     },
     "Front" : {
 
@@ -656,8 +670,22 @@
     "Total items: %lld" : {
 
     },
-    "TRUE" : {
-
+    "True" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "true"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "верно"
+          }
+        }
+      }
     },
     "VerifyIt" : {
       "extractionState" : "manual",

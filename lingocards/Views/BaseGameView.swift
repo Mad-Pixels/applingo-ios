@@ -48,7 +48,7 @@ struct BaseGameView<Content: View>: View {
                     }) {
                         Image(systemName: "xmark.circle.fill")
                             .font(.title)
-                            .foregroundColor(theme.baseTextColor)
+                            .foregroundColor(theme.secondaryIconColor)
                     }
                 }
                 .padding()

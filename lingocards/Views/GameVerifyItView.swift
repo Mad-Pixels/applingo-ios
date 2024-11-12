@@ -176,7 +176,7 @@ struct CardView: View {
             
             ZStack {
                 VStack {
-                    Text("FALSE")
+                    Text(LanguageManager.shared.localizedString(for: "False").uppercased())
                         .font(.system(size: 48, weight: .heavy))
                         .foregroundColor(.red)
                         .padding(20)
@@ -189,7 +189,7 @@ struct CardView: View {
                 .opacity(dragState.translation.width < 0 ? dragPercentage : 0)
                 
                 VStack {
-                    Text("TRUE")
+                    Text(LanguageManager.shared.localizedString(for: "True").uppercased())
                         .font(.system(size: 48, weight: .heavy))
                         .foregroundColor(.green)
                         .padding(20)
