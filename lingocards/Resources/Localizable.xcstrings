@@ -498,9 +498,6 @@
         }
       }
     },
-    "Practice" : {
-
-    },
     "PracticeDescription" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -617,12 +614,6 @@
         }
       }
     },
-    "Streak: %lld" : {
-
-    },
-    "Survival" : {
-
-    },
     "SurvivalDescription" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -650,9 +641,6 @@
           }
         }
       }
-    },
-    "Time Attack" : {
-
     },
     "TimeAttackDescription" : {
       "extractionState" : "manual",
