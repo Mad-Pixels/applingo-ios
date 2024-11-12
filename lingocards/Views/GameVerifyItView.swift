@@ -20,6 +20,7 @@ struct GameVerifyItContent: View {
     @State private var cardOffset: CGFloat = 0
     @State private var cardRotation: Double = 0
     @State private var startTime: TimeInterval = 0
+    @StateObject private var feedbackHandler = GameFeedbackHandler()
     
     var body: some View {
         ZStack {
@@ -35,6 +36,7 @@ struct GameVerifyItContent: View {
                             handleSwipe(isRight: isRight)
                         }
                     )
+                    .shake(isShaking: feedbackHandler.isShaking)
                 }
                 if showAnswerFeedback {
                     VStack {
@@ -79,6 +81,10 @@ struct GameVerifyItContent: View {
     private func handleSwipe(isRight: Bool) {
         guard let card = currentCard else { return }
         isCorrectAnswer = isRight == card.isMatch
+        
+        if !isCorrectAnswer {
+                    feedbackHandler.provideFeedbackForWrongAnswer()
+                }
 
         let result = VerifyGameResultModel(
             word: card.frontWord,
@@ -231,5 +237,3 @@ struct CardView: View {
         .animation(.interactiveSpring(), value: dragState.translation)
     }
 }
-
-

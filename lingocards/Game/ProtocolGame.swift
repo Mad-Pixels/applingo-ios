@@ -10,6 +10,8 @@ protocol GameResultProtocol {
     var responseTime: TimeInterval { get }
 }
 
+
+
 enum GameMode {
     case practice
     case survival
