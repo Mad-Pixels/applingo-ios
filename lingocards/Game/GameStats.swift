@@ -26,7 +26,6 @@ struct GameStatsModel {
             streak = 0
             lives -= 1
         }
-        
         let totalAnswers = correctAnswers + wrongAnswers
         averageResponseTime = (averageResponseTime * Double(totalAnswers - 1) + responseTime) / Double(totalAnswers)
     }
