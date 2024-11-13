@@ -10,7 +10,18 @@ protocol GameResultProtocol {
     var responseTime: TimeInterval { get }
 }
 
+protocol GameFeedbackProtocol {
+    func trigger()
+}
 
+protocol GameFeedbackVisualProtocol: GameFeedbackProtocol {
+    associatedtype ModifierType: ViewModifier
+    func modifier() -> ModifierType
+}
+
+protocol GameFeedbackHapticProtocol: GameFeedbackProtocol {
+    func playHaptic()
+}
 
 enum GameMode {
     case practice

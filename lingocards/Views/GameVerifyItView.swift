@@ -20,8 +20,17 @@ struct GameVerifyItContent: View {
     @State private var cardOffset: CGFloat = 0
     @State private var cardRotation: Double = 0
     @State private var startTime: TimeInterval = 0
-    @StateObject private var feedbackHandler = GameFeedbackHandler()
+    @StateObject private var feedbackHandler = CompositeFeedback(feedbacks: [
+        FeedbackWrongAnswerHaptic()
+    ])
     @State private var hintPenalty: Int = 0
+    @State private var showErrorBorder = false
+    @State private var isErrorBorderActive = false
+    
+    let errorBorderFeedback: FeedbackErrorBorder
+    init() {
+        self.errorBorderFeedback = FeedbackErrorBorder(isActive: .constant(false))
+    }
     
     var body: some View {
         ZStack {
@@ -40,7 +49,7 @@ struct GameVerifyItContent: View {
                             hintPenalty = 5
                         }
                     )
-                    .shake(isShaking: feedbackHandler.isShaking)
+                    .withFeedback(FeedbackErrorBorder(isActive: $isErrorBorderActive)) // Применяем к CardView
                 }
                 if showAnswerFeedback {
                     VStack {
@@ -103,8 +112,11 @@ struct GameVerifyItContent: View {
         )
         
         if !isCorrectAnswer {
-            feedbackHandler.provideFeedbackForWrongAnswer()
-        }
+                    isErrorBorderActive = true // Активируем эффект
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        isErrorBorderActive = false // Деактивируем эффект
+                    }
+                }
         
         let result = VerifyGameResultModel(
             word: card.frontWord,

@@ -25,7 +25,7 @@ enum DatabaseError: Error, LocalizedError {
     }
 }
 
-class DatabaseManager: ObservableObject {
+final class DatabaseManager: ObservableObject {
     @Published private(set) var isConnected: Bool = false
     static let shared = DatabaseManager()
     
