@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct GameSpecialService {
+class GameSpecialService: ObservableObject {
     private var specials: [GameSpecialProtocol]
     
     init(specials: [GameSpecialProtocol] = []) {

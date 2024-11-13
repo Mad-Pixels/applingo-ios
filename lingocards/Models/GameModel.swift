@@ -32,11 +32,11 @@ struct VerifyCardModel {
     let isMatch: Bool
     let isSpecial: Bool
     
-    init(frontWord: WordItemModel, backText: String, isMatch: Bool) {
+    init(frontWord: WordItemModel, backText: String, isMatch: Bool, isSpecial: Bool) {
         self.frontWord = frontWord
         self.backText = backText
         self.isMatch = isMatch
-        self.isSpecial = GameSpecialManager.shared.isSpecial(frontWord)
+        self.isSpecial = isSpecial
     }
 }
 

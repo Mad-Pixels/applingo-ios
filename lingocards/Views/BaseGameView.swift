@@ -53,7 +53,7 @@ struct ScorePointsView: View {
 struct BaseGameView<Content: View>: View {
     @StateObject private var cacheGetter: GameCacheGetterViewModel
     @StateObject private var gameHandler: GameHandler
-    @StateObject private var specialService = GameSpecialService()
+    @StateObject private var specialService: GameSpecialService
     
     @State private var scoreAnimations: [ScoreAnimationModel] = []
     
@@ -73,13 +73,10 @@ struct BaseGameView<Content: View>: View {
         guard let dbQueue = DatabaseManager.shared.databaseQueue else {
             fatalError("Database is not connected")
         }
-        
         let repository = RepositoryWord(dbQueue: dbQueue)
         self._cacheGetter = StateObject(wrappedValue: GameCacheGetterViewModel(repository: repository))
-        self._gameHandler = StateObject(wrappedValue: GameHandler(
-            scoreService: GameScoreService(),
-            onGameEnd: nil
-        ))
+        self._gameHandler = StateObject(wrappedValue: GameHandler(onGameEnd: nil))
+        self._specialService = StateObject(wrappedValue: GameSpecialService())
     }
     
     var body: some View {
