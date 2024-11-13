@@ -12,44 +12,17 @@ struct ScoreAnimationModel: Identifiable, Equatable {
     }
 }
 
-//enum ScoreAnimationReason: Equatable {
-//    case normal
-//    case fast
-//    case special
-//    case hint
-//    
-//    var icon: String {
-//        switch self {
-//        case .normal: return ""
-//        case .fast: return "bolt.fill"
-//        case .special: return "star.fill"
-//        case .hint: return "lightbulb.fill"
-//        }
-//    }
-//    
-//    var color: Color {
-//        switch self {
-//        case .normal: return .primary
-//        case .fast: return .blue
-//        case .special: return .yellow
-//        case .hint: return .orange
-//        }
-//    }
-//}
-
-// MARK: - Environment Key
-private struct BaseGameViewKey: EnvironmentKey {
+private struct ShowScoreKey: EnvironmentKey {
     static let defaultValue: ((Int, ScoreAnimationReason) -> Void)? = nil
 }
 
 extension EnvironmentValues {
     var showScore: ((Int, ScoreAnimationReason) -> Void)? {
-        get { self[BaseGameViewKey.self] }
-        set { self[BaseGameViewKey.self] = newValue }
+        get { self[ShowScoreKey.self] }
+        set { self[ShowScoreKey.self] = newValue }
     }
 }
 
-// MARK: - Score Points View
 struct ScorePointsView: View {
     let score: ScoreAnimationModel
     let theme = ThemeManager.shared.currentThemeStyle
@@ -61,7 +34,7 @@ struct ScorePointsView: View {
                     .foregroundColor(score.reason.color)
             }
             
-            Text(score.points > 0 ? "+\(score.points)" : "\(score.points)")
+            Text(ScoreFormatter.formatScore(score.points, showPlus: true))
                 .font(.system(size: 24, weight: .bold, design: .rounded))
                 .foregroundColor(score.points >= 0 ? .green : .red)
         }
@@ -77,12 +50,12 @@ struct ScorePointsView: View {
     }
 }
 
-// MARK: - Base Game View
 struct BaseGameView<Content: View>: View {
     @StateObject private var cacheGetter: GameCacheGetterViewModel
-    @StateObject private var gameAction: GameActionViewModel
+    @StateObject private var gameHandler: GameHandler
+    @StateObject private var specialService = GameSpecialService()
+    
     @State private var scoreAnimations: [ScoreAnimationModel] = []
-    @StateObject private var gameStats = GameStatsModel()
     
     let isPresented: Binding<Bool>
     let content: Content
@@ -100,9 +73,13 @@ struct BaseGameView<Content: View>: View {
         guard let dbQueue = DatabaseManager.shared.databaseQueue else {
             fatalError("Database is not connected")
         }
+        
         let repository = RepositoryWord(dbQueue: dbQueue)
         self._cacheGetter = StateObject(wrappedValue: GameCacheGetterViewModel(repository: repository))
-        self._gameAction = StateObject(wrappedValue: GameActionViewModel(repository: repository))
+        self._gameHandler = StateObject(wrappedValue: GameHandler(
+            scoreService: GameScoreService(),
+            onGameEnd: nil
+        ))
     }
     
     var body: some View {
@@ -113,23 +90,17 @@ struct BaseGameView<Content: View>: View {
             
             VStack(spacing: 0) {
                 HStack {
-                    if gameAction.isGameActive {
-                        CompToolbarGame(
-                            gameMode: gameAction.gameMode,
-                           // stats: gameAction.stats,
-                            isGameActive: .constant(true)
-                        )
-                        .environmentObject(gameStats)
-                    }
-                    Spacer()
-                    Button(action: {
-                        cacheGetter.clearCache()
-                        gameAction.endGame()
-                        isPresented.wrappedValue = false
-                    }) {
-                        Image(systemName: "xmark.circle.fill")
-                            .font(.title)
-                            .foregroundColor(theme.secondaryIconColor)
+                    if gameHandler.isGameActive {
+                        CompToolbarGame()
+                            .environmentObject(gameHandler)
+                        
+                        Spacer()
+                        
+                        Button(action: endGame) {
+                            Image(systemName: "xmark.circle.fill")
+                                .font(.title)
+                                .foregroundColor(theme.secondaryIconColor)
+                        }
                     }
                 }
                 .padding()
@@ -142,24 +113,22 @@ struct BaseGameView<Content: View>: View {
                     Spacer()
                     CompGameStateView()
                     Spacer()
-                } else if !gameAction.isGameActive {
+                } else if !gameHandler.isGameActive {
                     Spacer()
                     GameModeView(
                         selectedMode: .init(
-                            get: { gameAction.gameMode },
-                            set: { newMode in
-                                gameAction.setGameMode(newMode)
-                            }
+                            get: { gameHandler.gameMode },
+                            set: { mode in gameHandler.startGame(mode: mode) }
                         ),
-                        startGame: { gameAction.startGame() }
+                        startGame: { gameHandler.startGame(mode: .practice) }
                     )
                     Spacer()
                 } else {
                     Spacer()
                     contentWithEnvironment
                         .environmentObject(cacheGetter)
-                        .environmentObject(gameAction)
-                        .environmentObject(gameStats)
+                        .environmentObject(gameHandler)
+                        .environmentObject(specialService)
                     Spacer()
                 }
             }
@@ -174,19 +143,27 @@ struct BaseGameView<Content: View>: View {
                 .zIndex(100)
             }
         }
-        .onAppear {
-            FrameManager.shared.setActiveFrame(.game)
-            cacheGetter.setFrame(.game)
-            gameAction.setFrame(.game)
-            cacheGetter.initializeCache()
-        }
-        .onDisappear {
-            cacheGetter.clearCache()
-            gameAction.endGame()
-        }
+        .onAppear(perform: setupGame)
+        .onDisappear(perform: cleanupGame)
     }
     
-    func showScoreAnimation(_ points: Int, reason: ScoreAnimationReason = .normal) {
+    private func setupGame() {
+        FrameManager.shared.setActiveFrame(.game)
+        cacheGetter.setFrame(.game)
+        cacheGetter.initializeCache()
+    }
+    
+    private func cleanupGame() {
+        cacheGetter.clearCache()
+        gameHandler.endGame()
+    }
+    
+    private func endGame() {
+        cleanupGame()
+        isPresented.wrappedValue = false
+    }
+    
+    private func showScoreAnimation(_ points: Int, reason: ScoreAnimationReason = .normal) {
         let animation = ScoreAnimationModel(points: points, reason: reason)
         withAnimation {
             scoreAnimations.append(animation)
@@ -199,56 +176,10 @@ struct BaseGameView<Content: View>: View {
         }
     }
     
-    var contentWithEnvironment: some View {
+    private var contentWithEnvironment: some View {
         content.environment(\.showScore) { points, reason in
             showScoreAnimation(points, reason: reason)
         }
-    }
-}
-
-
-///
-///
-///
-///
-///
-///
-///
-///
-///
-
-
-// MARK: - Score Calculator
-
-
-// MARK: - Game Stats Extension
-extension GameStatsModel {
-    func updateStats(
-        isCorrect: Bool,
-        responseTime: TimeInterval,
-        isSpecial: Bool = false
-    ) {
-        if isCorrect {
-            correctAnswers += 1
-            streak += 1
-            bestStreak = max(bestStreak, streak)
-            
-            let scoreResult = GameScoreCalculator.calculateScore(
-                isCorrect: true,
-                streak: streak,
-                responseTime: responseTime,
-                isSpecial: isSpecial
-            )
-            score += scoreResult.total
-        } else {
-            wrongAnswers += 1
-            streak = 0
-            lives -= 1
-            score -= 10
-        }
-        
-        let totalAnswers = correctAnswers + wrongAnswers
-        averageResponseTime = (averageResponseTime * Double(totalAnswers - 1) + responseTime) / Double(totalAnswers)
     }
 }
 
