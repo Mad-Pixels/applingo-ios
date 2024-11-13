@@ -20,6 +20,7 @@ struct GameVerifyItContent: View {
     @State private var cardOffset: CGFloat = 0
     @State private var cardRotation: Double = 0
     @State private var startTime: TimeInterval = 0
+    @EnvironmentObject var gameStats: GameStatsModel
     @StateObject private var feedbackHandler = CompositeFeedback(feedbacks: [
         FeedbackWrongAnswerHaptic()
     ])
@@ -109,32 +110,34 @@ struct GameVerifyItContent: View {
     
     private func handleSwipe(isRight: Bool) {
         guard let card = currentCard else { return }
-        isCorrectAnswer = isRight == card.isMatch
+                let isCorrectAnswer = isRight == card.isMatch
+                let responseTime = Date().timeIntervalSince1970 - startTime
         
-        let scoreResult = GameScoreCalculator.calculateScore(
-                isCorrect: isCorrectAnswer,
-                streak: gameAction.stats.streak,
-                responseTime: Date().timeIntervalSince1970 - startTime,
-                isSpecial: card.isSpecial
-            )
+        let scoreResult = gameStats.updateStats(
+                    isCorrect: isCorrectAnswer,
+                    responseTime: responseTime,
+                    isSpecial: card.isSpecial,
+                    hintPenalty: hintPenalty
+                )
         showScore?(scoreResult.totalScore, scoreResult.reason)
 
         if !isCorrectAnswer {
-                isErrorBorderActive = true
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    isErrorBorderActive = false
+                    isErrorBorderActive = true
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        isErrorBorderActive = false
+                    }
                 }
-            }
         
         let result = VerifyGameResultModel(
-                word: card.frontWord,
-                isCorrect: isCorrectAnswer,
-                score: scoreResult.totalScore,
-                responseTime: Date().timeIntervalSince1970 - startTime,
-                isSpecial: card.isSpecial
-            )
+                    word: card.frontWord,
+                    isCorrect: isCorrectAnswer,
+                    score: scoreResult.totalScore,
+                    responseTime: responseTime,
+                    isSpecial: card.isSpecial,
+                    hintPenalty: hintPenalty
+                )
         gameAction.handleGameResult(result)
-        
+
         withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
             showAnswerFeedback = true
             cardOffset = isRight ? 1000 : -1000

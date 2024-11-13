@@ -82,6 +82,7 @@ struct BaseGameView<Content: View>: View {
     @StateObject private var cacheGetter: GameCacheGetterViewModel
     @StateObject private var gameAction: GameActionViewModel
     @State private var scoreAnimations: [ScoreAnimationModel] = []
+    @StateObject private var gameStats = GameStatsModel()
     
     let isPresented: Binding<Bool>
     let content: Content
@@ -115,9 +116,10 @@ struct BaseGameView<Content: View>: View {
                     if gameAction.isGameActive {
                         CompToolbarGame(
                             gameMode: gameAction.gameMode,
-                            stats: gameAction.stats,
+                           // stats: gameAction.stats,
                             isGameActive: .constant(true)
                         )
+                        .environmentObject(gameStats)
                     }
                     Spacer()
                     Button(action: {
@@ -157,6 +159,7 @@ struct BaseGameView<Content: View>: View {
                     contentWithEnvironment
                         .environmentObject(cacheGetter)
                         .environmentObject(gameAction)
+                        .environmentObject(gameStats)
                     Spacer()
                 }
             }
@@ -288,7 +291,7 @@ struct GameScoreCalculator {
 
 // MARK: - Game Stats Extension
 extension GameStatsModel {
-    mutating func updateStats(
+    func updateStats(
         isCorrect: Bool,
         responseTime: TimeInterval,
         isSpecial: Bool = false

@@ -8,6 +8,8 @@ protocol GameResultProtocol {
     var word: WordItemModel { get }
     var isCorrect: Bool { get }
     var responseTime: TimeInterval { get }
+    var isSpecial: Bool { get }
+    var hintPenalty: Int { get }
 }
 
 protocol GameFeedbackProtocol {

@@ -1,8 +1,9 @@
 import SwiftUI
 
 struct CompToolbarGame: View {
+    @EnvironmentObject var gameStats: GameStatsModel
+
     let gameMode: GameMode
-    let stats: GameStatsModel
     @Binding var isGameActive: Bool
 
     var body: some View {
@@ -10,22 +11,22 @@ struct CompToolbarGame: View {
 
         HStack(spacing: 10) {
             HStack(spacing: 12) {
-                ScoreIndicator(score: stats.score)
-                StreakIndicator(streak: stats.streak)
+                ScoreIndicator(score: gameStats.score)
+                StreakIndicator(streak: gameStats.streak)
             }
             Spacer(minLength: 8)
             switch gameMode {
             case .practice:
-                AccuracyView(stats: stats)
+                AccuracyView(stats: gameStats)
             case .timeAttack:
                 HStack(spacing: 6) {
-                    TimeIndicator(timeRemaining: stats.timeRemaining)
-                    AccuracyView(stats: stats)
+                    TimeIndicator(timeRemaining: gameStats.timeRemaining)
+                    AccuracyView(stats: gameStats)
                 }
             case .survival:
                 HStack(spacing: 6) {
-                    LivesIndicator(lives: stats.lives)
-                    AccuracyView(stats: stats)
+                    LivesIndicator(lives: gameStats.lives)
+                    AccuracyView(stats: gameStats)
                 }
             }
         }
@@ -38,6 +39,7 @@ struct CompToolbarGame: View {
         }
     }
 }
+
 
 private struct ScoreIndicator: View {
     let score: Int

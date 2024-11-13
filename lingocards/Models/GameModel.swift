@@ -46,13 +46,15 @@ struct VerifyGameResultModel: GameResultProtocol {
     let score: Int
     let responseTime: TimeInterval
     let isSpecial: Bool
+    let hintPenalty: Int
     
-    init(word: WordItemModel, isCorrect: Bool, score: Int, responseTime: TimeInterval, isSpecial: Bool) {
+    init(word: WordItemModel, isCorrect: Bool, score: Int, responseTime: TimeInterval, isSpecial: Bool, hintPenalty: Int) {
         self.word = word
         self.isCorrect = isCorrect
         self.score = score
         self.responseTime = responseTime
         self.isSpecial = isSpecial
+        self.hintPenalty = hintPenalty
     }
 }
 
