@@ -7,6 +7,7 @@ final class GameSpecialManager: ObservableObject {
     private init() {}
     
     func register(_ item: GameSpecial) {
+        clear()
         special.append(item)
     }
     
@@ -19,9 +20,14 @@ final class GameSpecialManager: ObservableObject {
     }
     
     func calculateBonus(baseScore: Int) -> Int {
-        special.reduce(baseScore) { score, item in
-            item.calculateBonus(baseScore: score)
+        // Добавим print для отладки
+        print("Number of special cards: \(special.count)")
+        let finalScore = special.reduce(baseScore) { score, item in
+            let bonus = item.calculateBonus(baseScore: score)
+            print("Score \(score) after bonus: \(bonus)")
+            return bonus
         }
+        return finalScore
     }
     
     func getModifiers() -> [AnyViewModifier] {

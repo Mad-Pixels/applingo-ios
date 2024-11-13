@@ -10,12 +10,10 @@ struct GameVerifyItView: View {
     }
 }
 
-
-
 struct GameVerifyItContent: View {
     @EnvironmentObject var cacheGetter: GameCacheGetterViewModel
     @EnvironmentObject var gameAction: GameActionViewModel
-    
+    @Environment(\.showScore) private var showScore
     @State private var currentCard: VerifyCardModel?
     @State private var showAnswerFeedback = false
     @State private var isCorrectAnswer = false
@@ -29,14 +27,12 @@ struct GameVerifyItContent: View {
     @State private var showErrorBorder = false
     @State private var isErrorBorderActive = false
     @State private var showSuccessEffect = false
-    
+    @StateObject private var specialManager = GameSpecialManager.shared
+
     let errorBorderFeedback: FeedbackErrorBorder
     init() {
-        
-        
         self.errorBorderFeedback = FeedbackErrorBorder(isActive: .constant(false))
-        let goldCard = SpecialGoldCard(showSuccessEffect: $showSuccessEffect)
-        GameSpecialManager.shared.register(goldCard)
+
     }
     
     var body: some View {
@@ -77,12 +73,17 @@ struct GameVerifyItContent: View {
             }
         }
         .onAppear {
+            let goldCard = SpecialGoldCard(showSuccessEffect: $showSuccessEffect)
+                        GameSpecialManager.shared.register(goldCard)
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                 if cacheGetter.cache.count >= 8 {
                     generateNewCard()
                 }
             }
         }
+        .onDisappear {
+                    GameSpecialManager.shared.clear()
+                }
     }
     
     private func generateNewCard() {
@@ -110,24 +111,28 @@ struct GameVerifyItContent: View {
         guard let card = currentCard else { return }
         isCorrectAnswer = isRight == card.isMatch
         
-        // Базовые очки за правильный ответ
-        let baseScore = isCorrectAnswer ? 10 : 0
-        let finalScore = GameSpecialManager.shared.calculateBonus(baseScore: baseScore)
-        
+        let scoreResult = GameScoreCalculator.calculateScore(
+                isCorrect: isCorrectAnswer,
+                streak: gameAction.stats.streak,
+                responseTime: Date().timeIntervalSince1970 - startTime,
+                isSpecial: card.isSpecial
+            )
+        showScore?(scoreResult.totalScore, scoreResult.reason)
+
         if !isCorrectAnswer {
-            isErrorBorderActive = true
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                isErrorBorderActive = false
+                isErrorBorderActive = true
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    isErrorBorderActive = false
+                }
             }
-        }
         
         let result = VerifyGameResultModel(
-            word: card.frontWord,
-            isCorrect: isCorrectAnswer,
-            score: finalScore,
-            responseTime: Date().timeIntervalSince1970 - startTime,
-            isSpecial: card.isSpecial
-        )
+                word: card.frontWord,
+                isCorrect: isCorrectAnswer,
+                score: scoreResult.totalScore,
+                responseTime: Date().timeIntervalSince1970 - startTime,
+                isSpecial: card.isSpecial
+            )
         gameAction.handleGameResult(result)
         
         withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
