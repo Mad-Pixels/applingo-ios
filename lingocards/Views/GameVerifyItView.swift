@@ -10,6 +10,8 @@ struct GameVerifyItView: View {
     }
 }
 
+
+
 struct GameVerifyItContent: View {
     @EnvironmentObject var cacheGetter: GameCacheGetterViewModel
     @EnvironmentObject var gameAction: GameActionViewModel
@@ -26,10 +28,15 @@ struct GameVerifyItContent: View {
     @State private var hintPenalty: Int = 0
     @State private var showErrorBorder = false
     @State private var isErrorBorderActive = false
+    @State private var showSuccessEffect = false
     
     let errorBorderFeedback: FeedbackErrorBorder
     init() {
+        
+        
         self.errorBorderFeedback = FeedbackErrorBorder(isActive: .constant(false))
+        let goldCard = SpecialGoldCard(showSuccessEffect: $showSuccessEffect)
+        GameSpecialManager.shared.register(goldCard)
     }
     
     var body: some View {
@@ -49,11 +56,12 @@ struct GameVerifyItContent: View {
                             hintPenalty = 5
                         }
                     )
-                    .withFeedback(FeedbackErrorBorder(isActive: $isErrorBorderActive)) // Применяем к CardView
+                    .withFeedback(FeedbackErrorBorder(isActive: $isErrorBorderActive))
+                    .applySpecialEffects(GameSpecialManager.shared.getModifiers())
                 }
                 if showAnswerFeedback {
                     VStack {
-                        if currentCard?.isGolden == true && isCorrectAnswer {
+                        if currentCard?.isSpecial == true && isCorrectAnswer {
                             Image(systemName: "star.circle.fill")
                                 .foregroundColor(.yellow)
                                 .font(.system(size: 80))
@@ -104,26 +112,21 @@ struct GameVerifyItContent: View {
         
         // Базовые очки за правильный ответ
         let baseScore = isCorrectAnswer ? 10 : 0
-        
-        // Применяем бонус за золотую карточку
-        let finalScore = GoldenCardService.shared.calculateBonusScore(
-            baseScore: baseScore,
-            isGolden: card.isGolden
-        )
+        let finalScore = GameSpecialManager.shared.calculateBonus(baseScore: baseScore)
         
         if !isCorrectAnswer {
-                    isErrorBorderActive = true // Активируем эффект
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                        isErrorBorderActive = false // Деактивируем эффект
-                    }
-                }
+            isErrorBorderActive = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                isErrorBorderActive = false
+            }
+        }
         
         let result = VerifyGameResultModel(
             word: card.frontWord,
             isCorrect: isCorrectAnswer,
             score: finalScore,
             responseTime: Date().timeIntervalSince1970 - startTime,
-            isGolden: card.isGolden
+            isSpecial: card.isSpecial
         )
         gameAction.handleGameResult(result)
         
@@ -260,9 +263,6 @@ struct CardView: View {
                     .stroke(theme.accentColor.opacity(0.2), lineWidth: 1)
             )
             .shadow(color: theme.accentColor.opacity(0.1), radius: 10, x: 0, y: 5)
-            .goldenCard(isGolden: card.isGolden)
-            .goldenCardSuccessEffect(isActive: showSuccessEffect)
-            .goldenCardAppearance(isGolden: card.isGolden)
             
             ZStack {
                 VStack {
@@ -313,7 +313,7 @@ struct CardView: View {
                     if abs(gesture.translation.width) > swipeThreshold {
                         let isRight = gesture.translation.width > 0
                         
-                        if card.isGolden && isRight == card.isMatch {
+                        if card.isSpecial && isRight == card.isMatch {
                             showSuccessEffect = true
                         }
                         
