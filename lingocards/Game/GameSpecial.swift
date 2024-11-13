@@ -1,8 +1,8 @@
 import SwiftUI
 
 struct SpecialGoldCardConfig: GameSpecialConfig {
-    let weightThreshold: Int = 400
-    let chance: Double = 0.1
+    let weightThreshold: Int = 450
+    let chance: Double = 0.4
     let scoreMultiplier: Double = 2.5
 }
 
@@ -32,7 +32,7 @@ final class SpecialGoldCard: GameSpecial {
     
     func modifiers() -> [AnyViewModifier] {
         [
-            AnyViewModifier(GoldCardModifier()),
+            AnyViewModifier(GoldCardModifier(isActive: true)),
             AnyViewModifier(GoldCardAppearanceModifier()),
             AnyViewModifier(GoldCardSuccessEffectModifier(isActive: $showSuccessEffect))
         ]

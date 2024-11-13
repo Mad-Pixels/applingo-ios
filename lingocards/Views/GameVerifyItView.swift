@@ -57,7 +57,7 @@ struct GameVerifyItContent: View {
                         }
                     )
                     .withFeedback(FeedbackErrorBorder(isActive: $isErrorBorderActive))
-                    .applySpecialEffects(GameSpecialManager.shared.getModifiers())
+                    //.applySpecialEffects(GameSpecialManager.shared.getModifiers())
                 }
                 if showAnswerFeedback {
                     VStack {
@@ -263,6 +263,9 @@ struct CardView: View {
                     .stroke(theme.accentColor.opacity(0.2), lineWidth: 1)
             )
             .shadow(color: theme.accentColor.opacity(0.1), radius: 10, x: 0, y: 5)
+            .if(card.isSpecial) { view in
+                            view.applySpecialEffects(GameSpecialManager.shared.getModifiers())
+                        }
             
             ZStack {
                 VStack {
@@ -324,5 +327,16 @@ struct CardView: View {
                 }
         )
         .animation(.interactiveSpring(), value: dragState.translation)
+    }
+}
+
+extension View {
+    @ViewBuilder
+    func `if`(_ condition: Bool, transform: (Self) -> some View) -> some View {
+        if condition {
+            transform(self)
+        } else {
+            self
+        }
     }
 }
