@@ -1,32 +1,30 @@
 import SwiftUI
 
 struct CompToolbarGame: View {
-    @EnvironmentObject var gameStats: GameStatsModel
-
-    let gameMode: GameMode
-    @Binding var isGameActive: Bool
+    @EnvironmentObject var gameHandler: GameHandler
 
     var body: some View {
         let theme = ThemeManager.shared.currentThemeStyle
+        let stats = gameHandler.stats
 
         HStack(spacing: 10) {
             HStack(spacing: 12) {
-                ScoreIndicator(score: gameStats.score)
-                StreakIndicator(streak: gameStats.streak)
+                ScoreIndicator(score: stats.score)
+                StreakIndicator(streak: stats.streak)
             }
             Spacer(minLength: 8)
-            switch gameMode {
+            switch gameHandler.gameMode {
             case .practice:
-                AccuracyView(stats: gameStats)
+                AccuracyView(stats: stats)
             case .timeAttack:
                 HStack(spacing: 6) {
-                    TimeIndicator(timeRemaining: gameStats.timeRemaining)
-                    AccuracyView(stats: gameStats)
+                    TimeIndicator(timeRemaining: stats.timeRemaining)
+                    AccuracyView(stats: stats)
                 }
             case .survival:
                 HStack(spacing: 6) {
-                    LivesIndicator(lives: gameStats.lives)
-                    AccuracyView(stats: gameStats)
+                    LivesIndicator(lives: stats.lives)
+                    AccuracyView(stats: stats)
                 }
             }
         }
@@ -39,7 +37,6 @@ struct CompToolbarGame: View {
         }
     }
 }
-
 
 private struct ScoreIndicator: View {
     let score: Int
