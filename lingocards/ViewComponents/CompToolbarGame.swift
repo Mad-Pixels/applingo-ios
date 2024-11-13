@@ -2,15 +2,15 @@ import SwiftUI
 
 struct CompToolbarGame: View {
     @EnvironmentObject var gameHandler: GameHandler
-
+    
     var body: some View {
         let theme = ThemeManager.shared.currentThemeStyle
         let stats = gameHandler.stats
-
+        
         HStack(spacing: 10) {
             HStack(spacing: 12) {
-                ScoreIndicator(score: stats.score)
-                StreakIndicator(streak: stats.streak)
+                ScoreIndicator(stats: stats)
+                StreakIndicator(stats: stats)
             }
             Spacer(minLength: 8)
             switch gameHandler.gameMode {
@@ -18,12 +18,12 @@ struct CompToolbarGame: View {
                 AccuracyView(stats: stats)
             case .timeAttack:
                 HStack(spacing: 6) {
-                    TimeIndicator(timeRemaining: stats.timeRemaining)
+                    TimeIndicator(stats: stats)
                     AccuracyView(stats: stats)
                 }
             case .survival:
                 HStack(spacing: 6) {
-                    LivesIndicator(lives: stats.lives)
+                    LivesIndicator(stats: stats)
                     AccuracyView(stats: stats)
                 }
             }
@@ -39,14 +39,14 @@ struct CompToolbarGame: View {
 }
 
 private struct ScoreIndicator: View {
-    let score: Int
-
+    @ObservedObject var stats: GameStatsModel
+    
     var body: some View {
         HStack(spacing: 4) {
             Image(systemName: "star.fill")
                 .foregroundColor(.yellow)
                 .imageScale(.medium)
-            Text(formatLargeNumber(score, maxValue: 99999))
+            Text(formatLargeNumber(stats.score, maxValue: 99999))
                 .font(.system(.title3, design: .rounded))
                 .fontWeight(.bold)
                 .monospacedDigit()
@@ -56,9 +56,11 @@ private struct ScoreIndicator: View {
 }
 
 private struct StreakIndicator: View {
-    let streak: Int
-
+    @ObservedObject var stats: GameStatsModel
+    
     var body: some View {
+        let streak = stats.streak
+        
         HStack(spacing: 4) {
             Image(systemName: "flame.fill")
                 .foregroundColor(streakColor)
@@ -74,8 +76,9 @@ private struct StreakIndicator: View {
         }
         .opacity(streak > 0 ? 1 : 0.5)
     }
-
+    
     private var streakColor: Color {
+        let streak = stats.streak
         if streak >= 10 {
             return .red
         } else if streak >= 5 {
@@ -87,9 +90,11 @@ private struct StreakIndicator: View {
 }
 
 private struct LivesIndicator: View {
-    let lives: Int
-
+    @ObservedObject var stats: GameStatsModel
+    
     var body: some View {
+        let lives = stats.lives
+        
         HStack(spacing: 1) {
             ForEach(0..<3) { index in
                 Image(systemName: index < lives ? "heart.fill" : "heart")
@@ -102,9 +107,11 @@ private struct LivesIndicator: View {
 }
 
 private struct TimeIndicator: View {
-    let timeRemaining: TimeInterval
-
+    @ObservedObject var stats: GameStatsModel
+    
     var body: some View {
+        let timeRemaining = stats.timeRemaining
+        
         Text(timeString)
             .font(.system(.title3, design: .rounded))
             .fontWeight(.bold)
@@ -113,17 +120,17 @@ private struct TimeIndicator: View {
             .frame(minWidth: 48)
             .animation(.easeInOut(duration: 0.3), value: timeRemaining)
     }
-
+    
     private var timeString: String {
-        let minutes = Int(timeRemaining) / 60
-        let seconds = Int(timeRemaining) % 60
+        let minutes = Int(stats.timeRemaining) / 60
+        let seconds = Int(stats.timeRemaining) % 60
         return String(format: "%d:%02d", minutes, seconds)
     }
-
+    
     private var timeColor: Color {
-        if timeRemaining <= 10 {
+        if stats.timeRemaining <= 10 {
             return .red
-        } else if timeRemaining <= 30 {
+        } else if stats.timeRemaining <= 30 {
             return .orange
         } else {
             return .primary
@@ -132,25 +139,22 @@ private struct TimeIndicator: View {
 }
 
 private struct AccuracyView: View {
-    let stats: GameStatsModel
-
+    @ObservedObject var stats: GameStatsModel
+    
     var body: some View {
-        Text("\(Int(calculateAccuracy() * 100))%")
+        Text("\(Int(accuracy * 100))%")
             .font(.system(.body, design: .rounded))
             .fontWeight(.bold)
             .monospacedDigit()
             .foregroundColor(accuracyColor)
             .frame(minWidth: 38, alignment: .trailing)
     }
-
-    private func calculateAccuracy() -> Double {
-        let total = Double(stats.correctAnswers + stats.wrongAnswers)
-        guard total > 0 else { return 0 }
-        return Double(stats.correctAnswers) / total
+    
+    private var accuracy: Double {
+        stats.accuracy
     }
-
+    
     private var accuracyColor: Color {
-        let accuracy = calculateAccuracy()
         if accuracy >= 0.8 {
             return .green
         } else if accuracy >= 0.6 {

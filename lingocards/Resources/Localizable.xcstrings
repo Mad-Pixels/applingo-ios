@@ -27,9 +27,6 @@
         }
       }
     },
-    "+%lld" : {
-
-    },
     "AddDictionary" : {
       "extractionState" : "manual",
       "localizations" : {

@@ -88,19 +88,6 @@ enum ScoreAnimationReason {
     }
 }
 
-protocol GameStatsProtocol {
-    var averageResponseTime: TimeInterval { get }
-    var timeRemaining: TimeInterval { get }
-    var correctAnswers: Int { get }
-    var wrongAnswers: Int { get }
-    var score: Int { get }
-    var bestStreak: Int { get }
-    var streak: Int { get }
-    var lives: Int { get }
-    
-    func update(with result: GameResultProtocol, scoreResult: GameScoreResultProtocol)
-}
-
 protocol GameFlowProtocol {
     var isGameActive: Bool { get }
     var gameMode: GameMode { get }
@@ -166,5 +153,59 @@ struct AnyGameSpecial: GameSpecialProtocol, GameSpecialScoringProtocol {
     
     func modifyScoreForWrongAnswer(_ score: Int) -> Int {
         _modifyScoreForWrongAnswer(score)
+    }
+}
+
+protocol GameStatsProtocol {
+    var averageResponseTime: TimeInterval { get }
+    var timeRemaining: TimeInterval { get }
+    var correctAnswers: Int { get }
+    var wrongAnswers: Int { get }
+    var score: Int { get }
+    var bestStreak: Int { get }
+    var streak: Int { get }
+    var lives: Int { get }
+    var totalAnswers: Int { get }
+    var accuracy: Double { get }
+    var isGameOver: Bool { get }
+    var lastScoreResult: GameScoreResult? { get }
+    var isLastAnswerCorrect: Bool { get }
+    
+    func reset()
+    func resetLives(to value: Int)
+    func update(with result: GameResultProtocol, scoreResult: GameScoreResult)
+    func decrementTime()
+    
+    func formatTime(_ time: TimeInterval) -> String
+    func formatAccuracy(_ accuracy: Double) -> String
+    func formatResponseTime(_ time: TimeInterval) -> String
+}
+
+extension GameStatsProtocol {
+    var totalAnswers: Int {
+        correctAnswers + wrongAnswers
+    }
+    
+    var accuracy: Double {
+        guard totalAnswers > 0 else { return 0 }
+        return Double(correctAnswers) / Double(totalAnswers)
+    }
+    
+    var isGameOver: Bool {
+        timeRemaining <= 0 || lives <= 0
+    }
+    
+    func formatTime(_ time: TimeInterval) -> String {
+        let minutes = Int(time) / 60
+        let seconds = Int(time) % 60
+        return String(format: "%02d:%02d", minutes, seconds)
+    }
+    
+    func formatAccuracy(_ accuracy: Double) -> String {
+        String(format: "%.1f%%", accuracy * 100)
+    }
+    
+    func formatResponseTime(_ time: TimeInterval) -> String {
+        String(format: "%.2fs", time)
     }
 }

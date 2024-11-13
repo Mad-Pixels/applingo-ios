@@ -28,7 +28,7 @@ final class GameActionViewModel: BaseDatabaseViewModel {
     }
     
     func setGameMode(_ mode: GameMode) {
-        gameHandler.gameMode = mode
+        gameHandler.setGameMode(mode)
     }
     
     func startGame() {
@@ -40,7 +40,7 @@ final class GameActionViewModel: BaseDatabaseViewModel {
     }
     
     func handleGameResult(_ result: GameResultProtocol) {
-        gameHandler.handleGameResult(result)
+        gameHandler.handleResult(result)
         let updatedWord = updateWordStats(
             word: result.word,
             isCorrect: result.isCorrect

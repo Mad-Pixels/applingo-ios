@@ -53,7 +53,7 @@ struct ScorePointsView: View {
 struct BaseGameView<Content: View>: View {
     @StateObject private var cacheGetter: GameCacheGetterViewModel
     @StateObject private var gameHandler: GameHandler
-    @StateObject private var specialService: GameSpecialService
+    @StateObject private var specialService = GameSpecialService()
     
     @State private var scoreAnimations: [ScoreAnimationModel] = []
     
@@ -69,14 +69,16 @@ struct BaseGameView<Content: View>: View {
         self.minimumWordsRequired = minimumWordsRequired
         self.isPresented = isPresented
         self.content = content()
-        
+            
         guard let dbQueue = DatabaseManager.shared.databaseQueue else {
             fatalError("Database is not connected")
         }
         let repository = RepositoryWord(dbQueue: dbQueue)
         self._cacheGetter = StateObject(wrappedValue: GameCacheGetterViewModel(repository: repository))
-        self._gameHandler = StateObject(wrappedValue: GameHandler(onGameEnd: nil))
-        self._specialService = StateObject(wrappedValue: GameSpecialService())
+        self._gameHandler = StateObject(wrappedValue: GameHandler(
+            scoreCalculator: GameScoreCalculator(),
+            onGameEnd: nil
+        ))
     }
     
     var body: some View {
@@ -129,7 +131,6 @@ struct BaseGameView<Content: View>: View {
                     Spacer()
                 }
             }
-            
             if !scoreAnimations.isEmpty {
                 VStack {
                     ForEach(scoreAnimations) { animation in
@@ -140,7 +141,10 @@ struct BaseGameView<Content: View>: View {
                 .zIndex(100)
             }
         }
-        .onAppear(perform: setupGame)
+        .onAppear {
+            setupGame()
+            setupScoreCallback()
+        }
         .onDisappear(perform: cleanupGame)
     }
     
@@ -150,6 +154,12 @@ struct BaseGameView<Content: View>: View {
         cacheGetter.initializeCache()
     }
     
+    private func setupScoreCallback() {
+        gameHandler.onScoreChange = { points, reason in
+            showScoreAnimation(points, reason: reason)
+        }
+    }
+
     private func cleanupGame() {
         cacheGetter.clearCache()
         gameHandler.endGame()

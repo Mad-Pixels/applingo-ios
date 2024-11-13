@@ -12,6 +12,9 @@ final class GameStatsModel: ObservableObject, GameStatsProtocol {
     @Published private(set) var streak: Int = 0
     @Published private(set) var lives: Int = 0
     
+    private(set) var lastScoreResult: GameScoreResult?
+    private(set) var isLastAnswerCorrect: Bool = false
+    
     private let initialTime: TimeInterval
     private let initialLives: Int
     
@@ -37,7 +40,10 @@ final class GameStatsModel: ObservableObject, GameStatsProtocol {
         lives = value
     }
     
-    func update(with result: GameResultProtocol, scoreResult: GameScoreResultProtocol) {
+    func update(with result: GameResultProtocol, scoreResult: GameScoreResult) {
+        self.isLastAnswerCorrect = result.isCorrect
+        self.lastScoreResult = scoreResult
+        
         updateAnswers(isCorrect: result.isCorrect)
         updateStreak(isCorrect: result.isCorrect)
         updateScore(result: scoreResult)

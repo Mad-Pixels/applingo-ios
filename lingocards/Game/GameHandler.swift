@@ -13,6 +13,8 @@ final class GameHandler: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     private var onGameEnd: (() -> Void)?
     
+    var onScoreChange: ((Int, ScoreAnimationReason) -> Void)?
+    
     init(
         mode: GameMode = .practice,
         stats: GameStatsModel = GameStatsModel(),
@@ -62,6 +64,10 @@ final class GameHandler: ObservableObject {
         isGameActive = true
     }
     
+    func setGameMode(_ mode: GameMode) {
+        gameMode = mode
+    }
+    
     func handleResult(_ result: GameResultProtocol) {
         guard isGameActive else { return }
         
@@ -74,6 +80,7 @@ final class GameHandler: ObservableObject {
         
         stats.update(with: result, scoreResult: scoreResult)
         checkGameEndConditions()
+        onScoreChange?(scoreResult.total, scoreResult.reason)
     }
     
     func calculateWordWeight(success: Int, fail: Int) -> Int {

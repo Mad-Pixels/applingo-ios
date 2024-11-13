@@ -13,7 +13,6 @@ struct GameVerifyItView: View {
 struct GameVerifyItContent: View {
     @EnvironmentObject var cacheGetter: GameCacheGetterViewModel
     @EnvironmentObject var gameHandler: GameHandler
-    @EnvironmentObject var specialService: GameSpecialService
     @Environment(\.showScore) private var showScore
     
     @State private var currentCard: VerifyCardModel?
@@ -25,6 +24,7 @@ struct GameVerifyItContent: View {
     @State private var isErrorBorderActive = false
     @State private var showSuccessEffect = false
     
+    @StateObject private var specialService = SpecialServiceViewModel()
     @StateObject private var feedbackHandler = GameFeedback.wrongAnswer(
         isActive: .constant(false)
     )
@@ -81,7 +81,7 @@ struct GameVerifyItContent: View {
     }
     
     private func setupGame() {
-        specialService.withSpecial(
+        specialService.registerSpecial(
             SpecialGoldCard(
                 config: .standard,
                 showSuccessEffect: $showSuccessEffect
@@ -124,21 +124,19 @@ struct GameVerifyItContent: View {
     private func handleSwipe(isRight: Bool) {
         guard let card = currentCard else { return }
         
+        let responseTime = Date().timeIntervalSince1970 - startTime
+        let isCorrect = isRight == card.isMatch
         let result = VerifyGameResultModel(
             word: card.frontWord,
-            isCorrect: isRight == card.isMatch,
-            responseTime: Date().timeIntervalSince1970 - startTime,
+            isCorrect: isCorrect,
+            score: isCorrect ? 10 : -10,
+            responseTime: responseTime,
             isSpecial: card.isSpecial,
             hintPenalty: hintPenalty
         )
-        
         gameHandler.handleResult(result)
         
-        if let scoreResult = gameHandler.stats.lastScoreResult {
-            showScore?(scoreResult.total, scoreResult.reason)
-        }
-        
-        if !result.isCorrect {
+        if !isCorrect {
             isErrorBorderActive = true
         }
         
@@ -206,16 +204,15 @@ struct CardView: View {
             }
             .frame(width: UIScreen.main.bounds.width - 40, height: 480)
             .background(theme.backgroundBlockColor)
+            .if(card.isSpecial) { view in
+                view.applySpecialEffects(specialService.getModifiers())
+            }
             .clipShape(RoundedRectangle(cornerRadius: 20))
             .overlay(
                 RoundedRectangle(cornerRadius: 20)
                     .stroke(theme.accentColor.opacity(0.2), lineWidth: 1)
             )
             .shadow(color: theme.accentColor.opacity(0.1), radius: 10, x: 0, y: 5)
-            .if(card.isSpecial) { view in
-                view.applySpecialEffects(specialService.getModifiers())
-            }
-            swipeOverlays
         }
         .offset(x: offset + dragState.translation.width, y: dragState.translation.height)
         .rotationEffect(.degrees(cardRotation))
