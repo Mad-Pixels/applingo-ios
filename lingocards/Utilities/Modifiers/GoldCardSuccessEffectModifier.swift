@@ -2,8 +2,8 @@ import SwiftUI
 
 struct GoldCardSuccessEffectModifier: ViewModifier {
     @Binding var isActive: Bool
-    @State private var particlesOpacity: Double = 0
     @State private var particles: [(CGPoint, Double)] = []
+    @State private var particlesOpacity: Double = 0
     
     func body(content: Content) -> some View {
         content
@@ -28,17 +28,7 @@ struct GoldCardSuccessEffectModifier: ViewModifier {
             .onChange(of: isActive) { newValue in
                 if newValue {
                     createParticles()
-                    withAnimation(.easeOut(duration: 1)) {
-                        particlesOpacity = 1
-                        updateParticles()
-                    }
-                    
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                        withAnimation {
-                            particlesOpacity = 0
-                            particles = []
-                        }
-                    }
+                    animateParticles()
                 }
             }
     }
@@ -53,13 +43,24 @@ struct GoldCardSuccessEffectModifier: ViewModifier {
         }
     }
     
-    private func updateParticles() {
-        for i in particles.indices {
-            let currentPosition = particles[i].0
-            let newX = currentPosition.x + CGFloat.random(in: -50...50)
-            let newY = currentPosition.y - CGFloat.random(in: 50...100)
-            particles[i].0 = CGPoint(x: newX, y: newY)
-            particles[i].1 *= 0.5
+    private func animateParticles() {
+        withAnimation(.easeOut(duration: 1)) {
+            particlesOpacity = 1
+            for i in particles.indices {
+                let currentPosition = particles[i].0
+                let newX = currentPosition.x + CGFloat.random(in: -50...50)
+                let newY = currentPosition.y - CGFloat.random(in: 50...100)
+                particles[i].0 = CGPoint(x: newX, y: newY)
+                particles[i].1 *= 0.5
+            }
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            withAnimation {
+                particlesOpacity = 0
+                particles = []
+                isActive = false
+            }
         }
     }
 }

@@ -1,7 +1,7 @@
 import SwiftUI
 import CoreHaptics
 
-class CompositeFeedback: ObservableObject {
+final class CompositeFeedback: ObservableObject {
     private var feedbacks: [GameFeedbackProtocol]
     
     init(feedbacks: [GameFeedbackProtocol]) {
@@ -45,50 +45,112 @@ struct FeedbackShake: GameFeedbackVisualProtocol {
     @Binding var isActive: Bool
     let duration: Double
     
+    init(isActive: Binding<Bool>, duration: Double = 0.5) {
+        self._isActive = isActive
+        self.duration = duration
+    }
+    
     func trigger() {
         isActive = true
+        
         DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
-            isActive = false
+            withAnimation {
+                isActive = false
+            }
         }
     }
     
     func modifier() -> ShakeModifier {
-        ShakeModifier(duration: duration, isShaking: isActive)
+        ShakeModifier(isShaking: isActive, duration: duration)
     }
 }
 
 struct FeedbackErrorBorder: GameFeedbackVisualProtocol {
     @Binding var isActive: Bool
+    let duration: Double
+    
+    init(isActive: Binding<Bool>, duration: Double = 0.5) {
+        self._isActive = isActive
+        self.duration = duration
+    }
     
     func trigger() {
         isActive = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            isActive = false
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
+            withAnimation {
+                isActive = false
+            }
         }
     }
     
     func modifier() -> InnerShadowBorderModifier {
-        InnerShadowBorderModifier(isActive: isActive, color: .red)
+        InnerShadowBorderModifier(color: .red, isActive: isActive)
     }
 }
 
 struct FeedbackSuccessBorder: GameFeedbackVisualProtocol {
     @Binding var isActive: Bool
+    let duration: Double
+    
+    init(isActive: Binding<Bool>, duration: Double = 0.5) {
+        self._isActive = isActive
+        self.duration = duration
+    }
     
     func trigger() {
         isActive = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            isActive = false
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
+            withAnimation {
+                isActive = false
+            }
         }
     }
     
     func modifier() -> InnerShadowBorderModifier {
-        InnerShadowBorderModifier(isActive: isActive, color: .green)
+        InnerShadowBorderModifier(color: .green, isActive: isActive)
     }
 }
 
 extension View {
     func withFeedback<F: GameFeedbackVisualProtocol>(_ feedback: F) -> some View {
         modifier(feedback.modifier())
+    }
+}
+
+struct GameFeedback {
+    static func composite(
+        visualFeedbacks: [any GameFeedbackVisualProtocol] = [],
+        hapticFeedbacks: [GameFeedbackHapticProtocol] = []
+    ) -> CompositeFeedback {
+        CompositeFeedback(feedbacks: visualFeedbacks + hapticFeedbacks)
+    }
+    
+    static func wrongAnswer(
+        isActive: Binding<Bool>
+    ) -> CompositeFeedback {
+        composite(
+            visualFeedbacks: [
+                FeedbackShake(isActive: isActive),
+                FeedbackErrorBorder(isActive: isActive)
+            ],
+            hapticFeedbacks: [
+                FeedbackWrongAnswerHaptic()
+            ]
+        )
+    }
+    
+    static func correctAnswer(
+        isActive: Binding<Bool>
+    ) -> CompositeFeedback {
+        composite(
+            visualFeedbacks: [
+                FeedbackSuccessBorder(isActive: isActive)
+            ],
+            hapticFeedbacks: [
+                FeedbackCorrectAnswerHaptic()
+            ]
+        )
     }
 }

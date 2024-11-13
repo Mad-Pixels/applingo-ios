@@ -119,7 +119,7 @@ struct GameVerifyItContent: View {
                     isSpecial: card.isSpecial,
                     hintPenalty: hintPenalty
                 )
-        showScore?(scoreResult.totalScore, scoreResult.reason)
+        showScore?(scoreResult.total, scoreResult.reason)
 
         if !isCorrectAnswer {
                     isErrorBorderActive = true
@@ -131,7 +131,7 @@ struct GameVerifyItContent: View {
         let result = VerifyGameResultModel(
                     word: card.frontWord,
                     isCorrect: isCorrectAnswer,
-                    score: scoreResult.totalScore,
+                    score: scoreResult.total,
                     responseTime: responseTime,
                     isSpecial: card.isSpecial,
                     hintPenalty: hintPenalty

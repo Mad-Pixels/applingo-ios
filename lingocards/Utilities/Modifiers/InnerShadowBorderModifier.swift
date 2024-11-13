@@ -1,15 +1,20 @@
 import SwiftUI
 
 struct InnerShadowBorderModifier: ViewModifier {
-    let isActive: Bool
     let color: Color
+    let isActive: Bool
+    
+    private let shadowRadius: CGFloat = 4
+    private let borderWidth: CGFloat = 2
+    private let cornerRadius: CGFloat = 20
     
     func body(content: Content) -> some View {
         content.overlay(
-            RoundedRectangle(cornerRadius: 20)
-                .stroke(color, lineWidth: 2)
-                .blur(radius: 4)
-                .opacity(isActive ? 0.5 : 0)
+            RoundedRectangle(cornerRadius: cornerRadius)
+                .stroke(color, lineWidth: borderWidth)
+                .blur(radius: shadowRadius)
+                .opacity(isActive ? 0.8 : 0)
         )
+        .animation(.easeInOut(duration: 0.3), value: isActive)
     }
 }

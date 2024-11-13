@@ -12,30 +12,30 @@ struct ScoreAnimationModel: Identifiable, Equatable {
     }
 }
 
-enum ScoreAnimationReason: Equatable {
-    case normal
-    case fast
-    case special
-    case hint
-    
-    var icon: String {
-        switch self {
-        case .normal: return ""
-        case .fast: return "bolt.fill"
-        case .special: return "star.fill"
-        case .hint: return "lightbulb.fill"
-        }
-    }
-    
-    var color: Color {
-        switch self {
-        case .normal: return .primary
-        case .fast: return .blue
-        case .special: return .yellow
-        case .hint: return .orange
-        }
-    }
-}
+//enum ScoreAnimationReason: Equatable {
+//    case normal
+//    case fast
+//    case special
+//    case hint
+//    
+//    var icon: String {
+//        switch self {
+//        case .normal: return ""
+//        case .fast: return "bolt.fill"
+//        case .special: return "star.fill"
+//        case .hint: return "lightbulb.fill"
+//        }
+//    }
+//    
+//    var color: Color {
+//        switch self {
+//        case .normal: return .primary
+//        case .fast: return .blue
+//        case .special: return .yellow
+//        case .hint: return .orange
+//        }
+//    }
+//}
 
 // MARK: - Environment Key
 private struct BaseGameViewKey: EnvironmentKey {
@@ -219,75 +219,7 @@ struct BaseGameView<Content: View>: View {
 
 
 // MARK: - Score Calculator
-struct GameScoreCalculator {
-    struct ScoreResult {
-        let baseScore: Int
-        let timeBonus: Int
-        let streakBonus: Int
-        let specialBonus: Int
-        let totalScore: Int
-        let reason: ScoreAnimationReason
-        
-        var isPositive: Bool {
-            totalScore > 0
-        }
-    }
-    
-    static func calculateScore(
-        isCorrect: Bool,
-        streak: Int,
-        responseTime: TimeInterval,
-        isSpecial: Bool
-    ) -> ScoreResult {
-        guard isCorrect else {
-            return ScoreResult(
-                baseScore: -10,
-                timeBonus: 0,
-                streakBonus: 0,
-                specialBonus: 0,
-                totalScore: -10,
-                reason: .normal
-            )
-        }
-        
-        // Базовые очки
-        let baseScore = 10
-        
-        // Бонус за время
-        let timeBonus = max(5 * (1.0 - responseTime/3.0), 1)
-        
-        // Бонус за серию
-        let streakMultiplier = min(Double(streak) * 0.1 + 1.0, 2.0)
-        let streakBonus = Int(Double(baseScore) * (streakMultiplier - 1.0))
-        
-        // Бонус за специальную карточку
-        let specialMultiplier: Double = isSpecial ? 2.5 : 1.0
-        let specialBonus = isSpecial ?
-            Int(Double(baseScore + Int(timeBonus) + streakBonus) * (specialMultiplier - 1.0)) : 0
-        
-        // Итоговые очки
-        let totalScore = baseScore + Int(timeBonus) + streakBonus + specialBonus
-        
-        // Определяем причину для анимации
-        let reason: ScoreAnimationReason
-        if isSpecial {
-            reason = .special
-        } else if responseTime < 1.0 {
-            reason = .fast
-        } else {
-            reason = .normal
-        }
-        
-        return ScoreResult(
-            baseScore: baseScore,
-            timeBonus: Int(timeBonus),
-            streakBonus: streakBonus,
-            specialBonus: specialBonus,
-            totalScore: totalScore,
-            reason: reason
-        )
-    }
-}
+
 
 // MARK: - Game Stats Extension
 extension GameStatsModel {
@@ -307,7 +239,7 @@ extension GameStatsModel {
                 responseTime: responseTime,
                 isSpecial: isSpecial
             )
-            score += scoreResult.totalScore
+            score += scoreResult.total
         } else {
             wrongAnswers += 1
             streak = 0

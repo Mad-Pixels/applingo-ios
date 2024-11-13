@@ -12,6 +12,12 @@ protocol GameResultProtocol {
     var hintPenalty: Int { get }
 }
 
+enum GameMode {
+    case practice
+    case survival
+    case timeAttack
+}
+
 protocol GameFeedbackProtocol {
     func trigger()
 }
@@ -25,23 +31,140 @@ protocol GameFeedbackHapticProtocol: GameFeedbackProtocol {
     func playHaptic()
 }
 
-protocol GameSpecialConfig {
+protocol GameScoreModifierProtocol {
+    func modifyScore(_ score: Int) -> Int
+}
+
+protocol GameScoreResultProtocol {
+    var baseScore: Int { get }
+    var timeBonus: Int { get }
+    var streakBonus: Int { get }
+    var specialBonus: Int { get }
+    var hintPenalty: Int { get }
+    var total: Int { get }
+    var reason: ScoreAnimationReason { get }
+}
+
+protocol GameSpecialConfigProtocol {
+    var weightThreshold: Int { get }
     var chance: Double { get }
     var scoreMultiplier: Double { get }
 }
 
-protocol GameSpecial {
+protocol GameSpecialProtocol {
+    var config: GameSpecialConfigProtocol { get }
+    
     func isSpecial(_ item: WordItemModel) -> Bool
-    func calculateBonus(baseScore: Int) -> Int
     func modifiers() -> [AnyViewModifier]
 }
 
-protocol GameSpecialEffect {
-    func trigger()
+protocol GameSpecialScoringProtocol {
+    func modifyScoreForCorrectAnswer(_ score: Int) -> Int
+    func modifyScoreForWrongAnswer(_ score: Int) -> Int
 }
 
-enum GameMode {
-    case practice
-    case survival
-    case timeAttack
+enum ScoreAnimationReason {
+    case normal
+    case fast
+    case special
+    case hint
+    
+    var icon: String {
+        switch self {
+        case .normal: return ""
+        case .fast: return "bolt.fill"
+        case .special: return "star.fill"
+        case .hint: return "lightbulb.fill"
+        }
+    }
+    
+    var color: Color {
+        switch self {
+        case .normal: return .primary
+        case .fast: return .blue
+        case .special: return .yellow
+        case .hint: return .orange
+        }
+    }
+}
+
+protocol GameStatsProtocol {
+    var averageResponseTime: TimeInterval { get }
+    var timeRemaining: TimeInterval { get }
+    var correctAnswers: Int { get }
+    var wrongAnswers: Int { get }
+    var score: Int { get }
+    var bestStreak: Int { get }
+    var streak: Int { get }
+    var lives: Int { get }
+    
+    func update(with result: GameResultProtocol, scoreResult: GameScoreResultProtocol)
+}
+
+protocol GameFlowProtocol {
+    var isGameActive: Bool { get }
+    var gameMode: GameMode { get }
+    var stats: GameStatsProtocol { get }
+    
+    func startGame(mode: GameMode)
+    func endGame()
+    func handleResult(_ result: GameResultProtocol)
+}
+
+protocol GameSpecialServiceProtocol {
+    func isSpecial(_ item: WordItemModel) -> Bool
+    func getActiveSpecial() -> (any GameSpecialScoringProtocol)?
+    func getModifiers() -> [AnyViewModifier]
+}
+
+protocol GameScoreServiceProtocol {
+    func calculateScore(
+        result: GameResultProtocol,
+        streak: Int,
+        special: (any GameSpecialScoringProtocol)?
+    ) -> GameScoreResultProtocol
+}
+
+protocol AnyViewModifierProtocol {
+    func modifyAny(_ view: AnyView) -> AnyView
+}
+
+extension View {
+    func anyView() -> AnyView {
+        AnyView(self)
+    }
+}
+
+struct AnyGameSpecial: GameSpecialProtocol, GameSpecialScoringProtocol {
+    private let _isSpecial: (WordItemModel) -> Bool
+    private let _modifiers: () -> [AnyViewModifier]
+    private let _modifyScoreForCorrectAnswer: (Int) -> Int
+    private let _modifyScoreForWrongAnswer: (Int) -> Int
+    private let _config: GameSpecialConfigProtocol
+    
+    var config: GameSpecialConfigProtocol { _config }
+    
+    init<S: GameSpecialProtocol & GameSpecialScoringProtocol>(_ special: S) {
+        self._isSpecial = special.isSpecial
+        self._modifiers = special.modifiers
+        self._modifyScoreForCorrectAnswer = special.modifyScoreForCorrectAnswer
+        self._modifyScoreForWrongAnswer = special.modifyScoreForWrongAnswer
+        self._config = special.config
+    }
+    
+    func isSpecial(_ item: WordItemModel) -> Bool {
+        _isSpecial(item)
+    }
+    
+    func modifiers() -> [AnyViewModifier] {
+        _modifiers()
+    }
+    
+    func modifyScoreForCorrectAnswer(_ score: Int) -> Int {
+        _modifyScoreForCorrectAnswer(score)
+    }
+    
+    func modifyScoreForWrongAnswer(_ score: Int) -> Int {
+        _modifyScoreForWrongAnswer(score)
+    }
 }

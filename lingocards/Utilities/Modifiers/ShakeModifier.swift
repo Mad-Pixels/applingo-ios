@@ -1,18 +1,21 @@
 import SwiftUI
 
 struct ShakeModifier: ViewModifier {
-    let duration: Double
     let isShaking: Bool
+    let duration: Double
+    
+    private let defaultAmount: CGFloat = 10
+    private let defaultShakesPerUnit = 3
     
     func body(content: Content) -> some View {
         content
             .modifier(ShakeEffect(
-                animatableData: isShaking ? 1 : 0,
-                shakesPerUnit: 4,
-                amount: 12
+                amount: defaultAmount,
+                shakesPerUnit: defaultShakesPerUnit,
+                animatableData: isShaking ? 1 : 0
             ))
             .animation(
-                .spring(response: 0.3, dampingFraction: 0.5)
+                .spring(response: duration * 0.6, dampingFraction: 0.5)
                     .repeatCount(2, autoreverses: false),
                 value: isShaking
             )
@@ -20,9 +23,9 @@ struct ShakeModifier: ViewModifier {
 }
 
 private struct ShakeEffect: AnimatableModifier {
+    var amount: CGFloat = 10
+    var shakesPerUnit = 3
     var animatableData: CGFloat
-    var shakesPerUnit: Int
-    var amount: CGFloat
     
     func body(content: Content) -> some View {
         content.offset(x: amount * sin(animatableData * .pi * CGFloat(shakesPerUnit)))
