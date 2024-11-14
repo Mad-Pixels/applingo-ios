@@ -29,15 +29,3 @@ struct GlassBackgroundModifier: ViewModifier {
             }
     }
 }
-
-extension View {
-    func glassBackground(
-        cornerRadius: CGFloat = 16,
-        opacity: CGFloat = 0.85
-    ) -> some View {
-        modifier(GlassBackgroundModifier(
-            cornerRadius: cornerRadius,
-            opacity: opacity
-        ))
-    }
-}

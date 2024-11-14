@@ -116,12 +116,6 @@ protocol AnyViewModifierProtocol {
     func modifyAny(_ view: AnyView) -> AnyView
 }
 
-extension View {
-    func anyView() -> AnyView {
-        AnyView(self)
-    }
-}
-
 struct AnyGameSpecial: GameSpecialProtocol, GameSpecialScoringProtocol {
     private let _isSpecial: (WordItemModel) -> Bool
     private let _modifiers: () -> [AnyViewModifier]

@@ -48,18 +48,6 @@ extension EnvironmentValues {
     }
 }
 
-extension View {
-    func withSpecial(_ special: GameSpecialProtocol) -> some View {
-        environment(\.specialService, GameSpecialService().withSpecial(special))
-    }
-    
-    func applySpecialEffects(_ modifiers: [AnyViewModifier]) -> some View {
-        return modifiers.reduce(AnyView(self)) { currentView, modifier in
-            return modifier.modify(currentView)
-        }
-    }
-}
-
 struct SpecialGoldCardConfig: GameSpecialConfigProtocol {
     let weightThreshold: Int
     let chance: Double

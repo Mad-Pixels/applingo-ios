@@ -113,18 +113,6 @@ struct FeedbackSuccessBorder: GameFeedbackVisualProtocol {
     }
 }
 
-extension View {
-    func withVisualFeedback<F: GameFeedbackVisualProtocol>(_ feedback: F) -> some View {
-        modifier(feedback.modifier())
-    }
-    
-    func withHapticFeedback(_ feedback: GameFeedbackHapticProtocol) -> some View {
-        onAppear {
-            feedback.playHaptic()
-        }
-    }
-}
-
 struct GameFeedback {
     static func composite(
         visualFeedbacks: [any GameFeedbackVisualProtocol] = [],
