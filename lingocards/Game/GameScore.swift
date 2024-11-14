@@ -115,17 +115,16 @@ final class GameScoreCalculator {
             let scoreWithStreakBonus = streakBonus.modifyScore(components.currentTotal)
             components.addStreakBonus(scoreWithStreakBonus - components.currentTotal)
             
-            if let special = special {
+            if result.isSpecial, let special = special {
                 let specialScore = special.modifyScoreForCorrectAnswer(components.currentTotal)
                 components.addSpecialBonus(specialScore - components.currentTotal)
             }
         } else {
-            if let special = special {
+            if result.isSpecial, let special = special {
                 let specialScore = special.modifyScoreForWrongAnswer(components.currentTotal)
                 components.addSpecialBonus(specialScore - components.currentTotal)
             }
         }
-        
         components.addHintPenalty(result.hintPenalty)
         
         return GameScoreResult(
