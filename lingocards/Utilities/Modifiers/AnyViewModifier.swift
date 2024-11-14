@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct AnyViewModifier: ViewModifier {
-    private let modify: (AnyView) -> AnyView
+    let modify: (AnyView) -> AnyView
     
     init<M: ViewModifier>(_ modifier: M) {
         self.modify = { view in

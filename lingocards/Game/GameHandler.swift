@@ -31,8 +31,11 @@ final class GameHandler: ObservableObject {
     }
     
     func updateSpecialService(_ newService: GameSpecialService) {
-        print("🎮 GameHandler: Updating special service")
-        self.specialService = newService
+        specialService = newService
+    }
+    
+    func getSpecialsCount() -> Int {
+        specialService.getSpecialsCount()
     }
     
     func startGame(mode: GameMode) {

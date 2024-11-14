@@ -38,19 +38,31 @@ private struct GameVerifyItContent: View {
                         },
                         onHintUsed: {
                             hintPenalty = 5
-                        }
+                        },
+                        specialService: gameAction.specialServiceProvider
                     )
-//                    .withHapticFeedback(FeedbackWrongAnswerHaptic())
                 }
-                
                 if showAnswerFeedback {
                     answerFeedbackView
                         .zIndex(1)
                 }
             }
         }
-        .onAppear(perform: setupGame)
-        .onDisappear(perform: cleanupGame)
+        .onAppear {
+                    print("🎮 GameVerifyItContent: onAppear called")
+                    setupGame()
+                }
+        .onDisappear {
+                    print("🧹 GameVerifyItContent: onDisappear called")
+                    cleanupGame()
+                }
+        .onChange(of: cacheGetter.isLoadingCache) { isLoading in
+                    print("📦 Cache loading state changed: \(isLoading)")
+                    if !isLoading {
+                        print("🎮 Cache loaded, calling setupGame()")
+                        setupGame()
+                    }
+                }
     }
     
     private var answerFeedbackView: some View {
@@ -72,20 +84,24 @@ private struct GameVerifyItContent: View {
     }
     
     private func setupGame() {
-        print("🎮 VerifyIt: Setting up game")
-        gameAction.registerSpecial(
-            SpecialGoldCard(
+            print("🎮 VerifyIt: Starting setupGame")
+            let special = SpecialGoldCard(
                 config: .standard,
                 showSuccessEffect: $showSuccessEffect
             )
-        )
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-            if cacheGetter.cache.count >= 8 {
-                generateNewCard()
+            print("🌟 Created special card")
+            
+            print("⭐️ Registering special in gameAction")
+            gameAction.registerSpecial(special)
+            print("✅ Special registered")
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                if cacheGetter.cache.count >= 8 {
+                    print("🎲 Generating initial card")
+                    generateNewCard()
+                }
             }
         }
-    }
     
     private func cleanupGame() {
         print("🧹 VerifyIt: Cleaning up game")
@@ -179,13 +195,15 @@ struct CardView: View {
     let onSwipe: (Bool) -> Void
     let onHintUsed: () -> Void
     
-    @GestureState private var dragState = GameDragStateModel.inactive
-    @State private var swipeStatus: GameSwipeStatusModel = .none
-    @State private var showSuccessEffect: Bool = false
-    @State private var showHint: Bool = false
-    @State private var hintWasUsed: Bool = false
+    let specialService: GameSpecialService
     
-    @Environment(\.specialService) private var specialService
+    @GestureState private var dragState = GameDragStateModel.inactive
+        @State private var swipeStatus: GameSwipeStatusModel = .none
+        @State private var showSuccessEffect: Bool = false
+        @State private var showHint: Bool = false
+        @State private var hintWasUsed: Bool = false
+    
+    //@Environment(\.specialService) private var specialService
     
     private var cardRotation: Double {
         let dragRotation = Double(dragState.translation.width / 300) * 20
@@ -213,17 +231,38 @@ struct CardView: View {
                 
                 backSection(theme)
             }
+//            .frame(width: UIScreen.main.bounds.width - 40, height: 480)
+//            .background(theme.backgroundBlockColor)
+//            .if(true) { view in
+//                let modifiers = specialService.getModifiers()
+//                print("🎨 Applying special effects, service has \(specialService.specials.count) specials")
+//                print("🎨 Got \(modifiers.count) modifiers to apply")
+//                return view.applySpecialEffects(modifiers)
+//            }
+//            .clipShape(RoundedRectangle(cornerRadius: 20))
+//            .overlay(
+//                RoundedRectangle(cornerRadius: 20)
+//                    .stroke(theme.accentColor.opacity(0.2), lineWidth: 1)
+//            )
+//            .shadow(color: theme.accentColor.opacity(0.1), radius: 10, x: 0, y: 5)
             .frame(width: UIScreen.main.bounds.width - 40, height: 480)
             .background(theme.backgroundBlockColor)
+            .clipShape(RoundedRectangle(cornerRadius: 20))
+            // Применяем специальные эффекты если это специальная карточка
             .if(card.isSpecial) { view in
                 view.applySpecialEffects(specialService.getModifiers())
-            }
-            .clipShape(RoundedRectangle(cornerRadius: 20))
+            } // card.isSpecial
             .overlay(
                 RoundedRectangle(cornerRadius: 20)
                     .stroke(theme.accentColor.opacity(0.2), lineWidth: 1)
             )
             .shadow(color: theme.accentColor.opacity(0.1), radius: 10, x: 0, y: 5)
+////            .clipShape(RoundedRectangle(cornerRadius: 20))
+////            .overlay(
+////                RoundedRectangle(cornerRadius: 20)
+////                    .stroke(theme.accentColor.opacity(0.2), lineWidth: 1)
+////            )
+////            .shadow(color: theme.accentColor.opacity(0.1), radius: 10, x: 0, y: 5)
         }
         .offset(x: offset + dragState.translation.width, y: dragState.translation.height)
         .rotationEffect(.degrees(cardRotation))

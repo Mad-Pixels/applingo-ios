@@ -7,8 +7,13 @@ class GameSpecialService: ObservableObject {
         self.specials = specials
     }
     
+    func getSpecialsCount() -> Int {
+        return specials.count
+    }
+    
     func withSpecial(_ special: GameSpecialProtocol) -> GameSpecialService {
-        GameSpecialService(specials: specials + [special])
+        let newService = GameSpecialService(specials: specials + [special])
+        return newService
     }
     
     func withSpecials(_ newSpecials: [GameSpecialProtocol]) -> GameSpecialService {
@@ -16,7 +21,8 @@ class GameSpecialService: ObservableObject {
     }
     
     func isSpecial(_ item: WordItemModel) -> Bool {
-        specials.contains { $0.isSpecial(item) }
+        let isSpecial = specials.contains { $0.isSpecial(item) }
+        return isSpecial
     }
     
     func getActiveSpecial() -> (any GameSpecialScoringProtocol)? {
@@ -24,7 +30,10 @@ class GameSpecialService: ObservableObject {
     }
     
     func getModifiers() -> [AnyViewModifier] {
-        specials.flatMap { $0.modifiers() }
+        let allModifiers = specials.flatMap { special in
+            return special.modifiers()
+        }
+        return allModifiers
     }
 }
 
@@ -45,8 +54,8 @@ extension View {
     }
     
     func applySpecialEffects(_ modifiers: [AnyViewModifier]) -> some View {
-        modifiers.reduce(AnyView(self)) { currentView, modifier in
-            AnyView(currentView.modifier(modifier))
+        return modifiers.reduce(AnyView(self)) { currentView, modifier in
+            return modifier.modify(currentView)
         }
     }
 }
@@ -57,8 +66,8 @@ struct SpecialGoldCardConfig: GameSpecialConfigProtocol {
     let scoreMultiplier: Double
     
     static let standard = SpecialGoldCardConfig(
-        weightThreshold: 1000,
-        chance: 0.4,
+        weightThreshold: 450,
+        chance: 0.35,
         scoreMultiplier: 2.5
     )
 }
