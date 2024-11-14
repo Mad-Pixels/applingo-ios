@@ -11,24 +11,27 @@ final class GameActionViewModel: BaseDatabaseViewModel {
     private let scoreCalculator: GameScoreCalculator
     private let repository: WordRepositoryProtocol
     
-    private var frame: AppFrameModel = .main
-    private var specialService: GameSpecialService
     private var cancellables = Set<AnyCancellable>()
-    
+    private var frame: AppFrameModel = .main
+    private var specialService: GameSpecialService {
+        didSet {
+            gameHandler.updateSpecialService(specialService)
+        }
+    }
     var onScoreChange: ((Int, ScoreAnimationReason) -> Void)?
     
     init(repository: WordRepositoryProtocol) {
-        print("🎮 GameActionViewModel: Initializing")
         self.repository = repository
         self.scoreCalculator = GameScoreCalculator()
         self.specialService = GameSpecialService()
-        self.stats = GameStatsModel()
         
+        let initialStats = GameStatsModel()
+        self.stats = initialStats
         self.gameHandler = GameHandler(
+            stats: initialStats,
             scoreCalculator: scoreCalculator,
             specialService: specialService
         )
-        
         super.init()
         setupBindings()
     }

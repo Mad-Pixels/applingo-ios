@@ -7,8 +7,7 @@ final class GameHandler: ObservableObject {
     @Published private(set) var isGameActive: Bool = false
     
     private let scoreCalculator: GameScoreCalculator
-    private let specialService: GameSpecialService
-    
+    private var specialService: GameSpecialService
     private var timer: Timer?
     private var cancellables = Set<AnyCancellable>()
     private var onGameEnd: (() -> Void)?
@@ -29,6 +28,11 @@ final class GameHandler: ObservableObject {
         self.onGameEnd = onGameEnd
         
         setupSubscriptions()
+    }
+    
+    func updateSpecialService(_ newService: GameSpecialService) {
+        print("🎮 GameHandler: Updating special service")
+        self.specialService = newService
     }
     
     func startGame(mode: GameMode) {
