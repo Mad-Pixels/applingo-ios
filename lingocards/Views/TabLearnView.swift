@@ -5,6 +5,7 @@ struct TabLearnView: View {
     @State private var showVerifyItGame = false
     @State private var showLearnGame = false
     @State private var showQuizGame = false
+    @State private var showLettersGame = false
     
     var body: some View {
         NavigationView {
@@ -36,6 +37,12 @@ struct TabLearnView: View {
                         color: ThemeManager.shared.currentThemeStyle.secondatyAccentColor4,
                         action: { showVerifyItGame = true }
                     )
+                    CompButtonGameMenuView(
+                        LanguageManager.shared.localizedString(for: "aaaa").capitalizedFirstLetter,
+                        icon: "number",
+                        color: ThemeManager.shared.currentThemeStyle.secondatyAccentColor4,
+                        action: { showLettersGame = true }
+                    )
                 }
                 .padding(.vertical, 32)
                 .padding(.horizontal, 16)
@@ -58,6 +65,9 @@ struct TabLearnView: View {
             }
             .fullScreenCover(isPresented: $showVerifyItGame) {
                 GameVerifyItView(isPresented: $showVerifyItGame)
+            }
+            .fullScreenCover(isPresented: $showLettersGame) {
+                GameLettersView(isPresented: $showLettersGame)
             }
         }
     }
