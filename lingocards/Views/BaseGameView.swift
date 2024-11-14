@@ -51,25 +51,20 @@ struct ScorePointsView: View {
 }
 
 struct BaseGameView<Content: View>: View {
-    // MARK: - ViewModels
     @StateObject private var cacheGetter: GameCacheGetterViewModel
     @StateObject private var gameAction: GameActionViewModel
     
-    // MARK: - State
     @State private var scoreAnimations: [ScoreAnimationModel] = []
     
-    // MARK: - Properties
     let isPresented: Binding<Bool>
     let content: Content
     let minimumWordsRequired: Int
     
-    // MARK: - Init
     init(
         isPresented: Binding<Bool>,
         minimumWordsRequired: Int = 12,
         @ViewBuilder content: () -> Content
     ) {
-        print("🎮 BaseGameView: Initializing")
         self.minimumWordsRequired = minimumWordsRequired
         self.isPresented = isPresented
         self.content = content()
@@ -77,13 +72,11 @@ struct BaseGameView<Content: View>: View {
         guard let dbQueue = DatabaseManager.shared.databaseQueue else {
             fatalError("Database is not connected")
         }
-        
         let repository = RepositoryWord(dbQueue: dbQueue)
         self._cacheGetter = StateObject(wrappedValue: GameCacheGetterViewModel(repository: repository))
         self._gameAction = StateObject(wrappedValue: GameActionViewModel(repository: repository))
     }
     
-    // MARK: - Body
     var body: some View {
         let theme = ThemeManager.shared.currentThemeStyle
         
@@ -94,10 +87,7 @@ struct BaseGameView<Content: View>: View {
                 HStack {
                     if gameAction.isGameActive {
                         CompToolbarGame(viewModel: gameAction)
-                            //.environmentObject(gameAction)
-                        
                         Spacer()
-                        
                         Button(action: endGame) {
                             Image(systemName: "xmark.circle.fill")
                                 .font(.title)
@@ -121,12 +111,10 @@ struct BaseGameView<Content: View>: View {
                         selectedMode: .init(
                             get: { gameAction.gameMode },
                             set: { mode in
-                                print("🎲 Setting game mode: \(mode)")
                                 gameAction.setGameMode(mode)
                             }
                         ),
                         startGame: {
-                            print("🎮 Starting game")
                             gameAction.startGame()
                         }
                     )
@@ -139,8 +127,6 @@ struct BaseGameView<Content: View>: View {
                     Spacer()
                 }
             }
-            
-            // Score Animations Layer
             if !scoreAnimations.isEmpty {
                 VStack {
                     ForEach(scoreAnimations) { animation in
@@ -158,9 +144,7 @@ struct BaseGameView<Content: View>: View {
         .onDisappear(perform: cleanupGame)
     }
     
-    // MARK: - Setup
     private func setupGame() {
-        print("🎮 BaseGameView: Setting up game")
         FrameManager.shared.setActiveFrame(.game)
         cacheGetter.setFrame(.game)
         gameAction.setFrame(.game)
@@ -168,33 +152,27 @@ struct BaseGameView<Content: View>: View {
     }
     
     private func setupScoreCallback() {
-        print("💯 BaseGameView: Setting up score callback")
         gameAction.onScoreChange = { points, reason in
             showScoreAnimation(points, reason: reason)
         }
     }
     
-    // MARK: - Cleanup
     private func cleanupGame() {
-        print("🧹 BaseGameView: Cleaning up game")
         cacheGetter.clearCache()
         gameAction.endGame()
     }
     
     private func endGame() {
-        print("🎮 BaseGameView: Ending game")
         cleanupGame()
         isPresented.wrappedValue = false
     }
     
     private func showScoreAnimation(_ points: Int, reason: ScoreAnimationReason = .normal) {
-        print("💫 Showing score animation: \(points) points, reason: \(reason)")
         let animation = ScoreAnimationModel(points: points, reason: reason)
         withAnimation {
             scoreAnimations.append(animation)
         }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
             withAnimation {
                 scoreAnimations.removeAll { $0.id == animation.id }
             }
