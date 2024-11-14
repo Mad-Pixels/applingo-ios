@@ -1,12 +1,12 @@
 import Foundation
 
-enum SwipeStatusModel {
+enum GameSwipeStatusModel {
     case none
     case left
     case right
 }
 
-enum DragStateModel {
+enum GameDragStateModel {
     case inactive
     case dragging(translation: CGSize)
     
@@ -26,7 +26,7 @@ protocol GameCardModel: Equatable, Identifiable {
     var frontWord: WordModel { get }
 }
 
-struct VerifyCardModel {
+struct GameVerifyCardModel {
     let frontWord: WordItemModel
     let backText: String
     let isMatch: Bool
@@ -40,7 +40,7 @@ struct VerifyCardModel {
     }
 }
 
-struct VerifyGameResultModel: GameResultProtocol {
+struct GameVerifyResultModel: GameResultProtocol {
     let word: WordItemModel
     let isCorrect: Bool
     let score: Int
@@ -58,4 +58,14 @@ struct VerifyGameResultModel: GameResultProtocol {
     }
 }
 
-
+struct GameScoreAnimationModel: Identifiable, Equatable {
+    let id = UUID()
+    let points: Int
+    let reason: ScoreAnimationReason
+    
+    static func == (lhs: GameScoreAnimationModel, rhs: GameScoreAnimationModel) -> Bool {
+        lhs.id == rhs.id &&
+        lhs.points == rhs.points &&
+        lhs.reason == rhs.reason
+    }
+}

@@ -16,7 +16,7 @@ struct GameVerifyItContent: View {
     @EnvironmentObject var gameAction: GameActionViewModel
     
     // MARK: - State
-    @State private var currentCard: VerifyCardModel?
+    @State private var currentCard: GameVerifyCardModel?
     @State private var showAnswerFeedback = false
     @State private var cardOffset: CGFloat = 0
     @State private var cardRotation: Double = 0
@@ -116,7 +116,7 @@ struct GameVerifyItContent: View {
         
         startTime = Date().timeIntervalSince1970
         withAnimation {
-            currentCard = VerifyCardModel(
+            currentCard = GameVerifyCardModel(
                 frontWord: firstWord,
                 backText: secondWord.backText,
                 isMatch: shouldUseSameWord,
@@ -135,7 +135,7 @@ struct GameVerifyItContent: View {
         let responseTime = Date().timeIntervalSince1970 - startTime
         let isCorrect = isRight == card.isMatch
         
-        let result = VerifyGameResultModel(
+        let result = GameVerifyResultModel(
             word: card.frontWord,
             isCorrect: isCorrect,
             score: isCorrect ? 10 : -10,
@@ -178,14 +178,14 @@ struct GameVerifyItContent: View {
 
 
 struct CardView: View {
-    let card: VerifyCardModel
+    let card: GameVerifyCardModel
     let offset: CGFloat
     let rotation: Double
     let onSwipe: (Bool) -> Void
     let onHintUsed: () -> Void
     
-    @GestureState private var dragState = DragStateModel.inactive
-    @State private var swipeStatus: SwipeStatusModel = .none
+    @GestureState private var dragState = GameDragStateModel.inactive
+    @State private var swipeStatus: GameSwipeStatusModel = .none
     @State private var showSuccessEffect: Bool = false
     @State private var showHint: Bool = false
     @State private var hintWasUsed: Bool = false

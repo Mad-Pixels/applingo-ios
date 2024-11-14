@@ -1,60 +1,10 @@
 import SwiftUI
 
-struct ScoreAnimationModel: Identifiable, Equatable {
-    let id = UUID()
-    let points: Int
-    let reason: ScoreAnimationReason
-    
-    static func == (lhs: ScoreAnimationModel, rhs: ScoreAnimationModel) -> Bool {
-        lhs.id == rhs.id &&
-        lhs.points == rhs.points &&
-        lhs.reason == rhs.reason
-    }
-}
-
-private struct ShowScoreKey: EnvironmentKey {
-    static let defaultValue: ((Int, ScoreAnimationReason) -> Void)? = nil
-}
-
-extension EnvironmentValues {
-    var showScore: ((Int, ScoreAnimationReason) -> Void)? {
-        get { self[ShowScoreKey.self] }
-        set { self[ShowScoreKey.self] = newValue }
-    }
-}
-
-struct ScorePointsView: View {
-    let score: ScoreAnimationModel
-    let theme = ThemeManager.shared.currentThemeStyle
-    
-    var body: some View {
-        HStack(spacing: 4) {
-            if !score.reason.icon.isEmpty {
-                Image(systemName: score.reason.icon)
-                    .foregroundColor(score.reason.color)
-            }
-            
-            Text(ScoreFormatter.formatScore(score.points, showPlus: true))
-                .font(.system(size: 24, weight: .bold, design: .rounded))
-                .foregroundColor(score.points >= 0 ? .green : .red)
-        }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 6)
-        .background(
-            theme.backgroundBlockColor
-                .opacity(0.9)
-                .clipShape(Capsule())
-                .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
-        )
-        .transition(.scale.combined(with: .opacity))
-    }
-}
-
 struct BaseGameView<Content: View>: View {
     @StateObject private var cacheGetter: GameCacheGetterViewModel
     @StateObject private var gameAction: GameActionViewModel
     
-    @State private var scoreAnimations: [ScoreAnimationModel] = []
+    @State private var scoreAnimations: [GameScoreAnimationModel] = []
     
     let isPresented: Binding<Bool>
     let content: Content
@@ -168,7 +118,7 @@ struct BaseGameView<Content: View>: View {
     }
     
     private func showScoreAnimation(_ points: Int, reason: ScoreAnimationReason = .normal) {
-        let animation = ScoreAnimationModel(points: points, reason: reason)
+        let animation = GameScoreAnimationModel(points: points, reason: reason)
         withAnimation {
             scoreAnimations.append(animation)
         }
@@ -183,5 +133,16 @@ struct BaseGameView<Content: View>: View {
         content.environment(\.showScore) { points, reason in
             showScoreAnimation(points, reason: reason)
         }
+    }
+}
+
+private struct ShowScoreKey: EnvironmentKey {
+    static let defaultValue: ((Int, ScoreAnimationReason) -> Void)? = nil
+}
+
+extension EnvironmentValues {
+    var showScore: ((Int, ScoreAnimationReason) -> Void)? {
+        get { self[ShowScoreKey.self] }
+        set { self[ShowScoreKey.self] = newValue }
     }
 }
