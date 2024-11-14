@@ -10,19 +10,43 @@ struct GameQuizView: View {
     }
 }
 
+struct GameQuizQuestionModel {
+    let correctWord: WordItemModel
+    let options: [WordItemModel]
+    let isReversed: Bool
+    let isSpecial: Bool
+    
+    var questionText: String {
+        isReversed ? correctWord.backText : correctWord.frontText
+    }
+    
+    var correctAnswer: WordItemModel {
+        correctWord
+    }
+    
+    var hintText: String? {
+        correctWord.hint
+    }
+}
 
-
-private struct GameQuizContent: View {
+struct GameQuizContent: View {
+    // MARK: - Environment
     @EnvironmentObject var cacheGetter: GameCacheGetterViewModel
     @EnvironmentObject var gameAction: GameActionViewModel
-
+    
+    // MARK: - States
     @State private var currentQuestion: GameQuizQuestionModel?
     @State private var showAnswerFeedback = false
     @State private var startTime: TimeInterval = 0
     @State private var hintPenalty: Int = 0
     @State private var showSuccessEffect = false
     @State private var hintState = GameHintState(isShowing: false, wasUsed: false)
+    @State private var isAnswerCorrect = false
+    @State private var showFeedbackBorder = false
     
+    private let style = GameCardStyle(theme: ThemeManager.shared.currentThemeStyle)
+    
+    // MARK: - Body
     var body: some View {
         ZStack {
             if cacheGetter.isLoadingCache {
@@ -40,7 +64,11 @@ private struct GameQuizContent: View {
                     )
                 }
                 if showAnswerFeedback {
-                    answerFeedbackView.zIndex(1)
+                    AnswerFeedback(
+                        isCorrect: isAnswerCorrect,
+                        isSpecial: currentQuestion?.isSpecial ?? false
+                    )
+                    .zIndex(1)
                 }
             }
         }
@@ -50,22 +78,7 @@ private struct GameQuizContent: View {
         }
     }
     
-    private var answerFeedbackView: some View {
-        VStack {
-            if let question = currentQuestion,
-               question.isSpecial && gameAction.stats.isLastAnswerCorrect {
-                Image(systemName: "star.circle.fill")
-                    .foregroundColor(.yellow)
-                    .font(.system(size: 80))
-                    .transition(.scale.combined(with: .opacity))
-            } else {
-                Image(systemName: gameAction.stats.isLastAnswerCorrect ? "checkmark.circle.fill" : "x.circle.fill")
-                    .foregroundColor(gameAction.stats.isLastAnswerCorrect ? .green : .red)
-                    .font(.system(size: 60))
-            }
-        }
-    }
-    
+    // MARK: - Setup
     private func setupGame() {
         let special = SpecialGoldCard(
             config: .standard,
@@ -80,156 +93,276 @@ private struct GameQuizContent: View {
         }
     }
     
+    // MARK: - Question Generation
     private func generateNewQuestion() {
         guard cacheGetter.cache.count >= 8 else { return }
         
-        let shouldReverse = Int.random(in: 1...100) <= 40  // 40% шанс перевернуть
+        let shouldReverse = Int.random(in: 1...100) <= 40
         var questionWords = Array(cacheGetter.cache.shuffled().prefix(4))
-        guard questionWords.count == 4 else { return }
+        
+        questionWords = Array(Set(questionWords))
+        
+        if questionWords.count < 4 {
+            let remainingWords = cacheGetter.cache.filter { !questionWords.contains($0) }
+            questionWords.append(contentsOf: remainingWords.shuffled().prefix(4 - questionWords.count))
+        }
+        
+        guard questionWords.count >= 4 else { return }
+        questionWords = Array(questionWords.prefix(4))
         
         let correctWord = questionWords.randomElement()!
         questionWords.shuffle()
         
+        // Сбрасываем все состояния
         hintState = GameHintState(isShowing: false, wasUsed: false)
         startTime = Date().timeIntervalSince1970
         hintPenalty = 0
         
-        withAnimation {
-            currentQuestion = GameQuizQuestionModel(
-                correctWord: correctWord,
-                options: questionWords,
-                isReversed: shouldReverse,
-                isSpecial: gameAction.isSpecial(correctWord)
-            )
+        // Полностью удаляем текущий вопрос перед созданием нового
+        currentQuestion = nil
+        
+        // Создаем новый вопрос с небольшой задержкой
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            withAnimation {
+                currentQuestion = GameQuizQuestionModel(
+                    correctWord: correctWord,
+                    options: questionWords,
+                    isReversed: shouldReverse,
+                    isSpecial: gameAction.isSpecial(correctWord)
+                )
+            }
         }
     }
     
+    // MARK: - Answer Handling
     private func handleOptionSelected(_ selectedWord: WordItemModel) {
         guard let question = currentQuestion else { return }
         
         let responseTime = Date().timeIntervalSince1970 - startTime
-        let isCorrect = selectedWord.id == question.correctAnswer.id
+        isAnswerCorrect = selectedWord.id == question.correctAnswer.id
+        
         let result = GameVerifyResultModel(
             word: question.correctWord,
-            isCorrect: isCorrect,
+            isCorrect: isAnswerCorrect,
             responseTime: responseTime,
             isSpecial: question.isSpecial,
             hintPenalty: hintPenalty
         )
+        
         gameAction.handleGameResult(result)
         
-        if !isCorrect {
+        if isAnswerCorrect {
+            FeedbackCorrectAnswerHaptic().playHaptic()
+        } else {
             FeedbackWrongAnswerHaptic().playHaptic()
         }
         
         withAnimation {
             showAnswerFeedback = true
         }
+        
         cacheGetter.removeFromCache(question.correctWord)
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        // Увеличиваем задержку перед следующей карточкой
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             withAnimation {
                 showAnswerFeedback = false
                 currentQuestion = nil
-            }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                generateNewQuestion()
+                
+                // Генерируем новую карточку с небольшой задержкой
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    generateNewQuestion()
+                }
             }
         }
     }
 }
 
-import Foundation
-
-struct GameQuizQuestionModel {
-    let correctWord: WordItemModel
-    let options: [WordItemModel]
-    let isReversed: Bool
+struct AnswerFeedback: View {
+    let isCorrect: Bool
     let isSpecial: Bool
     
-    var questionText: String {
-        isReversed ? correctWord.backText : correctWord.frontText
-    }
-    
-    var correctAnswer: WordItemModel {
-        correctWord
+    var body: some View {
+        if isSpecial && isCorrect {
+            Image(systemName: "star.circle.fill")
+                .foregroundColor(.yellow)
+                .font(.system(size: 80))
+                .transition(.scale.combined(with: .opacity))
+        } else {
+            Circle()
+                .frame(width: 80, height: 80)
+                .foregroundColor(.clear)
+                .modifier(
+                    isCorrect
+                    ? FeedbackSuccessBorder(isActive: .constant(true)).modifier()
+                    : FeedbackErrorBorder(isActive: .constant(true)).modifier()
+                )
+                .transition(.scale.combined(with: .opacity))
+        }
     }
 }
 
-
-
-import SwiftUI
 
 struct GameQuizCard: View {
     let question: GameQuizQuestionModel
     let onOptionSelected: (WordItemModel) -> Void
     let onHintUsed: () -> Void
     let specialService: GameSpecialService
-    @Binding var hintState: GameHintState
     
-    let style = GameCardStyle(theme: ThemeManager.shared.currentThemeStyle)
+    @Binding var hintState: GameHintState
+    @State private var selectedOption: WordItemModel?
+    @State private var isInteractionDisabled = false
+    
+    private let style = GameCardStyle(theme: ThemeManager.shared.currentThemeStyle)
     
     var body: some View {
         VStack(spacing: 0) {
-            if hintState.isShowing {
-                style.hintContainer {
-                    Text(hintText)
-                        .font(GameCardStyle.Typography.hintFont)
-                        .foregroundColor(style.theme.secondaryTextColor)
-                }
-            }
-            
+            questionSection
             Spacer()
+            optionsSection
+            Spacer()
+            
+            if let hint = question.hintText {
+                hintSection(hint)
+            }
+        }
+        .gameCardStyle(style)
+        .gameCardSpecialEffects(
+            style: style,
+            isSpecial: question.isSpecial,
+            specialService: specialService
+        )
+        .id("\(question.correctWord.id ?? 0)-\(question.isReversed)")
+    }
+    
+    private var questionSection: some View {
+        VStack(spacing: 16) {
+            Text("Выберите перевод")
+                .font(GameCardStyle.Typography.captionFont)
+                .foregroundColor(style.theme.secondaryTextColor)
+                .padding(.top, GameCardStyle.Layout.topPadding)
             
             style.mainText(question.questionText)
                 .padding(.horizontal, GameCardStyle.Layout.horizontalPadding)
-            
-            Spacer()
-            
-            VStack(spacing: 12) {
-                ForEach(question.options, id: \.id) { option in
-                    Button(action: {
-                        onOptionSelected(option)
-                    }) {
-                        Text(optionText(for: option))
-                            .font(GameCardStyle.Typography.titleFont)
-                            .foregroundColor(style.theme.baseTextColor)
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(style.theme.secondaryTextColor)
-                            .cornerRadius(12)
-                    }
+        }
+    }
+    
+    private var optionsSection: some View {
+        VStack(spacing: 12) {
+            ForEach(question.options) { option in
+                optionButton(for: option)
+            }
+        }
+        .padding(.horizontal, GameCardStyle.Layout.horizontalPadding)
+    }
+    
+    private func optionButton(for option: WordItemModel) -> some View {
+        Button(action: { handleOptionTap(option) }) {
+            HStack {
+                Text(optionText(for: option))
+                    .font(GameCardStyle.Typography.titleFont)
+                    .foregroundColor(getTextColor(for: option))
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.8)
+            }
+            .frame(maxWidth: .infinity)
+            .frame(height: 56)
+            .background(getBackgroundColor(for: option))
+            .cornerRadius(12)
+            .overlay(
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(getBorderColor(for: option), lineWidth: selectedOption?.id == option.id ? 2 : 1)
+            )
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(PlainButtonStyle())
+        .disabled(isInteractionDisabled)
+    }
+    
+    private func getTextColor(for option: WordItemModel) -> Color {
+        if selectedOption == nil {
+            return selectedOption?.id == option.id ? .white : Color(.label)
+        } else {
+            return question.correctAnswer.id == option.id ? .white : Color(.label)
+        }
+    }
+    
+    private func getBackgroundColor(for option: WordItemModel) -> Color {
+        if selectedOption == nil {
+            return selectedOption?.id == option.id ? .accentColor : Color(.systemBackground)
+        } else {
+            if question.correctAnswer.id == option.id {
+                return .green
+            } else if selectedOption?.id == option.id {
+                return .red
+            } else {
+                return Color(.systemBackground)
+            }
+        }
+    }
+    
+    private func getBorderColor(for option: WordItemModel) -> Color {
+        if selectedOption == nil {
+            return selectedOption?.id == option.id ? .clear : Color(.separator)
+        } else {
+            if question.correctAnswer.id == option.id {
+                return .green
+            } else if selectedOption?.id == option.id {
+                return .red
+            } else {
+                return Color(.separator)
+            }
+        }
+    }
+    
+    private func hintSection(_ hint: String) -> some View {
+        VStack {
+            if hintState.isShowing {
+                style.hintContainer {
+                    style.hintPenalty()
+                    
+                    Text(hint)
+                        .font(GameCardStyle.Typography.hintFont)
+                        .foregroundColor(style.theme.secondaryTextColor)
+                        .multilineTextAlignment(.center)
                 }
             }
-            .padding(.horizontal, 20)
             
-            Spacer()
-            
-            Button(action: {
-                if !hintState.wasUsed {
-                    hintState.isShowing = true
-                    hintState.wasUsed = true
-                    onHintUsed()
-                }
-            }) {
-                style.hintButton(isActive: hintState.wasUsed)
+            Button(action: handleHintTap) {
+                style.hintButton(isActive: hintState.isShowing)
             }
+            .disabled(hintState.wasUsed && hintState.isShowing)
             .padding(.bottom, 20)
         }
-        .modifier(style.makeBaseModifier())
-        .modifier(style.makeSpecialEffectsModifier(isSpecial: question.isSpecial, specialService: specialService))
     }
     
     private func optionText(for option: WordItemModel) -> String {
         question.isReversed ? option.frontText : option.backText
     }
     
-    private var hintText: String {
-        // Предоставляем подсказку для правильного ответа
-        if question.isReversed {
-            return "Подсказка: \(question.correctWord.frontText)"
-        } else {
-            return "Подсказка: \(question.correctWord.backText)"
+    private func handleOptionTap(_ option: WordItemModel) {
+        guard !isInteractionDisabled else { return }
+        
+        withAnimation(.easeInOut(duration: 0.2)) {
+            selectedOption = option
+            isInteractionDisabled = true
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            onOptionSelected(option)
+        }
+    }
+    
+    private func handleHintTap() {
+        withAnimation(.spring()) {
+            if !hintState.wasUsed {
+                hintState.wasUsed = true
+                onHintUsed()
+            }
+            hintState.isShowing.toggle()
         }
     }
 }
+
+
+
