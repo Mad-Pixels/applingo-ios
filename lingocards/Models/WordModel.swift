@@ -100,3 +100,31 @@ extension WordItemModel: FetchableRecord, PersistableRecord {
         try db.create(index: "Words_createdAt_idx", on: databaseTableName, columns: ["createdAt"])
     }
 }
+
+extension WordItemModel: Hashable {
+    func hash(into hasher: inout Hasher) {
+        // Используем id как основной ключ для хеширования
+        hasher.combine(id)
+        
+        // Если id отсутствует, используем комбинацию полей
+        if id == nil {
+            hasher.combine(tableName)
+            hasher.combine(frontText)
+            hasher.combine(backText)
+            hasher.combine(createdAt)
+        }
+    }
+    
+    static func == (lhs: WordItemModel, rhs: WordItemModel) -> Bool {
+        // Если у обоих есть id, сравниваем по id
+        if let lhsId = lhs.id, let rhsId = rhs.id {
+            return lhsId == rhsId
+        }
+        
+        // Если id отсутствует хотя бы у одного, сравниваем по содержимому
+        return lhs.tableName == rhs.tableName &&
+            lhs.frontText == rhs.frontText &&
+            lhs.backText == rhs.backText &&
+            lhs.createdAt == rhs.createdAt
+    }
+}
