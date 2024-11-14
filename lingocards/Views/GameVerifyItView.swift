@@ -10,7 +10,7 @@ struct GameVerifyItView: View {
     }
 }
 
-struct GameVerifyItContent: View {
+private struct GameVerifyItContent: View {
     // MARK: - Environment
     @EnvironmentObject var cacheGetter: GameCacheGetterViewModel
     @EnvironmentObject var gameAction: GameActionViewModel
