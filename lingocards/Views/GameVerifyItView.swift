@@ -11,10 +11,11 @@ struct GameVerifyItView: View {
 }
 
 struct GameVerifyItContent: View {
+    // MARK: - Environment
     @EnvironmentObject var cacheGetter: GameCacheGetterViewModel
-    @EnvironmentObject var gameHandler: GameHandler
-    @Environment(\.showScore) private var showScore
+    @EnvironmentObject var gameAction: GameActionViewModel
     
+    // MARK: - State
     @State private var currentCard: VerifyCardModel?
     @State private var showAnswerFeedback = false
     @State private var cardOffset: CGFloat = 0
@@ -24,11 +25,12 @@ struct GameVerifyItContent: View {
     @State private var isErrorBorderActive = false
     @State private var showSuccessEffect = false
     
-    @StateObject private var specialService = SpecialServiceViewModel()
+    // MARK: - Feedback
     @StateObject private var feedbackHandler = GameFeedback.wrongAnswer(
         isActive: .constant(false)
     )
     
+    // MARK: - Body
     var body: some View {
         ZStack {
             if cacheGetter.isLoadingCache {
@@ -65,23 +67,25 @@ struct GameVerifyItContent: View {
     private var answerFeedbackView: some View {
         VStack {
             if let card = currentCard,
-               card.isSpecial && gameHandler.stats.isLastAnswerCorrect {
+               card.isSpecial && gameAction.stats.isLastAnswerCorrect {
                 Image(systemName: "star.circle.fill")
                     .foregroundColor(.yellow)
                     .font(.system(size: 80))
                     .transition(.scale.combined(with: .opacity))
             } else {
-                Image(systemName: gameHandler.stats.isLastAnswerCorrect ?
+                Image(systemName: gameAction.stats.isLastAnswerCorrect ?
                       "checkmark.circle.fill" : "x.circle.fill")
-                    .foregroundColor(gameHandler.stats.isLastAnswerCorrect ?
+                    .foregroundColor(gameAction.stats.isLastAnswerCorrect ?
                                    .green : .red)
                     .font(.system(size: 60))
             }
         }
     }
     
+    // MARK: - Setup & Cleanup
     private func setupGame() {
-        specialService.registerSpecial(
+        print("🎮 VerifyIt: Setting up game")
+        gameAction.registerSpecial(
             SpecialGoldCard(
                 config: .standard,
                 showSuccessEffect: $showSuccessEffect
@@ -96,11 +100,13 @@ struct GameVerifyItContent: View {
     }
     
     private func cleanupGame() {
-        specialService.clear()
+        print("🧹 VerifyIt: Cleaning up game")
     }
     
+    // MARK: - Card Generation
     private func generateNewCard() {
         guard cacheGetter.cache.count >= 8 else { return }
+        print("🎴 VerifyIt: Generating new card")
         
         let shouldUseSameWord = Bool.random()
         let firstWord = cacheGetter.cache.randomElement()!
@@ -114,18 +120,21 @@ struct GameVerifyItContent: View {
                 frontWord: firstWord,
                 backText: secondWord.backText,
                 isMatch: shouldUseSameWord,
-                isSpecial: specialService.isSpecial(firstWord)
+                isSpecial: gameAction.isSpecial(firstWord)
             )
             cardOffset = 0
             cardRotation = 0
         }
     }
     
+    // MARK: - Game Logic
     private func handleSwipe(isRight: Bool) {
         guard let card = currentCard else { return }
+        print("👆 VerifyIt: Handling swipe \(isRight ? "right" : "left")")
         
         let responseTime = Date().timeIntervalSince1970 - startTime
         let isCorrect = isRight == card.isMatch
+        
         let result = VerifyGameResultModel(
             word: card.frontWord,
             isCorrect: isCorrect,
@@ -134,20 +143,27 @@ struct GameVerifyItContent: View {
             isSpecial: card.isSpecial,
             hintPenalty: hintPenalty
         )
-        gameHandler.handleResult(result)
         
+        // Обрабатываем результат через GameActionViewModel
+        gameAction.handleGameResult(result)
+        
+        // Визуальная обратная связь
         if !isCorrect {
             isErrorBorderActive = true
+            feedbackHandler.trigger()
         }
         
+        // Анимация карточки
         withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
             showAnswerFeedback = true
             cardOffset = isRight ? 1000 : -1000
             cardRotation = isRight ? 20 : -20
         }
         
+        // Удаляем карточку из кэша
         cacheGetter.removeFromCache(card.frontWord)
         
+        // Показываем результат и генерируем новую карточку
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             withAnimation {
                 showAnswerFeedback = false

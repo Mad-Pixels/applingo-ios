@@ -57,9 +57,9 @@ struct SpecialGoldCardConfig: GameSpecialConfigProtocol {
     let scoreMultiplier: Double
     
     static let standard = SpecialGoldCardConfig(
-        weightThreshold: 1000,
+        weightThreshold: 900,
         chance: 0.9,
-        scoreMultiplier: 2.5
+        scoreMultiplier: 10
     )
 }
 

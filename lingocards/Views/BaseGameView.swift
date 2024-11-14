@@ -51,36 +51,39 @@ struct ScorePointsView: View {
 }
 
 struct BaseGameView<Content: View>: View {
+    // MARK: - ViewModels
     @StateObject private var cacheGetter: GameCacheGetterViewModel
-    @StateObject private var gameHandler: GameHandler
-    @StateObject private var specialService = GameSpecialService()
+    @StateObject private var gameAction: GameActionViewModel
     
+    // MARK: - State
     @State private var scoreAnimations: [ScoreAnimationModel] = []
     
+    // MARK: - Properties
     let isPresented: Binding<Bool>
     let content: Content
     let minimumWordsRequired: Int
     
+    // MARK: - Init
     init(
         isPresented: Binding<Bool>,
         minimumWordsRequired: Int = 12,
         @ViewBuilder content: () -> Content
     ) {
+        print("🎮 BaseGameView: Initializing")
         self.minimumWordsRequired = minimumWordsRequired
         self.isPresented = isPresented
         self.content = content()
-            
+        
         guard let dbQueue = DatabaseManager.shared.databaseQueue else {
             fatalError("Database is not connected")
         }
+        
         let repository = RepositoryWord(dbQueue: dbQueue)
         self._cacheGetter = StateObject(wrappedValue: GameCacheGetterViewModel(repository: repository))
-        self._gameHandler = StateObject(wrappedValue: GameHandler(
-            scoreCalculator: GameScoreCalculator(),
-            onGameEnd: nil
-        ))
+        self._gameAction = StateObject(wrappedValue: GameActionViewModel(repository: repository))
     }
     
+    // MARK: - Body
     var body: some View {
         let theme = ThemeManager.shared.currentThemeStyle
         
@@ -89,9 +92,9 @@ struct BaseGameView<Content: View>: View {
             
             VStack(spacing: 0) {
                 HStack {
-                    if gameHandler.isGameActive {
-                        CompToolbarGame()
-                            .environmentObject(gameHandler)
+                    if gameAction.isGameActive {
+                        CompToolbarGame(viewModel: gameAction)
+                            //.environmentObject(gameAction)
                         
                         Spacer()
                         
@@ -112,25 +115,32 @@ struct BaseGameView<Content: View>: View {
                     Spacer()
                     CompGameStateView()
                     Spacer()
-                } else if !gameHandler.isGameActive {
+                } else if !gameAction.isGameActive {
                     Spacer()
                     GameModeView(
                         selectedMode: .init(
-                            get: { gameHandler.gameMode },
-                            set: { mode in gameHandler.startGame(mode: mode) }
+                            get: { gameAction.gameMode },
+                            set: { mode in
+                                print("🎲 Setting game mode: \(mode)")
+                                gameAction.setGameMode(mode)
+                            }
                         ),
-                        startGame: { gameHandler.startGame(mode: .practice) }
+                        startGame: {
+                            print("🎮 Starting game")
+                            gameAction.startGame()
+                        }
                     )
                     Spacer()
                 } else {
                     Spacer()
                     contentWithEnvironment
                         .environmentObject(cacheGetter)
-                        .environmentObject(gameHandler)
-                        .environmentObject(specialService)
+                        .environmentObject(gameAction)
                     Spacer()
                 }
             }
+            
+            // Score Animations Layer
             if !scoreAnimations.isEmpty {
                 VStack {
                     ForEach(scoreAnimations) { animation in
@@ -148,29 +158,37 @@ struct BaseGameView<Content: View>: View {
         .onDisappear(perform: cleanupGame)
     }
     
+    // MARK: - Setup
     private func setupGame() {
+        print("🎮 BaseGameView: Setting up game")
         FrameManager.shared.setActiveFrame(.game)
         cacheGetter.setFrame(.game)
+        gameAction.setFrame(.game)
         cacheGetter.initializeCache()
     }
     
     private func setupScoreCallback() {
-        gameHandler.onScoreChange = { points, reason in
+        print("💯 BaseGameView: Setting up score callback")
+        gameAction.onScoreChange = { points, reason in
             showScoreAnimation(points, reason: reason)
         }
     }
-
+    
+    // MARK: - Cleanup
     private func cleanupGame() {
+        print("🧹 BaseGameView: Cleaning up game")
         cacheGetter.clearCache()
-        gameHandler.endGame()
+        gameAction.endGame()
     }
     
     private func endGame() {
+        print("🎮 BaseGameView: Ending game")
         cleanupGame()
         isPresented.wrappedValue = false
     }
     
     private func showScoreAnimation(_ points: Int, reason: ScoreAnimationReason = .normal) {
+        print("💫 Showing score animation: \(points) points, reason: \(reason)")
         let animation = ScoreAnimationModel(points: points, reason: reason)
         withAnimation {
             scoreAnimations.append(animation)
@@ -189,4 +207,3 @@ struct BaseGameView<Content: View>: View {
         }
     }
 }
-

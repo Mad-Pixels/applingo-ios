@@ -1,11 +1,16 @@
 import SwiftUI
 
 struct CompToolbarGame: View {
-    @EnvironmentObject var gameHandler: GameHandler
+    @ObservedObject var stats: GameStatsModel
+    let gameMode: GameMode
+    
+    init(viewModel: GameActionViewModel) {
+        self._stats = ObservedObject(wrappedValue: viewModel.stats)
+        self.gameMode = viewModel.gameMode
+    }
     
     var body: some View {
         let theme = ThemeManager.shared.currentThemeStyle
-        let stats = gameHandler.stats
         
         HStack(spacing: 10) {
             HStack(spacing: 12) {
@@ -13,7 +18,7 @@ struct CompToolbarGame: View {
                 StreakIndicator(stats: stats)
             }
             Spacer(minLength: 8)
-            switch gameHandler.gameMode {
+            switch gameMode {
             case .practice:
                 AccuracyView(stats: stats)
             case .timeAttack:
@@ -122,9 +127,7 @@ private struct TimeIndicator: View {
     }
     
     private var timeString: String {
-        let minutes = Int(stats.timeRemaining) / 60
-        let seconds = Int(stats.timeRemaining) % 60
-        return String(format: "%d:%02d", minutes, seconds)
+        stats.formatTime(stats.timeRemaining)
     }
     
     private var timeColor: Color {
@@ -142,7 +145,7 @@ private struct AccuracyView: View {
     @ObservedObject var stats: GameStatsModel
     
     var body: some View {
-        Text("\(Int(accuracy * 100))%")
+        Text(stats.formatAccuracy(stats.accuracy))
             .font(.system(.body, design: .rounded))
             .fontWeight(.bold)
             .monospacedDigit()
@@ -150,11 +153,8 @@ private struct AccuracyView: View {
             .frame(minWidth: 38, alignment: .trailing)
     }
     
-    private var accuracy: Double {
-        stats.accuracy
-    }
-    
     private var accuracyColor: Color {
+        let accuracy = stats.accuracy
         if accuracy >= 0.8 {
             return .green
         } else if accuracy >= 0.6 {

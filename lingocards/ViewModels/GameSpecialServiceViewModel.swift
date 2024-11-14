@@ -12,7 +12,7 @@ final class SpecialServiceViewModel: ObservableObject {
     }
     
     func isSpecial(_ item: WordItemModel) -> Bool {
-        service.isSpecial(item)
+        return service.isSpecial(item)
     }
     
     func getActiveSpecial() -> (any GameSpecialScoringProtocol)? {
