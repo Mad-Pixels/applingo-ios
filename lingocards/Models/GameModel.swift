@@ -67,3 +67,8 @@ struct GameScoreAnimationModel: Identifiable, Equatable {
         lhs.reason == rhs.reason
     }
 }
+
+struct GameHintState {
+    var isShowing: Bool
+    var wasUsed: Bool
+}

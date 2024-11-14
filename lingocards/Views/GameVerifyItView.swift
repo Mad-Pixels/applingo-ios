@@ -21,6 +21,7 @@ private struct GameVerifyItContent: View {
     @State private var startTime: TimeInterval = 0
     @State private var hintPenalty: Int = 0
     @State private var showSuccessEffect = false
+    @State private var hintState = GameHintState(isShowing: false, wasUsed: false)
     
     var body: some View {
         ZStack {
@@ -38,10 +39,13 @@ private struct GameVerifyItContent: View {
                         onHintUsed: {
                             hintPenalty = 5
                         },
-                        specialService: gameAction.specialServiceProvider
+                        specialService: gameAction.specialServiceProvider,
+                        hintState: $hintState
                     )
                 }
-                if showAnswerFeedback { answerFeedbackView.zIndex(1) }
+                if showAnswerFeedback {
+                    answerFeedbackView.zIndex(1)
+                }
             }
         }
         .onAppear { setupGame() }
@@ -85,8 +89,11 @@ private struct GameVerifyItContent: View {
         
         let shouldUseSameWord = Bool.random()
         let firstWord = cacheGetter.cache.randomElement()!
-        let secondWord = shouldUseSameWord ? firstWord : cacheGetter.cache.filter {$0.id != firstWord.id}.randomElement()!
+        let secondWord = shouldUseSameWord ? firstWord : cacheGetter.cache.filter { $0.id != firstWord.id }.randomElement()!
+        
+        hintState = GameHintState(isShowing: false, wasUsed: false)
         startTime = Date().timeIntervalSince1970
+        hintPenalty = 0
         
         withAnimation {
             currentCard = GameVerifyCardModel(
@@ -105,7 +112,6 @@ private struct GameVerifyItContent: View {
         
         let responseTime = Date().timeIntervalSince1970 - startTime
         let isCorrect = isRight == card.isMatch
-        
         let result = GameVerifyResultModel(
             word: card.frontWord,
             isCorrect: isCorrect,
@@ -113,11 +119,12 @@ private struct GameVerifyItContent: View {
             isSpecial: card.isSpecial,
             hintPenalty: hintPenalty
         )
-        
         gameAction.handleGameResult(result)
+        
         if !isCorrect {
             FeedbackWrongAnswerHaptic().playHaptic()
         }
+        
         withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
             showAnswerFeedback = true
             cardOffset = isRight ? 1000 : -1000

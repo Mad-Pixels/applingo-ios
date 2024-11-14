@@ -8,11 +8,10 @@ struct CompGameCardSwipe: View {
     let onHintUsed: () -> Void
     let specialService: GameSpecialService
     
+    @Binding var hintState: GameHintState
     @GestureState private var dragState = GameDragStateModel.inactive
     @State private var swipeStatus: GameSwipeStatusModel = .none
     @State private var showSuccessEffect: Bool = false
-    @State private var showHint: Bool = false
-    @State private var hintWasUsed: Bool = false
     
     private let style = GameCardStyle(theme: ThemeManager.shared.currentThemeStyle)
     
@@ -58,7 +57,7 @@ struct CompGameCardSwipe: View {
             }
             .padding(.horizontal, GameCardStyle.Layout.horizontalPadding)
             
-            if showHint {
+            if hintState.isShowing {
                 hintView
             }
             style.mainText(card.frontWord.frontText)
@@ -69,7 +68,8 @@ struct CompGameCardSwipe: View {
     
     private var backSection: some View {
         VStack {
-            style.sectionHeader("Back").padding(.horizontal, GameCardStyle.Layout.horizontalPadding)
+            style.sectionHeader("Back")
+                .padding(.horizontal, GameCardStyle.Layout.horizontalPadding)
             style.mainText(card.backText)
         }
         .frame(maxWidth: .infinity)
@@ -80,7 +80,7 @@ struct CompGameCardSwipe: View {
     private var hintButton: some View {
         if let hint = card.frontWord.hint, !hint.isEmpty {
             Button(action: handleHintTap) {
-                style.hintButton(isActive: showHint)
+                style.hintButton(isActive: hintState.isShowing)
             }
         }
     }
@@ -141,11 +141,13 @@ struct CompGameCardSwipe: View {
     
     private func handleHintTap() {
         withAnimation(.spring()) {
-            if !hintWasUsed {
-                hintWasUsed = true
+            if !hintState.wasUsed {
+                hintState.wasUsed = true
                 onHintUsed()
+                hintState.isShowing = true
+            } else {
+                hintState.isShowing.toggle()
             }
-            showHint.toggle()
         }
     }
 }
