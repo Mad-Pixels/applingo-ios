@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct ScorePointsView: View {
+struct CompGameScorePointsView: View {
     let score: GameScoreAnimationModel
     
     var body: some View {

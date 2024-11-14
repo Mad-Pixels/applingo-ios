@@ -80,7 +80,7 @@ struct BaseGameView<Content: View>: View {
             if !scoreAnimations.isEmpty {
                 VStack {
                     ForEach(scoreAnimations) { animation in
-                        ScorePointsView(score: animation)
+                        CompGameScorePointsView(score: animation)
                     }
                 }
                 .animation(.spring(), value: scoreAnimations)
