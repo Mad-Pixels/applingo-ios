@@ -4,39 +4,56 @@ struct GameCardStyle {
     let theme: ThemeStyle
     
     struct Layout {
-        static let width: CGFloat = UIScreen.main.bounds.width - 40
-        static let height: CGFloat = 480
-        static let cornerRadius: CGFloat = 20
+        static let width = UIScreen.main.bounds.width - 40
+        static let height: CGFloat = 520
+        static let cornerRadius: CGFloat = 24
+        
         static let horizontalPadding: CGFloat = 24
         static let verticalPadding: CGFloat = 40
         static let topPadding: CGFloat = 16
+        
         static let dividerHeight: CGFloat = 2
         static let dividerHorizontalPadding: CGFloat = 20
+        
+        static let borderWidth: CGFloat = 1.5
+        static let shadowRadius: CGFloat = 15
+        static let shadowY: CGFloat = 8
+        
+        struct Animation {
+            static let defaultDuration: Double = 0.3
+            static let springDamping: Double = 0.7
+            static let springResponse: Double = 0.35
+        }
     }
     
     struct Typography {
-        static let titleFont = Font.system(.title3, design: .rounded)
-        static let mainTextFont = Font.system(size: 32, weight: .bold)
+        static let titleFont = Font.system(.title3, design: .rounded).weight(.semibold)
+        static let mainTextFont = Font.system(size: 32, design: .rounded).weight(.bold)
         static let captionFont = Font.caption
         static let hintFont = Font.system(size: 14)
         static let secondaryFont = Font.caption2
     }
     
     struct BaseCardModifier: ViewModifier {
-            let theme: ThemeStyle
-            
-            func body(content: Content) -> some View {
-                content
-                    .frame(width: Layout.width, height: Layout.height)
-                    .background(theme.backgroundBlockColor)
-                    .clipShape(RoundedRectangle(cornerRadius: Layout.cornerRadius))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: Layout.cornerRadius)
-                            .stroke(theme.accentColor.opacity(0.2), lineWidth: 1)
-                    )
-                    .shadow(color: theme.accentColor.opacity(0.1), radius: 10, x: 0, y: 5)
-            }
+        let theme: ThemeStyle
+        
+        func body(content: Content) -> some View {
+            content
+                .frame(width: Layout.width, height: Layout.height)
+                .background(theme.backgroundBlockColor)
+                .clipShape(RoundedRectangle(cornerRadius: Layout.cornerRadius))
+                .overlay(
+                    RoundedRectangle(cornerRadius: Layout.cornerRadius)
+                        .stroke(theme.accentColor.opacity(0.2), lineWidth: Layout.borderWidth)
+                )
+                .shadow(
+                    color: theme.accentColor.opacity(0.1),
+                    radius: Layout.shadowRadius,
+                    x: 0,
+                    y: Layout.shadowY
+                )
         }
+    }
     
     struct SpecialEffectsModifier: ViewModifier {
         let isSpecial: Bool
@@ -50,7 +67,7 @@ struct GameCardStyle {
             }
         }
     }
-
+    
     func makeBaseModifier() -> BaseCardModifier {
         BaseCardModifier(theme: theme)
     }
