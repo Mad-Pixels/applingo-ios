@@ -8,7 +8,7 @@ struct BaseGameView<Content: View>: View {
     
     let isPresented: Binding<Bool>
     let content: Content
-    let minimumWordsRequired: Int
+    let minimumWordsRequired: Int 
     
     init(
         isPresented: Binding<Bool>,

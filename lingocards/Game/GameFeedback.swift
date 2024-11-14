@@ -114,8 +114,14 @@ struct FeedbackSuccessBorder: GameFeedbackVisualProtocol {
 }
 
 extension View {
-    func withFeedback<F: GameFeedbackVisualProtocol>(_ feedback: F) -> some View {
+    func withVisualFeedback<F: GameFeedbackVisualProtocol>(_ feedback: F) -> some View {
         modifier(feedback.modifier())
+    }
+    
+    func withHapticFeedback(_ feedback: GameFeedbackHapticProtocol) -> some View {
+        onAppear {
+            feedback.playHaptic()
+        }
     }
 }
 
@@ -125,32 +131,5 @@ struct GameFeedback {
         hapticFeedbacks: [GameFeedbackHapticProtocol] = []
     ) -> CompositeFeedback {
         CompositeFeedback(feedbacks: visualFeedbacks + hapticFeedbacks)
-    }
-    
-    static func wrongAnswer(
-        isActive: Binding<Bool>
-    ) -> CompositeFeedback {
-        composite(
-            visualFeedbacks: [
-                FeedbackShake(isActive: isActive),
-                FeedbackErrorBorder(isActive: isActive)
-            ],
-            hapticFeedbacks: [
-                FeedbackWrongAnswerHaptic()
-            ]
-        )
-    }
-    
-    static func correctAnswer(
-        isActive: Binding<Bool>
-    ) -> CompositeFeedback {
-        composite(
-            visualFeedbacks: [
-                FeedbackSuccessBorder(isActive: isActive)
-            ],
-            hapticFeedbacks: [
-                FeedbackCorrectAnswerHaptic()
-            ]
-        )
     }
 }

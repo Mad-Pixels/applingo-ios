@@ -1,8 +1,8 @@
 import SwiftUI
 
 struct BaseScore {
-    static let correct: Int = 10
-    static let wrong: Int = -7
+    static let correct: Int = 8
+    static let wrong: Int = -6
 }
 
 struct ScoreComponents {

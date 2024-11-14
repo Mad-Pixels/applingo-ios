@@ -11,11 +11,9 @@ struct GameVerifyItView: View {
 }
 
 private struct GameVerifyItContent: View {
-    // MARK: - Environment
     @EnvironmentObject var cacheGetter: GameCacheGetterViewModel
     @EnvironmentObject var gameAction: GameActionViewModel
     
-    // MARK: - State
     @State private var currentCard: GameVerifyCardModel?
     @State private var showAnswerFeedback = false
     @State private var cardOffset: CGFloat = 0
@@ -24,13 +22,7 @@ private struct GameVerifyItContent: View {
     @State private var hintPenalty: Int = 0
     @State private var isErrorBorderActive = false
     @State private var showSuccessEffect = false
-    
-    // MARK: - Feedback
-    @StateObject private var feedbackHandler = GameFeedback.wrongAnswer(
-        isActive: .constant(false)
-    )
-    
-    // MARK: - Body
+        
     var body: some View {
         ZStack {
             if cacheGetter.isLoadingCache {
@@ -48,10 +40,7 @@ private struct GameVerifyItContent: View {
                             hintPenalty = 5
                         }
                     )
-                    .withFeedback(FeedbackErrorBorder(
-                        isActive: $isErrorBorderActive,
-                        duration: 0.5
-                    ))
+//                    .withHapticFeedback(FeedbackWrongAnswerHaptic())
                 }
                 
                 if showAnswerFeedback {
@@ -82,7 +71,6 @@ private struct GameVerifyItContent: View {
         }
     }
     
-    // MARK: - Setup & Cleanup
     private func setupGame() {
         print("🎮 VerifyIt: Setting up game")
         gameAction.registerSpecial(
@@ -103,7 +91,6 @@ private struct GameVerifyItContent: View {
         print("🧹 VerifyIt: Cleaning up game")
     }
     
-    // MARK: - Card Generation
     private func generateNewCard() {
         guard cacheGetter.cache.count >= 8 else { return }
         print("🎴 VerifyIt: Generating new card")
@@ -127,7 +114,6 @@ private struct GameVerifyItContent: View {
         }
     }
     
-    // MARK: - Game Logic
     private func handleSwipe(isRight: Bool) {
         guard let card = currentCard else { return }
         print("👆 VerifyIt: Handling swipe \(isRight ? "right" : "left")")
@@ -149,8 +135,7 @@ private struct GameVerifyItContent: View {
         
         // Визуальная обратная связь
         if !isCorrect {
-            isErrorBorderActive = true
-            feedbackHandler.trigger()
+            FeedbackWrongAnswerHaptic().playHaptic()
         }
         
         // Анимация карточки
@@ -176,7 +161,17 @@ private struct GameVerifyItContent: View {
     }
 }
 
-
+///
+///
+///
+///
+///
+///
+///
+///
+///
+///
+///
 struct CardView: View {
     let card: GameVerifyCardModel
     let offset: CGFloat
