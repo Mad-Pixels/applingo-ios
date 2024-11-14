@@ -352,12 +352,6 @@
         }
       }
     },
-    "Hello World from Match Hunt!" : {
-
-    },
-    "Hello World from Quiz!" : {
-
-    },
     "Hint" : {
       "extractionState" : "stale",
       "localizations" : {
