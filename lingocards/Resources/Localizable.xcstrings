@@ -183,6 +183,23 @@
         }
       }
     },
+    "ComposeTheTranslation" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "compose the translation"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "составьте перевод"
+          }
+        }
+      }
+    },
     "Count" : {
       "extractionState" : "manual",
       "localizations" : {

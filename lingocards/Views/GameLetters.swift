@@ -11,31 +11,26 @@ struct GameLettersView: View {
 }
 
 private struct GameLettersContent: View {
-    // MARK: - Environment
     @EnvironmentObject var cacheGetter: GameCacheGetterViewModel
     @EnvironmentObject var gameAction: GameActionViewModel
     
-    // MARK: - States
+    @State private var hintState = GameHintState(isShowing: false, wasUsed: false)
     @State private var currentWord: WordItemModel?
     @State private var scrambledLetters: [Character] = []
     @State private var selectedLetters: [Character] = []
     @State private var showAnswerFeedback = false
     @State private var showSuccessEffect = false
+    @State private var isAnswerCorrect = false
     @State private var startTime: TimeInterval = 0
     @State private var hintPenalty: Int = 0
-    @State private var hintState = GameHintState(isShowing: false, wasUsed: false)
-    @State private var isAnswerCorrect = false
-    
     private let style = GameCardStyle(theme: ThemeManager.shared.currentThemeStyle)
     
-    // MARK: - Body
     var body: some View {
         ZStack {
             if cacheGetter.isLoadingCache {
                 CompPreloaderView()
             } else {
                 gameContent
-                
                 if showAnswerFeedback {
                     AnswerFeedback(
                         isCorrect: isAnswerCorrect,
@@ -53,36 +48,26 @@ private struct GameLettersContent: View {
     
     private var gameContent: some View {
         VStack(spacing: 24) {
-            // Question Section
             if let word = currentWord {
                 wordSection(word)
             }
-            
             Spacer(minLength: 20)
-            
-            // Answer Section
             answerSection
             
-            // Hint Section
             if let hint = currentWord?.hint {
                 hintSection(hint)
             }
-            
             Spacer(minLength: 20)
-            
-            // Letters Section
             lettersSection
         }
         .padding()
     }
     
-    // MARK: - Sections
     private func wordSection(_ word: WordItemModel) -> some View {
         VStack(spacing: 12) {
-            Text("Составьте перевод")
+            Text(LanguageManager.shared.localizedString(for: "ComposeTheTranslation").capitalizedFirstLetter)
                 .font(GameCardStyle.Typography.captionFont)
                 .foregroundColor(style.theme.secondaryTextColor)
-            
             Text(word.frontText)
                 .font(GameCardStyle.Typography.mainTextFont)
                 .multilineTextAlignment(.center)
@@ -104,7 +89,6 @@ private struct GameLettersContent: View {
     
     private var answerSection: some View {
         VStack(spacing: 16) {
-            // Selected Letters
             LetterGridView(
                 letters: selectedLetters,
                 onTap: removeLetter,
@@ -139,7 +123,6 @@ private struct GameLettersContent: View {
                         .multilineTextAlignment(.center)
                 }
             }
-            
             Button(action: useHint) {
                 style.hintButton(isActive: hintState.isShowing)
             }
@@ -147,127 +130,112 @@ private struct GameLettersContent: View {
         }
     }
     
-    // MARK: - Game Logic
-        private func setupGame() {
-            let special = SpecialGoldCard(
-                config: .standard,
-                showSuccessEffect: $showSuccessEffect
-            )
-            gameAction.registerSpecial(special)
+    private func setupGame() {
+        let special = SpecialGoldCard(
+            config: .standard,
+            showSuccessEffect: $showSuccessEffect
+        )
+        gameAction.registerSpecial(special)
             
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                generateNewWord()
-            }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            generateNewWord()
         }
+    }
         
-        private func generateNewWord() {
-            guard let word = cacheGetter.cache.randomElement() else { return }
+    private func generateNewWord() {
+        guard let word = cacheGetter.cache.randomElement() else { return }
             
-            // Сброс состояний
-            hintState = GameHintState(isShowing: false, wasUsed: false)
-            selectedLetters = []
-            startTime = Date().timeIntervalSince1970
-            hintPenalty = 0
+        hintState = GameHintState(isShowing: false, wasUsed: false)
+        selectedLetters = []
+        startTime = Date().timeIntervalSince1970
+        hintPenalty = 0
             
-            let targetWord = word.backText.lowercased()
-            var letters = Array(targetWord)
+        let targetWord = word.backText.lowercased()
+        var letters = Array(targetWord)
             
-            // Определяем язык слова и получаем дополнительные буквы
-            let extraCount = min(max(3, targetWord.count / 3), 5) // Адаптивное количество доп. букв
-            if let extraLetters = generateExtraLetters(for: targetWord, count: extraCount) {
-                letters.append(contentsOf: extraLetters)
-            }
-            
-            // Перемешиваем буквы
-            scrambledLetters = letters.shuffled()
-            currentWord = word
+        let extraCount = min(max(3, targetWord.count / 3), 5)
+        if let extraLetters = generateExtraLetters(for: targetWord, count: extraCount) {
+            letters.append(contentsOf: extraLetters)
         }
+        scrambledLetters = letters.shuffled()
+        currentWord = word
+    }
         
     private func generateExtraLetters(for word: String, count: Int) -> [Character]? {
-        // Определяем скрипт на основе первого символа
         guard let script = ScriptType.detect(from: word) else { return nil }
         
-        // Получаем все валидные символы для данного скрипта
         let characters = script.getCharacters()
-        
-        // Фильтруем символы, которые уже есть в слове
         let wordLower = word.lowercased()
         let availableChars = characters.filter { !wordLower.contains(String($0).lowercased()) }
         
-        // Проверяем, что у нас достаточно символов
         guard availableChars.count >= count else { return nil }
-        
-        // Возвращаем случайные символы
         return Array(availableChars.shuffled().prefix(count))
     }
         
-        private func addLetter(_ letter: Character) {
-            guard let index = scrambledLetters.firstIndex(of: letter) else { return }
+    private func addLetter(_ letter: Character) {
+        guard let index = scrambledLetters.firstIndex(of: letter) else { return }
             
-            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                scrambledLetters.remove(at: index)
-                selectedLetters.append(letter)
-            }
-            
-            checkAnswer()
+        withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+            scrambledLetters.remove(at: index)
+            selectedLetters.append(letter)
         }
+        checkAnswer()
+    }
         
-        private func removeLetter(_ letter: Character) {
-            guard let index = selectedLetters.firstIndex(of: letter) else { return }
+    private func removeLetter(_ letter: Character) {
+        guard let index = selectedLetters.firstIndex(of: letter) else { return }
             
-            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                selectedLetters.remove(at: index)
-                scrambledLetters.append(letter)
-                scrambledLetters.shuffle()
-            }
+        withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+            selectedLetters.remove(at: index)
+            scrambledLetters.append(letter)
+            scrambledLetters.shuffle()
         }
-        
-        private func checkAnswer() {
-            guard let word = currentWord else { return }
-            let userAnswer = String(selectedLetters).lowercased()
-            let correctAnswer = word.backText.lowercased()
+    }
+
+    private func checkAnswer() {
+        guard let word = currentWord else { return }
+        let userAnswer = String(selectedLetters).lowercased()
+        let correctAnswer = word.backText.lowercased()
             
-            if userAnswer.count == correctAnswer.count {
-                isAnswerCorrect = userAnswer == correctAnswer
-                handleResult(isCorrect: isAnswerCorrect)
-            }
+        if userAnswer.count == correctAnswer.count {
+            isAnswerCorrect = userAnswer == correctAnswer
+            handleResult(isCorrect: isAnswerCorrect)
         }
+    }
         
-        private func handleResult(isCorrect: Bool) {
-            guard let word = currentWord else { return }
+    private func handleResult(isCorrect: Bool) {
+        guard let word = currentWord else { return }
             
-            let responseTime = Date().timeIntervalSince1970 - startTime
-            let result = GameVerifyResultModel(
-                word: word,
-                isCorrect: isCorrect,
-                responseTime: responseTime,
-                isSpecial: gameAction.isSpecial(word),
-                hintPenalty: hintPenalty
-            )
+        let responseTime = Date().timeIntervalSince1970 - startTime
+        let result = GameVerifyResultModel(
+            word: word,
+            isCorrect: isCorrect,
+            responseTime: responseTime,
+            isSpecial: gameAction.isSpecial(word),
+            hintPenalty: hintPenalty
+        )
+        gameAction.handleGameResult(result)
             
-            gameAction.handleGameResult(result)
+        if isCorrect {
+            FeedbackCorrectAnswerHaptic().playHaptic()
+            cacheGetter.removeFromCache(word)
+        } else {
+            FeedbackWrongAnswerHaptic().playHaptic()
+        }
             
-            if isCorrect {
-                FeedbackCorrectAnswerHaptic().playHaptic()
-                cacheGetter.removeFromCache(word)
-            } else {
-                FeedbackWrongAnswerHaptic().playHaptic()
-            }
-            
-            withAnimation(.easeInOut(duration: 0.3)) {
-                showAnswerFeedback = true
-            }
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
-                withAnimation {
-                    showAnswerFeedback = false
-                    
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                        generateNewWord()
-                    }
+        withAnimation(.easeInOut(duration: 0.3)) {
+            showAnswerFeedback = true
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+            withAnimation {
+                showAnswerFeedback = false
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    generateNewWord()
                 }
             }
         }
+    }
         
     private func useHint() {
         if !hintState.wasUsed {
@@ -276,22 +244,20 @@ private struct GameLettersContent: View {
                 hintState.isShowing = true
                 hintPenalty = 5
             }
-            
-            // Добавляем первую правильную букву
             if let firstLetter = currentWord?.backText.first?.lowercased() {
                 let firstChar = Character(String(firstLetter))
                 if !selectedLetters.contains(firstChar),
                    let index = scrambledLetters.firstIndex(where: { $0.lowercased() == String(firstChar).lowercased() }) {
-                    addLetter(scrambledLetters[index])
+                        addLetter(scrambledLetters[index])
+                    }
                 }
-            }
         } else {
             withAnimation(.spring()) {
                 hintState.isShowing.toggle()
             }
         }
     }
-    }
+}
 
 
 // MARK: - Letter Grid Components
@@ -486,64 +452,3 @@ extension CharacterSet {
         return set
     }()
 }
-
-
-
-//extension ScriptType {
-//    // Дополнительные диапазоны для некоторых скриптов
-//    var additionalRanges: [Range<Int>] {
-//        switch self {
-//        case .japanese:
-//            return [
-//                0x3040..<0x309F,  // Hiragana
-//                0x30A0..<0x30FF,  // Katakana
-//                0x4E00..<0x9FFF   // Common Kanji
-//            ]
-//        case .korean:
-//            return [
-//                0xAC00..<0xD7AF,  // Hangul Syllables
-//                0x1100..<0x11FF   // Hangul Jamo
-//            ]
-//        case .latin:
-//            return [
-//                0x0061..<0x007B,  // Basic Latin lowercase
-//                0x0041..<0x005B   // Basic Latin uppercase
-//            ]
-//        default:
-//            return [range]
-//        }
-//    }
-//    
-//    static func detect(from text: String) -> ScriptType? {
-//        guard let firstChar = text.unicodeScalars.first else { return nil }
-//        let charValue = Int(firstChar.value)
-//        
-//        for script in [
-//            ScriptType.hebrew,
-//            ScriptType.cyrillic,
-//            ScriptType.latin,
-//            ScriptType.devanagari,
-//            ScriptType.arabic,
-//            ScriptType.thai,
-//            ScriptType.japanese,
-//            ScriptType.korean
-//        ] {
-//            // Проверяем все возможные диапазоны для скрипта
-//            if script.additionalRanges.contains(where: { $0.contains(charValue) }) {
-//                return script
-//            }
-//        }
-//        
-//        return nil
-//    }
-//    
-//    // Получение всех символов для скрипта
-//    func getAllCharacters() -> [Character] {
-//        return additionalRanges.flatMap { range in
-//            range.compactMap {
-//                guard let scalar = UnicodeScalar($0) else { return nil }
-//                return Character(scalar)
-//            }
-//        }
-//    }
-//}
