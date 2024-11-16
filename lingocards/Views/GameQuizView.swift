@@ -192,11 +192,6 @@ struct AnswerFeedback: View {
             Circle()
                 .frame(width: 80, height: 80)
                 .foregroundColor(.clear)
-                .modifier(
-                    isCorrect
-                    ? FeedbackSuccessBorder(isActive: .constant(true)).modifier()
-                    : FeedbackErrorBorder(isActive: .constant(true)).modifier()
-                )
                 .transition(.scale.combined(with: .opacity))
         }
     }
