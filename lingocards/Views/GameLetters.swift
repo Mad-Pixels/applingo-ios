@@ -89,6 +89,9 @@ private struct GameLettersContent: View {
     
     private var answerSection: some View {
         VStack(spacing: 16) {
+            Text(LanguageManager.shared.localizedString(for: "Word").capitalizedFirstLetter)
+                .font(GameCardStyle.Typography.captionFont)
+                .foregroundColor(style.theme.secondaryTextColor)
             LetterGridView(
                 letters: selectedLetters,
                 onTap: removeLetter,
@@ -126,7 +129,6 @@ private struct GameLettersContent: View {
             Button(action: useHint) {
                 style.hintButton(isActive: hintState.isShowing)
             }
-            .disabled(hintState.wasUsed && hintState.isShowing)
         }
     }
     
@@ -236,7 +238,7 @@ private struct GameLettersContent: View {
             }
         }
     }
-        
+
     private func useHint() {
         if !hintState.wasUsed {
             withAnimation(.spring()) {
@@ -244,24 +246,50 @@ private struct GameLettersContent: View {
                 hintState.isShowing = true
                 hintPenalty = 5
             }
-            if let firstLetter = currentWord?.backText.first?.lowercased() {
-                let firstChar = Character(String(firstLetter))
-                if !selectedLetters.contains(firstChar),
-                   let index = scrambledLetters.firstIndex(where: { $0.lowercased() == String(firstChar).lowercased() }) {
-                        addLetter(scrambledLetters[index])
-                    }
-                }
         } else {
             withAnimation(.spring()) {
-                hintState.isShowing.toggle()
+                hintPenalty += 2
+            }
+        }
+        
+        if let word = currentWord {
+            let correctWord = word.backText.lowercased()
+            let currentAnswer = String(selectedLetters).lowercased()
+            var correctIndex = 0
+            
+            for (index, letter) in currentAnswer.enumerated() {
+                let correctLetter = Array(correctWord)[index]
+                if letter != correctLetter {
+                    correctIndex = index
+                    
+                    if let wrongLetterIndex = selectedLetters.lastIndex(where: {
+                        String($0).lowercased() == String(letter)
+                    }) {
+                        removeLetter(selectedLetters[wrongLetterIndex])
+                    }
+                    if let correctLetterIndex = scrambledLetters.firstIndex(where: {
+                        String($0).lowercased() == String(correctLetter)
+                    }) {
+                        addLetter(scrambledLetters[correctLetterIndex])
+                    }
+                    break
+                }
+                correctIndex = index + 1
+            }
+            if correctIndex >= currentAnswer.count && correctIndex < correctWord.count {
+                let nextCorrectLetter = Array(correctWord)[correctIndex]
+                
+                if let letterIndex = scrambledLetters.firstIndex(where: {
+                    String($0).lowercased() == String(nextCorrectLetter)
+                }) {
+                    addLetter(scrambledLetters[letterIndex])
+                }
             }
         }
     }
 }
 
-
-// MARK: - Letter Grid Components
-struct LetterGridView: View {
+private struct LetterGridView: View {
     let letters: [Character]
     let onTap: (Character) -> Void
     let style: LetterStyle
@@ -285,7 +313,7 @@ struct LetterGridView: View {
     }
 }
 
-struct LetterButton: View {
+private struct LetterButton: View {
     let letter: Character
     let style: LetterGridView.LetterStyle
     let onTap: (Character) -> Void
@@ -326,7 +354,7 @@ struct LetterButton: View {
     }
 }
 
-struct ScaleButtonStyle: ButtonStyle {
+private struct ScaleButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .scaleEffect(configuration.isPressed ? 0.95 : 1)
