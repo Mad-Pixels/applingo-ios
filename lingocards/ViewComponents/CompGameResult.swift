@@ -137,16 +137,16 @@ struct GameResultCard: View {
     private var actionButtons: some View {
         HStack(spacing: 16) {
             Button(action: onClose) {
-                Label("Close", systemImage: "xmark")
-                    .font(.system(.body, design: .rounded).weight(.semibold))
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(
-                        Capsule()
-                            .fill(Color(.systemGray))
-                    )
-            }
+                                Label("Close", systemImage: "xmark")
+                                    .font(.system(.body, design: .rounded).weight(.semibold))
+                                    .foregroundColor(.white)
+                                    .frame(maxWidth: .infinity)
+                                    .padding()
+                                    .background(
+                                        Capsule()
+                                            .fill(Color(.systemGray))
+                                    )
+                            }
             
             Button(action: onRestart) {
                 Label("Play Again", systemImage: "arrow.clockwise")

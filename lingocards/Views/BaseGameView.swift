@@ -7,6 +7,7 @@ struct BaseGameView<Content: View>: View {
     
     @State private var scoreAnimations: [GameScoreAnimationModel] = []
     @State private var showResultCard = false
+    @State private var isRestarting = false
     
     let isPresented: Binding<Bool>
     let content: Content
@@ -141,9 +142,19 @@ struct BaseGameView<Content: View>: View {
         }
     }
     private func restartGame() {
-        cleanupGame()
-        setupGame()
-        gameAction.startGame()
+        isRestarting = true // Устанавливаем флаг перед началом перезапуска
+        
+        withAnimation(.easeInOut(duration: 0.3)) {
+            showResultCard = false
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            cleanupGame()
+            setupGame()
+            setupGameOverCallback()
+            gameAction.startGame()
+            isRestarting = false // Сбрасываем флаг после завершения перезапуска
+        }
     }
     
     private func showGameResults() {
@@ -153,23 +164,28 @@ struct BaseGameView<Content: View>: View {
     }
     
     private func setupGameOverCallback() {
-            gameAction.$isGameActive.sink { isActive in
-                if !isActive &&
-                   (gameAction.gameMode == .timeAttack || gameAction.gameMode == .survival) {
-                    showGameResults()
-                }
+        cancellableStore.cancellables.removeAll()
+        
+        gameAction.$isGameActive.sink { isActive in
+            if !isActive && !showResultCard && !isRestarting &&
+               (gameAction.gameMode == .timeAttack || gameAction.gameMode == .survival) {
+                showGameResults()
             }
-            .store(in: &cancellableStore.cancellables)
         }
+        .store(in: &cancellableStore.cancellables)
+    }
     
     private func cleanupGame() {
+        cancellableStore.cancellables.removeAll()
         cacheGetter.clearCache()
         gameAction.endGame()
     }
     
     private func endGame() {
-        cleanupGame()
-        isPresented.wrappedValue = false
+        if !isRestarting { // Проверяем флаг перед закрытием
+            cleanupGame()
+            isPresented.wrappedValue = false
+        }
     }
     
     private func showScoreAnimation(_ points: Int, reason: ScoreAnimationReason = .normal) {
