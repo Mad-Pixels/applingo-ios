@@ -200,6 +200,9 @@
         }
       }
     },
+    "Correct Answers" : {
+
+    },
     "Count" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -368,6 +371,9 @@
           }
         }
       }
+    },
+    "Game Over!" : {
+
     },
     "Hint" : {
       "extractionState" : "stale",
@@ -545,6 +551,9 @@
         }
       }
     },
+    "Play Again" : {
+
+    },
     "PracticeDescription" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -689,6 +698,9 @@
         }
       }
     },
+    "Time's Up!" : {
+
+    },
     "TimeAttackDescription" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -701,6 +713,9 @@
       }
     },
     "Total items: %lld" : {
+
+    },
+    "Total Questions" : {
 
     },
     "True" : {
@@ -790,6 +805,12 @@
           }
         }
       }
+    },
+    "Wrong Answers" : {
+
+    },
+    "Your Results" : {
+
     }
   },
   "version" : "1.0"

@@ -1,15 +1,19 @@
 import SwiftUI
+import Combine
 
 struct BaseGameView<Content: View>: View {
     @StateObject private var cacheGetter: GameCacheGetterViewModel
     @StateObject private var gameAction: GameActionViewModel
     
     @State private var scoreAnimations: [GameScoreAnimationModel] = []
+    @State private var showResultCard = false
     
     let isPresented: Binding<Bool>
     let content: Content
-    let minimumWordsRequired: Int 
+    let minimumWordsRequired: Int
     
+    @StateObject private var cancellableStore = CancellableStore()
+
     init(
         isPresented: Binding<Bool>,
         minimumWordsRequired: Int = 12,
@@ -86,13 +90,43 @@ struct BaseGameView<Content: View>: View {
                 .animation(.spring(), value: scoreAnimations)
                 .zIndex(100)
             }
+            if showResultCard {
+                            GameResultCard(
+                                stats: gameAction.stats,
+                                gameMode: gameAction.gameMode,
+                                onClose: {
+                                    withAnimation(.easeInOut(duration: 0.3)) {
+                                        showResultCard = false
+                                        isPresented.wrappedValue = false
+                                    }
+                                },
+                                onRestart: {
+                                    withAnimation(.easeInOut(duration: 0.3)) {
+                                        showResultCard = false
+                                        restartGame()
+                                    }
+                                }
+                            )
+                            .zIndex(200) // Выше чем score animations
+                            .transition(.opacity.combined(with: .scale))
+                        }
         }
         .onAppear {
             setupGame()
             setupScoreCallback()
+            setupGameOverCallback()
         }
         .onDisappear(perform: cleanupGame)
     }
+    
+    private func handleGameEnd() {
+            if gameAction.gameMode == .practice {
+                cleanupGame()
+                isPresented.wrappedValue = false
+            } else {
+                showGameResults()
+            }
+        }
     
     private func setupGame() {
         FrameManager.shared.setActiveFrame(.game)
@@ -106,6 +140,27 @@ struct BaseGameView<Content: View>: View {
             showScoreAnimation(points, reason: reason)
         }
     }
+    private func restartGame() {
+        cleanupGame()
+        setupGame()
+        gameAction.startGame()
+    }
+    
+    private func showGameResults() {
+        withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+            showResultCard = true
+        }
+    }
+    
+    private func setupGameOverCallback() {
+            gameAction.$isGameActive.sink { isActive in
+                if !isActive &&
+                   (gameAction.gameMode == .timeAttack || gameAction.gameMode == .survival) {
+                    showGameResults()
+                }
+            }
+            .store(in: &cancellableStore.cancellables)
+        }
     
     private func cleanupGame() {
         cacheGetter.clearCache()
@@ -145,4 +200,19 @@ extension EnvironmentValues {
         get { self[ShowScoreKey.self] }
         set { self[ShowScoreKey.self] = newValue }
     }
+}
+
+private struct ShowResultCardKey: EnvironmentKey {
+    static let defaultValue: (() -> Void)? = nil
+}
+
+extension EnvironmentValues {
+    var showResultCard: (() -> Void)? {
+        get { self[ShowResultCardKey.self] }
+        set { self[ShowResultCardKey.self] = newValue }
+    }
+}
+
+class CancellableStore: ObservableObject {
+    var cancellables = Set<AnyCancellable>()
 }
