@@ -10,24 +10,47 @@ struct GameMatchHuntView: View {
     }
 }
 
+private struct MatchState {
+    var leftWords: [WordItemModel] = []
+    var rightWords: [WordItemModel] = []
+    var matchedIndices: Set<Int> = []
+    var selectedLeftIndex: Int?
+    var selectedRightIndex: Int?
+    var isProcessingMatch: Bool = false
+    
+    mutating func reset() {
+        matchedIndices.removeAll()
+        selectedLeftIndex = nil
+        selectedRightIndex = nil
+        isProcessingMatch = false
+    }
+    
+    var hasSelectedPair: Bool {
+        selectedLeftIndex != nil && selectedRightIndex != nil
+    }
+    
+    func canSelectLeft(_ index: Int) -> Bool {
+        !isProcessingMatch && !matchedIndices.contains(index) && selectedLeftIndex != index
+    }
+    
+    func canSelectRight(_ index: Int) -> Bool {
+        !isProcessingMatch && !matchedIndices.contains(index + leftWords.count) && selectedRightIndex != index
+    }
+}
+
 private struct GameMatchHuntContent: View {
     // MARK: - Environment
     @EnvironmentObject var cacheGetter: GameCacheGetterViewModel
     @EnvironmentObject var gameAction: GameActionViewModel
     
     // MARK: - States
-    @State private var leftWords: [WordItemModel] = []
-    @State private var rightWords: [WordItemModel] = []
-    @State private var matchedIndices: Set<Int> = []
-    @State private var selectedLeftIndex: Int?
-    @State private var selectedRightIndex: Int?
+    @State private var matchState = MatchState()
     @State private var showAnswerFeedback = false
     @State private var startTime: TimeInterval = 0
     @State private var hintPenalty: Int = 0
     @State private var showSuccessEffect = false
     @State private var hintState = GameHintState(isShowing: false, wasUsed: false)
     @State private var isAnswerCorrect = false
-    @State private var showFeedbackBorder = false
     
     private let style = GameCardStyle(theme: ThemeManager.shared.currentThemeStyle)
     
@@ -47,7 +70,7 @@ private struct GameMatchHuntContent: View {
                 if showAnswerFeedback {
                     AnswerFeedback(
                         isCorrect: isAnswerCorrect,
-                        isSpecial: false  // Пока не используем специальные карточки в этом режиме
+                        isSpecial: false
                     )
                     .zIndex(1)
                 }
@@ -64,12 +87,12 @@ private struct GameMatchHuntContent: View {
         HStack(spacing: 16) {
             // Левая колонка
             VStack(spacing: 12) {
-                ForEach(leftWords.indices, id: \.self) { index in
+                ForEach(matchState.leftWords.indices, id: \.self) { index in
                     WordOptionView(
-                        word: leftWords[index],
+                        word: matchState.leftWords[index],
                         showTranslation: false,
-                        isSelected: index == selectedLeftIndex,
-                        isMatched: matchedIndices.contains(index),
+                        isSelected: index == matchState.selectedLeftIndex,
+                        isMatched: matchState.matchedIndices.contains(index),
                         onTap: { selectLeftWord(at: index) }
                     )
                 }
@@ -84,12 +107,12 @@ private struct GameMatchHuntContent: View {
             
             // Правая колонка
             VStack(spacing: 12) {
-                ForEach(rightWords.indices, id: \.self) { index in
+                ForEach(matchState.rightWords.indices, id: \.self) { index in
                     WordOptionView(
-                        word: rightWords[index],
+                        word: matchState.rightWords[index],
                         showTranslation: true,
-                        isSelected: index == selectedRightIndex,
-                        isMatched: matchedIndices.contains(index + leftWords.count),
+                        isSelected: index == matchState.selectedRightIndex,
+                        isMatched: matchState.matchedIndices.contains(index + matchState.leftWords.count),
                         onTap: { selectRightWord(at: index) }
                     )
                 }
@@ -106,14 +129,13 @@ private struct GameMatchHuntContent: View {
         )
         gameAction.registerSpecial(special)
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             if cacheGetter.cache.count >= 12 {
                 generateNewPairs()
             }
         }
     }
     
-    // MARK: - Game Logic
     private func generateNewPairs() {
         guard cacheGetter.cache.count >= 12 else { return }
         
@@ -124,122 +146,128 @@ private struct GameMatchHuntContent: View {
             }
         }
         
-        // Отключаем анимацию для начальной загрузки
-        withAnimation(nil) {
-            leftWords = Array(wordsSet)
-            rightWords = Array(wordsSet).shuffled()
-            matchedIndices.removeAll()
-            selectedLeftIndex = nil
-            selectedRightIndex = nil
-            hintState = GameHintState(isShowing: false, wasUsed: false)
-            startTime = Date().timeIntervalSince1970
-            hintPenalty = 0
-        }
+        matchState.leftWords = Array(wordsSet)
+        matchState.rightWords = Array(wordsSet).shuffled()
+        matchState.reset()
+        
+        startTime = Date().timeIntervalSince1970
+        hintPenalty = 0
     }
     
     // MARK: - Selection Handlers
     private func selectLeftWord(at index: Int) {
-        guard !matchedIndices.contains(index) else { return }
+        guard matchState.canSelectLeft(index) else { return }
+        
         withAnimation(.easeInOut(duration: 0.2)) {
-            selectedLeftIndex = index
+            matchState.selectedLeftIndex = index
         }
-        checkForMatch()
+        
+        if matchState.hasSelectedPair {
+            checkForMatch()
+        }
     }
     
     private func selectRightWord(at index: Int) {
-        guard !matchedIndices.contains(index + leftWords.count) else { return }
+        guard matchState.canSelectRight(index) else { return }
+        
         withAnimation(.easeInOut(duration: 0.2)) {
-            selectedRightIndex = index
+            matchState.selectedRightIndex = index
         }
-        checkForMatch()
+        
+        if matchState.hasSelectedPair {
+            checkForMatch()
+        }
     }
     
     private func checkForMatch() {
-        guard let leftIndex = selectedLeftIndex,
-              let rightIndex = selectedRightIndex,
-              let leftWordId = leftWords[leftIndex].id,
-              let rightWordId = rightWords[rightIndex].id
-        else { return }
+        guard let leftIndex = matchState.selectedLeftIndex,
+              let rightIndex = matchState.selectedRightIndex,
+              !matchState.isProcessingMatch else { return }
+        
+        matchState.isProcessingMatch = true
+        
+        let leftWord = matchState.leftWords[leftIndex]
+        let rightWord = matchState.rightWords[rightIndex]
         
         let responseTime = Date().timeIntervalSince1970 - startTime
-        isAnswerCorrect = leftWordId == rightWordId
+        isAnswerCorrect = leftWord.id == rightWord.id
         
         let result = GameVerifyResultModel(
-            word: leftWords[leftIndex],
+            word: leftWord,
             isCorrect: isAnswerCorrect,
             responseTime: responseTime,
             isSpecial: false,
             hintPenalty: hintPenalty
         )
+        
         gameAction.handleGameResult(result)
         
         if isAnswerCorrect {
             FeedbackCorrectAnswerHaptic().playHaptic()
-            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                matchedIndices.insert(leftIndex)
-                matchedIndices.insert(rightIndex + leftWords.count)
-            }
-            cacheGetter.removeFromCache(leftWords[leftIndex])
             
-            if matchedIndices.count % 6 == 0 {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                matchState.matchedIndices.insert(leftIndex)
+                matchState.matchedIndices.insert(rightIndex + matchState.leftWords.count)
+            }
+            
+            cacheGetter.removeFromCache(leftWord)
+            
+            // Сбрасываем состояние выбора сразу
+            withAnimation(.easeInOut(duration: 0.2)) {
+                matchState.selectedLeftIndex = nil
+                matchState.selectedRightIndex = nil
+                matchState.isProcessingMatch = false
+            }
+            
+            if matchState.matchedIndices.count % 6 == 0 {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                     loadMorePairs()
                 }
             }
         } else {
             FeedbackWrongAnswerHaptic().playHaptic()
-        }
-        
-        withAnimation(.easeInOut(duration: 0.3)) {
-            showAnswerFeedback = true
-        }
-        
-        // Сбрасываем выбор с небольшой задержкой
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-            withAnimation(.easeInOut(duration: 0.2)) {
-                showAnswerFeedback = false
-                if !isAnswerCorrect {
-                    selectedLeftIndex = nil
-                    selectedRightIndex = nil
+            
+            // При неправильном ответе сбрасываем выбор с задержкой
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    matchState.selectedLeftIndex = nil
+                    matchState.selectedRightIndex = nil
+                    matchState.isProcessingMatch = false
                 }
             }
         }
     }
     
     private func loadMorePairs() {
-            guard cacheGetter.cache.count >= 3 else { return }
-            
-            var wordsSet = Set<WordItemModel>()
-            while wordsSet.count < 3 {
-                if let word = cacheGetter.cache.randomElement() {
-                    wordsSet.insert(word)
-                }
-            }
-            let newWords = Array(wordsSet)
-            
-            // Находим индексы отгаданных пар
-            let matchedLeftIndices = matchedIndices.filter { $0 < leftWords.count }
-            let matchedRightIndices = matchedIndices.filter { $0 >= leftWords.count }
-                .map { $0 - leftWords.count }
-            
-            withAnimation(.easeInOut(duration: 0.3)) {
-                // Заменяем отгаданные слова на новые
-                for (i, leftIndex) in matchedLeftIndices.enumerated() {
-                    leftWords[leftIndex] = newWords[i]
-                }
-                
-                // Перемешиваем новые слова для правой колонки
-                let shuffledNewWords = newWords.shuffled()
-                for (i, rightIndex) in matchedRightIndices.enumerated() {
-                    rightWords[rightIndex] = shuffledNewWords[i]
-                }
-                
-                // Очищаем использованные индексы
-                matchedIndices.removeAll()
-                selectedLeftIndex = nil
-                selectedRightIndex = nil
+        guard cacheGetter.cache.count >= 3 else { return }
+        
+        var wordsSet = Set<WordItemModel>()
+        while wordsSet.count < 3 {
+            if let word = cacheGetter.cache.randomElement() {
+                wordsSet.insert(word)
             }
         }
+        let newWords = Array(wordsSet)
+        
+        let matchedLeftIndices = matchState.matchedIndices.filter { $0 < matchState.leftWords.count }
+        let matchedRightIndices = matchState.matchedIndices
+            .filter { $0 >= matchState.leftWords.count }
+            .map { $0 - matchState.leftWords.count }
+        
+        withAnimation(.easeInOut(duration: 0.3)) {
+            // Заменяем отгаданные слова на новые
+            for (i, leftIndex) in matchedLeftIndices.enumerated() {
+                matchState.leftWords[leftIndex] = newWords[i]
+            }
+            
+            let shuffledNewWords = newWords.shuffled()
+            for (i, rightIndex) in matchedRightIndices.enumerated() {
+                matchState.rightWords[rightIndex] = shuffledNewWords[i]
+            }
+            
+            matchState.reset()
+        }
+    }
 }
 
 
@@ -337,8 +365,8 @@ struct WordOptionButtonStyle: ButtonStyle {
     
     private var shadowColor: Color {
         isSelected ?
-            style.theme.accentColor.opacity(0.3) :
-            style.theme.secondaryTextColor.opacity(0.1)
+        style.theme.accentColor.opacity(0.3) :
+        style.theme.secondaryTextColor.opacity(0.1)
     }
 }
 
