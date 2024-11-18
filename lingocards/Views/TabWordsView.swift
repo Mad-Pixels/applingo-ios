@@ -54,6 +54,7 @@ struct TabWordsView: View {
                     }
                 )
                 .id(ThemeManager.shared.currentTheme)
+                .background(ThemeManager.shared.currentThemeStyle.backgroundViewColor)
                 .searchable(
                     text: $wordsGetter.searchText,
                     placement: .navigationBarDrawer(displayMode: .always),

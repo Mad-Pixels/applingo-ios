@@ -42,6 +42,9 @@ struct CompItemListView<Item: Identifiable & Equatable, RowContent: View>: View 
                     }
                 }
             }
+            .background(ThemeManager.shared.currentThemeStyle.backgroundViewColor)
+            .scrollContentBackground(.hidden)
+            
             if isLoadingPage && items.isEmpty {
                 VStack {
                     ProgressView()
