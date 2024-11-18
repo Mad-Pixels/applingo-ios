@@ -1,5 +1,36 @@
 import Foundation
 
+struct GameHintState {
+    var isShowing: Bool
+    var wasUsed: Bool
+}
+
+struct GameScoreAnimationModel: Identifiable, Equatable {
+    let id = UUID()
+    let points: Int
+    let reason: ScoreAnimationReason
+    
+    static func == (lhs: GameScoreAnimationModel, rhs: GameScoreAnimationModel) -> Bool {
+        lhs.id == rhs.id &&
+        lhs.points == rhs.points &&
+        lhs.reason == rhs.reason
+    }
+}
+
+struct GameVerifyResultModel: GameResultProtocol {
+    let word: WordItemModel
+    let isCorrect: Bool
+    let responseTime: TimeInterval
+    let isSpecial: Bool
+    let hintPenalty: Int
+}
+
+protocol GameCardModel: Equatable, Identifiable {
+    associatedtype WordModel
+    var id: UUID { get }
+    var frontWord: WordModel { get }
+}
+
 enum GameSwipeStatusModel {
     case none
     case left
@@ -20,24 +51,11 @@ enum GameDragStateModel {
     }
 }
 
-protocol GameCardModel: Equatable, Identifiable {
-    associatedtype WordModel
-    var id: UUID { get }
-    var frontWord: WordModel { get }
-}
-
 struct GameVerifyCardModel {
     let frontWord: WordItemModel
     let backText: String
     let isMatch: Bool
     let isSpecial: Bool
-    
-    init(frontWord: WordItemModel, backText: String, isMatch: Bool, isSpecial: Bool) {
-        self.frontWord = frontWord
-        self.backText = backText
-        self.isMatch = isMatch
-        self.isSpecial = isSpecial
-    }
 }
 
 struct GameQuizCardModel: Equatable {
@@ -57,6 +75,18 @@ struct GameQuizCardModel: Equatable {
     var hintText: String? {
         correctWord.hint
     }
+}
+
+struct QuizCardState {
+    var selectedOptionId: Int?
+    var isInteractionDisabled: Bool
+    var showCorrectAnswer: Bool
+    
+    static let initial = QuizCardState(
+        selectedOptionId: nil,
+        isInteractionDisabled: false,
+        showCorrectAnswer: false
+    )
 }
 
 struct MatchCardState {
@@ -87,52 +117,7 @@ struct MatchCardState {
     }
 }
 
-struct QuizCardState {
-    var selectedOptionId: Int?
-    var isInteractionDisabled: Bool
-    var showCorrectAnswer: Bool
-    
-    static let initial = QuizCardState(
-        selectedOptionId: nil,
-        isInteractionDisabled: false,
-        showCorrectAnswer: false
-    )
-}
-
 enum GameLetterStyle {
     case option
     case answer
-}
-
-struct GameVerifyResultModel: GameResultProtocol {
-    let word: WordItemModel
-    let isCorrect: Bool
-    let responseTime: TimeInterval
-    let isSpecial: Bool
-    let hintPenalty: Int
-    
-    init(word: WordItemModel, isCorrect: Bool,  responseTime: TimeInterval, isSpecial: Bool, hintPenalty: Int) {
-        self.word = word
-        self.isCorrect = isCorrect
-        self.responseTime = responseTime
-        self.isSpecial = isSpecial
-        self.hintPenalty = hintPenalty
-    }
-}
-
-struct GameScoreAnimationModel: Identifiable, Equatable {
-    let id = UUID()
-    let points: Int
-    let reason: ScoreAnimationReason
-    
-    static func == (lhs: GameScoreAnimationModel, rhs: GameScoreAnimationModel) -> Bool {
-        lhs.id == rhs.id &&
-        lhs.points == rhs.points &&
-        lhs.reason == rhs.reason
-    }
-}
-
-struct GameHintState {
-    var isShowing: Bool
-    var wasUsed: Bool
 }
