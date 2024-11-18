@@ -40,6 +40,37 @@ struct GameVerifyCardModel {
     }
 }
 
+struct GameQuizCardModel: Equatable {
+    let correctWord: WordItemModel
+    let options: [WordItemModel]
+    let isReversed: Bool
+    let isSpecial: Bool
+    
+    var questionText: String {
+        isReversed ? correctWord.backText : correctWord.frontText
+    }
+    
+    var correctAnswer: WordItemModel {
+        correctWord
+    }
+    
+    var hintText: String? {
+        correctWord.hint
+    }
+}
+
+struct QuizCardState {
+    var selectedOptionId: Int?
+    var isInteractionDisabled: Bool
+    var showCorrectAnswer: Bool
+    
+    static let initial = QuizCardState(
+        selectedOptionId: nil,
+        isInteractionDisabled: false,
+        showCorrectAnswer: false
+    )
+}
+
 struct GameVerifyResultModel: GameResultProtocol {
     let word: WordItemModel
     let isCorrect: Bool

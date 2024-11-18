@@ -29,7 +29,7 @@ private struct GameVerifyItContent: View {
                 CompPreloaderView()
             } else {
                 if let card = currentCard {
-                    CompGameCardSwipe(
+                    CompGameCardSwipeView(
                         card: card,
                         offset: cardOffset,
                         rotation: cardRotation,

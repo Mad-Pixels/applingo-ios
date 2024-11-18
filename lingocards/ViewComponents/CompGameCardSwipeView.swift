@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct CompGameCardSwipe: View {
+struct CompGameCardSwipeView: View {
     let card: GameVerifyCardModel
     let offset: CGFloat
     let rotation: Double

@@ -182,7 +182,7 @@ struct BaseGameView<Content: View>: View {
     }
     
     private func endGame() {
-        if !isRestarting { // Проверяем флаг перед закрытием
+        if !isRestarting {
             cleanupGame()
             isPresented.wrappedValue = false
         }
@@ -231,4 +231,31 @@ extension EnvironmentValues {
 
 class CancellableStore: ObservableObject {
     var cancellables = Set<AnyCancellable>()
+}
+
+struct AnswerFeedback: View {
+    let isCorrect: Bool
+    let isSpecial: Bool
+    
+    var body: some View {
+        if isSpecial && isCorrect {
+            Image(systemName: "star.circle.fill")
+                .foregroundColor(.yellow)
+                .font(.system(size: 80))
+                .transition(.scale.combined(with: .opacity))
+        } else {
+            Circle()
+                .frame(width: 80, height: 80)
+                .foregroundColor(.clear)
+                .transition(.scale.combined(with: .opacity))
+        }
+    }
+}
+
+struct ScaleButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.98 : 1)
+            .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
+    }
 }
