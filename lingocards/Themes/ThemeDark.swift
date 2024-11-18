@@ -5,6 +5,7 @@ struct ThemeDark: ThemeStyle {
     var backgroundBlockColor: Color = Color(red: 28 / 255, green: 28 / 255, blue: 30 / 255)
     var headerBlockTextColor:Color = Color(red: 130 / 255, green: 130 / 255, blue: 120 / 255)
     var errorTextColor:Color = Color(red: 183 / 255, green: 52 / 255, blue: 42 / 255)
+    var okTextColor:Color = Color(red: 73 / 255, green: 138 / 255, blue: 83 / 255)
     var fieldTextColor:Color = Color(red: 120 / 255, green: 120 / 255, blue: 115 / 255)
     var secondaryIconColor:Color = Color(red: 155 / 255, green: 155 / 255, blue: 150 / 255)
     var baseTextColor:Color = Color(red: 205 / 255, green: 205 / 255, blue: 200 / 255)

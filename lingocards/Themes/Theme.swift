@@ -6,6 +6,7 @@ protocol ThemeStyle {
     var headerBlockTextColor: Color { get }
     var secondaryIconColor: Color { get }
     var errorTextColor: Color { get }
+    var okTextColor: Color { get }
     var fieldTextColor: Color { get }
     var baseTextColor: Color { get }
     var secondaryTextColor: Color { get }

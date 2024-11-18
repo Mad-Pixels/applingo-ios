@@ -5,6 +5,7 @@ struct ThemeLight: ThemeStyle {
     var backgroundBlockColor: Color = Color(red: 255 / 255, green: 255 / 255, blue: 255 / 255)
     var headerBlockTextColor: Color = Color(red: 146 / 255, green: 146 / 255, blue: 152 / 255)
     var errorTextColor: Color = Color(red: 235 / 255, green: 78 / 255, blue: 61 / 255)
+    var okTextColor: Color = Color(red: 122 / 255, green: 205 / 255, blue: 125 / 255)
     var fieldTextColor:Color = Color(red: 12 / 255, green: 12 / 255, blue: 12 / 255)
     var secondaryIconColor:Color = Color(red: 90 / 255, green: 90 / 255, blue: 110 / 255)
     var baseTextColor:Color = Color(red: 12 / 255, green: 12 / 255, blue: 12 / 255)

@@ -30,6 +30,8 @@ struct CompGameQuizCardView: View {
     
     private var questionSection: some View {
         VStack() {
+            style.sectionHeader(LanguageManager.shared.localizedString(for: "Question"))
+                .padding(.horizontal, GameCardStyle.Layout.horizontalPadding)
             style.mainText(question.questionText)
                 .padding(.horizontal, GameCardStyle.Layout.horizontalPadding)
         }
@@ -44,35 +46,11 @@ struct CompGameQuizCardView: View {
         .padding(.horizontal, GameCardStyle.Layout.horizontalPadding)
     }
     
-    private func optionButton(for option: WordItemModel) -> some View {
-        Button(action: { onOptionSelected(option) }) {
-            HStack {
-                Text(optionText(for: option))
-                    .font(GameCardStyle.Typography.titleFont)
-                    .foregroundColor(getTextColor(for: option))
-                    .lineLimit(2)
-                    .minimumScaleFactor(0.8)
-            }
-            .frame(maxWidth: .infinity)
-            .frame(height: 56)
-            .background(getBackgroundColor(for: option))
-            .cornerRadius(12)
-            .overlay(
-                RoundedRectangle(cornerRadius: 12)
-                    .stroke(getBorderColor(for: option), lineWidth: cardState.selectedOptionId == option.id ? 2 : 1)
-            )
-            .contentShape(Rectangle())
-        }
-        .buttonStyle(PlainButtonStyle())
-        .disabled(cardState.isInteractionDisabled)
-    }
-    
     private func hintSection(_ hint: String) -> some View {
         VStack {
             if hintState.isShowing {
                 style.hintContainer {
                     style.hintPenalty()
-                    
                     Text(hint)
                         .font(GameCardStyle.Typography.hintFont)
                         .foregroundColor(style.theme.secondaryTextColor)
@@ -84,47 +62,131 @@ struct CompGameQuizCardView: View {
                 style.hintButton(isActive: hintState.isShowing)
             }
             .disabled(hintState.wasUsed && hintState.isShowing)
-            .padding(.bottom, 20)
+            .padding(.bottom, GameCardStyle.Layout.verticalPadding)
         }
     }
     
-    private func getTextColor(for option: WordItemModel) -> Color {
-        if cardState.selectedOptionId == nil {
-            return cardState.selectedOptionId == option.id ? .white : Color(.label)
-        } else {
-            return question.correctAnswer.id == option.id ? .white : Color(.label)
+    private func optionButton(for option: WordItemModel) -> some View {
+        Button(action: { onOptionSelected(option) }) {
+            Text(optionText(for: option))
+                .font(GameCardStyle.Typography.titleFont)
+                .lineLimit(2)
+                .minimumScaleFactor(0.8)
+                .modifier(
+                    GameCardStyle.QuizOption.optionStyle(
+                        isSelected: cardState.selectedOptionId == option.id,
+                        isCorrect: question.correctAnswer.id == option.id,
+                        isAnswered: cardState.selectedOptionId != nil,
+                        theme: style.theme
+                    )
+                )
+                .animation(.easeInOut(duration: GameCardStyle.Layout.Animation.defaultDuration), value: cardState.selectedOptionId)
+                .contentShape(Rectangle())
         }
-    }
-    
-    private func getBackgroundColor(for option: WordItemModel) -> Color {
-        if cardState.selectedOptionId == nil {
-            return cardState.selectedOptionId == option.id ? .accentColor : Color(.systemBackground)
-        } else {
-            if question.correctAnswer.id == option.id {
-                return .green
-            } else if cardState.selectedOptionId == option.id {
-                return .red
-            } else {
-                return Color(.systemBackground)
-            }
-        }
-    }
-    
-    private func getBorderColor(for option: WordItemModel) -> Color {
-        if cardState.selectedOptionId == nil {
-            return cardState.selectedOptionId == option.id ? .clear : Color(.separator)
-        } else {
-            if question.correctAnswer.id == option.id {
-                return .green
-            } else if cardState.selectedOptionId == option.id {
-                return .red
-            } else {
-                return Color(.separator)
-            }
-        }
+        .buttonStyle(ScaleButtonStyle())
+        .disabled(cardState.isInteractionDisabled)
     }
     
     private func optionText(for option: WordItemModel) -> String {
         question.isReversed ? option.frontText : option.backText
+    }
+}
+
+extension GameCardStyle {
+    struct QuizOption {
+        static let height: CGFloat = 56
+        static let cornerRadius: CGFloat = 12
+        
+        static func optionStyle(
+            isSelected: Bool,
+            isCorrect: Bool,
+            isAnswered: Bool,
+            theme: ThemeStyle
+        ) -> some ViewModifier {
+            OptionStyleModifier(
+                theme: theme,
+                isSelected: isSelected,
+                isCorrect: isCorrect,
+                isAnswered: isAnswered
+            )
+        }
+    }
+}
+
+private struct OptionStyleModifier: ViewModifier {
+    let theme: ThemeStyle
+    let isSelected: Bool
+    let isCorrect: Bool
+    let isAnswered: Bool
+    
+    func body(content: Content) -> some View {
+        content
+            .foregroundColor(foregroundColor)
+            .frame(maxWidth: .infinity)
+            .frame(height: GameCardStyle.QuizOption.height)
+            .background(backgroundColor)
+            .cornerRadius(GameCardStyle.QuizOption.cornerRadius)
+            .overlay(
+                RoundedRectangle(cornerRadius: GameCardStyle.QuizOption.cornerRadius)
+                    .stroke(borderColor, lineWidth: isSelected ? 2 : 1)
+            )
+            .shadow(
+                color: shadowColor,
+                radius: isSelected ? 5 : 2,
+                x: 0,
+                y: isSelected ? 2 : 1
+            )
+    }
+    
+    private var foregroundColor: Color {
+        if !isAnswered {
+            return isSelected ? .white : theme.baseTextColor
+        } else {
+            return isCorrect ? .white : theme.baseTextColor
+        }
+    }
+    
+    private var backgroundColor: Color {
+        if !isAnswered {
+            return isSelected ? theme.accentColor : theme.backgroundBlockColor
+        } else {
+            if isCorrect {
+                return theme.okTextColor
+            } else if isSelected {
+                return theme.errorTextColor
+            } else {
+                return theme.backgroundBlockColor
+            }
+        }
+    }
+    
+    private var borderColor: Color {
+        if !isAnswered {
+            return isSelected ? .clear : theme.secondaryTextColor.opacity(0.3)
+        } else {
+            if isCorrect {
+                return theme.okTextColor
+            } else if isSelected {
+                return theme.errorTextColor
+            } else {
+                return theme.secondaryTextColor.opacity(0.3)
+            }
+        }
+    }
+    
+    private var shadowColor: Color {
+        if !isAnswered {
+            return isSelected ?
+                theme.accentColor.opacity(0.3) :
+                theme.secondaryTextColor.opacity(0.1)
+        } else {
+            if isCorrect {
+                return theme.okTextColor.opacity(0.3)
+            } else if isSelected {
+                return theme.errorTextColor.opacity(0.3)
+            } else {
+                return theme.secondaryTextColor.opacity(0.1)
+            }
+        }
     }
 }
