@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct CompGameStateView: View {
+struct CompGameEmptyView: View {
     var body: some View {
         let theme = ThemeManager.shared.currentThemeStyle
         

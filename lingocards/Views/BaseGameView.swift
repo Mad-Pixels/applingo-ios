@@ -54,7 +54,7 @@ struct BaseGameView<Content: View>: View {
                 
                 if cacheGetter.cache.count < minimumWordsRequired {
                     Spacer()
-                    CompGameStateView()
+                    CompGameEmptyView()
                     Spacer()
                 } else if !gameAction.isGameActive {
                     Spacer()
