@@ -59,6 +59,34 @@ struct GameQuizCardModel: Equatable {
     }
 }
 
+struct MatchCardState {
+    var leftWords: [WordItemModel] = []
+    var rightWords: [WordItemModel] = []
+    var matchedIndices: Set<Int> = []
+    var selectedLeftIndex: Int?
+    var selectedRightIndex: Int?
+    var isProcessingMatch: Bool = false
+    
+    mutating func reset() {
+        matchedIndices.removeAll()
+        selectedLeftIndex = nil
+        selectedRightIndex = nil
+        isProcessingMatch = false
+    }
+    
+    var hasSelectedPair: Bool {
+        selectedLeftIndex != nil && selectedRightIndex != nil
+    }
+    
+    func canSelectLeft(_ index: Int) -> Bool {
+        !isProcessingMatch && !matchedIndices.contains(index) && selectedLeftIndex != index
+    }
+    
+    func canSelectRight(_ index: Int) -> Bool {
+        !isProcessingMatch && !matchedIndices.contains(index + leftWords.count) && selectedRightIndex != index
+    }
+}
+
 struct QuizCardState {
     var selectedOptionId: Int?
     var isInteractionDisabled: Bool
