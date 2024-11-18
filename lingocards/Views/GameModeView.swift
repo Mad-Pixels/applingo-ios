@@ -1,7 +1,5 @@
 import SwiftUI
 
-import SwiftUI
-
 struct GameModeView: View {
     @Binding var selectedMode: GameMode
     let startGame: () -> Void
