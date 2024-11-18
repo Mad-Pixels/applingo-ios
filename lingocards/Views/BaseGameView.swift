@@ -52,11 +52,7 @@ struct BaseGameView<Content: View>: View {
                 }
                 .padding()
                 
-                if cacheGetter.isLoadingCache {
-                    Spacer()
-                    CompPreloaderView()
-                    Spacer()
-                } else if cacheGetter.cache.count < minimumWordsRequired {
+                if cacheGetter.cache.count < minimumWordsRequired {
                     Spacer()
                     CompGameStateView()
                     Spacer()
@@ -92,25 +88,25 @@ struct BaseGameView<Content: View>: View {
                 .zIndex(100)
             }
             if showResultCard {
-                            GameResultCard(
-                                stats: gameAction.stats,
-                                gameMode: gameAction.gameMode,
-                                onClose: {
-                                    withAnimation(.easeInOut(duration: 0.3)) {
-                                        showResultCard = false
-                                        isPresented.wrappedValue = false
-                                    }
-                                },
-                                onRestart: {
-                                    withAnimation(.easeInOut(duration: 0.3)) {
-                                        showResultCard = false
-                                        restartGame()
-                                    }
-                                }
-                            )
-                            .zIndex(200) // Выше чем score animations
-                            .transition(.opacity.combined(with: .scale))
+                GameResultCard(
+                    stats: gameAction.stats,
+                    gameMode: gameAction.gameMode,
+                    onClose: {
+                        withAnimation(.easeInOut(duration: 0.3)) {
+                            showResultCard = false
+                            isPresented.wrappedValue = false
                         }
+                    },
+                    onRestart: {
+                        withAnimation(.easeInOut(duration: 0.3)) {
+                            showResultCard = false
+                            restartGame()
+                        }
+                    }
+                )
+                .zIndex(200)
+                .transition(.opacity.combined(with: .scale))
+            }
         }
         .onAppear {
             setupGame()
@@ -142,7 +138,7 @@ struct BaseGameView<Content: View>: View {
         }
     }
     private func restartGame() {
-        isRestarting = true // Устанавливаем флаг перед началом перезапуска
+        isRestarting = true
         
         withAnimation(.easeInOut(duration: 0.3)) {
             showResultCard = false
@@ -153,7 +149,7 @@ struct BaseGameView<Content: View>: View {
             setupGame()
             setupGameOverCallback()
             gameAction.startGame()
-            isRestarting = false // Сбрасываем флаг после завершения перезапуска
+            isRestarting = false
         }
     }
     
