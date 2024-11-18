@@ -119,9 +119,7 @@ struct GameQuizContent: View {
         }
     }
     
-    private func handleWrongAnswer(_ option: WordItemModel) {
-        guard let question = currentQuestion else { return }
-        
+    private func handleWrongAnswer(_ option: WordItemModel) {        
         FeedbackWrongAnswerHaptic().playHaptic()
         
         let result = createGameResult(for: option, isCorrect: false)
