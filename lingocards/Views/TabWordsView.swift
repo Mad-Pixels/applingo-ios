@@ -53,6 +53,7 @@ struct TabWordsView: View {
                         )
                     }
                 )
+                .id(ThemeManager.shared.currentTheme)
                 .searchable(
                     text: $wordsGetter.searchText,
                     placement: .navigationBarDrawer(displayMode: .always),

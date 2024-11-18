@@ -55,6 +55,7 @@ struct TabDictionariesView: View {
                         )
                     }
                 )
+                .id(ThemeManager.shared.currentTheme)
                 .searchable(
                     text: $dictionaryGetter.searchText,
                     placement: .navigationBarDrawer(displayMode: .always),
