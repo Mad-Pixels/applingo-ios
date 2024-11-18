@@ -67,9 +67,7 @@ struct DictionaryRemoteListView: View {
                     prompt: LanguageManager.shared.localizedString(for: "Search").capitalizedFirstLetter
                 )
                 .navigationTitle(LanguageManager.shared.localizedString(for: "Dictionaries").capitalizedFirstLetter)
-                .navigationBarItems(leading: Button(action: {
-                    presentationMode.wrappedValue.dismiss()
-                }) {
+                .navigationBarItems(leading: Button(action: dismiss) {
                     Text(LanguageManager.shared.localizedString(for: "Back").capitalizedFirstLetter)
                         .foregroundColor(theme.accentColor)
                 })
@@ -131,5 +129,10 @@ struct DictionaryRemoteListView: View {
             }
             .navigationViewStyle(StackNavigationViewStyle())
         }
+    }
+    
+    private func dismiss() {
+        FrameManager.shared.setActiveFrame(.tabDictionaries)
+        presentationMode.wrappedValue.dismiss()
     }
 }
