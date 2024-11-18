@@ -1,19 +1,39 @@
 import SwiftUI
 
 struct BaseCheckboxStyle: ToggleStyle {
+    @Environment(\.isEnabled) private var isEnabled
+    private let theme = ThemeManager.shared.currentThemeStyle
+    
     func makeBody(configuration: Configuration) -> some View {
         HStack {
             configuration.label
             Spacer()
-            Image(systemName: configuration.isOn ? "checkmark.square.fill" : "square")
-                .resizable()
-                .frame(width: 28, height: 28)
-                .foregroundColor(configuration.isOn ?
-                                 ThemeManager.shared.currentThemeStyle.accentColor :
-                                    ThemeManager.shared.currentThemeStyle.secondaryIconColor)
-                .onTapGesture {
+            
+            ZStack {
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(
+                        configuration.isOn ? theme.accentColor : theme.secondaryIconColor,
+                        lineWidth: configuration.isOn ? 0 : 2
+                    )
+                    .background(
+                        RoundedRectangle(cornerRadius: 8)
+                            .fill(configuration.isOn ? theme.accentColor : .clear)
+                    )
+                    .frame(width: 26, height: 26)
+                
+                Image(systemName: "checkmark")
+                    .font(.system(size: 14, weight: .bold))
+                    .foregroundColor(.white)
+                    .opacity(configuration.isOn ? 1 : 0)
+                    .scaleEffect(configuration.isOn ? 1 : 0.5)
+            }
+            .opacity(isEnabled ? 1 : 0.5)
+            .animation(.spring(response: 0.2, dampingFraction: 0.7), value: configuration.isOn)
+            .onTapGesture {
+                withAnimation {
                     configuration.isOn.toggle()
                 }
+            }
         }
     }
 }
