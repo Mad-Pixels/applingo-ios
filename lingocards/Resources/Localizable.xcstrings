@@ -113,9 +113,6 @@
         }
       }
     },
-    "Cache Status:" : {
-
-    },
     "Cancel" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -304,9 +301,6 @@
           }
         }
       }
-    },
-    "Dictionary: %@" : {
-
     },
     "Download" : {
       "extractionState" : "manual",
@@ -712,9 +706,6 @@
         }
       }
     },
-    "Total items: %lld" : {
-
-    },
     "Total Questions" : {
 
     },
@@ -751,9 +742,6 @@
           }
         }
       }
-    },
-    "Weight: %lld" : {
-
     },
     "Word" : {
       "extractionState" : "stale",

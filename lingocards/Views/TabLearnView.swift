@@ -45,9 +45,6 @@ struct TabLearnView: View {
                 
                 Spacer()
             }
-            .fullScreenCover(isPresented: $showLearnGame) {
-                GameLearnView(isPresented: $showLearnGame)
-            }
             .fullScreenCover(isPresented: $showQuizGame) {
                 GameQuizView(isPresented: $showQuizGame)
             }

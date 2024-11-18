@@ -99,6 +99,11 @@ struct QuizCardState {
     )
 }
 
+enum GameLetterStyle {
+    case option
+    case answer
+}
+
 struct GameVerifyResultModel: GameResultProtocol {
     let word: WordItemModel
     let isCorrect: Bool
