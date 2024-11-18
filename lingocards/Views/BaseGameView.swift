@@ -42,12 +42,12 @@ struct BaseGameView<Content: View>: View {
                 HStack {
                     if gameAction.isGameActive {
                         CompToolbarGame(viewModel: gameAction)
-                        Spacer()
-                        Button(action: endGame) {
-                            Image(systemName: "xmark.circle.fill")
-                                .font(.title)
-                                .foregroundColor(theme.secondaryIconColor)
-                        }
+                    }
+                    Spacer()
+                    Button(action: endGame) {
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.title)
+                            .foregroundColor(theme.secondaryIconColor)
                     }
                 }
                 .padding()
