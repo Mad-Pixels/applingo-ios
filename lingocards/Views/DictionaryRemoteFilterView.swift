@@ -46,11 +46,15 @@ struct DictionaryRemoteFilterView: View {
                                         }
                                         .frame(maxWidth: .infinity)
 
-                                        Image(systemName: "arrow.left.and.right.circle.fill")
-                                            .resizable()
-                                            .frame(width: 24, height: 24)
-                                            .padding(.horizontal, 8)
-                                            .modifier(MainIconStyle())
+                                        ZStack {
+                                            Capsule()
+                                                .fill(ThemeManager.shared.currentThemeStyle.accentColor.opacity(0.1))
+                                                .frame(width: 36, height: 24)
+                                            
+                                            Image(systemName: "arrow.left.and.right")
+                                                .font(.system(size: 12, weight: .medium))
+                                                .foregroundColor(ThemeManager.shared.currentThemeStyle.accentColor)
+                                        }
 
                                         CompPickerView(
                                             selectedValue: $selectedBackCategory,
