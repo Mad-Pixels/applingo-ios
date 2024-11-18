@@ -73,7 +73,8 @@ private struct GameLettersContent: View {
             CompGameLetterGridView(
                 letters: scrambledLetters,
                 onTap: addLetter,
-                style: .option
+                style: .option,
+                cardStyle: style
             )
             .padding(.horizontal)
         }

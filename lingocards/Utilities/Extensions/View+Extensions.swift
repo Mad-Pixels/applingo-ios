@@ -33,10 +33,12 @@ extension View {
         isSpecial: Bool,
         specialService: GameSpecialService
     ) -> some View {
-        modifier(style.makeSpecialEffectsModifier(
-            isSpecial: isSpecial,
-            specialService: specialService
-        ))
+        modifier(
+            style.makeSpecialEffectsModifier(
+                isSpecial: isSpecial,
+                specialService: specialService
+            )
+        )
     }
     
     func withVisualFeedback<F: GameFeedbackVisualProtocol>(_ feedback: F) -> some View {

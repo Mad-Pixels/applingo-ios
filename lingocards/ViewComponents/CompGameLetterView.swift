@@ -4,36 +4,37 @@ struct CompGameLetterGridView: View {
     let letters: [Character]
     let onTap: (Character) -> Void
     let style: GameLetterStyle
+    let cardStyle: GameCardStyle
+    
+    private let columns = [
+        GridItem(.adaptive(minimum: GameCardStyle.Letters.buttonSize), spacing: GameCardStyle.Letters.gridSpacing)
+    ]
     
     var body: some View {
-        LazyVGrid(columns: GameLetterGridStyle.columns, spacing: GameLetterGridStyle.gridSpacing) {
+        LazyVGrid(columns: columns, spacing: GameCardStyle.Letters.gridSpacing) {
             ForEach(letters, id: \.self) { letter in
-                CompGameLetterButton(letter: letter, style: style, onTap: onTap)
+                CompGameLetterButton(letter: letter, style: style, cardStyle: cardStyle, onTap: onTap)
             }
         }
-        .padding(GameLetterGridStyle.gridPadding)
+        .padding(GameCardStyle.Letters.gridPadding)
     }
 }
 
 struct CompGameLetterButton: View {
     let letter: Character
     let style: GameLetterStyle
+    let cardStyle: GameCardStyle
     let onTap: (Character) -> Void
     
     var body: some View {
         Button(action: { onTap(letter) }) {
             Text(String(letter))
-                .font(.system(.title2, design: .rounded).weight(.semibold))
-                .frame(width: GameLetterGridStyle.buttonSize, height: GameLetterGridStyle.buttonSize)
-                .background(GameLetterGridStyle.backgroundColor(for: style))
-                .foregroundColor(GameLetterGridStyle.foregroundColor(for: style))
-                .clipShape(RoundedRectangle(cornerRadius: GameLetterGridStyle.cornerRadius))
-                .shadow(
-                    color: GameLetterGridStyle.shadowColor,
-                    radius: 2,
-                    x: 0,
-                    y: 1
+                .font(GameCardStyle.Typography.titleFont)
+                .frame(
+                    width: GameCardStyle.Letters.buttonSize,
+                    height: GameCardStyle.Letters.buttonSize
                 )
+                .modifier(cardStyle.letters.buttonStyle(for: style))
         }
         .buttonStyle(ScaleButtonStyle())
     }
@@ -45,27 +46,26 @@ struct CompGameLetterContentSections {
         let style: GameCardStyle
         
         var body: some View {
-            VStack(spacing: 12) {
-                Text(LanguageManager.shared.localizedString(for: "ComposeTheTranslation").capitalizedFirstLetter)
-                    .font(GameCardStyle.Typography.captionFont)
-                    .foregroundColor(style.theme.secondaryTextColor)
-                Text(word.frontText)
-                    .font(GameCardStyle.Typography.mainTextFont)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal)
+            VStack(spacing: GameCardStyle.Layout.topPadding) {
+                style.sectionHeader(
+                    LanguageManager.shared.localizedString(for: "ComposeTheTranslation")
+                        .capitalizedFirstLetter
+                )
+                style.mainText(word.frontText)
                     .frame(maxWidth: .infinity)
-                    .frame(height: 80)
+                    .frame(height: GameCardStyle.Letters.wordSectionHeight)
                     .background(
-                        RoundedRectangle(cornerRadius: 12)
+                        RoundedRectangle(cornerRadius: GameCardStyle.Layout.cornerRadius)
                             .fill(style.theme.backgroundBlockColor)
                             .shadow(
                                 color: style.theme.accentColor.opacity(0.1),
-                                radius: 5,
+                                radius: GameCardStyle.Layout.shadowRadius,
                                 x: 0,
-                                y: 2
+                                y: GameCardStyle.Layout.shadowY
                             )
                     )
             }
+            .padding(.horizontal, GameCardStyle.Layout.horizontalPadding)
         }
     }
     
@@ -75,19 +75,22 @@ struct CompGameLetterContentSections {
         let style: GameCardStyle
         
         var body: some View {
-            VStack(spacing: 16) {
-                Text(LanguageManager.shared.localizedString(for: "Word").capitalizedFirstLetter)
-                    .font(GameCardStyle.Typography.captionFont)
-                    .foregroundColor(style.theme.secondaryTextColor)
+            VStack(spacing: GameCardStyle.Layout.topPadding) {
+                style.sectionHeader(
+                    LanguageManager.shared.localizedString(for: "Word")
+                        .capitalizedFirstLetter
+                )
                 CompGameLetterGridView(
                     letters: selectedLetters,
                     onTap: onTap,
-                    style: .answer
+                    style: .answer,
+                    cardStyle: style
                 )
-                .frame(minHeight: 100)
+                .frame(minHeight: GameCardStyle.Letters.answerSectionHeight)
                 .background(
-                    RoundedRectangle(cornerRadius: 12)
-                        .stroke(style.theme.accentColor.opacity(0.2), lineWidth: 1)
+                    RoundedRectangle(cornerRadius: GameCardStyle.Layout.cornerRadius)
+                        .stroke(style.theme.accentColor.opacity(0.2),
+                               lineWidth: GameCardStyle.Layout.borderWidth)
                 )
             }
         }
@@ -104,7 +107,6 @@ struct CompGameLetterContentSections {
                 if hintState.isShowing {
                     style.hintContainer {
                         style.hintPenalty()
-                        
                         Text(hint)
                             .font(GameCardStyle.Typography.hintFont)
                             .foregroundColor(style.theme.secondaryTextColor)
