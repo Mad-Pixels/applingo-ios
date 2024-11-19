@@ -376,6 +376,40 @@
         }
       }
     },
+    "ErrApiDefault" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed execute remote request"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не удалось выполнить запрос на сервер"
+          }
+        }
+      }
+    },
+    "ErrDatabaseDefault" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed execute database request"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не удалось выполнить запрос в БД"
+          }
+        }
+      }
+    },
     "Error: %@" : {
       "localizations" : {
         "en" : {

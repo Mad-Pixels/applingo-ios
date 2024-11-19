@@ -27,7 +27,7 @@ struct TabDictionariesView: View {
                 CompItemListView(
                     items: $dictionaryGetter.dictionaries,
                     isLoadingPage: dictionaryGetter.isLoadingPage,
-                    error: ErrorManager.shared.currentError,
+                    error: nil,
                     onItemAppear: { dictionary in
                         dictionaryGetter.loadMoreDictionariesIfNeeded(currentItem: dictionary)
                     },
