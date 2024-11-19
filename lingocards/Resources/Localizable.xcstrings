@@ -466,13 +466,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "correct"
+            "value" : "correct answers"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "верно"
+            "value" : "верные ответы"
           }
         }
       }
@@ -653,13 +653,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "wrong"
+            "value" : "wrong answers"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "неверно"
+            "value" : "неверные ответы"
           }
         }
       }
