@@ -157,13 +157,8 @@ struct TabDictionariesView: View {
             DictionaryDetailView(
                 dictionary: dictionary,
                 isPresented: .constant(true),
-                onSave: { updatedDictionary, completion in
-                    dictionaryAction.update(updatedDictionary) { result in
-                        if case .success = result {
-                            dictionaryGetter.resetPagination()
-                        }
-                        completion(result)
-                    }
+                refresh: {
+                    dictionaryGetter.resetPagination()
                 }
             )
         }

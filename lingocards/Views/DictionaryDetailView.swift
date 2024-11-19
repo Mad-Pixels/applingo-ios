@@ -1,24 +1,39 @@
 import SwiftUI
 
+class EditableDictionaryWrapper: ObservableObject {
+    @Published var dictionary: DictionaryItemModel
+    
+    init(dictionary: DictionaryItemModel) {
+        self.dictionary = dictionary
+    }
+}
+
 struct DictionaryDetailView: View {
     @Environment(\.presentationMode) private var presentationMode
+    @StateObject private var dictionaryAction: DictionaryLocalActionViewModel
+    @StateObject private var wrapper: EditableDictionaryWrapper
 
-    @State private var editedDictionary: DictionaryItemModel
+    @State private var errorMessage: String = ""
     @State private var isShowingErrorAlert = false
     @State private var isEditing = false
 
     @Binding var isPresented: Bool
-    let onSave: (DictionaryItemModel, @escaping (Result<Void, Error>) -> Void) -> Void
+    let refresh: () -> Void
     private let originalDictionary: DictionaryItemModel
 
     init(
         dictionary: DictionaryItemModel,
         isPresented: Binding<Bool>,
-        onSave: @escaping (DictionaryItemModel, @escaping (Result<Void, Error>) -> Void) -> Void
+        refresh: @escaping () -> Void
     ) {
-        _editedDictionary = State(initialValue: dictionary)
+        guard let dbQueue = DatabaseManager.shared.databaseQueue else {
+            fatalError("Database is not connected")
+        }
+        let repository = RepositoryDictionary(dbQueue: dbQueue)
+        _dictionaryAction = StateObject(wrappedValue: DictionaryLocalActionViewModel(repository: repository))
+        _wrapper = StateObject(wrappedValue: EditableDictionaryWrapper(dictionary: dictionary))
         _isPresented = isPresented
-        self.onSave = onSave
+        self.refresh = refresh
         self.originalDictionary = dictionary
     }
 
@@ -36,7 +51,10 @@ struct DictionaryDetailView: View {
                                 placeholder: LanguageManager.shared.localizedString(
                                     for: "Display Name"
                                 ).capitalizedFirstLetter,
-                                text: $editedDictionary.displayName,
+                                text: Binding(
+                                    get: { wrapper.dictionary.displayName },
+                                    set: { wrapper.dictionary.displayName = $0 }
+                                ),
                                 isEditing: isEditing,
                                 icon: "book"
                             )
@@ -44,19 +62,15 @@ struct DictionaryDetailView: View {
                                 placeholder: LanguageManager.shared.localizedString(
                                     for: "Description"
                                 ).capitalizedFirstLetter,
-                                text: Binding<String>(
-                                    get: {
-                                        editedDictionary.description
-                                    },
-                                    set: { newValue in
-                                        editedDictionary.description = newValue.isEmpty ? "" : newValue
-                                    }
+                                text: Binding(
+                                    get: { wrapper.dictionary.description },
+                                    set: { wrapper.dictionary.description = $0.isEmpty ? "" : $0 }
                                 ),
                                 isEditing: isEditing,
                                 icon: "scroll"
                             )
                             .frame(height: 150)
-                        }
+                    }
 
                     Section(header: Text(LanguageManager.shared.localizedString(for: "Category"))
                         .modifier(HeaderBlockTextStyle())) {
@@ -64,7 +78,10 @@ struct DictionaryDetailView: View {
                                 placeholder: LanguageManager.shared.localizedString(
                                     for: "Category"
                                 ).capitalizedFirstLetter,
-                                text: $editedDictionary.category,
+                                text: Binding(
+                                    get: { wrapper.dictionary.category },
+                                    set: { wrapper.dictionary.category = $0 }
+                                ),
                                 isEditing: isEditing,
                                 icon: "cube"
                             )
@@ -72,11 +89,14 @@ struct DictionaryDetailView: View {
                                 placeholder: LanguageManager.shared.localizedString(
                                     for: "Subcategory"
                                 ).capitalizedFirstLetter,
-                                text: $editedDictionary.subcategory,
+                                text: Binding(
+                                    get: { wrapper.dictionary.subcategory },
+                                    set: { wrapper.dictionary.subcategory = $0 }
+                                ),
                                 isEditing: isEditing,
                                 icon: "square.3.layers.3d"
                             )
-                        }
+                    }
 
                     Section(header: Text(LanguageManager.shared.localizedString(for: "Additional"))
                         .modifier(HeaderBlockTextStyle())) {
@@ -84,7 +104,10 @@ struct DictionaryDetailView: View {
                                 placeholder: LanguageManager.shared.localizedString(
                                     for: "Author"
                                 ).capitalizedFirstLetter,
-                                text: $editedDictionary.author,
+                                text: Binding(
+                                    get: { wrapper.dictionary.author },
+                                    set: { wrapper.dictionary.author = $0 }
+                                ),
                                 isEditing: isEditing,
                                 icon: "person"
                             )
@@ -92,81 +115,70 @@ struct DictionaryDetailView: View {
                                 placeholder: LanguageManager.shared.localizedString(
                                     for: "Created At"
                                 ).capitalizedFirstLetter,
-                                text: .constant(editedDictionary.formattedCreatedAt),
+                                text: .constant(wrapper.dictionary.formattedCreatedAt),
                                 isEditing: false
                             )
+                    }
+                }
+                .onAppear {
+                    FrameManager.shared.setActiveFrame(.dictionaryDetail)
+                }
+                .navigationTitle(LanguageManager.shared.localizedString(for: "Details").capitalizedFirstLetter)
+                .navigationBarItems(
+                    leading: Button(
+                        isEditing ? LanguageManager.shared.localizedString(
+                            for: "Cancel"
+                        ).capitalizedFirstLetter : LanguageManager.shared.localizedString(
+                            for: "Close"
+                        ).capitalizedFirstLetter
+                    ) {
+                        if isEditing {
+                            isEditing = false
+                            wrapper.dictionary = originalDictionary
+                        } else {
+                            presentationMode.wrappedValue.dismiss()
                         }
-                }
-                Spacer()
-            }
-            .onAppear {
-                FrameManager.shared.setActiveFrame(.dictionaryDetail)
-            }
-            .navigationTitle(LanguageManager.shared.localizedString(for: "Details").capitalizedFirstLetter)
-            .navigationBarItems(
-                leading: Button(
-                    isEditing ? LanguageManager.shared.localizedString(
-                        for: "Cancel"
-                    ).capitalizedFirstLetter : LanguageManager.shared.localizedString(
-                        for: "Close"
-                    ).capitalizedFirstLetter
-                ) {
-                    if isEditing {
-                        isEditing = false
-                        editedDictionary = originalDictionary
-                    } else {
-                        presentationMode.wrappedValue.dismiss()
+                    },
+                    trailing: Button(
+                        isEditing ? LanguageManager.shared.localizedString(
+                            for: "Save"
+                        ).capitalizedFirstLetter : LanguageManager.shared.localizedString(
+                            for: "Edit"
+                        ).capitalizedFirstLetter
+                    ) {
+                        if isEditing {
+                            updateDictionary()
+                        } else {
+                            isEditing = true
+                        }
                     }
-                },
-                trailing: Button(
-                    isEditing ? LanguageManager.shared.localizedString(
-                        for: "Save"
-                    ).capitalizedFirstLetter : LanguageManager.shared.localizedString(
-                        for: "Edit"
-                    ).capitalizedFirstLetter
-                ) {
-                    if isEditing {
-                        updateDictionary(editedDictionary)
-                    } else {
-                        isEditing = true
-                    }
-                }
-                .disabled(isEditing && isSaveDisabled)
-            )
-            .animation(.easeInOut, value: isEditing)
-            .alert(isPresented: $isShowingErrorAlert) {
-                Alert(
-                    title: Text(LanguageManager.shared.localizedString(for: "Error")),
-                    message: Text(LanguageManager.shared.localizedString(for: "DbErrorDescription")),
-                    dismissButton: .default(Text(LanguageManager.shared.localizedString(for: "Close")))
+                    .disabled(isEditing && isSaveDisabled)
                 )
-            }
-        }
-    }
-
-    private func updateDictionary(_ dictionary: DictionaryItemModel) {
-        let previousDictionary = editedDictionary
-
-        onSave(dictionary) { result in
-            switch result {
-            case .success:
-                self.isEditing = false
-                self.presentationMode.wrappedValue.dismiss()
-            case .failure(let error):
-                if let appError = error as? AppErrorModel {
-                    ErrorManager.shared.setError(appError: appError, frame: .dictionaryDetail, source: .dictionaryUpdate)
+                .animation(.easeInOut, value: isEditing)
+                .alert(isPresented: $isShowingErrorAlert) {
+                    Alert(
+                        title: Text(LanguageManager.shared.localizedString(for: "Error")),
+                        message: Text(LanguageManager.shared.localizedString(for: "DbErrorDescription")),
+                        dismissButton: .default(Text(LanguageManager.shared.localizedString(for: "Close")))
+                    )
                 }
-                self.editedDictionary = previousDictionary
-                self.isShowingErrorAlert = true
             }
         }
     }
 
+    private func updateDictionary() {
+        dictionaryAction.update(wrapper.dictionary) { _ in
+            self.isEditing = false
+            self.presentationMode.wrappedValue.dismiss()
+            refresh()
+        }
+    }
+    
     private var isSaveDisabled: Bool {
-        editedDictionary.displayName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ||
-        editedDictionary.category.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ||
-        editedDictionary.subcategory.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ||
-        editedDictionary.author.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ||
-        editedDictionary.description.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        wrapper.dictionary.displayName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ||
+        wrapper.dictionary.category.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ||
+        wrapper.dictionary.subcategory.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ||
+        wrapper.dictionary.author.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ||
+        wrapper.dictionary.description.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 }

@@ -1,10 +1,18 @@
 import SwiftUI
 
+private class EditableWordWrapper: ObservableObject {
+    @Published var word: WordItemModel
+    
+    init(word: WordItemModel) {
+        self.word = word
+    }
+}
+
 struct WordDetailView: View {
     @Environment(\.presentationMode) private var presentationMode
     @StateObject private var wordsAction: WordsLocalActionViewModel
+    @StateObject private var wrapper: EditableWordWrapper
 
-    @State private var editedWord: WordItemModel
     @State private var errorMessage: String = ""
     @State private var isShowingAlert = false
     @State private var isEditing = false
@@ -13,14 +21,17 @@ struct WordDetailView: View {
     let refresh: () -> Void
     private let originalWord: WordItemModel
 
-    init(word: WordItemModel, isPresented: Binding<Bool>, refresh: @escaping () -> Void) {
+    init(
+        word: WordItemModel,
+        isPresented: Binding<Bool>,
+        refresh: @escaping () -> Void
+    ) {
         guard let dbQueue = DatabaseManager.shared.databaseQueue else {
             fatalError("Database is not connected")
         }
         let wordRepository = RepositoryWord(dbQueue: dbQueue)
         _wordsAction = StateObject(wrappedValue: WordsLocalActionViewModel(repository: wordRepository))
-        
-        _editedWord = State(initialValue: word)
+        _wrapper = StateObject(wrappedValue: EditableWordWrapper(word: word))
         _isPresented = isPresented
         self.originalWord = word
         self.refresh = refresh
@@ -40,7 +51,10 @@ struct WordDetailView: View {
                                 placeholder: LanguageManager.shared.localizedString(
                                     for: "Word"
                                 ).capitalizedFirstLetter,
-                                text: $editedWord.frontText,
+                                text: Binding(
+                                    get: { wrapper.word.frontText },
+                                    set: { wrapper.word.frontText = $0 }
+                                ),
                                 isEditing: isEditing,
                                 icon: "rectangle.and.pencil.and.ellipsis"
                             )
@@ -48,11 +62,14 @@ struct WordDetailView: View {
                                 placeholder: LanguageManager.shared.localizedString(
                                     for: "Definition"
                                 ).capitalizedFirstLetter,
-                                text: $editedWord.backText,
+                                text: Binding(
+                                    get: { wrapper.word.backText },
+                                    set: { wrapper.word.backText = $0 }
+                                ),
                                 isEditing: isEditing,
                                 icon: "translate"
                             )
-                        }
+                    }
 
                     Section(header: Text(LanguageManager.shared.localizedString(for: "Additional"))
                         .modifier(HeaderBlockTextStyle())) {
@@ -60,12 +77,15 @@ struct WordDetailView: View {
                                 placeholder: LanguageManager.shared.localizedString(
                                     for: "TableName"
                                 ).capitalizedFirstLetter,
-                                text: $editedWord.tableName,
+                                text: .constant(wrapper.word.tableName),
                                 isEditing: false
                             )
                             CompTextFieldView(
                                 placeholder: LanguageManager.shared.localizedString(for: "Hint").capitalizedFirstLetter,
-                                text: $editedWord.hint.unwrap(default: ""),
+                                text: Binding(
+                                    get: { wrapper.word.hint ?? "" },
+                                    set: { wrapper.word.hint = $0.isEmpty ? nil : $0 }
+                                ),
                                 isEditing: isEditing,
                                 icon: "tag"
                             )
@@ -73,7 +93,10 @@ struct WordDetailView: View {
                                 placeholder: LanguageManager.shared.localizedString(
                                     for: "Description"
                                 ).capitalizedFirstLetter,
-                                text: $editedWord.description.unwrap(default: ""),
+                                text: Binding(
+                                    get: { wrapper.word.description ?? "" },
+                                    set: { wrapper.word.description = $0.isEmpty ? nil : $0 }
+                                ),
                                 isEditing: isEditing,
                                 icon: "scroll"
                             )
@@ -86,8 +109,8 @@ struct WordDetailView: View {
                                 CompBarChartView(
                                     title: LanguageManager.shared.localizedString(for: "Answers"),
                                     barData: [
-                                        BarData(value: Double(editedWord.fail), label: "fail", color: .red),
-                                        BarData(value: Double(editedWord.success), label: "success", color: .green)
+                                        BarData(value: Double(wrapper.word.fail), label: "fail", color: .red),
+                                        BarData(value: Double(wrapper.word.success), label: "success", color: .green)
                                     ]
                                 )
                                 .padding(.bottom, 4)
@@ -99,7 +122,7 @@ struct WordDetailView: View {
                                 )
                                 .padding(.bottom, 0)
                             }
-                        }
+                    }
                 }
                 .onAppear {
                     FrameManager.shared.setActiveFrame(.wordDetail)
@@ -123,19 +146,20 @@ struct WordDetailView: View {
                     ) {
                         if isEditing {
                             isEditing = false
-                            editedWord = originalWord
+                            wrapper.word = originalWord
                         } else {
                             presentationMode.wrappedValue.dismiss()
                         }
                     },
-                    trailing: Button(isEditing ? LanguageManager.shared.localizedString(
-                        for: "Save"
-                    ).capitalizedFirstLetter : LanguageManager.shared.localizedString(
-                        for: "Edit"
-                    ).capitalizedFirstLetter
+                    trailing: Button(
+                        isEditing ? LanguageManager.shared.localizedString(
+                            for: "Save"
+                        ).capitalizedFirstLetter : LanguageManager.shared.localizedString(
+                            for: "Edit"
+                        ).capitalizedFirstLetter
                     ) {
                         if isEditing {
-                            update(editedWord)
+                            updateWord()
                         } else {
                             isEditing = true
                         }
@@ -156,23 +180,21 @@ struct WordDetailView: View {
         }
     }
 
-    private func update(_ word: WordItemModel) {
-        wordsAction.update(word) { result in
-            if case .success = result {
-                self.presentationMode.wrappedValue.dismiss()
-                self.isEditing = false
-                refresh()
-            }
+    private func updateWord() {
+        wordsAction.update(wrapper.word) { _ in
+            self.isEditing = false
+            self.presentationMode.wrappedValue.dismiss()
+            refresh()
         }
     }
 
     private func calculateWeight() -> Int {
-        let normalizedWeight = Double(editedWord.weight) / 100.0
+        let normalizedWeight = Double(wrapper.word.weight) / 100.0
         return Int(floor(normalizedWeight))
     }
     
     private var isSaveDisabled: Bool {
-        editedWord.frontText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ||
-        editedWord.backText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        wrapper.word.frontText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ||
+        wrapper.word.backText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 }
