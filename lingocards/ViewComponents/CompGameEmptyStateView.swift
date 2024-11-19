@@ -9,7 +9,7 @@ struct CompGameEmptyView: View {
                 .font(.system(size: 60))
                 .foregroundColor(theme.accentColor)
             
-            Text(LanguageManager.shared.localizedString(for: "NotEnoughWords"))
+            Text(LanguageManager.shared.localizedString(for: "NotEnoughWords")) 
                 .font(.title2)
                 .fontWeight(.bold)
                 .foregroundColor(theme.baseTextColor)

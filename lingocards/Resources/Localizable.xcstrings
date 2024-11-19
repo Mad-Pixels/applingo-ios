@@ -71,6 +71,23 @@
         }
       }
     },
+    "AddWordsOrActivateDictionaries" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Download and activate additional dictionaries or add more words to existing ones."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скачайте и активируйте дополнительные словари или добавьте больше слов в существующие."
+          }
+        }
+      }
+    },
     "Answers" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -851,6 +868,23 @@
         }
       }
     },
+    "NotEnoughWords" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not enough active words for play"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Недостаточно слов для игры"
+          }
+        }
+      }
+    },
     "NoWordsAvailable" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1082,7 +1116,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "3 жизни!"
           }
         }
