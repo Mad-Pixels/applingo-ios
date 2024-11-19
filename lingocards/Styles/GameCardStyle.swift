@@ -119,7 +119,7 @@ struct GameCardStyle {
     }
     
     func hintPenalty() -> some View {
-        Text(LanguageManager.shared.displayName(for: "HintPenalty").uppercased())
+        Text(LanguageManager.shared.localizedString(for: "HintPenalty").uppercased())
             .font(Typography.secondaryFont)
             .foregroundColor(theme.secondaryTextColor)
             .padding(.horizontal, 8)
