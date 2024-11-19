@@ -74,8 +74,11 @@ class RepositoryWord: WordRepositoryProtocol {
     
     func fetchCache(count: Int) throws -> [WordItemModel] {
         let activeDictionaries = try fetchActive()
+        guard !activeDictionaries.isEmpty else {
+            return []
+        }
         guard !activeDictionaries.isEmpty else { return [] }
-            
+
         let activeDisplayNames = activeDictionaries.map { $0.tableName }
         let randomCount = Int(Double(count) * 0.6)
         let weightedCount = count - randomCount
@@ -135,10 +138,13 @@ class RepositoryWord: WordRepositoryProtocol {
     }
     
     private func fetchActive() throws -> [DictionaryItemModel] {
-        return try dbQueue.read { db in
+        let activeDictionaries = try dbQueue.read { db in
             let sql = "SELECT * FROM \(DictionaryItemModel.databaseTableName) WHERE isActive = 1"
-            Logger.debug("[RepositoryWord]: fetchActive - \(sql)")
             return try DictionaryItemModel.fetchAll(db, sql: sql)
         }
+        guard !activeDictionaries.isEmpty else {
+            return []
+        }
+        return activeDictionaries
     }
 }

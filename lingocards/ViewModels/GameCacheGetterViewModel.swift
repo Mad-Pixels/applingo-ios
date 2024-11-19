@@ -21,10 +21,14 @@ final class GameCacheGetterViewModel: BaseDatabaseViewModel {
     
     private func setupCacheObserver() {
         $cache
+            .dropFirst()
             .filter { $0.count < self.cacheThreshold }
             .debounce(for: .seconds(0.5), scheduler: DispatchQueue.main)
             .sink { [weak self] _ in
-                self?.refillCache()
+                guard let self = self else { return }
+                if !self.cache.isEmpty {
+                    self.refillCache()
+                }
             }
             .store(in: &cancellables)
     }
@@ -40,6 +44,10 @@ final class GameCacheGetterViewModel: BaseDatabaseViewModel {
             successHandler: { [weak self] fetchedWords in
                 guard let self = self,
                       currentToken == self.cancellationToken else { return }
+                if fetchedWords.isEmpty {
+                    self.isLoadingCache = false
+                    return
+                }
                 self.cache = fetchedWords
                 self.isLoadingCache = false
             },
@@ -60,7 +68,7 @@ final class GameCacheGetterViewModel: BaseDatabaseViewModel {
         guard !isLoadingCache else { return }
         
         let needCount = cacheSize - cache.count
-        if needCount <= 0 { return }
+        guard needCount > 0 else { return }
         
         let currentToken = cancellationToken
         isLoadingCache = true
@@ -70,6 +78,10 @@ final class GameCacheGetterViewModel: BaseDatabaseViewModel {
             successHandler: { [weak self] fetchedWords in
                 guard let self = self,
                       currentToken == self.cancellationToken else { return }
+                if fetchedWords.isEmpty {
+                    self.isLoadingCache = false
+                    return
+                }
                 self.cache.append(contentsOf: fetchedWords)
                 self.isLoadingCache = false
             },
@@ -104,3 +116,4 @@ final class GameCacheGetterViewModel: BaseDatabaseViewModel {
         clearCache()
     }
 }
+
