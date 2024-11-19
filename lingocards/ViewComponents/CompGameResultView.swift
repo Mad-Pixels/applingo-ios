@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct GameResultCard: View {
+struct GameResultCardView: View {
     let stats: GameStatsModel
     let gameMode: GameMode
     let onClose: () -> Void
@@ -10,22 +10,14 @@ struct GameResultCard: View {
     
     var body: some View {
         ZStack {
-            // Затемненный фон
-            Color.black.opacity(0.5)
+            Color.black.opacity(0.1)
                 .edgesIgnoringSafeArea(.all)
+                .allowsHitTesting(false)
             
-            // Карточка результатов
             VStack(spacing: 24) {
-                // Заголовок
                 header
-                
-                // Основные результаты
                 statsGrid
-                
-                // Дополнительная статистика
                 additionalStats
-                
-                // Кнопки действий
                 actionButtons
             }
             .padding(24)
@@ -137,16 +129,16 @@ struct GameResultCard: View {
     private var actionButtons: some View {
         HStack(spacing: 16) {
             Button(action: onClose) {
-                                Label("Close", systemImage: "xmark")
-                                    .font(.system(.body, design: .rounded).weight(.semibold))
-                                    .foregroundColor(.white)
-                                    .frame(maxWidth: .infinity)
-                                    .padding()
-                                    .background(
-                                        Capsule()
-                                            .fill(Color(.systemGray))
-                                    )
-                            }
+                Label("Close", systemImage: "xmark")
+                    .font(.system(.body, design: .rounded).weight(.semibold))
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(
+                        Capsule()
+                            .fill(Color(.systemGray))
+                        )
+                }
             
             Button(action: onRestart) {
                 Label("Play Again", systemImage: "arrow.clockwise")
@@ -163,7 +155,6 @@ struct GameResultCard: View {
     }
 }
 
-// MARK: - Supporting Views
 private struct StatItem: View {
     let title: String
     let value: String

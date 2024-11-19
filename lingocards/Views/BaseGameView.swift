@@ -88,7 +88,7 @@ struct BaseGameView<Content: View>: View {
                 .zIndex(100)
             }
             if showResultCard {
-                GameResultCard(
+                GameResultCardView(
                     stats: gameAction.stats,
                     gameMode: gameAction.gameMode,
                     onClose: {
