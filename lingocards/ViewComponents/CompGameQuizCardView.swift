@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct CompGameQuizCardView: View {
+    @ObservedObject private var languageManager = LanguageManager.shared
+
     let question: GameQuizCardModel
     let cardState: QuizCardState
     let hintState: GameHintState
@@ -30,8 +32,6 @@ struct CompGameQuizCardView: View {
     
     private var questionSection: some View {
         VStack() {
-            style.sectionHeader(LanguageManager.shared.localizedString(for: "Question"))
-                .padding(.horizontal, GameCardStyle.Layout.horizontalPadding)
             style.mainText(question.questionText)
                 .padding(.horizontal, GameCardStyle.Layout.horizontalPadding)
         }

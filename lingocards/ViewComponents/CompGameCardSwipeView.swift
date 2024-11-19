@@ -9,6 +9,7 @@ struct CompGameCardSwipeView: View {
     let specialService: GameSpecialService
     
     @Binding var hintState: GameHintState
+    @ObservedObject private var languageManager = LanguageManager.shared
     @GestureState private var dragState = GameDragStateModel.inactive
     @State private var swipeStatus: GameSwipeStatusModel = .none
     @State private var showSuccessEffect: Bool = false

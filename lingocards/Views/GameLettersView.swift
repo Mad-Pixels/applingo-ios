@@ -60,14 +60,12 @@ private struct GameLettersContent: View {
                 style: style
             )
             
-            if let hint = currentWord?.hint {
-                CompGameLetterContentSections.HintSection(
-                    hint: hint,
-                    hintState: hintState,
-                    style: style,
-                    onTap: useHint
-                )
-            }
+            CompGameLetterContentSections.HintSection(
+                hint: "",
+                hintState: hintState,
+                style: style,
+                onTap: useHint
+            )
             Spacer(minLength: 20)
             
             CompGameLetterGridView(

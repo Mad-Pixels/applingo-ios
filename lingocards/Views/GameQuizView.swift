@@ -13,7 +13,7 @@ struct GameQuizView: View {
 struct GameQuizContent: View {
     @EnvironmentObject var cacheGetter: GameCacheGetterViewModel
     @EnvironmentObject var gameAction: GameActionViewModel
-    
+        
     @State private var currentQuestion: GameQuizCardModel?
     @State private var cardState = QuizCardState.initial
     @State private var startTime: TimeInterval = 0
