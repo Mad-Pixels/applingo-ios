@@ -11,12 +11,8 @@ struct TabWordsView: View {
     @State private var selectedWord: WordItemModel?
 
     init() {
-        guard let dbQueue = DatabaseManager.shared.databaseQueue else {
-            fatalError("Database is not connected")
-        }
-        let wordRepository = RepositoryWord(dbQueue: dbQueue)
-        _wordsAction = StateObject(wrappedValue: WordsLocalActionViewModel(repository: wordRepository))
-        _wordsGetter = StateObject(wrappedValue: WordsLocalGetterViewModel(repository: wordRepository))
+        _wordsAction = StateObject(wrappedValue: WordsLocalActionViewModel())
+        _wordsGetter = StateObject(wrappedValue: WordsLocalGetterViewModel())
     }
 
     var body: some View {

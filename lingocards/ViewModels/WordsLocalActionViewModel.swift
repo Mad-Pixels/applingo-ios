@@ -6,10 +6,10 @@ final class WordsLocalActionViewModel: BaseDatabaseViewModel {
     private let wordRepository: WordRepositoryProtocol
     private var frame: AppFrameModel = .main
 
-    init(repository: WordRepositoryProtocol) {
-        self.wordRepository = repository
+    override init() {
         if let dbQueue = DatabaseManager.shared.databaseQueue {
             self.dictionaryRepository = RepositoryDictionary(dbQueue: dbQueue)
+            self.wordRepository = RepositoryWord(dbQueue: dbQueue)
         } else {
             fatalError("Database is not connected")
         }

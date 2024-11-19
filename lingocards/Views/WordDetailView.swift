@@ -26,11 +26,7 @@ struct WordDetailView: View {
         isPresented: Binding<Bool>,
         refresh: @escaping () -> Void
     ) {
-        guard let dbQueue = DatabaseManager.shared.databaseQueue else {
-            fatalError("Database is not connected")
-        }
-        let wordRepository = RepositoryWord(dbQueue: dbQueue)
-        _wordsAction = StateObject(wrappedValue: WordsLocalActionViewModel(repository: wordRepository))
+        _wordsAction = StateObject(wrappedValue: WordsLocalActionViewModel())
         _wrapper = StateObject(wrappedValue: EditableWordWrapper(word: word))
         _isPresented = isPresented
         self.originalWord = word

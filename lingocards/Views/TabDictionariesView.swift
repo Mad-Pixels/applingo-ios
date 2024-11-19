@@ -13,12 +13,8 @@ struct TabDictionariesView: View {
     @State private var errorMessage: String = ""
 
     init() {
-        guard let dbQueue = DatabaseManager.shared.databaseQueue else {
-            fatalError("Database is not connected")
-        }
-        let repository = RepositoryDictionary(dbQueue: dbQueue)
-        _dictionaryAction = StateObject(wrappedValue: DictionaryLocalActionViewModel(repository: repository))
-        _dictionaryGetter = StateObject(wrappedValue: DictionaryLocalGetterViewModel(repository: repository))
+        _dictionaryAction = StateObject(wrappedValue: DictionaryLocalActionViewModel())
+        _dictionaryGetter = StateObject(wrappedValue: DictionaryLocalGetterViewModel())
     }
 
     var body: some View {

@@ -3,16 +3,21 @@ import Combine
 import GRDB
 
 final class DictionaryLocalActionViewModel: BaseDatabaseViewModel {
+    private let dictionaryRepository: DictionaryRepositoryProtocol
     private var frame: AppFrameModel = .main
-    private let repository: DictionaryRepositoryProtocol
 
-    init(repository: DictionaryRepositoryProtocol) {
-        self.repository = repository
+    override init() {
+        if let dbQueue = DatabaseManager.shared.databaseQueue {
+            self.dictionaryRepository = RepositoryDictionary(dbQueue: dbQueue)
+        } else {
+            fatalError("Database is not connected")
+        }
+        super.init()
     }
 
     func save(_ dictionary: DictionaryItemModel, completion: @escaping (Result<Void, Error>) -> Void) {
         performDatabaseOperation(
-            { try self.repository.save(dictionary) },
+            { try self.dictionaryRepository.save(dictionary) },
             successHandler: { _ in },
             source: .dictionarySave,
             frame: frame,
@@ -21,10 +26,12 @@ final class DictionaryLocalActionViewModel: BaseDatabaseViewModel {
             completion: completion
         )
     }
+    
+    
 
     func update(_ dictionary: DictionaryItemModel, completion: @escaping (Result<Void, Error>) -> Void) {
         performDatabaseOperation(
-            { try self.repository.update(dictionary) },
+            { try self.dictionaryRepository.update(dictionary) },
             successHandler: { _ in },
             source: .dictionaryUpdate,
             frame: frame,
@@ -36,7 +43,7 @@ final class DictionaryLocalActionViewModel: BaseDatabaseViewModel {
 
     func delete(_ dictionary: DictionaryItemModel, completion: @escaping (Result<Void, Error>) -> Void) {
         performDatabaseOperation(
-            { try self.repository.delete(dictionary) },
+            { try self.dictionaryRepository.delete(dictionary) },
             successHandler: { _ in },
             source: .dictionaryDelete,
             frame: frame,
@@ -49,7 +56,7 @@ final class DictionaryLocalActionViewModel: BaseDatabaseViewModel {
 
     func updateStatus(dictionaryID: Int, newStatus: Bool, completion: @escaping (Result<Void, Error>) -> Void) {
         performDatabaseOperation(
-            { try self.repository.updateStatus(dictionaryID: dictionaryID, newStatus: newStatus) },
+            { try self.dictionaryRepository.updateStatus(dictionaryID: dictionaryID, newStatus: newStatus) },
             successHandler: { _ in },
             source: .dictionaryUpdate,
             frame: frame,

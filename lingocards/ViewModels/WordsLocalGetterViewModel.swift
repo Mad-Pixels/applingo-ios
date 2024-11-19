@@ -13,15 +13,19 @@ final class WordsLocalGetterViewModel: BaseDatabaseViewModel {
     }
 
     private var cancellables = Set<AnyCancellable>()
-    private let repository: WordRepositoryProtocol
+    private let wordRepository: WordRepositoryProtocol
     private var cancellationToken = UUID()
     private var frame: AppFrameModel = .main
     private let itemsPerPage: Int = 50
     private var hasMorePages = true
     private var currentPage = 0
 
-    init(repository: WordRepositoryProtocol) {
-        self.repository = repository
+    override init() {
+        if let dbQueue = DatabaseManager.shared.databaseQueue {
+            self.wordRepository = RepositoryWord(dbQueue: dbQueue)
+        } else {
+            fatalError("Database is not connected")
+        }
         super.init()
     }
 
@@ -42,7 +46,7 @@ final class WordsLocalGetterViewModel: BaseDatabaseViewModel {
         isLoadingPage = true
 
         performDatabaseOperation(
-            { try self.repository.fetch(
+            { try self.wordRepository.fetch(
                 searchText: self.searchText,
                 offset: self.currentPage * self.itemsPerPage,
                 limit: self.itemsPerPage

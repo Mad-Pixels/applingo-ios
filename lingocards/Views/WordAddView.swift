@@ -14,13 +14,8 @@ struct WordAddView: View {
     @State private var isShowingAlert = false
 
     init(isPresented: Binding<Bool>, refresh: @escaping () -> Void) {
-        guard let dbQueue = DatabaseManager.shared.databaseQueue else {
-            fatalError("Database is not connected")
-        }
-        let dictionaryRepository = RepositoryDictionary(dbQueue: dbQueue)
-        _dictionaryGetter = StateObject(wrappedValue: DictionaryLocalGetterViewModel(repository: dictionaryRepository))
-        let wordRepository = RepositoryWord(dbQueue: dbQueue)
-        _wordsAction = StateObject(wrappedValue: WordsLocalActionViewModel(repository: wordRepository))
+        _dictionaryGetter = StateObject(wrappedValue: DictionaryLocalGetterViewModel())
+        _wordsAction = StateObject(wrappedValue: WordsLocalActionViewModel())
         
         _isPresented = isPresented
         self.refresh = refresh
