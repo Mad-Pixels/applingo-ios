@@ -29,6 +29,19 @@ class RepositoryDictionary: DictionaryRepositoryProtocol {
         }
     }
     
+    func fetchDisplayName(byTableName tableName: String) throws -> String {
+        return try dbQueue.read { db in
+            let sql = """
+            SELECT displayName FROM \(DictionaryItemModel.databaseTableName)
+            WHERE tableName = ?
+            """
+            let arguments: [DatabaseValueConvertible] = [tableName]
+            
+            Logger.debug("[RepositoryDictionary]: getDisplayName - SQL: \(sql), Arguments: \(arguments)")
+            return try String.fetchOne(db, sql: sql, arguments: StatementArguments(arguments)) ?? ""
+        }
+    }
+    
     func save(_ dictionary: DictionaryItemModel) throws {
         var fmtDictionary = dictionary
         fmtDictionary.fmt()

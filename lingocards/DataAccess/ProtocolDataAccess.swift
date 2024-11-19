@@ -10,6 +10,7 @@ protocol DictionaryRepositoryProtocol {
     func update(_ dictionary: DictionaryItemModel) throws
     func delete(_ dictionary: DictionaryItemModel) throws
     func updateStatus(dictionaryID: Int, newStatus: Bool) throws
+    func fetchDisplayName(byTableName tableName: String) throws -> String
 }
 
 protocol WordRepositoryProtocol {

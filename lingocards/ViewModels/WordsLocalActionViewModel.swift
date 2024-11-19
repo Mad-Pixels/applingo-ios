@@ -3,11 +3,11 @@ import Combine
 
 final class WordsLocalActionViewModel: BaseDatabaseViewModel {
     private let dictionaryRepository: DictionaryRepositoryProtocol
-    private let repository: WordRepositoryProtocol
+    private let wordRepository: WordRepositoryProtocol
     private var frame: AppFrameModel = .main
 
     init(repository: WordRepositoryProtocol) {
-        self.repository = repository
+        self.wordRepository = repository
         if let dbQueue = DatabaseManager.shared.databaseQueue {
             self.dictionaryRepository = RepositoryDictionary(dbQueue: dbQueue)
         } else {
@@ -17,7 +17,7 @@ final class WordsLocalActionViewModel: BaseDatabaseViewModel {
     
     func save(_ word: WordItemModel, completion: @escaping (Result<Void, Error>) -> Void) {
         performDatabaseOperation(
-            { try self.repository.save(word) },
+            { try self.wordRepository.save(word) },
             successHandler: { _ in },
             source: .wordSave,
             frame: frame,
@@ -29,7 +29,7 @@ final class WordsLocalActionViewModel: BaseDatabaseViewModel {
 
     func update(_ word: WordItemModel, completion: @escaping (Result<Void, Error>) -> Void) {
         performDatabaseOperation(
-            { try self.repository.update(word) },
+            { try self.wordRepository.update(word) },
             successHandler: { _ in },
             source: .wordUpdate,
             frame: frame,
@@ -42,7 +42,7 @@ final class WordsLocalActionViewModel: BaseDatabaseViewModel {
     
     func delete(_ word: WordItemModel, completion: @escaping (Result<Void, Error>) -> Void) {
         performDatabaseOperation(
-            { try self.repository.delete(word) },
+            { try self.wordRepository.delete(word) },
             successHandler: { _ in },
             source: .wordDelete,
             frame: frame,
@@ -50,6 +50,26 @@ final class WordsLocalActionViewModel: BaseDatabaseViewModel {
             additionalInfo: ["word": word.toString()],
             completion: completion
         )
+    }
+    
+    func dictionaryDisplayName(_ word: WordItemModel) -> String {
+        do {
+            return try self.dictionaryRepository.fetchDisplayName(byTableName: word.tableName)
+        } catch {
+            let appError = AppErrorModel(
+                type: .database,
+                message: "Failed to fetch dictionary display name for tableName \(word.tableName)",
+                localized: LanguageManager.shared.localizedString(for: "ErrDatabaseDefault"),
+                original: error,
+                additional: ["word": word.toString()]
+            )
+            ErrorManager.shared.setError(
+                appError: appError,
+                frame: frame,
+                source: .dictionaryDisplayName
+            )
+            return ""
+        }
     }
 
     func setFrame(_ newFrame: AppFrameModel) {

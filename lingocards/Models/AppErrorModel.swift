@@ -21,6 +21,7 @@ enum ErrorSourceModel: String {
     case dictionarySave
     case dictionariesClear
     case dictionaryImport
+    case dictionaryDisplayName
     case dictionariesRemoteGet
     case categoriesGet
     case initialization

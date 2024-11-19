@@ -77,7 +77,7 @@ struct WordDetailView: View {
                                 placeholder: LanguageManager.shared.localizedString(
                                     for: "TableName"
                                 ).capitalizedFirstLetter,
-                                text: .constant(wrapper.word.tableName),
+                                text: .constant(wordsAction.dictionaryDisplayName(wrapper.word)),
                                 isEditing: false
                             )
                             CompTextFieldView(
