@@ -96,7 +96,3 @@ final class ErrorManager: ObservableObject {
         )
     }
 }
-
-extension Notification.Name {
-    static let errorVisibilityChanged = Notification.Name("errorVisibilityChanged")
-}

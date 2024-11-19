@@ -99,9 +99,6 @@ struct DictionaryRemoteListView: View {
                         }
                     }
                 }
-                .onDisappear {
-                    NotificationCenter.default.removeObserver(self, name: .errorVisibilityChanged, object: nil)
-                }
                 .onChange(of: apiRequestParams) { newParams in
                     dictionaryGetter.resetPagination(with: newParams)
                 }
@@ -120,10 +117,7 @@ struct DictionaryRemoteListView: View {
                 .sheet(item: $selectedDictionary) { dictionary in
                     DictionaryRemoteDetailView(
                         dictionary: dictionary,
-                        isPresented: .constant(true),
-                        onDownload: {
-                            Logger.debug("[DictionaryRemoteList]: Download button tapped for dictionary \(dictionary.displayName)")
-                        }
+                        isPresented: .constant(true)
                     )
                 }
             }

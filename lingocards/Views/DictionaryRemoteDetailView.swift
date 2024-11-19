@@ -141,6 +141,7 @@ struct DictionaryRemoteDetailView: View {
                 
                 await MainActor.run {
                     isDownloading = false
+                    NotificationCenter.default.post(name: .dictionaryListShouldUpdate, object: nil)
                     presentationMode.wrappedValue.dismiss()
                 }
             } catch {

@@ -86,6 +86,16 @@ struct TabDictionariesView: View {
                     dictionaryAction.setFrame(.tabDictionaries)
                     dictionaryGetter.setFrame(.tabDictionaries)
                     dictionaryGetter.resetPagination()
+                    
+                    NotificationCenter.default.addObserver(
+                        forName: .dictionaryListShouldUpdate,
+                        object: nil,
+                        queue: .main
+                    ) { [weak dictionaryGetter] _ in
+                        print("TabDictionariesView: Received update notification")
+                        dictionaryGetter?.clear()
+                        dictionaryGetter?.resetPagination()
+                    }
                 }
                 .onReceive(NotificationCenter.default.publisher(for: .errorVisibilityChanged)) { _ in
                     if let error = ErrorManager.shared.currentError,
@@ -96,6 +106,12 @@ struct TabDictionariesView: View {
                 }
                 .onDisappear {
                     dictionaryGetter.clear()
+                    
+                    NotificationCenter.default.removeObserver(
+                        self,
+                        name: .dictionaryListShouldUpdate,
+                        object: nil
+                    )
                 }
                 .modifier(ErrModifier(currentError: ErrorManager.shared.currentError) { newError in
                     if let error = newError, error.frame == .tabDictionaries, error.source == .dictionaryDelete {
