@@ -74,7 +74,7 @@ struct DictionaryRemoteListView: View {
                         CompToolbarMenuView(
                             items: [
                                 CompToolbarMenuView.MenuItem(title: LanguageManager.shared.localizedString(
-                                    for: "Filter"
+                                    for: LanguageManager.shared.localizedString(for: "Filter").capitalizedFirstLetter
                                 ), systemImage: "line.horizontal.3.decrease.circle", action: {
                                     isShowingFilterView = true
                                 })

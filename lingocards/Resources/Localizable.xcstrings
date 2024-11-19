@@ -375,6 +375,23 @@
         }
       }
     },
+    "Filter" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "filter"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "фильтр"
+          }
+        }
+      }
+    },
     "GameAccuracy" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -813,6 +830,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "квиз"
+          }
+        }
+      }
+    },
+    "Reset" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "reset"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "сбросить"
           }
         }
       }
