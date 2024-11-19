@@ -137,7 +137,7 @@ struct DictionaryDetailView: View {
             .alert(isPresented: $isShowingErrorAlert) {
                 Alert(
                     title: Text(LanguageManager.shared.localizedString(for: "Error")),
-                    message: Text("Failed to update the dictionary due to database issues."),
+                    message: Text(LanguageManager.shared.localizedString(for: "DbErrorDescription")),
                     dismissButton: .default(Text(LanguageManager.shared.localizedString(for: "Close")))
                 )
             }

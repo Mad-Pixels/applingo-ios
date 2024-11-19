@@ -4,26 +4,18 @@
     "" : {
 
     },
-    "-5 points" : {
-
-    },
     "%lld" : {
       "localizations" : {
-        "ru" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld"
           }
-        }
-      }
-    },
-    "%lld%%" : {
-      "extractionState" : "stale",
-      "localizations" : {
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld%%"
+            "value" : "%lld"
           }
         }
       }
@@ -114,7 +106,7 @@
       }
     },
     "Cancel" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -158,7 +150,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "категория"
           }
         }
@@ -197,9 +189,6 @@
         }
       }
     },
-    "Correct Answers" : {
-
-    },
     "Count" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -213,6 +202,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "счет"
+          }
+        }
+      }
+    },
+    "DbErrorDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "failed to update the dictionary due to database issues."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ошибка обновления словаря"
           }
         }
       }
@@ -235,7 +241,7 @@
       }
     },
     "Description" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -320,7 +326,7 @@
       }
     },
     "Edit" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -338,6 +344,12 @@
     },
     "Error: %@" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error: %@"
+          }
+        },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
@@ -345,9 +357,6 @@
           }
         }
       }
-    },
-    "Failed to update the dictionary due to database issues." : {
-
     },
     "False" : {
       "extractionState" : "manual",
@@ -366,11 +375,212 @@
         }
       }
     },
-    "Game Over!" : {
-
+    "GameAccuracy" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "accuracy"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "точность"
+          }
+        }
+      }
+    },
+    "GameAvgTime" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "avg time"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "время"
+          }
+        }
+      }
+    },
+    "GameBestStreak" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "best streak"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "комбо"
+          }
+        }
+      }
+    },
+    "GameCorrectAnswers" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "correct"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "верно"
+          }
+        }
+      }
+    },
+    "GameLivesLeft" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "lives left"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "жизней"
+          }
+        }
+      }
+    },
+    "GameOver" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "game over!"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "игра окончена"
+          }
+        }
+      }
+    },
+    "GamePlayAgain" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "again!"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "заново"
+          }
+        }
+      }
+    },
+    "GameResults" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "results"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "рузультаты"
+          }
+        }
+      }
+    },
+    "GameScore" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "score"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "очки"
+          }
+        }
+      }
+    },
+    "GameTimesUp" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "time's up!"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "время вышло!"
+          }
+        }
+      }
+    },
+    "GameTotalQuestions" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "total"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "всего"
+          }
+        }
+      }
+    },
+    "GameWrongAnswers" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "wrong"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "неверно"
+          }
+        }
+      }
     },
     "Hint" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -382,6 +592,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "подсказка"
+          }
+        }
+      }
+    },
+    "HintPenalty" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "tip penalty"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "штраф за подсказку"
           }
         }
       }
@@ -404,7 +631,21 @@
       }
     },
     "Key" : {
-      "extractionState" : "manual"
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "key"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ключ"
+          }
+        }
+      }
     },
     "Language" : {
       "extractionState" : "manual",
@@ -474,9 +715,6 @@
         }
       }
     },
-    "Loading..." : {
-
-    },
     "LogSettings" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -545,9 +783,6 @@
         }
       }
     },
-    "Play Again" : {
-
-    },
     "PracticeDescription" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -555,6 +790,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "practice without limits"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "игра без ограничений"
           }
         }
       }
@@ -577,7 +818,7 @@
       }
     },
     "Save" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -604,14 +845,27 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "поиск…"
           }
         }
       }
     },
     "Select" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "select"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "выбор"
+          }
+        }
+      }
     },
     "SendErrorsLogs" : {
       "extractionState" : "manual",
@@ -648,7 +902,7 @@
       }
     },
     "Statistics" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -672,6 +926,12 @@
             "state" : "translated",
             "value" : "3 lives, how far you can go?"
           }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3 жизни, на сколько тебя хватит?"
+          }
         }
       }
     },
@@ -692,9 +952,6 @@
         }
       }
     },
-    "Time's Up!" : {
-
-    },
     "TimeAttackDescription" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -703,11 +960,14 @@
             "state" : "translated",
             "value" : "race against time!"
           }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "игра на время!"
+          }
         }
       }
-    },
-    "Total Questions" : {
-
     },
     "True" : {
       "extractionState" : "manual",
@@ -744,7 +1004,7 @@
       }
     },
     "Word" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -760,8 +1020,8 @@
         }
       }
     },
-    "Word Details" : {
-      "extractionState" : "stale",
+    "WordDetails" : {
+      "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -771,7 +1031,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "детализация"
           }
         }
@@ -793,12 +1053,6 @@
           }
         }
       }
-    },
-    "Wrong Answers" : {
-
-    },
-    "Your Results" : {
-
     }
   },
   "version" : "1.0"

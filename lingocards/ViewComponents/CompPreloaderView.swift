@@ -4,7 +4,7 @@ struct CompPreloaderView: View {
     var body: some View {
         VStack {
             Spacer()
-            ProgressView("Loading...")
+            ProgressView(LanguageManager.shared.localizedString(for: "Loading"))
                 .progressViewStyle(CircularProgressViewStyle())
                 .padding()
             Spacer()

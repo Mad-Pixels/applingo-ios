@@ -39,11 +39,12 @@ struct GameResultCardView: View {
     
     private var header: some View {
         VStack(spacing: 8) {
-            Text(gameMode == .timeAttack ? "Time's Up!" : "Game Over!")
+            Text(gameMode == .timeAttack ? LanguageManager.shared.localizedString(for: "GameTimesUp") :
+                    LanguageManager.shared.localizedString(for: "GameOver"))
                 .font(.system(.title, design: .rounded).weight(.bold))
                 .foregroundColor(style.theme.baseTextColor)
             
-            Text("Your Results")
+            Text(LanguageManager.shared.localizedString(for: "GameResults").uppercased())
                 .font(.system(.title3, design: .rounded))
                 .foregroundColor(style.theme.secondaryTextColor)
         }
@@ -58,28 +59,29 @@ struct GameResultCardView: View {
             spacing: 16
         ) {
             StatItem(
-                title: "Score",
+                title: LanguageManager.shared.localizedString(for: "GameScore"),
                 value: "\(stats.score)",
                 icon: "star.fill",
                 color: .yellow
             )
             
             StatItem(
-                title: "Accuracy",
+                title: LanguageManager.shared.localizedString(for: "GameAccuracy"),
                 value: String(format: "%.1f%%", stats.accuracy * 100),
                 icon: "target",
                 color: .green
             )
             
             StatItem(
-                title: "Best Streak",
+                title: LanguageManager.shared.localizedString(for: "GameBestStreak"),
                 value: "\(stats.bestStreak)",
                 icon: "flame.fill",
                 color: .orange
             )
             
             StatItem(
-                title: gameMode == .timeAttack ? "Avg Time" : "Lives Left",
+                title: gameMode == .timeAttack ? LanguageManager.shared.localizedString(for: "GameAvgTime") :
+                    LanguageManager.shared.localizedString(for: "GameLivesLeft"),
                 value: gameMode == .timeAttack ?
                     String(format: "%.1fs", stats.averageResponseTime) :
                     "\(stats.lives)",
@@ -92,21 +94,21 @@ struct GameResultCardView: View {
     private var additionalStats: some View {
         VStack(spacing: 12) {
             HStack {
-                Text("Correct Answers")
+                Text(LanguageManager.shared.localizedString(for: "GameCorrectAnswers"))
                 Spacer()
                 Text("\(stats.correctAnswers)")
                     .fontWeight(.semibold)
             }
             
             HStack {
-                Text("Wrong Answers")
+                Text(LanguageManager.shared.localizedString(for: "GameWrongAnswers"))
                 Spacer()
                 Text("\(stats.wrongAnswers)")
                     .fontWeight(.semibold)
             }
             
             HStack {
-                Text("Total Questions")
+                Text(LanguageManager.shared.localizedString(for: "GameTotalQuestions"))
                 Spacer()
                 Text("\(stats.totalAnswers)")
                     .fontWeight(.semibold)
@@ -141,7 +143,7 @@ struct GameResultCardView: View {
                 }
             
             Button(action: onRestart) {
-                Label("Play Again", systemImage: "arrow.clockwise")
+                Label(LanguageManager.shared.localizedString(for: "GamePlayAgain"), systemImage: "arrow.clockwise")
                     .font(.system(.body, design: .rounded).weight(.semibold))
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
