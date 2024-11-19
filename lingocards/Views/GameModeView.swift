@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct GameModeView: View {
+    @ObservedObject private var languageManager = LanguageManager.shared
+    
     @Binding var selectedMode: GameMode
     let startGame: () -> Void
     
@@ -8,19 +10,19 @@ struct GameModeView: View {
         let theme = ThemeManager.shared.currentThemeStyle
         
         VStack(spacing: 20) {            
-            Text(LanguageManager.shared.displayName(for: "SelectGameMode").uppercased())
+            Text(languageManager.localizedString(for: "SelectGameMode").uppercased())
                 .font(.title)
                 .foregroundColor(theme.baseTextColor)
             
             VStack(spacing: 16) {
                 CompButtonGameModeView(
-                    title: LanguageManager.shared.displayName(
-                        for: "Practice"
+                    title: languageManager.localizedString(
+                        for: "GamePractice"
                     ).capitalizedFirstLetter,
                     icon: "book.fill",
-                    description: LanguageManager.shared.displayName(
+                    description: languageManager.localizedString(
                         for: "PracticeDescription"
-                    ),
+                    ).capitalizedFirstLetter,
                     action: {
                         selectedMode = .practice
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -29,13 +31,13 @@ struct GameModeView: View {
                     }
                 )
                 CompButtonGameModeView(
-                    title: LanguageManager.shared.displayName(
-                        for: "Survival"
+                    title: languageManager.localizedString(
+                        for: "GameSurvival"
                     ).capitalizedFirstLetter,
                     icon: "heart.fill",
-                    description: LanguageManager.shared.displayName(
+                    description: languageManager.localizedString(
                         for: "SurvivalDescription"
-                    ),
+                    ).capitalizedFirstLetter,
                     action: {
                         selectedMode = .survival
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -44,13 +46,13 @@ struct GameModeView: View {
                     }
                 )
                 CompButtonGameModeView(
-                    title: LanguageManager.shared.displayName(
-                        for: "TimeAttack"
+                    title: languageManager.localizedString(
+                        for: "GameTimeAttack"
                     ).capitalizedFirstLetter,
                     icon: "clock.fill",
-                    description: LanguageManager.shared.displayName(
+                    description: languageManager.localizedString(
                         for: "TimeAttackDescription"
-                    ),
+                    ).capitalizedFirstLetter,
                     action: {
                         print("[GameModeView] Selecting TimeAttack mode")
                         selectedMode = .timeAttack

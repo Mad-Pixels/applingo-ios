@@ -1,8 +1,8 @@
 import SwiftUI
 
 struct MainView: View {
+    @ObservedObject private var languageManager = LanguageManager.shared
     @EnvironmentObject var themeManager: ThemeManager
-    @State private var selectedTab: AppFrameModel = .learn
     
     init() {
         configureInitialTabBarAppearance()

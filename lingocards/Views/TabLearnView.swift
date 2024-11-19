@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct TabLearnView: View {
+    @ObservedObject private var languageManager = LanguageManager.shared
+
     @State private var showMatchHuntGame = false
     @State private var showVerifyItGame = false
     @State private var showLearnGame = false

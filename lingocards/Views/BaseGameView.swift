@@ -1,9 +1,10 @@
 import SwiftUI
 import Combine
 
-struct BaseGameView<Content: View>: View {
+struct BaseGameView<Content: View>: View {    
     @StateObject private var cacheGetter: GameCacheGetterViewModel
     @StateObject private var gameAction: GameActionViewModel
+    @StateObject private var cancellableStore = CancellableStore()
     
     @State private var scoreAnimations: [GameScoreAnimationModel] = []
     @State private var showResultCard = false
@@ -13,8 +14,6 @@ struct BaseGameView<Content: View>: View {
     let content: Content
     let minimumWordsRequired: Int
     
-    @StateObject private var cancellableStore = CancellableStore()
-
     init(
         isPresented: Binding<Bool>,
         minimumWordsRequired: Int = 12,

@@ -528,6 +528,23 @@
         }
       }
     },
+    "GamePractice" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "practice"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "практика"
+          }
+        }
+      }
+    },
     "GameResults" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -558,6 +575,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "очки"
+          }
+        }
+      }
+    },
+    "GameSurvival" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "survival"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "игра на выживание"
+          }
+        }
+      }
+    },
+    "GameTimeAttack" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "time attack"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "игра на время"
           }
         }
       }
@@ -761,7 +812,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "настройки логгирования"
+            "value" : "дополнительно"
           }
         }
       }
@@ -931,6 +982,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "выбор"
+          }
+        }
+      }
+    },
+    "SelectGameMode" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "select game mode"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "режимы игры"
           }
         }
       }
