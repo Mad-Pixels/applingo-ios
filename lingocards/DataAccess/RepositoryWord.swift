@@ -13,6 +13,9 @@ class RepositoryWord: WordRepositoryProtocol {
         limit: Int
     ) throws -> [WordItemModel] {
         let activeDictionaries = try fetchActive()
+        guard !activeDictionaries.isEmpty else {
+            return []
+        }
         let activeDisplayNames = activeDictionaries.map { $0.tableName } as [DatabaseValueConvertible]
         
         return try dbQueue.read { db -> [WordItemModel] in
