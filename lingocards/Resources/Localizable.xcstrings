@@ -206,6 +206,23 @@
         }
       }
     },
+    "DateCreated" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "created date"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "дата создания"
+          }
+        }
+      }
+    },
     "DbErrorDescription" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -834,6 +851,23 @@
         }
       }
     },
+    "Rating" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "rating"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "рейтинг"
+          }
+        }
+      }
+    },
     "Reset" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -931,6 +965,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "настройки"
+          }
+        }
+      }
+    },
+    "SortBy" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "sort by"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "сортировка"
           }
         }
       }

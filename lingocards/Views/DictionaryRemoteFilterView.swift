@@ -96,8 +96,6 @@ struct DictionaryRemoteFilterView: View {
                                 let backCategoryName = selectedBackCategory?.name ?? ""
                                 apiRequestParams.subcategory = "\(frontCategoryName)-\(backCategoryName)".lowercased()
                                 apiRequestParams.sortBy = selectedSortBy.rawValue
-                                
-                                Logger.debug("Filters saved: subcategory: \(apiRequestParams.subcategory ?? ""), sortBy: \(apiRequestParams.sortBy ?? "")")
                                 presentationMode.wrappedValue.dismiss()
                             }
                         )
