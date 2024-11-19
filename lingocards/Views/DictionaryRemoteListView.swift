@@ -35,11 +35,9 @@ struct DictionaryRemoteListView: View {
                         selectedDictionary = dictionary
                     },
                     emptyListView: AnyView(
-                        Text(LanguageManager.shared.localizedString(for: "NoDictionariesAvailable"))
-                            .foregroundColor(.gray)
-                            .italic()
-                            .padding()
-                            .multilineTextAlignment(.center)
+                        CompEmptyListView(
+                            message: LanguageManager.shared.localizedString(for: "NoWordsAvailable")
+                        )
                     ),
                     rowContent: { dictionary in
                         HStack {
