@@ -2,70 +2,124 @@ import SwiftUI
 
 struct GameModeView: View {
     @ObservedObject private var languageManager = LanguageManager.shared
-    
     @Binding var selectedMode: GameMode
     let startGame: () -> Void
     
+    @State private var selectedCard: GameMode?
+    @State private var isAnimating = false
+    
+    private let theme = ThemeManager.shared.currentThemeStyle
+    
     var body: some View {
-        let theme = ThemeManager.shared.currentThemeStyle
-        
-        VStack(spacing: 20) {            
+        VStack(spacing: 32) {
             Text(languageManager.localizedString(for: "SelectGameMode").uppercased())
-                .font(.title)
+                .font(.system(.title, design: .rounded).weight(.bold))
                 .foregroundColor(theme.baseTextColor)
+                .padding(.top)
+                .opacity(isAnimating ? 1 : 0)
+                .offset(y: isAnimating ? 0 : 20)
             
-            VStack(spacing: 16) {
-                CompButtonGameModeView(
-                    title: languageManager.localizedString(
-                        for: "GamePractice"
-                    ).capitalizedFirstLetter,
-                    icon: "book.fill",
-                    description: languageManager.localizedString(
-                        for: "PracticeDescription"
-                    ).capitalizedFirstLetter,
-                    action: {
-                        selectedMode = .practice
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                            startGame()
-                        }
-                    }
+            VStack(spacing: 20) {
+                modeCard(
+                    mode: .practice,
+                    title: languageManager.localizedString(for: "GamePractice"),
+                    icon: "graduationcap.fill",
+                    description: languageManager.localizedString(for: "PracticeDescription"),
+                    color: theme.secondatyAccentColor1,
+                    delay: 0.1
                 )
-                CompButtonGameModeView(
-                    title: languageManager.localizedString(
-                        for: "GameSurvival"
-                    ).capitalizedFirstLetter,
+                
+                modeCard(
+                    mode: .survival,
+                    title: languageManager.localizedString(for: "GameSurvival"),
                     icon: "heart.fill",
-                    description: languageManager.localizedString(
-                        for: "SurvivalDescription"
-                    ).capitalizedFirstLetter,
-                    action: {
-                        selectedMode = .survival
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                            startGame()
-                        }
-                    }
+                    description: languageManager.localizedString(for: "SurvivalDescription"),
+                    color: theme.secondatyAccentColor2,
+                    delay: 0.2
                 )
-                CompButtonGameModeView(
-                    title: languageManager.localizedString(
-                        for: "GameTimeAttack"
-                    ).capitalizedFirstLetter,
-                    icon: "clock.fill",
-                    description: languageManager.localizedString(
-                        for: "TimeAttackDescription"
-                    ).capitalizedFirstLetter,
-                    action: {
-                        print("[GameModeView] Selecting TimeAttack mode")
-                        selectedMode = .timeAttack
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                            startGame()
-                        }
-                    }
+                
+                modeCard(
+                    mode: .timeAttack,
+                    title: languageManager.localizedString(for: "GameTimeAttack"),
+                    icon: "timer",
+                    description: languageManager.localizedString(for: "TimeAttackDescription"),
+                    color: theme.secondatyAccentColor3,
+                    delay: 0.3
                 )
             }
+            .padding(.horizontal)
         }
-        .padding()
-        .onChange(of: selectedMode) { newMode in
-            print("[GameModeView] Mode changed to: \(newMode)")
+        .onAppear {
+            withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                isAnimating = true
+            }
+        }
+    }
+    
+    private func modeCard(
+        mode: GameMode,
+        title: String,
+        icon: String,
+        description: String,
+        color: Color,
+        delay: Double
+    ) -> some View {
+        let isSelected = selectedCard == mode
+        
+        return Button(action: {
+            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                selectedCard = mode
+            }
+            selectedMode = mode
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                startGame()
+            }
+        }) {
+            HStack(spacing: 20) {
+                Image(systemName: icon)
+                    .font(.system(size: 24, weight: .bold))
+                    .foregroundColor(.white)
+                    .frame(width: 56, height: 56)
+                    .background(
+                        Circle()
+                            .fill(color)
+                    )
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(title.capitalizedFirstLetter)
+                        .font(.system(.headline, design: .rounded).weight(.bold))
+                        .foregroundColor(theme.baseTextColor)
+                    
+                    Text(description.capitalizedFirstLetter)
+                        .font(.system(.body, design: .rounded))
+                        .foregroundColor(theme.secondaryTextColor)
+                        .lineLimit(2)
+                }
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.system(.body, weight: .semibold))
+                    .foregroundColor(theme.secondaryIconColor)
+                    .opacity(isSelected ? 1 : 0.5)
+            }
+            .padding()
+            .background(
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(theme.backgroundBlockColor)
+                    .shadow(
+                        color: color.opacity(0.2),
+                        radius: isSelected ? 10 : 5,
+                        x: 0,
+                        y: isSelected ? 5 : 2
+                    )
+            )
+            .scaleEffect(isSelected ? 1.02 : 1)
+            .opacity(isAnimating ? 1 : 0)
+            .offset(y: isAnimating ? 0 : 20)
+            .animation(
+                .spring(response: 0.6, dampingFraction: 0.8)
+                .delay(delay),
+                value: isAnimating
+            )
         }
     }
 }

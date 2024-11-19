@@ -1077,13 +1077,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3 lives, how far you can go?"
+            "value" : "3 lives only!"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "3 жизни, на сколько тебя хватит?"
+            "state" : "needs_review",
+            "value" : "3 жизни!"
           }
         }
       }
