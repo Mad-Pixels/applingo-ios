@@ -103,10 +103,8 @@ extension WordItemModel: FetchableRecord, PersistableRecord {
 
 extension WordItemModel: Hashable {
     func hash(into hasher: inout Hasher) {
-        // Используем id как основной ключ для хеширования
         hasher.combine(id)
         
-        // Если id отсутствует, используем комбинацию полей
         if id == nil {
             hasher.combine(tableName)
             hasher.combine(frontText)
@@ -116,12 +114,10 @@ extension WordItemModel: Hashable {
     }
     
     static func == (lhs: WordItemModel, rhs: WordItemModel) -> Bool {
-        // Если у обоих есть id, сравниваем по id
         if let lhsId = lhs.id, let rhsId = rhs.id {
             return lhsId == rhsId
         }
         
-        // Если id отсутствует хотя бы у одного, сравниваем по содержимому
         return lhs.tableName == rhs.tableName &&
             lhs.frontText == rhs.frontText &&
             lhs.backText == rhs.backText &&
