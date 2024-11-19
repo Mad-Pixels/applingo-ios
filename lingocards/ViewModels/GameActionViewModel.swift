@@ -9,7 +9,7 @@ final class GameActionViewModel: BaseDatabaseViewModel {
     
     private let gameHandler: GameHandler
     private let scoreCalculator: GameScoreCalculator
-    private let repository: WordRepositoryProtocol
+    private let wordRepository: WordRepositoryProtocol
     
     private var cancellables = Set<AnyCancellable>()
     private var frame: AppFrameModel = .main
@@ -23,8 +23,11 @@ final class GameActionViewModel: BaseDatabaseViewModel {
         specialService
     }
     
-    init(repository: WordRepositoryProtocol) {
-        self.repository = repository
+    override init() {
+        guard let dbQueue = DatabaseManager.shared.databaseQueue else {
+            fatalError("Database is not connected")
+        }
+        self.wordRepository = RepositoryWord(dbQueue: dbQueue)
         self.scoreCalculator = GameScoreCalculator()
         self.specialService = GameSpecialService()
         
@@ -116,7 +119,7 @@ final class GameActionViewModel: BaseDatabaseViewModel {
     
     private func update(_ word: WordItemModel, completion: @escaping (Result<Void, Error>) -> Void) {
         performDatabaseOperation(
-            { try self.repository.update(word) },
+            { try self.wordRepository.update(word) },
             successHandler: { _ in },
             source: .wordUpdate,
             frame: frame,

@@ -5,7 +5,7 @@ final class GameCacheGetterViewModel: BaseDatabaseViewModel {
     @Published private(set) var cache: [WordItemModel] = []
     @Published private(set) var isLoadingCache = false
     
-    private let repository: WordRepositoryProtocol
+    private let wordRepository: WordRepositoryProtocol
     private let cacheThreshold: Int = 20
     private let cacheSize: Int = 100
     
@@ -13,8 +13,11 @@ final class GameCacheGetterViewModel: BaseDatabaseViewModel {
     private var frame: AppFrameModel = .main
     private var cancellationToken = UUID()
     
-    init(repository: WordRepositoryProtocol) {
-        self.repository = repository
+    override init() {
+        guard let dbQueue = DatabaseManager.shared.databaseQueue else {
+            fatalError("Database is not connected")
+        }
+        self.wordRepository = RepositoryWord(dbQueue: dbQueue)
         super.init()
         setupCacheObserver()
     }
@@ -40,7 +43,7 @@ final class GameCacheGetterViewModel: BaseDatabaseViewModel {
         isLoadingCache = true
         
         performDatabaseOperation(
-            { try self.repository.fetchCache(count: self.cacheSize) },
+            { try self.wordRepository.fetchCache(count: self.cacheSize) },
             successHandler: { [weak self] fetchedWords in
                 guard let self = self,
                       currentToken == self.cancellationToken else { return }
@@ -74,7 +77,7 @@ final class GameCacheGetterViewModel: BaseDatabaseViewModel {
         isLoadingCache = true
         
         performDatabaseOperation(
-            { try self.repository.fetchCache(count: needCount) },
+            { try self.wordRepository.fetchCache(count: needCount) },
             successHandler: { [weak self] fetchedWords in
                 guard let self = self,
                       currentToken == self.cancellationToken else { return }

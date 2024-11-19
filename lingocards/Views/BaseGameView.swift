@@ -22,13 +22,9 @@ struct BaseGameView<Content: View>: View {
         self.minimumWordsRequired = minimumWordsRequired
         self.isPresented = isPresented
         self.content = content()
-        
-        guard let dbQueue = DatabaseManager.shared.databaseQueue else {
-            fatalError("Database is not connected")
-        }
-        let repository = RepositoryWord(dbQueue: dbQueue)
-        self._cacheGetter = StateObject(wrappedValue: GameCacheGetterViewModel(repository: repository))
-        self._gameAction = StateObject(wrappedValue: GameActionViewModel(repository: repository))
+
+        self._cacheGetter = StateObject(wrappedValue: GameCacheGetterViewModel())
+        self._gameAction = StateObject(wrappedValue: GameActionViewModel())
     }
     
     var body: some View {
