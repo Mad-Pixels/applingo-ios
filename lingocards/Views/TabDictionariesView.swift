@@ -6,10 +6,11 @@ struct TabDictionariesView: View {
     @StateObject private var dictionaryGetter: DictionaryLocalGetterViewModel
 
     @State private var selectedDictionary: DictionaryItemModel?
-    @State private var errorMessage: String = ""
     @State private var isShowingFileImporter = false
+    @State private var isShowingInstructions = false
     @State private var isShowingRemoteList = false
     @State private var isShowingAlert = false
+    @State private var errorMessage: String = ""
 
     init() {
         guard let dbQueue = DatabaseManager.shared.databaseQueue else {
@@ -67,16 +68,20 @@ struct TabDictionariesView: View {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         CompToolbarMenuView(
                             items: [
-                                CompToolbarMenuView.MenuItem(title: LanguageManager.shared.localizedString(
-                                    for: "ImportCSV"
-                                ), systemImage: "tray.and.arrow.down", action: {
-                                    isShowingFileImporter = true
-                                }),
-                                CompToolbarMenuView.MenuItem(title: LanguageManager.shared.localizedString(
-                                    for: "Download"
-                                ), systemImage: "arrow.down.circle", action: {
-                                    isShowingRemoteList = true
-                                })
+                                CompToolbarMenuView.MenuItem(
+                                    title: LanguageManager.shared.localizedString(for: "ImportCSV"),
+                                    systemImage: "tray.and.arrow.down",
+                                    action: {
+                                        isShowingInstructions = true
+                                    }
+                                ),
+                                CompToolbarMenuView.MenuItem(
+                                    title: LanguageManager.shared.localizedString(for: "Download"),
+                                    systemImage: "arrow.down.circle",
+                                    action: {
+                                        isShowingRemoteList = true
+                                    }
+                                )
                             ]
                         )
                     }
@@ -92,7 +97,6 @@ struct TabDictionariesView: View {
                         object: nil,
                         queue: .main
                     ) { [weak dictionaryGetter] _ in
-                        print("TabDictionariesView: Received update notification")
                         dictionaryGetter?.clear()
                         dictionaryGetter?.resetPagination()
                     }
@@ -106,7 +110,6 @@ struct TabDictionariesView: View {
                 }
                 .onDisappear {
                     dictionaryGetter.clear()
-                    
                     NotificationCenter.default.removeObserver(
                         self,
                         name: .dictionaryListShouldUpdate,
@@ -125,6 +128,14 @@ struct TabDictionariesView: View {
                     message: ErrorManager.shared.currentError?.errorDescription ?? "",
                     closeAction: {
                         ErrorManager.shared.clearError()
+                    }
+                )
+            }
+            .sheet(isPresented: $isShowingInstructions) {
+                CompDictionaryInstructionView(
+                    isShowingFileImporter: $isShowingFileImporter,
+                    onClose: {
+                        isShowingInstructions = false
                     }
                 )
             }
@@ -185,9 +196,7 @@ struct TabDictionariesView: View {
     }
 
     private func updateStatus(_ dictionary: DictionaryItemModel, newStatus: Bool) {
-        guard let dictionaryID = dictionary.id else {
-            return
-        }
+        guard let dictionaryID = dictionary.id else { return }
         dictionaryAction.updateStatus(dictionaryID: dictionaryID, newStatus: newStatus) { result in
             if case .success = result {
                 dictionaryGetter.resetPagination()
