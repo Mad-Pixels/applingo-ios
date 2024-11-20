@@ -90,6 +90,7 @@ struct BaseGameView<Content: View>: View {
                         withAnimation(.easeInOut(duration: 0.3)) {
                             showResultCard = false
                             isPresented.wrappedValue = false
+                            FrameManager.shared.setActiveFrame(.learn)
                         }
                     },
                     onRestart: {
@@ -176,6 +177,7 @@ struct BaseGameView<Content: View>: View {
         if !isRestarting {
             cleanupGame()
             isPresented.wrappedValue = false
+            FrameManager.shared.setActiveFrame(.learn)
         }
     }
     
