@@ -59,6 +59,9 @@ struct TabLearnView: View {
             .fullScreenCover(isPresented: $showLettersGame) {
                 GameLettersView(isPresented: $showLettersGame)
             }
+            .onAppear {
+                FrameManager.shared.setActiveFrame(.learn)
+            }
         }
     }
 }
