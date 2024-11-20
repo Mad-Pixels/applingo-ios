@@ -51,13 +51,6 @@ struct CompGameCardSwipeView: View {
     
     private var frontSection: some View {
         VStack {
-            HStack {
-                style.sectionHeader("Front")
-                Spacer()
-                hintButton
-            }
-            .padding(.horizontal, GameCardStyle.Layout.horizontalPadding)
-            
             if hintState.isShowing {
                 hintView
             }
@@ -69,8 +62,6 @@ struct CompGameCardSwipeView: View {
     
     private var backSection: some View {
         VStack {
-            style.sectionHeader("Back")
-                .padding(.horizontal, GameCardStyle.Layout.horizontalPadding)
             style.mainText(card.backText)
         }
         .frame(maxWidth: .infinity)
