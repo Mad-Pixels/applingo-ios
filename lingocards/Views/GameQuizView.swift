@@ -54,7 +54,7 @@ struct GameQuizContent: View {
         .onAppear(perform: setupGame)
         .onAppear {
             wrongAnswerFeedback.addFeedbacks([
-                FeedbackShake(isActive: $isShaking, duration: 0.15)
+                FeedbackShake(isActive: $isShaking, duration: 0.07)
             ])
         }
         .onChange(of: cacheGetter.isLoadingCache) { isLoading in
