@@ -14,12 +14,23 @@ struct GameQuizContent: View {
     @EnvironmentObject var cacheGetter: GameCacheGetterViewModel
     @EnvironmentObject var gameAction: GameActionViewModel
         
+    @State private var hintState = GameHintState(isShowing: false, wasUsed: false)
     @State private var currentQuestion: GameQuizCardModel?
     @State private var cardState = QuizCardState.initial
     @State private var startTime: TimeInterval = 0
     @State private var hintPenalty: Int = 0
-    @State private var hintState = GameHintState(isShowing: false, wasUsed: false)
     @State private var isAnswerCorrect = false
+    @State private var isShaking = false
+    
+    @StateObject private var wrongAnswerFeedback: CompositeFeedback = {
+        let feedback = GameFeedback.composite(
+            visualFeedbacks: [],
+            hapticFeedbacks: [
+                FeedbackWrongAnswerHaptic()
+            ]
+        )
+        return feedback
+    }()
     
     private let style = GameCardStyle(theme: ThemeManager.shared.currentThemeStyle)
     
@@ -37,9 +48,15 @@ struct GameQuizContent: View {
                     onOptionSelected: handleOptionTap,
                     onHintTap: handleHintTap
                 )
+                .modifier(FeedbackShake(isActive: $isShaking).modifier())
             }
         }
         .onAppear(perform: setupGame)
+        .onAppear {
+            wrongAnswerFeedback.addFeedbacks([
+                FeedbackShake(isActive: $isShaking, duration: 0.15)
+            ])
+        }
         .onChange(of: cacheGetter.isLoadingCache) { isLoading in
             if !isLoading { setupGame() }
         }
@@ -104,7 +121,7 @@ struct GameQuizContent: View {
         let isCorrect = option.id == question.correctAnswer.id
         isCorrect ? handleCorrectAnswer(option) : handleWrongAnswer(option)
     }
-    
+        
     private func handleCorrectAnswer(_ option: WordItemModel) {
         guard let question = currentQuestion else { return }
         
@@ -116,17 +133,16 @@ struct GameQuizContent: View {
             generateNewQuestion()
         }
     }
-    
-    private func handleWrongAnswer(_ option: WordItemModel) {        
-        FeedbackWrongAnswerHaptic().playHaptic()
+
+    private func handleWrongAnswer(_ option: WordItemModel) {
+        wrongAnswerFeedback.trigger()
         
         let result = createGameResult(for: option, isCorrect: false)
         gameAction.handleGameResult(result)
         
-        withAnimation(.easeOut(duration: 0.2)) {
+        withAnimation(.easeOut(duration: 0.3)) {
             cardState.showCorrectAnswer = true
         }
-        
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             generateNewQuestion()
         }

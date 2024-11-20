@@ -2,7 +2,7 @@ import SwiftUI
 import CoreHaptics
 
 final class CompositeFeedback: ObservableObject {
-    private var feedbacks: [GameFeedbackProtocol]
+    var feedbacks: [GameFeedbackProtocol]
     
     init(feedbacks: [GameFeedbackProtocol]) {
         self.feedbacks = feedbacks
@@ -10,6 +10,10 @@ final class CompositeFeedback: ObservableObject {
     
     func trigger() {
         feedbacks.forEach { $0.trigger() }
+    }
+    
+    func addFeedbacks(_ newFeedbacks: [GameFeedbackProtocol]) {
+        feedbacks.append(contentsOf: newFeedbacks)
     }
 }
 
