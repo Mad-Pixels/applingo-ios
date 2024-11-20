@@ -131,15 +131,21 @@ final class GameScoreCalculator {
             components: components,
             reason: determineReason(
                 responseTime: result.responseTime,
-                isSpecialResult: result.isSpecial && special != nil
+                isSpecialResult: result.isSpecial && special != nil,
+                score: components.currentTotal
             )
         )
     }
     
     private func determineReason(
         responseTime: TimeInterval,
-        isSpecialResult: Bool
+        isSpecialResult: Bool,
+        score: Int
     ) -> ScoreAnimationReason {
+        if score < 0 {
+            return .negative
+        }
+        
         switch (responseTime, isSpecialResult) {
         case (_, true):
             return .special
