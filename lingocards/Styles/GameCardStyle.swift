@@ -104,10 +104,11 @@ struct GameCardStyle {
     }
     
     func hintButton(isActive: Bool) -> some View {
-        Image(systemName: "lightbulb.fill")
-            .font(Typography.titleFont)
-            .foregroundColor(isActive ? .yellow : theme.accentColor)
-            .padding(.top, Layout.topPadding)
+       Image(systemName: isActive ? "wand.and.stars" : "wand.and.stars.inverse")
+           .font(Typography.titleFont)
+           .foregroundColor(isActive ? .yellow : theme.accentColor)
+           .padding(.top, Layout.topPadding)
+           .shadow(color: isActive ? .yellow.opacity(0.5) : .clear, radius: 5)
     }
     
     func hintContainer<Content: View>(@ViewBuilder content: @escaping () -> Content) -> some View {

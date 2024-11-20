@@ -67,7 +67,6 @@ enum ScoreAnimationReason {
     case normal
     case fast
     case special
-    case hint
     case negative
     
     var icon: String {
@@ -75,7 +74,6 @@ enum ScoreAnimationReason {
         case .normal: return ""
         case .fast: return "bolt.fill"
         case .special: return "star.fill"
-        case .hint: return "lightbulb.fill"
         case .negative: return "arrow.down"
         }
     }
@@ -85,7 +83,6 @@ enum ScoreAnimationReason {
         case .normal: return .primary
         case .fast: return .blue
         case .special: return .yellow
-        case .hint: return .orange
         case .negative: return .red
         }
     }
