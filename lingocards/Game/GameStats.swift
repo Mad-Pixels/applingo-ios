@@ -91,7 +91,8 @@ final class GameStatsModel: ObservableObject, GameStatsProtocol {
     }
     
     private func updateScore(result: GameScoreResultProtocol) {
-        score += result.total
+        let newScore = score + result.total
+        score = max(0, newScore)
     }
     
     private func updateResponseTime(_ newTime: TimeInterval) {
