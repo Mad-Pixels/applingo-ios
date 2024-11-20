@@ -53,6 +53,7 @@ struct MainView: View {
         .id(themeManager.currentTheme)
         .preferredColorScheme(themeManager.currentTheme == .dark ? .dark : .light)
         .onAppear {
+            FrameManager.shared.setActiveFrame(.learn)
             configureTabBarAppearance()
         }
         .onChange(of: themeManager.currentTheme) { _ in
