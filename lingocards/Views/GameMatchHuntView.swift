@@ -197,19 +197,15 @@ private struct GameMatchHuntContent: View {
     }
     
     private func handleCorrectMatch(leftIndex: Int, rightIndex: Int, word: WordItemModel) {
-        FeedbackCorrectAnswerHaptic().playHaptic()
-        
         withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
             matchState.matchedIndices.insert(leftIndex)
             matchState.matchedIndices.insert(rightIndex + matchState.leftWords.count)
         }
-        
         cacheGetter.removeFromCache(word)
         
         withAnimation(.easeInOut(duration: 0.2)) {
             resetSelection()
         }
-        
         if matchState.matchedIndices.count % 6 == 0 {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                 loadMorePairs()

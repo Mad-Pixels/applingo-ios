@@ -76,7 +76,7 @@ enum ScoreAnimationReason {
         case .fast: return "bolt.fill"
         case .special: return "star.fill"
         case .hint: return "lightbulb.fill"
-        case .negative: return "xmark.circle.fill"
+        case .negative: return "arrow.down"
         }
     }
     

@@ -108,8 +108,6 @@ struct GameQuizContent: View {
     private func handleCorrectAnswer(_ option: WordItemModel) {
         guard let question = currentQuestion else { return }
         
-        FeedbackCorrectAnswerHaptic().playHaptic()
-        
         let result = createGameResult(for: option, isCorrect: true)
         gameAction.handleGameResult(result)
         cacheGetter.removeFromCache(question.correctWord)

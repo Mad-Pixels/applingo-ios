@@ -185,9 +185,7 @@ private struct GameLettersContent: View {
     }
     
     private func playFeedback(isCorrect: Bool) {
-        if isCorrect {
-            FeedbackCorrectAnswerHaptic().playHaptic()
-        } else {
+        if !isCorrect {
             FeedbackWrongAnswerHaptic().playHaptic()
         }
     }
