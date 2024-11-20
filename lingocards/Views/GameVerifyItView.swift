@@ -23,6 +23,16 @@ private struct GameVerifyItContent: View {
     @State private var showSuccessEffect = false
     @State private var hintState = GameHintState(isShowing: false, wasUsed: false)
     
+    @StateObject private var wrongAnswerFeedback: CompositeFeedback = {
+        let feedback = GameFeedback.composite(
+            visualFeedbacks: [],
+            hapticFeedbacks: [
+                FeedbackWrongAnswerHaptic()
+            ]
+        )
+        return feedback
+    }()
+    
     var body: some View {
         ZStack {
             if cacheGetter.isLoadingCache {
@@ -122,7 +132,7 @@ private struct GameVerifyItContent: View {
         gameAction.handleGameResult(result)
         
         if !isCorrect {
-            FeedbackWrongAnswerHaptic().playHaptic()
+            wrongAnswerFeedback.trigger()
         }
         
         withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {

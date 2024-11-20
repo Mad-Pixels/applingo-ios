@@ -14,13 +14,23 @@ private struct GameMatchHuntContent: View {
     @EnvironmentObject var cacheGetter: GameCacheGetterViewModel
     @EnvironmentObject var gameAction: GameActionViewModel
     
+    @State private var hintState = GameHintState(isShowing: false, wasUsed: false)
     @State private var matchState = MatchCardState()
-    @State private var showAnswerFeedback = false
     @State private var startTime: TimeInterval = 0
     @State private var hintPenalty: Int = 0
+    @State private var showAnswerFeedback = false
     @State private var showSuccessEffect = false
-    @State private var hintState = GameHintState(isShowing: false, wasUsed: false)
     @State private var isAnswerCorrect = false
+    
+    @StateObject private var wrongAnswerFeedback: CompositeFeedback = {
+        let feedback = GameFeedback.composite(
+            visualFeedbacks: [],
+            hapticFeedbacks: [
+                FeedbackWrongAnswerHaptic()
+            ]
+        )
+        return feedback
+    }()
     
     private let style = GameCardStyle(theme: ThemeManager.shared.currentThemeStyle)
     
@@ -214,7 +224,7 @@ private struct GameMatchHuntContent: View {
     }
     
     private func handleWrongMatch() {
-        FeedbackWrongAnswerHaptic().playHaptic()
+        wrongAnswerFeedback.trigger()
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             withAnimation(.easeInOut(duration: 0.2)) {

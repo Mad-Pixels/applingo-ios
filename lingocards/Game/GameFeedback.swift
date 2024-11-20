@@ -25,7 +25,7 @@ struct FeedbackWrongAnswerHaptic: GameFeedbackHapticProtocol {
     func playHaptic() {
         HapticManager.shared.playHapticPattern(
             intensity: 1.0,
-            sharpness: 0.3,
+            sharpness: 0.5,
             count: 1
         )
     }

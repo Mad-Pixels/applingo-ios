@@ -24,6 +24,16 @@ private struct GameLettersContent: View {
     @State private var startTime: TimeInterval = 0
     @State private var hintPenalty: Int = 0
     
+    @StateObject private var wrongAnswerFeedback: CompositeFeedback = {
+        let feedback = GameFeedback.composite(
+            visualFeedbacks: [],
+            hapticFeedbacks: [
+                FeedbackWrongAnswerHaptic()
+            ]
+        )
+        return feedback
+    }()
+    
     private let style = GameCardStyle(theme: ThemeManager.shared.currentThemeStyle)
     
     var body: some View {
@@ -186,7 +196,7 @@ private struct GameLettersContent: View {
     
     private func playFeedback(isCorrect: Bool) {
         if !isCorrect {
-            FeedbackWrongAnswerHaptic().playHaptic()
+            wrongAnswerFeedback.trigger()
         }
     }
     
