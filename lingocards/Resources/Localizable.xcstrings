@@ -761,7 +761,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "импорт SCV"
+            "value" : "импорт CSV"
           }
         }
       }
