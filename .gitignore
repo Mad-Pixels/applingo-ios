@@ -65,3 +65,6 @@ fastlane/test_output
 
 # ML models
 lingocards/ML/*.mlmodel
+
+# config
+Configuration.plist
