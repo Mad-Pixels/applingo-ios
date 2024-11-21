@@ -156,6 +156,15 @@
         }
       }
     },
+    "cat,חתול,,household pet" : {
+
+    },
+    "cat,חתול,animal" : {
+
+    },
+    "cat,חתול,animal,household pet" : {
+
+    },
     "Category" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -766,6 +775,244 @@
         }
       }
     },
+    "ImportNoteColumnBackText" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "translation"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "перевод"
+          }
+        }
+      }
+    },
+    "ImportNoteColumnDescriptionText" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "description"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "описание"
+          }
+        }
+      }
+    },
+    "ImportNoteColumnFrontText" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "word or phrase"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "слово или фраза"
+          }
+        }
+      }
+    },
+    "ImportNoteColumnHintText" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "hint"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "подсказка"
+          }
+        }
+      }
+    },
+    "ImportNoteColumns" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "table columns"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "колонки в таблице"
+          }
+        }
+      }
+    },
+    "ImportNoteExampleCommaSeparated" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "separated by commas (,):"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "через запятую (,):"
+          }
+        }
+      }
+    },
+    "ImportNoteExampleSemicolonsSeparated" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "separated by semicolons (;):"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "через точку с запятой (;):"
+          }
+        }
+      }
+    },
+    "ImportNoteExampleTabSeparated" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "separated by tabs"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "через табуляцию"
+          }
+        }
+      }
+    },
+    "ImportNoteExampleTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "examples"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "примеры"
+          }
+        }
+      }
+    },
+    "ImportNoteExampleVerticalBarSeparated" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "separated by vertical bars (|):"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "через вертикальную черту (|):"
+          }
+        }
+      }
+    },
+    "ImportNoteNoColumnsWarning" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "the table must not have headers"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "таблица не должна иметь заголовков"
+          }
+        }
+      }
+    },
+    "ImportNoteNotRequired" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "optional"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "опционально"
+          }
+        }
+      }
+    },
+    "ImportNoteRequired" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "required"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "обязательно"
+          }
+        }
+      }
+    },
+    "ImportNoteTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "instructions"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "инструкция"
+          }
+        }
+      }
+    },
     "Key" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1021,6 +1268,15 @@
         }
       }
     },
+    "sea|ים||large body of water" : {
+
+    },
+    "sea|ים|water|" : {
+
+    },
+    "sea|ים|water|large body of water" : {
+
+    },
     "Search" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1138,6 +1394,15 @@
           }
         }
       }
+    },
+    "sun;שמש;;the main star" : {
+
+    },
+    "sun;שמש;sky" : {
+
+    },
+    "sun;שמש;sky;the main star" : {
+
     },
     "SurvivalDescription" : {
       "extractionState" : "manual",
