@@ -2,7 +2,7 @@ import Foundation
 
 class RepositoryAPI: ApiRepositoryProtocol {
     func getCategories() async throws -> CategoryItemModel {
-        let endpoint = "/device/v1/category/query"
+        let endpoint = "/v1/category/query"
         let body = "{}".data(using: .utf8)
         
         let data = try await APIManager.shared.request(
@@ -21,7 +21,7 @@ class RepositoryAPI: ApiRepositoryProtocol {
         dictionaries: [DictionaryItemModel],
         lastEvaluated: String?
     ) {
-        let endpoint = "/device/v1/dictionary/query"
+        let endpoint = "/v1/dictionary/query"
         let body = try? JSONSerialization.data(withJSONObject: request?.toDictionary() ?? [:])
             
         let data = try await APIManager.shared.request(
@@ -48,7 +48,7 @@ class RepositoryAPI: ApiRepositoryProtocol {
     }
     
     func downloadDictionary(_ dictionary: DictionaryItemModel) async throws -> URL {
-        let endpoint = "/device/v1/dictionary/download_url"
+        let endpoint = "/v1/dictionary/download"
         let body = try? JSONSerialization.data(
             withJSONObject: ApiDictionaryDownloadRequestModel(
                 dictionary: dictionary.tableName
