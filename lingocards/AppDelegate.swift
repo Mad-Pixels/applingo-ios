@@ -1,22 +1,6 @@
 import SwiftUI
 import IQKeyboardManagerSwift
 
-struct APIConfig {
-    static let baseURL: String = {
-        guard let url = ProcessInfo.processInfo.environment["API_URL"] else {
-            fatalError("API_URL not set in environment")
-        }
-        return url
-    }()
-    
-    static let token: String = {
-        guard let token = ProcessInfo.processInfo.environment["API_TOKEN"] else {
-            fatalError("API_TOKEN not set in environment")
-        }
-        return token
-    }()
-}
-
 @main
 struct LingocardApp: App {
     @StateObject private var languageManager = LanguageManager.shared
@@ -25,8 +9,8 @@ struct LingocardApp: App {
     @StateObject private var errorManager = ErrorManager.shared
     @StateObject private var frameManager = FrameManager.shared
     
-    private let apiUrl = APIConfig.baseURL
-    private let apiToken = APIConfig.token
+    private let apiUrl = GlobalConfig.apiURL
+    private let apiToken = GlobalConfig.apiToken
     private let dbName = "LingocardDB.sqlite"
 
     init() {

@@ -1,6 +1,6 @@
 import SwiftUI
 
-enum Configuration {
+enum GlobalConfig {
     private static let config: [String: Any] = {
         guard
             let url = Bundle.main.url(forResource: "Configuration", withExtension: "plist"),
