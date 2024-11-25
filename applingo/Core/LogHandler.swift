@@ -107,7 +107,7 @@ final class LogHandler: ObservableObject {
         Logger.debug("[LogHandler]: Log ready to send: \(log.description)")
         Task {
             do {
-                let endpoint = "/device/v1/errors/put"
+                let endpoint = "/v1/reports"
                 let body = try JSONEncoder().encode(log)
                     
                 _ = try await APIManager.shared.request(

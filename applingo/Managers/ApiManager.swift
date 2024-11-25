@@ -84,25 +84,27 @@ class APIManager {
         return localURL
     }
     
-    func request(endpoint: String, method: HTTPMethod, body: Data? = nil) async throws -> Data {
-        guard !baseURL.isEmpty else {
-            throw APIError.baseURLNotConfigured
-        }
+    func request(endpoint: String, method: HTTPMethod, queryItems: [URLQueryItem]? = nil, body: Data? = nil) async throws -> Data {
+       guard !baseURL.isEmpty else {
+           throw APIError.baseURLNotConfigured
+       }
 
-        guard var urlComponents = URLComponents(string: baseURL) else {
-            throw APIError.invalidBaseURL(url: baseURL)
-        }
-        urlComponents.path += endpoint
+       guard var urlComponents = URLComponents(string: baseURL) else {
+           throw APIError.invalidBaseURL(url: baseURL)
+       }
 
-        guard let url = urlComponents.url else {
-            throw APIError.invalidEndpointURL(endpoint: endpoint)
-        }
+       urlComponents.path += endpoint
+       urlComponents.queryItems = queryItems
 
-        let request = try signRequest(for: url, method: method, body: body)
-        Logger.debug("[APIManager]: sent request - \(request)")
+       guard let url = urlComponents.url else {
+           throw APIError.invalidEndpointURL(endpoint: endpoint)
+       }
 
-        let (data, response) = try await session.data(for: request)
-        return try handleResponse(response: response, data: data)
+       let request = try signRequest(for: url, method: method, body: body)
+       Logger.debug("[APIManager]: sent request - \(request)")
+
+       let (data, response) = try await session.data(for: request)
+       return try handleResponse(response: response, data: data)
     }
     
     private func handleResponse(response: URLResponse, data: Data) throws -> Data {
@@ -110,7 +112,7 @@ class APIManager {
             throw APIError.invalidAPIResponse
         }
 
-        guard httpResponse.statusCode == 200 else {
+        guard httpResponse.statusCode == 200 || httpResponse.statusCode == 201  else {
             if let apiErrorMessage = try? JSONDecoder().decode(ApiErrorMessageModel.self, from: data) {
                 throw APIError.apiErrorMessage(message: apiErrorMessage.message, statusCode: httpResponse.statusCode)
             } else {

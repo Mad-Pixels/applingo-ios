@@ -70,13 +70,14 @@ extension ApiDictionaryQueryRequestModel.SortBy {
 
 struct ApiDictionaryDownloadRequestModel: Codable, Equatable {
     let dictionary: String
+    let opertaion: String = "download"
     
     enum CodingKeys: String, CodingKey {
         case dictionary
     }
     
     func toDictionary() -> [String: Any] {
-        return ["dictionary": dictionary]
+        return ["name": dictionary, "operation": "download"]
     }
 }
 
