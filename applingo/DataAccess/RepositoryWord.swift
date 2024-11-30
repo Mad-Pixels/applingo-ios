@@ -12,6 +12,7 @@ class RepositoryWord: WordRepositoryProtocol {
         offset: Int,
         limit: Int
     ) throws -> [WordItemModel] {
+        let searchText = searchText?.lowercased()
         let activeDictionaries = try fetchActive()
         guard !activeDictionaries.isEmpty else {
             return []

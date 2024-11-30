@@ -12,6 +12,8 @@ struct WordAddView: View {
     @State private var wordItem = WordItemModel.empty()
     @State private var errorMessage: String = ""
     @State private var isShowingAlert = false
+    @State private var hintText: String = ""
+    @State private var descriptionText: String = ""
 
     init(isPresented: Binding<Bool>, refresh: @escaping () -> Void) {
         _dictionaryGetter = StateObject(wrappedValue: DictionaryLocalGetterViewModel())
@@ -66,24 +68,35 @@ struct WordAddView: View {
                                     placeholder: LanguageManager.shared.localizedString(
                                         for: "Hint"
                                     ).capitalizedFirstLetter,
-                                    text: $wordItem.hint.unwrap(default: ""),
+                                    text: $hintText,
                                     isEditing: true,
                                     icon: "tag"
                                 )
+                                .onChange(of: hintText) { newValue in
+                                    wordItem.hint = newValue.isEmpty ? nil : newValue
+                                }
+                                
                                 CompTextEditorView(
                                     placeholder: LanguageManager.shared.localizedString(
                                         for: "Description"
                                     ).capitalizedFirstLetter,
-                                    text: $wordItem.description.unwrap(default: ""),
+                                    text: $descriptionText,
                                     isEditing: true,
                                     icon: "scroll"
                                 )
+                                .onChange(of: descriptionText) { newValue in
+                                    wordItem.description = newValue.isEmpty ? nil : newValue
+                                }
                                 .frame(height: 150)
                             }
                             .padding(.vertical, 12)
                     }
                 }
                 .onAppear {
+                    // Инициализация начальных значений
+                    hintText = wordItem.hint ?? ""
+                    descriptionText = wordItem.description ?? ""
+                    
                     FrameManager.shared.setActiveFrame(.wordAdd)
                     dictionaryGetter.setFrame(.wordAdd)
                     wordsAction.setFrame(.wordAdd)
