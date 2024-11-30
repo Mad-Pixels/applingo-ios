@@ -77,7 +77,7 @@ struct ApiDictionaryDownloadRequestModel: Codable, Equatable {
     }
     
     func toDictionary() -> [String: Any] {
-        return ["name": dictionary, "operation": "download"]
+        return ["identifier": dictionary, "operation": "download"]
     }
 }
 
@@ -107,7 +107,7 @@ struct ApiDictionaryQueryResponseModel: Codable {
         let description: String
         let createdAt: Int
         let rating: Int
-        let isPublic: Int
+        let isPublic: Bool
         
         enum CodingKeys: String, CodingKey {
             case description
@@ -117,8 +117,8 @@ struct ApiDictionaryQueryResponseModel: Codable {
             case author
             case rating
             case name
-            case createdAt = "created_at"
-            case isPublic = "is_public"
+            case createdAt = "created"
+            case isPublic = "public"
             
         }
     }
