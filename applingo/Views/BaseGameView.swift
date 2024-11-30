@@ -7,6 +7,7 @@ struct BaseGameView<Content: View>: View {
     @StateObject private var cancellableStore = CancellableStore()
     
     @State private var scoreAnimations: [GameScoreAnimationModel] = []
+    @State private var isInitialCacheLoaded = false
     @State private var showResultCard = false
     @State private var isRestarting = false
     
@@ -47,7 +48,11 @@ struct BaseGameView<Content: View>: View {
                 }
                 .padding()
                 
-                if cacheGetter.cache.count < minimumWordsRequired {
+                if !isInitialCacheLoaded {
+                    Spacer()
+                    ProgressView()
+                    Spacer()
+                } else if cacheGetter.cache.count < minimumWordsRequired {
                     Spacer()
                     CompGameEmptyView()
                     Spacer()
@@ -108,6 +113,18 @@ struct BaseGameView<Content: View>: View {
             setupGame()
             setupScoreCallback()
             setupGameOverCallback()
+            
+            if !isInitialCacheLoaded {
+                cacheGetter.$isLoadingCache
+                    .filter { !$0 }
+                    .first()
+                    .sink { _ in
+                        withAnimation {
+                            isInitialCacheLoaded = true
+                        }
+                    }
+                    .store(in: &cancellableStore.cancellables)
+            }
         }
         .onDisappear(perform: cleanupGame)
     }
@@ -168,6 +185,7 @@ struct BaseGameView<Content: View>: View {
     }
     
     private func cleanupGame() {
+        isInitialCacheLoaded = false
         cancellableStore.cancellables.removeAll()
         cacheGetter.clearCache()
         gameAction.endGame()
