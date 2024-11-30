@@ -76,16 +76,17 @@ final class GameCacheGetterViewModel: BaseDatabaseViewModel {
         let currentToken = cancellationToken
         isLoadingCache = true
         
+        let existingIds = Set(cache.map { $0.id })
         performDatabaseOperation(
             { try self.wordRepository.fetchCache(count: needCount) },
             successHandler: { [weak self] fetchedWords in
                 guard let self = self,
                       currentToken == self.cancellationToken else { return }
-                if fetchedWords.isEmpty {
-                    self.isLoadingCache = false
-                    return
+                
+                let newWords = fetchedWords.filter { !existingIds.contains($0.id) }
+                if !newWords.isEmpty {
+                    self.cache.append(contentsOf: newWords)
                 }
-                self.cache.append(contentsOf: fetchedWords)
                 self.isLoadingCache = false
             },
             source: .wordsGet,

@@ -92,7 +92,8 @@ struct CompGameQuizCardView: View {
                 .modifier(
                     GameCardStyle.QuizOption.optionStyle(
                         isSelected: cardState.selectedOptionId == option.id,
-                        isCorrect: cardState.selectedOptionId == option.id && isCorrectOption(option),
+                        isCorrect: (cardState.selectedOptionId == option.id && isCorrectOption(option)) ||
+                                  (cardState.showCorrectAnswer && isCorrectOption(option)),
                         isAnswered: cardState.selectedOptionId != nil,
                         theme: style.theme
                     )
