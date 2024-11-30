@@ -57,7 +57,7 @@ class RepositoryAPI: ApiRepositoryProtocol {
                 subcategory: dictionaryItem.subcategory,
                 author: dictionaryItem.author,
                 createdAt: dictionaryItem.createdAt,
-                isPublic: (dictionaryItem.isPublic != 0)
+                isPublic: dictionaryItem.isPublic
             )
         }
         return (dictionaries: dictionaries, lastEvaluated: response.data.lastEvaluated)
