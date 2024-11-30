@@ -33,12 +33,12 @@ struct TabLearnView: View {
                         color: ThemeManager.shared.currentThemeStyle.secondatyAccentColor3,
                         action: { showVerifyItGame = true }
                     )
-                    CompButtonGameMenuView(
-                        LanguageManager.shared.localizedString(for: "Letters").capitalizedFirstLetter,
-                        icon: "aqi.medium",
-                        color: ThemeManager.shared.currentThemeStyle.secondatyAccentColor4,
-                        action: { showLettersGame = true }
-                    )
+//                    CompButtonGameMenuView(
+//                        LanguageManager.shared.localizedString(for: "Letters").capitalizedFirstLetter,
+//                        icon: "aqi.medium",
+//                        color: ThemeManager.shared.currentThemeStyle.secondatyAccentColor4,
+//                        action: { showLettersGame = true }
+//                    )
                 }
                 .padding(.vertical, 32)
                 .padding(.horizontal, 16)
@@ -56,9 +56,9 @@ struct TabLearnView: View {
             .fullScreenCover(isPresented: $showVerifyItGame) {
                 GameVerifyItView(isPresented: $showVerifyItGame)
             }
-            .fullScreenCover(isPresented: $showLettersGame) {
-                GameLettersView(isPresented: $showLettersGame)
-            }
+//            .fullScreenCover(isPresented: $showLettersGame) {
+//                GameLettersView(isPresented: $showLettersGame)
+//            }
             .onAppear {
                 FrameManager.shared.setActiveFrame(.learn)
             }
