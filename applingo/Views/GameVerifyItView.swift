@@ -121,7 +121,8 @@ private struct GameVerifyItContent: View {
         guard let card = currentCard else { return }
         
         let responseTime = Date().timeIntervalSince1970 - startTime
-        let isCorrect = isRight == card.isMatch
+        let isCorrect = (card.frontWord.backText == card.backText) == isRight
+        
         let result = GameVerifyResultModel(
             word: card.frontWord,
             isCorrect: isCorrect,
