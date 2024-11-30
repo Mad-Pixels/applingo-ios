@@ -5,6 +5,7 @@ struct DictionaryItemModel: Identifiable, Codable, Equatable, Hashable {
     static let databaseTableName = "Dictionary"
     
     var id: Int?
+    var key: String
     var displayName: String
     var tableName: String
     var description: String
@@ -18,6 +19,7 @@ struct DictionaryItemModel: Identifiable, Codable, Equatable, Hashable {
     
     init(
         id: Int? = nil,
+        key: String,
         displayName: String,
         tableName: String,
         description: String,
@@ -29,6 +31,7 @@ struct DictionaryItemModel: Identifiable, Codable, Equatable, Hashable {
         isActive: Bool = true
     ) {
         self.id = id
+        self.key = key
         self.displayName = displayName
         self.tableName = tableName
         self.description = description
@@ -58,6 +61,7 @@ struct DictionaryItemModel: Identifiable, Codable, Equatable, Hashable {
         """
         DictionaryItemModel:
         - ID: \(id ?? -1)
+        - Key: \(key)
         - Display Name: \(displayName)
         - Table Name: \(tableName)
         - Description: \(description)
@@ -92,6 +96,7 @@ extension DictionaryItemModel: FetchableRecord, PersistableRecord {
             t.column("createdAt", .integer).notNull()
             t.column("isPublic", .boolean).notNull()
             t.column("isActive", .boolean).notNull()
+            t.column("key", .text).unique()
         }
         try db.create(index: "Dictionary_createdAt_idx", on: databaseTableName, columns: ["createdAt"])
     }

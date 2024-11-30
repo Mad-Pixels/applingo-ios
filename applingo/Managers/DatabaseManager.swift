@@ -84,6 +84,7 @@ final class DatabaseManager: ObservableObject {
             Logger.debug("[DatabaseManager]: 'Dictionary' table created successfully")
             
             let internalDictionary = DictionaryItemModel(
+                key: "internal",
                 displayName: "Main",
                 tableName: "Internal",
                 description: "LingoCards default dictionary",
