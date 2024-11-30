@@ -45,6 +45,23 @@ struct CompGameQuizCardView: View {
         }
         .padding(.horizontal, GameCardStyle.Layout.horizontalPadding)
     }
+
+    private func isCorrectOption(_ option: WordItemModel) -> Bool {
+        let optionText = question.isReversed ? option.frontText : option.backText
+        let correctText = question.isReversed ? question.correctAnswer.frontText : question.correctAnswer.backText
+        
+        let optionVariants = optionText
+            .lowercased()
+            .split(separator: "|")
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+        
+        let correctVariants = correctText
+            .lowercased()
+            .split(separator: "|")
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+        
+        return !Set(optionVariants).intersection(correctVariants).isEmpty
+    }
     
     private func hintSection(_ hint: String) -> some View {
         VStack {
@@ -75,7 +92,7 @@ struct CompGameQuizCardView: View {
                 .modifier(
                     GameCardStyle.QuizOption.optionStyle(
                         isSelected: cardState.selectedOptionId == option.id,
-                        isCorrect: question.correctAnswer.id == option.id,
+                        isCorrect: cardState.selectedOptionId == option.id && isCorrectOption(option),
                         isAnswered: cardState.selectedOptionId != nil,
                         theme: style.theme
                     )
