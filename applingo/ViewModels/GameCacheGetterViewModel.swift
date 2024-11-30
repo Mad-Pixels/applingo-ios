@@ -51,7 +51,13 @@ final class GameCacheGetterViewModel: BaseDatabaseViewModel {
                     self.isLoadingCache = false
                     return
                 }
-                self.cache = fetchedWords
+                
+                var uniqueFrontText = Set<String>()
+                let uniqueWords = fetchedWords.filter { word in
+                    uniqueFrontText.insert(word.frontText.lowercased()).inserted
+                }
+                
+                self.cache = uniqueWords
                 self.isLoadingCache = false
             },
             source: .wordsGet,
@@ -77,13 +83,19 @@ final class GameCacheGetterViewModel: BaseDatabaseViewModel {
         isLoadingCache = true
         
         let existingIds = Set(cache.map { $0.id })
+        let existingFrontTexts = Set(cache.map { $0.frontText.lowercased() })
+        
         performDatabaseOperation(
             { try self.wordRepository.fetchCache(count: needCount) },
             successHandler: { [weak self] fetchedWords in
                 guard let self = self,
                       currentToken == self.cancellationToken else { return }
                 
-                let newWords = fetchedWords.filter { !existingIds.contains($0.id) }
+                let newWords = fetchedWords.filter { word in
+                    !existingIds.contains(word.id) &&
+                    !existingFrontTexts.contains(word.frontText.lowercased())
+                }
+                
                 if !newWords.isEmpty {
                     self.cache.append(contentsOf: newWords)
                 }
