@@ -14,15 +14,15 @@ struct ErrorLog: Codable {
     let additionalInfo: [String: String]?
     
     enum CodingKeys: String, CodingKey {
-        case additionalInfo = "additional_info"
+        case replicaID = "app_identifier"
+        case appVersion = "app_version"
+        case osVersion = "device_os"
+        case device = "device_name"
+        case additionalInfo = "metadata"
         case errorOriginal = "error_original"
         case errorMessage = "error_message"
-        case appVersion = "app_version"
-        case replicaID = "replica_id"
-        case osVersion = "os_version"
         case errorType = "error_type"
         case timestamp
-        case device
     }
 
     init(

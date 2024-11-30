@@ -2,7 +2,7 @@ import Foundation
 
 class RepositoryAPI: ApiRepositoryProtocol {
     func getCategories() async throws -> CategoryItemModel {
-        let endpoint = "/v1/categories"
+        let endpoint = "/v1/subcategories"
         
         let data = try await APIManager.shared.request(
             endpoint: endpoint,
@@ -29,7 +29,7 @@ class RepositoryAPI: ApiRepositoryProtocol {
                 queryItems.append(URLQueryItem(name: "subcategory", value: subcategory))
             }
             if let isPublic = request.isPublic {
-                queryItems.append(URLQueryItem(name: "is_public", value: isPublic ? "1" : "0"))
+                queryItems.append(URLQueryItem(name: "public", value: isPublic ? "true" : "false"))
             }
             if let sortBy = request.sortBy {
                 queryItems.append(URLQueryItem(name: "sort_by", value: sortBy))

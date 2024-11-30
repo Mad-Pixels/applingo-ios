@@ -46,9 +46,9 @@ struct Defaults {
         get {
             if let existingID = UserDefaults.standard.string(forKey: Keys.replicaID) {
                 Logger.debug("[Defaults]: Reading existing replicaID from UserDefaults")
-                return existingID
+                return existingID.lowercased()
             } else {
-                let newID = UUID().uuidString
+                let newID = UUID().uuidString.lowercased()
                 UserDefaults.standard.set(newID, forKey: Keys.replicaID)
                 Logger.debug("[Defaults]: Generated and saved new replicaID to UserDefaults")
                 return newID
