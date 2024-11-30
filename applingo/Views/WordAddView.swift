@@ -73,7 +73,7 @@ struct WordAddView: View {
                                     icon: "tag"
                                 )
                                 .onChange(of: hintText) { newValue in
-                                    wordItem.hint = newValue.isEmpty ? nil : newValue
+                                    wordItem.hint = newValue
                                 }
                                 
                                 CompTextEditorView(
@@ -85,7 +85,7 @@ struct WordAddView: View {
                                     icon: "scroll"
                                 )
                                 .onChange(of: descriptionText) { newValue in
-                                    wordItem.description = newValue.isEmpty ? nil : newValue
+                                    wordItem.description = newValue
                                 }
                                 .frame(height: 150)
                             }
@@ -145,8 +145,20 @@ struct WordAddView: View {
         guard let selectedDictionary = selectedDictionary else {
             return
         }
-        wordItem.tableName = selectedDictionary.tableName
-        wordsAction.save(wordItem) { result in
+        
+        let newWord = WordItemModel(
+            id: wordItem.id,
+            tableName: selectedDictionary.tableName,
+            frontText: wordItem.frontText,
+            backText: wordItem.backText,
+            description: descriptionText.isEmpty ? nil : descriptionText,
+            hint: hintText.isEmpty ? nil : hintText,
+            createdAt: wordItem.createdAt,
+            success: wordItem.success,
+            weight: wordItem.weight,
+            fail: wordItem.fail
+        )
+        wordsAction.save(newWord) { result in
             if case .success = result {
                 presentationMode.wrappedValue.dismiss()
                 refresh()
