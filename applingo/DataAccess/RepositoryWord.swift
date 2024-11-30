@@ -35,17 +35,22 @@ class RepositoryWord: WordRepositoryProtocol {
             if hasSearchText, let searchText = trimmedSearchText {
                 sql = """
                 SELECT *, CASE
-                    WHEN LOWER(frontText) = LOWER(?) THEN 1
-                    WHEN LOWER(frontText) LIKE LOWER(? || '%') THEN 2
-                    WHEN LOWER(frontText) LIKE LOWER('%' || ? || '%') THEN 3
+                    WHEN LOWER(frontText) = LOWER(?) OR LOWER(backText) = LOWER(?) THEN 1
+                    WHEN LOWER(frontText) LIKE LOWER(? || '%') OR LOWER(backText) LIKE LOWER(? || '%') THEN 2
+                    WHEN LOWER(frontText) LIKE LOWER('%' || ? || '%') OR LOWER(backText) LIKE LOWER('%' || ? || '%') THEN 3
                     ELSE 4 END AS relevance
                 FROM \(WordItemModel.databaseTableName)
                 """
                 
-                let relevanceArguments: [DatabaseValueConvertible] = [searchText, searchText, searchText]
-                allArguments = relevanceArguments + allArguments  // Combine arguments
+                let relevanceArguments: [DatabaseValueConvertible] = [
+                    searchText, searchText,
+                    searchText, searchText,
+                    searchText, searchText
+                ]
+                allArguments = relevanceArguments + allArguments
                 
-                conditions.append("LOWER(frontText) LIKE ?")
+                conditions.append("(LOWER(frontText) LIKE ? OR LOWER(backText) LIKE ?)")
+                allArguments.append("%\(searchText.lowercased())%")
                 allArguments.append("%\(searchText.lowercased())%")
             } else {
                 sql = "SELECT * FROM \(WordItemModel.databaseTableName)"
