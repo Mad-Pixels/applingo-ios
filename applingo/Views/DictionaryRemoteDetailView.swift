@@ -117,10 +117,12 @@ struct DictionaryRemoteDetailView: View {
                 }
             )
             .alert(isPresented: $showError) {
-                Alert(
-                    title: Text(LanguageManager.shared.localizedString(for: "Error")),
-                    message: Text(errorMessage),
-                    dismissButton: .default(Text(LanguageManager.shared.localizedString(for: "OK")))
+                CompAlertView(
+                    title: LanguageManager.shared.localizedString(for: "Error"),
+                    message: "Internet connection error or Dictionary is already downloaded",
+                    closeAction: {
+                        ErrorManager.shared.clearError()
+                    }
                 )
             }
         }
