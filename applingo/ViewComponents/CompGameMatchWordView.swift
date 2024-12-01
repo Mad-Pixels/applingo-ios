@@ -21,7 +21,7 @@ struct CompGameMatchWordView: View {
     }
     
     private var wordContent: some View {
-        Text(showTranslation ? word.backText : word.frontText)
+        Text(displayText)
             .font(.system(.body, design: .rounded).weight(.medium))
             .lineLimit(2)
             .minimumScaleFactor(0.7)
@@ -29,6 +29,13 @@ struct CompGameMatchWordView: View {
             .padding(.vertical, 12)
             .padding(.horizontal, 16)
             .frame(maxWidth: .infinity, minHeight: 60)
+    }
+
+    private var displayText: String {
+        let text = showTranslation ? word.backText : word.frontText
+        return text.split(separator: "|")
+            .first?
+            .trimmingCharacters(in: .whitespaces) ?? text
     }
 }
 

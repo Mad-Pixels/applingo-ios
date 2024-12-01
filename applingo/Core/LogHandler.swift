@@ -14,15 +14,15 @@ struct ErrorLog: Codable {
     let additionalInfo: [String: String]?
     
     enum CodingKeys: String, CodingKey {
-        case additionalInfo = "additional_info"
+        case replicaID = "app_identifier"
+        case appVersion = "app_version"
+        case osVersion = "device_os"
+        case device = "device_name"
+        case additionalInfo = "metadata"
         case errorOriginal = "error_original"
         case errorMessage = "error_message"
-        case appVersion = "app_version"
-        case replicaID = "replica_id"
-        case osVersion = "os_version"
         case errorType = "error_type"
         case timestamp
-        case device
     }
 
     init(
@@ -107,7 +107,7 @@ final class LogHandler: ObservableObject {
         Logger.debug("[LogHandler]: Log ready to send: \(log.description)")
         Task {
             do {
-                let endpoint = "/device/v1/errors/put"
+                let endpoint = "/v1/reports"
                 let body = try JSONEncoder().encode(log)
                     
                 _ = try await APIManager.shared.request(

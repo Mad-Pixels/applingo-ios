@@ -187,7 +187,7 @@ private struct GameMatchHuntContent: View {
         rightIndex: Int
     ) {
         let responseTime = Date().timeIntervalSince1970 - startTime
-        isAnswerCorrect = leftWord.id == rightWord.id
+        isAnswerCorrect = isMatchCorrect(leftWord: leftWord, rightWord: rightWord)
         
         let result = GameVerifyResultModel(
             word: leftWord,
@@ -204,6 +204,23 @@ private struct GameMatchHuntContent: View {
         } else {
             handleWrongMatch()
         }
+    }
+    
+    private func isMatchCorrect(leftWord: WordItemModel, rightWord: WordItemModel) -> Bool {
+        let leftText = leftWord.backText
+        let rightText = rightWord.backText
+        
+        let leftVariants = leftText
+            .lowercased()
+            .split(separator: "|")
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+        
+        let rightVariants = rightText
+            .lowercased()
+            .split(separator: "|")
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+        
+        return !Set(leftVariants).intersection(rightVariants).isEmpty
     }
     
     private func handleCorrectMatch(leftIndex: Int, rightIndex: Int, word: WordItemModel) {

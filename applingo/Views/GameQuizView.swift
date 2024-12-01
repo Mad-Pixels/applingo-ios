@@ -113,13 +113,35 @@ struct GameQuizContent: View {
         guard let question = currentQuestion,
               !cardState.isInteractionDisabled else { return }
         
+        let isCorrect = isAnswerCorrect(selected: option, question: question)
+        
         withAnimation(.easeOut(duration: 0.2)) {
             cardState.selectedOptionId = option.id
             cardState.isInteractionDisabled = true
         }
         
-        let isCorrect = option.id == question.correctAnswer.id
         isCorrect ? handleCorrectAnswer(option) : handleWrongAnswer(option)
+    }
+    
+    private func isAnswerCorrect(selected: WordItemModel, question: GameQuizCardModel) -> Bool {
+        let selectedText = question.isReversed ? selected.frontText : selected.backText
+        let correctText = question.isReversed ? question.correctAnswer.frontText : question.correctAnswer.backText
+        
+        return compareAnswers(selectedText, correctText)
+    }
+    
+    private func compareAnswers(_ selected: String, _ correct: String) -> Bool {
+        let selectedVariants = selected
+            .lowercased()
+            .split(separator: "|")
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+        
+        let correctVariants = correct
+            .lowercased()
+            .split(separator: "|")
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+        
+        return !Set(selectedVariants).intersection(correctVariants).isEmpty
     }
         
     private func handleCorrectAnswer(_ option: WordItemModel) {

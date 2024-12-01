@@ -12,6 +12,8 @@ struct WordAddView: View {
     @State private var wordItem = WordItemModel.empty()
     @State private var errorMessage: String = ""
     @State private var isShowingAlert = false
+    @State private var hintText: String = ""
+    @State private var descriptionText: String = ""
 
     init(isPresented: Binding<Bool>, refresh: @escaping () -> Void) {
         _dictionaryGetter = StateObject(wrappedValue: DictionaryLocalGetterViewModel())
@@ -66,24 +68,35 @@ struct WordAddView: View {
                                     placeholder: LanguageManager.shared.localizedString(
                                         for: "Hint"
                                     ).capitalizedFirstLetter,
-                                    text: $wordItem.hint.unwrap(default: ""),
+                                    text: $hintText,
                                     isEditing: true,
                                     icon: "tag"
                                 )
+                                .onChange(of: hintText) { newValue in
+                                    wordItem.hint = newValue
+                                }
+                                
                                 CompTextEditorView(
                                     placeholder: LanguageManager.shared.localizedString(
                                         for: "Description"
                                     ).capitalizedFirstLetter,
-                                    text: $wordItem.description.unwrap(default: ""),
+                                    text: $descriptionText,
                                     isEditing: true,
                                     icon: "scroll"
                                 )
+                                .onChange(of: descriptionText) { newValue in
+                                    wordItem.description = newValue
+                                }
                                 .frame(height: 150)
                             }
                             .padding(.vertical, 12)
                     }
                 }
                 .onAppear {
+                    // Инициализация начальных значений
+                    hintText = wordItem.hint ?? ""
+                    descriptionText = wordItem.description ?? ""
+                    
                     FrameManager.shared.setActiveFrame(.wordAdd)
                     dictionaryGetter.setFrame(.wordAdd)
                     wordsAction.setFrame(.wordAdd)
@@ -132,8 +145,20 @@ struct WordAddView: View {
         guard let selectedDictionary = selectedDictionary else {
             return
         }
-        wordItem.tableName = selectedDictionary.tableName
-        wordsAction.save(wordItem) { result in
+        
+        let newWord = WordItemModel(
+            id: wordItem.id,
+            tableName: selectedDictionary.tableName,
+            frontText: wordItem.frontText,
+            backText: wordItem.backText,
+            description: descriptionText.isEmpty ? nil : descriptionText,
+            hint: hintText.isEmpty ? nil : hintText,
+            createdAt: wordItem.createdAt,
+            success: wordItem.success,
+            weight: wordItem.weight,
+            fail: wordItem.fail
+        )
+        wordsAction.save(newWord) { result in
             if case .success = result {
                 presentationMode.wrappedValue.dismiss()
                 refresh()
