@@ -1,10 +1,10 @@
 import Foundation
 
 struct CategoryItem: Codable, Equatable, Hashable {
-    let name: String
+    let code: String
     
-    init(name: String) {
-        self.name = name
+    init(code: String) {
+        self.code = code
     }
 }
 
@@ -18,7 +18,7 @@ struct CategoryItemModel: Codable, Equatable, Hashable {
     }
     
     enum CodingKeys: String, CodingKey {
-        case frontCategory = "front_category"
-        case backCategory = "back_category"
+        case frontCategory = "front_side"
+        case backCategory = "back_side"
     }
 }
