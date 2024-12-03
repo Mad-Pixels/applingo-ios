@@ -126,21 +126,25 @@ class APIManager {
         var request = URLRequest(url: url)
         request.httpMethod = method.rawValue
 
-        let timestamp = String(Int(Date().timeIntervalSince1970))
-        let signature = generateSignature(input: timestamp)
-
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue(signature, forHTTPHeaderField: "x-signature")
-        request.setValue(timestamp, forHTTPHeaderField: "x-timestamp")
-        
+
+        let timestamp = String(Int(Date().timeIntervalSince1970))
+        let signature = generateSignature(timestamp: timestamp)
+            
+        let combinedAuth = "\(timestamp):::\(signature)"
+        request.setValue(combinedAuth, forHTTPHeaderField: "x-api-auth")
+            
         if method == .post, let body = body {
             request.httpBody = body
         }
         return request
     }
+
     
-    private func generateSignature(input: String) -> String {
-        let signature = HMAC<SHA256>.authenticationCode(for: Data(input.utf8), using: SymmetricKey(data: Data(token.utf8)))
-        return Data(signature).map { String(format: "%02hhx", $0) }.joined()
+    private func generateSignature(timestamp: String) -> String {
+        let key = SymmetricKey(data: Data(token.utf8))
+        let dataToSign = Data(timestamp.utf8)
+        let signature = HMAC<SHA256>.authenticationCode(for: dataToSign, using: key)
+        return signature.map { String(format: "%02x", $0) }.joined()
     }
 }

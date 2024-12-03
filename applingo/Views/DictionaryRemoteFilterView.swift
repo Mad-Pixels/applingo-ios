@@ -42,7 +42,7 @@ struct DictionaryRemoteFilterView: View {
                                             items: categoryGetter.frontCategories,
                                             title: ""
                                         ) { category in
-                                            Text(category?.name ?? "")
+                                            Text(category?.code ?? "")
                                         }
                                         .frame(maxWidth: .infinity)
 
@@ -61,7 +61,7 @@ struct DictionaryRemoteFilterView: View {
                                             items: categoryGetter.backCategories,
                                             title: ""
                                         ) { category in
-                                            Text(category?.name ?? "")
+                                            Text(category?.code ?? "")
                                         }
                                         .frame(maxWidth: .infinity)
                                     }
@@ -92,8 +92,8 @@ struct DictionaryRemoteFilterView: View {
                         CompButtonActionView(
                             title: LanguageManager.shared.localizedString(for: "Save").capitalizedFirstLetter,
                             action: {
-                                let frontCategoryName = selectedFrontCategory?.name ?? ""
-                                let backCategoryName = selectedBackCategory?.name ?? ""
+                                let frontCategoryName = selectedFrontCategory?.code ?? ""
+                                let backCategoryName = selectedBackCategory?.code ?? ""
                                 apiRequestParams.subcategory = "\(frontCategoryName)-\(backCategoryName)".lowercased()
                                 apiRequestParams.sortBy = selectedSortBy.rawValue
                                 presentationMode.wrappedValue.dismiss()
