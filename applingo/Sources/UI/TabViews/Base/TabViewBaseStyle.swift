@@ -2,75 +2,40 @@ import SwiftUI
 
 struct TabViewBaseStyle {
     struct UIKitStyle {
-        let tabBarHeight: CGFloat
-        let tabBarSpacing: CGFloat
-        let fontSize: CGFloat
+        // basic
         let fontWeight: UIFont.Weight
-    }
-    
-    struct SwiftUIStyle {
-        let iconSize: CGFloat
-        let selectedIconScale: CGFloat
-        let cornerRadius: CGFloat
-        let selectionAnimationDuration: Double
-        let transitionAnimation: Animation
+        let tabBarSpacing: CGFloat
+        let tabBarHeight: CGFloat
+        let fontSize: CGFloat
+        
+        // colors default state
+        let backgroundColor: Color
+        let normalTitleColor: Color
+        let normalIconColor: Color
+        
+        // colors selected state
+        let selectedTitleColor: Color
+        let selectedIconColor: Color
     }
     
     let uiKit: UIKitStyle
-    let swiftUI: SwiftUIStyle
 }
 
 extension TabViewBaseStyle {
     static var `default`: TabViewBaseStyle {
         TabViewBaseStyle(
             uiKit: UIKitStyle(
-                tabBarHeight: 49,
+                fontWeight: .medium,
                 tabBarSpacing: 8,
+                tabBarHeight: 49,
                 fontSize: 10,
-                fontWeight: .medium
-            ),
-            swiftUI: SwiftUIStyle(
-                iconSize: 24,
-                selectedIconScale: 1.1,
-                cornerRadius: 12,
-                selectionAnimationDuration: 0.2,
-                transitionAnimation: .easeInOut
-            )
-        )
-    }
-    
-    static var compact: TabViewBaseStyle {
-        TabViewBaseStyle(
-            uiKit: UIKitStyle(
-                tabBarHeight: 44,
-                tabBarSpacing: 6,
-                fontSize: 9,
-                fontWeight: .regular
-            ),
-            swiftUI: SwiftUIStyle(
-                iconSize: 20,
-                selectedIconScale: 1.05,
-                cornerRadius: 10,
-                selectionAnimationDuration: 0.15,
-                transitionAnimation: .easeInOut
-            )
-        )
-    }
-    
-    static var large: TabViewBaseStyle {
-        TabViewBaseStyle(
-            uiKit: UIKitStyle(
-                tabBarHeight: 56,
-                tabBarSpacing: 10,
-                fontSize: 11,
-                fontWeight: .semibold
-            ),
-            swiftUI: SwiftUIStyle(
-                iconSize: 28,
-                selectedIconScale: 1.15,
-                cornerRadius: 14,
-                selectionAnimationDuration: 0.25,
-                transitionAnimation: .easeInOut
+                
+                backgroundColor: .white,
+                normalTitleColor: .gray,
+                normalIconColor: .gray,
+                
+                selectedTitleColor: .blue,
+                selectedIconColor: .blue
             )
         )
     }

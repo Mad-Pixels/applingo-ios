@@ -1,10 +1,10 @@
 import SwiftUI
 
 struct BaseTabViewPreview<Content: View>: View {
-    let content: Content
-    let theme: ThemeType
     let style: TabViewBaseStyle
-    
+    let theme: ThemeType
+    let content: Content
+   
     init(
         theme: ThemeType = .light,
         style: TabViewBaseStyle = .default,
@@ -13,62 +13,65 @@ struct BaseTabViewPreview<Content: View>: View {
         self.theme = theme
         self.style = style
         self.content = content()
-        // Устанавливаем тему сразу при инициализации
+        
         ThemeManager.shared.setTheme(to: theme)
-        // Применяем конфигурацию таб-бара
-        BaseTabViewConfigurator.configure(with: ThemeManager.shared.currentThemeStyle, style: style)
+        BaseTabViewConfigurator.configure(
+            with: ThemeManager.shared.currentThemeStyle,
+            style: style
+        )
     }
     
     var body: some View {
         content
-            .id(theme) // Форсируем обновление при смене темы
+            .id(theme)
             .preferredColorScheme(theme == .dark ? .dark : .light)
             .environmentObject(ThemeManager.shared)
-            .environmentObject(LanguageManager.shared)
-            .environmentObject(FrameManager.shared)
-            .environmentObject(ErrorManager.shared)
-            .withFrameTracker(.learn)
             .withThemeTracker()
+            .withFrameTracker(.learn)
     }
 }
 
-#Preview("Tab View - Light") {
+#Preview("Light Theme") {
     BaseTabViewPreview(theme: .light, style: .default) {
         BaseTabView(frame: .main) {
             TabView {
-                Text("Light Theme - Words")
-                    .tabItem {
-                        Label("Words", systemImage: "text.book.closed")
-                    }
-                Text("Light Theme - Dictionary")
-                    .tabItem {
-                        Label("Dictionary", systemImage: "folder.fill")
-                    }
-                Text("Light Theme - Settings")
-                    .tabItem {
-                        Label("Settings", systemImage: "gear")
-                    }
+                Group {
+                    Text("Words")
+                        .tabItem {
+                            Label("Words", systemImage: "book.fill")
+                        }
+                    Text("Settings")
+                        .tabItem {
+                            Label("Settings", systemImage: "gear")
+                        }
+                    Text("Learn")
+                        .tabItem {
+                            Label("Learn", systemImage: "graduationcap.fill")
+                        }
+                }
             }
         }
     }
 }
 
-#Preview("Tab View - Dark") {
+#Preview("Dark Theme") {
     BaseTabViewPreview(theme: .dark, style: .default) {
         BaseTabView(frame: .main) {
             TabView {
-                Text("Dark Theme - Words")
-                    .tabItem {
-                        Label("Words", systemImage: "text.book.closed")
-                    }
-                Text("Dark Theme - Dictionary")
-                    .tabItem {
-                        Label("Dictionary", systemImage: "folder.fill")
-                    }
-                Text("Dark Theme - Settings")
-                    .tabItem {
-                        Label("Settings", systemImage: "gear")
-                    }
+                Group {
+                    Text("Words")
+                        .tabItem {
+                            Label("Words", systemImage: "book.fill")
+                        }
+                    Text("Settings")
+                        .tabItem {
+                            Label("Settings", systemImage: "gear")
+                        }
+                    Text("Learn")
+                        .tabItem {
+                            Label("Learn", systemImage: "graduationcap.fill")
+                        }
+                }
             }
         }
     }

@@ -7,7 +7,7 @@ struct BaseTabViewConfigurator {
     ) {
         let appearance = UITabBarAppearance()
         appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = UIColor(theme.backgroundViewColor)
+        //appearance.backgroundColor = UIColor(style.uiKit.backgroundColor)
         appearance.shadowColor = .clear
         
         if #available(iOS 15.0, *) {
@@ -22,17 +22,17 @@ struct BaseTabViewConfigurator {
         
         // Normal state
         let normalAppearance = appearance.stackedLayoutAppearance.normal
-        normalAppearance.iconColor = UIColor(theme.secondaryIconColor)
+        normalAppearance.iconColor = UIColor(style.uiKit.normalIconColor)
         normalAppearance.titleTextAttributes = [
-            .foregroundColor: UIColor(theme.secondaryTextColor),
+            .foregroundColor: UIColor(style.uiKit.normalTitleColor),
             .font: style.uiFont
         ]
         
         // Selected state
         let selectedAppearance = appearance.stackedLayoutAppearance.selected
-        selectedAppearance.iconColor = UIColor(theme.accentColor)
+        selectedAppearance.iconColor = UIColor(style.uiKit.selectedIconColor)
         selectedAppearance.titleTextAttributes = [
-            .foregroundColor: UIColor(theme.accentColor),
+            .foregroundColor: UIColor(style.uiKit.selectedTitleColor),
             .font: style.uiFont
         ]
         
