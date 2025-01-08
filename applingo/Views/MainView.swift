@@ -20,16 +20,6 @@ struct MainView: View {
                 }
                 .tag(AppFrameModel.learn)
 
-            TabDictionariesView()
-                .tabItem {
-                    Label {
-                        Text(LanguageManager.shared.localizedString(for: "Dictionaries").capitalizedFirstLetter)
-                    } icon: {
-                        Image(systemName: "folder.fill")
-                    }
-                }
-                .tag(AppFrameModel.tabDictionaries)
-
             TabWordsView()
                 .tabItem {
                     Label {
@@ -39,6 +29,16 @@ struct MainView: View {
                     }
                 }
                 .tag(AppFrameModel.tabWords)
+            
+            TabDictionariesView()
+                .tabItem {
+                    Label {
+                        Text(LanguageManager.shared.localizedString(for: "Dictionaries").capitalizedFirstLetter)
+                    } icon: {
+                        Image(systemName: "folder.fill")
+                    }
+                }
+                .tag(AppFrameModel.tabDictionaries)
 
             TabSettingsView()
                 .tabItem {
