@@ -3,6 +3,6 @@ import SwiftUI
 struct BaseNavigationStyle: ViewModifier {
     func body(content: Content) -> some View {
         content
-            .toolbarColorScheme(ThemeManager.shared.currentThemeStyle is ThemeDark ? .dark : .light, for: .navigationBar)
+            .toolbarColorScheme(ThemeManager.shared.currentThemeStyle is PaletteThemeDark ? .dark : .light, for: .navigationBar)
     }
 }

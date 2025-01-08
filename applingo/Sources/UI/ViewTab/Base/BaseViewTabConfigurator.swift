@@ -25,7 +25,6 @@ struct BaseViewTabConfigurator {
         normalAppearance.iconColor = UIColor(style.uiKit.normalIconColor(theme))
         normalAppearance.titleTextAttributes = [
             .foregroundColor: UIColor(style.uiKit.normalTitleColor(theme)),
-            //.font: style.uiFont
         ]
         
         // Selected state
@@ -33,7 +32,6 @@ struct BaseViewTabConfigurator {
         selectedAppearance.iconColor = UIColor(style.uiKit.selectedIconColor(theme))
         selectedAppearance.titleTextAttributes = [
             .foregroundColor: UIColor(style.uiKit.selectedTitleColor(theme)),
-            //.font: style.uiFont
         ]
         
         UITabBar.appearance().standardAppearance = appearance

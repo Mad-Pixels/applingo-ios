@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct ThemeDark: ThemeStyle {
+struct PaletteThemeDark: ThemeStyle {
     // Main text colors
     let textPrimary = Color(hex: "e5e7eb")
     let textSecondary = Color(hex: "9ca3af")
@@ -19,9 +19,9 @@ struct ThemeDark: ThemeStyle {
     let accentContrast = Color.white
     
     // System colors
-    let error = Color(hex: "ef4444")
     let success = Color(hex: "22c55e")
     let warning = Color(hex: "eab308")
+    let error = Color(hex: "ef4444")
     let info = Color(hex: "06b6d4")
     
     // Card and content
@@ -30,7 +30,7 @@ struct ThemeDark: ThemeStyle {
     let cardBackgroundHover = Color(hex: "333333")
     
     // Interactive states
-    let interactiveHover = Color(hex: "e38c10") // accentLight
     let interactiveDisabled = Color(hex: "4b5563")
-    let interactiveActive = Color(hex: "f8a009") // accentPrimary
+    let interactiveActive = Color(hex: "f8a009")
+    let interactiveHover = Color(hex: "e38c10")
 }

@@ -36,9 +36,9 @@ final class ThemeManager: ObservableObject {
     var currentThemeStyle: ThemeStyle {
         switch currentTheme {
         case .dark:
-            return ThemeDark()
+            return PaletteThemeDark()
         case .light:
-            return ThemeLight()
+            return PaletteThemeLight()
         }
     }
 }

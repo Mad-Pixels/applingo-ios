@@ -6,9 +6,9 @@ final class ThemeProvider {
     func currentTheme() -> ThemeStyle {
         switch ThemeManager().currentTheme {
         case .dark:
-            return ThemeDark()
+            return PaletteThemeDark()
         case .light:
-            return ThemeLight()
+            return PaletteThemeLight()
         }
     }
 }
