@@ -1,6 +1,7 @@
 import Combine
 
 final class ThemeManager: ObservableObject {
+    private(set) var supportedThemes: [ThemeType] = []
     static let shared = ThemeManager()
     
     @Published var currentTheme: ThemeType {
@@ -10,8 +11,6 @@ final class ThemeManager: ObservableObject {
             }
         }
     }
-    
-    private(set) var supportedThemes: [ThemeType] = []
     
     init() {
         self.currentTheme = Self.getInitialTheme()
