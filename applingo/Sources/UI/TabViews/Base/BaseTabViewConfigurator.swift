@@ -1,19 +1,19 @@
 import SwiftUI
 
-struct TabViewsBaseConfigurator {
+struct BaseTabViewConfigurator {
     static func configure(
         with theme: ThemeStyle,
-        style: TabViewStyle = .default
+        style: TabViewBaseStyle = .default
     ) {
         let appearance = UITabBarAppearance()
         appearance.configureWithOpaqueBackground()
-        
-        // Базовые настройки
         appearance.backgroundColor = UIColor(theme.backgroundViewColor)
         appearance.shadowColor = .clear
         
-        // Применяем отступы
         if #available(iOS 15.0, *) {
+            UITabBar.appearance().itemPositioning = .centered
+            UITabBar.appearance().itemSpacing = style.uiKit.tabBarSpacing
+            
             appearance.stackedLayoutAppearance.normal.titlePositionAdjustment = UIOffset(
                 horizontal: 0,
                 vertical: style.uiKit.tabBarSpacing
@@ -38,11 +38,5 @@ struct TabViewsBaseConfigurator {
         
         UITabBar.appearance().standardAppearance = appearance
         UITabBar.appearance().scrollEdgeAppearance = appearance
-        
-        // Дополнительные настройки для iOS 15+
-        if #available(iOS 15.0, *) {
-            UITabBar.appearance().itemPositioning = .centered
-            UITabBar.appearance().itemSpacing = style.uiKit.tabBarSpacing
-        }
     }
 }

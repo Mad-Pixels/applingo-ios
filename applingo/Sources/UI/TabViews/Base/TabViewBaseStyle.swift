@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct TabViewStyle {
+struct TabViewBaseStyle {
     struct UIKitStyle {
         let tabBarHeight: CGFloat
         let tabBarSpacing: CGFloat
@@ -20,9 +20,9 @@ struct TabViewStyle {
     let swiftUI: SwiftUIStyle
 }
 
-extension TabViewStyle {
-    static var `default`: TabViewStyle {
-        TabViewStyle(
+extension TabViewBaseStyle {
+    static var `default`: TabViewBaseStyle {
+        TabViewBaseStyle(
             uiKit: UIKitStyle(
                 tabBarHeight: 49,
                 tabBarSpacing: 8,
@@ -39,8 +39,8 @@ extension TabViewStyle {
         )
     }
     
-    static var compact: TabViewStyle {
-        TabViewStyle(
+    static var compact: TabViewBaseStyle {
+        TabViewBaseStyle(
             uiKit: UIKitStyle(
                 tabBarHeight: 44,
                 tabBarSpacing: 6,
@@ -57,8 +57,8 @@ extension TabViewStyle {
         )
     }
     
-    static var large: TabViewStyle {
-        TabViewStyle(
+    static var large: TabViewBaseStyle {
+        TabViewBaseStyle(
             uiKit: UIKitStyle(
                 tabBarHeight: 56,
                 tabBarSpacing: 10,
@@ -76,7 +76,7 @@ extension TabViewStyle {
     }
 }
 
-extension TabViewStyle {
+extension TabViewBaseStyle {
     var uiFont: UIFont {
         .systemFont(ofSize: uiKit.fontSize, weight: uiKit.fontWeight)
     }

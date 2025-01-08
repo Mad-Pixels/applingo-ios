@@ -13,7 +13,7 @@ struct BaseTabView<Content: View>: View {
     ) {
         self.frame = frame
         self.content = content()
-        TabViewsBaseConfigurator.configure(with: ThemeManager.shared.currentThemeStyle)
+        BaseTabViewConfigurator.configure(with: ThemeManager.shared.currentThemeStyle)
     }
     
     var body: some View {
@@ -21,7 +21,7 @@ struct BaseTabView<Content: View>: View {
             .withThemeTracker()
             .withFrameTracker(frame)
             .onChange(of: themeManager.currentTheme) { _ in
-                TabViewsBaseConfigurator.configure(with: themeManager.currentThemeStyle)
+                BaseTabViewConfigurator.configure(with: themeManager.currentThemeStyle)
             }
     }
 }
