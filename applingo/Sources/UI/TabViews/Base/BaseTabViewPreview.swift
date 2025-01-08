@@ -27,13 +27,12 @@ struct BaseTabViewPreview<Content: View>: View {
             .preferredColorScheme(theme == .dark ? .dark : .light)
             .environmentObject(ThemeManager.shared)
             .withThemeTracker()
-            .withFrameTracker(.learn)
     }
 }
 
 #Preview("Light Theme") {
     BaseTabViewPreview(theme: .light, style: .default) {
-        BaseTabView(frame: .main) {
+        BaseTabView() {
             TabView {
                 Group {
                     Text("Words")
@@ -56,7 +55,7 @@ struct BaseTabViewPreview<Content: View>: View {
 
 #Preview("Dark Theme") {
     BaseTabViewPreview(theme: .dark, style: .default) {
-        BaseTabView(frame: .main) {
+        BaseTabView() {
             TabView {
                 Group {
                     Text("Words")
