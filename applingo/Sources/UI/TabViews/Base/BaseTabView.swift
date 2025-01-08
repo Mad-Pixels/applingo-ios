@@ -21,7 +21,6 @@ struct BaseTabView<Content: View>: View {
     var body: some View {
         content
             .withThemeTracker()
-            .withLanguageTracker()
             .onChange(of: themeManager.currentTheme) { _ in
                 BaseTabViewConfigurator.configure(
                     with: themeManager.currentThemeStyle,
