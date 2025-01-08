@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct ScreenTracker: ViewModifier {
+struct ScreenViewTracker: ViewModifier {
     let name: ScreenName
     
     func body(content: Content) -> some View {
@@ -12,6 +12,6 @@ struct ScreenTracker: ViewModifier {
 
 extension View {
     func withScreenTracker(_ screenName: ScreenName) -> some View {
-        modifier(ScreenTracker(name: screenName))
+        modifier(ScreenViewTracker(name: screenName))
     }
 }

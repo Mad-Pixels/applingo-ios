@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct ThemeTracker: ViewModifier {
+struct ThemeViewTracker: ViewModifier {
     @ObservedObject private var themeManager = ThemeManager.shared
     
     func body(content: Content) -> some View {
@@ -13,6 +13,6 @@ struct ThemeTracker: ViewModifier {
 
 extension View {
     func withThemeTracker() -> some View {
-        modifier(ThemeTracker())
+        modifier(ThemeViewTracker())
     }
 }

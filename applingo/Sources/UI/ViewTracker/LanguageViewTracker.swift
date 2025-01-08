@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct LanguageTracker: ViewModifier {
+struct LanguageViewTracker: ViewModifier {
     @ObservedObject private var languageManager = LanguageManager.shared
     
     func body(content: Content) -> some View {
@@ -11,6 +11,6 @@ struct LanguageTracker: ViewModifier {
 
 extension View {
     func withLanguageTracker() -> some View {
-        modifier(LanguageTracker())
+        modifier(LanguageViewTracker())
     }
 }
