@@ -42,7 +42,7 @@ struct UserDefaultsStorage: AbstractStorage {
         }
     }
 
-    var id: String {
+    var appId: String {
         get {
             if let existingID = UserDefaults.standard.string(forKey: Keys.id) {
                 Logger.debug("[Storage]: Reading existing id")

@@ -7,7 +7,7 @@ final class LanguageManager: ObservableObject {
     
     @Published var currentLanguage: String {
         didSet {
-            Defaults.appLanguage = currentLanguage
+            AppStorage.shared.appLanguage = currentLanguage
             setLanguage(currentLanguage)
         }
     }
@@ -27,9 +27,9 @@ final class LanguageManager: ObservableObject {
 
     private static func getInitialLanguage() -> String {
         if #available(iOS 16.0, *) {
-            return Defaults.appLanguage ?? Locale.current.language.languageCode?.identifier ?? "en"
+            return AppStorage.shared.appLanguage ?? Locale.current.language.languageCode?.identifier ?? "en"
         } else {
-            return Defaults.appLanguage ?? Locale.current.languageCode ?? "en"
+            return AppStorage.shared.appLanguage ?? Locale.current.languageCode ?? "en"
         }
     }
 
@@ -55,7 +55,7 @@ final class LanguageManager: ObservableObject {
         
         Logger.debug("[LanguageManager]: Set language to \(language)")
         self.bundle = bundle
-        Defaults.appLanguage = language
+        AppStorage.shared.appLanguage = language
     }
     
     func localizedString(for key: String, arguments: CVarArg...) -> String {

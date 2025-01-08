@@ -6,8 +6,8 @@ final class ThemeManager: ObservableObject {
     
     @Published var currentTheme: ThemeType {
         didSet {
-            if Defaults.appTheme != currentTheme.rawValue {
-                Defaults.appTheme = currentTheme.rawValue
+            if AppStorage.shared.appTheme != currentTheme.rawValue {
+                AppStorage.shared.appTheme = currentTheme.rawValue
             }
         }
     }
@@ -19,7 +19,7 @@ final class ThemeManager: ObservableObject {
     }
     
     private static func getInitialTheme() -> ThemeType {
-        return ThemeType.fromString(Defaults.appTheme ?? ThemeType.light.rawValue)
+        return ThemeType.fromString(AppStorage.shared.appTheme ?? ThemeType.light.rawValue)
     }
     
     private func getSupportedThemes() -> [ThemeType] {

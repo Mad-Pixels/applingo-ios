@@ -19,12 +19,12 @@ final class AppStorage {
         set { storage.appTheme = newValue }
     }
     
+    var appId: String {
+        storage.appId
+    }
+    
     var sendLogs: Bool {
         get { storage.sendLogs }
         set { storage.sendLogs = newValue }
-    }
-    
-    var replicaID: String {
-        storage.id
     }
 }

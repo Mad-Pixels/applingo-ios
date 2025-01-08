@@ -40,7 +40,7 @@ struct ErrorLog: Codable {
         self.additionalInfo = additionalInfo
         self.errorMessage = errorMessage
         self.errorOriginal = errorOriginal.map { String(describing: $0) } ?? "unknown"
-        self.replicaID = Defaults.appReplicaID
+        self.replicaID = AppStorage.shared.appId
     }
 
     func toJSON() -> String? {
@@ -75,8 +75,8 @@ final class LogHandler: ObservableObject {
     
     @Published var sendLogs: Bool {
         didSet {
-            if Defaults.sendLogs != sendLogs {
-                Defaults.sendLogs = sendLogs
+            if AppStorage.shared.sendLogs != sendLogs {
+                AppStorage.shared.sendLogs = sendLogs
                 Logger.debug("[LogHandler]: Updated sendLogs to \(sendLogs) in UserDefaults")
             }
         }
@@ -85,7 +85,7 @@ final class LogHandler: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     
     private init() {
-        self.sendLogs = Defaults.sendLogs
+        self.sendLogs = AppStorage.shared.sendLogs
         observeSendLogs()
     }
     
@@ -93,7 +93,7 @@ final class LogHandler: ObservableObject {
         $sendLogs
             .sink { newValue in
                 Logger.debug("[LogHandler]: SendLogs changed to \(newValue)")
-                Defaults.sendLogs = newValue
+                AppStorage.shared.sendLogs = newValue
             }
             .store(in: &cancellables)
     }

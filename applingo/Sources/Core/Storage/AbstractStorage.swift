@@ -4,8 +4,7 @@ protocol AbstractStorage {
     // App Settings
     var appLanguage: String? { get set }
     var appTheme: String? { get set }
-    var sendLogs: Bool { get set }
+    var appId: String { get }
     
-    // App Identity
-    var id: String { get }
+    var sendLogs: Bool { get set }
 }
