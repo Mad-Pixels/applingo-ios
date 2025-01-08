@@ -4,12 +4,8 @@ struct MainView: View {
     @ObservedObject private var languageManager = LanguageManager.shared
     @EnvironmentObject var themeManager: ThemeManager
 
-//    init() {
-//        configureInitialTabBarAppearance()
-//    }
-
     var body: some View {
-        AppTabView(theme: themeManager.currentTheme, style: .default) {
+        AppViewTab(theme: themeManager.currentTheme, style: .default) {
             TabView {
                 TabLearnView()
                     .tabItem {
@@ -52,39 +48,8 @@ struct MainView: View {
                     .tag(AppFrameModel.tabSettings)
             }
         }
-        .id(themeManager.currentTheme)
-        .preferredColorScheme(themeManager.currentTheme == .dark ? .dark : .light)
         .onAppear {
             FrameManager.shared.setActiveFrame(.learn)
-            //configureTabBarAppearance()
         }
-//        .onChange(of: themeManager.currentTheme) { _ in
-//            configureTabBarAppearance()
-//        }
     }
-
-//    private func configureTabBarAppearance() {
-//        DispatchQueue.main.async {
-//            configureInitialTabBarAppearance()
-//        }
-//    }
-
-//    private func configureInitialTabBarAppearance() {
-//        let appearance = UITabBarAppearance()
-//        appearance.configureWithOpaqueBackground()
-//        appearance.backgroundColor = UIColor(ThemeManager.shared.currentThemeStyle.backgroundViewColor)
-//
-//        appearance.stackedLayoutAppearance.normal.iconColor = UIColor(ThemeManager.shared.currentThemeStyle.secondaryIconColor)
-//        appearance.stackedLayoutAppearance.normal.titleTextAttributes = [
-//            .foregroundColor: UIColor(ThemeManager.shared.currentThemeStyle.secondaryTextColor)
-//        ]
-//        
-//        appearance.stackedLayoutAppearance.selected.iconColor = UIColor(ThemeManager.shared.currentThemeStyle.accentColor)
-//        appearance.stackedLayoutAppearance.selected.titleTextAttributes = [
-//            .foregroundColor: UIColor(ThemeManager.shared.currentThemeStyle.accentColor)
-//        ]
-//        
-//        UITabBar.appearance().standardAppearance = appearance
-//        UITabBar.appearance().scrollEdgeAppearance = appearance
-//    }
 }

@@ -1,9 +1,9 @@
 import SwiftUI
 
-struct BaseTabViewConfigurator {
+struct BaseViewTabConfigurator {
     static func configure(
         with theme: ThemeStyle,
-        style: TabViewBaseStyle = .default
+        style: BaseViewTabStyle = .default
     ) {
         let appearance = UITabBarAppearance()
         appearance.configureWithOpaqueBackground()

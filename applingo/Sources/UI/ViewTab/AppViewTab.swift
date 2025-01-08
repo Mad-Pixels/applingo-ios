@@ -1,32 +1,28 @@
 import SwiftUI
 
-struct AppTabView<Content: View>: View {
+struct AppViewTab<Content: View>: View {
     let content: () -> Content
     let theme: ThemeType
-    let style: TabViewBaseStyle
+    let style: BaseViewTabStyle
     
     init(
         theme: ThemeType = .light,
-        style: TabViewBaseStyle = .default,
+        style: BaseViewTabStyle = .default,
         @ViewBuilder content: @escaping () -> Content
     ) {
         self.theme = theme
         self.style = style
         self.content = content
 
-        BaseTabViewConfigurator.configure(
+        BaseViewTabConfigurator.configure(
             with: ThemeManager.shared.currentThemeStyle,
             style: style
         )
     }
 
     var body: some View {
-        BaseTabView {
+        BaseViewTab(style: style) {
             content()
-                .id(theme)
-                .preferredColorScheme(theme == .dark ? .dark : .light)
-                .environmentObject(ThemeManager.shared)
-                .withThemeTracker()
         }
     }
 }

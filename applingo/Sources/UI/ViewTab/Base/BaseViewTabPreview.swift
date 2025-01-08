@@ -1,13 +1,13 @@
 import SwiftUI
 
-struct BaseTabViewPreview<Content: View>: View {
-    let style: TabViewBaseStyle
+struct BaseViewTabPreview<Content: View>: View {
+    let style: BaseViewTabStyle
     let theme: ThemeType
     let content: Content
    
     init(
         theme: ThemeType = .light,
-        style: TabViewBaseStyle = .default,
+        style: BaseViewTabStyle = .default,
         @ViewBuilder content: () -> Content
     ) {
         self.theme = theme
@@ -15,7 +15,7 @@ struct BaseTabViewPreview<Content: View>: View {
         self.content = content()
         
         ThemeManager.shared.setTheme(to: theme)
-        BaseTabViewConfigurator.configure(
+        BaseViewTabConfigurator.configure(
             with: ThemeManager.shared.currentThemeStyle,
             style: style
         )
@@ -31,8 +31,8 @@ struct BaseTabViewPreview<Content: View>: View {
 }
 
 #Preview("Light Theme") {
-    BaseTabViewPreview(theme: .light, style: .default) {
-        BaseTabView() {
+    BaseViewTabPreview(theme: .light, style: .default) {
+        BaseViewTab() {
             TabView {
                 Group {
                     Text("Words")
@@ -54,8 +54,8 @@ struct BaseTabViewPreview<Content: View>: View {
 }
 
 #Preview("Dark Theme") {
-    BaseTabViewPreview(theme: .dark, style: .default) {
-        BaseTabView() {
+    BaseViewTabPreview(theme: .dark, style: .default) {
+        BaseViewTab() {
             TabView {
                 Group {
                     Text("Words")
