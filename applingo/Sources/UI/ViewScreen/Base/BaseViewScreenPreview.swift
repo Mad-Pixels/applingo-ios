@@ -2,16 +2,19 @@ import SwiftUI
 
 struct BaseViewScreenPreview<Content: View>: View {
     let style: BaseViewScreenStyle
-    let theme: DiscoverTheme
     let content: Content
+    let screen: DiscoverScreen
+    let theme: DiscoverTheme
    
     init(
         theme: DiscoverTheme = .light,
         style: BaseViewScreenStyle = .default,
+        screen: DiscoverScreen,
         @ViewBuilder content: () -> Content
     ) {
         self.theme = theme
         self.style = style
+        self.screen = screen
         self.content = content()
         ThemeManager.shared.setTheme(to: theme)
     }
@@ -21,12 +24,14 @@ struct BaseViewScreenPreview<Content: View>: View {
             .id(theme)
             .preferredColorScheme(theme == .dark ? .dark : .light)
             .environmentObject(ThemeManager.shared)
+            .withScreenTracker(screen)
+            .withLanguageTracker()
             .withThemeTracker()
     }
 }
 
 #Preview("Light Theme") {
-    BaseViewScreenPreview(theme: .light) {
+    BaseViewScreenPreview(theme: .light, screen: .settings) {
         BaseViewScreen(screen: .settings) {
             VStack(spacing: 20) {
                 Text("Content Example")
@@ -39,7 +44,7 @@ struct BaseViewScreenPreview<Content: View>: View {
 }
 
 #Preview("Dark Theme") {
-    BaseViewScreenPreview(theme: .dark) {
+    BaseViewScreenPreview(theme: .dark, screen: .words) {
         BaseViewScreen(screen: .words) {
             VStack(spacing: 20) {
                 Text("Content Example")

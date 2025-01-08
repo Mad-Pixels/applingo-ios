@@ -27,4 +27,3 @@ struct BaseViewScreen<Content: View>: View {
         }
     }
 }
-
