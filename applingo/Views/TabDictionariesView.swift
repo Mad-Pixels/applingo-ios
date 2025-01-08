@@ -22,7 +22,7 @@ struct TabDictionariesView: View {
 
         NavigationView {
             ZStack {
-                theme.backgroundViewColor.edgesIgnoringSafeArea(.all)
+                theme.backgroundPrimary.edgesIgnoringSafeArea(.all)
 
                 CompItemListView(
                     items: $dictionaryGetter.dictionaries,

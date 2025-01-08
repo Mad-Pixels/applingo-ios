@@ -7,21 +7,21 @@ struct CompWordRowView: View {
     var body: some View {
         HStack {
             Text(word.frontText)
-                .foregroundColor(ThemeManager.shared.currentThemeStyle.baseTextColor)
+                .foregroundColor(ThemeManager.shared.currentThemeStyle.textPrimary)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .modifier(BaseTextStyle())
             ZStack {
                 Capsule()
-                    .fill(ThemeManager.shared.currentThemeStyle.accentColor.opacity(0.1))
+                    .fill(ThemeManager.shared.currentThemeStyle.accentPrimary.opacity(0.1))
                     .frame(width: 36, height: 24)
                 
                 Image(systemName: "arrow.left.and.right")
                     .font(.system(size: 12, weight: .medium))
-                    .foregroundColor(ThemeManager.shared.currentThemeStyle.accentColor)
+                    .foregroundColor(ThemeManager.shared.currentThemeStyle.accentPrimary)
             }
             Text(word.backText)
                 .font(.subheadline)
-                .foregroundColor(ThemeManager.shared.currentThemeStyle.secondaryTextColor)
+                .foregroundColor(ThemeManager.shared.currentThemeStyle.textSecondary)
                 .frame(maxWidth: .infinity, alignment: .trailing)
                 .modifier(BaseTextStyle())
         }

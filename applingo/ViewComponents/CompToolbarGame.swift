@@ -37,8 +37,8 @@ struct CompToolbarGame: View {
         .padding(.vertical, 8)
         .background {
             RoundedRectangle(cornerRadius: 16)
-                .fill(theme.backgroundBlockColor)
-                .shadow(color: theme.secondaryTextColor.opacity(0.3), radius: 5, x: 0, y: 2)
+                .fill(theme.backgroundSecondary)
+                .shadow(color: theme.backgroundSecondary.opacity(0.3), radius: 5, x: 0, y: 2)
         }
     }
 }

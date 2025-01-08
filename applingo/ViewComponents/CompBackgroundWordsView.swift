@@ -12,7 +12,7 @@ struct CompBackgroundWordsView: View {
                     Text(word.word)
                         .font(Font(word.font))
                         .position(word.position)
-                        .foregroundColor(theme.secondaryTextColor.opacity(word.opacity))
+                        .foregroundColor(theme.textSecondary.opacity(word.opacity))
                 }
             }
             .frame(width: geometry.size.width, height: geometry.size.height)

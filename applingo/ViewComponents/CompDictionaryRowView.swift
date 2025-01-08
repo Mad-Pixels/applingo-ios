@@ -10,7 +10,7 @@ struct CompDictionaryRowView: View {
             VStack(alignment: .leading) {
                 Text(dictionary.displayName)
                     .font(.headline)
-                    .foregroundColor(ThemeManager.shared.currentThemeStyle.baseTextColor)
+                    .foregroundColor(ThemeManager.shared.currentThemeStyle.textPrimary)
 
                 Text(dictionary.subTitle)
                     .font(.subheadline)

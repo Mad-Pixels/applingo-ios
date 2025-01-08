@@ -22,7 +22,7 @@ struct DictionaryRemoteListView: View {
 
         NavigationView {
             ZStack {
-                theme.backgroundViewColor.edgesIgnoringSafeArea(.all)
+                theme.backgroundPrimary.edgesIgnoringSafeArea(.all)
 
                 CompItemListView(
                     items: $dictionaryGetter.dictionaries,
@@ -44,7 +44,7 @@ struct DictionaryRemoteListView: View {
                             VStack(alignment: .leading) {
                                 Text(dictionary.displayName)
                                     .font(.headline)
-                                    .foregroundColor(theme.baseTextColor)
+                                    .foregroundColor(theme.textPrimary)
 
                                 Text(dictionary.subTitle)
                                     .font(.subheadline)
@@ -67,7 +67,7 @@ struct DictionaryRemoteListView: View {
                 .navigationTitle(LanguageManager.shared.localizedString(for: "Dictionaries").capitalizedFirstLetter)
                 .navigationBarItems(leading: Button(action: dismiss) {
                     Text(LanguageManager.shared.localizedString(for: "Back").capitalizedFirstLetter)
-                        .foregroundColor(theme.accentColor)
+                        .foregroundColor(theme.accentPrimary)
                 })
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {

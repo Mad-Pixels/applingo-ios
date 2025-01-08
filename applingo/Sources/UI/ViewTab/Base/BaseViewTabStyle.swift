@@ -8,12 +8,10 @@ struct BaseViewTabStyle {
         let tabBarHeight: CGFloat
         let fontSize: CGFloat
         
-        // default state
+        // colors
         let backgroundColor: (ThemeStyle) -> Color
         let normalTitleColor: (ThemeStyle) -> Color
         let normalIconColor: (ThemeStyle) -> Color
-        
-        // selected state
         let selectedTitleColor: (ThemeStyle) -> Color
         let selectedIconColor: (ThemeStyle) -> Color
     }
@@ -31,28 +29,21 @@ extension BaseViewTabStyle {
                 fontSize: 10,
                 
                 backgroundColor: { theme in
-                    theme.backgroundViewColor
+                    theme.backgroundPrimary
                 },
                 normalTitleColor: { theme in
-                    theme.secondaryTextColor
+                    theme.textSecondary
                 },
                 normalIconColor: { theme in
-                    theme.secondaryIconColor
+                    theme.textSecondary
                 },
-                
                 selectedTitleColor: { theme in
-                    theme.accentColor
+                    theme.accentPrimary
                 },
                 selectedIconColor: { theme in
-                    theme.accentColor
+                    theme.accentPrimary
                 }
             )
         )
-    }
-}
-
-extension BaseViewTabStyle {
-    var uiFont: UIFont {
-        .systemFont(ofSize: uiKit.fontSize, weight: uiKit.fontWeight)
     }
 }

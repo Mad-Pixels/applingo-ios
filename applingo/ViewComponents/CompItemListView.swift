@@ -42,7 +42,7 @@ struct CompItemListView<Item: Identifiable & Equatable, RowContent: View>: View 
                     }
                 }
             }
-            .background(ThemeManager.shared.currentThemeStyle.backgroundViewColor)
+            .background(ThemeManager.shared.currentThemeStyle.backgroundPrimary)
             .scrollContentBackground(.hidden)
             
             if isLoadingPage && items.isEmpty {

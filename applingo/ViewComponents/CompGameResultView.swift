@@ -23,9 +23,9 @@ struct GameResultCardView: View {
             .padding(24)
             .background(
                 RoundedRectangle(cornerRadius: 20)
-                    .fill(style.theme.backgroundBlockColor)
+                    .fill(style.theme.backgroundSecondary)
                     .shadow(
-                        color: style.theme.accentColor.opacity(0.2),
+                        color: style.theme.accentPrimary.opacity(0.2),
                         radius: 20,
                         x: 0,
                         y: 10
@@ -42,11 +42,11 @@ struct GameResultCardView: View {
             Text(gameMode == .timeAttack ? LanguageManager.shared.localizedString(for: "GameTimesUp") :
                     LanguageManager.shared.localizedString(for: "GameOver"))
                 .font(.system(.title, design: .rounded).weight(.bold))
-                .foregroundColor(style.theme.baseTextColor)
+                .foregroundColor(style.theme.textPrimary)
             
             Text(LanguageManager.shared.localizedString(for: "GameResults").uppercased())
                 .font(.system(.title3, design: .rounded))
-                .foregroundColor(style.theme.secondaryTextColor)
+                .foregroundColor(style.theme.textSecondary)
         }
     }
     
@@ -118,9 +118,9 @@ struct GameResultCardView: View {
         .padding()
         .background(
             RoundedRectangle(cornerRadius: 12)
-                .fill(style.theme.backgroundBlockColor)
+                .fill(style.theme.backgroundSecondary)
                 .shadow(
-                    color: style.theme.accentColor.opacity(0.1),
+                    color: style.theme.accentPrimary.opacity(0.1),
                     radius: 5,
                     x: 0,
                     y: 2
@@ -150,7 +150,7 @@ struct GameResultCardView: View {
                     .padding()
                     .background(
                         Capsule()
-                            .fill(style.theme.accentColor)
+                            .fill(style.theme.accentPrimary)
                     )
             }
         }

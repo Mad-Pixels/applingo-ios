@@ -12,12 +12,12 @@ struct BaseCheckboxStyle: ToggleStyle {
             ZStack {
                 RoundedRectangle(cornerRadius: 8)
                     .stroke(
-                        configuration.isOn ? theme.accentColor : theme.secondaryIconColor,
+                        configuration.isOn ? theme.accentPrimary : theme.accentLight,
                         lineWidth: configuration.isOn ? 0 : 2
                     )
                     .background(
                         RoundedRectangle(cornerRadius: 8)
-                            .fill(configuration.isOn ? theme.accentColor : .clear)
+                            .fill(configuration.isOn ? theme.accentPrimary : .clear)
                     )
                     .frame(width: 26, height: 26)
                 

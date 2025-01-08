@@ -14,8 +14,8 @@ struct CompButtonActionView: View {
         }
         .buttonStyle(
             BaseButtonStyle(
-                backgroundColor: ThemeManager.shared.currentThemeStyle.accentColor,
-                textColor: ThemeManager.shared.currentThemeStyle.baseTextColor
+                backgroundColor: ThemeManager.shared.currentThemeStyle.accentPrimary,
+                textColor: ThemeManager.shared.currentThemeStyle.textPrimary
             )
         )
     }

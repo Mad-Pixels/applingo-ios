@@ -11,7 +11,7 @@ struct TabSettingsView: View {
 
         NavigationView {
             ZStack {
-                theme.backgroundViewColor.edgesIgnoringSafeArea(.all)
+                theme.backgroundPrimary.edgesIgnoringSafeArea(.all)
                 
                 Form {
                     CompSelectView(

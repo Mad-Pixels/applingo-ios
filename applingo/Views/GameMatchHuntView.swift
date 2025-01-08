@@ -101,7 +101,7 @@ private struct GameMatchHuntContent: View {
     
     private var divider: some View {
         Rectangle()
-            .fill(style.theme.accentColor)
+            .fill(style.theme.accentPrimary)
             .frame(width: 2)
             .opacity(0.3)
     }

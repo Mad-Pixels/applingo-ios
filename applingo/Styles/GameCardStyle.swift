@@ -40,14 +40,14 @@ struct GameCardStyle {
         func body(content: Content) -> some View {
             content
                 .frame(width: Layout.width, height: Layout.height)
-                .background(theme.backgroundBlockColor)
+                .background(theme.backgroundSecondary)
                 .clipShape(RoundedRectangle(cornerRadius: Layout.cornerRadius))
                 .overlay(
                     RoundedRectangle(cornerRadius: Layout.cornerRadius)
-                        .stroke(theme.accentColor.opacity(0.2), lineWidth: Layout.borderWidth)
+                        .stroke(theme.accentPrimary.opacity(0.2), lineWidth: Layout.borderWidth)
                 )
                 .shadow(
-                    color: theme.accentColor.opacity(0.1),
+                    color: theme.accentPrimary.opacity(0.1),
                     radius: Layout.shadowRadius,
                     x: 0,
                     y: Layout.shadowY
@@ -85,7 +85,7 @@ struct GameCardStyle {
     func sectionHeader(_ title: String) -> some View {
         Text(title)
             .font(Typography.captionFont)
-            .foregroundColor(theme.secondaryTextColor)
+            .foregroundColor(theme.accentDark)
             .padding(.top, Layout.topPadding)
     }
     
@@ -98,7 +98,7 @@ struct GameCardStyle {
     
     func divider() -> some View {
         Rectangle()
-            .fill(theme.accentColor)
+            .fill(theme.accentPrimary)
             .frame(height: Layout.dividerHeight)
             .padding(.horizontal, Layout.dividerHorizontalPadding)
     }
@@ -106,7 +106,7 @@ struct GameCardStyle {
     func hintButton(isActive: Bool) -> some View {
        Image(systemName: isActive ? "wand.and.stars" : "wand.and.stars.inverse")
            .font(Typography.titleFont)
-           .foregroundColor(isActive ? .yellow : theme.accentColor)
+           .foregroundColor(isActive ? .yellow : theme.accentPrimary)
            .padding(.top, Layout.topPadding)
            .shadow(color: isActive ? .yellow.opacity(0.5) : .clear, radius: 5)
     }
@@ -122,7 +122,7 @@ struct GameCardStyle {
     func hintPenalty() -> some View {
         Text(LanguageManager.shared.localizedString(for: "HintPenalty").uppercased())
             .font(Typography.secondaryFont)
-            .foregroundColor(theme.secondaryTextColor)
+            .foregroundColor(theme.textSecondary)
             .padding(.horizontal, 8)
             .padding(.vertical, 2)
             .background(
@@ -231,36 +231,36 @@ private struct QuizOptionStyleModifier: ViewModifier {
     
     private var foregroundColor: Color {
         if !isAnswered {
-            return isSelected ? .white : theme.baseTextColor
+            return isSelected ? .white : theme.textPrimary
         } else {
-            return isCorrect ? .white : theme.baseTextColor
+            return isCorrect ? .white : theme.textPrimary
         }
     }
     
     private var backgroundColor: Color {
         if !isAnswered {
-            return isSelected ? theme.accentColor : theme.backgroundBlockColor
+            return isSelected ? theme.accentPrimary : theme.backgroundSecondary
         } else {
             if isCorrect {
                 return .green
             } else if isSelected {
                 return .red
             } else {
-                return theme.backgroundBlockColor
+                return theme.backgroundSecondary
             }
         }
     }
     
     private var borderColor: Color {
         if !isAnswered {
-            return isSelected ? .clear : theme.secondaryTextColor.opacity(0.3)
+            return isSelected ? .clear : theme.textSecondary.opacity(0.3)
         } else {
             if isCorrect {
                 return .green
             } else if isSelected {
                 return .red
             } else {
-                return theme.secondaryTextColor.opacity(0.3)
+                return theme.textSecondary.opacity(0.3)
             }
         }
     }
@@ -268,15 +268,15 @@ private struct QuizOptionStyleModifier: ViewModifier {
     private var shadowColor: Color {
         if !isAnswered {
             return isSelected ?
-                theme.accentColor.opacity(0.3) :
-                theme.secondaryTextColor.opacity(0.1)
+                theme.accentPrimary.opacity(0.3) :
+                theme.textSecondary.opacity(0.1)
         } else {
             if isCorrect {
                 return Color.green.opacity(0.3)
             } else if isSelected {
                 return Color.red.opacity(0.3)
             } else {
-                return theme.secondaryTextColor.opacity(0.1)
+                return theme.textSecondary.opacity(0.1)
             }
         }
     }
@@ -306,14 +306,14 @@ private struct LetterButtonStyleModifier: ViewModifier {
     private var foregroundColor: Color {
         switch style {
         case .option:
-            return theme.baseTextColor
+            return theme.textPrimary
         case .answer:
-            return theme.accentColor
+            return theme.accentPrimary
         }
     }
     
     private var shadowColor: Color {
-        theme.secondaryTextColor.opacity(0.2)
+        theme.textSecondary.opacity(0.2)
     }
 }
 

@@ -9,11 +9,11 @@ struct CompEmptyListView: View {
             Spacer()
             Image(systemName: "rectangle.stack.badge.plus")
                 .font(.system(size: 70))
-                .foregroundColor(theme.accentColor)
+                .foregroundColor(theme.accentPrimary)
                 .padding(.bottom, 8)
             Text(message)
                 .font(.title2.weight(.medium))
-                .foregroundColor(theme.baseTextColor)
+                .foregroundColor(theme.textPrimary)
                 .multilineTextAlignment(.center)
             Spacer()
         }
@@ -21,7 +21,7 @@ struct CompEmptyListView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(
             Circle()
-                .fill(theme.accentColor.opacity(0.05))
+                .fill(theme.accentPrimary.opacity(0.05))
                 .frame(width: 300, height: 300)
                 .blur(radius: 50)
         )

@@ -11,7 +11,7 @@ struct CompButtonGameMenuView: View {
     init(
         _ title: String,
         icon: String,
-        color: Color = ThemeManager.shared.currentThemeStyle.accentColor,
+        color: Color = ThemeManager.shared.currentThemeStyle.accentPrimary,
         action: @escaping () -> Void = {}
     ) {
         self.title = title
@@ -35,13 +35,13 @@ struct CompButtonGameMenuView: View {
                 HStack {
                     Text(title.uppercased())
                         .font(.body)
-                        .foregroundColor(theme.baseTextColor)
+                        .foregroundColor(theme.textPrimary)
                         .fontWeight(.bold)
                     Spacer()
                 }
                 .padding(.horizontal, 20)
                 .padding(.vertical, 12)
-                .foregroundColor(theme.baseTextColor)
+                .foregroundColor(theme.textPrimary)
             }
             .frame(maxWidth: .infinity)
             .frame(height: 70)

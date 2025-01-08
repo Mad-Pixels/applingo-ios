@@ -20,7 +20,7 @@ struct TabWordsView: View {
 
         NavigationView {
             ZStack {
-                theme.backgroundViewColor.edgesIgnoringSafeArea(.all)
+                theme.backgroundPrimary.edgesIgnoringSafeArea(.all)
 
                 CompItemListView(
                     items: $wordsGetter.words,
@@ -50,7 +50,7 @@ struct TabWordsView: View {
                     }
                 )
                 .id(ThemeManager.shared.currentTheme)
-                .background(ThemeManager.shared.currentThemeStyle.backgroundViewColor)
+                .background(ThemeManager.shared.currentThemeStyle.backgroundSecondary)
                 .searchable(
                     text: $wordsGetter.searchText,
                     placement: .navigationBarDrawer(displayMode: .always),

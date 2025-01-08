@@ -32,7 +32,7 @@ struct BaseGameView<Content: View>: View {
         let theme = ThemeManager.shared.currentThemeStyle
         
         ZStack(alignment: .top) {
-            theme.backgroundViewColor.edgesIgnoringSafeArea(.all)
+            theme.backgroundPrimary.edgesIgnoringSafeArea(.all)
             
             VStack(spacing: 0) {
                 HStack {
@@ -43,7 +43,7 @@ struct BaseGameView<Content: View>: View {
                     Button(action: endGame) {
                         Image(systemName: "xmark.circle.fill")
                             .font(.title)
-                            .foregroundColor(theme.secondaryIconColor)
+                            .foregroundColor(theme.cardBorder)
                     }
                 }
                 .padding()

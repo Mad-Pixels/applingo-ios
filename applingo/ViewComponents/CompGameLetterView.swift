@@ -56,9 +56,9 @@ struct CompGameLetterContentSections {
                     .frame(height: GameCardStyle.Letters.wordSectionHeight)
                     .background(
                         RoundedRectangle(cornerRadius: GameCardStyle.Layout.cornerRadius)
-                            .fill(style.theme.backgroundBlockColor)
+                            .fill(style.theme.backgroundSecondary)
                             .shadow(
-                                color: style.theme.accentColor.opacity(0.1),
+                                color: style.theme.accentPrimary.opacity(0.1),
                                 radius: GameCardStyle.Layout.shadowRadius,
                                 x: 0,
                                 y: GameCardStyle.Layout.shadowY
@@ -89,7 +89,7 @@ struct CompGameLetterContentSections {
                 .frame(minHeight: GameCardStyle.Letters.answerSectionHeight)
                 .background(
                     RoundedRectangle(cornerRadius: GameCardStyle.Layout.cornerRadius)
-                        .stroke(style.theme.accentColor.opacity(0.2),
+                        .stroke(style.theme.accentPrimary.opacity(0.2),
                                lineWidth: GameCardStyle.Layout.borderWidth)
                 )
             }
@@ -109,7 +109,7 @@ struct CompGameLetterContentSections {
                         style.hintPenalty()
                         Text(hint)
                             .font(GameCardStyle.Typography.hintFont)
-                            .foregroundColor(style.theme.secondaryTextColor)
+                            .foregroundColor(style.theme.textSecondary)
                             .multilineTextAlignment(.center)
                     }
                 }

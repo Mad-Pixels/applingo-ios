@@ -20,7 +20,7 @@ struct CompGameScorePointsView: View {
             .padding(.horizontal, 12)
             .padding(.vertical, 6)
             .background(
-                ThemeManager.shared.currentThemeStyle.backgroundBlockColor
+                ThemeManager.shared.currentThemeStyle.backgroundSecondary
                     .opacity(0.9)
                     .clipShape(Capsule())
                     .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)

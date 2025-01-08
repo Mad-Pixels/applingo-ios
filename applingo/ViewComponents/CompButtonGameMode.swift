@@ -19,17 +19,17 @@ struct CompButtonGameModeView: View {
                         .font(.headline)
                     Text(description)
                         .font(.caption)
-                        .foregroundColor(theme.secondaryTextColor)
+                        .foregroundColor(theme.textSecondary)
                 }
                 Spacer()
                 Image(systemName: "chevron.right")
                     .font(.caption)
-                    .foregroundColor(theme.secondaryTextColor)
+                    .foregroundColor(theme.textSecondary)
             }
             .padding()
-            .background(theme.backgroundBlockColor.opacity(0.3))
+            .background(theme.backgroundSecondary.opacity(0.3))
             .cornerRadius(10)
         }
-        .foregroundColor(theme.baseTextColor)
+        .foregroundColor(theme.textPrimary)
     }
 }

@@ -6,7 +6,7 @@ struct ThemeViewTracker: ViewModifier {
     func body(content: Content) -> some View {
         content
             .preferredColorScheme(themeManager.currentTheme == .dark ? .dark : .light)
-            .background(themeManager.currentThemeStyle.backgroundViewColor)
+            .background(themeManager.currentThemeStyle.backgroundPrimary)
             .id(themeManager.currentTheme)
     }
 }

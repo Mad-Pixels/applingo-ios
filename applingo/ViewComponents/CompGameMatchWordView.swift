@@ -72,20 +72,20 @@ struct CompGameMatchButtonStyle: ButtonStyle {
         if isSelected {
             return .white
         }
-        return style.theme.baseTextColor
+        return style.theme.textPrimary
     }
     
     private func backgroundColor(isPressed: Bool) -> Color {
         if isMatched {
-            return style.theme.backgroundBlockColor.opacity(0.5)
+            return style.theme.backgroundSecondary.opacity(0.5)
         }
         if isSelected {
-            return style.theme.accentColor
+            return style.theme.accentPrimary
         }
         if isPressed {
-            return style.theme.backgroundBlockColor.opacity(0.8)
+            return style.theme.backgroundSecondary.opacity(0.8)
         }
-        return style.theme.backgroundBlockColor
+        return style.theme.backgroundSecondary
     }
     
     private var borderColor: Color {
@@ -93,14 +93,14 @@ struct CompGameMatchButtonStyle: ButtonStyle {
             return .gray.opacity(0.3)
         }
         if isSelected {
-            return style.theme.accentColor
+            return style.theme.accentPrimary
         }
-        return style.theme.secondaryTextColor.opacity(0.3)
+        return style.theme.textSecondary.opacity(0.3)
     }
     
     private var shadowColor: Color {
         isSelected ?
-        style.theme.accentColor.opacity(0.3) :
-        style.theme.secondaryTextColor.opacity(0.1)
+        style.theme.accentPrimary.opacity(0.3) :
+        style.theme.textSecondary.opacity(0.1)
     }
 }

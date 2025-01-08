@@ -70,7 +70,7 @@ struct CompGameQuizCardView: View {
                     style.hintPenalty()
                     Text(hint)
                         .font(GameCardStyle.Typography.hintFont)
-                        .foregroundColor(style.theme.secondaryTextColor)
+                        .foregroundColor(style.theme.textSecondary)
                         .multilineTextAlignment(.center)
                 }
             }
@@ -158,36 +158,36 @@ private struct OptionStyleModifier: ViewModifier {
     
     private var foregroundColor: Color {
         if !isAnswered {
-            return isSelected ? .white : theme.baseTextColor
+            return isSelected ? .white : theme.textPrimary
         } else {
-            return isCorrect ? .white : theme.baseTextColor
+            return isCorrect ? .white : theme.textPrimary
         }
     }
     
     private var backgroundColor: Color {
         if !isAnswered {
-            return isSelected ? theme.accentColor : theme.backgroundBlockColor
+            return isSelected ? theme.accentPrimary : theme.backgroundSecondary
         } else {
             if isCorrect {
-                return theme.okTextColor
+                return theme.success
             } else if isSelected {
-                return theme.errorTextColor
+                return theme.error
             } else {
-                return theme.backgroundBlockColor
+                return theme.backgroundSecondary
             }
         }
     }
     
     private var borderColor: Color {
         if !isAnswered {
-            return isSelected ? .clear : theme.secondaryTextColor.opacity(0.3)
+            return isSelected ? .clear : theme.textSecondary.opacity(0.3)
         } else {
             if isCorrect {
-                return theme.okTextColor
+                return theme.success
             } else if isSelected {
-                return theme.errorTextColor
+                return theme.error
             } else {
-                return theme.secondaryTextColor.opacity(0.3)
+                return theme.backgroundSecondary.opacity(0.3)
             }
         }
     }
@@ -195,15 +195,15 @@ private struct OptionStyleModifier: ViewModifier {
     private var shadowColor: Color {
         if !isAnswered {
             return isSelected ?
-                theme.accentColor.opacity(0.3) :
-                theme.secondaryTextColor.opacity(0.1)
+                theme.accentPrimary.opacity(0.3) :
+                theme.textSecondary.opacity(0.1)
         } else {
             if isCorrect {
-                return theme.okTextColor.opacity(0.3)
+                return theme.success.opacity(0.3)
             } else if isSelected {
-                return theme.errorTextColor.opacity(0.3)
+                return theme.error.opacity(0.3)
             } else {
-                return theme.secondaryTextColor.opacity(0.1)
+                return theme.backgroundSecondary.opacity(0.1)
             }
         }
     }

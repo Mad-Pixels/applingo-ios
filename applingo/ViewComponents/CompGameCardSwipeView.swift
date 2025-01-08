@@ -57,7 +57,7 @@ struct CompGameCardSwipeView: View {
             style.mainText(card.frontWord.frontText)
         }
         .frame(maxWidth: .infinity)
-        .background(style.theme.backgroundBlockColor)
+        .background(style.theme.backgroundSecondary)
     }
     
     private var backSection: some View {
@@ -65,7 +65,7 @@ struct CompGameCardSwipeView: View {
             style.mainText(card.backText)
         }
         .frame(maxWidth: .infinity)
-        .background(style.theme.backgroundBlockColor)
+        .background(style.theme.backgroundSecondary)
     }
     
     @ViewBuilder
@@ -84,7 +84,7 @@ struct CompGameCardSwipeView: View {
                 
                 Text(hint)
                     .font(GameCardStyle.Typography.hintFont)
-                    .foregroundColor(style.theme.secondaryTextColor)
+                    .foregroundColor(style.theme.textSecondary)
                     .multilineTextAlignment(.center)
             }
         }

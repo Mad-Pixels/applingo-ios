@@ -10,16 +10,16 @@ struct BaseFieldStyle: ViewModifier {
             .background(
                 RoundedRectangle(cornerRadius: 8)
                     .fill(isEditing ?
-                          ThemeManager.shared.currentThemeStyle.backgroundViewColor :
-                            ThemeManager.shared.currentThemeStyle.detailsColor)
+                          ThemeManager.shared.currentThemeStyle.backgroundPrimary :
+                            ThemeManager.shared.currentThemeStyle.backgroundActive)
             )
             .overlay(
                 Group {
                     if border {
                         RoundedRectangle(cornerRadius: 8)
                             .stroke(isEditing ?
-                                    ThemeManager.shared.currentThemeStyle.backgroundBlockColor :
-                                        ThemeManager.shared.currentThemeStyle.detailsColor, lineWidth: isEditing ? 2 : 1)
+                                    ThemeManager.shared.currentThemeStyle.backgroundPrimary :
+                                        ThemeManager.shared.currentThemeStyle.backgroundActive, lineWidth: isEditing ? 2 : 1)
                     }
                 }
             )

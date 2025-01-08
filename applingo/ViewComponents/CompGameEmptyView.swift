@@ -7,17 +7,17 @@ struct CompGameEmptyView: View {
         VStack(spacing: 20) {
             Image(systemName: "text.book.closed.fill")
                 .font(.system(size: 60))
-                .foregroundColor(theme.accentColor)
+                .foregroundColor(theme.accentPrimary)
             
             Text(LanguageManager.shared.localizedString(for: "NotEnoughWords")) 
                 .font(.title2)
                 .fontWeight(.bold)
-                .foregroundColor(theme.baseTextColor)
+                .foregroundColor(theme.textPrimary)
             
             Text(LanguageManager.shared.localizedString(for: "AddWordsOrActivateDictionaries"))
                 .multilineTextAlignment(.center)
                 .font(.body)
-                .foregroundColor(theme.secondaryTextColor)
+                .foregroundColor(theme.textSecondary)
         }
         .padding()
     }

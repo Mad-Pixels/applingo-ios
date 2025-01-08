@@ -19,11 +19,11 @@ struct DictionaryRemoteDetailView: View {
 
         NavigationView {
             ZStack {
-                theme.backgroundViewColor.edgesIgnoringSafeArea(.all)
+                theme.backgroundPrimary.edgesIgnoringSafeArea(.all)
                 
                 VStack {
                     Form {
-                        Section(header: Text(LanguageManager.shared.localizedString(for: "Dictionary")).foregroundColor(theme.baseTextColor)) {
+                        Section(header: Text(LanguageManager.shared.localizedString(for: "Dictionary")).foregroundColor(theme.textPrimary)) {
                             CompTextFieldView(
                                 placeholder: LanguageManager.shared.localizedString(
                                     for: "Display Name"
@@ -43,7 +43,7 @@ struct DictionaryRemoteDetailView: View {
                             .frame(height: 150)
                         }
 
-                        Section(header: Text(LanguageManager.shared.localizedString(for: "Category")).foregroundColor(theme.baseTextColor)) {
+                        Section(header: Text(LanguageManager.shared.localizedString(for: "Category")).foregroundColor(theme.textPrimary)) {
                             CompTextFieldView(
                                 placeholder: LanguageManager.shared.localizedString(
                                     for: "Category"
@@ -62,7 +62,7 @@ struct DictionaryRemoteDetailView: View {
                             )
                         }
 
-                        Section(header: Text(LanguageManager.shared.localizedString(for: "Additional")).foregroundColor(theme.baseTextColor)) {
+                        Section(header: Text(LanguageManager.shared.localizedString(for: "Additional")).foregroundColor(theme.textPrimary)) {
                             CompTextFieldView(
                                 placeholder: LanguageManager.shared.localizedString(
                                     for: "Author"
@@ -96,7 +96,7 @@ struct DictionaryRemoteDetailView: View {
                         .padding()
                     }
                 }
-                .background(theme.detailsColor)
+                .background(theme.accentLight)
                 .disabled(isDownloading)
             }
             .onAppear {
@@ -113,7 +113,7 @@ struct DictionaryRemoteDetailView: View {
                     Text(LanguageManager.shared.localizedString(
                         for: "Close"
                     ).capitalizedFirstLetter)
-                        .foregroundColor(theme.accentColor)
+                        .foregroundColor(theme.accentPrimary)
                 }
             )
             .alert(isPresented: $showError) {

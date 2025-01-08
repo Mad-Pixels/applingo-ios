@@ -38,7 +38,7 @@ struct WordDetailView: View {
 
         NavigationView {
             ZStack {
-                theme.backgroundViewColor.edgesIgnoringSafeArea(.all)
+                theme.backgroundPrimary.edgesIgnoringSafeArea(.all)
 
                 Form {
                     Section(header: Text(LanguageManager.shared.localizedString(for: "Card"))

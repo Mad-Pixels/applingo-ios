@@ -27,13 +27,13 @@ struct DictionaryRemoteFilterView: View {
 
         NavigationView {
             ZStack {
-                theme.backgroundViewColor.edgesIgnoringSafeArea(.all)
+                theme.backgroundPrimary.edgesIgnoringSafeArea(.all)
 
                 VStack {
                     Form {
                         Section(header: Text(LanguageManager.shared.localizedString(
                             for: "Dictionary"
-                        )).font(.headline).foregroundColor(theme.baseTextColor)) {
+                        )).font(.headline).foregroundColor(theme.textPrimary)) {
                             ZStack {
                                 if !categoryGetter.isLoadingPage {
                                     HStack {
@@ -48,12 +48,12 @@ struct DictionaryRemoteFilterView: View {
 
                                         ZStack {
                                             Capsule()
-                                                .fill(ThemeManager.shared.currentThemeStyle.accentColor.opacity(0.1))
+                                                .fill(ThemeManager.shared.currentThemeStyle.accentPrimary.opacity(0.1))
                                                 .frame(width: 36, height: 24)
                                             
                                             Image(systemName: "arrow.left.and.right")
                                                 .font(.system(size: 12, weight: .medium))
-                                                .foregroundColor(ThemeManager.shared.currentThemeStyle.accentColor)
+                                                .foregroundColor(ThemeManager.shared.currentThemeStyle.accentPrimary)
                                         }
 
                                         CompPickerView(
@@ -113,7 +113,7 @@ struct DictionaryRemoteFilterView: View {
                     .padding(.horizontal)
                     .padding(.vertical, 10)
                 }
-                .background(theme.detailsColor)
+                .background(theme.cardBorder)
             }
             .navigationTitle(LanguageManager.shared.localizedString(for: "Filter").capitalizedFirstLetter)
             .navigationBarTitleDisplayMode(.inline)
@@ -122,7 +122,7 @@ struct DictionaryRemoteFilterView: View {
                     presentationMode.wrappedValue.dismiss()
                 }) {
                     Text(LanguageManager.shared.localizedString(for: "Close").capitalizedFirstLetter)
-                        .foregroundColor(theme.accentColor)
+                        .foregroundColor(theme.accentPrimary)
                 }
             )
             .onAppear {

@@ -14,7 +14,7 @@ struct GameModeView: View {
         VStack(spacing: 32) {
             Text(languageManager.localizedString(for: "SelectGameMode").uppercased())
                 .font(.system(.title, design: .rounded).weight(.bold))
-                .foregroundColor(theme.baseTextColor)
+                .foregroundColor(theme.textPrimary)
                 .padding(.top)
                 .opacity(isAnimating ? 1 : 0)
                 .offset(y: isAnimating ? 0 : 20)
@@ -25,7 +25,7 @@ struct GameModeView: View {
                     title: languageManager.localizedString(for: "GamePractice"),
                     icon: "graduationcap.fill",
                     description: languageManager.localizedString(for: "PracticeDescription"),
-                    color: theme.secondatyAccentColor1,
+                    color: theme.accentPrimary,
                     delay: 0.1
                 )
                 
@@ -34,7 +34,7 @@ struct GameModeView: View {
                     title: languageManager.localizedString(for: "GameSurvival"),
                     icon: "heart.fill",
                     description: languageManager.localizedString(for: "SurvivalDescription"),
-                    color: theme.secondatyAccentColor2,
+                    color: theme.accentPrimary,
                     delay: 0.2
                 )
                 
@@ -43,7 +43,7 @@ struct GameModeView: View {
                     title: languageManager.localizedString(for: "GameTimeAttack"),
                     icon: "timer",
                     description: languageManager.localizedString(for: "TimeAttackDescription"),
-                    color: theme.secondatyAccentColor3,
+                    color: theme.accentPrimary,
                     delay: 0.3
                 )
             }
@@ -88,23 +88,23 @@ struct GameModeView: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(title.capitalizedFirstLetter)
                         .font(.system(.headline, design: .rounded).weight(.bold))
-                        .foregroundColor(theme.baseTextColor)
+                        .foregroundColor(theme.textPrimary)
                     
                     Text(description.capitalizedFirstLetter)
                         .font(.system(.body, design: .rounded))
-                        .foregroundColor(theme.secondaryTextColor)
+                        .foregroundColor(theme.textSecondary)
                         .lineLimit(2)
                 }
                 Spacer()
                 Image(systemName: "chevron.right")
                     .font(.system(.body, weight: .semibold))
-                    .foregroundColor(theme.secondaryIconColor)
+                    .foregroundColor(theme.cardBorder)
                     .opacity(isSelected ? 1 : 0.5)
             }
             .padding()
             .background(
                 RoundedRectangle(cornerRadius: 16)
-                    .fill(theme.backgroundBlockColor)
+                    .fill(theme.cardBorder)
                     .shadow(
                         color: color.opacity(0.2),
                         radius: isSelected ? 10 : 5,

@@ -18,19 +18,19 @@ struct TabLearnView: View {
                     CompButtonGameMenuView(
                         LanguageManager.shared.localizedString(for: "Quiz").capitalizedFirstLetter,
                         icon: "laser.burst",
-                        color: ThemeManager.shared.currentThemeStyle.secondatyAccentColor1,
+                        color: ThemeManager.shared.currentThemeStyle.accentPrimary,
                         action: { showQuizGame = true }
                     )
                     CompButtonGameMenuView(
                         LanguageManager.shared.localizedString(for: "MatchHunt").capitalizedFirstLetter,
                         icon: "puzzlepiece",
-                        color: ThemeManager.shared.currentThemeStyle.secondatyAccentColor2,
+                        color: ThemeManager.shared.currentThemeStyle.accentPrimary,
                         action: { showMatchHuntGame = true }
                     )
                     CompButtonGameMenuView(
                         LanguageManager.shared.localizedString(for: "VerifyIt").capitalizedFirstLetter,
                         icon: "number",
-                        color: ThemeManager.shared.currentThemeStyle.secondatyAccentColor3,
+                        color: ThemeManager.shared.currentThemeStyle.accentPrimary,
                         action: { showVerifyItGame = true }
                     )
 //                    CompButtonGameMenuView(

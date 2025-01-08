@@ -17,7 +17,7 @@ struct CompSearchView: View {
             ZStack(alignment: .leading) {
                 if searchText.isEmpty {
                     Text(placeholder)
-                        .foregroundColor(ThemeManager.shared.currentThemeStyle.secondaryTextColor)
+                        .foregroundColor(ThemeManager.shared.currentThemeStyle.textSecondary)
                 }
                 TextField("", text: $searchText)
                     .foregroundColor(.red)
