@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct ScreenViewTracker: ViewModifier {
-    let screen: DiscoverScreen
+    let screen: ScreenType
     
     func body(content: Content) -> some View {
         content.onAppear {
@@ -11,7 +11,7 @@ struct ScreenViewTracker: ViewModifier {
 }
 
 extension View {
-    func withScreenTracker(_ screen: DiscoverScreen) -> some View {
+    func withScreenTracker(_ screen: ScreenType) -> some View {
         modifier(ScreenViewTracker(screen: screen))
     }
 }

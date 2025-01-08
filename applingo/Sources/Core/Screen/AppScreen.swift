@@ -1,7 +1,7 @@
 import Combine
 
 final class AppScreen: ObservableObject {
-    @Published var activeScreen: DiscoverScreen = .game
+    @Published var activeScreen: ScreenType = .game
     
     static let shared = AppScreen()
     private var cancellables = Set<AnyCancellable>()
@@ -10,18 +10,18 @@ final class AppScreen: ObservableObject {
         Logger.debug("[Screen]: Initialized")
     }
 
-    func setActiveScreen(_ screen: DiscoverScreen) {
+    func setActiveScreen(_ screen: ScreenType) {
         if activeScreen != screen {
             activeScreen = screen
             Logger.debug("[Screen]: Activated \(screen.rawValue)")
         }
     }
     
-    func isActive(screen: DiscoverScreen) -> Bool {
+    func isActive(screen: ScreenType) -> Bool {
         return activeScreen == screen
     }
 
-    private func clearErrors(for screen: DiscoverScreen) {
+    private func clearErrors(for screen: ScreenType) {
         //ErrorManager.shared.clearErrors(for: screen)
         Logger.debug("[Screen]: Cleared errors for \(screen.rawValue)")
     }

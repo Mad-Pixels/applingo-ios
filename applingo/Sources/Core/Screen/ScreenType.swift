@@ -1,4 +1,4 @@
-enum DiscoverScreen: String, Codable {
+enum ScreenType: String, Codable {
     case dictionariesLocal
     case dictionariesLocalDetail
     case dictionariesRemote

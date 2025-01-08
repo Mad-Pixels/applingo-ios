@@ -3,13 +3,13 @@ import SwiftUI
 struct BaseViewScreenPreview<Content: View>: View {
     let style: BaseViewScreenStyle
     let content: Content
-    let screen: DiscoverScreen
-    let theme: DiscoverTheme
+    let screen: ScreenType
+    let theme: ThemeType
    
     init(
-        theme: DiscoverTheme = .light,
+        theme: ThemeType = .light,
         style: BaseViewScreenStyle = .default,
-        screen: DiscoverScreen,
+        screen: ScreenType,
         @ViewBuilder content: () -> Content
     ) {
         self.theme = theme

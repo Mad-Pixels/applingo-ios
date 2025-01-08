@@ -4,11 +4,11 @@ struct BaseViewScreen<Content: View>: View {
     @EnvironmentObject private var themeManager: ThemeManager
     
     private let style: BaseViewScreenStyle
-    private let screen: DiscoverScreen
+    private let screen: ScreenType
     private let content: Content
     
     init(
-        screen: DiscoverScreen,
+        screen: ScreenType,
         style: BaseViewScreenStyle = .default,
         @ViewBuilder content: () -> Content
     ) {
