@@ -2,11 +2,11 @@ import SwiftUI
 
 struct BaseViewTabPreview<Content: View>: View {
     let style: BaseViewTabStyle
-    let theme: ThemeType
+    let theme: DisplayTheme
     let content: Content
    
     init(
-        theme: ThemeType = .light,
+        theme: DisplayTheme = .light,
         style: BaseViewTabStyle = .default,
         @ViewBuilder content: () -> Content
     ) {

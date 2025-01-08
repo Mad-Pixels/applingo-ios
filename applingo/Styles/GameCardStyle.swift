@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct GameCardStyle {
-    let theme: ThemeStyle
+    let theme: AppTheme
     
     struct Layout {
         static let width = UIScreen.main.bounds.width - 40
@@ -35,7 +35,7 @@ struct GameCardStyle {
     }
     
     struct BaseCardModifier: ViewModifier {
-        let theme: ThemeStyle
+        let theme: AppTheme
         
         func body(content: Content) -> some View {
             content
@@ -132,7 +132,7 @@ struct GameCardStyle {
     }
     
     struct QuizOptionStyle {
-        let theme: ThemeStyle
+        let theme: AppTheme
         static let height: CGFloat = 56
         static let cornerRadius: CGFloat = 12
         
@@ -155,7 +155,7 @@ struct GameCardStyle {
     }
     
     struct Letters {
-        let theme: ThemeStyle
+        let theme: AppTheme
         
         static let buttonSize: CGFloat = 50
         static let gridSpacing: CGFloat = 12
@@ -205,7 +205,7 @@ struct GameCardStyle {
 }
 
 private struct QuizOptionStyleModifier: ViewModifier {
-    let theme: ThemeStyle
+    let theme: AppTheme
     let isSelected: Bool
     let isCorrect: Bool
     let isAnswered: Bool
@@ -284,7 +284,7 @@ private struct QuizOptionStyleModifier: ViewModifier {
 
 private struct LetterButtonStyleModifier: ViewModifier {
     let style: GameLetterStyle
-    let theme: ThemeStyle
+    let theme: AppTheme
     
     func body(content: Content) -> some View {
         content

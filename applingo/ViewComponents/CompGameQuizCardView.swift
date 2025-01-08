@@ -119,7 +119,7 @@ extension GameCardStyle {
             isSelected: Bool,
             isCorrect: Bool,
             isAnswered: Bool,
-            theme: ThemeStyle
+            theme: AppTheme
         ) -> some ViewModifier {
             OptionStyleModifier(
                 theme: theme,
@@ -132,7 +132,7 @@ extension GameCardStyle {
 }
 
 private struct OptionStyleModifier: ViewModifier {
-    let theme: ThemeStyle
+    let theme: AppTheme
     let isSelected: Bool
     let isCorrect: Bool
     let isAnswered: Bool

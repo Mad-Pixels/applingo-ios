@@ -2,7 +2,7 @@ import SwiftUI
 
 struct BaseViewTabConfigurator {
     static func configure(
-        with theme: ThemeStyle,
+        with theme: AppTheme,
         style: BaseViewTabStyle = .default
     ) {
         let appearance = UITabBarAppearance()

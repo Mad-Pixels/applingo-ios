@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct PaletteThemeLight: ThemeStyle {
+struct PaletteThemeLight: AppTheme {
     // Main text colors
     let textPrimary = Color(hex: "1a1a1a")
     let textSecondary = Color(hex: "666666")

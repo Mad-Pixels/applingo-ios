@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct PaletteThemeDark: ThemeStyle {
+struct PaletteThemeDark: AppTheme {
     // Main text colors
     let textPrimary = Color(hex: "e5e7eb")
     let textSecondary = Color(hex: "9ca3af")

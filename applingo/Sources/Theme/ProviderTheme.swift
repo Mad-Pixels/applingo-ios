@@ -1,9 +1,9 @@
 import SwiftUI
 
-final class ThemeProvider {
-    static let shared = ThemeProvider()
+final class ProviderTheme {
+    static let shared = ProviderTheme()
     
-    func currentTheme() -> ThemeStyle {
+    func currentTheme() -> AppTheme {
         switch ThemeManager().currentTheme {
         case .dark:
             return PaletteThemeDark()

@@ -9,11 +9,11 @@ struct BaseViewTabStyle {
         let fontSize: CGFloat
         
         // colors
-        let backgroundColor: (ThemeStyle) -> Color
-        let normalTitleColor: (ThemeStyle) -> Color
-        let normalIconColor: (ThemeStyle) -> Color
-        let selectedTitleColor: (ThemeStyle) -> Color
-        let selectedIconColor: (ThemeStyle) -> Color
+        let backgroundColor: (AppTheme) -> Color
+        let normalTitleColor: (AppTheme) -> Color
+        let normalIconColor: (AppTheme) -> Color
+        let selectedTitleColor: (AppTheme) -> Color
+        let selectedIconColor: (AppTheme) -> Color
     }
     
     let uiKit: UIKitStyle

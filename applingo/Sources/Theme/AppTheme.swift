@@ -1,6 +1,6 @@
 import SwiftUI
 
-protocol ThemeStyle {
+protocol AppTheme {
     // Main text colors
     var textPrimary: Color { get }
     var textSecondary: Color { get }

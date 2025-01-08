@@ -3,7 +3,7 @@ import Combine
 final class ThemeManager: ObservableObject {
     static let shared = ThemeManager()
     
-    @Published var currentTheme: ThemeType {
+    @Published var currentTheme: DisplayTheme {
         didSet {
             if Defaults.appTheme != currentTheme.rawValue {
                 Defaults.appTheme = currentTheme.rawValue
@@ -11,7 +11,7 @@ final class ThemeManager: ObservableObject {
         }
     }
     
-    private(set) var supportedThemes: [ThemeType] = []
+    private(set) var supportedThemes: [DisplayTheme] = []
     
     init() {
         self.currentTheme = Self.getInitialTheme()
@@ -19,21 +19,21 @@ final class ThemeManager: ObservableObject {
         Logger.debug("[ThemeManager]: Initialize manager with \(self.currentTheme.rawValue)")
     }
     
-    private static func getInitialTheme() -> ThemeType {
-        return ThemeType.fromString(Defaults.appTheme ?? ThemeType.light.rawValue)
+    private static func getInitialTheme() -> DisplayTheme {
+        return DisplayTheme.fromString(Defaults.appTheme ?? DisplayTheme.light.rawValue)
     }
     
-    private func getSupportedThemes() -> [ThemeType] {
-        let themes = ThemeType.allCases
+    private func getSupportedThemes() -> [DisplayTheme] {
+        let themes = DisplayTheme.allCases
         Logger.debug("[ThemeManager]: Supported themes: \(themes.map { $0.rawValue })")
         return themes
     }
     
-    func setTheme(to theme: ThemeType) {
+    func setTheme(to theme: DisplayTheme) {
         self.currentTheme = theme
     }
     
-    var currentThemeStyle: ThemeStyle {
+    var currentThemeStyle: AppTheme {
         switch currentTheme {
         case .dark:
             return PaletteThemeDark()
