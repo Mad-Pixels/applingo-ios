@@ -8,14 +8,14 @@ struct BaseViewTabStyle {
         let tabBarHeight: CGFloat
         let fontSize: CGFloat
         
-        // colors default state
-        let backgroundColor: Color
-        let normalTitleColor: Color
-        let normalIconColor: Color
+        // default state
+        let backgroundColor: (ThemeStyle) -> Color
+        let normalTitleColor: (ThemeStyle) -> Color
+        let normalIconColor: (ThemeStyle) -> Color
         
-        // colors selected state
-        let selectedTitleColor: Color
-        let selectedIconColor: Color
+        // selected state
+        let selectedTitleColor: (ThemeStyle) -> Color
+        let selectedIconColor: (ThemeStyle) -> Color
     }
     
     let uiKit: UIKitStyle
@@ -30,12 +30,22 @@ extension BaseViewTabStyle {
                 tabBarHeight: 49,
                 fontSize: 10,
                 
-                backgroundColor: .white,
-                normalTitleColor: .gray,
-                normalIconColor: .gray,
+                backgroundColor: { theme in
+                    theme.backgroundViewColor
+                },
+                normalTitleColor: { theme in
+                    theme.secondaryTextColor
+                },
+                normalIconColor: { theme in
+                    theme.secondaryIconColor
+                },
                 
-                selectedTitleColor: .blue,
-                selectedIconColor: .blue
+                selectedTitleColor: { theme in
+                    theme.accentColor
+                },
+                selectedIconColor: { theme in
+                    theme.accentColor
+                }
             )
         )
     }
