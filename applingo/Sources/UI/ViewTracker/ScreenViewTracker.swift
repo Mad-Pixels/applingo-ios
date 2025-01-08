@@ -1,17 +1,17 @@
 import SwiftUI
 
 struct ScreenViewTracker: ViewModifier {
-    let name: ScreenName
+    let screen: DiscoverScreen
     
     func body(content: Content) -> some View {
         content.onAppear {
-            Screen.shared.setActiveScreen(name)
+            AppScreen.shared.setActiveScreen(screen)
         }
     }
 }
 
 extension View {
-    func withScreenTracker(_ screenName: ScreenName) -> some View {
-        modifier(ScreenViewTracker(name: screenName))
+    func withScreenTracker(_ screen: DiscoverScreen) -> some View {
+        modifier(ScreenViewTracker(screen: screen))
     }
 }

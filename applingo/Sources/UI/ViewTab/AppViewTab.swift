@@ -2,11 +2,11 @@ import SwiftUI
 
 struct AppViewTab<Content: View>: View {
     let content: () -> Content
-    let theme: DisplayTheme
+    let theme: DiscoverTheme
     let style: BaseViewTabStyle
     
     init(
-        theme: DisplayTheme = .light,
+        theme: DiscoverTheme = .light,
         style: BaseViewTabStyle = .default,
         @ViewBuilder content: @escaping () -> Content
     ) {

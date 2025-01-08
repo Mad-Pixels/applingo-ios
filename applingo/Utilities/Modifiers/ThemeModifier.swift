@@ -1,8 +1,8 @@
 import SwiftUI
 
 struct ThemeModifier: ViewModifier {
-    let selectedTheme: DisplayTheme
-    let onChange: (DisplayTheme) -> Void
+    let selectedTheme: DiscoverTheme
+    let onChange: (DiscoverTheme) -> Void
     
     func body(content: Content) -> some View {
         if #available(iOS 17.0, *) {

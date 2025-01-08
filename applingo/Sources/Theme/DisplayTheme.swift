@@ -1,11 +1,11 @@
 import SwiftUI
 
-enum DisplayTheme: String, CaseIterable {
+enum DiscoverTheme: String, CaseIterable {
     case light = "Light"
     case dark = "Dark"
     
-    static func fromString(_ string: String) -> DisplayTheme {
-        return DisplayTheme(rawValue: string) ?? .light
+    static func fromString(_ string: String) -> DiscoverTheme {
+        return DiscoverTheme(rawValue: string) ?? .light
     }
 
     var asString: String {
