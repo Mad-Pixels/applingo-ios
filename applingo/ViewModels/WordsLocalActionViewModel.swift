@@ -63,7 +63,7 @@ final class WordsLocalActionViewModel: BaseDatabaseViewModel {
                 original: error,
                 additional: ["word": word.toString()]
             )
-            ErrorManager.shared.setError(
+            ErrorManager1.shared.setError(
                 appError: appError,
                 frame: frame,
                 source: .dictionaryDisplayName

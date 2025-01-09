@@ -6,7 +6,7 @@ struct LingocardApp: App {
     @StateObject private var languageManager = LanguageManager.shared
     @StateObject private var hapticManager = HapticManager.shared
     @StateObject private var themeManager = ThemeManager.shared
-    @StateObject private var errorManager = ErrorManager.shared
+    @StateObject private var errorManager = ErrorManager1.shared
     @StateObject private var frameManager = FrameManager.shared
     
     private let apiUrl = GlobalConfig.apiURL
@@ -28,7 +28,7 @@ struct LingocardApp: App {
                 original: error,
                 additional: ["error": error.localizedDescription]
             )
-            ErrorManager.shared.setError(appError: appError, frame: .main, source: .initialization)
+            ErrorManager1.shared.setError(appError: appError, frame: .main, source: .initialization)
         }
         APIManager.configure(baseURL: apiUrl, token: apiToken)
         _ = RepositoryCache.shared

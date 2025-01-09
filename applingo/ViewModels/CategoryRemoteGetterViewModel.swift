@@ -28,7 +28,7 @@ final class CategoryRemoteGetterViewModel: BaseApiViewModel {
                 guard let self = self else { return }
                 self.frontCategories = categoryItemModel.frontCategory
                 self.backCategories = categoryItemModel.backCategory
-                ErrorManager.shared.clearError(for: .categoriesGet)
+                ErrorManager1.shared.clearError(for: .categoriesGet)
                 Logger.debug("[CategoryRemoteGetterViewModel]: Categories updated - front: \(categoryItemModel.frontCategory.count), back: \(categoryItemModel.backCategory.count)")
             },
             source: .categoriesGet,

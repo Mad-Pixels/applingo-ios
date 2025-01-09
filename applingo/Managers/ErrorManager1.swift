@@ -1,6 +1,6 @@
 import Foundation
 import Combine
-
+//
 enum GlobalError: Error, LocalizedError, Identifiable, Equatable {
     var id: UUID { UUID() }
 
@@ -35,8 +35,8 @@ enum GlobalError: Error, LocalizedError, Identifiable, Equatable {
     }
 }
 
-final class ErrorManager: ObservableObject {
-    static let shared = ErrorManager()
+final class ErrorManager1: ObservableObject {
+    static let shared = ErrorManager1()
     
     @Published var currentError: GlobalError?
     private(set) var isErrorVisible: Bool = false

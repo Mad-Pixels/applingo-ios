@@ -18,7 +18,7 @@ class BaseViewModel {
             original: original,
             additional: additional
         )
-        ErrorManager.shared.setError(appError: appError, frame: frame, source: source)
+        ErrorManager1.shared.setError(appError: appError, frame: frame, source: source)
         completion?(.failure(appError))
     }
 }

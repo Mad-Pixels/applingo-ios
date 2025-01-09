@@ -2,6 +2,7 @@ import SwiftUI
 
 struct BaseViewScreen<Content: View>: View {
     @EnvironmentObject private var themeManager: ThemeManager
+    @StateObject private var errorManager = ErrorManager.shared
     
     private let style: BaseViewScreenStyle
     private let screen: ScreenType
@@ -24,6 +25,17 @@ struct BaseViewScreen<Content: View>: View {
                 .withScreenTracker(screen)
                 .withLanguageTracker()
                 .withThemeTracker()
+                .alert(item: $errorManager.currentError) { error in
+                    Alert(
+                        title: Text(error.title),
+                        message: Text(error.message),
+                        primaryButton: .default(
+                            Text(error.actionTitle ?? "OK"),
+                            action: error.action ?? {}
+                        ),
+                        secondaryButton: .cancel()
+                    )
+                }
         }
     }
 }

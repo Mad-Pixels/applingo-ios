@@ -32,7 +32,7 @@ final class FrameManager: ObservableObject {
     }
 
     private func clearErrors(for frame: AppFrameModel) {
-        ErrorManager.shared.clearErrors(for: frame)
+        ErrorManager1.shared.clearErrors(for: frame)
         Logger.debug("[FrameManager]: Cleared errors for \(frame.rawValue)")
     }
 }

@@ -121,7 +121,7 @@ struct DictionaryRemoteDetailView: View {
                     title: LanguageManager.shared.localizedString(for: "Error"),
                     message: "Internet connection error or Dictionary is already downloaded",
                     closeAction: {
-                        ErrorManager.shared.clearError()
+                        ErrorManager1.shared.clearError()
                     }
                 )
             }

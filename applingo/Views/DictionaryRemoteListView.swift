@@ -27,7 +27,7 @@ struct DictionaryRemoteListView: View {
                 CompItemListView(
                     items: $dictionaryGetter.dictionaries,
                     isLoadingPage: dictionaryGetter.isLoadingPage,
-                    error: ErrorManager.shared.currentError,
+                    error: ErrorManager1.shared.currentError,
                     onItemAppear: { dictionary in
                         dictionaryGetter.loadMoreDictionariesIfNeeded(currentItem: dictionary)
                     },
@@ -89,7 +89,7 @@ struct DictionaryRemoteListView: View {
                     dictionaryGetter.resetPagination(with: apiRequestParams)
 
                     NotificationCenter.default.addObserver(forName: .errorVisibilityChanged, object: nil, queue: .main) { _ in
-                        if let error = ErrorManager.shared.currentError,
+                        if let error = ErrorManager1.shared.currentError,
                            error.frame == .dictionaryRemoteList,
                            error.source == .dictionariesRemoteGet {
                             isShowingAlert = true
@@ -105,7 +105,7 @@ struct DictionaryRemoteListView: View {
                         title: Text(LanguageManager.shared.localizedString(for: "Error")),
                         message: Text(errMessage),
                         dismissButton: .default(Text(LanguageManager.shared.localizedString(for: "Close"))) {
-                            ErrorManager.shared.clearError()
+                            ErrorManager1.shared.clearError()
                         }
                     )
                 }

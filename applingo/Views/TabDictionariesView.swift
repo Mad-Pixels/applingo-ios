@@ -98,7 +98,7 @@ struct TabDictionariesView: View {
                     }
                 }
                 .onReceive(NotificationCenter.default.publisher(for: .errorVisibilityChanged)) { _ in
-                    if let error = ErrorManager.shared.currentError,
+                    if let error = ErrorManager1.shared.currentError,
                        error.frame == .tabDictionaries {
                         errorMessage = error.localizedMessage
                         isShowingAlert = true
@@ -112,7 +112,7 @@ struct TabDictionariesView: View {
                         object: nil
                     )
                 }
-                .modifier(ErrModifier(currentError: ErrorManager.shared.currentError) { newError in
+                .modifier(ErrModifier(currentError: ErrorManager1.shared.currentError) { newError in
                     if let error = newError, error.frame == .tabDictionaries, error.source == .dictionaryDelete {
                         isShowingAlert = true
                     }
@@ -121,9 +121,9 @@ struct TabDictionariesView: View {
             .alert(isPresented: $isShowingAlert) {
                 CompAlertView(
                     title: LanguageManager.shared.localizedString(for: "Error"),
-                    message: ErrorManager.shared.currentError?.errorDescription ?? "",
+                    message: ErrorManager1.shared.currentError?.errorDescription ?? "",
                     closeAction: {
-                        ErrorManager.shared.clearError()
+                        ErrorManager1.shared.clearError()
                     }
                 )
             }
@@ -177,7 +177,7 @@ struct TabDictionariesView: View {
                     original: nil,
                     additional: nil
                 )
-                ErrorManager.shared.setError(
+                ErrorManager1.shared.setError(
                     appError: appError,
                     frame: .tabDictionaries,
                     source: .dictionaryDelete
@@ -207,7 +207,7 @@ struct TabDictionariesView: View {
                 original: nil,
                 additional: ["url": url.absoluteString]
             )
-            ErrorManager.shared.setError(appError: appError, frame: .tabDictionaries, source: .dictionaryImport)
+            ErrorManager1.shared.setError(appError: appError, frame: .tabDictionaries, source: .dictionaryImport)
             return
         }
 
@@ -223,7 +223,7 @@ struct TabDictionariesView: View {
                 original: error,
                 additional: ["url": url.absoluteString]
             )
-            ErrorManager.shared.setError(appError: appError, frame: .tabDictionaries, source: .dictionaryImport)
+            ErrorManager1.shared.setError(appError: appError, frame: .tabDictionaries, source: .dictionaryImport)
         }
     }
 }

@@ -78,7 +78,7 @@ struct TabWordsView: View {
                     wordsGetter.resetPagination()
                 }
                 .onReceive(NotificationCenter.default.publisher(for: .errorVisibilityChanged)) { _ in
-                    if let error = ErrorManager.shared.currentError,
+                    if let error = ErrorManager1.shared.currentError,
                        error.frame == .tabWords {
                         errorMessage = error.localizedMessage
                         isShowingAlert = true
@@ -87,7 +87,7 @@ struct TabWordsView: View {
                 .onDisappear {
                     wordsGetter.clear()
                 }
-                .modifier(ErrModifier(currentError: ErrorManager.shared.currentError) { newError in
+                .modifier(ErrModifier(currentError: ErrorManager1.shared.currentError) { newError in
                     if let error = newError, error.frame == .tabWords, error.source == .wordDelete {
                         isShowingAlert = true
                     }
@@ -96,9 +96,9 @@ struct TabWordsView: View {
             .alert(isPresented: $isShowingAlert) {
                 CompAlertView(
                     title: LanguageManager.shared.localizedString(for: "Error"),
-                    message: ErrorManager.shared.currentError?.errorDescription ?? "",
+                    message: ErrorManager1.shared.currentError?.errorDescription ?? "",
                     closeAction: {
-                        ErrorManager.shared.clearError()
+                        ErrorManager1.shared.clearError()
                     }
                 )
             }

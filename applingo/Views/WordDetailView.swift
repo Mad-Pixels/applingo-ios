@@ -125,7 +125,7 @@ struct WordDetailView: View {
                     wordsAction.setFrame(.wordDetail)
                 }
                 .onReceive(NotificationCenter.default.publisher(for: .errorVisibilityChanged)) { _ in
-                    if let error = ErrorManager.shared.currentError,
+                    if let error = ErrorManager1.shared.currentError,
                        error.frame == .wordDetail {
                         errorMessage = error.localizedMessage
                         isShowingAlert = true
@@ -168,7 +168,7 @@ struct WordDetailView: View {
                         title: LanguageManager.shared.localizedString(for: "Error"),
                         message: errorMessage,
                         closeAction: {
-                            ErrorManager.shared.clearError()
+                            ErrorManager1.shared.clearError()
                         }
                     )
                 }
