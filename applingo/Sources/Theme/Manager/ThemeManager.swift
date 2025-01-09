@@ -1,30 +1,30 @@
 import Combine
 
 final class ThemeManager: ObservableObject {
-    private(set) var supportedThemes: [ThemeType] = []
     static let shared = ThemeManager()
+    private(set) var supportedThemes: [ThemeType] = []
     
     @Published var currentTheme: ThemeType {
         didSet {
-            if AppStorage.shared.appTheme != currentTheme.rawValue {
-                AppStorage.shared.appTheme = currentTheme.rawValue
+            if AppStorage.shared.appTheme != currentTheme {
+                AppStorage.shared.appTheme = currentTheme
             }
         }
     }
     
-    init() {
+    private init() {
         self.currentTheme = Self.getInitialTheme()
         self.supportedThemes = getSupportedThemes()
-        Logger.debug("[ThemeManager]: Initialize manager with \(self.currentTheme.rawValue)")
+        Logger.debug("[ThemeManager]: Initialize manager with \(self.currentTheme.asString)")
     }
     
     private static func getInitialTheme() -> ThemeType {
-        return ThemeType.fromString(AppStorage.shared.appTheme ?? ThemeType.light.rawValue)
+        AppStorage.shared.appTheme
     }
     
     private func getSupportedThemes() -> [ThemeType] {
         let themes = ThemeType.allCases
-        Logger.debug("[ThemeManager]: Supported themes: \(themes.map { $0.rawValue })")
+        Logger.debug("[ThemeManager]: Supported themes: \(themes.map { $0.asString })")
         return themes
     }
     

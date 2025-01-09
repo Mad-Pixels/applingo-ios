@@ -1,4 +1,4 @@
-enum ScreenType: String, Codable {
+enum ScreenType: String {
     case dictionariesLocal
     case dictionariesLocalDetail
     case dictionariesRemote

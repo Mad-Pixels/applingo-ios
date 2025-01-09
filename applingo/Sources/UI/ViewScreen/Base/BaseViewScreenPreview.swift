@@ -25,7 +25,7 @@ struct BaseViewScreenPreview<Content: View>: View {
             .preferredColorScheme(theme == .dark ? .dark : .light)
             .environmentObject(ThemeManager.shared)
             .withScreenTracker(screen)
-            .withLanguageTracker()
+            .withLocaleTracker()
             .withThemeTracker()
     }
 }
