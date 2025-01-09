@@ -33,4 +33,9 @@ struct DarkTheme: AppTheme {
     let interactiveDisabled = Color(hex: "4b5563")
     let interactiveActive = Color(hex: "f8a009")
     let interactiveHover = Color(hex: "e38c10")
+    
+    // Error colors
+    var errorPrimaryColor: Color { Color(hex: "ef4444") }
+    var errorSecondaryColor: Color { Color(hex: "f87171") }
+    var errorBackgroundColor: Color { Color(hex: "7f1d1d") }
 }

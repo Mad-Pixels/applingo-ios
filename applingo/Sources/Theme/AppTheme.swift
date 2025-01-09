@@ -33,6 +33,10 @@ protocol AppTheme {
     var interactiveHover: Color { get }
     var interactiveDisabled: Color { get }
     var interactiveActive: Color { get }
+    
+    var errorPrimaryColor: Color { get }
+    var errorSecondaryColor: Color { get }
+    var errorBackgroundColor: Color { get }
 }
 
 extension Color {
