@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct BaseViewScreen<Content: View>: View {
+    @EnvironmentObject private var localeManager: LocaleManager
     @EnvironmentObject private var themeManager: ThemeManager
     
     private let style: BaseViewScreenStyle
@@ -20,6 +21,7 @@ struct BaseViewScreen<Content: View>: View {
     var body: some View {
         NavigationView {
             content
+                .id("\(themeManager.currentTheme.rawValue)_\(localeManager.currentLocale.asString)")
                 .background(themeManager.currentThemeStyle.backgroundPrimary)
                 .withScreenTracker(screen)
                 .withErrorTracker(screen)

@@ -20,6 +20,9 @@
         }
       }
     },
+    "Action Button" : {
+
+    },
     "AddDictionary" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -346,6 +349,9 @@
           }
         }
       }
+    },
+    "Content Example" : {
+
     },
     "Count" : {
       "extractionState" : "manual",
@@ -771,6 +777,9 @@
           }
         }
       }
+    },
+    "Form Content" : {
+
     },
     "GameAccuracy" : {
       "extractionState" : "manual",

@@ -37,7 +37,9 @@ struct MainView: View {
                     }
                     .tag(AppFrameModel.tabDictionaries)
 
-                TabSettingsView()
+                ScreenSettings()
+                    .environmentObject(ThemeManager.shared)
+                    .environmentObject(LocaleManager.shared)
                     .tabItem {
                         Label {
                             Text(languageManager.localizedString(for: "Settings").capitalizedFirstLetter)
