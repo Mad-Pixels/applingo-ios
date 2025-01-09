@@ -121,7 +121,7 @@ struct WordDetailView: View {
                     }
                 }
                 .onAppear {
-                    FrameManager.shared.setActiveFrame(.wordDetail)
+                    AppStorage.shared.activeScreen = .wordsDetail
                     wordsAction.setFrame(.wordDetail)
                 }
                 .onReceive(NotificationCenter.default.publisher(for: .errorVisibilityChanged)) { _ in

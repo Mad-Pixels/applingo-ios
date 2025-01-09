@@ -72,7 +72,7 @@ struct TabWordsView: View {
                     }
                 }
                 .onAppear {
-                    FrameManager.shared.setActiveFrame(.tabWords)
+                    AppStorage.shared.activeScreen = .words
                     wordsAction.setFrame(.tabWords)
                     wordsGetter.setFrame(.tabWords)
                     wordsGetter.resetPagination()

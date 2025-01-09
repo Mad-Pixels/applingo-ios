@@ -100,7 +100,7 @@ struct DictionaryRemoteDetailView: View {
                 .disabled(isDownloading)
             }
             .onAppear {
-                FrameManager.shared.setActiveFrame(.dictionaryRemoteDetail)
+                AppStorage.shared.activeScreen = .dictionariesRemoteDetail
             }
             .navigationTitle(LanguageManager.shared.localizedString(
                 for: "Details"

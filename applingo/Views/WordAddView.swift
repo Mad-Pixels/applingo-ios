@@ -97,7 +97,7 @@ struct WordAddView: View {
                     hintText = wordItem.hint ?? ""
                     descriptionText = wordItem.description ?? ""
                     
-                    FrameManager.shared.setActiveFrame(.wordAdd)
+                    AppStorage.shared.activeScreen = .wordsAdd
                     dictionaryGetter.setFrame(.wordAdd)
                     wordsAction.setFrame(.wordAdd)
                     dictionaryGetter.get()

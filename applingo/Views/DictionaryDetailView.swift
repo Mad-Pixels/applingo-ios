@@ -117,7 +117,7 @@ struct DictionaryDetailView: View {
                     }
                 }
                 .onAppear {
-                    FrameManager.shared.setActiveFrame(.dictionaryDetail)
+                    AppStorage.shared.activeScreen = .dictionariesLocalDetail
                 }
                 .navigationTitle(LanguageManager.shared.localizedString(for: "Details").capitalizedFirstLetter)
                 .navigationBarItems(

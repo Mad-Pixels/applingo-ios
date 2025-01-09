@@ -60,7 +60,7 @@ struct TabLearnView: View {
 //                GameLettersView(isPresented: $showLettersGame)
 //            }
             .onAppear {
-                FrameManager.shared.setActiveFrame(.learn)
+                AppStorage.shared.activeScreen = .game
             }
         }
     }

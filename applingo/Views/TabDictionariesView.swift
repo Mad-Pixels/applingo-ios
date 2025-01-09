@@ -83,7 +83,7 @@ struct TabDictionariesView: View {
                     }
                 }
                 .onAppear {
-                    FrameManager.shared.setActiveFrame(.tabDictionaries)
+                    AppStorage.shared.activeScreen = .dictionariesLocal
                     dictionaryAction.setFrame(.tabDictionaries)
                     dictionaryGetter.setFrame(.tabDictionaries)
                     dictionaryGetter.resetPagination()

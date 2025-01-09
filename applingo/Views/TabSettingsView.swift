@@ -41,7 +41,7 @@ struct TabSettingsView: View {
                 .modifier(BaseNavigationStyle())
             }
             .onAppear {
-                FrameManager.shared.setActiveFrame(.tabSettings)
+                AppStorage.shared.activeScreen = .settings
             }
         }
     }

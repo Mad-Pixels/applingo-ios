@@ -49,7 +49,7 @@ struct MainView: View {
             }
         }
         .onAppear {
-            FrameManager.shared.setActiveFrame(.learn)
+            AppStorage.shared.activeScreen = .game
         }
     }
 }

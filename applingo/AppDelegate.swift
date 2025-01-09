@@ -7,7 +7,7 @@ struct LingocardApp: App {
     @StateObject private var hapticManager = HapticManager.shared
     @StateObject private var themeManager = ThemeManager.shared
     @StateObject private var errorManager = ErrorManager1.shared
-    @StateObject private var frameManager = FrameManager.shared
+    //@StateObject private var frameManager = FrameManager.shared
     
     private let apiUrl = GlobalConfig.apiURL
     private let apiToken = GlobalConfig.apiToken
@@ -40,7 +40,7 @@ struct LingocardApp: App {
                 .environmentObject(languageManager)
                 .environmentObject(errorManager)
                 .environmentObject(themeManager)
-                .environmentObject(frameManager)
+                //.environmentObject(frameManager)
                 .environmentObject(DatabaseManager.shared)
         }
     }

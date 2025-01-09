@@ -95,7 +95,7 @@ struct BaseGameView<Content: View>: View {
                         withAnimation(.easeInOut(duration: 0.3)) {
                             showResultCard = false
                             isPresented.wrappedValue = false
-                            FrameManager.shared.setActiveFrame(.learn)
+                            AppStorage.shared.activeScreen = .game
                         }
                     },
                     onRestart: {
@@ -139,7 +139,7 @@ struct BaseGameView<Content: View>: View {
         }
     
     private func setupGame() {
-        FrameManager.shared.setActiveFrame(.game)
+        AppStorage.shared.activeScreen = .game
         cacheGetter.setFrame(.game)
         gameAction.setFrame(.game)
         cacheGetter.initializeCache()
@@ -195,7 +195,7 @@ struct BaseGameView<Content: View>: View {
         if !isRestarting {
             cleanupGame()
             isPresented.wrappedValue = false
-            FrameManager.shared.setActiveFrame(.learn)
+            AppStorage.shared.activeScreen = .game
         }
     }
     

@@ -83,7 +83,7 @@ struct DictionaryRemoteListView: View {
                     }
                 }
                 .onAppear {
-                    FrameManager.shared.setActiveFrame(.dictionaryRemoteList)
+                    AppStorage.shared.activeScreen = .dictionariesRemote
                     dictionaryGetter.setFrame(.dictionaryRemoteList)
                     dictionaryGetter.resetPagination()
                     dictionaryGetter.resetPagination(with: apiRequestParams)
@@ -124,7 +124,7 @@ struct DictionaryRemoteListView: View {
     }
     
     private func dismiss() {
-        FrameManager.shared.setActiveFrame(.tabDictionaries)
+        AppStorage.shared.activeScreen = .dictionariesLocal
         presentationMode.wrappedValue.dismiss()
     }
 }

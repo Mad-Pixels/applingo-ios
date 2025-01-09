@@ -126,7 +126,7 @@ struct DictionaryRemoteFilterView: View {
                 }
             )
             .onAppear {
-                FrameManager.shared.setActiveFrame(.dictionaryRemoteFilter)
+                AppStorage.shared.activeScreen = .dictionariesRemoteFilter
                 categoryGetter.setFrame(.dictionaryRemoteFilter)
                 categoryGetter.get { _ in }
             }
