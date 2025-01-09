@@ -22,6 +22,7 @@ struct BaseViewScreen<Content: View>: View {
             content
                 .background(themeManager.currentThemeStyle.backgroundPrimary)
                 .withScreenTracker(screen)
+                .withErrorTracker(screen)
                 .withLocaleTracker()
                 .withThemeTracker()
         }
