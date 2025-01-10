@@ -17,3 +17,4 @@ enum LocaleType: String, CaseIterable {
             .localizedString(forIdentifier: self.rawValue)?.lowercased() ?? self.rawValue
     }
 }
+
