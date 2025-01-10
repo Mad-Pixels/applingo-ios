@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct ScreenSettings: View {
-    @StateObject private var logHandler = LogHandler.shared
     @StateObject private var style: ScreenSettingsStyle
     
     init(style: ScreenSettingsStyle? = nil) {
