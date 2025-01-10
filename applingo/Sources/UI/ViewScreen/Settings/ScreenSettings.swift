@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ScreenSettings: View {
     @StateObject private var style: ScreenSettingsStyle
+    @StateObject private var locale = ScreenSettingsLocale()
     
     init(style: ScreenSettingsStyle? = nil) {
         let initialStyle = style ?? .themed(ThemeManager.shared.currentThemeStyle)
@@ -15,7 +16,7 @@ struct ScreenSettings: View {
                 LocaleSection()
                 LogSection()
             }
-            .navigationTitle(style.navigationTitle)
+            .navigationTitle(locale.navigationTitle)
             .navigationBarTitleDisplayMode(.large)
         }
     }

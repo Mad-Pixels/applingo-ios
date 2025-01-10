@@ -2,6 +2,7 @@ import SwiftUI
 
 struct LocaleSection: View {
     @EnvironmentObject private var localeManager: LocaleManager
+    @Environment(\.settingsLocale) private var locale
     
     private var selectedLocale: Binding<LocaleType> {
         Binding(
@@ -16,7 +17,11 @@ struct LocaleSection: View {
         AppPicker(
             selectedValue: selectedLocale,
             items: localeManager.supportedLocales,
-            title: LocaleManager.shared.localizedString(for: "language")
+            title: locale.languageTitle,
+            style: .themed(ThemeManager.shared.currentThemeStyle),
+            onChange: { newLocale in
+                localeManager.setLocale(newLocale)
+            }
         ) { locale in
             Text(locale.displayName)
         }

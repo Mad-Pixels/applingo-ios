@@ -1,15 +1,9 @@
 import SwiftUI
 
 final class ScreenSettingsStyle: ObservableObject {
-    private enum Strings {
-        static let settings = "Settings"
-    }
-    
     let backgroundColor: Color
     let padding: EdgeInsets
     let spacing: CGFloat
-    
-    @Published private(set) var navigationTitle: String
     
     init(
         spacing: CGFloat,
@@ -19,23 +13,6 @@ final class ScreenSettingsStyle: ObservableObject {
         self.spacing = spacing
         self.padding = padding
         self.backgroundColor = backgroundColor
-        
-        self.navigationTitle = LocaleManager.shared.localizedString(for: Strings.settings).capitalizedFirstLetter
-        
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(localeDidChange),
-            name: LocaleManager.localeDidChangeNotification,
-            object: nil
-        )
-    }
-    
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
-    
-    @objc private func localeDidChange() {
-        navigationTitle = LocaleManager.shared.localizedString(for: Strings.settings).capitalizedFirstLetter
     }
 }
 

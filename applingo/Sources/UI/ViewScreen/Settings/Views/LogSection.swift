@@ -1,14 +1,19 @@
 import SwiftUI
 
- struct LogSection: View {
+struct LogSection: View {
+    @EnvironmentObject private var themeManager: ThemeManager
     @ObservedObject private var logHandler = LogHandler.shared
+    @Environment(\.settingsLocale) private var locale
     
     var body: some View {
         AppToggle(
             isOn: $logHandler.sendLogs,
-            title: "send_errors_logs",
-            header: "log_settings"
+            title: locale.sendErrorLogsTitle,
+            header: locale.logSettingsTitle,
+            style: .themed(themeManager.currentThemeStyle),
+            onChange: { newValue in
+                logHandler.sendLogs = newValue
+            }
         )
     }
 }
-
