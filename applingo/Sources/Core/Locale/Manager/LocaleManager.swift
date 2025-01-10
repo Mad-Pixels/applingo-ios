@@ -61,7 +61,6 @@ final class LocaleManager: ObservableObject {
             self.bundle = Bundle.main
             return
         }
-        
         self.bundle = bundle
     }
 }
