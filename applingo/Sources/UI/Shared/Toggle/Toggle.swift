@@ -11,7 +11,7 @@ struct AppToggle: View {
         isOn: Binding<Bool>,
         title: String,
         header: String? = nil,
-        style: AppToggleStyle = .default,
+        style: AppToggleStyle = .themed(ThemeManager.shared.currentThemeStyle),
         onChange: ((Bool) -> Void)? = nil
     ) {
         self._isOn = isOn

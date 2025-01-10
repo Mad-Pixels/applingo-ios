@@ -13,9 +13,9 @@ struct BaseViewScreen<Content: View>: View {
         style: BaseViewScreenStyle = .default,
         @ViewBuilder content: () -> Content
     ) {
+        self.content = content()
         self.screen = screen
         self.style = style
-        self.content = content()
     }
     
     var body: some View {

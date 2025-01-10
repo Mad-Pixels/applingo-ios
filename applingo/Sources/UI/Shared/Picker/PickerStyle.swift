@@ -16,42 +16,12 @@ struct AppPickerStyle {
 }
 
 extension AppPickerStyle {
-    static var `default`: AppPickerStyle {
+    static func themed(_ theme: AppTheme, type: PickerType = .wheel) -> AppPickerStyle {
         AppPickerStyle(
-            titleColor: .primary,
+            titleColor: theme.textPrimary,
             backgroundColor: .clear,
-            accentColor: .blue,
-            type: .wheel,
-            spacing: 8
-        )
-    }
-    
-    static var segmented: AppPickerStyle {
-        AppPickerStyle(
-            titleColor: .primary,
-            backgroundColor: .clear,
-            accentColor: .blue,
-            type: .segmented,
-            spacing: 8
-        )
-    }
-    
-    static var menu: AppPickerStyle {
-        AppPickerStyle(
-            titleColor: .primary,
-            backgroundColor: .clear,
-            accentColor: .blue,
-            type: .menu,
-            spacing: 8
-        )
-    }
-    
-    static var inline: AppPickerStyle {
-        AppPickerStyle(
-            titleColor: .primary,
-            backgroundColor: .clear,
-            accentColor: .blue,
-            type: .inline,
+            accentColor: theme.accentPrimary,
+            type: type,
             spacing: 8
         )
     }

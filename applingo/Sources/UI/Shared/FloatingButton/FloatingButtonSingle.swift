@@ -4,6 +4,16 @@ struct FloatingButtonSingle: View {
     let icon: String
     let action: () -> Void
     let style: FloatingButtonStyle
+    
+    init(
+        icon: String,
+        action: @escaping () -> Void,
+        style: FloatingButtonStyle = .themed(ThemeManager.shared.currentThemeStyle)
+    ) {
+        self.icon = icon
+        self.action = action
+        self.style = style
+    }
 
     var body: some View {
         ZStack {

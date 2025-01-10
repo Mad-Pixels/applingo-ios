@@ -19,10 +19,6 @@ struct ErrorViewTracker: ViewModifier {
                     error.actionTitle ?? LocaleManager.shared.localizedString(for: "general.ok"),
                     action: error.action ?? {}
                 )
-                Button(
-                    LocaleManager.shared.localizedString(for: "general.cancel"),
-                    role: .cancel
-                ) {}
             } message: { error in
                 Text(error.message)
                     .foregroundColor(themeManager.currentThemeStyle.errorPrimaryColor)

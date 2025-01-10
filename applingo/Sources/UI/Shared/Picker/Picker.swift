@@ -12,7 +12,7 @@ struct AppPicker<Item: Hashable, Content: View>: View {
         selectedValue: Binding<Item>,
         items: [Item],
         title: String? = nil,
-        style: AppPickerStyle = .default,
+        style: AppPickerStyle = .themed(ThemeManager.shared.currentThemeStyle),
         onChange: ((Item) -> Void)? = nil,
         @ViewBuilder content: @escaping (Item) -> Content
     ) {
@@ -27,7 +27,7 @@ struct AppPicker<Item: Hashable, Content: View>: View {
     var body: some View {
         Group {
             if let title = title {
-                Section(header: Text(LocaleManager.shared.localizedString(for: title))
+                Section(header: Text(title)
                     .foregroundColor(style.titleColor)) {
                     pickerContent
                 }

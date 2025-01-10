@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// Wrapper для корректного предпросмотра вьюх с поддержкой темы и ошибок
 struct PreviewContainerView<Content: View>: View {
     @StateObject private var themeManager = ThemeManager.shared
     @StateObject private var errorManager = ErrorManager.shared
@@ -65,9 +64,6 @@ struct BaseViewScreenPreview<Content: View>: View {
             VStack(spacing: 20) {
                 Text("Content Example")
                     .foregroundColor(ThemeManager.shared.currentThemeStyle.textPrimary)
-                Button("Action Button") {
-                    // action
-                }
                 .foregroundColor(ThemeManager.shared.currentThemeStyle.accentPrimary)
             }
             .padding()
@@ -81,9 +77,6 @@ struct BaseViewScreenPreview<Content: View>: View {
             VStack(spacing: 20) {
                 Text("Content Example")
                     .foregroundColor(ThemeManager.shared.currentThemeStyle.textPrimary)
-                Button("Action Button") {
-                    // action
-                }
                 .foregroundColor(ThemeManager.shared.currentThemeStyle.accentPrimary)
             }
             .padding()
@@ -91,7 +84,7 @@ struct BaseViewScreenPreview<Content: View>: View {
     }
 }
 
-#Preview("Network Error") {
+#Preview("Alert Error") {
     PreviewContainerView {
         BaseViewScreenPreview(
             theme: .light,
@@ -113,41 +106,6 @@ struct BaseViewScreenPreview<Content: View>: View {
             VStack(spacing: 20) {
                 Text("Content Example")
                     .foregroundColor(ThemeManager.shared.currentThemeStyle.textPrimary)
-                Button("Action Button") {
-                    // action
-                }
-                .foregroundColor(ThemeManager.shared.currentThemeStyle.accentPrimary)
-            }
-            .padding()
-        }
-    }
-}
-
-#Preview("Validation Error") {
-    PreviewContainerView {
-        BaseViewScreenPreview(
-            theme: .dark,
-            screen: .wordsAdd,
-            error: AppError(
-                type: .validation(field: "word"),
-                context: AppErrorContext(
-                    source: .database,
-                    screen: .wordsAdd,
-                    metadata: [:],
-                    severity: .warning
-                ),
-                title: "Validation Error",
-                message: "Please enter a valid word",
-                actionTitle: "OK",
-                action: {}
-            )
-        ) {
-            VStack(spacing: 20) {
-                Text("Form Content")
-                    .foregroundColor(ThemeManager.shared.currentThemeStyle.textPrimary)
-                Button("Save") {
-                    // action
-                }
                 .foregroundColor(ThemeManager.shared.currentThemeStyle.accentPrimary)
             }
             .padding()

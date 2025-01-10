@@ -1,24 +1,27 @@
 import SwiftUI
 
 final class ScreenSettingsStyle: ObservableObject {
-    let spacing: CGFloat
-    let padding: EdgeInsets
+    private enum Strings {
+        static let settings = "Settings"
+    }
+    
     let backgroundColor: Color
+    let padding: EdgeInsets
+    let spacing: CGFloat
     
     @Published private(set) var navigationTitle: String
     
     init(
         spacing: CGFloat,
         padding: EdgeInsets,
-        backgroundColor: Color,
-        navigationTitle: String
+        backgroundColor: Color
     ) {
         self.spacing = spacing
         self.padding = padding
         self.backgroundColor = backgroundColor
-        self.navigationTitle = navigationTitle
         
-        // Подписываемся на смену локали
+        self.navigationTitle = LocaleManager.shared.localizedString(for: Strings.settings).capitalizedFirstLetter
+        
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(localeDidChange),
@@ -32,8 +35,7 @@ final class ScreenSettingsStyle: ObservableObject {
     }
     
     @objc private func localeDidChange() {
-        // Обновляем заголовок при смене локали
-        navigationTitle = LocaleManager.shared.localizedString(for: "Settings").capitalizedFirstLetter
+        navigationTitle = LocaleManager.shared.localizedString(for: Strings.settings).capitalizedFirstLetter
     }
 }
 
@@ -42,8 +44,7 @@ extension ScreenSettingsStyle {
         ScreenSettingsStyle(
             spacing: 16,
             padding: EdgeInsets(top: 0, leading: 16, bottom: 16, trailing: 16),
-            backgroundColor: theme.backgroundPrimary,
-            navigationTitle: LocaleManager.shared.localizedString(for: "Settings").capitalizedFirstLetter
+            backgroundColor: theme.backgroundPrimary
         )
     }
 }

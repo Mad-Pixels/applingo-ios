@@ -1,6 +1,6 @@
 import SwiftUI
 
- struct ThemeSection: View {
+struct ThemeSection: View {
     @EnvironmentObject private var themeManager: ThemeManager
     
     var body: some View {
@@ -8,7 +8,7 @@ import SwiftUI
             selectedValue: $themeManager.currentTheme,
             items: themeManager.supportedThemes,
             title: "theme",
-            style: .segmented,
+            style: .themed(themeManager.currentThemeStyle, type: .segmented),
             onChange: { newTheme in
                 themeManager.setTheme(to: newTheme)
             }

@@ -10,22 +10,22 @@ struct AppToggleStyle {
 }
 
 extension AppToggleStyle {
-    static var `default`: AppToggleStyle {
+    static func themed(_ theme: AppTheme) -> AppToggleStyle {
         AppToggleStyle(
-            titleColor: .primary,
-            headerColor: .secondary,
-            tintColor: .blue,
+            titleColor: theme.textPrimary,
+            headerColor: theme.textSecondary,
+            tintColor: theme.accentPrimary,
             backgroundColor: .clear,
             spacing: 8,
             showHeader: true
         )
     }
     
-    static var compact: AppToggleStyle {
+    static func themedCompact(_ theme: AppTheme) -> AppToggleStyle {
         AppToggleStyle(
-            titleColor: .primary,
-            headerColor: .secondary,
-            tintColor: .blue,
+            titleColor: theme.textPrimary,
+            headerColor: theme.textSecondary,
+            tintColor: theme.accentPrimary,
             backgroundColor: .clear,
             spacing: 4,
             showHeader: false

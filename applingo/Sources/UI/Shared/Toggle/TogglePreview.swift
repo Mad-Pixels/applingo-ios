@@ -5,27 +5,36 @@ struct TogglePreview: View {
     @State private var isOnWithoutHeader = false
     
     var body: some View {
-        VStack(spacing: 20) {
-            AppToggle(
-                isOn: $isOnWithHeader,
-                title: "send_errors_logs",
-                header: "log_settings",
-                style: .default,
-                onChange: { newValue in
-                    print("Toggle changed to: \(newValue)")
-                }
-            )
+        ScrollView {
+            VStack(spacing: 32) {
+                previewSection("Light Theme", theme: LightTheme())
+                previewSection("Dark Theme", theme: DarkTheme())
+            }
+            .padding()
+        }
+    }
+    
+    private func previewSection(_ title: String, theme: AppTheme) -> some View {
+        VStack(alignment: .leading, spacing: 20) {
+            Text(title)
+                .font(.headline)
             
             AppToggle(
                 isOn: $isOnWithoutHeader,
-                title: "enable_notifications",
-                style: .compact,
-                onChange: { newValue in
-                    print("Toggle changed to: \(newValue)")
-                }
+                title: "Enable notifications",
+                style: .themedCompact(theme)
             )
+            
+            AppToggle(
+                isOn: .constant(true),
+                title: "Disabled toggle",
+                header: "Disabled section",
+                style: .themed(theme)
+            )
+            .disabled(true)
         }
         .padding()
+        .background(theme.backgroundPrimary)
     }
 }
 

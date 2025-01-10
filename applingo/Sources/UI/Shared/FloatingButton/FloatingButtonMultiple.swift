@@ -11,6 +11,14 @@ struct FloatingButtonMultiple: View {
     
     @State private var isOpen = false
     
+    init(
+        items: [IconAction],
+        style: FloatingButtonStyle = .themed(ThemeManager.shared.currentThemeStyle)
+    ) {
+        self.items = items
+        self.style = style
+    }
+    
     var body: some View {
         ZStack {
             if isOpen {

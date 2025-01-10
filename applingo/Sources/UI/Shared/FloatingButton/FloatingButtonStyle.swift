@@ -11,17 +11,16 @@ struct FloatingButtonStyle {
     let shadowRadius: CGFloat
 }
 
-// Default
 extension FloatingButtonStyle {
-    static var `default`: FloatingButtonStyle {
+    static func themed(_ theme: AppTheme) -> FloatingButtonStyle {
         FloatingButtonStyle(
-            mainButtonColor: .blue,
-            itemButtonColor: .blue,
+            mainButtonColor: theme.accentPrimary,
+            itemButtonColor: theme.accentPrimary,
             mainButtonSize: CGSize(width: 60, height: 60),
             itemButtonSize: CGSize(width: 50, height: 50),
             spacing: 10,
             cornerRadius: 30,
-            shadowColor: .black.opacity(0.3),
+            shadowColor: theme.backgroundPrimary.opacity(0.3),
             shadowRadius: 5
         )
     }

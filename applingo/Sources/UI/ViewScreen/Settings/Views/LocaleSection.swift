@@ -7,7 +7,6 @@ struct LocaleSection: View {
         Binding(
             get: { localeManager.currentLocale },
             set: { newValue in
-                Logger.debug("[LocaleSection]: Selected new locale: \(newValue.asString)")
                 localeManager.setLocale(newValue)
             }
         )
@@ -17,14 +16,9 @@ struct LocaleSection: View {
         AppPicker(
             selectedValue: selectedLocale,
             items: localeManager.supportedLocales,
-            title: LocaleManager.shared.localizedString(for: "language"),
-            style: .default
+            title: LocaleManager.shared.localizedString(for: "language")
         ) { locale in
             Text(locale.displayName)
-        }
-        .id(localeManager.viewId) // Перенесли id на весь AppPicker
-        .onChange(of: localeManager.currentLocale) { newValue in
-            Logger.debug("[LocaleSection]: Locale changed to: \(newValue.asString)")
         }
     }
 }

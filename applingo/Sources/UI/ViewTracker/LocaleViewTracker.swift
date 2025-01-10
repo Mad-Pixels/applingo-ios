@@ -6,9 +6,7 @@ struct LocaleViewTracker: ViewModifier {
     func body(content: Content) -> some View {
         content
             .environment(\.locale, .init(identifier: localeManager.currentLocale.asString))
-            .onReceive(localeManager.objectWillChange) { _ in
-                Logger.debug("[LocaleViewTracker]: Locale environment updated to: \(localeManager.currentLocale.asString)")
-            }
+            .onReceive(localeManager.objectWillChange) { _ in }
     }
 }
 

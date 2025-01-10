@@ -7,11 +7,7 @@ struct PickerPreview: View {
         case third = "Third"
         
         var localizedTitle: String {
-            switch self {
-            case .first: return "First Option"
-            case .second: return "Second Option"
-            case .third: return "Third Option"
-            }
+            rawValue
         }
     }
     
@@ -21,52 +17,61 @@ struct PickerPreview: View {
     @State private var selectedInline: PreviewItem = .first
     
     var body: some View {
-        VStack(spacing: 20) {
-            // Wheel Picker
+        ScrollView {
+            VStack(spacing: 32) {
+                previewSection("Light Theme", theme: LightTheme())
+                previewSection("Dark Theme", theme: DarkTheme())
+            }
+            .padding()
+        }
+    }
+    
+    private func previewSection(_ title: String, theme: AppTheme) -> some View {
+        VStack(alignment: .leading, spacing: 20) {
+            Text(title)
+                .font(.headline)
+            
             AppPicker(
                 selectedValue: $selectedWheel,
                 items: PreviewItem.allCases,
                 title: "Wheel Style",
-                style: .default
+                style: .themed(theme, type: .wheel)
             ) { item in
                 Text(item.localizedTitle)
             }
             
-            // Segmented Picker
             AppPicker(
                 selectedValue: $selectedSegmented,
                 items: PreviewItem.allCases,
                 title: "Segmented Style",
-                style: .segmented
+                style: .themed(theme, type: .segmented)
             ) { item in
                 Text(item.localizedTitle)
             }
             
-            // Menu Picker
             AppPicker(
                 selectedValue: $selectedMenu,
                 items: PreviewItem.allCases,
                 title: "Menu Style",
-                style: .menu
+                style: .themed(theme, type: .menu)
             ) { item in
                 Text(item.localizedTitle)
             }
             
-            // Inline Picker
             AppPicker(
                 selectedValue: $selectedInline,
                 items: PreviewItem.allCases,
                 title: "Inline Style",
-                style: .inline
+                style: .themed(theme, type: .inline)
             ) { item in
                 Text(item.localizedTitle)
             }
         }
         .padding()
+        .background(theme.backgroundPrimary)
     }
 }
 
 #Preview("Picker Styles") {
     PickerPreview()
 }
-
