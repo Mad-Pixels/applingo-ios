@@ -37,11 +37,21 @@ final class LocaleManager: ObservableObject {
         if AppStorage.shared.appLocale != currentLocale {
             Logger.debug("[LocaleManager]: Updating app locale")
             
+            // Проверим текущий bundle перед обновлением
+            if let currentPath = bundle?.bundlePath {
+                Logger.debug("[LocaleManager]: Current bundle path: \(currentPath)")
+            }
+            
             updateBundle()
             AppStorage.shared.appLocale = currentLocale
             
-            DispatchQueue.main.async {
-                self.viewId = UUID()
+            // Проверим новый bundle после обновления
+            if let newPath = bundle?.bundlePath {
+                Logger.debug("[LocaleManager]: New bundle path: \(newPath)")
+            }
+            
+            DispatchQueue.main.async { [weak self] in
+                self?.objectWillChange.send()
                 NotificationCenter.default.post(name: Self.localeDidChangeNotification, object: nil)
             }
         }
@@ -58,14 +68,19 @@ final class LocaleManager: ObservableObject {
     }
     
     private func updateBundle() {
-        guard let path = Bundle.main.path(forResource: currentLocale.asString, ofType: "lproj"),
-              let bundle = Bundle(path: path) else {
-            Logger.warning("[LocaleManager]: Could not find bundle for locale \(currentLocale.asString). Falling back to default.")
+        guard let path = Bundle.main.path(forResource: currentLocale.asString, ofType: "lproj") else {
+            Logger.warning("[LocaleManager]: Could not find path for locale \(currentLocale.asString)")
             self.bundle = Bundle.main
             return
         }
         
-        Logger.debug("[LocaleManager]: Bundle updated for locale: \(currentLocale.asString)")
+        guard let bundle = Bundle(path: path) else {
+            Logger.warning("[LocaleManager]: Could not create bundle for path \(path)")
+            self.bundle = Bundle.main
+            return
+        }
+        
+        Logger.debug("[LocaleManager]: Bundle updated for locale: \(currentLocale.asString), path: \(path)")
         self.bundle = bundle
     }
     

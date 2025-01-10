@@ -1,9 +1,8 @@
 import SwiftUI
 
- struct LocaleSection: View {
+struct LocaleSection: View {
     @EnvironmentObject private var localeManager: LocaleManager
     
-    // Используем computed property вместо state
     private var selectedLocale: Binding<LocaleType> {
         Binding(
             get: { localeManager.currentLocale },
@@ -18,12 +17,12 @@ import SwiftUI
         AppPicker(
             selectedValue: selectedLocale,
             items: localeManager.supportedLocales,
-            title: "language",
+            title: LocaleManager.shared.localizedString(for: "language"),
             style: .default
         ) { locale in
             Text(locale.displayName)
-                .id(localeManager.viewId)
         }
+        .id(localeManager.viewId) // Перенесли id на весь AppPicker
         .onChange(of: localeManager.currentLocale) { newValue in
             Logger.debug("[LocaleSection]: Locale changed to: \(newValue.asString)")
         }

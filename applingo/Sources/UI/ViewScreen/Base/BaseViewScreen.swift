@@ -21,7 +21,7 @@ struct BaseViewScreen<Content: View>: View {
     var body: some View {
         NavigationView {
             content
-                .id("\(themeManager.currentTheme.rawValue)_\(localeManager.currentLocale.asString)")
+                .id(themeManager.currentTheme.rawValue)
                 .background(themeManager.currentThemeStyle.backgroundPrimary)
                 .withScreenTracker(screen)
                 .withErrorTracker(screen)
