@@ -59,14 +59,5 @@ struct ScreenWords: View {
             .environmentObject(ThemeManager.shared)
             .environmentObject(LocaleManager.shared)
         }
-        .alert(isPresented: $isShowingAlert) {
-            CompAlertView(
-                title: locale.errorTitle,
-                message: ErrorManager1.shared.currentError?.errorDescription ?? "",
-                closeAction: {
-                    ErrorManager1.shared.clearError()
-                }
-            )
-        }
     }
 }

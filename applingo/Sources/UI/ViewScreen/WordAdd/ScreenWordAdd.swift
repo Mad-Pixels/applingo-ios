@@ -29,7 +29,7 @@ struct ScreenWordAdd: View {
     }
     
     var body: some View {
-        NavigationView {
+        BaseViewScreen(screen: .wordsAdd) {
             Form {
                 WordAddMainSection(
                     wordItem: $wordItem,
@@ -58,27 +58,12 @@ struct ScreenWordAdd: View {
                 .disabled(isSaveDisabled)
             )
         }
-        .onAppear {
-            AppStorage.shared.activeScreen = .wordsAdd
-            dictionaryGetter.setFrame(.wordAdd)
-            wordsAction.setFrame(.wordAdd)
-            dictionaryGetter.get()
-        }
         .onChange(of: hintText) { wordItem.hint = $0 }
         .onChange(of: descriptionText) { wordItem.description = $0 }
         .onChange(of: dictionaryGetter.dictionaries) { dictionaries in
             if selectedDictionary == nil {
                 selectedDictionary = dictionaries.first
             }
-        }
-        .alert(isPresented: $isShowingAlert) {
-            Alert(
-                title: Text(locale.errorTitle),
-                message: Text(errorMessage),
-                dismissButton: .default(Text(locale.cancelTitle)) {
-                    ErrorManager1.shared.clearError()
-                }
-            )
         }
     }
     

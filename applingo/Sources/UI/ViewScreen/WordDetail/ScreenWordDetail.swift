@@ -31,7 +31,7 @@ struct ScreenWordDetail: View {
     }
     
     var body: some View {
-        NavigationView {
+        BaseViewScreen(screen: .wordsDetail) {
             Form {
                 WordDetailCardSection(
                     word: $wrapper.word,
@@ -73,19 +73,6 @@ struct ScreenWordDetail: View {
                     }
                 }
                 .disabled(isEditing && isSaveDisabled)
-            )
-        }
-        .onAppear {
-            AppStorage.shared.activeScreen = .wordsDetail
-            wordsAction.setFrame(.wordDetail)
-        }
-        .alert(isPresented: $isShowingAlert) {
-            Alert(
-                title: Text(locale.errorTitle),
-                message: Text(errorMessage),
-                dismissButton: .default(Text(locale.closeTitle)) {
-                    ErrorManager1.shared.clearError()
-                }
             )
         }
     }
