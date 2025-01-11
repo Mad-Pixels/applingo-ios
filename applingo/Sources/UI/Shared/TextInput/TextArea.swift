@@ -38,7 +38,7 @@ struct TextArea: View {
             
             ZStack(alignment: .topLeading) {
                 TextEditor(text: $text)
-                    .padding(6)
+                    .padding(style.padding)
                     .disabled(!isEditing)
                     .foregroundColor(style.textColor)
                     .font(style.font)
@@ -66,7 +66,6 @@ struct TextArea: View {
                         .allowsHitTesting(false)
                 }
             }
-            .animation(.easeInOut(duration: 0.4), value: isEditing)
         }
     }
 }

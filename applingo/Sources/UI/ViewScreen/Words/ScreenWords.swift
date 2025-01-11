@@ -51,11 +51,13 @@ struct ScreenWords: View {
             .environmentObject(LocaleManager.shared)
         }
         .sheet(item: $selectedWord) { word in
-            WordDetailView(
+            ScreenWordDetail(
                 word: word,
                 isPresented: $isShowingDetailView,
                 refresh: { wordsGetter.resetPagination() }
             )
+            .environmentObject(ThemeManager.shared)
+            .environmentObject(LocaleManager.shared)
         }
         .alert(isPresented: $isShowingAlert) {
             CompAlertView(
