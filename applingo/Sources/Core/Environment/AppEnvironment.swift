@@ -1,5 +1,6 @@
 import SwiftUI
 
+// MARK: - Locale
 private struct SettingsLocaleKey: EnvironmentKey {
     static let defaultValue: ScreenSettingsLocale = ScreenSettingsLocale()
 }

@@ -17,7 +17,10 @@ struct MainView: View {
                     }
                     .tag(AppFrameModel.learn)
 
-                TabWordsView()
+                //TabWordsView()
+                ScreenWords()
+                    .environmentObject(ThemeManager.shared)
+                    .environmentObject(LocaleManager.shared)
                     .tabItem {
                         Label {
                             Text(languageManager.localizedString(for: "Words").capitalizedFirstLetter)
@@ -27,7 +30,10 @@ struct MainView: View {
                     }
                     .tag(AppFrameModel.tabWords)
 
-                TabDictionariesView()
+                //TabDictionariesView()
+                ScreenDictionariesLocal()
+                    .environmentObject(ThemeManager.shared)
+                    .environmentObject(LocaleManager.shared)
                     .tabItem {
                         Label {
                             Text(languageManager.localizedString(for: "Dictionaries").capitalizedFirstLetter)

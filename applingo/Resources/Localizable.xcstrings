@@ -290,6 +290,9 @@
         }
       }
     },
+    "Checked state" : {
+
+    },
     "Close" : {
       "localizations" : {
         "de" : {
@@ -433,6 +436,9 @@
           }
         }
       }
+    },
+    "Default state" : {
+
     },
     "Definition" : {
       "extractionState" : "manual",
@@ -579,6 +585,9 @@
         }
       }
     },
+    "Disabled state" : {
+
+    },
     "Download" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -636,6 +645,9 @@
           }
         }
       }
+    },
+    "Empty list" : {
+
     },
     "ErrApiDefault" : {
       "extractionState" : "manual",
@@ -1874,6 +1886,9 @@
         }
       }
     },
+    "Long text" : {
+
+    },
     "MatchHunt" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1902,6 +1917,9 @@
           }
         }
       }
+    },
+    "No items" : {
+
     },
     "NoDictionariesAvailable" : {
       "extractionState" : "manual",
@@ -2076,6 +2094,9 @@
           }
         }
       }
+    },
+    "Regular state" : {
+
     },
     "Reset" : {
       "extractionState" : "manual",
@@ -2499,6 +2520,9 @@
           }
         }
       }
+    },
+    "With items" : {
+
     },
     "Word" : {
       "extractionState" : "manual",
