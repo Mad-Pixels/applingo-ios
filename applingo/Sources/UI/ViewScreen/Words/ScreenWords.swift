@@ -43,10 +43,12 @@ struct ScreenWords: View {
             }
         }
         .sheet(isPresented: $isShowingAddView) {
-            WordAddView(
+            ScreenWordAdd(
                 isPresented: $isShowingAddView,
                 refresh: { wordsGetter.resetPagination() }
             )
+            .environmentObject(ThemeManager.shared)
+            .environmentObject(LocaleManager.shared)
         }
         .sheet(item: $selectedWord) { word in
             WordDetailView(
