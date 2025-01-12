@@ -4,34 +4,36 @@ struct ButtonAction: View {
     enum ButtonType {
         case action
         case cancel
+        case disabled
     }
     
     let title: String
     let type: ButtonType
-    let style: ButtonActionStyle
     let action: () -> Void
+    let style: ButtonActionStyle
     
     init(
         title: String,
         type: ButtonType = .action,
-        style: ButtonActionStyle? = nil,
-        action: @escaping () -> Void
+        action: @escaping () -> Void,
+        style: ButtonActionStyle? = nil
     ) {
         self.title = title
         self.type = type
-        self.style = style ?? .themed(ThemeManager.shared.currentThemeStyle, type: type)
         self.action = action
+        self.style = style ?? .themed(ThemeManager.shared.currentThemeStyle, type: type)
     }
     
     var body: some View {
         Button(action: action) {
             Text(title)
-                .font(style.font)
-                .foregroundColor(style.textColor)
-                .padding(style.padding)
                 .frame(maxWidth: .infinity, minHeight: style.height)
                 .background(style.backgroundColor)
+                .foregroundColor(style.textColor)
                 .cornerRadius(style.cornerRadius)
+                .padding(style.padding)
+                .font(style.font)
         }
+        .disabled(type == .disabled)
     }
 }

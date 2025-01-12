@@ -1,7 +1,15 @@
 import SwiftUI
 
-#Preview("Button Component") {
-    ButtonPreview()
+struct ButtonPreview_Previews: PreviewProvider {
+    static var previews: some View {
+        Group {
+            ButtonPreview()
+                .previewDisplayName("Button Component Preview")
+                .previewLayout(.sizeThatFits)
+                .padding()
+                .background(Color(.systemBackground))
+        }
+    }
 }
 
 private struct ButtonPreview: View {
@@ -14,14 +22,14 @@ private struct ButtonPreview: View {
             .padding()
         }
     }
-    
+
     private func previewSection(_ title: String, theme: AppTheme) -> some View {
         VStack(alignment: .leading, spacing: 20) {
             Text(title)
                 .font(.headline)
+                .foregroundColor(theme.textPrimary)
             
             Group {
-                // Action buttons
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Action Button")
                         .font(.subheadline)
@@ -30,20 +38,13 @@ private struct ButtonPreview: View {
                     ButtonAction(
                         title: "Confirm Action",
                         type: .action,
+                        action: {
+                            print("Action tapped")
+                        },
                         style: .themed(theme, type: .action)
-                    ) {
-                        print("Action tapped")
-                    }
-                    
-                    ButtonAction(
-                        title: "Disabled Action",
-                        type: .action,
-                        style: .themed(theme, type: .action)
-                    ) {}
-                        .disabled(true)
+                    )
                 }
                 
-                // Cancel buttons
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Cancel Button")
                         .font(.subheadline)
@@ -52,21 +53,29 @@ private struct ButtonPreview: View {
                     ButtonAction(
                         title: "Cancel Action",
                         type: .cancel,
+                        action: {
+                            print("Cancel tapped")
+                        },
                         style: .themed(theme, type: .cancel)
-                    ) {
-                        print("Cancel tapped")
-                    }
+                    )
+                }
+                
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Disabled Button")
+                        .font(.subheadline)
+                        .foregroundColor(theme.textSecondary)
                     
                     ButtonAction(
-                        title: "Disabled Cancel",
-                        type: .cancel,
-                        style: .themed(theme, type: .cancel)
-                    ) {}
-                        .disabled(true)
+                        title: "Disabled Action",
+                        type: .disabled,
+                        action: {},
+                        style: .themed(theme, type: .disabled)
+                    )
                 }
             }
         }
         .padding()
         .background(theme.backgroundPrimary)
+        .cornerRadius(8)
     }
 }
