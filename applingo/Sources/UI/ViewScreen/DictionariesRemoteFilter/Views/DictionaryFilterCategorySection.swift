@@ -26,7 +26,7 @@ struct DictionaryFilterCategorySection: View {
                     .frame(maxWidth: .infinity)
             } else {
                 HStack {
-                    AppPicker(
+                    ItemPicker(
                         selectedValue: $selectedFrontCategory,
                         items: categoryGetter.frontCategories,
                         style: .themed(themeManager.currentThemeStyle)
@@ -38,7 +38,7 @@ struct DictionaryFilterCategorySection: View {
                     // Стрелка между пикерами
                     //ArrowDivider()
                     
-                    AppPicker(
+                    ItemPicker(
                         selectedValue: $selectedBackCategory,
                         items: categoryGetter.backCategories,
                         style: .themed(themeManager.currentThemeStyle)

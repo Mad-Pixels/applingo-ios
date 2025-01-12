@@ -13,7 +13,7 @@ struct DictionariesRemoteSearch: View {
     }
     
     var body: some View {
-        AppSearch(
+        InputSearch(
             text: $searchText,
             placeholder: locale.searchPlaceholder,
             style: .themed(ThemeManager.shared.currentThemeStyle)

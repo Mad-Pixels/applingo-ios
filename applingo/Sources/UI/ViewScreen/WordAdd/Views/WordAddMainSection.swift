@@ -37,7 +37,7 @@ struct WordAddMainSection: View {
                     icon: "translate"
                 )
                 
-                AppPicker(
+                ItemPicker(
                     selectedValue: $selectedDictionary,
                     items: dictionaries,
                     style: .themed(themeManager.currentThemeStyle)

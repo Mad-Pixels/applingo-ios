@@ -1,8 +1,8 @@
 import SwiftUI
 
-struct Checkbox: View {
+struct ItemCheckbox: View {
     @Binding var isChecked: Bool
-    let style: CheckboxStyle
+    let style: ItemCheckboxStyle
     let onChange: ((Bool) -> Void)?
     let disabled: Bool
 
@@ -10,7 +10,7 @@ struct Checkbox: View {
         isChecked: Binding<Bool>,
         disabled: Bool = false,
         onChange: ((Bool) -> Void)? = nil,
-        style: CheckboxStyle = .themed(ThemeManager.shared.currentThemeStyle)
+        style: ItemCheckboxStyle = .themed(ThemeManager.shared.currentThemeStyle)
     ) {
         self.style = style
         self.onChange = onChange

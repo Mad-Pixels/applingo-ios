@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct AppSearchStyle {
+struct InputSearchStyle {
     let backgroundColor: Color
     let textColor: Color
     let placeholderColor: Color
@@ -15,9 +15,9 @@ struct AppSearchStyle {
     let shadowY: CGFloat
 }
 
-extension AppSearchStyle {
-    static func themed(_ theme: AppTheme) -> AppSearchStyle {
-        AppSearchStyle(
+extension InputSearchStyle {
+    static func themed(_ theme: AppTheme) -> InputSearchStyle {
+        InputSearchStyle(
             backgroundColor: theme.backgroundPrimary,
             textColor: theme.textPrimary,
             placeholderColor: theme.textPrimary,

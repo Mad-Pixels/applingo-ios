@@ -1,18 +1,17 @@
 import SwiftUI
 
-struct CheckboxPreview_Previews: PreviewProvider {
+struct SearchPreview_Previews: PreviewProvider {
     static var previews: some View {
-        CheckboxPreview()
-            .previewDisplayName("Checkbox Component")
-            .previewLayout(.fixed(width: 350, height: 600))
+        SearchPreview()
+            .previewDisplayName("Search Component (Light & Dark Mode)")
+            .previewLayout(.sizeThatFits)
             .padding()
     }
 }
 
-private struct CheckboxPreview: View {
-    @State private var isChecked = false
-    @State private var isCheckedDisabled = true
-
+private struct SearchPreview: View {
+    @State private var searchText = ""
+    
     var body: some View {
         ScrollView {
             VStack(spacing: 32) {
@@ -23,7 +22,7 @@ private struct CheckboxPreview: View {
             .frame(maxWidth: .infinity)
         }
     }
-
+    
     private func previewSection(_ title: String, theme: AppTheme) -> some View {
         VStack(alignment: .leading, spacing: 20) {
             Text(title)
@@ -33,47 +32,46 @@ private struct CheckboxPreview: View {
             
             Group {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Default state")
+                    Text("Empty State")
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     
-                    Checkbox(
-                        isChecked: $isChecked,
-                        onChange: { newValue in
-                            print("Checkbox changed to: \(newValue)")
-                        },
+                    InputSearch(
+                        text: $searchText,
+                        placeholder: "Search items...",
                         style: .themed(theme)
                     )
                 }
-
+                
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Checked state")
+                    Text("With Text")
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     
-                    Checkbox(
-                        isChecked: .constant(true),
+                    InputSearch(
+                        text: .constant("Search query"),
+                        placeholder: "Search items...",
                         style: .themed(theme)
                     )
                 }
-
+                
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Disabled state")
+                    Text("Disabled State")
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     
-                    Checkbox(
-                        isChecked: $isCheckedDisabled,
-                        disabled: true,
+                    InputSearch(
+                        text: .constant("Disabled search"),
+                        placeholder: "Search items...",
                         style: .themed(theme)
                     )
+                    .disabled(true)
                 }
             }
         }
         .padding()
-        .background(theme.backgroundSecondary)
+        .background(theme.backgroundPrimary)
         .cornerRadius(12)
-        .shadow(color: .gray.opacity(0.2), radius: 4, x: 0, y: 2)
-        .frame(maxWidth: .infinity)
+        .shadow(color: .gray.opacity(0.1), radius: 8, x: 0, y: 4)
     }
 }

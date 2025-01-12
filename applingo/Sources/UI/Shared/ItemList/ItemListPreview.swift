@@ -46,7 +46,7 @@ private struct ListPreview: View {
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     
-                    ItemsList(
+                    ItemList(
                         items: $emptyItems,
                         style: .themed(theme),
                         emptyListView: AnyView(
@@ -68,7 +68,7 @@ private struct ListPreview: View {
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     
-                    ItemsList(
+                    ItemList(
                         items: $items,
                         style: .themed(theme)
                     ) { item in
@@ -86,7 +86,7 @@ private struct ListPreview: View {
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     
-                    ItemsList(
+                    ItemList(
                         items: $emptyItems,
                         style: .themed(theme),
                         isLoadingPage: true

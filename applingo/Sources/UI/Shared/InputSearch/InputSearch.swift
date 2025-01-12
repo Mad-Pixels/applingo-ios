@@ -1,9 +1,9 @@
 import SwiftUI
 
-struct AppSearch: View {
+struct InputSearch: View {
     @Binding var text: String
     let placeholder: String
-    let style: AppSearchStyle
+    let style: InputSearchStyle
 
     var body: some View {
         HStack {

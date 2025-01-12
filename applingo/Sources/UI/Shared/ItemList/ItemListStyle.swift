@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct ItemsListStyle {
+struct ItemListStyle {
     let backgroundColor: Color
     let loadingColor: Color
     let errorColor: Color
@@ -9,9 +9,9 @@ struct ItemsListStyle {
     let padding: EdgeInsets
 }
 
-extension ItemsListStyle {
-    static func themed(_ theme: AppTheme) -> ItemsListStyle {
-        ItemsListStyle(
+extension ItemListStyle {
+    static func themed(_ theme: AppTheme) -> ItemListStyle {
+        ItemListStyle(
             backgroundColor: theme.backgroundPrimary,
             loadingColor: theme.accentPrimary,
             errorColor: theme.error,

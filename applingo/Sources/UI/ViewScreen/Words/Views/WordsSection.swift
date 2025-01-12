@@ -18,7 +18,7 @@ struct WordsSection: View {
     }
     
     var body: some View {
-        ItemsList<WordItemModel, WordRow>(
+        ItemList<WordItemModel, WordRow>(
             items: $wordsGetter.words,
             style: .themed(themeManager.currentThemeStyle),
             isLoadingPage: wordsGetter.isLoadingPage,

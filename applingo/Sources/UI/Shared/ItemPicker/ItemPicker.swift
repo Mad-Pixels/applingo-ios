@@ -1,10 +1,10 @@
 import SwiftUI
 
-struct AppPicker<Item: Hashable, Content: View>: View {
+struct ItemPicker<Item: Hashable, Content: View>: View {
     @Binding var selectedValue: Item
     let items: [Item]
     let title: String?
-    let style: AppPickerStyle
+    let style: ItemPickerStyle
     let content: (Item) -> Content
     let onChange: ((Item) -> Void)?
     
@@ -12,7 +12,7 @@ struct AppPicker<Item: Hashable, Content: View>: View {
         selectedValue: Binding<Item>,
         items: [Item],
         title: String? = nil,
-        style: AppPickerStyle = .themed(ThemeManager.shared.currentThemeStyle),
+        style: ItemPickerStyle = .themed(ThemeManager.shared.currentThemeStyle),
         onChange: ((Item) -> Void)? = nil,
         @ViewBuilder content: @escaping (Item) -> Content
     ) {
@@ -58,7 +58,7 @@ struct AppPicker<Item: Hashable, Content: View>: View {
 }
 
 struct PickerStyleModifier: ViewModifier {
-    let style: AppPickerStyle.PickerType
+    let style: ItemPickerStyle.PickerType
     
     func body(content: Content) -> some View {
         switch style {

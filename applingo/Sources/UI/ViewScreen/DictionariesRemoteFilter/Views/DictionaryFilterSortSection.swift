@@ -13,7 +13,7 @@ struct DictionaryFilterSortSection: View {
         }
     
     var body: some View {
-        AppPicker(
+        ItemPicker(
             selectedValue: $selectedSortBy,
             items: ApiDictionaryQueryRequestModel.SortBy.allCases,
             title: locale.sortByTitle,

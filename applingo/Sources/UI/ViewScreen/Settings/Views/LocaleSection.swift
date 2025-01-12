@@ -14,7 +14,7 @@ struct LocaleSection: View {
     }
     
     var body: some View {
-        AppPicker(
+        ItemPicker(
             selectedValue: selectedLocale,
             items: localeManager.supportedLocales,
             title: locale.languageTitle,

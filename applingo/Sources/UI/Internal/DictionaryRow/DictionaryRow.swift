@@ -24,7 +24,7 @@ struct DictionaryRow: View {
             .contentShape(Rectangle())
             .onTapGesture(perform: onTap)
             
-            Checkbox(
+            ItemCheckbox(
                 isChecked: .constant(isActive),
                 onChange: onToggle
             )

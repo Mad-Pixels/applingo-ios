@@ -1,8 +1,8 @@
 import SwiftUI
 
-struct ItemsList<Item: Identifiable & Equatable, RowContent: View>: View {
+struct ItemList<Item: Identifiable & Equatable, RowContent: View>: View {
     @Binding var items: [Item]
-    let style: ItemsListStyle
+    let style: ItemListStyle
     
     let isLoadingPage: Bool
     let error: Error?
@@ -15,7 +15,7 @@ struct ItemsList<Item: Identifiable & Equatable, RowContent: View>: View {
     
     init(
         items: Binding<[Item]>,
-        style: ItemsListStyle = .themed(ThemeManager.shared.currentThemeStyle),
+        style: ItemListStyle = .themed(ThemeManager.shared.currentThemeStyle),
         isLoadingPage: Bool = false,
         error: Error? = nil,
         emptyListView: AnyView? = nil,

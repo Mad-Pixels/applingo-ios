@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct CheckboxStyle {
+struct ItemCheckboxStyle {
     let activeColor: Color
     let inactiveColor: Color
     let borderColor: Color
@@ -8,9 +8,9 @@ struct CheckboxStyle {
     let borderWidth: CGFloat
 }
 
-extension CheckboxStyle {
-    static func themed(_ theme: AppTheme) -> CheckboxStyle {
-        CheckboxStyle(
+extension ItemCheckboxStyle {
+    static func themed(_ theme: AppTheme) -> ItemCheckboxStyle {
+        ItemCheckboxStyle(
             activeColor: theme.accentPrimary,
             inactiveColor: .clear,
             borderColor: theme.textSecondary,
@@ -22,7 +22,7 @@ extension CheckboxStyle {
 
 struct CheckboxToggleStyle: ToggleStyle {
     @Environment(\.isEnabled) private var isEnabled
-    let style: CheckboxStyle
+    let style: ItemCheckboxStyle
 
     func makeBody(configuration: Configuration) -> some View {
         ZStack {

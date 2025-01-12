@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct AppPickerStyle {
+struct ItemPickerStyle {
     let titleColor: Color
     let backgroundColor: Color
     let accentColor: Color
@@ -15,9 +15,9 @@ struct AppPickerStyle {
     }
 }
 
-extension AppPickerStyle {
-    static func themed(_ theme: AppTheme, type: PickerType = .wheel) -> AppPickerStyle {
-        AppPickerStyle(
+extension ItemPickerStyle {
+    static func themed(_ theme: AppTheme, type: PickerType = .wheel) -> ItemPickerStyle {
+        ItemPickerStyle(
             titleColor: theme.textPrimary,
             backgroundColor: .clear,
             accentColor: theme.accentPrimary,

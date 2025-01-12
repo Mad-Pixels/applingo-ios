@@ -49,7 +49,7 @@ private struct PickerPreview: View {
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     
-                    AppPicker(
+                    ItemPicker(
                         selectedValue: $selectedWheel,
                         items: PreviewItem.allCases,
                         title: "",
@@ -69,7 +69,7 @@ private struct PickerPreview: View {
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     
-                    AppPicker(
+                    ItemPicker(
                         selectedValue: $selectedSegmented,
                         items: PreviewItem.allCases,
                         title: "",
@@ -89,7 +89,7 @@ private struct PickerPreview: View {
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     
-                    AppPicker(
+                    ItemPicker(
                         selectedValue: $selectedMenu,
                         items: PreviewItem.allCases,
                         title: "",
@@ -109,7 +109,7 @@ private struct PickerPreview: View {
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     
-                    AppPicker(
+                    ItemPicker(
                         selectedValue: $selectedInline,
                         items: PreviewItem.allCases,
                         title: "",

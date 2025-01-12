@@ -14,7 +14,7 @@ struct DictionariesLocalSection: View {
         self.dictionaryGetter = dictionaryGetter
     }
    var body: some View {
-       ItemsList<DictionaryItemModel, DictionaryRow>(
+       ItemList<DictionaryItemModel, DictionaryRow>(
            items: $dictionaryGetter.dictionaries,
            style: .themed(themeManager.currentThemeStyle),
            isLoadingPage: dictionaryGetter.isLoadingPage,

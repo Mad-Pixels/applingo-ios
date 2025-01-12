@@ -5,7 +5,7 @@ struct ThemeSection: View {
     @Environment(\.settingsLocale) private var locale
     
     var body: some View {
-        AppPicker(
+        ItemPicker(
             selectedValue: $themeManager.currentTheme,
             items: themeManager.supportedThemes,
             title: locale.themeTitle,
