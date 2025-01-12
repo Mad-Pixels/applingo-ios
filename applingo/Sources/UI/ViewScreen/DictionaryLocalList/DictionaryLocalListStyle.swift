@@ -1,6 +1,6 @@
 import SwiftUI
 
-final class DictionaryListLocalStyle: ObservableObject {
+final class DictionaryLocalListStyle: ObservableObject {
     let backgroundColor: Color
     let padding: EdgeInsets
     let spacing: CGFloat
@@ -16,9 +16,9 @@ final class DictionaryListLocalStyle: ObservableObject {
     }
 }
 
-extension DictionaryListLocalStyle {
-    static func themed(_ theme: AppTheme) -> DictionaryListLocalStyle {
-        DictionaryListLocalStyle(
+extension DictionaryLocalListStyle {
+    static func themed(_ theme: AppTheme) -> DictionaryLocalListStyle {
+        DictionaryLocalListStyle(
             spacing: 16,
             padding: EdgeInsets(top: 0, leading: 16, bottom: 16, trailing: 16),
             backgroundColor: theme.backgroundPrimary

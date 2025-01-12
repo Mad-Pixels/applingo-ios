@@ -1,15 +1,15 @@
 import SwiftUI
 
-struct DictionaryListLocal: View {
-   @StateObject private var style: DictionaryListLocalStyle
-   @StateObject private var locale = DictionaryListLocalLocale()
+struct DictionaryLocalList: View {
+   @StateObject private var style: DictionaryLocalListStyle
+   @StateObject private var locale = DictionaryLocalListLocale()
    @StateObject private var dictionaryGetter = DictionaryLocalGetterViewModel()
 
    @State private var selectedDictionary: DictionaryItemModel?
    @State private var isShowingInstructions = false
    @State private var isShowingRemoteList = false
    
-   init(style: DictionaryListLocalStyle? = nil) {
+   init(style: DictionaryLocalListStyle? = nil) {
        let initialStyle = style ?? .themed(ThemeManager.shared.currentThemeStyle)
        _style = StateObject(wrappedValue: initialStyle)
    }
@@ -18,12 +18,12 @@ struct DictionaryListLocal: View {
        BaseViewScreen(screen: .dictionariesLocal) {
            ZStack {
                VStack(spacing: style.spacing) {
-                   DictionaryListLocalViewSearch(
+                   DictionaryLocalListViewSearch(
                        searchText: $dictionaryGetter.searchText,
                        locale: locale
                    )
                    
-                   DictionaryListLocalViewSection(
+                   DictionaryLocalListViewList(
                        locale: locale,
                        dictionaryGetter: dictionaryGetter,
                        onDictionarySelect: { dictionary in
@@ -34,7 +34,7 @@ struct DictionaryListLocal: View {
                .navigationTitle(locale.navigationTitle)
                .navigationBarTitleDisplayMode(.large)
                
-               DictionaryListLocalViewActions(
+               DictionaryLocalListViewActions(
                    locale: locale,
                    onImport: { isShowingInstructions = true },
                    onDownload: { isShowingRemoteList = true }
@@ -60,7 +60,7 @@ struct DictionaryListLocal: View {
            )
        }
        .fullScreenCover(isPresented: $isShowingRemoteList) {
-           DictionaryListRemote(isPresented: $isShowingRemoteList)
+           DictionaryRemoteList(isPresented: $isShowingRemoteList)
        }
    }
 }

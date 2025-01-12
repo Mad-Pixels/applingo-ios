@@ -1,11 +1,11 @@
 import SwiftUI
 
-struct DictionaryListRemoteViewActions: View {
+struct DictionaryRemoteListViewActions: View {
     let onFilter: () -> Void
-    private let locale: DictionaryListRemoteLocale
+    private let locale: DictionaryRemoteListLocale
     
     init(
-        locale: DictionaryListRemoteLocale,
+        locale: DictionaryRemoteListLocale,
         onFilter: @escaping () -> Void
     ) {
         self.locale = locale

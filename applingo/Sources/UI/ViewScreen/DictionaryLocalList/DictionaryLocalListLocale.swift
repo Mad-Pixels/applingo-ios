@@ -1,32 +1,29 @@
 import Foundation
 
-final class DictionaryListRemoteLocale: ObservableObject {
+final class DictionaryLocalListLocale: ObservableObject {
     private enum Strings {
         static let dictionaries = "Dictionaries"
         static let search = "Search"
-        static let filter = "Filter"
-        static let back = "Back"
-        static let noWords = "NoWordsAvailable"
+        static let importCSV = "ImportCSV"
+        static let download = "Download"
+        static let noDictionaries = "NoDictionariesAvailable"
         static let error = "Error"
-        static let close = "Close"
     }
     
     @Published private(set) var navigationTitle: String
     @Published private(set) var searchPlaceholder: String
-    @Published private(set) var filterTitle: String
-    @Published private(set) var backTitle: String
+    @Published private(set) var importTitle: String
+    @Published private(set) var downloadTitle: String
     @Published private(set) var emptyMessage: String
     @Published private(set) var errorTitle: String
-    @Published private(set) var closeTitle: String
     
     init() {
         self.navigationTitle = Self.localizedString(for: .navigationTitle)
         self.searchPlaceholder = Self.localizedString(for: .searchPlaceholder)
-        self.filterTitle = Self.localizedString(for: .filterTitle)
-        self.backTitle = Self.localizedString(for: .backTitle)
+        self.importTitle = Self.localizedString(for: .importTitle)
+        self.downloadTitle = Self.localizedString(for: .downloadTitle)
         self.emptyMessage = Self.localizedString(for: .emptyMessage)
         self.errorTitle = Self.localizedString(for: .errorTitle)
-        self.closeTitle = Self.localizedString(for: .closeTitle)
         
         NotificationCenter.default.addObserver(
             self,
@@ -41,26 +38,27 @@ final class DictionaryListRemoteLocale: ObservableObject {
     }
     
     private enum LocalizedKey {
-        case navigationTitle, searchPlaceholder, filterTitle, backTitle
-        case emptyMessage, errorTitle, closeTitle
+        case navigationTitle
+        case searchPlaceholder
+        case importTitle
+        case downloadTitle
+        case emptyMessage
+        case errorTitle
         
         var key: String {
             switch self {
             case .navigationTitle: return Strings.dictionaries
             case .searchPlaceholder: return Strings.search
-            case .filterTitle: return Strings.filter
-            case .backTitle: return Strings.back
-            case .emptyMessage: return Strings.noWords
+            case .importTitle: return Strings.importCSV
+            case .downloadTitle: return Strings.download
+            case .emptyMessage: return Strings.noDictionaries
             case .errorTitle: return Strings.error
-            case .closeTitle: return Strings.close
             }
         }
         
         var capitalized: Bool {
             switch self {
-            case .navigationTitle, .searchPlaceholder,
-                 .filterTitle, .backTitle:
-                return true
+            case .navigationTitle, .searchPlaceholder: return true
             default: return false
             }
         }
@@ -74,10 +72,9 @@ final class DictionaryListRemoteLocale: ObservableObject {
     @objc private func localeDidChange() {
         navigationTitle = Self.localizedString(for: .navigationTitle)
         searchPlaceholder = Self.localizedString(for: .searchPlaceholder)
-        filterTitle = Self.localizedString(for: .filterTitle)
-        backTitle = Self.localizedString(for: .backTitle)
+        importTitle = Self.localizedString(for: .importTitle)
+        downloadTitle = Self.localizedString(for: .downloadTitle)
         emptyMessage = Self.localizedString(for: .emptyMessage)
         errorTitle = Self.localizedString(for: .errorTitle)
-        closeTitle = Self.localizedString(for: .closeTitle)
     }
 }

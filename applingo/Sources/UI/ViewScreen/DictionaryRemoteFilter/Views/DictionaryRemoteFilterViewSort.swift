@@ -1,12 +1,12 @@
 import SwiftUI
 
-struct DictionaryFilterRemoteViewSort: View {
+struct DictionaryRemoteFilterViewSort: View {
     @Binding var selectedSortBy: ApiDictionaryQueryRequestModel.SortBy
-    private let locale: DictionaryFilterRemoteLocale
+    private let locale: DictionaryRemoteFilterLocale
     
     init(
             selectedSortBy: Binding<ApiDictionaryQueryRequestModel.SortBy>,
-            locale: DictionaryFilterRemoteLocale
+            locale: DictionaryRemoteFilterLocale
         ) {
             self._selectedSortBy = selectedSortBy
             self.locale = locale

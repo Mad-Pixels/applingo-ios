@@ -1,12 +1,12 @@
 import SwiftUI
 
-struct DictionaryListRemoteViewSearch: View {
+struct DictionaryRemoteListViewSearch: View {
     @Binding var searchText: String
-    private let locale: DictionaryListRemoteLocale
+    private let locale: DictionaryRemoteListLocale
     
     init(
         searchText: Binding<String>,
-        locale: DictionaryListRemoteLocale
+        locale: DictionaryRemoteListLocale
     ) {
         self._searchText = searchText
         self.locale = locale

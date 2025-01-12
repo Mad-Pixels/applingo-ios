@@ -1,9 +1,9 @@
 import SwiftUI
 
-struct DictionaryFilterRemote: View {
+struct DictionaryRemoteFilter: View {
     @Environment(\.presentationMode) var presentationMode
-    @StateObject private var style: DictionaryFilterRemoteStyle
-    @StateObject private var locale = DictionaryFilterRemoteLocale()
+    @StateObject private var style: DictionaryRemoteFilterStyle
+    @StateObject private var locale = DictionaryRemoteFilterLocale()
     @StateObject private var categoryGetter = CategoryRemoteGetterViewModel()
     
     @Binding var apiRequestParams: ApiDictionaryQueryRequestModel
@@ -13,7 +13,7 @@ struct DictionaryFilterRemote: View {
     
     init(
         apiRequestParams: Binding<ApiDictionaryQueryRequestModel>,
-        style: DictionaryFilterRemoteStyle? = nil
+        style: DictionaryRemoteFilterStyle? = nil
     ) {
         self._apiRequestParams = apiRequestParams
         let initialStyle = style ?? .themed(ThemeManager.shared.currentThemeStyle)
@@ -28,20 +28,20 @@ struct DictionaryFilterRemote: View {
         BaseViewScreen(screen: .dictionariesRemoteFilter) {
             VStack(spacing: 0) {
                 Form {
-                    DictionaryFilterRemoteViewSection(
+                    DictionaryRemoteFilterViewFilter(
                         categoryGetter: categoryGetter,
                         selectedFrontCategory: $selectedFrontCategory,
                         selectedBackCategory: $selectedBackCategory,
                         locale: locale
                     )
                             
-                    DictionaryFilterRemoteViewSort(
+                    DictionaryRemoteFilterViewSort(
                         selectedSortBy: $selectedSortBy,
                         locale: locale
                     )
                 }
                     
-                DictionaryFilterRemoteViewActions(
+                DictionaryRemoteFilterViewActions(
                     locale: locale,
                     onSave: saveFilters,
                     onReset: resetFilters

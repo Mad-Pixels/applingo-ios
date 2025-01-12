@@ -1,13 +1,13 @@
 import SwiftUI
 
-struct DictionaryListRemoteViewSection: View {
+struct DictionaryRemoteListViewList: View {
    @EnvironmentObject private var themeManager: ThemeManager
    @ObservedObject var dictionaryGetter: DictionaryRemoteGetterViewModel
-   private let locale: DictionaryListRemoteLocale
+   private let locale: DictionaryRemoteListLocale
    let onDictionarySelect: (DictionaryItemModel) -> Void
    
    init(
-       locale: DictionaryListRemoteLocale,
+       locale: DictionaryRemoteListLocale,
        dictionaryGetter: DictionaryRemoteGetterViewModel,
        onDictionarySelect: @escaping (DictionaryItemModel) -> Void
    ) {

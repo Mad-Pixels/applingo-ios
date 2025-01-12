@@ -1,6 +1,6 @@
 import SwiftUI
 
-final class DictionaryFilterRemoteStyle: ObservableObject {
+final class DictionaryRemoteFilterStyle: ObservableObject {
     let backgroundColor: Color
     let spacing: CGFloat
     let padding: EdgeInsets
@@ -16,9 +16,9 @@ final class DictionaryFilterRemoteStyle: ObservableObject {
     }
 }
 
-extension DictionaryFilterRemoteStyle {
-    static func themed(_ theme: AppTheme) -> DictionaryFilterRemoteStyle {
-        DictionaryFilterRemoteStyle(
+extension DictionaryRemoteFilterStyle {
+    static func themed(_ theme: AppTheme) -> DictionaryRemoteFilterStyle {
+        DictionaryRemoteFilterStyle(
             backgroundColor: theme.backgroundPrimary,
             spacing: 16,
             padding: EdgeInsets(top: 0, leading: 16, bottom: 16, trailing: 16)

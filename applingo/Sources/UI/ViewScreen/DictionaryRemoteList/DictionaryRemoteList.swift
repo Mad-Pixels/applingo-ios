@@ -1,8 +1,8 @@
 import SwiftUI
 
-struct DictionaryListRemote: View {
+struct DictionaryRemoteList: View {
     @Environment(\.presentationMode) var presentationMode
-    @StateObject private var locale = DictionaryListRemoteLocale()
+    @StateObject private var locale = DictionaryRemoteListLocale()
     @StateObject private var dictionaryGetter = DictionaryRemoteGetterViewModel()
     @State private var apiRequestParams = ApiDictionaryQueryRequestModel()
     @State private var selectedDictionary: DictionaryItemModel?
@@ -14,12 +14,12 @@ struct DictionaryListRemote: View {
         BaseViewScreen(screen: .dictionariesRemote) {
             ZStack {
                 VStack(spacing: 16) {
-                    DictionaryListRemoteViewSearch(
+                    DictionaryRemoteListViewSearch(
                         searchText: $dictionaryGetter.searchText,
                         locale: locale
                     )
                     
-                    DictionaryListRemoteViewSection(
+                    DictionaryRemoteListViewList(
                         locale: locale,
                         dictionaryGetter: dictionaryGetter,
                         onDictionarySelect: { dictionary in
@@ -31,7 +31,7 @@ struct DictionaryListRemote: View {
                 }
                 .padding(.horizontal, 16)
                 
-                DictionaryListRemoteViewActions(
+                DictionaryRemoteListViewActions(
                     locale: locale,
                     onFilter: { isShowingFilterView = true }
                 )
@@ -50,7 +50,7 @@ struct DictionaryListRemote: View {
             dictionaryGetter.resetPagination(with: newParams)
         }
         .sheet(isPresented: $isShowingFilterView) {
-            DictionaryFilterRemote(apiRequestParams: $apiRequestParams)
+            DictionaryRemoteFilter(apiRequestParams: $apiRequestParams)
                 .environmentObject(ThemeManager.shared)
                 .environmentObject(LocaleManager.shared)
         }

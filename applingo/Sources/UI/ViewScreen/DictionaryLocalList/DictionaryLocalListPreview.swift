@@ -1,7 +1,7 @@
 import SwiftUI
 
 #Preview("Dictionaries Local Screen") {
-    DictionaryListLocal()
+    DictionaryLocalList()
        .environmentObject(ThemeManager.shared)
        .environmentObject(LocaleManager.shared)
 }

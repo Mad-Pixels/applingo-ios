@@ -2,8 +2,8 @@ import SwiftUI
 
 #Preview("Remote Dictionaries Section") {
     NavigationView {
-        DictionaryListRemoteViewSection(
-            locale: DictionaryListRemoteLocale(),
+        DictionaryRemoteListViewList(
+            locale: DictionaryRemoteListLocale(),
             dictionaryGetter: {
                 let getter = DictionaryRemoteGetterViewModel()
                 getter.dictionaries = [

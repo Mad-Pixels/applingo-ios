@@ -34,7 +34,7 @@ struct MainView: View {
                     .tag(AppFrameModel.tabWords)
 
                 //TabDictionariesView()
-                DictionaryListLocal()
+                DictionaryLocalList()
                     .environmentObject(ThemeManager.shared)
                     .environmentObject(LocaleManager.shared)
                     .tabItem {

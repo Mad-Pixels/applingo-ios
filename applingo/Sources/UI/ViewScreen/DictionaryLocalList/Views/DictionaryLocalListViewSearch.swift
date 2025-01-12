@@ -1,12 +1,12 @@
 import SwiftUI
 
-struct DictionaryListLocalViewSearch: View {
+struct DictionaryLocalListViewSearch: View {
     @Binding var searchText: String
-        private let locale: DictionaryListLocalLocale
+        private let locale: DictionaryLocalListLocale
         
         init(
             searchText: Binding<String>,
-            locale: DictionaryListLocalLocale
+            locale: DictionaryLocalListLocale
         ) {
             self._searchText = searchText
             self.locale = locale

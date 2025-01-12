@@ -1,6 +1,6 @@
 import Foundation
 
-final class DictionaryFilterRemoteLocale: ObservableObject {
+final class DictionaryRemoteFilterLocale: ObservableObject {
    private enum Strings {
        static let filter = "Filter"
        static let dictionary = "Dictionary"

@@ -1,14 +1,14 @@
 import SwiftUI
 
-struct DictionaryListLocalViewSection: View {
+struct DictionaryLocalListViewList: View {
    @EnvironmentObject private var themeManager: ThemeManager
    @ObservedObject var dictionaryGetter: DictionaryLocalGetterViewModel
    @StateObject private var dictionaryAction = DictionaryLocalActionViewModel()
-   private let locale: DictionaryListLocalLocale
+   private let locale: DictionaryLocalListLocale
    let onDictionarySelect: (DictionaryItemModel) -> Void
    
    init(
-       locale: DictionaryListLocalLocale,
+       locale: DictionaryLocalListLocale,
        dictionaryGetter: DictionaryLocalGetterViewModel,
        onDictionarySelect: @escaping (DictionaryItemModel) -> Void
    ) {

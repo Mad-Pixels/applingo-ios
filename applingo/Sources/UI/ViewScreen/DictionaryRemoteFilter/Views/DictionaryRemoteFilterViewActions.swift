@@ -1,12 +1,12 @@
 import SwiftUI
 
-struct DictionaryFilterRemoteViewActions: View {
+struct DictionaryRemoteFilterViewActions: View {
     let onSave: () -> Void
     let onReset: () -> Void
-    private let locale: DictionaryFilterRemoteLocale
+    private let locale: DictionaryRemoteFilterLocale
     
     init(
-            locale: DictionaryFilterRemoteLocale,
+            locale: DictionaryRemoteFilterLocale,
             onSave: @escaping () -> Void,
             onReset: @escaping () -> Void
         ) {

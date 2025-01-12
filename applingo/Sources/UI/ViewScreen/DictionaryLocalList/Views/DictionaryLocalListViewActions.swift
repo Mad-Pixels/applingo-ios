@@ -1,12 +1,12 @@
 import SwiftUI
 
-struct DictionaryListLocalViewActions: View {
+struct DictionaryLocalListViewActions: View {
    let onImport: () -> Void
    let onDownload: () -> Void
-   private let locale: DictionaryListLocalLocale
+   private let locale: DictionaryLocalListLocale
    
    init(
-       locale: DictionaryListLocalLocale,
+       locale: DictionaryLocalListLocale,
        onImport: @escaping () -> Void,
        onDownload: @escaping () -> Void
    ) {
