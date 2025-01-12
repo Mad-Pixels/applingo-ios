@@ -5,6 +5,15 @@ struct ListItem: Identifiable, Equatable {
     let title: String
 }
 
+struct ListPreview_Previews: PreviewProvider {
+    static var previews: some View {
+        ListPreview()
+            .previewDisplayName("List Component")
+            .previewLayout(.sizeThatFits)
+            .padding()
+    }
+}
+
 private struct ListPreview: View {
     @State private var emptyItems: [ListItem] = []
     @State private var items: [ListItem] = [
@@ -20,6 +29,7 @@ private struct ListPreview: View {
                 previewSection("Dark Theme", theme: DarkTheme())
             }
             .padding()
+            .frame(maxWidth: .infinity)
         }
     }
     
@@ -27,63 +37,73 @@ private struct ListPreview: View {
         VStack(alignment: .leading, spacing: 20) {
             Text(title)
                 .font(.headline)
+                .foregroundColor(theme.textPrimary)
+                .frame(maxWidth: .infinity, alignment: .leading)
             
-            // Empty list
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Empty list")
-                    .font(.subheadline)
-                    .foregroundColor(theme.textSecondary)
-                
-                ItemsList(
-                    items: $emptyItems,
-                    style: .themed(theme),
-                    emptyListView: AnyView(
-                        Text("No items")
-                            .foregroundColor(theme.textSecondary)
-                    )
-                ) { item in
-                    Text(item.title)
+            Group {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Empty list")
+                        .font(.subheadline)
+                        .foregroundColor(theme.textSecondary)
+                    
+                    ItemsList(
+                        items: $emptyItems,
+                        style: .themed(theme),
+                        emptyListView: AnyView(
+                            Text("No items")
+                                .foregroundColor(theme.textSecondary)
+                        )
+                    ) { item in
+                        Text(item.title)
+                            .foregroundColor(theme.textPrimary)
+                    }
+                    .frame(maxWidth: .infinity, minHeight: 100)
+                    .background(theme.backgroundSecondary)
+                    .cornerRadius(12)
+                    .shadow(color: .gray.opacity(0.2), radius: 4, x: 0, y: 2)
                 }
-                .frame(height: 100)
-            }
-            
-            // Filled list
-            VStack(alignment: .leading, spacing: 8) {
-                Text("With items")
-                    .font(.subheadline)
-                    .foregroundColor(theme.textSecondary)
                 
-                ItemsList(
-                    items: $items,
-                    style: .themed(theme)
-                ) { item in
-                    Text(item.title)
-                        .foregroundColor(theme.textPrimary)
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("With items")
+                        .font(.subheadline)
+                        .foregroundColor(theme.textSecondary)
+                    
+                    ItemsList(
+                        items: $items,
+                        style: .themed(theme)
+                    ) { item in
+                        Text(item.title)
+                            .foregroundColor(theme.textPrimary)
+                    }
+                    .frame(maxWidth: .infinity, minHeight: 200)
+                    .background(theme.backgroundSecondary)
+                    .cornerRadius(12)
+                    .shadow(color: .gray.opacity(0.2), radius: 4, x: 0, y: 2)
                 }
-                .frame(height: 200)
-            }
-            
-            // Loading state
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Loading")
-                    .font(.subheadline)
-                    .foregroundColor(theme.textSecondary)
                 
-                ItemsList(
-                    items: $emptyItems,
-                    style: .themed(theme),
-                    isLoadingPage: true
-                ) { item in
-                    Text(item.title)
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Loading")
+                        .font(.subheadline)
+                        .foregroundColor(theme.textSecondary)
+                    
+                    ItemsList(
+                        items: $emptyItems,
+                        style: .themed(theme),
+                        isLoadingPage: true
+                    ) { item in
+                        Text(item.title)
+                            .foregroundColor(theme.textPrimary)
+                    }
+                    .frame(maxWidth: .infinity, minHeight: 100)
+                    .background(theme.backgroundSecondary)
+                    .cornerRadius(12)
+                    .shadow(color: .gray.opacity(0.2), radius: 4, x: 0, y: 2)
                 }
-                .frame(height: 100)
             }
         }
         .padding()
         .background(theme.backgroundPrimary)
+        .cornerRadius(12)
+        .shadow(color: .gray.opacity(0.1), radius: 8, x: 0, y: 4)
     }
-}
-
-#Preview("List Component") {
-    ListPreview()
 }

@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct ItemsList<Item: Identifiable & Equatable, RowContent: View>: View {
-    // MARK: - Properties
     @Binding var items: [Item]
     let style: ItemsListStyle
     
@@ -10,12 +9,9 @@ struct ItemsList<Item: Identifiable & Equatable, RowContent: View>: View {
     let emptyListView: AnyView?
     let rowContent: (Item) -> RowContent
     
-    // Callbacks
     let onItemAppear: ((Item) -> Void)?
     let onDelete: ((IndexSet) -> Void)?
     let onItemTap: ((Item) -> Void)?
-    
-    // MARK: - Initialization
     
     init(
         items: Binding<[Item]>,
@@ -39,43 +35,42 @@ struct ItemsList<Item: Identifiable & Equatable, RowContent: View>: View {
         self.rowContent = rowContent
     }
     
-    // MARK: - Body
-    
     var body: some View {
         ZStack {
-            List {
-                listContent
-            }
-            .background(style.backgroundColor)
-            .scrollContentBackground(.hidden)
-            
+            listView
             if isLoadingPage && items.isEmpty {
                 loadingOverlay
             }
         }
     }
     
-    // MARK: - Private Views
+    private var listView: some View {
+        List {
+            listContent
+        }
+        .listStyle(.insetGrouped)
+        .listRowSeparator(.hidden)
+        .scrollContentBackground(.hidden)
+        .background(style.backgroundColor)
+    }
     
     @ViewBuilder
     private var listContent: some View {
         if let error = error {
             errorView(error)
         }
-        
         if items.isEmpty && !isLoadingPage {
             if let emptyView = emptyListView {
                 emptyView
             }
         } else if !items.isEmpty {
-            itemsList
-        }
-    }
-    
-    private var itemsList: some View {
-        Group {
             ForEach(items) { item in
                 rowContent(item)
+                    .listRowBackground(
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(style.backgroundColor)
+                            .shadow(color: .black.opacity(0.05), radius: 2, x: 0, y: 1)
+                    )
                     .onTapGesture {
                         onItemTap?(item)
                     }
@@ -95,24 +90,34 @@ struct ItemsList<Item: Identifiable & Equatable, RowContent: View>: View {
         Text("Error: \(error.localizedDescription)")
             .foregroundColor(style.errorColor)
             .padding(style.padding)
+            .listRowBackground(
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(style.backgroundColor)
+            )
     }
     
     private var loadingIndicator: some View {
         HStack {
             Spacer()
             ProgressView()
+                .progressViewStyle(.circular)
                 .padding(style.padding)
             Spacer()
         }
+        .listRowBackground(
+            RoundedRectangle(cornerRadius: 12)
+                .fill(style.backgroundColor)
+        )
     }
     
     private var loadingOverlay: some View {
         VStack {
             ProgressView()
-                .progressViewStyle(CircularProgressViewStyle())
+                .progressViewStyle(.circular)
                 .scaleEffect(style.loadingSize)
                 .padding(style.padding)
         }
-        .background(Color.clear)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(style.backgroundColor.opacity(0.2))
     }
 }
