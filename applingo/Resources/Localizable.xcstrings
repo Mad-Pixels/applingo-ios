@@ -606,6 +606,9 @@
     "Disabled Text Input" : {
 
     },
+    "Disabled Toggle with Header" : {
+
+    },
     "Download" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2513,6 +2516,9 @@
           }
         }
       }
+    },
+    "Toggle without Header" : {
+
     },
     "True" : {
       "extractionState" : "manual",

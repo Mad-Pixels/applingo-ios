@@ -26,24 +26,33 @@ struct ScreenDictionaryFilter: View {
     
     var body: some View {
         BaseViewScreen(screen: .dictionariesRemoteFilter) {
-            Form {
-                DictionaryFilterCategorySection(
-                    categoryGetter: categoryGetter,
-                    selectedFrontCategory: $selectedFrontCategory,
-                    selectedBackCategory: $selectedBackCategory,
-                    locale: locale
-                )
-                
-                DictionaryFilterSortSection(
-                    selectedSortBy: $selectedSortBy,
-                    locale: locale
+            VStack(spacing: 0) {
+                Form {
+                    DictionaryFilterCategorySection(
+                        categoryGetter: categoryGetter,
+                        selectedFrontCategory: $selectedFrontCategory,
+                        selectedBackCategory: $selectedBackCategory,
+                        locale: locale
+                    )
+                            
+                    DictionaryFilterSortSection(
+                        selectedSortBy: $selectedSortBy,
+                        locale: locale
+                    )
+                }
+                    
+                DictionaryFilterActions(
+                    locale: locale,
+                    onSave: saveFilters,
+                    onReset: resetFilters
                 )
             }
-            
-            DictionaryFilterActions(
-                locale: locale,
-                onSave: saveFilters,
-                onReset: resetFilters
+            .navigationTitle(locale.navigationTitle)
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarItems(
+                trailing: Button(locale.closeTitle) {
+                    presentationMode.wrappedValue.dismiss()
+                }
             )
         }
         .navigationTitle(locale.navigationTitle)
