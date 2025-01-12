@@ -36,7 +36,7 @@ struct LingocardApp: App {
 
     var body: some Scene {
         WindowGroup {
-            MainView()
+            Main()
                 .environmentObject(languageManager)
                 .environmentObject(errorManager)
                 .environmentObject(themeManager)

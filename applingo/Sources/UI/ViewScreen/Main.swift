@@ -1,7 +1,7 @@
 import SwiftUI
 
 
-struct MainView: View {
+struct Main: View {
     @ObservedObject private var languageManager = LanguageManager.shared
     @EnvironmentObject var themeManager: ThemeManager
     @State private var selectedTab: Int = 0
