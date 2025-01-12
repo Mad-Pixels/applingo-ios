@@ -1,13 +1,14 @@
 import SwiftUI
 
+
 struct MainView: View {
     @ObservedObject private var languageManager = LanguageManager.shared
     @EnvironmentObject var themeManager: ThemeManager
+    @State private var selectedTab: Int = 0
 
     var body: some View {
         AppViewTab(theme: themeManager.currentTheme, style: .default) {
-            TabView {
-                //TabLearnView()
+            TabView(selection: $selectedTab) {
                 ScreenLearn()
                     .environmentObject(ThemeManager.shared)
                     .environmentObject(LocaleManager.shared)
@@ -18,9 +19,8 @@ struct MainView: View {
                             Image(systemName: "book.fill")
                         }
                     }
-                    .tag(AppFrameModel.learn)
+                    .tag(0)
 
-                //TabWordsView()
                 ScreenWords()
                     .environmentObject(ThemeManager.shared)
                     .environmentObject(LocaleManager.shared)
@@ -31,9 +31,8 @@ struct MainView: View {
                             Image(systemName: "textformat")
                         }
                     }
-                    .tag(AppFrameModel.tabWords)
+                    .tag(1)
 
-                //TabDictionariesView()
                 DictionaryLocalList()
                     .environmentObject(ThemeManager.shared)
                     .environmentObject(LocaleManager.shared)
@@ -44,7 +43,7 @@ struct MainView: View {
                             Image(systemName: "folder.fill")
                         }
                     }
-                    .tag(AppFrameModel.tabDictionaries)
+                    .tag(2)
 
                 ScreenSettings()
                     .environmentObject(ThemeManager.shared)
@@ -56,11 +55,10 @@ struct MainView: View {
                             Image(systemName: "gearshape.fill")
                         }
                     }
-                    .tag(AppFrameModel.tabSettings)
+                    .tag(3)
             }
-        }
-        .onAppear {
-            AppStorage.shared.activeScreen = .game
         }
     }
 }
+
+
