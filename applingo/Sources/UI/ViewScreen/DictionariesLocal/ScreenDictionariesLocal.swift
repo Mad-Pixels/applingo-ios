@@ -45,7 +45,9 @@ struct ScreenDictionariesLocal: View {
             )
         }
         .fullScreenCover(isPresented: $isShowingRemoteList) {
-            DictionaryRemoteListView(isPresented: $isShowingRemoteList)
+            ScreenDictionariesRemote(isPresented: $isShowingRemoteList)
+                .environmentObject(ThemeManager.shared)
+                .environmentObject(LocaleManager.shared)
         }
     }
 }
