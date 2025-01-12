@@ -2,17 +2,21 @@ import SwiftUI
 
 struct DictionariesLocalSection: View {
    @EnvironmentObject private var themeManager: ThemeManager
-    @ObservedObject var dictionaryGetter: DictionaryLocalGetterViewModel
+   @ObservedObject var dictionaryGetter: DictionaryLocalGetterViewModel
    @StateObject private var dictionaryAction = DictionaryLocalActionViewModel()
    private let locale: ScreenDictionariesLocalLocale
+   let onDictionarySelect: (DictionaryItemModel) -> Void
    
-    init(
-        locale: ScreenDictionariesLocalLocale,
-        dictionaryGetter: DictionaryLocalGetterViewModel
-    ) {
-        self.locale = locale
-        self.dictionaryGetter = dictionaryGetter
-    }
+   init(
+       locale: ScreenDictionariesLocalLocale,
+       dictionaryGetter: DictionaryLocalGetterViewModel,
+       onDictionarySelect: @escaping (DictionaryItemModel) -> Void
+   ) {
+       self.locale = locale
+       self.dictionaryGetter = dictionaryGetter
+       self.onDictionarySelect = onDictionarySelect
+   }
+   
    var body: some View {
        ItemList<DictionaryItemModel, DictionaryRow>(
            items: $dictionaryGetter.dictionaries,
@@ -24,7 +28,7 @@ struct DictionariesLocalSection: View {
                dictionaryGetter.loadMoreDictionariesIfNeeded(currentItem: dictionary)
            },
            onDelete: delete,
-           onItemTap: { _ in }
+           onItemTap: onDictionarySelect
        ) { dictionary in
            DictionaryRow(
                title: dictionary.displayName,
@@ -32,7 +36,7 @@ struct DictionariesLocalSection: View {
                isActive: dictionary.isActive,
                style: .themed(themeManager.currentThemeStyle),
                onTap: {
-                   // TODO: Handle tap через callback от родителя
+                   onDictionarySelect(dictionary)
                },
                onToggle: { newStatus in
                    updateStatus(dictionary, newStatus: newStatus)
@@ -56,17 +60,14 @@ struct DictionariesLocalSection: View {
                    }
                }
            } else {
-               let appError = AppErrorModel(
-                   type: .ui,
-                   message: LocaleManager.shared.localizedString(for: "ErrDeleteInternalDictionary"),
-                   localized: LocaleManager.shared.localizedString(for: "ErrDeleteInternalDictionary"),
-                   original: nil,
-                   additional: nil
-               )
-               ErrorManager1.shared.setError(
-                   appError: appError,
-                   frame: .tabDictionaries,
-                   source: .dictionaryDelete
+               struct InternalDictionaryError: LocalizedError {
+                               var errorDescription: String? {
+                                   LocaleManager.shared.localizedString(for: "ErrDeleteInternalDictionary")
+                               }
+                           }
+                ErrorManager.shared.process(
+                InternalDictionaryError(),
+                   screen: .dictionariesLocal
                )
            }
        }
