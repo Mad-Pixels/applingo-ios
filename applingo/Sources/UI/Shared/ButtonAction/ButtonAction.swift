@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct ActionButton: View {
+struct ButtonAction: View {
     enum ButtonType {
         case action
         case cancel
@@ -8,13 +8,13 @@ struct ActionButton: View {
     
     let title: String
     let type: ButtonType
-    let style: ActionButtonStyle
+    let style: ButtonActionStyle
     let action: () -> Void
     
     init(
         title: String,
         type: ButtonType = .action,
-        style: ActionButtonStyle? = nil,
+        style: ButtonActionStyle? = nil,
         action: @escaping () -> Void
     ) {
         self.title = title

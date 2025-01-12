@@ -27,7 +27,7 @@ private struct ButtonPreview: View {
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     
-                    ActionButton(
+                    ButtonAction(
                         title: "Confirm Action",
                         type: .action,
                         style: .themed(theme, type: .action)
@@ -35,7 +35,7 @@ private struct ButtonPreview: View {
                         print("Action tapped")
                     }
                     
-                    ActionButton(
+                    ButtonAction(
                         title: "Disabled Action",
                         type: .action,
                         style: .themed(theme, type: .action)
@@ -49,7 +49,7 @@ private struct ButtonPreview: View {
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     
-                    ActionButton(
+                    ButtonAction(
                         title: "Cancel Action",
                         type: .cancel,
                         style: .themed(theme, type: .cancel)
@@ -57,7 +57,7 @@ private struct ButtonPreview: View {
                         print("Cancel tapped")
                     }
                     
-                    ActionButton(
+                    ButtonAction(
                         title: "Disabled Cancel",
                         type: .cancel,
                         style: .themed(theme, type: .cancel)

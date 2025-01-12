@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct ActionButtonStyle {
+struct ButtonActionStyle {
     let backgroundColor: Color
     let textColor: Color
     let font: Font
@@ -9,11 +9,11 @@ struct ActionButtonStyle {
     let padding: EdgeInsets
 }
 
-extension ActionButtonStyle {
-    static func themed(_ theme: AppTheme, type: ActionButton.ButtonType) -> ActionButtonStyle {
+extension ButtonActionStyle {
+    static func themed(_ theme: AppTheme, type: ButtonAction.ButtonType) -> ButtonActionStyle {
         switch type {
         case .action:
-            return ActionButtonStyle(
+            return ButtonActionStyle(
                 backgroundColor: theme.accentPrimary,
                 textColor: theme.textPrimary,
                 font: .body.bold(),
@@ -22,7 +22,7 @@ extension ActionButtonStyle {
                 padding: EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16)
             )
         case .cancel:
-            return ActionButtonStyle(
+            return ButtonActionStyle(
                 backgroundColor: theme.backgroundSecondary,
                 textColor: theme.textPrimary,
                 font: .body.bold(),

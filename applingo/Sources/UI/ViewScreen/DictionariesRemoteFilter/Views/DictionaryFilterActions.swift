@@ -17,13 +17,13 @@ struct DictionaryFilterActions: View {
     
     var body: some View {
         HStack {
-            ActionButton(
+            ButtonAction(
                 title: locale.saveTitle,
                 type: .action,
                 action: onSave
             )
             
-            ActionButton(
+            ButtonAction(
                 title: locale.resetTitle,
                 type: .cancel,
                 action: onReset
