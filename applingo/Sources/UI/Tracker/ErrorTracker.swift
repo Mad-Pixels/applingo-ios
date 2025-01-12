@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct ErrorViewTracker: ViewModifier {
+struct ErrorTracker: ViewModifier {
     @ObservedObject private var errorManager = ErrorManager.shared
     @EnvironmentObject private var themeManager: ThemeManager
     let screen: ScreenType
@@ -28,6 +28,6 @@ struct ErrorViewTracker: ViewModifier {
 
 extension View {
     func withErrorTracker(_ screen: ScreenType) -> some View {
-        modifier(ErrorViewTracker(screen: screen))
+        modifier(ErrorTracker(screen: screen))
     }
 }

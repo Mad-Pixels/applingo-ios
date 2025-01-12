@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct LocaleViewTracker: ViewModifier {
+struct LocaleTracker: ViewModifier {
     @ObservedObject private var localeManager = LocaleManager.shared
     
     func body(content: Content) -> some View {
@@ -12,6 +12,6 @@ struct LocaleViewTracker: ViewModifier {
 
 extension View {
     func withLocaleTracker() -> some View {
-        modifier(LocaleViewTracker())
+        modifier(LocaleTracker())
     }
 }
