@@ -76,6 +76,7 @@ private struct ButtonPreview: View {
         }
         .padding()
         .background(theme.backgroundPrimary)
-        .cornerRadius(8)
+        .cornerRadius(12)
+        .shadow(color: .gray.opacity(0.2), radius: 4, x: 0, y: 2)
     }
 }
