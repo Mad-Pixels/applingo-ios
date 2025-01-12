@@ -2,8 +2,8 @@ import SwiftUI
 
 struct SettingsViewLocale: View {
     @EnvironmentObject private var localeManager: LocaleManager
-    @Environment(\.settingsLocale) private var locale
-    
+    @StateObject private var locale = SettingsLocale()
+
     private var selectedLocale: Binding<LocaleType> {
         Binding(
             get: { localeManager.currentLocale },

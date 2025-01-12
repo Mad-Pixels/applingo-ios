@@ -3,7 +3,7 @@ import SwiftUI
 struct SettingsViewLogger: View {
     @EnvironmentObject private var themeManager: ThemeManager
     @ObservedObject private var logHandler = LogHandler.shared
-    @Environment(\.settingsLocale) private var locale
+    @StateObject private var locale = SettingsLocale()
     
     var body: some View {
         ItemToggle(

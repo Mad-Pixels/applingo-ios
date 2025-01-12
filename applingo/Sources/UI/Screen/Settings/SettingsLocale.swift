@@ -2,13 +2,16 @@ import Foundation
 
 final class SettingsLocale: ObservableObject {
     private enum Strings {
-        static let theme = "Theme"
+        static let quiz = "Quiz"
+        static let matchHunt = "MatchHunt"
+        static let verifyIt = "VerifyIt"
         static let settings = "Settings"
+        static let theme = "Theme"
         static let language = "Language"
-        static let logSettings = "LogSettings"
-        static let sendErrorLogs = "SendErrorsLogs"
+        static let logSettings = "Log Settings"
+        static let sendErrorLogs = "Send Error Logs"
     }
-
+    
     @Published private(set) var navigationTitle: String
     @Published private(set) var themeTitle: String
     @Published private(set) var languageTitle: String
@@ -16,11 +19,11 @@ final class SettingsLocale: ObservableObject {
     @Published private(set) var sendErrorLogsTitle: String
     
     init() {
-        self.navigationTitle = Self.localizedString(for: .navigationTitle)
-        self.themeTitle = Self.localizedString(for: .themeTitle)
-        self.languageTitle = Self.localizedString(for: .languageTitle)
-        self.logSettingsTitle = Self.localizedString(for: .logSettingsTitle)
-        self.sendErrorLogsTitle = Self.localizedString(for: .sendErrorLogsTitle)
+        self.navigationTitle = Self.localizedString(for: .settings)
+        self.themeTitle = Self.localizedString(for: .theme)
+        self.languageTitle = Self.localizedString(for: .language)
+        self.logSettingsTitle = Self.localizedString(for: .logSettings)
+        self.sendErrorLogsTitle = Self.localizedString(for: .sendErrorLogs)
         
         NotificationCenter.default.addObserver(
             self,
@@ -35,27 +38,24 @@ final class SettingsLocale: ObservableObject {
     }
     
     private enum LocalizedKey {
-        case navigationTitle
-        case themeTitle
-        case languageTitle
-        case logSettingsTitle
-        case sendErrorLogsTitle
+        case settings
+        case theme
+        case language
+        case logSettings
+        case sendErrorLogs
         
         var key: String {
             switch self {
-            case .navigationTitle: return Strings.settings
-            case .themeTitle: return Strings.theme
-            case .languageTitle: return Strings.language
-            case .logSettingsTitle: return Strings.logSettings
-            case .sendErrorLogsTitle: return Strings.sendErrorLogs
+            case .settings: return Strings.settings
+            case .theme: return Strings.theme
+            case .language: return Strings.language
+            case .logSettings: return Strings.logSettings
+            case .sendErrorLogs: return Strings.sendErrorLogs
             }
         }
         
         var capitalized: Bool {
-            switch self {
-            case .navigationTitle: return true
-            default: return false
-            }
+            true
         }
     }
     
@@ -65,10 +65,10 @@ final class SettingsLocale: ObservableObject {
     }
     
     @objc private func localeDidChange() {
-        navigationTitle = Self.localizedString(for: .navigationTitle)
-        themeTitle = Self.localizedString(for: .themeTitle)
-        languageTitle = Self.localizedString(for: .languageTitle)
-        logSettingsTitle = Self.localizedString(for: .logSettingsTitle)
-        sendErrorLogsTitle = Self.localizedString(for: .sendErrorLogsTitle)
+        navigationTitle = Self.localizedString(for: .settings)
+        themeTitle = Self.localizedString(for: .theme)
+        languageTitle = Self.localizedString(for: .language)
+        logSettingsTitle = Self.localizedString(for: .logSettings)
+        sendErrorLogsTitle = Self.localizedString(for: .sendErrorLogs)
     }
 }

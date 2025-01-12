@@ -2,7 +2,7 @@ import SwiftUI
 
 struct SettingsViewTheme: View {
     @EnvironmentObject private var themeManager: ThemeManager
-    @Environment(\.settingsLocale) private var locale
+    @StateObject private var locale = SettingsLocale()
     
     var body: some View {
         ItemPicker(
