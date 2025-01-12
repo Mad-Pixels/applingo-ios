@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct LocaleSection: View {
+struct SettingsViewLocale: View {
     @EnvironmentObject private var localeManager: LocaleManager
     @Environment(\.settingsLocale) private var locale
     

@@ -1,6 +1,6 @@
 import SwiftUI
 
-final class ScreenSettingsStyle: ObservableObject {
+final class SettingsStyle: ObservableObject {
     let backgroundColor: Color
     let padding: EdgeInsets
     let spacing: CGFloat
@@ -16,9 +16,9 @@ final class ScreenSettingsStyle: ObservableObject {
     }
 }
 
-extension ScreenSettingsStyle {
-    static func themed(_ theme: AppTheme) -> ScreenSettingsStyle {
-        ScreenSettingsStyle(
+extension SettingsStyle {
+    static func themed(_ theme: AppTheme) -> SettingsStyle {
+        SettingsStyle(
             spacing: 16,
             padding: EdgeInsets(top: 0, leading: 16, bottom: 16, trailing: 16),
             backgroundColor: theme.backgroundPrimary

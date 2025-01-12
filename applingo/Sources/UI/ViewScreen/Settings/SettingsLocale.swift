@@ -1,6 +1,6 @@
 import Foundation
 
-final class ScreenSettingsLocale: ObservableObject {
+final class SettingsLocale: ObservableObject {
     private enum Strings {
         static let theme = "Theme"
         static let settings = "Settings"

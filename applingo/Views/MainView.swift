@@ -45,7 +45,7 @@ struct MainView: View {
                     }
                     .tag(2)
 
-                ScreenSettings()
+                Settings()
                     .environmentObject(ThemeManager.shared)
                     .environmentObject(LocaleManager.shared)
                     .tabItem {

@@ -1,7 +1,7 @@
 import SwiftUI
 
 #Preview("Settings Screen") {
-    ScreenSettings()
+    Settings()
         .environmentObject(ThemeManager.shared)
         .environmentObject(LocaleManager.shared)
 }

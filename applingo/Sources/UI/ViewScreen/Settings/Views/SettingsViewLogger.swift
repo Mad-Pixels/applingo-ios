@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct LogSection: View {
+struct SettingsViewLogger: View {
     @EnvironmentObject private var themeManager: ThemeManager
     @ObservedObject private var logHandler = LogHandler.shared
     @Environment(\.settingsLocale) private var locale

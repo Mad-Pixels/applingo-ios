@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct ThemeSection: View {
+struct SettingsViewTheme: View {
     @EnvironmentObject private var themeManager: ThemeManager
     @Environment(\.settingsLocale) private var locale
     

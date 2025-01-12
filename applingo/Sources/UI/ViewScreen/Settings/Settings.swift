@@ -1,10 +1,10 @@
 import SwiftUI
 
-struct ScreenSettings: View {
-    @StateObject private var style: ScreenSettingsStyle
-    @StateObject private var locale = ScreenSettingsLocale()
+struct Settings: View {
+    @StateObject private var style: SettingsStyle
+    @StateObject private var locale = SettingsLocale()
     
-    init(style: ScreenSettingsStyle? = nil) {
+    init(style: SettingsStyle? = nil) {
         let initialStyle = style ?? .themed(ThemeManager.shared.currentThemeStyle)
         _style = StateObject(wrappedValue: initialStyle)
     }
@@ -12,9 +12,9 @@ struct ScreenSettings: View {
     var body: some View {
         BaseViewScreen(screen: .settings) {
             Form {
-                ThemeSection()
-                LocaleSection()
-                LogSection()
+                SettingsViewTheme()
+                SettingsViewLocale()
+                SettingsViewLogger()
             }
             .navigationTitle(locale.navigationTitle)
             .navigationBarTitleDisplayMode(.large)
