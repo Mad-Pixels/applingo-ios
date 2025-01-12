@@ -1,6 +1,15 @@
 import SwiftUI
 
-struct PickerPreview: View {
+struct PickerPreview_Previews: PreviewProvider {
+    static var previews: some View {
+        PickerPreview()
+            .previewDisplayName("Picker Styles")
+            .previewLayout(.sizeThatFits)
+            .padding()
+    }
+}
+
+private struct PickerPreview: View {
     enum PreviewItem: String, CaseIterable {
         case first = "First"
         case second = "Second"
@@ -23,6 +32,7 @@ struct PickerPreview: View {
                 previewSection("Dark Theme", theme: DarkTheme())
             }
             .padding()
+            .frame(maxWidth: .infinity)
         }
     }
     
@@ -30,48 +40,94 @@ struct PickerPreview: View {
         VStack(alignment: .leading, spacing: 20) {
             Text(title)
                 .font(.headline)
+                .foregroundColor(theme.textPrimary)
+                .frame(maxWidth: .infinity, alignment: .leading)
             
-            AppPicker(
-                selectedValue: $selectedWheel,
-                items: PreviewItem.allCases,
-                title: "Wheel Style",
-                style: .themed(theme, type: .wheel)
-            ) { item in
-                Text(item.localizedTitle)
-            }
-            
-            AppPicker(
-                selectedValue: $selectedSegmented,
-                items: PreviewItem.allCases,
-                title: "Segmented Style",
-                style: .themed(theme, type: .segmented)
-            ) { item in
-                Text(item.localizedTitle)
-            }
-            
-            AppPicker(
-                selectedValue: $selectedMenu,
-                items: PreviewItem.allCases,
-                title: "Menu Style",
-                style: .themed(theme, type: .menu)
-            ) { item in
-                Text(item.localizedTitle)
-            }
-            
-            AppPicker(
-                selectedValue: $selectedInline,
-                items: PreviewItem.allCases,
-                title: "Inline Style",
-                style: .themed(theme, type: .inline)
-            ) { item in
-                Text(item.localizedTitle)
+            Group {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Wheel Style")
+                        .font(.subheadline)
+                        .foregroundColor(theme.textSecondary)
+                    
+                    AppPicker(
+                        selectedValue: $selectedWheel,
+                        items: PreviewItem.allCases,
+                        title: "",
+                        style: .themed(theme, type: .wheel)
+                    ) { item in
+                        Text(item.localizedTitle)
+                            .foregroundColor(theme.textPrimary)
+                    }
+                }
+                .padding()
+                .background(theme.backgroundSecondary)
+                .cornerRadius(12)
+                .shadow(color: .gray.opacity(0.2), radius: 4, x: 0, y: 2)
+                
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Segmented Style")
+                        .font(.subheadline)
+                        .foregroundColor(theme.textSecondary)
+                    
+                    AppPicker(
+                        selectedValue: $selectedSegmented,
+                        items: PreviewItem.allCases,
+                        title: "",
+                        style: .themed(theme, type: .segmented)
+                    ) { item in
+                        Text(item.localizedTitle)
+                            .foregroundColor(theme.textPrimary)
+                    }
+                }
+                .padding()
+                .background(theme.backgroundSecondary)
+                .cornerRadius(12)
+                .shadow(color: .gray.opacity(0.2), radius: 4, x: 0, y: 2)
+                
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Menu Style")
+                        .font(.subheadline)
+                        .foregroundColor(theme.textSecondary)
+                    
+                    AppPicker(
+                        selectedValue: $selectedMenu,
+                        items: PreviewItem.allCases,
+                        title: "",
+                        style: .themed(theme, type: .menu)
+                    ) { item in
+                        Text(item.localizedTitle)
+                            .foregroundColor(theme.textPrimary)
+                    }
+                }
+                .padding()
+                .background(theme.backgroundSecondary)
+                .cornerRadius(12)
+                .shadow(color: .gray.opacity(0.2), radius: 4, x: 0, y: 2)
+                
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Inline Style")
+                        .font(.subheadline)
+                        .foregroundColor(theme.textSecondary)
+                    
+                    AppPicker(
+                        selectedValue: $selectedInline,
+                        items: PreviewItem.allCases,
+                        title: "",
+                        style: .themed(theme, type: .inline)
+                    ) { item in
+                        Text(item.localizedTitle)
+                            .foregroundColor(theme.textPrimary)
+                    }
+                }
+                .padding()
+                .background(theme.backgroundSecondary)
+                .cornerRadius(12)
+                .shadow(color: .gray.opacity(0.2), radius: 4, x: 0, y: 2)
             }
         }
         .padding()
         .background(theme.backgroundPrimary)
+        .cornerRadius(12)
+        .shadow(color: .gray.opacity(0.1), radius: 8, x: 0, y: 4)
     }
-}
-
-#Preview("Picker Styles") {
-    PickerPreview()
 }
