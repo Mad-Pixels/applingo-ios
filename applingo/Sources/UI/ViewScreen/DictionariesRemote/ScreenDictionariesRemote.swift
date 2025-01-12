@@ -55,10 +55,12 @@ struct ScreenDictionariesRemote: View {
                 .environmentObject(LocaleManager.shared)
         }
         .sheet(item: $selectedDictionary) { dictionary in
-            DictionaryRemoteDetailView(
+            ScreenDictionaryDetail(
                 dictionary: dictionary,
                 isPresented: .constant(true)
             )
+            .environmentObject(ThemeManager.shared)
+            .environmentObject(LocaleManager.shared)
         }
     }
     
