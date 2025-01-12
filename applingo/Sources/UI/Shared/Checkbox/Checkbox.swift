@@ -30,7 +30,7 @@ struct Checkbox: View {
         )) {
             EmptyView()
         }
-        .toggleStyle(CheckboxToggleStyle(style: style, disabled: disabled))
+        .toggleStyle(CheckboxToggleStyle(style: style))
         .disabled(disabled)
         .opacity(disabled ? 0.5 : 1.0)
     }
