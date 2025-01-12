@@ -34,20 +34,22 @@ struct BaseViewTabPreview<Content: View>: View {
     BaseViewTabPreview(theme: .light, style: .default) {
         BaseTab() {
             TabView {
-                Group {
-                    Text("Words")
-                        .tabItem {
-                            Label("Words", systemImage: "book.fill")
-                        }
-                    Text("Settings")
-                        .tabItem {
-                            Label("Settings", systemImage: "gear")
-                        }
-                    Text("Learn")
-                        .tabItem {
-                            Label("Learn", systemImage: "graduationcap.fill")
-                        }
-                }
+                Text("Main")
+                    .tabItem {
+                        Label("Main", systemImage: "rectangle.grid.2x2.fill")
+                    }
+                Text("Words")
+                    .tabItem {
+                        Label("Words", systemImage: "text.magnifyingglass")
+                    }
+                Text("Dictionaries")
+                    .tabItem {
+                        Label("Dictionaries", systemImage: "doc.text.fill.viewfinder")
+                    }
+                Text("Settings")
+                    .tabItem {
+                        Label("Settings", systemImage: "gearshape.2.fill")
+                    }
             }
         }
     }

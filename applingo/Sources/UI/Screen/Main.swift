@@ -1,8 +1,7 @@
 import SwiftUI
 
-
 struct Main: View {
-    @ObservedObject private var languageManager = LanguageManager.shared
+    @ObservedObject private var locale = LocaleManager.shared
     @EnvironmentObject var themeManager: ThemeManager
     @State private var selectedTab: Int = 0
 
@@ -14,9 +13,9 @@ struct Main: View {
                     .environmentObject(LocaleManager.shared)
                     .tabItem {
                         Label {
-                            Text(languageManager.localizedString(for: "Learn").capitalizedFirstLetter)
+                            Text(locale.localizedString(for: "Learn").capitalizedFirstLetter)
                         } icon: {
-                            Image(systemName: "book.fill")
+                            Image(systemName: "rectangle.grid.2x2.fill")
                         }
                     }
                     .tag(0)
@@ -26,9 +25,9 @@ struct Main: View {
                     .environmentObject(LocaleManager.shared)
                     .tabItem {
                         Label {
-                            Text(languageManager.localizedString(for: "Words").capitalizedFirstLetter)
+                            Text(locale.localizedString(for: "Words").capitalizedFirstLetter)
                         } icon: {
-                            Image(systemName: "textformat")
+                            Image(systemName: "text.magnifyingglass")
                         }
                     }
                     .tag(1)
@@ -38,9 +37,9 @@ struct Main: View {
                     .environmentObject(LocaleManager.shared)
                     .tabItem {
                         Label {
-                            Text(languageManager.localizedString(for: "Dictionaries").capitalizedFirstLetter)
+                            Text(locale.localizedString(for: "Dictionaries").capitalizedFirstLetter)
                         } icon: {
-                            Image(systemName: "folder.fill")
+                            Image(systemName: "doc.text.fill.viewfinder")
                         }
                     }
                     .tag(2)
@@ -50,9 +49,9 @@ struct Main: View {
                     .environmentObject(LocaleManager.shared)
                     .tabItem {
                         Label {
-                            Text(languageManager.localizedString(for: "Settings").capitalizedFirstLetter)
+                            Text(locale.localizedString(for: "Settings").capitalizedFirstLetter)
                         } icon: {
-                            Image(systemName: "gearshape.fill")
+                            Image(systemName: "gearshape.2.fill")
                         }
                     }
                     .tag(3)
@@ -60,5 +59,3 @@ struct Main: View {
         }
     }
 }
-
-

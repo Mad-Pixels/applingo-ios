@@ -56,7 +56,6 @@ struct BaseTabConfigurator {
         UITabBar.appearance().scrollEdgeAppearance = appearance
     }
 
-    // Создание изображения для бордера
     private static func createTopBorderImage(color: UIColor, height: CGFloat) -> UIImage {
         let size = CGSize(width: 1, height: height)
         UIGraphicsBeginImageContextWithOptions(size, false, 0)
