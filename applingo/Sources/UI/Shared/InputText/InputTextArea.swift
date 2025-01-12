@@ -1,13 +1,13 @@
 import SwiftUI
 
-struct TextArea: View {
+struct InputTextArea: View {
     @Binding var text: String
     let placeholder: String
     let isEditing: Bool
     let border: Bool
     let minHeight: CGFloat
     let icon: String?
-    let style: TextInputStyle
+    let style: InputTextStyle
     
     init(
         text: Binding<String>,
@@ -16,7 +16,7 @@ struct TextArea: View {
         border: Bool = false,
         minHeight: CGFloat = 156,
         icon: String? = nil,
-        style: TextInputStyle = .themed(ThemeManager.shared.currentThemeStyle)
+        style: InputTextStyle = .themed(ThemeManager.shared.currentThemeStyle)
     ) {
         self._text = text
         self.placeholder = placeholder

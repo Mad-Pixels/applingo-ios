@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct AppToggleStyle {
+struct ItemToggleStyle {
     let titleColor: Color
     let headerColor: Color
     let tintColor: Color
@@ -9,9 +9,9 @@ struct AppToggleStyle {
     let showHeader: Bool
 }
 
-extension AppToggleStyle {
-    static func themed(_ theme: AppTheme) -> AppToggleStyle {
-        AppToggleStyle(
+extension ItemToggleStyle {
+    static func themed(_ theme: AppTheme) -> ItemToggleStyle {
+        ItemToggleStyle(
             titleColor: theme.textPrimary,
             headerColor: theme.textSecondary,
             tintColor: theme.accentPrimary,
@@ -21,8 +21,8 @@ extension AppToggleStyle {
         )
     }
     
-    static func themedCompact(_ theme: AppTheme) -> AppToggleStyle {
-        AppToggleStyle(
+    static func themedCompact(_ theme: AppTheme) -> ItemToggleStyle {
+        ItemToggleStyle(
             titleColor: theme.textPrimary,
             headerColor: theme.textSecondary,
             tintColor: theme.accentPrimary,

@@ -22,14 +22,14 @@ struct WordDetailCardSection: View {
     var body: some View {
         Section(header: Text(locale.cardTitle)) {
             VStack(spacing: style.spacing) {
-                TextInput(
+                InputText(
                     text: $word.frontText,
                     placeholder: locale.wordPlaceholder,
                     isEditing: isEditing,
                     icon: "rectangle.and.pencil.and.ellipsis"
                 )
                 
-                TextInput(
+                InputText(
                     text: $word.backText,
                     placeholder: locale.definitionPlaceholder,
                     isEditing: isEditing,

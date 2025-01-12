@@ -25,13 +25,13 @@ struct WordDetailAdditionalSection: View {
     var body: some View {
         Section(header: Text(locale.additionalTitle)) {
             VStack(spacing: style.spacing) {
-                TextInput(
+                InputText(
                     text: .constant(tableName),
                     placeholder: locale.tableNamePlaceholder,
                     isEditing: false
                 )
                 
-                TextInput(
+                InputText(
                     text: Binding(
                         get: { word.hint ?? "" },
                         set: { word.hint = $0.isEmpty ? nil : $0 }
@@ -41,7 +41,7 @@ struct WordDetailAdditionalSection: View {
                     icon: "tag"
                 )
                 
-                TextArea(
+                InputTextArea(
                     text: Binding(
                         get: { word.description ?? "" },
                         set: { word.description = $0.isEmpty ? nil : $0 }

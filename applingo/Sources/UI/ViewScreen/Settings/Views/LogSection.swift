@@ -6,7 +6,7 @@ struct LogSection: View {
     @Environment(\.settingsLocale) private var locale
     
     var body: some View {
-        AppToggle(
+        ItemToggle(
             isOn: $logHandler.sendLogs,
             title: locale.sendErrorLogsTitle,
             header: locale.logSettingsTitle,

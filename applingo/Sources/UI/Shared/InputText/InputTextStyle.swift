@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct TextInputStyle {
+struct InputTextStyle {
     let textColor: Color
     let placeholderColor: Color
     let backgroundColor: Color
@@ -13,9 +13,9 @@ struct TextInputStyle {
     let borderWidth: CGFloat
 }
 
-extension TextInputStyle {
-    static func themed(_ theme: AppTheme) -> TextInputStyle {
-        TextInputStyle(
+extension InputTextStyle {
+    static func themed(_ theme: AppTheme) -> InputTextStyle {
+        InputTextStyle(
             textColor: theme.textPrimary,
             placeholderColor: theme.textPrimary.opacity(0.5),
             backgroundColor: theme.backgroundPrimary,

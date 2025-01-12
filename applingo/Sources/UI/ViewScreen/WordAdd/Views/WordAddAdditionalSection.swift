@@ -21,13 +21,13 @@ struct WordAddAdditionalSection: View {
     var body: some View {
         Section(header: Text(locale.additionalTitle)) {
             VStack(spacing: style.spacing) {
-                TextInput(
+                InputText(
                     text: $hint,
                     placeholder: locale.hintPlaceholder,
                     icon: "tag"
                 )
                 
-                TextArea(
+                InputTextArea(
                     text: $description,
                     placeholder: locale.descriptionPlaceholder,
                     icon: "scroll"

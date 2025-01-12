@@ -600,6 +600,12 @@
     "Disabled State" : {
 
     },
+    "Disabled Text Area" : {
+
+    },
+    "Disabled Text Input" : {
+
+    },
     "Download" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2122,6 +2128,9 @@
     "Regular state" : {
 
     },
+    "Regular Text Input" : {
+
+    },
     "Reset" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2434,6 +2443,18 @@
           }
         }
       }
+    },
+    "Text Area" : {
+
+    },
+    "Text Area with Icon" : {
+
+    },
+    "Text Input with Border" : {
+
+    },
+    "Text Input with Icon" : {
+
     },
     "Theme" : {
       "extractionState" : "manual",

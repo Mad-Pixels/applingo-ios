@@ -1,17 +1,17 @@
 import SwiftUI
 
-struct AppToggle: View {
+struct ItemToggle: View {
     @Binding var isOn: Bool
     let title: String
     let header: String?
-    let style: AppToggleStyle
+    let style: ItemToggleStyle
     let onChange: ((Bool) -> Void)?
     
     init(
         isOn: Binding<Bool>,
         title: String,
         header: String? = nil,
-        style: AppToggleStyle = .themed(ThemeManager.shared.currentThemeStyle),
+        style: ItemToggleStyle = .themed(ThemeManager.shared.currentThemeStyle),
         onChange: ((Bool) -> Void)? = nil
     ) {
         self._isOn = isOn

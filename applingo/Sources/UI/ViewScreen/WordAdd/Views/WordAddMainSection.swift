@@ -25,13 +25,13 @@ struct WordAddMainSection: View {
     var body: some View {
         Section(header: Text(locale.cardTitle)) {
             VStack(spacing: style.spacing) {
-                TextInput(
+                InputText(
                     text: $wordItem.frontText,
                     placeholder: locale.wordPlaceholder,
                     icon: "rectangle.and.pencil.and.ellipsis"
                 )
                 
-                TextInput(
+                InputText(
                     text: $wordItem.backText,
                     placeholder: locale.definitionPlaceholder,
                     icon: "translate"

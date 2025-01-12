@@ -1,12 +1,12 @@
 import SwiftUI
 
-struct TextInput: View {
+struct InputText: View {
     @Binding var text: String
     let placeholder: String
     let isEditing: Bool
     let border: Bool
     let icon: String?
-    let style: TextInputStyle
+    let style: InputTextStyle
     
     init(
         text: Binding<String>,
@@ -14,7 +14,7 @@ struct TextInput: View {
         isEditing: Bool = true,
         border: Bool = false,
         icon: String? = nil,
-        style: TextInputStyle = .themed(ThemeManager.shared.currentThemeStyle)
+        style: InputTextStyle = .themed(ThemeManager.shared.currentThemeStyle)
     ) {
         self._text = text
         self.placeholder = placeholder
