@@ -24,7 +24,6 @@ struct GameButton: View {
     var body: some View {
         Button(action: action) {
             ZStack(alignment: .trailing) {
-                // Иконка справа
                 Image(systemName: icon)
                     .font(.system(size: style.iconSize))
                     .rotationEffect(.degrees(style.iconRotation))
@@ -32,7 +31,6 @@ struct GameButton: View {
                     .frame(width: 100)
                     .offset(x: 25)
                 
-                // Текст
                 HStack {
                     Text(title.uppercased())
                         .font(style.font)

@@ -11,10 +11,9 @@ struct GameButtonStyle {
     let height: CGFloat
     let cornerRadius: CGFloat
 
-    // Анимация и обводка
     let borderColor: Color
     let borderWidth: CGFloat
-    let highlightOnPress: Bool // Подсветка при нажатии
+    let highlightOnPress: Bool
 }
 
 extension GameButtonStyle {
@@ -25,7 +24,7 @@ extension GameButtonStyle {
             iconColor: color,
             font: .body.bold(),
             iconSize: 75,
-            iconRotation: 45,  // Вернул разворот иконки
+            iconRotation: 45,
             padding: EdgeInsets(top: 12, leading: 20, bottom: 12, trailing: 20),
             height: 70,
             cornerRadius: 16,
