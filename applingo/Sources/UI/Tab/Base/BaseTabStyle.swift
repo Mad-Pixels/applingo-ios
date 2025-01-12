@@ -2,13 +2,13 @@ import SwiftUI
 
 struct BaseTabStyle {
     struct UIKitStyle {
-        // basic
         let fontWeight: UIFont.Weight
         let tabBarSpacing: CGFloat
         let tabBarHeight: CGFloat
         let fontSize: CGFloat
-        
-        // colors
+        let titleFont: UIFont
+        let iconSize: CGFloat
+
         let backgroundColor: (AppTheme) -> Color
         let normalTitleColor: (AppTheme) -> Color
         let normalIconColor: (AppTheme) -> Color
@@ -26,7 +26,9 @@ extension BaseTabStyle {
                 fontWeight: .medium,
                 tabBarSpacing: 8,
                 tabBarHeight: 49,
-                fontSize: 10,
+                fontSize: 12,
+                titleFont: UIFont.systemFont(ofSize: 12, weight: .bold),
+                iconSize: 24,
                 
                 backgroundColor: { theme in
                     theme.backgroundPrimary
