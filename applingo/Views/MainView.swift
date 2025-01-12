@@ -9,7 +9,7 @@ struct MainView: View {
     var body: some View {
         AppViewTab(theme: themeManager.currentTheme, style: .default) {
             TabView(selection: $selectedTab) {
-                ScreenLearn()
+                Home()
                     .environmentObject(ThemeManager.shared)
                     .environmentObject(LocaleManager.shared)
                     .tabItem {

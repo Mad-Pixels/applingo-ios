@@ -1,14 +1,14 @@
 import SwiftUI
 
-struct ScreenLearn: View {
-    @StateObject private var style: ScreenLearnStyle
-    @StateObject private var locale = ScreenLearnLocale()
+struct Home: View {
+    @StateObject private var style: HomeStyle
+    @StateObject private var locale = HomeLocale()
     
     @State private var showMatchHuntGame = false
     @State private var showVerifyItGame = false
     @State private var showQuizGame = false
     
-    init(style: ScreenLearnStyle? = nil) {
+    init(style: HomeStyle? = nil) {
         let initialStyle = style ?? .themed(ThemeManager.shared.currentThemeStyle)
         _style = StateObject(wrappedValue: initialStyle)
     }

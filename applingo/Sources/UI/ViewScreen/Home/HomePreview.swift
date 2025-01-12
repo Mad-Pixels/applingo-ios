@@ -1,7 +1,7 @@
 import SwiftUI
 
 #Preview("Learn Screen") {
-    ScreenLearn()
+    Home()
         .environmentObject(ThemeManager.shared)
         .environmentObject(LocaleManager.shared)
 }

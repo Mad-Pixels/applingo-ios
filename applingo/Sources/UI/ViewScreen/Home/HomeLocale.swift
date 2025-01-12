@@ -1,6 +1,6 @@
 import Foundation
 
-final class ScreenLearnLocale: ObservableObject {
+final class HomeLocale: ObservableObject {
     private enum Strings {
         static let quiz = "Quiz"
         static let matchHunt = "MatchHunt"

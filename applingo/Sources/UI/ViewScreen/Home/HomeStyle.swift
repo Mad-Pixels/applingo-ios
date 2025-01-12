@@ -1,6 +1,6 @@
 import SwiftUI
 
-final class ScreenLearnStyle: ObservableObject {
+final class HomeStyle: ObservableObject {
     let backgroundColor: Color
     let padding: EdgeInsets
     let spacing: CGFloat
@@ -16,9 +16,9 @@ final class ScreenLearnStyle: ObservableObject {
     }
 }
 
-extension ScreenLearnStyle {
-    static func themed(_ theme: AppTheme) -> ScreenLearnStyle {
-        ScreenLearnStyle(
+extension HomeStyle {
+    static func themed(_ theme: AppTheme) -> HomeStyle {
+        HomeStyle(
             backgroundColor: theme.backgroundPrimary,
             padding: EdgeInsets(top: 32, leading: 24, bottom: 32, trailing: 24),
             spacing: 20
