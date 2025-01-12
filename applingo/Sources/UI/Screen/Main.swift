@@ -7,7 +7,7 @@ struct Main: View {
     @State private var selectedTab: Int = 0
 
     var body: some View {
-        AppViewTab(theme: themeManager.currentTheme, style: .default) {
+        AppTab(theme: themeManager.currentTheme, style: .default) {
             TabView(selection: $selectedTab) {
                 Home()
                     .environmentObject(ThemeManager.shared)

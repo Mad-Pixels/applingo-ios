@@ -1,18 +1,18 @@
 import SwiftUI
 
-struct BaseViewTab<Content: View>: View {
+struct BaseTab<Content: View>: View {
     @EnvironmentObject private var themeManager: ThemeManager
     
-    private let style: BaseViewTabStyle
+    private let style: BaseTabStyle
     private let content: Content
     
     init(
-        style: BaseViewTabStyle = .default,
+        style: BaseTabStyle = .default,
         @ViewBuilder content: () -> Content
     ) {
         self.style = style
         self.content = content()
-        BaseViewTabConfigurator.configure(
+        BaseTabConfigurator.configure(
             with: ThemeManager.shared.currentThemeStyle,
             style: style
         )
@@ -22,7 +22,7 @@ struct BaseViewTab<Content: View>: View {
         content
             .withThemeTracker()
             .onChange(of: themeManager.currentTheme) { _ in
-                BaseViewTabConfigurator.configure(
+                BaseTabConfigurator.configure(
                     with: themeManager.currentThemeStyle,
                     style: style
                 )

@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct BaseViewTabStyle {
+struct BaseTabStyle {
     struct UIKitStyle {
         // basic
         let fontWeight: UIFont.Weight
@@ -19,9 +19,9 @@ struct BaseViewTabStyle {
     let uiKit: UIKitStyle
 }
 
-extension BaseViewTabStyle {
-    static var `default`: BaseViewTabStyle {
-        BaseViewTabStyle(
+extension BaseTabStyle {
+    static var `default`: BaseTabStyle {
+        BaseTabStyle(
             uiKit: UIKitStyle(
                 fontWeight: .medium,
                 tabBarSpacing: 8,
