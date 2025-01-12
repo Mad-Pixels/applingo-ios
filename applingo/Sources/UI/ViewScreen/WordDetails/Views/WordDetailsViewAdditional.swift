@@ -1,18 +1,18 @@
 import SwiftUI
 
-struct WordDetailAdditionalSection: View {
+struct WordDetailsViewAdditional: View {
     @EnvironmentObject private var themeManager: ThemeManager
     @Binding var word: WordItemModel
     let tableName: String
-    private let locale: ScreenWordDetailLocale
-    private let style: ScreenWordDetailStyle
+    private let locale: WordDetailsLocale
+    private let style: WordDetailsStyle
     let isEditing: Bool
     
     init(
         word: Binding<WordItemModel>,
         tableName: String,
-        locale: ScreenWordDetailLocale,
-        style: ScreenWordDetailStyle,
+        locale: WordDetailsLocale,
+        style: WordDetailsStyle,
         isEditing: Bool
     ) {
         self._word = word

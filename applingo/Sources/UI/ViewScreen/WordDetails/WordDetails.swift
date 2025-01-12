@@ -1,10 +1,10 @@
 import SwiftUI
 import Foundation
 
-struct ScreenWordDetail: View {
+struct WordDetails: View {
     @Environment(\.presentationMode) private var presentationMode
-    @StateObject private var style: ScreenWordDetailStyle
-    @StateObject private var locale = ScreenWordDetailLocale()
+    @StateObject private var style: WordDetailsStyle
+    @StateObject private var locale = WordDetailsLocale()
     @StateObject private var wordsAction = WordsLocalActionViewModel()
     @StateObject private var wrapper: WordWrapper
     
@@ -20,7 +20,7 @@ struct ScreenWordDetail: View {
         word: WordItemModel,
         isPresented: Binding<Bool>,
         refresh: @escaping () -> Void,
-        style: ScreenWordDetailStyle? = nil
+        style: WordDetailsStyle? = nil
     ) {
         let initialStyle = style ?? .themed(ThemeManager.shared.currentThemeStyle)
         _style = StateObject(wrappedValue: initialStyle)
@@ -33,14 +33,14 @@ struct ScreenWordDetail: View {
     var body: some View {
         BaseViewScreen(screen: .wordsDetail) {
             Form {
-                WordDetailCardSection(
+                WordDetailsViewMain(
                     word: $wrapper.word,
                     locale: locale,
                     style: style,
                     isEditing: isEditing
                 )
                 
-                WordDetailAdditionalSection(
+                WordDetailsViewAdditional(
                     word: $wrapper.word,
                     tableName: wordsAction.dictionaryDisplayName(wrapper.word),
                     locale: locale,
@@ -48,7 +48,7 @@ struct ScreenWordDetail: View {
                     isEditing: isEditing
                 )
                 
-                WordDetailStatisticsSection(
+                WordDetailsViewStatistic(
                     word: wrapper.word,
                     locale: locale,
                     style: style

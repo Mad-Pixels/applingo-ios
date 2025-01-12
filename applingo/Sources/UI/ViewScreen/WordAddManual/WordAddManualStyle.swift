@@ -1,31 +1,31 @@
 import SwiftUI
 
-final class ScreenWordDetailStyle: ObservableObject {
+final class WordAddManualStyle: ObservableObject {
     let backgroundColor: Color
-    let padding: EdgeInsets
     let spacing: CGFloat
+    let padding: EdgeInsets
     let sectionSpacing: CGFloat
     
     init(
         backgroundColor: Color,
-        padding: EdgeInsets,
         spacing: CGFloat,
+        padding: EdgeInsets,
         sectionSpacing: CGFloat
     ) {
         self.backgroundColor = backgroundColor
-        self.padding = padding
         self.spacing = spacing
+        self.padding = padding
         self.sectionSpacing = sectionSpacing
     }
 }
 
-extension ScreenWordDetailStyle {
-    static func themed(_ theme: AppTheme) -> ScreenWordDetailStyle {
-        ScreenWordDetailStyle(
+extension WordAddManualStyle {
+    static func themed(_ theme: AppTheme) -> WordAddManualStyle {
+        WordAddManualStyle(
             backgroundColor: theme.backgroundPrimary,
-            padding: EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16),
             spacing: 16,
-            sectionSpacing: 16
+            padding: EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16),
+            sectionSpacing: 12
         )
     }
 }

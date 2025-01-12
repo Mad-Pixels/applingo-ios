@@ -1,8 +1,8 @@
 import SwiftUI
 
-struct ScreenWords: View {
-    @StateObject private var style: ScreenWordsStyle
-    @StateObject private var locale = ScreenWordsLocale()
+struct WordList: View {
+    @StateObject private var style: WordListStyle
+    @StateObject private var locale = WordListLocale()
     @StateObject private var wordsGetter = WordsLocalGetterViewModel()
     
     @State private var selectedWord: WordItemModel?
@@ -11,7 +11,7 @@ struct ScreenWords: View {
     @State private var isShowingAlert = false
     @State private var errorMessage: String = ""
     
-    init(style: ScreenWordsStyle? = nil) {
+    init(style: WordListStyle? = nil) {
         let initialStyle = style ?? .themed(ThemeManager.shared.currentThemeStyle)
         _style = StateObject(wrappedValue: initialStyle)
     }
@@ -20,11 +20,11 @@ struct ScreenWords: View {
         BaseViewScreen(screen: .words) {
             ZStack {
                 VStack(spacing: style.spacing) {
-                    WordsSearch(
+                    WordListViewSearch(
                         searchText: $wordsGetter.searchText,
                         locale: locale
                     )
-                    WordsSection(
+                    WordListViewList(
                         locale: locale,
                         wordsGetter: wordsGetter,
                         onWordSelect: { word in
@@ -36,14 +36,14 @@ struct ScreenWords: View {
                 .navigationTitle(locale.navigationTitle)
                 .navigationBarTitleDisplayMode(.large)
                 
-                WordsActions(
+                WordListViewActions(
                     locale: locale,
                     onAdd: { isShowingAddView = true }
                 )
             }
         }
         .sheet(isPresented: $isShowingAddView) {
-            ScreenWordAdd(
+            WordAddManual(
                 isPresented: $isShowingAddView,
                 refresh: { wordsGetter.resetPagination() }
             )
@@ -51,7 +51,7 @@ struct ScreenWords: View {
             .environmentObject(LocaleManager.shared)
         }
         .sheet(item: $selectedWord) { word in
-            ScreenWordDetail(
+            WordDetails(
                 word: word,
                 isPresented: $isShowingDetailView,
                 refresh: { wordsGetter.resetPagination() }

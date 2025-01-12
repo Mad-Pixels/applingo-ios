@@ -1,11 +1,11 @@
 import SwiftUI
 
-struct WordsActions: View {
+struct WordListViewActions: View {
     let onAdd: () -> Void
-    private let locale: ScreenWordsLocale
+    private let locale: WordListLocale
     
     init(
-        locale: ScreenWordsLocale,
+        locale: WordListLocale,
         onAdd: @escaping () -> Void
     ) {
         self.locale = locale

@@ -1,12 +1,12 @@
 import SwiftUI
 
-struct WordsSearch: View {
+struct WordListViewSearch: View {
     @Binding var searchText: String
-        private let locale: ScreenWordsLocale
+        private let locale: WordListLocale
         
         init(
             searchText: Binding<String>,
-            locale: ScreenWordsLocale
+            locale: WordListLocale
         ) {
             self._searchText = searchText
             self.locale = locale

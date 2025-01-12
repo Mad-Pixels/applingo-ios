@@ -1,7 +1,7 @@
 import SwiftUI
 
 #Preview("Word Add Screen") {
-    ScreenWordAdd(
+    WordAddManual(
         isPresented: .constant(true),
         refresh: {}
     )

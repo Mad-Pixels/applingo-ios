@@ -1,9 +1,9 @@
 import SwiftUI
 
-struct ScreenWordAdd: View {
+struct WordAddManual: View {
     @Environment(\.presentationMode) private var presentationMode
-    @StateObject private var style: ScreenWordAddStyle
-    @StateObject private var locale = ScreenWordAddLocale()
+    @StateObject private var style: WordAddManualStyle
+    @StateObject private var locale = WordAddManualLocale()
     @StateObject private var wordsAction = WordsLocalActionViewModel()
     @StateObject private var dictionaryGetter = DictionaryLocalGetterViewModel()
     
@@ -20,7 +20,7 @@ struct ScreenWordAdd: View {
     init(
         isPresented: Binding<Bool>,
         refresh: @escaping () -> Void,
-        style: ScreenWordAddStyle? = nil
+        style: WordAddManualStyle? = nil
     ) {
         self._isPresented = isPresented
         self.refresh = refresh
@@ -31,7 +31,7 @@ struct ScreenWordAdd: View {
     var body: some View {
         BaseViewScreen(screen: .wordsAdd) {
             Form {
-                WordAddMainSection(
+                WordAddManualViewMain(
                     wordItem: $wordItem,
                     selectedDictionary: $selectedDictionary,
                     dictionaries: dictionaryGetter.dictionaries,
@@ -39,7 +39,7 @@ struct ScreenWordAdd: View {
                     style: style
                 )
                 
-                WordAddAdditionalSection(
+                WordAddManualViewAdditional(
                     hint: $hintText,
                     description: $descriptionText,
                     locale: locale,

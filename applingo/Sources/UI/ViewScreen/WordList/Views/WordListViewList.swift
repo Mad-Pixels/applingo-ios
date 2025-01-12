@@ -1,14 +1,14 @@
 import SwiftUI
 
-struct WordsSection: View {
+struct WordListViewList: View {
     @EnvironmentObject private var themeManager: ThemeManager
     @StateObject private var wordsAction = WordsLocalActionViewModel()
     @ObservedObject var wordsGetter: WordsLocalGetterViewModel
-    private let locale: ScreenWordsLocale
+    private let locale: WordListLocale
     let onWordSelect: (WordItemModel) -> Void
     
     init(
-        locale: ScreenWordsLocale,
+        locale: WordListLocale,
         wordsGetter: WordsLocalGetterViewModel,
         onWordSelect: @escaping (WordItemModel) -> Void
     ) {

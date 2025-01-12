@@ -1,7 +1,7 @@
 import SwiftUI
 
 #Preview("Word Detail Screen") {
-    ScreenWordDetail(
+    WordDetails(
         word: WordItemModel.empty(),
         isPresented: .constant(true),
         refresh: {}

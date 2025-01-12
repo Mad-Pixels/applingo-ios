@@ -1,14 +1,14 @@
 import SwiftUI
 
-struct WordDetailStatisticsSection: View {
+struct WordDetailsViewStatistic: View {
     private let word: WordItemModel
-    private let locale: ScreenWordDetailLocale
-    private let style: ScreenWordDetailStyle
+    private let locale: WordDetailsLocale
+    private let style: WordDetailsStyle
     
     init(
         word: WordItemModel,
-        locale: ScreenWordDetailLocale,
-        style: ScreenWordDetailStyle
+        locale: WordDetailsLocale,
+        style: WordDetailsStyle
     ) {
         self.word = word
         self.locale = locale

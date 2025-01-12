@@ -1,16 +1,16 @@
 import SwiftUI
 
-struct WordDetailCardSection: View {
+struct WordDetailsViewMain: View {
     @EnvironmentObject private var themeManager: ThemeManager
     @Binding var word: WordItemModel
-    private let locale: ScreenWordDetailLocale
-    private let style: ScreenWordDetailStyle
+    private let locale: WordDetailsLocale
+    private let style: WordDetailsStyle
     let isEditing: Bool
     
     init(
         word: Binding<WordItemModel>,
-        locale: ScreenWordDetailLocale,
-        style: ScreenWordDetailStyle,
+        locale: WordDetailsLocale,
+        style: WordDetailsStyle,
         isEditing: Bool
     ) {
         self._word = word

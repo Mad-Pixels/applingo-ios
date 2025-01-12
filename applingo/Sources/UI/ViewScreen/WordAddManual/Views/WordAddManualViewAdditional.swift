@@ -1,16 +1,16 @@
 import SwiftUI
 
-struct WordAddAdditionalSection: View {
+struct WordAddManualViewAdditional: View {
     @Binding var hint: String
     @Binding var description: String
-    private let locale: ScreenWordAddLocale
-    private let style: ScreenWordAddStyle
+    private let locale: WordAddManualLocale
+    private let style: WordAddManualStyle
     
     init(
         hint: Binding<String>,
         description: Binding<String>,
-        locale: ScreenWordAddLocale,
-        style: ScreenWordAddStyle
+        locale: WordAddManualLocale,
+        style: WordAddManualStyle
     ) {
         self._hint = hint
         self._description = description

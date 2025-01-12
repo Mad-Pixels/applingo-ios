@@ -1,6 +1,6 @@
 import Foundation
 
-final class ScreenWordsLocale: ObservableObject {
+final class WordListLocale: ObservableObject {
     private enum Strings {
         static let words = "Words"
         static let search = "Search"

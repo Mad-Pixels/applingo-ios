@@ -1,7 +1,7 @@
 import SwiftUI
 
 #Preview("Words Screen") {
-    ScreenWords()
+    WordList()
         .environmentObject(ThemeManager.shared)
         .environmentObject(LocaleManager.shared)
 }

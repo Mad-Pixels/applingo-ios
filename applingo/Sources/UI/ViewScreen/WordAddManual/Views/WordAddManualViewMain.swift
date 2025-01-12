@@ -1,19 +1,19 @@
 import SwiftUI
 
-struct WordAddMainSection: View {
+struct WordAddManualViewMain: View {
     @EnvironmentObject private var themeManager: ThemeManager
     @Binding var wordItem: WordItemModel
     @Binding var selectedDictionary: DictionaryItemModel?
     let dictionaries: [DictionaryItemModel]
-    private let locale: ScreenWordAddLocale
-    private let style: ScreenWordAddStyle
+    private let locale: WordAddManualLocale
+    private let style: WordAddManualStyle
     
     init(
         wordItem: Binding<WordItemModel>,
         selectedDictionary: Binding<DictionaryItemModel?>,
         dictionaries: [DictionaryItemModel],
-        locale: ScreenWordAddLocale,
-        style: ScreenWordAddStyle
+        locale: WordAddManualLocale,
+        style: WordAddManualStyle
     ) {
         self._wordItem = wordItem
         self._selectedDictionary = selectedDictionary

@@ -21,7 +21,7 @@ struct MainView: View {
                     }
                     .tag(0)
 
-                ScreenWords()
+                WordList()
                     .environmentObject(ThemeManager.shared)
                     .environmentObject(LocaleManager.shared)
                     .tabItem {
