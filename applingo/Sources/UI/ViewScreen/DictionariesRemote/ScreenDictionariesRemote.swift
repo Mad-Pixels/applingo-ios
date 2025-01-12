@@ -50,7 +50,9 @@ struct ScreenDictionariesRemote: View {
             dictionaryGetter.resetPagination(with: newParams)
         }
         .sheet(isPresented: $isShowingFilterView) {
-            DictionaryRemoteFilterView(apiRequestParams: $apiRequestParams)
+            ScreenDictionaryFilter(apiRequestParams: $apiRequestParams)
+                .environmentObject(ThemeManager.shared)
+                .environmentObject(LocaleManager.shared)
         }
         .sheet(item: $selectedDictionary) { dictionary in
             DictionaryRemoteDetailView(

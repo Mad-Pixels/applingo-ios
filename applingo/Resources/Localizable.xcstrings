@@ -20,6 +20,9 @@
         }
       }
     },
+    "Action Button" : {
+
+    },
     "AddDictionary" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -222,6 +225,9 @@
           }
         }
       }
+    },
+    "Cancel Button" : {
+
     },
     "Card" : {
       "extractionState" : "manual",
