@@ -11,8 +11,8 @@ struct GameButton: View {
         title: String,
         icon: String,
         color: Color = ThemeManager.shared.currentThemeStyle.accentPrimary,
-        style: GameButtonStyle = .themed(ThemeManager.shared.currentThemeStyle, color: ThemeManager.shared.currentThemeStyle.accentPrimary),
-        action: @escaping () -> Void = {}
+        action: @escaping () -> Void = {},
+        style: GameButtonStyle = .themed(ThemeManager.shared.currentThemeStyle, color: ThemeManager.shared.currentThemeStyle.accentPrimary)
     ) {
         self.title = title
         self.icon = icon

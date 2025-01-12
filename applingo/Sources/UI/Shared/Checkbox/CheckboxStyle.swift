@@ -8,6 +8,22 @@ struct CheckboxStyle {
     let borderWidth: CGFloat
 }
 
+struct CheckboxToggleStyle: ToggleStyle {
+    let style: CheckboxStyle
+    let disabled: Bool  // Добавлено для управления состоянием
+
+    func makeBody(configuration: Configuration) -> some View {
+        Image(systemName: configuration.isOn ? "checkmark.square.fill" : "square")
+            .foregroundColor(disabled ? style.borderColor.opacity(0.5) : (configuration.isOn ? style.activeColor : style.borderColor))
+            .font(.system(size: style.size))
+            .onTapGesture {
+                if !disabled {
+                    configuration.isOn.toggle()
+                }
+            }
+    }
+}
+
 extension CheckboxStyle {
     static func themed(_ theme: AppTheme) -> CheckboxStyle {
         CheckboxStyle(
@@ -20,15 +36,3 @@ extension CheckboxStyle {
     }
 }
 
-struct CheckboxToggleStyle: ToggleStyle {
-    let style: CheckboxStyle
-    
-    func makeBody(configuration: Configuration) -> some View {
-        Image(systemName: configuration.isOn ? "checkmark.square.fill" : "square")
-            .foregroundColor(configuration.isOn ? style.activeColor : style.borderColor)
-            .font(.system(size: style.size))
-            .onTapGesture {
-                configuration.isOn.toggle()
-            }
-    }
-}

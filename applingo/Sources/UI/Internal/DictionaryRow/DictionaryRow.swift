@@ -26,7 +26,6 @@ struct DictionaryRow: View {
             
             Checkbox(
                 isChecked: .constant(isActive),
-                style: .themed(ThemeManager.shared.currentThemeStyle),
                 onChange: onToggle
             )
         }

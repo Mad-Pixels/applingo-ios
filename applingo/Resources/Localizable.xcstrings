@@ -1927,6 +1927,9 @@
         }
       }
     },
+    "Multiple Floating Buttons" : {
+
+    },
     "No items" : {
 
     },
@@ -2317,6 +2320,9 @@
           }
         }
       }
+    },
+    "Single Floating Button" : {
+
     },
     "SortBy" : {
       "extractionState" : "manual",

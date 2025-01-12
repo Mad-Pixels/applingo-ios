@@ -4,27 +4,34 @@ struct Checkbox: View {
     @Binding var isChecked: Bool
     let style: CheckboxStyle
     let onChange: ((Bool) -> Void)?
-    
+    let disabled: Bool
+
     init(
         isChecked: Binding<Bool>,
-        style: CheckboxStyle = .themed(ThemeManager.shared.currentThemeStyle),
-        onChange: ((Bool) -> Void)? = nil
+        disabled: Bool = false,
+        onChange: ((Bool) -> Void)? = nil,
+        style: CheckboxStyle = .themed(ThemeManager.shared.currentThemeStyle)
     ) {
-        self._isChecked = isChecked
         self.style = style
         self.onChange = onChange
+        self.disabled = disabled
+        self._isChecked = isChecked
     }
     
     var body: some View {
         Toggle(isOn: Binding(
             get: { isChecked },
             set: { newValue in
-                isChecked = newValue
-                onChange?(newValue)
+                if !disabled {
+                    isChecked = newValue
+                    onChange?(newValue)
+                }
             }
         )) {
             EmptyView()
         }
-        .toggleStyle(CheckboxToggleStyle(style: style))
+        .toggleStyle(CheckboxToggleStyle(style: style, disabled: disabled))
+        .disabled(disabled)
+        .opacity(disabled ? 0.5 : 1.0)
     }
 }
