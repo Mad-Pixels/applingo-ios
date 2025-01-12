@@ -9,4 +9,5 @@ enum ScreenType: String {
     case wordsAdd
     case settings
     case game
+    case main
 }

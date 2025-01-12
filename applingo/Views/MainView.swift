@@ -7,7 +7,10 @@ struct MainView: View {
     var body: some View {
         AppViewTab(theme: themeManager.currentTheme, style: .default) {
             TabView {
-                TabLearnView()
+                //TabLearnView()
+                ScreenLearn()
+                    .environmentObject(ThemeManager.shared)
+                    .environmentObject(LocaleManager.shared)
                     .tabItem {
                         Label {
                             Text(languageManager.localizedString(for: "Learn").capitalizedFirstLetter)
