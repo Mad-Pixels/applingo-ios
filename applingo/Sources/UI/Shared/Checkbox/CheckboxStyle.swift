@@ -10,7 +10,7 @@ struct CheckboxStyle {
 
 struct CheckboxToggleStyle: ToggleStyle {
     let style: CheckboxStyle
-    let disabled: Bool  // Добавлено для управления состоянием
+    let disabled: Bool
 
     func makeBody(configuration: Configuration) -> some View {
         Image(systemName: configuration.isOn ? "checkmark.square.fill" : "square")
@@ -35,4 +35,3 @@ extension CheckboxStyle {
         )
     }
 }
-

@@ -27,10 +27,10 @@ struct GameButton: View {
                 // Иконка справа
                 Image(systemName: icon)
                     .font(.system(size: style.iconSize))
-                    .rotationEffect(.degrees(style.iconRotation))  // Разворот иконки
+                    .rotationEffect(.degrees(style.iconRotation))
                     .foregroundColor(style.iconColor)
                     .frame(width: 100)
-                    .offset(x: 25)  // Сдвиг вправо для позиции иконки
+                    .offset(x: 25)
                 
                 // Текст
                 HStack {
@@ -51,7 +51,7 @@ struct GameButton: View {
             )
             .scaleEffect(style.highlightOnPress ? 0.98 : 1.0)
             .animation(.easeOut(duration: 0.2), value: style.highlightOnPress)
-            .contentShape(Rectangle())  // Увеличение зоны нажатия
+            .contentShape(Rectangle())
         }
         .buttonStyle(PlainButtonStyle())
     }
