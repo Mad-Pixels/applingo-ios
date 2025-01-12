@@ -1,19 +1,15 @@
 import SwiftUI
 
-struct IconAction {
-    let icon: String
-    let action: () -> Void
-}
-
-struct FloatingButtonMultiple: View {
-    let items: [IconAction]
-    let style: FloatingButtonStyle
+struct ButtonFloatingMultiple: View {
+    let items: [ButtonFloatingIconAction]
+    let style: ButtonFloatingStyle
     
     @State private var isOpen = false
-    
+    @State private var iconRotation: Double = 0
+
     init(
-        items: [IconAction],
-        style: FloatingButtonStyle = .themed(ThemeManager.shared.currentThemeStyle)
+        items: [ButtonFloatingIconAction],
+        style: ButtonFloatingStyle = .themed(ThemeManager.shared.currentThemeStyle)
     ) {
         self.items = items
         self.style = style
@@ -25,8 +21,9 @@ struct FloatingButtonMultiple: View {
                 Color.black.opacity(0.01)
                     .ignoresSafeArea()
                     .onTapGesture {
-                        withAnimation {
+                        withAnimation(.easeInOut(duration: 0.4)) {
                             isOpen = false
+                            iconRotation = 0
                         }
                     }
             }
@@ -36,8 +33,9 @@ struct FloatingButtonMultiple: View {
                     VStack(spacing: style.spacing) {
                         ForEach(0..<items.count, id: \.self) { index in
                             Button(action: {
-                                withAnimation {
+                                withAnimation(.spring(response: 0.4, dampingFraction: 0.7, blendDuration: 0.2)) {
                                     isOpen = false
+                                    iconRotation = 0
                                 }
                                 items[index].action()
                             }) {
@@ -62,8 +60,9 @@ struct FloatingButtonMultiple: View {
                 }
 
                 Button(action: {
-                    withAnimation {
+                    withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {
                         isOpen.toggle()
+                        iconRotation += 180
                     }
                 }) {
                     Image(systemName: isOpen ? "xmark" : "plus")
@@ -79,6 +78,9 @@ struct FloatingButtonMultiple: View {
                             color: style.shadowColor,
                             radius: style.shadowRadius
                         )
+                        .rotationEffect(.degrees(iconRotation))
+                        .scaleEffect(isOpen ? 1.1 : 1.0)
+                        .animation(.easeInOut(duration: 0.4), value: isOpen)
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)

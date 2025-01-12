@@ -13,13 +13,9 @@ struct WordsActions: View {
     }
     
     var body: some View {
-        FloatingButtonMultiple(
-            items: [
-                IconAction(
-                    icon: "plus.circle",
-                    action: onAdd
-                )
-            ]
+        ButtonFloatingSingle(
+            icon: "plus.circle",
+            action: onAdd
         )
     }
 }

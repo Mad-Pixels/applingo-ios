@@ -1,14 +1,14 @@
 import SwiftUI
 
-struct FloatingButtonSingle: View {
+struct ButtonFloatingSingle: View {
     let icon: String
     let action: () -> Void
-    let style: FloatingButtonStyle
+    let style: ButtonFloatingStyle
     
     init(
         icon: String,
         action: @escaping () -> Void,
-        style: FloatingButtonStyle = .themed(ThemeManager.shared.currentThemeStyle)
+        style: ButtonFloatingStyle = .themed(ThemeManager.shared.currentThemeStyle)
     ) {
         self.icon = icon
         self.action = action

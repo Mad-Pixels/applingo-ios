@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct FloatingButtonStyle {
+struct ButtonFloatingStyle {
     let mainButtonColor: Color
     let itemButtonColor: Color
     let mainButtonSize: CGSize
@@ -11,9 +11,9 @@ struct FloatingButtonStyle {
     let shadowRadius: CGFloat
 }
 
-extension FloatingButtonStyle {
-    static func themed(_ theme: AppTheme) -> FloatingButtonStyle {
-        FloatingButtonStyle(
+extension ButtonFloatingStyle {
+    static func themed(_ theme: AppTheme) -> ButtonFloatingStyle {
+        ButtonFloatingStyle(
             mainButtonColor: theme.accentPrimary,
             itemButtonColor: theme.accentPrimary,
             mainButtonSize: CGSize(width: 60, height: 60),

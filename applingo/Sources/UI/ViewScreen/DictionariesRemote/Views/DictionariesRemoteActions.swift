@@ -13,13 +13,9 @@ struct DictionariesRemoteActions: View {
     }
     
     var body: some View {
-        FloatingButtonMultiple(
-            items: [
-                IconAction(
-                    icon: "line.horizontal.3.decrease.circle",
-                    action: onFilter
-                )
-            ]
+        ButtonFloatingSingle(
+            icon: "line.horizontal.3.decrease.circle",
+            action: onFilter
         )
     }
 }
