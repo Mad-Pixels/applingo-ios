@@ -69,6 +69,7 @@ struct BaseGameView<Content: View>: View {
                             gameAction.startGame()
                         }
                     )
+                    
                     Spacer()
                 } else {
                     Spacer()

@@ -1884,6 +1884,9 @@
         }
       }
     },
+    "locale.backTitle" : {
+
+    },
     "LogSettings" : {
       "extractionState" : "manual",
       "localizations" : {

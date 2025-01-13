@@ -1,17 +1,18 @@
 import SwiftUI
 
 struct GameMode: View {
+   @Environment(\.presentationMode) private var presentationMode
    @StateObject private var style: GameModeStyle
    private let locale: GameModeLocale
    
-   @Binding var selectedMode: GameModeEnum
+    @Binding var selectedMode: GameModeEnum
    let startGame: () -> Void
    
-   @State private var selectedCard: GameModeEnum?
+    @State private var selectedCard: GameModeEnum?
    @State private var isAnimating = false
    
    init(
-       selectedMode: Binding<GameModeEnum>,
+    selectedMode: Binding<GameModeEnum>,
        startGame: @escaping () -> Void,
        style: GameModeStyle? = nil
    ) {
@@ -23,60 +24,67 @@ struct GameMode: View {
    }
    
    var body: some View {
-       BaseScreen(screen: .game) {
-           VStack(spacing: style.spacing) {
-               Text(locale.selectModeTitle.uppercased())
-                   .font(style.titleStyle.font)
-                   .foregroundColor(style.titleStyle.color)
-                   .padding(.top)
-                   .opacity(isAnimating ? 1 : 0)
-                   .offset(y: isAnimating ? 0 : 20)
-               
-               VStack(spacing: style.cardSpacing) {
-                   GameModeViewCard(
-                       mode: .practice,
-                       icon: "graduationcap.fill",
-                       title: locale.practiceTitle,
-                       description: locale.practiceDescription,
-                       style: style,
-                       isSelected: selectedCard == .practice,
-                       onSelect: { selectMode(.practice) }
-                   )
-                   //.withAppearanceAnimation(delay: 0.1, isAnimating: isAnimating)
+       NavigationView {
+           BaseScreen(screen: .game) {
+               VStack(spacing: style.spacing) {
+                   Text(locale.selectModeTitle.uppercased())
+                       .font(style.titleStyle.font)
+                       .foregroundColor(style.titleStyle.color)
+                       .padding(.top)
+                       .opacity(isAnimating ? 1 : 0)
+                       .offset(y: isAnimating ? 0 : 20)
                    
-                   GameModeViewCard(
-                       mode: .survival,
-                       icon: "heart.fill",
-                       title: locale.survivalTitle,
-                       description: locale.survivalDescription,
-                       style: style,
-                       isSelected: selectedCard == .survival,
-                       onSelect: { selectMode(.survival) }
-                   )
-                   //.withAppearanceAnimation(delay: 0.2, isAnimating: isAnimating)
-                   
-                   GameModeViewCard(
-                       mode: .timeAttack,
-                       icon: "timer",
-                       title: locale.timeAttackTitle,
-                       description: locale.timeAttackDescription,
-                       style: style,
-                       isSelected: selectedCard == .timeAttack,
-                       onSelect: { selectMode(.timeAttack) }
-                   )
-                   //.withAppearanceAnimation(delay: 0.3, isAnimating: isAnimating)
+                   VStack(spacing: style.cardSpacing) {
+                       GameModeViewCard(
+                           mode: .practice,
+                           icon: "graduationcap.fill",
+                           title: locale.practiceTitle,
+                           description: locale.practiceDescription,
+                           style: style,
+                           isSelected: selectedCard == .practice,
+                           onSelect: { selectMode(.practice) }
+                       )
+                       //.withAppearanceAnimation(delay: 0.1, isAnimating: isAnimating)
+                       
+                       GameModeViewCard(
+                           mode: .survival,
+                           icon: "heart.fill",
+                           title: locale.survivalTitle,
+                           description: locale.survivalDescription,
+                           style: style,
+                           isSelected: selectedCard == .survival,
+                           onSelect: { selectMode(.survival) }
+                       )
+                       //.withAppearanceAnimation(delay: 0.2, isAnimating: isAnimating)
+                       
+                       GameModeViewCard(
+                           mode: .timeAttack,
+                           icon: "timer",
+                           title: locale.timeAttackTitle,
+                           description: locale.timeAttackDescription,
+                           style: style,
+                           isSelected: selectedCard == .timeAttack,
+                           onSelect: { selectMode(.timeAttack) }
+                       )
+                       //.withAppearanceAnimation(delay: 0.3, isAnimating: isAnimating)
+                   }
+                   .padding(style.padding)
                }
-               .padding(style.padding)
-           }
-           .onAppear {
-               withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
-                   isAnimating = true
+               .navigationBarItems(
+                   leading: Button("locale.backTitle") {
+                       presentationMode.wrappedValue.dismiss()
+                   }
+               )
+               .onAppear {
+                   withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                       isAnimating = true
+                   }
                }
            }
        }
    }
    
-   private func selectMode(_ mode: GameModeEnum) {
+    private func selectMode(_ mode: GameModeEnum) {
        withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
            selectedCard = mode
        }
