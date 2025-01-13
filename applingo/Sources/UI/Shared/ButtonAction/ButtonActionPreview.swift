@@ -7,7 +7,6 @@ struct ButtonPreview_Previews: PreviewProvider {
                 .previewDisplayName("Button Component Preview")
                 .previewLayout(.sizeThatFits)
                 .padding()
-                .background(Color(.systemBackground))
         }
     }
 }
