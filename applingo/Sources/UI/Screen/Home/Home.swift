@@ -22,19 +22,22 @@ struct Home: View {
                     ButtonIcon(
                         title: locale.quizTitle,
                         icon: "laser.burst",
-                        action: { showQuizGame = true }
+                        action: { showQuizGame = true },
+                        style: .asGameSelect(ThemeManager.shared.currentThemeStyle.quizTheme)
                     )
                     
                     ButtonIcon(
                         title: locale.matchHuntTitle,
                         icon: "puzzlepiece",
-                        action: { showMatchHuntGame = true }
+                        action: { showMatchHuntGame = true },
+                        style: .asGameSelect(ThemeManager.shared.currentThemeStyle.matchTheme)
                     )
                     
                     ButtonIcon(
                         title: locale.verifyItTitle,
                         icon: "number",
-                        action: { showVerifyItGame = true }
+                        action: { showVerifyItGame = true },
+                        style: .asGameSelect(ThemeManager.shared.currentThemeStyle.swipeTheme)
                     )
                 }
                 .padding(style.padding)
