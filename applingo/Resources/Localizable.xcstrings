@@ -197,6 +197,9 @@
         }
       }
     },
+    "Back to GameMode" : {
+
+    },
     "Cancel" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -326,6 +329,9 @@
           }
         }
       }
+    },
+    "Close FullScreen" : {
+
     },
     "ComposeTheTranslation" : {
       "extractionState" : "manual",
@@ -807,6 +813,9 @@
           }
         }
       }
+    },
+    "Game Mode" : {
+
     },
     "GameAccuracy" : {
       "extractionState" : "manual",
@@ -1884,9 +1893,6 @@
         }
       }
     },
-    "locale.backTitle" : {
-
-    },
     "LogSettings" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1917,6 +1923,9 @@
       }
     },
     "Long text" : {
+
+    },
+    "Match Hunt Game Content" : {
 
     },
     "MatchHunt" : {
@@ -1985,6 +1994,9 @@
           }
         }
       }
+    },
+    "Not enough words to play" : {
+
     },
     "NotEnoughWords" : {
       "extractionState" : "manual",
@@ -2101,6 +2113,12 @@
           }
         }
       }
+    },
+    "Quiz Game" : {
+
+    },
+    "Quiz Game Content" : {
+
     },
     "Rating" : {
       "extractionState" : "manual",
@@ -2551,6 +2569,9 @@
           }
         }
       }
+    },
+    "Verify It Game Content" : {
+
     },
     "VerifyIt" : {
       "extractionState" : "manual",

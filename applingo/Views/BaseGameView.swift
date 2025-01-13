@@ -58,17 +58,17 @@ struct BaseGameView<Content: View>: View {
                     Spacer()
                 } else if cacheGetter.cache.count >= minimumWordsRequired && !gameAction.isGameActive {
                     Spacer()
-                    GameMode(
-                        selectedMode: .init(
-                            get: { gameAction.gameMode },
-                            set: { mode in
-                                gameAction.setGameMode(mode)
-                            }
-                        ),
-                        startGame: {
-                            gameAction.startGame()
-                        }
-                    )
+//                    GameMode(
+//                        selectedMode: .init(
+//                            get: { gameAction.gameMode },
+//                            set: { mode in
+//                                gameAction.setGameMode(mode)
+//                            }
+//                        ),
+//                        startGame: {
+//                            gameAction.startGame()
+//                        }
+//                    )
                     
                     Spacer()
                 } else {
