@@ -19,19 +19,19 @@ struct Home: View {
                 MainBackground().edgesIgnoringSafeArea(.all)
                 
                 VStack(spacing: style.spacing) {
-                    GameButton(
+                    ButtonIcon(
                         title: locale.quizTitle,
                         icon: "laser.burst",
                         action: { showQuizGame = true }
                     )
                     
-                    GameButton(
+                    ButtonIcon(
                         title: locale.matchHuntTitle,
                         icon: "puzzlepiece",
                         action: { showMatchHuntGame = true }
                     )
                     
-                    GameButton(
+                    ButtonIcon(
                         title: locale.verifyItTitle,
                         icon: "number",
                         action: { showVerifyItGame = true }

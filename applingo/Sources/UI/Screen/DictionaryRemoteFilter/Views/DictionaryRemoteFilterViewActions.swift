@@ -19,13 +19,11 @@ struct DictionaryRemoteFilterViewActions: View {
         HStack {
             ButtonAction(
                 title: locale.saveTitle,
-                type: .action,
                 action: onSave
             )
             
             ButtonAction(
                 title: locale.resetTitle,
-                type: .cancel,
                 action: onReset
             )
         }

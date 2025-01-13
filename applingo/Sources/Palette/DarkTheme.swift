@@ -38,4 +38,31 @@ struct DarkTheme: AppTheme {
     var errorPrimaryColor: Color { Color(hex: "ef4444") }
     var errorSecondaryColor: Color { Color(hex: "f87171") }
     var errorBackgroundColor: Color { Color(hex: "7f1d1d") }
+    
+    // Quiz game
+    var quizTheme: GameTheme {
+        GameTheme(
+            main: Color(hex: "f87171"),
+            dark: Color(hex: "7f1d1d"),
+            light: Color(hex: "ef4444")
+        )
+    }
+        
+    // Match game
+    var matchTheme: GameTheme {
+        GameTheme(
+            main: Color(hex: "4b5563"),
+            dark: Color(hex: "f8a009"),
+            light: Color(hex: "e38c10")
+        )
+    }
+    
+    // Swipe game
+    var swipeTheme: GameTheme {
+        GameTheme(
+            main: Color(hex: "4b5563"),
+            dark: Color(hex: "f8a009"),
+            light: Color(hex: "e38c10")
+        )
+    }
 }

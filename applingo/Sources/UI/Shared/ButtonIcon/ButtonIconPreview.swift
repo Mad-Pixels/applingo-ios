@@ -1,15 +1,15 @@
 import SwiftUI
 
-struct GameButtonPreview_Previews: PreviewProvider {
+struct ButtonSelectGame_Previews: PreviewProvider {
     static var previews: some View {
-        GameButtonPreview()
+        ButtonSelectGamePreview()
             .previewDisplayName("Game Button Preview")
             .previewLayout(.sizeThatFits)
             .padding()
     }
 }
 
-private struct GameButtonPreview: View {
+private struct ButtonSelectGamePreview: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 32) {
@@ -26,16 +26,16 @@ private struct GameButtonPreview: View {
                 .font(.headline)
                 .foregroundColor(theme.textPrimary)
             
-            GameButton(
+            ButtonIcon(
                 title: "Play Game",
                 icon: "gamecontroller.fill",
                 style: .themed(theme, color: theme.accentPrimary)
             )
             
-            GameButton(
-                title: "Settings",
+            ButtonIcon(
+                title: "Quiz",
                 icon: "gearshape.fill",
-                style: .themed(theme, color: theme.success)
+                style: .asGameSelect(theme.quizTheme)
             )
         }
         .padding()

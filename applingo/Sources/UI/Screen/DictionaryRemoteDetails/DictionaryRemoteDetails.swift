@@ -47,7 +47,6 @@ struct DictionaryRemoteDetails: View {
                } else {
                    ButtonAction(
                        title: locale.downloadTitle,
-                       type: .action,
                        action: downloadDictionary
                    )
                    .padding(style.padding)

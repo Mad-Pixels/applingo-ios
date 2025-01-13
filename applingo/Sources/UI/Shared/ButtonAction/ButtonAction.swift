@@ -1,27 +1,21 @@
 import SwiftUI
 
 struct ButtonAction: View {
-    enum ButtonType {
-        case action
-        case cancel
-        case disabled
-    }
-    
     let title: String
-    let type: ButtonType
     let action: () -> Void
+    let disabled: Bool
     let style: ButtonActionStyle
     
     init(
         title: String,
-        type: ButtonType = .action,
         action: @escaping () -> Void,
+        disabled: Bool = false,
         style: ButtonActionStyle? = nil
     ) {
         self.title = title
-        self.type = type
         self.action = action
-        self.style = style ?? .themed(ThemeManager.shared.currentThemeStyle, type: type)
+        self.disabled = disabled
+        self.style = style ?? .themed(ThemeManager.shared.currentThemeStyle)
     }
     
     var body: some View {
@@ -34,6 +28,6 @@ struct ButtonAction: View {
                 .padding(style.padding)
                 .font(style.font)
         }
-        .disabled(type == .disabled)
+        .disabled(disabled)
     }
 }

@@ -1,10 +1,10 @@
 import SwiftUI
 
-struct GameButton: View {
+struct ButtonIcon: View {
     let title: String
     let icon: String
     let color: Color
-    let style: GameButtonStyle
+    let style: ButtonIconStyle
     let action: () -> Void
 
     init(
@@ -12,7 +12,7 @@ struct GameButton: View {
         icon: String,
         color: Color = ThemeManager.shared.currentThemeStyle.accentPrimary,
         action: @escaping () -> Void = {},
-        style: GameButtonStyle = .themed(ThemeManager.shared.currentThemeStyle, color: ThemeManager.shared.currentThemeStyle.accentPrimary)
+        style: ButtonIconStyle = .themed(ThemeManager.shared.currentThemeStyle, color: ThemeManager.shared.currentThemeStyle.accentPrimary)
     ) {
         self.title = title
         self.icon = icon
