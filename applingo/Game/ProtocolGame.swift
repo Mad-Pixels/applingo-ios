@@ -12,7 +12,7 @@ protocol GameResultProtocol {
     var hintPenalty: Int { get }
 }
 
-enum GameMode {
+enum GameModeEnum {
     case practice
     case survival
     case timeAttack
@@ -90,10 +90,10 @@ enum ScoreAnimationReason {
 
 protocol GameFlowProtocol {
     var isGameActive: Bool { get }
-    var gameMode: GameMode { get }
+    var gameMode: GameModeEnum { get }
     var stats: GameStatsProtocol { get }
     
-    func startGame(mode: GameMode)
+    func startGame(mode: GameModeEnum)
     func endGame()
     func handleResult(_ result: GameResultProtocol)
 }

@@ -1,7 +1,7 @@
 import SwiftUI
 
 #Preview("Game Mode Screen") {
-   ScreenGameMode(
+    GameMode(
        selectedMode: .constant(.practice),
        startGame: {}
    )
@@ -13,7 +13,7 @@ struct ScreenGameMode_Previews: PreviewProvider {
    static var previews: some View {
        Group {
            // Light theme
-           ScreenGameMode(
+           GameMode(
                selectedMode: .constant(.practice),
                startGame: {}
            )
@@ -22,7 +22,7 @@ struct ScreenGameMode_Previews: PreviewProvider {
            .preferredColorScheme(.light)
            
            // Dark theme
-           ScreenGameMode(
+           GameMode(
                selectedMode: .constant(.practice),
                startGame: {}
            )

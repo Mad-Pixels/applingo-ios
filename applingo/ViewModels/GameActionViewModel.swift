@@ -4,7 +4,7 @@ import SwiftUI
 
 final class GameActionViewModel: BaseDatabaseViewModel {
     @Published private(set) var stats: GameStatsModel
-    @Published private(set) var gameMode: GameMode = .practice
+    @Published private(set) var gameMode: GameModeEnum = .practice
     @Published private(set) var isGameActive = false
     
     private let gameHandler: GameHandler
@@ -42,7 +42,7 @@ final class GameActionViewModel: BaseDatabaseViewModel {
         setupBindings()
     }
     
-    func setGameMode(_ mode: GameMode) {
+    func setGameMode(_ mode: GameModeEnum) {
         gameHandler.setGameMode(mode)
     }
     

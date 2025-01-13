@@ -3,7 +3,7 @@ import Combine
 
 final class GameHandler: ObservableObject {
     @Published private(set) var stats: GameStatsModel
-    @Published private(set) var gameMode: GameMode
+    @Published private(set) var gameMode: GameModeEnum
     @Published private(set) var isGameActive: Bool = false
     
     private let scoreCalculator: GameScoreCalculator
@@ -15,7 +15,7 @@ final class GameHandler: ObservableObject {
     var onScoreChange: ((Int, ScoreAnimationReason) -> Void)?
     
     init(
-        mode: GameMode = .practice,
+        mode: GameModeEnum = .practice,
         stats: GameStatsModel = GameStatsModel(),
         scoreCalculator: GameScoreCalculator = GameScoreCalculator(),
         specialService: GameSpecialService = GameSpecialService(),
@@ -38,7 +38,7 @@ final class GameHandler: ObservableObject {
         specialService.getSpecialsCount()
     }
     
-    func startGame(mode: GameMode) {
+    func startGame(mode: GameModeEnum) {
         stats.reset()
         gameMode = mode
         isGameActive = true
@@ -71,7 +71,7 @@ final class GameHandler: ObservableObject {
         isGameActive = true
     }
     
-    func setGameMode(_ mode: GameMode) {
+    func setGameMode(_ mode: GameModeEnum) {
         gameMode = mode
     }
     

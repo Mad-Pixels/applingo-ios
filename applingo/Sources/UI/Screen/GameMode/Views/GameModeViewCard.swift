@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct GameModeViewCard: View {
-   let mode: GameMode
+   let mode: GameModeEnum
    let icon: String
    let title: String
    let description: String

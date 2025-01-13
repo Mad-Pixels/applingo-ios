@@ -1,17 +1,17 @@
 import SwiftUI
 
-struct ScreenGameMode: View {
+struct GameMode: View {
    @StateObject private var style: GameModeStyle
    private let locale: GameModeLocale
    
-   @Binding var selectedMode: GameMode
+   @Binding var selectedMode: GameModeEnum
    let startGame: () -> Void
    
-   @State private var selectedCard: GameMode?
+   @State private var selectedCard: GameModeEnum?
    @State private var isAnimating = false
    
    init(
-       selectedMode: Binding<GameMode>,
+       selectedMode: Binding<GameModeEnum>,
        startGame: @escaping () -> Void,
        style: GameModeStyle? = nil
    ) {
@@ -76,7 +76,7 @@ struct ScreenGameMode: View {
        }
    }
    
-   private func selectMode(_ mode: GameMode) {
+   private func selectMode(_ mode: GameModeEnum) {
        withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
            selectedCard = mode
        }

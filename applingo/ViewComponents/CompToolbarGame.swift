@@ -2,7 +2,7 @@ import SwiftUI
 
 struct CompToolbarGame: View {
     @ObservedObject var stats: GameStatsModel
-    let gameMode: GameMode
+    let gameMode: GameModeEnum
     
     init(viewModel: GameActionViewModel) {
         self._stats = ObservedObject(wrappedValue: viewModel.stats)

@@ -2,7 +2,7 @@ import SwiftUI
 
 struct GameResultCardView: View {
     let stats: GameStatsModel
-    let gameMode: GameMode
+    let gameMode: GameModeEnum
     let onClose: () -> Void
     let onRestart: () -> Void
     
