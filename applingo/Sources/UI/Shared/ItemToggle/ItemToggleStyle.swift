@@ -20,15 +20,4 @@ extension ItemToggleStyle {
             showHeader: true
         )
     }
-    
-    static func themedCompact(_ theme: AppTheme) -> ItemToggleStyle {
-        ItemToggleStyle(
-            titleColor: theme.textPrimary,
-            headerColor: theme.textSecondary,
-            tintColor: theme.accentPrimary,
-            backgroundColor: .clear,
-            spacing: 4,
-            showHeader: false
-        )
-    }
 }

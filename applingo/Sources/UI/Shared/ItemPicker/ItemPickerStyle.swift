@@ -19,7 +19,7 @@ extension ItemPickerStyle {
     static func themed(_ theme: AppTheme, type: PickerType = .wheel) -> ItemPickerStyle {
         ItemPickerStyle(
             titleColor: theme.textPrimary,
-            backgroundColor: .clear,
+            backgroundColor: theme.backgroundSecondary,
             accentColor: theme.accentPrimary,
             type: type,
             spacing: 8

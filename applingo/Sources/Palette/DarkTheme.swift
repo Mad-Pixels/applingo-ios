@@ -2,18 +2,18 @@ import SwiftUI
 
 struct DarkTheme: AppTheme {
     // Main text colors
-    let textPrimary = Color(hex: "e5e7eb")
+    let textPrimary = Color(hex: "f5f7f4")
     let textSecondary = Color(hex: "9ca3af")
     
     // Main background colors
-    let backgroundPrimary = Color(hex: "1a1a1a")
-    let backgroundSecondary = Color(hex: "262626")
+    let backgroundPrimary = Color(hex: "131512")
+    let backgroundSecondary = Color(hex: "2a2c29")
     let backgroundHover = Color(hex: "333333")
     let backgroundActive = Color(hex: "404040")
     let backgroundActiveHover = Color(hex: "4a4a4a")
     
     // Accent colors
-    let accentPrimary = Color(hex: "f8a009")
+    let accentPrimary = Color(hex: "aae282")
     let accentLight = Color(hex: "e38c10")
     let accentDark = Color(hex: "ea891a")
     let accentContrast = Color.white

@@ -40,7 +40,7 @@ private struct TogglePreview: View {
                     ItemToggle(
                         isOn: $isOnWithoutHeader,
                         title: "Enable notifications",
-                        style: .themedCompact(theme)
+                        style: .themed(theme)
                     )
                 }
                 
