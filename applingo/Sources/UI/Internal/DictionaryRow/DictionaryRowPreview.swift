@@ -10,6 +10,42 @@ struct DictionaryRow_Previews: PreviewProvider {
 }
 
 private struct DictionaryRowPreview: View {
+    static let previewModel = DictionaryRowModel(
+        title: "English - Russian",
+        category: "Language",
+        subcategory: "Basic",
+        description: "Common English words and phrases",
+        wordsCount: 1234,
+        isActive: true
+    )
+    
+    static let languageModel = DictionaryRowModel(
+        title: "Language Model",
+        category: "Language",
+        subcategory: "ru-en",
+        description: "Common English words and phrases",
+        wordsCount: 1234,
+        isActive: true
+    )
+    
+    static let inactiveModel = DictionaryRowModel(
+        title: "Spanish - Russian",
+        category: "Language",
+        subcategory: "Advanced",
+        description: "Advanced Spanish vocabulary",
+        wordsCount: 567,
+        isActive: false
+    )
+    
+    static let longTextModel = DictionaryRowModel(
+        title: "This is a very long dictionary title",
+        category: "Special",
+        subcategory: "Professional Terms",
+        description: "A very detailed description of the dictionary content",
+        wordsCount: 999,
+        isActive: true
+    )
+    
     var body: some View {
         ScrollView {
             VStack(spacing: 32) {
@@ -36,9 +72,23 @@ private struct DictionaryRowPreview: View {
                         .foregroundColor(theme.textSecondary)
                     
                     DictionaryRow(
-                        title: "English - Russian",
-                        subtitle: "1234 words",
-                        isActive: true,
+                        model: Self.previewModel,
+                        style: .themed(theme),
+                        onTap: { print("Tapped active dictionary") },
+                        onToggle: { isActive in
+                            print("Toggle dictionary: \(isActive)")
+                        }
+                    )
+                }
+                
+                // Language dictionary
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Language dictionary")
+                        .font(.subheadline)
+                        .foregroundColor(theme.textSecondary)
+                    
+                    DictionaryRow(
+                        model: Self.languageModel,
                         style: .themed(theme),
                         onTap: { print("Tapped active dictionary") },
                         onToggle: { isActive in
@@ -54,9 +104,7 @@ private struct DictionaryRowPreview: View {
                         .foregroundColor(theme.textSecondary)
                     
                     DictionaryRow(
-                        title: "Spanish - Russian",
-                        subtitle: "567 words",
-                        isActive: false,
+                        model: Self.inactiveModel,
                         style: .themed(theme),
                         onTap: { print("Tapped inactive dictionary") },
                         onToggle: { isActive in
@@ -72,9 +120,7 @@ private struct DictionaryRowPreview: View {
                         .foregroundColor(theme.textSecondary)
                     
                     DictionaryRow(
-                        title: "This is a very long dictionary title to test text wrapping",
-                        subtitle: "This is a very long subtitle with detailed description",
-                        isActive: true,
+                        model: Self.longTextModel,
                         style: .themed(theme),
                         onTap: { print("Tapped long text dictionary") },
                         onToggle: { isActive in

@@ -1,16 +1,16 @@
 import SwiftUI
 
 struct WordRow: View {
-    let word: WordRowModel
+    let model: WordRowModel
     let style: WordRowStyle
     let onTap: () -> Void
     
     init(
-        word: WordRowModel,
+        model: WordRowModel,
         style: WordRowStyle = .themed(ThemeManager.shared.currentThemeStyle),
         onTap: @escaping () -> Void
     ) {
-        self.word = word
+        self.model = model
         self.style = style
         self.onTap = onTap
     }
@@ -18,11 +18,11 @@ struct WordRow: View {
     var body: some View {
         HStack(spacing: style.spacing) {
             VStack(alignment: .leading, spacing: style.spacing / 2) {
-                Text(word.frontText)
+                Text(model.frontText)
                     .foregroundColor(style.frontTextColor)
                     .font(style.frontTextFont)
                 
-                Text(word.backText)
+                Text(model.backText)
                     .font(style.backTextFont)
                     .foregroundColor(style.backTextColor)
                 
@@ -31,7 +31,7 @@ struct WordRow: View {
                         .font(.system(size: 12))
                         .foregroundColor(style.arrowColor)
                     
-                    ChartIndicator(weight: word.weight)
+                    ChartIndicator(weight: model.weight)
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)

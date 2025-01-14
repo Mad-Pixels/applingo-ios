@@ -688,6 +688,9 @@
     "Empty State" : {
 
     },
+    "English to Russian" : {
+
+    },
     "ErrApiDefault" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -768,6 +771,9 @@
     "error.title" : {
 
     },
+    "Fallback Example (unknown country code)" : {
+
+    },
     "False" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -825,6 +831,9 @@
           }
         }
       }
+    },
+    "French to German" : {
+
     },
     "Game Mode" : {
 
@@ -1824,6 +1833,9 @@
         }
       }
     },
+    "Language dictionary" : {
+
+    },
     "Learn" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2424,6 +2436,9 @@
           }
         }
       }
+    },
+    "Spanish to Italian" : {
+
     },
     "Statistics" : {
       "extractionState" : "manual",

@@ -1,5 +1,5 @@
 {
-  "originHash" : "6ee292eb3a6b2062ad2965a13f65ebc48172e071042e6b86985de3bf18c8a0f5",
+  "originHash" : "c46f5ed295ecb95d47cd73929c876e44b6f6c47c52e5cca21fd31088b1171831",
   "pins" : [
     {
       "identity" : "cocoalumberjack",
@@ -8,6 +8,15 @@
       "state" : {
         "revision" : "4b8714a7fb84d42393314ce897127b3939885ec3",
         "version" : "3.8.5"
+      }
+    },
+    {
+      "identity" : "flagkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/madebybowtie/FlagKit.git",
+      "state" : {
+        "revision" : "f12111d91902d23fd1d9cc7ad9198030b049795d",
+        "version" : "2.4.0"
       }
     },
     {

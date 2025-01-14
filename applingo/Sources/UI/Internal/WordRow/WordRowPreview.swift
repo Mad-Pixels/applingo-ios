@@ -36,7 +36,7 @@ private struct WordRowPreview: View {
                        .foregroundColor(theme.textSecondary)
                    
                    WordRow(
-                       word: WordRowModel(
+                        model: WordRowModel(
                            frontText: "Hello",
                            backText: "Привет",
                            weight: 250
@@ -56,7 +56,7 @@ private struct WordRowPreview: View {
                        .foregroundColor(theme.textSecondary)
                    
                    WordRow(
-                       word: WordRowModel(
+                       model: WordRowModel(
                            frontText: "World",
                            backText: "Мир",
                            weight: 500
@@ -76,7 +76,7 @@ private struct WordRowPreview: View {
                        .foregroundColor(theme.textSecondary)
                    
                    WordRow(
-                       word: WordRowModel(
+                       model: WordRowModel(
                            frontText: "Example",
                            backText: "Пример",
                            weight: 850
@@ -96,7 +96,7 @@ private struct WordRowPreview: View {
                        .foregroundColor(theme.textSecondary)
                    
                    WordRow(
-                       word: WordRowModel(
+                       model: WordRowModel(
                            frontText: "This is a very long text to test wrapping",
                            backText: "Это очень длинный текст для проверки переноса",
                            weight: 650

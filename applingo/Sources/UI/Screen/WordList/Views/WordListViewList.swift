@@ -31,7 +31,7 @@ struct WordListViewList: View {
             onItemTap: onWordSelect
         ) { word in
             WordRow(
-                word: WordRowModel(
+                model: WordRowModel(
                     frontText: word.frontText,
                     backText: word.backText,
                     weight: word.weight

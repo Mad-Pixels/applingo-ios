@@ -1,9 +1,7 @@
 import SwiftUI
 
 struct DictionaryRow: View {
-    let title: String
-    let subtitle: String
-    let isActive: Bool
+    let model: DictionaryRowModel
     let style: DictionaryRowStyle
     let onTap: () -> Void
     let onToggle: (Bool) -> Void
@@ -11,18 +9,44 @@ struct DictionaryRow: View {
     var body: some View {
         HStack(spacing: style.spacing) {
             VStack(alignment: .leading, spacing: style.spacing / 2) {
-                Text(title)
+                Text(model.title)
                     .font(style.titleFont)
                     .foregroundColor(style.titleColor)
                 
-                Text(subtitle)
-                    .font(style.subtitleFont)
-                    .foregroundColor(style.subtitleColor)
+                if let pair = model.languagePair {
+                    HStack(spacing: 4) {
+                        FlagIcon(
+                            code: pair.from,
+                            style: .themed(ThemeManager.shared.currentThemeStyle)
+                        )
+                        Image(systemName: "arrow.right")
+                            .font(.system(size: 11))
+                            .foregroundColor(style.subtitleColor)
+                        FlagIcon(
+                            code: pair.to,
+                            style: .themed(ThemeManager.shared.currentThemeStyle)
+                        )
+                    }
+                } else {
+                    Text(model.subtitle)
+                        .font(style.subtitleFont)
+                        .foregroundColor(style.subtitleColor)
+                }
+                
+                HStack(spacing: 4) {
+                    Image(systemName: "book.closed")
+                        .font(.system(size: 11))
+                        .foregroundColor(style.accentColor)
+                    
+                    Text(model.formattedWordCount)
+                        .font(style.wordCountFont)
+                        .foregroundColor(style.subtitleColor)
+                }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             
             ItemCheckbox(
-                isChecked: .constant(isActive),
+                isChecked: .constant(model.isActive),
                 onChange: onToggle
             )
         }

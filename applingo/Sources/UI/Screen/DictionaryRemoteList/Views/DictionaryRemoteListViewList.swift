@@ -29,9 +29,15 @@ struct DictionaryRemoteListViewList: View {
            onItemTap: onDictionarySelect
        ) { dictionary in
            DictionaryRow(
-               title: dictionary.displayName,
-               subtitle: dictionary.subTitle,
-               isActive: false,
+            model: DictionaryRowModel(
+                title: dictionary.displayName,
+                category: dictionary.category,
+                subcategory: dictionary.subcategory,
+                description: dictionary.description,
+                wordsCount: 1234,
+                isActive: dictionary.isActive
+            ),
+
                style: .themed(themeManager.currentThemeStyle),
                onTap: {
                    onDictionarySelect(dictionary)
