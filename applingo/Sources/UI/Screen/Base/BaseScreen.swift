@@ -16,6 +16,11 @@ struct BaseScreen<Content: View>: View {
         self.content = content()
         self.screen = screen
         self.style = style
+        
+        BaseNavigationConfigurator.configure(
+            with: ThemeManager.shared.currentThemeStyle,
+            style: style
+        )
     }
     
     var body: some View {
@@ -27,6 +32,12 @@ struct BaseScreen<Content: View>: View {
                 .withErrorTracker(screen)
                 .withLocaleTracker()
                 .withThemeTracker()
+        }
+        .onChange(of: themeManager.currentTheme) { _ in
+            BaseNavigationConfigurator.configure(
+                with: themeManager.currentThemeStyle,
+                style: style
+            )
         }
     }
 }
