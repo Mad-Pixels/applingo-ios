@@ -26,7 +26,7 @@ struct WordRowStyle {
             arrowSize: 14,
             capsuleSize: CGSize(width: 36, height: 24),
             spacing: 12,
-            backgroundColor: theme.backgroundPrimary,
+            backgroundColor: theme.backgroundSecondary,
             cornerRadius: 12,
             shadowRadius: 4
         )
