@@ -31,8 +31,11 @@ struct WordListViewList: View {
             onItemTap: onWordSelect
         ) { word in
             WordRow(
-                frontText: word.frontText,
-                backText: word.backText,
+                word: WordRowModel(
+                    frontText: word.frontText,
+                    backText: word.backText,
+                    weight: word.weight
+                ),
                 style: .themed(themeManager.currentThemeStyle),
                 onTap: {
                     onWordSelect(word)

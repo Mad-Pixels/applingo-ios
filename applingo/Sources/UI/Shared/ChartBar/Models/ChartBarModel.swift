@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct BarChartModel: Identifiable {
+struct ChartBarModel: Identifiable {
    let id = UUID()
    let value: Double
    let label: String

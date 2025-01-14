@@ -1,10 +1,10 @@
 import SwiftUI
 
-struct BarItem: View {
+struct ChartBarItem: View {
    let data: BarData
    let maxHeight: CGFloat
    let totalValue: Double
-   let style: BarChartStyle
+   let style: ChartBarStyle
    
    private var proportionalHeight: CGFloat {
        guard totalValue > 0 else { return 0 }

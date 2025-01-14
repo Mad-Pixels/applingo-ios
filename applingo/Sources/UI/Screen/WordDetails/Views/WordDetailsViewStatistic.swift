@@ -18,7 +18,7 @@ struct WordDetailsViewStatistic: View {
     var body: some View {
         Section(header: Text(locale.statisticsTitle)) {
             VStack(alignment: .leading, spacing: style.spacing) {
-                BarChart(
+                ChartBar(
                     title: locale.answersTitle,
                     data: [
                         BarData(value: Double(word.fail), label: "fail", color: .red),

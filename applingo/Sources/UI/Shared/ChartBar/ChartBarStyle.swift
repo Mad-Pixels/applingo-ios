@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct BarChartStyle {
+struct ChartBarStyle {
    let titleFont: Font
    let valueFont: Font
    let titleColor: Color
@@ -14,9 +14,9 @@ struct BarChartStyle {
    let animationDuration: Double
 }
 
-extension BarChartStyle {
-   static func themed(_ theme: AppTheme) -> BarChartStyle {
-       BarChartStyle(
+extension ChartBarStyle {
+   static func themed(_ theme: AppTheme) -> ChartBarStyle {
+       ChartBarStyle(
            titleFont: .headline,
            valueFont: .headline,
            titleColor: theme.textPrimary,

@@ -1,16 +1,16 @@
 import SwiftUI
 
-struct BarChart: View {
+struct ChartBar: View {
    let title: String
    let data: [BarData]
    let height: CGFloat
-   let style: BarChartStyle
+   let style: ChartBarStyle
    
    init(
        title: String,
        data: [BarData],
        height: CGFloat = 160,
-       style: BarChartStyle = .themed(ThemeManager.shared.currentThemeStyle)
+       style: ChartBarStyle = .themed(ThemeManager.shared.currentThemeStyle)
    ) {
        self.title = title
        self.data = data
@@ -33,7 +33,7 @@ struct BarChart: View {
            
            HStack(alignment: .bottom, spacing: style.barSpacing) {
                ForEach(data) { item in
-                   BarItem(
+                   ChartBarItem(
                        data: item,
                        maxHeight: height,
                        totalValue: totalValue,

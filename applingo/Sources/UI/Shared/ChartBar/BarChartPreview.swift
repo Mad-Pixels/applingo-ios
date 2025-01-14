@@ -20,7 +20,7 @@ private struct BarChartPreview: View {
            Text(title)
                .font(.headline)
            
-           BarChart(
+           ChartBar(
                title: "Sample Data",
                data: [
                    BarData(value: 30, label: "A", color: theme.accentPrimary),
@@ -30,7 +30,7 @@ private struct BarChartPreview: View {
                style: .themed(theme)
            )
            
-           BarChart(
+           ChartBar(
                title: "Equal Values",
                data: [
                    BarData(value: 33.33, label: "X", color: theme.accentPrimary),
@@ -40,7 +40,7 @@ private struct BarChartPreview: View {
                style: .themed(theme)
            )
            
-           BarChart(
+           ChartBar(
                title: "Empty Data",
                data: [],
                style: .themed(theme)
