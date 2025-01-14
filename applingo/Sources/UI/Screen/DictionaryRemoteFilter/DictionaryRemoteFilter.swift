@@ -25,7 +25,7 @@ struct DictionaryRemoteFilter: View {
     }
     
     var body: some View {
-        BaseScreen(screen: .dictionariesRemoteFilter) {
+        BaseScreen(screen: .dictionariesRemoteFilter,title: locale.navigationTitle) {
             VStack(spacing: 0) {
                 Form {
                     DictionaryRemoteFilterViewFilter(

@@ -11,7 +11,7 @@ struct DictionaryRemoteList: View {
     @Binding var isPresented: Bool
     
     var body: some View {
-        BaseScreen(screen: .dictionariesRemote) {
+        BaseScreen(screen: .dictionariesRemote, title: locale.navigationTitle) {
             ZStack {
                 VStack(spacing: 16) {
                     DictionaryRemoteListViewSearch(

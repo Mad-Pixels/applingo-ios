@@ -15,32 +15,36 @@ struct DictionaryLocalList: View {
    }
    
    var body: some View {
-       BaseScreen(screen: .dictionariesLocal) {
-           ZStack {
-               VStack(spacing: style.spacing) {
-                   DictionaryLocalListViewSearch(
-                       searchText: $dictionaryGetter.searchText,
-                       locale: locale
-                   )
-                   
-                   DictionaryLocalListViewList(
-                       locale: locale,
-                       dictionaryGetter: dictionaryGetter,
-                       onDictionarySelect: { dictionary in
-                           selectedDictionary = dictionary
-                       }
-                   )
+       BaseScreen(
+                   screen: .dictionariesLocal,
+                   title: locale.navigationTitle
+               ) {
+                   VStack(spacing: 0) {
+                       DictionaryLocalListViewSearch(
+                           searchText: $dictionaryGetter.searchText,
+                           locale: locale
+                       )
+                       .padding()
+                       
+                       DictionaryLocalListViewList(
+                           locale: locale,
+                           dictionaryGetter: dictionaryGetter,
+                           onDictionarySelect: { dictionary in
+                               selectedDictionary = dictionary
+                           }
+                       )
+                   }
+                   .overlay(alignment: .bottomTrailing) {
+                       DictionaryLocalListViewActions(
+                           locale: locale,
+                           onImport: { isShowingInstructions = true },
+                           onDownload: { isShowingRemoteList = true }
+                       )
+                       .padding(.bottom, 16)
+                       .padding(.trailing, 16)
+                   }
+                   .navigationBarTitleDisplayMode(.inline)
                }
-               .navigationTitle(locale.navigationTitle)
-               .navigationBarTitleDisplayMode(.large)
-               
-               DictionaryLocalListViewActions(
-                   locale: locale,
-                   onImport: { isShowingInstructions = true },
-                   onDownload: { isShowingRemoteList = true }
-               )
-           }
-       }
        .sheet(item: $selectedDictionary) { dictionary in
            DictionaryLocalDetails(
                dictionary: dictionary,

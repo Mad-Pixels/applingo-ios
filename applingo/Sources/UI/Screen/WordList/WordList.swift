@@ -17,7 +17,7 @@ struct WordList: View {
     }
     
     var body: some View {
-        BaseScreen(screen: .words) {
+        BaseScreen(screen: .words, title: locale.navigationTitle) {
             ZStack {
                 VStack(spacing: style.spacing) {
                     WordListViewSearch(

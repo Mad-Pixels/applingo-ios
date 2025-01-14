@@ -29,7 +29,7 @@ struct WordAddManual: View {
     }
     
     var body: some View {
-        BaseScreen(screen: .wordsAdd) {
+        BaseScreen(screen: .wordsAdd, title: locale.navigationTitle) {
             Form {
                 WordAddManualViewMain(
                     wordItem: $wordItem,

@@ -21,7 +21,7 @@ struct DictionaryRemoteDetails: View {
    }
    
    var body: some View {
-       BaseScreen(screen: .dictionariesRemoteDetail) {
+       BaseScreen(screen: .dictionariesRemoteDetail, title: locale.navigationTitle) {
            VStack {
                Form {
                    DictionaryRemoteDetailsViewMain(

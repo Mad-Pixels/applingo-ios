@@ -10,7 +10,7 @@ struct Settings: View {
     }
 
     var body: some View {
-        BaseScreen(screen: .settings) {
+        BaseScreen(screen: .settings, title: locale.navigationTitle) {
             Form {
                 SettingsViewTheme()
                 SettingsViewLocale()

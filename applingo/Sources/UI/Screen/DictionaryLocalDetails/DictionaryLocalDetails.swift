@@ -27,7 +27,7 @@ struct DictionaryLocalDetails: View {
    }
    
    var body: some View {
-       BaseScreen(screen: .dictionariesLocalDetail) {
+       BaseScreen(screen: .dictionariesLocalDetail, title: locale.navigationTitle) {
            Form {
                DictionaryLocalDetailsViewMain(
                    dictionary: wrapper,

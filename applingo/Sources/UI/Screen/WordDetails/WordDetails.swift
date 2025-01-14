@@ -31,7 +31,7 @@ struct WordDetails: View {
     }
     
     var body: some View {
-        BaseScreen(screen: .wordsDetail) {
+        BaseScreen(screen: .wordsDetail, title: locale.navigationTitle) {
             Form {
                 WordDetailsViewMain(
                     word: $wrapper.word,

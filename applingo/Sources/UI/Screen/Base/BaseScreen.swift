@@ -7,15 +7,18 @@ struct BaseScreen<Content: View>: View {
     private let style: BaseScreenStyle
     private let screen: ScreenType
     private let content: Content
+    private let title: String
     
     init(
         screen: ScreenType,
+        title: String,
         style: BaseScreenStyle = .default,
         @ViewBuilder content: () -> Content
     ) {
         self.content = content()
         self.screen = screen
         self.style = style
+        self.title = title
         
         BaseNavigationConfigurator.configure(
             with: ThemeManager.shared.currentThemeStyle,
@@ -25,13 +28,18 @@ struct BaseScreen<Content: View>: View {
     
     var body: some View {
         NavigationView {
-            content
-                .id("\(themeManager.currentTheme.rawValue)_\(localeManager.viewId)")
-                .background(themeManager.currentThemeStyle.backgroundPrimary)
-                .withScreenTracker(screen)
-                .withErrorTracker(screen)
-                .withLocaleTracker()
-                .withThemeTracker()
+            
+                content
+                    .id("\(themeManager.currentTheme.rawValue)_\(localeManager.viewId)")
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+            
+            .navigationTitle(title)
+            .navigationBarTitleDisplayMode(.large)
+            .background(themeManager.currentThemeStyle.backgroundPrimary)
+            .withScreenTracker(screen)
+            .withErrorTracker(screen)
+            .withLocaleTracker()
+            .withThemeTracker()
         }
         .onChange(of: themeManager.currentTheme) { _ in
             BaseNavigationConfigurator.configure(
