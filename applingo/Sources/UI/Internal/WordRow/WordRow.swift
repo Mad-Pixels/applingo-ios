@@ -16,28 +16,27 @@ struct WordRow: View {
     }
     
     var body: some View {
-        VStack(spacing: style.spacing / 2) {
-            HStack(spacing: style.spacing) {
+        HStack(spacing: style.spacing) {
+            VStack(alignment: .leading, spacing: style.spacing / 2) {
                 // Front text
                 Text(word.frontText)
                     .foregroundColor(style.frontTextColor)
                     .font(style.frontTextFont)
-                    .frame(maxWidth: .infinity, alignment: .leading)
                 
                 // Back text
                 Text(word.backText)
                     .font(style.backTextFont)
                     .foregroundColor(style.backTextColor)
-                    .frame(maxWidth: .infinity, alignment: .trailing)
                 
-                // Arrow icon
-                Image(systemName: "chevron.right")
-                    .font(.system(size: style.arrowSize))
-                    .foregroundColor(style.arrowColor)
+                // Progress indicator
+                ChartIndicator(weight: word.weight)
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
             
-            // Progress indicator
-            ChartIndicator(weight: word.weight, style: style)
+            // Arrow icon
+            Image(systemName: "chevron.right")
+                .font(.system(size: style.arrowSize))
+                .foregroundColor(style.arrowColor)
         }
         .padding(.horizontal, style.spacing)
         .padding(.vertical, style.spacing * 0.75)

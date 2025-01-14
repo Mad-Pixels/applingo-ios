@@ -20,6 +20,9 @@
         }
       }
     },
+    "%lld%% progress" : {
+
+    },
     "Action Button" : {
 
     },
@@ -138,6 +141,9 @@
           }
         }
       }
+    },
+    "Animated example" : {
+
     },
     "Answers" : {
       "extractionState" : "manual",
@@ -1255,6 +1261,9 @@
         }
       }
     },
+    "High progress" : {
+
+    },
     "Hint" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1925,6 +1934,12 @@
         }
       }
     },
+    "Long text" : {
+
+    },
+    "Low progress" : {
+
+    },
     "Match Hunt Game Content" : {
 
     },
@@ -1956,6 +1971,9 @@
           }
         }
       }
+    },
+    "Medium progress" : {
+
     },
     "Menu Style" : {
 
@@ -2118,6 +2136,9 @@
 
     },
     "Quiz Game Content" : {
+
+    },
+    "Randomize" : {
 
     },
     "Rating" : {

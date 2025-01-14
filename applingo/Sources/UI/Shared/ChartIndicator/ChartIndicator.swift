@@ -2,7 +2,15 @@ import SwiftUI
 
 struct ChartIndicator: View {
     let weight: Int
-    let style: WordRowStyle
+    let style: ChartIndicatorStyle
+    
+    init(
+        weight: Int,
+        style: ChartIndicatorStyle = .themed(ThemeManager.shared.currentThemeStyle)
+    ) {
+        self.weight = max(0, min(1000, weight))
+        self.style = style
+    }
     
     private var progress: CGFloat {
         CGFloat(weight) / 1000.0
@@ -10,11 +18,11 @@ struct ChartIndicator: View {
     
     private var indicatorColor: Color {
         if weight < 300 {
-            return .red.opacity(0.7)
+            return style.foregroundColor.opacity(0.4)
         } else if weight < 700 {
-            return .orange.opacity(0.7)
+            return style.foregroundColor.opacity(0.7)
         } else {
-            return .green.opacity(0.7)
+            return style.foregroundColor
         }
     }
     
@@ -22,17 +30,18 @@ struct ChartIndicator: View {
         GeometryReader { geometry in
             ZStack(alignment: .leading) {
                 Rectangle()
-                    //.fill(style.capsuleColor)
-                    .frame(width: geometry.size.width, height: 4)
-                    .cornerRadius(2)
+                    .fill(style.backgroundColor)
+                    .frame(width: geometry.size.width, height: style.height)
+                    .cornerRadius(style.cornerRadius)
                 
                 Rectangle()
                     .fill(indicatorColor)
-                    .frame(width: geometry.size.width * progress, height: 4)
-                    .cornerRadius(2)
-                    .animation(.spring(response: 0.3), value: weight)
+                    .frame(width: geometry.size.width * progress, height: style.height)
+                    .cornerRadius(style.cornerRadius)
+                    .animation(style.animation, value: weight)
             }
         }
-        .frame(height: 4)
+        .frame(height: style.height)
+        .accessibilityValue("\(Int(progress * 100))% progress")
     }
 }
