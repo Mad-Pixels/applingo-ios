@@ -48,7 +48,6 @@ struct WordDetailsViewAdditional: View {
                     ),
                     placeholder: locale.descriptionPlaceholder,
                     isEditing: isEditing,
-                    border: true,
                     icon: "scroll"
                 )
             }

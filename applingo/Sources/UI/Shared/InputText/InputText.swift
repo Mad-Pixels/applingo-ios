@@ -1,31 +1,40 @@
 import SwiftUI
 
+// InputText.swift
 struct InputText: View {
     @Binding var text: String
     let placeholder: String
     let isEditing: Bool
-    let border: Bool
     let icon: String?
     let style: InputTextStyle
+    
+    @FocusState private var isFocused: Bool
     
     init(
         text: Binding<String>,
         placeholder: String,
         isEditing: Bool = true,
-        border: Bool = false,
         icon: String? = nil,
         style: InputTextStyle = .themed(ThemeManager.shared.currentThemeStyle)
     ) {
         self._text = text
         self.placeholder = placeholder
         self.isEditing = isEditing
-        self.border = border
         self.icon = icon
         self.style = style
     }
     
+    private var backgroundColor: Color {
+        isEditing ? style.backgroundColor : style.disabledBackgroundColor
+    }
+    
+    private var border: some View {
+        RoundedRectangle(cornerRadius: style.cornerRadius)
+            .stroke(style.borderColor, lineWidth: isFocused ? 3 : 1)
+    }
+    
     var body: some View {
-        HStack {
+        HStack(spacing: style.iconSpacing) {
             if let iconName = icon {
                 Image(systemName: iconName)
                     .foregroundColor(style.iconColor)
@@ -33,23 +42,17 @@ struct InputText: View {
             }
             
             TextField(placeholder, text: $text)
+                .focused($isFocused)
                 .disabled(!isEditing)
                 .foregroundColor(style.textColor)
                 .font(style.font)
+                .textFieldStyle(.plain)
                 .padding(style.padding)
-                .background(
-                    RoundedRectangle(cornerRadius: style.cornerRadius)
-                        .fill(isEditing ? style.backgroundColor : style.backgroundColor.opacity(0.5))
+                .background(backgroundColor)
+                .overlay(
+                    isEditing ? border : nil
                 )
-                .if(border) { view in
-                    view.overlay(
-                        RoundedRectangle(cornerRadius: style.cornerRadius)
-                            .stroke(
-                                isEditing ? style.borderColor : style.disabledBorderColor,
-                                lineWidth: isEditing ? style.borderWidth : 1
-                            )
-                    )
-                }
+                .cornerRadius(style.cornerRadius)
         }
     }
 }
