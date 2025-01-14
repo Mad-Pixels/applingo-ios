@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct MainBackground: View {
-    @ObservedObject private var manager = BackgroundWordsManager.shared
+    @ObservedObject private var manager = MainBackgroundManager.shared
     
     var body: some View {
         let theme = ThemeManager.shared.currentThemeStyle
