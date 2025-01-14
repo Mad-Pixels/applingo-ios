@@ -16,7 +16,7 @@ struct LightTheme: AppTheme {
     let accentPrimary = Color(hex: "2563eb")
     let accentLight = Color(hex: "3b82f6")
     let accentDark = Color(hex: "1d4ed8")
-    let accentContrast = Color.white
+    let accentContrast = Color(hex: "2a2c29")
     
     // System colors
     let success = Color(hex: "16a34a")

@@ -4,6 +4,8 @@ struct InputSearch: View {
     @Binding var text: String
     let placeholder: String
     let style: InputSearchStyle
+    
+    @FocusState private var isFocused: Bool
 
     var body: some View {
         HStack {
@@ -13,6 +15,7 @@ struct InputSearch: View {
             
             TextField(placeholder, text: $text)
                 .foregroundColor(style.textColor)
+                .focused($isFocused)
                 .padding(.vertical, 4)
             
             if !text.isEmpty {
@@ -27,8 +30,12 @@ struct InputSearch: View {
             }
         }
         .padding(style.padding)
-        .background(style.backgroundColor)
+        .background(Color.clear)
         .cornerRadius(style.cornerRadius)
+        .overlay(
+            RoundedRectangle(cornerRadius: style.cornerRadius)
+                .stroke(style.borderColor, lineWidth: isFocused ? 3 : 1)
+        )
         .shadow(color: style.shadowColor, radius: style.shadowRadius, x: style.shadowX, y: style.shadowY)
     }
 }

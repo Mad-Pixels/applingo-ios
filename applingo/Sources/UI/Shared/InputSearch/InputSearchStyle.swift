@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct InputSearchStyle {
-    let backgroundColor: Color
+    let borderColor: Color
     let textColor: Color
     let placeholderColor: Color
     let iconColor: Color
@@ -18,12 +18,12 @@ struct InputSearchStyle {
 extension InputSearchStyle {
     static func themed(_ theme: AppTheme) -> InputSearchStyle {
         InputSearchStyle(
-            backgroundColor: theme.backgroundPrimary,
+            borderColor: theme.accentContrast,
             textColor: theme.textPrimary,
             placeholderColor: theme.textPrimary,
-            iconColor: theme.textSecondary,
+            iconColor: theme.accentContrast,
             padding: EdgeInsets(top: 8, leading: 12, bottom: 8, trailing: 12),
-            cornerRadius: 12,
+            cornerRadius: 24,
             iconSize: 20,
             spacing: 8,
             shadowColor: theme.textSecondary.opacity(0.2),
