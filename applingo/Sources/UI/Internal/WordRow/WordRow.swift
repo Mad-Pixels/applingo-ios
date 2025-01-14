@@ -18,22 +18,24 @@ struct WordRow: View {
     var body: some View {
         HStack(spacing: style.spacing) {
             VStack(alignment: .leading, spacing: style.spacing / 2) {
-                // Front text
                 Text(word.frontText)
                     .foregroundColor(style.frontTextColor)
                     .font(style.frontTextFont)
                 
-                // Back text
                 Text(word.backText)
                     .font(style.backTextFont)
                     .foregroundColor(style.backTextColor)
                 
-                // Progress indicator
-                ChartIndicator(weight: word.weight)
+                HStack(spacing: style.spacing / 2) {
+                    Image(systemName: "figure.run")
+                        .font(.system(size: 12))
+                        .foregroundColor(style.arrowColor)
+                    
+                    ChartIndicator(weight: word.weight)
+                }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             
-            // Arrow icon
             Image(systemName: "chevron.right")
                 .font(.system(size: style.arrowSize))
                 .foregroundColor(style.arrowColor)
