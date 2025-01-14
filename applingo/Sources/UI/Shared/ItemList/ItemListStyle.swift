@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ItemListStyle {
     let backgroundColor: Color
+    let ontapColor: Color
     let loadingColor: Color
     let errorColor: Color
     let spacing: CGFloat
@@ -13,6 +14,7 @@ extension ItemListStyle {
     static func themed(_ theme: AppTheme) -> ItemListStyle {
         ItemListStyle(
             backgroundColor: theme.backgroundPrimary,
+            ontapColor: theme.cardBorder,
             loadingColor: theme.accentPrimary,
             errorColor: theme.error,
             spacing: 16,

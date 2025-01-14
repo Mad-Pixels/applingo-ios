@@ -737,6 +737,9 @@
         }
       }
     },
+    "Error" : {
+
+    },
     "Error: %@" : {
       "localizations" : {
         "en" : {

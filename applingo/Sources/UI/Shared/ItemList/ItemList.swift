@@ -13,6 +13,8 @@ struct ItemList<Item: Identifiable & Equatable, RowContent: View>: View {
     let onDelete: ((IndexSet) -> Void)?
     let onItemTap: ((Item) -> Void)?
     
+    @State private var pressedItemId: Item.ID?
+    
     init(
         items: Binding<[Item]>,
         style: ItemListStyle = .themed(ThemeManager.shared.currentThemeStyle),
@@ -39,7 +41,7 @@ struct ItemList<Item: Identifiable & Equatable, RowContent: View>: View {
         ZStack {
             listView
             if isLoadingPage && items.isEmpty {
-                loadingOverlay
+                ItemListLoadingOverlay(style: style)
             }
         }
     }
@@ -48,8 +50,7 @@ struct ItemList<Item: Identifiable & Equatable, RowContent: View>: View {
         List {
             listContent
         }
-        .listStyle(.insetGrouped)
-        .listRowSeparator(.hidden)
+        .listStyle(.plain)
         .scrollContentBackground(.hidden)
         .background(style.backgroundColor)
     }
@@ -57,7 +58,7 @@ struct ItemList<Item: Identifiable & Equatable, RowContent: View>: View {
     @ViewBuilder
     private var listContent: some View {
         if let error = error {
-            errorView(error)
+            ItemListErrorView(error: error, style: style)
         }
         if items.isEmpty && !isLoadingPage {
             if let emptyView = emptyListView {
@@ -65,18 +66,14 @@ struct ItemList<Item: Identifiable & Equatable, RowContent: View>: View {
             }
         } else if !items.isEmpty {
             ForEach(items) { item in
-                rowContent(item)
-                    .listRowBackground(
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(style.backgroundColor)
-                            .shadow(color: .black.opacity(0.05), radius: 2, x: 0, y: 1)
-                    )
-                    .onTapGesture {
-                        onItemTap?(item)
-                    }
-                    .onAppear {
-                        onItemAppear?(item)
-                    }
+                ItemListRow(
+                    item: item,
+                    style: style,
+                    pressedItemId: $pressedItemId,
+                    rowContent: rowContent,
+                    onItemTap: onItemTap,
+                    onItemAppear: onItemAppear
+                )
             }
             .onDelete(perform: onDelete)
             
@@ -84,16 +81,6 @@ struct ItemList<Item: Identifiable & Equatable, RowContent: View>: View {
                 loadingIndicator
             }
         }
-    }
-    
-    private func errorView(_ error: Error) -> some View {
-        Text("Error: \(error.localizedDescription)")
-            .foregroundColor(style.errorColor)
-            .padding(style.padding)
-            .listRowBackground(
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(style.backgroundColor)
-            )
     }
     
     private var loadingIndicator: some View {
@@ -104,20 +91,6 @@ struct ItemList<Item: Identifiable & Equatable, RowContent: View>: View {
                 .padding(style.padding)
             Spacer()
         }
-        .listRowBackground(
-            RoundedRectangle(cornerRadius: 12)
-                .fill(style.backgroundColor)
-        )
-    }
-    
-    private var loadingOverlay: some View {
-        VStack {
-            ProgressView()
-                .progressViewStyle(.circular)
-                .scaleEffect(style.loadingSize)
-                .padding(style.padding)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(style.backgroundColor.opacity(0.2))
+        .listRowBackground(Color.clear)
     }
 }

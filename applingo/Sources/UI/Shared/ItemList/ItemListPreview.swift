@@ -99,6 +99,21 @@ private struct ListPreview: View {
                     .cornerRadius(12)
                     .shadow(color: .gray.opacity(0.2), radius: 4, x: 0, y: 2)
                 }
+                
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Error")
+                        .font(.subheadline)
+                        .foregroundColor(theme.textSecondary)
+                    
+                    ItemListErrorView(
+                        error: NSError(domain: "Preview Error", code: 400, userInfo: [NSLocalizedDescriptionKey: "This is a preview error message."]),
+                        style: .themed(theme)
+                    )
+                    .frame(maxWidth: .infinity, minHeight: 100)
+                    .background(theme.backgroundSecondary)
+                    .cornerRadius(12)
+                    .shadow(color: .gray.opacity(0.2), radius: 4, x: 0, y: 2)
+                }
             }
         }
         .padding()
