@@ -26,6 +26,9 @@
     "Action Button" : {
 
     },
+    "Active dictionary" : {
+
+    },
     "AddDictionary" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1756,6 +1759,9 @@
           }
         }
       }
+    },
+    "Inactive dictionary" : {
+
     },
     "Inline Style" : {
 

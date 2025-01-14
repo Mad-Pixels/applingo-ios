@@ -9,8 +9,8 @@ struct DictionaryRow: View {
     let onToggle: (Bool) -> Void
     
     var body: some View {
-        HStack {
-            VStack(alignment: .leading) {
+        HStack(spacing: style.spacing) {
+            VStack(alignment: .leading, spacing: style.spacing / 2) {
                 Text(title)
                     .font(style.titleFont)
                     .foregroundColor(style.titleColor)
@@ -20,15 +20,25 @@ struct DictionaryRow: View {
                     .foregroundColor(style.subtitleColor)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(style.padding)
-            .contentShape(Rectangle())
-            .onTapGesture(perform: onTap)
             
             ItemCheckbox(
                 isChecked: .constant(isActive),
                 onChange: onToggle
             )
         }
-        .background(style.backgroundColor)
+        .padding(.horizontal, style.spacing)
+        .padding(.vertical, style.spacing * 0.75)
+        .background(
+            RoundedRectangle(cornerRadius: style.cornerRadius)
+                .fill(style.backgroundColor)
+                .shadow(
+                    color: style.shadowColor.opacity(0.1),
+                    radius: style.shadowRadius,
+                    x: 0,
+                    y: 2
+                )
+        )
+        .contentShape(Rectangle())
+        .onTapGesture(perform: onTap)
     }
 }
