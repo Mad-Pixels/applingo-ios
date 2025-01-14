@@ -10,7 +10,6 @@ struct WordRowStyle {
     let arrowSize: CGFloat
     let capsuleSize: CGSize
     
-    // Добавим новые параметры
     let spacing: CGFloat
     let backgroundColor: Color
     let cornerRadius: CGFloat
