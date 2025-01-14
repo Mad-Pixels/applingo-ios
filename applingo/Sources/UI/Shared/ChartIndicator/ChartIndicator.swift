@@ -29,12 +29,10 @@ struct ChartIndicator: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack(alignment: .leading) {
-                // Background Track
                 Capsule()
                     .fill(style.backgroundColor)
                     .frame(width: geometry.size.width, height: style.height)
                 
-                // Progress Indicator
                 Capsule()
                     .fill(
                         LinearGradient(
@@ -52,7 +50,6 @@ struct ChartIndicator: View {
                     )
                     .animation(style.animation, value: weight)
                 
-                // Shine Effect
                 if progress > 0.1 {
                     Capsule()
                         .fill(
