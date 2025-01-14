@@ -1,6 +1,5 @@
 import SwiftUI
 
-// InputText.swift
 struct InputText: View {
     @Binding var text: String
     let placeholder: String
