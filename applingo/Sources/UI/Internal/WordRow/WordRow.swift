@@ -25,16 +25,6 @@ struct WordRow: View {
                .font(style.frontTextFont)
                .frame(maxWidth: .infinity, alignment: .leading)
            
-           ZStack {
-               Capsule()
-                   .fill(style.capsuleColor)
-                   .frame(width: style.capsuleSize.width, height: style.capsuleSize.height)
-               
-               Image(systemName: "arrow.left.and.right")
-                   .font(.system(size: style.arrowSize, weight: .medium))
-                   .foregroundColor(style.arrowColor)
-           }
-           
            Text(backText)
                .font(style.backTextFont)
                .foregroundColor(style.backTextColor)
