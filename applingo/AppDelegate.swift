@@ -15,9 +15,6 @@ struct LingocardApp: App {
 
     init() {
         Logger.initializeLogger()
-        IQKeyboardManager.shared.resignOnTouchOutside = true
-        IQKeyboardManager.shared.enable = true
-
         do {
             try DatabaseManager.shared.connect(dbName: dbName)
         } catch {

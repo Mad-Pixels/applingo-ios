@@ -23,7 +23,7 @@ struct DictionaryRowStyle {
             titleFont: .system(size: 15, weight: .bold),
             subtitleFont: .system(size: 14),
             wordCountFont: .system(size: 12, weight: .medium),
-            spacing: 16,
+            spacing: 12,
             cornerRadius: 12,
             shadowRadius: 4
         )
