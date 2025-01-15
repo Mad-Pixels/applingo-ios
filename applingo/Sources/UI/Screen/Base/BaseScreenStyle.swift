@@ -2,10 +2,8 @@ import SwiftUI
 
 struct BaseScreenStyle {
     struct UIKitStyle {
-        // Colors
         let backgroundColor: (AppTheme) -> Color
     }
-    
     let uiKit: UIKitStyle
 }
 

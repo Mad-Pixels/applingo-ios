@@ -28,18 +28,16 @@ struct BaseScreen<Content: View>: View {
     
     var body: some View {
         NavigationStack {
-            
-                content
-                    .id("\(themeManager.currentTheme.rawValue)_\(localeManager.viewId)")
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-            
-            .navigationTitle(title)
-            .navigationBarTitleDisplayMode(.large)
-            .background(themeManager.currentThemeStyle.backgroundPrimary)
-            .withScreenTracker(screen)
-            .withErrorTracker(screen)
-            .withLocaleTracker()
-            .withThemeTracker()
+            content
+                .id("\(themeManager.currentTheme.rawValue)_\(localeManager.viewId)")
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                .background(themeManager.currentThemeStyle.backgroundPrimary)
+                .navigationBarTitleDisplayMode(.large)
+                .navigationTitle(title)
+                .withScreenTracker(screen)
+                .withErrorTracker(screen)
+                .withLocaleTracker()
+                .withThemeTracker()
         }
         .onChange(of: themeManager.currentTheme) { _ in
             BaseNavigationConfigurator.configure(
