@@ -16,6 +16,7 @@ struct Settings: View {
                 SettingsViewLocale()
                 SettingsViewLogger()
             }
+            .scrollContentBackground(.hidden)
             .navigationTitle(locale.navigationTitle)
             .navigationBarTitleDisplayMode(.large)
         }
