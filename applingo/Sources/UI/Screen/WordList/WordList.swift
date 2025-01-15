@@ -8,8 +8,6 @@ struct WordList: View {
     @State private var selectedWord: WordItemModel?
     @State private var isShowingDetailView = false
     @State private var isShowingAddView = false
-    @State private var isShowingAlert = false
-    @State private var errorMessage: String = ""
     
     init(style: WordListStyle? = nil) {
         let initialStyle = style ?? .themed(ThemeManager.shared.currentThemeStyle)
@@ -17,38 +15,36 @@ struct WordList: View {
     }
     
     var body: some View {
-        BaseScreen(screen: .words, title: locale.navigationTitle) {
-            ZStack {
-                VStack(spacing: style.spacing) {
-                    WordListViewSearch(
-                        searchText: $wordsGetter.searchText,
-                        locale: locale
-                    )
-                    WordListViewList(
-                        locale: locale,
-                        wordsGetter: wordsGetter,
-                        onWordSelect: { word in
-                            selectedWord = word
-                            isShowingDetailView = true
-                        }
-                    )
-                }
-                .navigationTitle(locale.navigationTitle)
-                .navigationBarTitleDisplayMode(.large)
+        BaseScreen(
+            screen: .words,
+            title: locale.navigationTitle
+        ) {
+            VStack(spacing: 0) {
+                WordListViewSearch(
+                    searchText: $wordsGetter.searchText,
+                    locale: locale
+                )
+                .padding()
                 
+                WordListViewList(
+                    locale: locale,
+                    wordsGetter: wordsGetter,
+                    onWordSelect: { word in
+                        selectedWord = word
+                        isShowingDetailView = true
+                    }
+                )
+                
+            }
+            .overlay(alignment: .bottomTrailing) {
                 WordListViewActions(
                     locale: locale,
                     onAdd: { isShowingAddView = true }
                 )
+                .padding(.bottom, 16)
+                .padding(.trailing, 16)
             }
-        }
-        .sheet(isPresented: $isShowingAddView) {
-            WordAddManual(
-                isPresented: $isShowingAddView,
-                refresh: { wordsGetter.resetPagination() }
-            )
-            .environmentObject(ThemeManager.shared)
-            .environmentObject(LocaleManager.shared)
+            .navigationBarTitleDisplayMode(.inline)
         }
         .sheet(item: $selectedWord) { word in
             WordDetails(
@@ -56,8 +52,12 @@ struct WordList: View {
                 isPresented: $isShowingDetailView,
                 refresh: { wordsGetter.resetPagination() }
             )
-            .environmentObject(ThemeManager.shared)
-            .environmentObject(LocaleManager.shared)
+        }
+        .sheet(isPresented: $isShowingAddView) {
+            WordAddManual(
+                isPresented: $isShowingAddView,
+                refresh: { wordsGetter.resetPagination() }
+            )
         }
     }
 }

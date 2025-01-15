@@ -27,7 +27,7 @@ struct BaseScreen<Content: View>: View {
     }
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             
                 content
                     .id("\(themeManager.currentTheme.rawValue)_\(localeManager.viewId)")

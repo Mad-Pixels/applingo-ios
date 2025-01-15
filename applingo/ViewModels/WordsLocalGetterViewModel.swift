@@ -80,12 +80,12 @@ final class WordsLocalGetterViewModel: BaseDatabaseViewModel {
     func loadMoreWordsIfNeeded(currentItem word: WordItemModel?) {
         guard
             let word = word,
-            let index = words.firstIndex(where: { $0.id == word.id })
+            let index = words.firstIndex(where: { $0.id == word.id }),
+            index >= words.count - 5,
+            hasMorePages,
+            !isLoadingPage
         else { return }
-        
-        if index >= words.count - 5 && hasMorePages && !isLoadingPage {
-            get()
-        }
+        get()
     }
     
     func clear() {
