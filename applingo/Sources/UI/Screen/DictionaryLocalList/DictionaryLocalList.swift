@@ -40,8 +40,6 @@ struct DictionaryLocalList: View {
                     onImport: { isShowingInstructions = true },
                     onDownload: { isShowingRemoteList = true }
                 )
-                .padding(.bottom, 16)
-                .padding(.trailing, 16)
             }
             .navigationBarTitleDisplayMode(.inline)
         }

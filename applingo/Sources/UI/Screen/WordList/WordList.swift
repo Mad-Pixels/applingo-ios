@@ -41,8 +41,6 @@ struct WordList: View {
                     locale: locale,
                     onAdd: { isShowingAddView = true }
                 )
-                .padding(.bottom, 16)
-                .padding(.trailing, 16)
             }
             .navigationBarTitleDisplayMode(.inline)
         }
