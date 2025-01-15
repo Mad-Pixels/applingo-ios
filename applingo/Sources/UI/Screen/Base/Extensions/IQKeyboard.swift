@@ -40,6 +40,7 @@ final class KeyboardObserver: ObservableObject {
 
 struct CustomKeyboardToolbarModifier: ViewModifier {
     @StateObject private var keyboardObserver = KeyboardObserver()
+    @State private var showToolbar = false
     
     let enableIQKeyboard: Bool
     let resignOnTouchOutside: Bool
@@ -53,8 +54,21 @@ struct CustomKeyboardToolbarModifier: ViewModifier {
                     IQKeyboardManager.shared.resignOnTouchOutside = resignOnTouchOutside
                     IQKeyboardManager.shared.enableAutoToolbar = false
                 }
+                .onChange(of: keyboardObserver.height) { newHeight in
+                    if newHeight > 0 {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                            withAnimation(.easeInOut(duration: 0.5)) {
+                                showToolbar = true
+                            }
+                        }
+                    } else {
+                        withAnimation(.easeInOut(duration: keyboardObserver.animationDuration)) {
+                            showToolbar = false
+                        }
+                    }
+                }
             
-            if keyboardObserver.height > 0 {
+            if showToolbar {
                 VStack(spacing: 0) {
                     Button {
                         UIApplication.shared.sendAction(
@@ -66,21 +80,14 @@ struct CustomKeyboardToolbarModifier: ViewModifier {
                     } label: {
                         Text(buttonTitle)
                             .font(.system(size: 16, weight: .semibold))
-                            .frame(height: 28)
+                            .frame(height: 32)
                             .frame(maxWidth: .infinity)
                             .background(ThemeManager.shared.currentThemeStyle.accentPrimary)
                             .foregroundColor(ThemeManager.shared.currentThemeStyle.backgroundPrimary)
                     }
                 }
                 .padding(.bottom, keyboardObserver.height)
-                .animation(
-                    .interactiveSpring(
-                        response: keyboardObserver.animationDuration,
-                        dampingFraction: 0.5,
-                        blendDuration: 0
-                    ),
-                    value: keyboardObserver.height
-                )
+                .transition(.opacity)
             }
         }
         .edgesIgnoringSafeArea(.bottom)
