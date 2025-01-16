@@ -7,7 +7,7 @@ struct LightTheme: AppTheme {
     
     // Main background colors
     let backgroundPrimary = Color.white
-    let backgroundSecondary = Color(hex: "f8f8f8")
+    let backgroundSecondary = Color(hex: "f4f4f4")
     let backgroundHover = Color(hex: "f0f0f0")
     let backgroundActive = Color(hex: "e8e8e8")
     let backgroundActiveHover = Color(hex: "e0e0e0")
