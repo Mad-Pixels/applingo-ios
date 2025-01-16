@@ -29,25 +29,33 @@ struct WordAddManual: View {
     }
     
     var body: some View {
-        BaseScreen(screen: .wordsAdd, title: locale.navigationTitle) {
-            Form {
-                WordAddManualViewMain(
-                    wordItem: $wordItem,
-                    selectedDictionary: $selectedDictionary,
-                    dictionaries: dictionaryGetter.dictionaries,
-                    locale: locale,
-                    style: style
-                )
-                
-                WordAddManualViewAdditional(
-                    hint: $hintText,
-                    description: $descriptionText,
-                    locale: locale,
-                    style: style
-                )
+        BaseScreen(
+            screen: .wordsAdd,
+            title: locale.navigationTitle
+        ) {
+            ScrollView {
+                VStack(spacing: style.spacing) {
+                    WordAddManualViewMain(
+                        wordItem: $wordItem,
+                        selectedDictionary: $selectedDictionary,
+                        dictionaries: dictionaryGetter.dictionaries,
+                        locale: locale,
+                        style: style
+                    )
+                        
+                    WordAddManualViewAdditional(
+                        hint: $hintText,
+                        description: $descriptionText,
+                        locale: locale,
+                        style: style
+                    )
+                }
+                .padding(style.padding)
             }
-            .navigationTitle(locale.navigationTitle)
+            .keyboardAdaptive()
+            .background(style.backgroundColor)
             .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle(locale.navigationTitle)
             .navigationBarItems(
                 leading: Button(locale.cancelTitle) {
                     presentationMode.wrappedValue.dismiss()

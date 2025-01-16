@@ -23,18 +23,26 @@ struct WordAddManualViewMain: View {
     }
     
     var body: some View {
-        Section(header: Text(locale.cardTitle)) {
+        VStack(spacing: style.spacing) {
+            SectionHeader(
+                title: locale.cardTitle.capitalizedFirstLetter,
+                style: .titled(ThemeManager.shared.currentThemeStyle)
+            )
+            .padding(.top, 8)
+            
             VStack(spacing: style.spacing) {
                 InputText(
                     text: $wordItem.frontText,
+                    title: locale.wordPlaceholder.capitalizedFirstLetter,
                     placeholder: locale.wordPlaceholder,
-                    icon: "rectangle.and.pencil.and.ellipsis"
+                    isEditing: true
                 )
-                
+                    
                 InputText(
                     text: $wordItem.backText,
+                    title: locale.definitionPlaceholder.capitalizedFirstLetter,
                     placeholder: locale.definitionPlaceholder,
-                    icon: "translate"
+                    isEditing: true
                 )
                 
                 ItemPicker(
@@ -45,7 +53,8 @@ struct WordAddManualViewMain: View {
                     Text(dictionary?.displayName ?? "")
                 }
             }
-            .padding(style.padding)
+            .padding(.horizontal, 8)
+            .background(Color.clear)
         }
     }
 }

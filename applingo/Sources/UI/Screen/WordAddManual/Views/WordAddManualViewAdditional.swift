@@ -19,21 +19,30 @@ struct WordAddManualViewAdditional: View {
     }
     
     var body: some View {
-        Section(header: Text(locale.additionalTitle)) {
+        VStack(spacing: style.spacing) {
+            SectionHeader(
+                title: locale.additionalTitle.capitalizedFirstLetter,
+                style: .titled(ThemeManager.shared.currentThemeStyle)
+            )
+            .padding(.top, 8)
+            
             VStack(spacing: style.spacing) {
                 InputText(
                     text: $hint,
+                    title: locale.hintPlaceholder.capitalizedFirstLetter,
                     placeholder: locale.hintPlaceholder,
-                    icon: "tag"
+                    isEditing: true
                 )
                 
                 InputTextArea(
                     text: $description,
+                    title: locale.descriptionPlaceholder.capitalizedFirstLetter,
                     placeholder: locale.descriptionPlaceholder,
-                    icon: "scroll"
+                    isEditing: true
                 )
             }
-            .padding(style.padding)
+            .padding(.horizontal, 8)
+            .background(Color.clear)
         }
     }
 }
