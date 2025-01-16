@@ -33,6 +33,9 @@ struct DictionaryLocalList: View {
                         selectedDictionary = dictionary
                     }
                 )
+                .safeAreaInset(edge: .bottom) {
+                    Color.clear.frame(height: 80)
+                }
             }
             .overlay(alignment: .bottomTrailing) {
                 DictionaryLocalListViewActions(

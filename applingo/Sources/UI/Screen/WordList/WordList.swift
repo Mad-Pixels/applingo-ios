@@ -34,7 +34,9 @@ struct WordList: View {
                         isShowingDetailView = true
                     }
                 )
-                
+                .safeAreaInset(edge: .bottom) {
+                    Color.clear.frame(height: 80)
+                }
             }
             .overlay(alignment: .bottomTrailing) {
                 WordListViewActions(

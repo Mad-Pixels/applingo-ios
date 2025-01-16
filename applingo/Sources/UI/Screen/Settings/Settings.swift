@@ -22,14 +22,16 @@ struct Settings: View {
                     SettingsViewLogger()
                         .frame(maxWidth: .infinity)
                 }
+                .safeAreaInset(edge: .bottom) {
+                    Color.clear.frame(height: 80)
+                }
                 .padding(.top, style.padding.top + 8)
                 .padding(.leading, style.padding.leading + 8)
                 .padding(.trailing, style.padding.trailing + 8)
                 .padding(.bottom, style.padding.bottom)
             }
             .background(style.backgroundColor)
+            .ignoresSafeArea(edges: .bottom)
         }
     }
 }
-
-
