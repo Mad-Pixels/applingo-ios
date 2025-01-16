@@ -35,7 +35,6 @@ struct ItemPicker<Item: Hashable, Content: View>: View {
                 pickerContent
             }
         }
-        .background(style.backgroundColor)
     }
     
     @ViewBuilder
@@ -52,24 +51,36 @@ struct ItemPicker<Item: Hashable, Content: View>: View {
                     .tag(item)
             }
         }
-        .modifier(PickerStyleModifier(style: style.type))
-        .accentColor(style.accentColor)
+        .modifier(PickerStyleModifier(style: style))
     }
 }
 
 struct PickerStyleModifier: ViewModifier {
-    let style: ItemPickerStyle.PickerType
+    let style: ItemPickerStyle
     
     func body(content: Content) -> some View {
-        switch style {
-        case .wheel:
-            content.pickerStyle(WheelPickerStyle())
-        case .segmented:
-            content.pickerStyle(SegmentedPickerStyle())
-        case .menu:
-            content.pickerStyle(MenuPickerStyle())
-        case .inline:
-            content.pickerStyle(DefaultPickerStyle())
+        Group {
+            switch style.type {
+            case .wheel:
+                content
+                    .pickerStyle(WheelPickerStyle())
+                    .background(style.backgroundColor)
+                    .cornerRadius(16)
+                
+            case .segmented:
+                content
+                    .pickerStyle(SegmentedPickerStyle())
+                
+            case .menu:
+                content
+                    .pickerStyle(MenuPickerStyle())
+                
+            case .inline:
+                content
+                    .pickerStyle(DefaultPickerStyle())
+                    .listRowBackground(style.backgroundColor)
+            }
         }
+        .accentColor(style.accentColor)
     }
 }
