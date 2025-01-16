@@ -8,6 +8,7 @@ struct BaseNavigationConfigurator {
         let appearance = UINavigationBarAppearance()
         appearance.configureWithDefaultBackground()
         appearance.backgroundColor = UIColor(theme.backgroundPrimary)
+        appearance.shadowColor = .clear
         
         appearance.largeTitleTextAttributes = [
             .foregroundColor: UIColor(theme.textPrimary),
@@ -19,8 +20,9 @@ struct BaseNavigationConfigurator {
             .font: UIFont.systemFont(ofSize: 17, weight: .semibold)
         ]
                     
-        UINavigationBar.appearance().standardAppearance = appearance
+        
         UINavigationBar.appearance().scrollEdgeAppearance = appearance
+        UINavigationBar.appearance().standardAppearance = appearance
         UINavigationBar.appearance().compactAppearance = appearance
     }
 }
