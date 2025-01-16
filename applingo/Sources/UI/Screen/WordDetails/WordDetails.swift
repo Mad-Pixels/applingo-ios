@@ -57,9 +57,10 @@ struct WordDetails: View {
                 }
                 .padding(style.padding)
             }
+            .keyboardAdaptive()
             .background(style.backgroundColor)
-            .navigationTitle(locale.navigationTitle)
             .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle(locale.navigationTitle)
             .navigationBarItems(
                 leading: Button(isEditing ? locale.cancelTitle : locale.closeTitle) {
                     if isEditing {

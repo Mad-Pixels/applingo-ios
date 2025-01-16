@@ -51,8 +51,9 @@ struct CustomKeyboardToolbarModifier: ViewModifier {
             content
                 .onAppear {
                     IQKeyboardManager.shared.enable = enableIQKeyboard
-                    IQKeyboardManager.shared.resignOnTouchOutside = resignOnTouchOutside
                     IQKeyboardManager.shared.enableAutoToolbar = false
+                    IQKeyboardManager.shared.resignOnTouchOutside = resignOnTouchOutside
+                    IQKeyboardManager.shared.keyboardDistance = 200
                 }
                 .onChange(of: keyboardObserver.height) { newHeight in
                     if newHeight > 0 {
