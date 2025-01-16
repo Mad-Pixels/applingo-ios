@@ -29,16 +29,13 @@ struct ItemPicker<Item: Hashable, Content: View>: View {
             if let title = title {
                 SectionHeader(
                     title: title,
-                    style: .themed(ThemeManager.shared.currentThemeStyle)
+                    style: .titled(ThemeManager.shared.currentThemeStyle)
                 )
             }
             
-            if style.type == .wheel {
-                SectionBody {
-                    pickerContent
-                }
-            } else {
+            SectionBody {
                 pickerContent
+                    .padding(.horizontal, style.type == .wheel ? 0 : style.spacing)
             }
         }
     }

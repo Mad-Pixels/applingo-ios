@@ -26,7 +26,7 @@ struct ItemToggle: View {
             if style.showHeader, let header = header {
                 SectionHeader(
                     title: LocaleManager.shared.localizedString(for: header),
-                    style: .themed(ThemeManager.shared.currentThemeStyle)
+                    style: .titled(ThemeManager.shared.currentThemeStyle)
                 )
             }
             

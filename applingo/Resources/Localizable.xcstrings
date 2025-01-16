@@ -371,6 +371,9 @@
         }
       }
     },
+    "Content is more spacious." : {
+
+    },
     "Count" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -399,6 +402,12 @@
           }
         }
       }
+    },
+    "Custom Font & Colors" : {
+
+    },
+    "Custom padding applied." : {
+
     },
     "DateCreated" : {
       "extractionState" : "manual",
@@ -457,6 +466,12 @@
           }
         }
       }
+    },
+    "Default Header" : {
+
+    },
+    "Default Section" : {
+
     },
     "Default state" : {
 
@@ -1996,6 +2011,9 @@
     "Menu Style" : {
 
     },
+    "Minimal Header" : {
+
+    },
     "Multiple Floating Buttons" : {
 
     },
@@ -2287,6 +2305,12 @@
         }
       }
     },
+    "Section with Custom Padding" : {
+
+    },
+    "Section with Rounded Corners" : {
+
+    },
     "Segmented Style" : {
 
     },
@@ -2548,6 +2572,12 @@
         }
       }
     },
+    "This is a default section body." : {
+
+    },
+    "This section has extra rounded corners." : {
+
+    },
     "TimeAttackDescription" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2576,6 +2606,9 @@
           }
         }
       }
+    },
+    "Titled Header" : {
+
     },
     "Toggle without Header" : {
 

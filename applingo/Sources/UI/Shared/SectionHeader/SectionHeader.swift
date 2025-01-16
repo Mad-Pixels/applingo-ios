@@ -24,5 +24,6 @@ struct SectionHeader: View {
                 .fill(style.separatorColor)
                 .frame(height: 0.5)
         }
+        .padding(.bottom, style.padding.bottom)
     }
 }
