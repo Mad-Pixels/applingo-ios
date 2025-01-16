@@ -33,6 +33,7 @@ struct WordDetailsViewAdditional: View {
             VStack(spacing: style.spacing) {
                 InputText(
                     text: .constant(tableName),
+                    title: locale.tableNamePlaceholder.capitalizedFirstLetter,
                     placeholder: locale.tableNamePlaceholder,
                     isEditing: false
                 )
@@ -42,9 +43,9 @@ struct WordDetailsViewAdditional: View {
                         get: { word.hint ?? "" },
                         set: { word.hint = $0.isEmpty ? nil : $0 }
                     ),
+                    title: locale.hintPlaceholder.capitalizedFirstLetter,
                     placeholder: locale.hintPlaceholder,
-                    isEditing: isEditing,
-                    icon: "tag"
+                    isEditing: isEditing
                 )
                 
                 InputTextArea(
@@ -52,9 +53,9 @@ struct WordDetailsViewAdditional: View {
                         get: { word.description ?? "" },
                         set: { word.description = $0.isEmpty ? nil : $0 }
                     ),
+                    title: locale.descriptionPlaceholder.capitalizedFirstLetter,
                     placeholder: locale.descriptionPlaceholder,
-                    isEditing: isEditing,
-                    icon: "scroll"
+                    isEditing: isEditing
                 )
             }
             .padding(.horizontal, 8)

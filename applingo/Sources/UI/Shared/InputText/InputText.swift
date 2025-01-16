@@ -32,7 +32,7 @@ struct InputText: View {
     
     private var border: some View {
         RoundedRectangle(cornerRadius: style.cornerRadius)
-            .stroke(style.borderColor, lineWidth: isFocused ? 3 : 1)
+            .stroke(style.borderColor, lineWidth: isFocused ? 6 : 2)
     }
     
     var body: some View {

@@ -30,12 +30,14 @@ struct WordDetailsViewMain: View {
             VStack(spacing: style.spacing) {
                 InputText(
                     text: $word.frontText,
+                    title: locale.wordPlaceholder.capitalizedFirstLetter,
                     placeholder: locale.wordPlaceholder,
                     isEditing: isEditing
                 )
                     
                 InputText(
                     text: $word.backText,
+                    title: locale.definitionPlaceholder.capitalizedFirstLetter,
                     placeholder: locale.definitionPlaceholder,
                     isEditing: isEditing
                 )

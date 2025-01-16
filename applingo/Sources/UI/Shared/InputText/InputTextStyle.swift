@@ -18,14 +18,14 @@ struct InputTextStyle {
     static func themed(_ theme: AppTheme) -> InputTextStyle {
         InputTextStyle(
             textColor: theme.textPrimary,
-            titleColor: theme.textSecondary,
+            titleColor: theme.textPrimary,
             placeholderColor: theme.textSecondary,
             backgroundColor: .clear,
             disabledBackgroundColor: theme.backgroundSecondary.opacity(0.5),
             borderColor: theme.accentPrimary,
             iconColor: theme.textSecondary,
-            titleFont: .system(size: 13, weight: .semibold),
-            textFont: .system(size: 15),
+            titleFont: .system(size: 15, weight: .bold),
+            textFont: .system(size: 14),
             padding: EdgeInsets(top: 12, leading: 12, bottom: 12, trailing: 12),
             cornerRadius: 8,
             iconSpacing: 8,
