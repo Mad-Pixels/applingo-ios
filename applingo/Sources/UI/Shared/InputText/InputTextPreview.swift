@@ -33,24 +33,18 @@ private struct TextInputPreview: View {
             
             Group {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Regular Text Input")
-                        .font(.subheadline)
-                        .foregroundColor(theme.textSecondary)
-                    
                     InputText(
                         text: $inputText,
+                        title: "Regular Input",
                         placeholder: "Enter text",
                         style: .themed(theme)
                     )
                 }
                 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Text Input with Icon")
-                        .font(.subheadline)
-                        .foregroundColor(theme.textSecondary)
-                    
                     InputText(
                         text: $inputText,
+                        title: "Search Field",
                         placeholder: "Search",
                         icon: "magnifyingglass",
                         style: .themed(theme)
@@ -58,24 +52,21 @@ private struct TextInputPreview: View {
                 }
                 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Text Input with Border")
+                    Text("Text Input without Title")
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     
                     InputText(
                         text: $inputText,
-                        placeholder: "With border",
+                        placeholder: "No title field",
                         style: .themed(theme)
                     )
                 }
                 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Disabled Text Input")
-                        .font(.subheadline)
-                        .foregroundColor(theme.textSecondary)
-                    
                     InputText(
                         text: .constant("Disabled input"),
+                        title: "Disabled Field",
                         placeholder: "Disabled",
                         isEditing: false,
                         style: .themed(theme)
@@ -95,10 +86,6 @@ private struct TextInputPreview: View {
                 }
                 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Text Area with Icon")
-                        .font(.subheadline)
-                        .foregroundColor(theme.textSecondary)
-                    
                     InputTextArea(
                         text: $areaText,
                         placeholder: "Notes",

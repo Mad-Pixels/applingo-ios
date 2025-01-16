@@ -633,9 +633,6 @@
     "Disabled Text Area" : {
 
     },
-    "Disabled Text Input" : {
-
-    },
     "Disabled Toggle with Header" : {
 
     },
@@ -2206,9 +2203,6 @@
         }
       }
     },
-    "Regular Text Input" : {
-
-    },
     "Reset" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2534,13 +2528,7 @@
     "Text Area" : {
 
     },
-    "Text Area with Icon" : {
-
-    },
-    "Text Input with Border" : {
-
-    },
-    "Text Input with Icon" : {
+    "Text Input without Title" : {
 
     },
     "Theme" : {
