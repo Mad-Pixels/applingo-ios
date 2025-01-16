@@ -25,10 +25,16 @@ struct ItemPicker<Item: Hashable, Content: View>: View {
     }
     
     var body: some View {
-        Group {
+        VStack(spacing: style.spacing) {
             if let title = title {
-                Section(header: Text(title)
-                    .foregroundColor(style.titleColor)) {
+                SectionHeader(
+                    title: title,
+                    style: .themed(ThemeManager.shared.currentThemeStyle)
+                )
+            }
+            
+            if style.type == .wheel {
+                SectionBody {
                     pickerContent
                 }
             } else {
@@ -64,16 +70,16 @@ struct PickerStyleModifier: ViewModifier {
             case .wheel:
                 content
                     .pickerStyle(WheelPickerStyle())
-                    .background(style.backgroundColor)
-                    .cornerRadius(16)
                 
             case .segmented:
                 content
                     .pickerStyle(SegmentedPickerStyle())
+                    .padding(.horizontal, style.spacing)
                 
             case .menu:
                 content
                     .pickerStyle(MenuPickerStyle())
+                    .padding(.horizontal, style.spacing)
                 
             case .inline:
                 content

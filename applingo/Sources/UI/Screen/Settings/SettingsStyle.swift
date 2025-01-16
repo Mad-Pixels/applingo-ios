@@ -19,8 +19,8 @@ final class SettingsStyle: ObservableObject {
 extension SettingsStyle {
     static func themed(_ theme: AppTheme) -> SettingsStyle {
         SettingsStyle(
-            spacing: 16,
-            padding: EdgeInsets(top: 0, leading: 16, bottom: 16, trailing: 16),
+            spacing: 24,
+            padding: EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16),
             backgroundColor: theme.backgroundPrimary
         )
     }

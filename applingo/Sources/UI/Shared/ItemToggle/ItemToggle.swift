@@ -22,19 +22,19 @@ struct ItemToggle: View {
     }
     
     var body: some View {
-        Group {
-            if style.showHeader && header != nil {
-                Section(
-                    header: Text(LocaleManager.shared.localizedString(for: header!))
-                        .foregroundColor(style.headerColor)
-                ) {
-                    toggleContent
-                }
-            } else {
+        VStack(spacing: style.spacing) {
+            if style.showHeader, let header = header {
+                SectionHeader(
+                    title: LocaleManager.shared.localizedString(for: header),
+                    style: .themed(ThemeManager.shared.currentThemeStyle)
+                )
+            }
+            
+            SectionBody {
                 toggleContent
+                    .padding(.horizontal, style.spacing)
             }
         }
-        .background(style.backgroundColor)
     }
     
     private var toggleContent: some View {
