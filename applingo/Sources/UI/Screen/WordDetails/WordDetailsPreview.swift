@@ -7,4 +7,5 @@ import SwiftUI
         refresh: {}
     )
     .environmentObject(ThemeManager.shared)
+    .environmentObject(LocaleManager.shared)
 }
