@@ -31,7 +31,10 @@ struct WordDetails: View {
     }
     
     var body: some View {
-        BaseScreen(screen: .wordsDetail, title: locale.navigationTitle) {
+        BaseScreen(
+            screen: .wordsDetail,
+            title: locale.navigationTitle
+        ) {
             ScrollView {
                 VStack(spacing: style.spacing) {
                     WordDetailsViewMain(

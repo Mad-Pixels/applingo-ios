@@ -34,8 +34,8 @@ final class WordDetailsStyle: ObservableObject {
             accentColor: theme.accentPrimary,
             disabledColor: theme.textSecondary.opacity(0.5),
             padding: EdgeInsets(top: 16, leading: 16, bottom: 32, trailing: 16),
-            spacing: 24, // Увеличенный отступ между секциями
-            sectionSpacing: 16  // Отступ внутри секций
+            spacing: 24,
+            sectionSpacing: 16
         )
     }
 }

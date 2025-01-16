@@ -1,42 +1,54 @@
 import SwiftUI
 
 struct DictionaryLocalDetailsViewMain: View {
-   let dictionary: EditableDictionaryWrapper
-   private let locale: DictionaryLocalDetailsLocale
-   let isEditing: Bool
+    let dictionary: EditableDictionaryWrapper
+    private let locale: DictionaryLocalDetailsLocale
+    private let style: DictionaryLocalDetailsStyle
+    let isEditing: Bool
    
-   init(
-       dictionary: EditableDictionaryWrapper,
-       locale: DictionaryLocalDetailsLocale,
-       isEditing: Bool
-   ) {
-       self.dictionary = dictionary
-       self.locale = locale
-       self.isEditing = isEditing
-   }
+    init(
+        dictionary: EditableDictionaryWrapper,
+        locale: DictionaryLocalDetailsLocale,
+        style: DictionaryLocalDetailsStyle,
+        isEditing: Bool
+    ) {
+        self.dictionary = dictionary
+        self.locale = locale
+        self.style = style
+        self.isEditing = isEditing
+    }
    
-   var body: some View {
-       Section(header: Text(locale.dictionaryTitle)) {
-           InputText(
-               text: Binding(
-                   get: { dictionary.dictionary.displayName },
-                   set: { dictionary.dictionary.displayName = $0 }
-               ),
-               placeholder: locale.displayNameTitle,
-               isEditing: isEditing,
-               icon: "book"
-           )
+    var body: some View {
+        VStack(spacing: style.spacing) {
+            SectionHeader(
+                title: locale.dictionaryTitle.capitalizedFirstLetter,
+                style: .titled(ThemeManager.shared.currentThemeStyle)
+            )
+            .padding(.top, 8)
            
-           InputTextArea(
-               text: Binding(
-                   get: { dictionary.dictionary.description },
-                   set: { dictionary.dictionary.description = $0 }
-               ),
-               placeholder: locale.descriptionTitle,
-               isEditing: isEditing,
-               icon: "scroll"
-           )
-           .frame(height: 150)
-       }
-   }
+            VStack(spacing: style.spacing) {
+                InputText(
+                    text: Binding(
+                        get: { dictionary.dictionary.displayName },
+                        set: { dictionary.dictionary.displayName = $0 }
+                    ),
+                    title: locale.displayNameTitle.capitalizedFirstLetter,
+                    placeholder: locale.displayNameTitle,
+                    isEditing: isEditing
+                )
+                   
+                InputTextArea(
+                    text: Binding(
+                        get: { dictionary.dictionary.description },
+                        set: { dictionary.dictionary.description = $0 }
+                    ),
+                    title: locale.descriptionTitle.capitalizedFirstLetter,
+                    placeholder: locale.descriptionTitle,
+                    isEditing: isEditing
+                )
+            }
+            .padding(.horizontal, 8)
+            .background(Color.clear)
+        }
+    }
 }
