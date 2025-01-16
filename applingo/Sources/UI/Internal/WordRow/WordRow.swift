@@ -16,42 +16,32 @@ struct WordRow: View {
     }
     
     var body: some View {
-        HStack(spacing: style.spacing) {
-            VStack(alignment: .leading, spacing: style.spacing / 2) {
-                Text(model.frontText)
-                    .foregroundColor(style.frontTextColor)
-                    .font(style.frontTextFont)
-                
-                Text(model.backText)
-                    .font(style.backTextFont)
-                    .foregroundColor(style.backTextColor)
-                
-                HStack(spacing: style.spacing / 2) {
-                    Image(systemName: "figure.run")
-                        .font(.system(size: 12))
-                        .foregroundColor(style.arrowColor)
+        SectionBody {
+            HStack(spacing: style.spacing) {
+                VStack(alignment: .leading, spacing: style.spacing / 2) {
+                    Text(model.frontText)
+                        .foregroundColor(style.frontTextColor)
+                        .font(style.frontTextFont)
                     
-                    ChartIndicator(weight: model.weight)
+                    Text(model.backText)
+                        .font(style.backTextFont)
+                        .foregroundColor(style.backTextColor)
+                    
+                    HStack(spacing: style.spacing / 2) {
+                        Image(systemName: "figure.run")
+                            .font(.system(size: 12))
+                            .foregroundColor(style.arrowColor)
+                        
+                        ChartIndicator(weight: model.weight)
+                    }
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                
+                Image(systemName: "chevron.right")
+                    .font(.system(size: style.arrowSize))
+                    .foregroundColor(style.arrowColor)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            
-            Image(systemName: "chevron.right")
-                .font(.system(size: style.arrowSize))
-                .foregroundColor(style.arrowColor)
         }
-        .padding(.horizontal, style.spacing)
-        .padding(.vertical, style.spacing * 0.75)
-        .background(
-            RoundedRectangle(cornerRadius: style.cornerRadius)
-                .fill(style.backgroundColor)
-                .shadow(
-                    color: style.arrowColor.opacity(0.1),
-                    radius: style.shadowRadius,
-                    x: 0,
-                    y: 2
-                )
-        )
         .contentShape(Rectangle())
         .onTapGesture(perform: onTap)
     }
