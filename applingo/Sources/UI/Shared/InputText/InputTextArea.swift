@@ -22,7 +22,7 @@ struct InputTextArea: View {
     ) {
         self._text = text
         self.title = title
-        self.placeholder = placeholder
+        self.placeholder = ""
         self.isEditing = isEditing
         self.minHeight = minHeight
         self.icon = icon
@@ -35,7 +35,7 @@ struct InputTextArea: View {
     
     private var border: some View {
         RoundedRectangle(cornerRadius: style.cornerRadius)
-            .stroke(style.borderColor, lineWidth: isFocused ? 3 : 1)
+            .stroke(style.borderColor, lineWidth: isFocused ? 6 : 2)
     }
     
     var body: some View {
