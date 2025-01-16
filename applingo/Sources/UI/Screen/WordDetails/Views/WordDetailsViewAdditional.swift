@@ -23,7 +23,13 @@ struct WordDetailsViewAdditional: View {
     }
     
     var body: some View {
-        Section(header: Text(locale.additionalTitle)) {
+        VStack(spacing: style.spacing) {
+            SectionHeader(
+                title: locale.additionalTitle.capitalizedFirstLetter,
+                style: .titled(ThemeManager.shared.currentThemeStyle)
+            )
+            .padding(.top, 8)
+            
             VStack(spacing: style.spacing) {
                 InputText(
                     text: .constant(tableName),
@@ -51,7 +57,8 @@ struct WordDetailsViewAdditional: View {
                     icon: "scroll"
                 )
             }
-            .padding(style.padding)
+            .padding(.horizontal, 8)
+            .background(Color.clear)
         }
     }
 }

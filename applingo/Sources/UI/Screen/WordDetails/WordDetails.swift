@@ -32,28 +32,32 @@ struct WordDetails: View {
     
     var body: some View {
         BaseScreen(screen: .wordsDetail, title: locale.navigationTitle) {
-            Form {
-                WordDetailsViewMain(
-                    word: $wrapper.word,
-                    locale: locale,
-                    style: style,
-                    isEditing: isEditing
-                )
-                
-                WordDetailsViewAdditional(
-                    word: $wrapper.word,
-                    tableName: wordsAction.dictionaryDisplayName(wrapper.word),
-                    locale: locale,
-                    style: style,
-                    isEditing: isEditing
-                )
-                
-                WordDetailsViewStatistic(
-                    word: wrapper.word,
-                    locale: locale,
-                    style: style
-                )
+            ScrollView {
+                VStack(spacing: style.spacing) {
+                    WordDetailsViewMain(
+                        word: $wrapper.word,
+                        locale: locale,
+                        style: style,
+                        isEditing: isEditing
+                    )
+                        
+                    WordDetailsViewAdditional(
+                        word: $wrapper.word,
+                        tableName: wordsAction.dictionaryDisplayName(wrapper.word),
+                        locale: locale,
+                        style: style,
+                        isEditing: isEditing
+                    )
+                        
+                    WordDetailsViewStatistic(
+                        word: wrapper.word,
+                        locale: locale,
+                        style: style
+                    )
+                }
+                .padding(style.padding)
             }
+            .background(style.backgroundColor)
             .navigationTitle(locale.navigationTitle)
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarItems(
@@ -73,6 +77,7 @@ struct WordDetails: View {
                     }
                 }
                 .disabled(isEditing && isSaveDisabled)
+                .foregroundColor(isEditing && isSaveDisabled ? style.disabledColor : style.accentColor)
             )
         }
     }

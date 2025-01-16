@@ -20,23 +20,28 @@ struct WordDetailsViewMain: View {
     }
     
     var body: some View {
-        Section(header: Text(locale.cardTitle)) {
+        VStack(spacing: style.spacing) {
+            SectionHeader(
+                title: locale.cardTitle.capitalizedFirstLetter,
+                style: .titled(ThemeManager.shared.currentThemeStyle)
+            )
+            .padding(.top, 8)
+            
             VStack(spacing: style.spacing) {
                 InputText(
                     text: $word.frontText,
                     placeholder: locale.wordPlaceholder,
-                    isEditing: isEditing,
-                    icon: "rectangle.and.pencil.and.ellipsis"
+                    isEditing: isEditing
                 )
-                
+                    
                 InputText(
                     text: $word.backText,
                     placeholder: locale.definitionPlaceholder,
-                    isEditing: isEditing,
-                    icon: "translate"
+                    isEditing: isEditing
                 )
             }
-            .padding(style.padding)
+            .padding(.horizontal, 8)
+            .background(Color.clear)
         }
     }
 }

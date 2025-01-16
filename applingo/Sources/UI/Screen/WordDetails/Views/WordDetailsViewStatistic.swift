@@ -16,8 +16,14 @@ struct WordDetailsViewStatistic: View {
     }
     
     var body: some View {
-        Section(header: Text(locale.statisticsTitle)) {
-            VStack(alignment: .leading, spacing: style.spacing) {
+        VStack(spacing: style.spacing) {
+            SectionHeader(
+                title: locale.statisticsTitle.capitalizedFirstLetter,
+                style: .titled(ThemeManager.shared.currentThemeStyle)
+            )
+            .padding(.top, 8)
+            
+            VStack(spacing: style.spacing) {
                 ChartBar(
                     title: locale.answersTitle,
                     data: [
@@ -26,7 +32,8 @@ struct WordDetailsViewStatistic: View {
                     ]
                 )
             }
-            .padding(style.padding)
+            .padding(.horizontal, 8)
+            .background(Color.clear)
         }
     }
 }
