@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct ButtonNavStyle {
+struct ButtonNavStyle1 {
     let backgroundColor: Color
     let foregroundColor: Color
     let iconColor: Color
@@ -15,9 +15,9 @@ struct ButtonNavStyle {
     let shadowColor: Color
 }
 
-extension ButtonNavStyle {
-    static func themed(_ theme: AppTheme) -> ButtonNavStyle {
-        ButtonNavStyle(
+extension ButtonNavStyle1 {
+    static func themed(_ theme: AppTheme) -> ButtonNavStyle1 {
+        ButtonNavStyle1(
             backgroundColor: theme.backgroundPrimary,
             foregroundColor: theme.textPrimary,
             iconColor: theme.accentPrimary,
@@ -32,8 +32,8 @@ extension ButtonNavStyle {
         )
     }
     
-    static func asGameSelect(_ gameTheme: GameTheme) -> ButtonNavStyle {
-        ButtonNavStyle(
+    static func asGameSelect(_ gameTheme: GameTheme) -> ButtonNavStyle1 {
+        ButtonNavStyle1(
             backgroundColor: gameTheme.main.opacity(0.1),
             foregroundColor: .white,
             iconColor: gameTheme.main,

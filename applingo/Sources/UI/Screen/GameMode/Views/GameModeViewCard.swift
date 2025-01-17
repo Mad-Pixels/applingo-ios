@@ -11,7 +11,7 @@ struct GameModeViewCard: View {
    @EnvironmentObject private var themeManager: ThemeManager
    
     var body: some View {
-        ButtonNav(
+        ButtonNav1(
             title: title,
             subtitle: description,
             icon: icon,
