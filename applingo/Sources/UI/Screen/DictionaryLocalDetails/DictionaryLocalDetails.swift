@@ -6,11 +6,14 @@ struct DictionaryLocalDetails: View {
     @StateObject private var locale = DictionaryLocalDetailsLocale()
     @StateObject private var dictionaryAction = DictionaryLocalActionViewModel()
     @StateObject private var wrapper: EditableDictionaryWrapper
-   
-    @State private var isEditing = false
+    
     @Binding var isPresented: Bool
     let refresh: () -> Void
     private let originalDictionary: DictionaryItemModel
+    
+    @State private var isEditing = false
+    @State private var isPressedLeading = false
+    @State private var isPressedTrailing = false
    
     init(
         dictionary: DictionaryItemModel,
@@ -61,21 +64,29 @@ struct DictionaryLocalDetails: View {
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle(locale.navigationTitle)
             .navigationBarItems(
-                leading: Button(isEditing ? locale.cancelTitle : locale.closeTitle) {
-                    if isEditing {
-                        isEditing = false
-                        wrapper.dictionary = originalDictionary
-                    } else {
-                        presentationMode.wrappedValue.dismiss()
-                    }
-                },
-                trailing: Button(isEditing ? locale.saveTitle : locale.editTitle) {
-                    if isEditing {
-                        updateDictionary()
-                    } else {
-                        isEditing = true
-                    }
-                }
+                leading: ButtonNav(
+                    style: isEditing ? .close(ThemeManager.shared.currentThemeStyle) : .back(ThemeManager.shared.currentThemeStyle),
+                    onTap: {
+                        if isEditing {
+                            isEditing = false
+                            wrapper.dictionary = originalDictionary
+                        } else {
+                            presentationMode.wrappedValue.dismiss()
+                        }
+                    },
+                    isPressed: $isPressedLeading
+                ),
+                trailing: ButtonNav(
+                    style: isEditing ? .save(ThemeManager.shared.currentThemeStyle) : .edit(ThemeManager.shared.currentThemeStyle),
+                    onTap: {
+                        if isEditing {
+                            updateDictionary()
+                        } else {
+                            isEditing = true
+                        }
+                    },
+                    isPressed: $isPressedTrailing
+                )
                 .disabled(isEditing && isSaveDisabled)
             )
         }

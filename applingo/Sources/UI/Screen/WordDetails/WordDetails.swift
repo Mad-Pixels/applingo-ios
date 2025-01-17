@@ -14,6 +14,8 @@ struct WordDetails: View {
     
     @State private var isEditing = false
     @State private var isShowingAlert = false
+    @State private var isPressedLeading = false
+    @State private var isPressedTrailing = false
     @State private var errorMessage: String = ""
     
     init(
@@ -65,23 +67,30 @@ struct WordDetails: View {
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle(locale.navigationTitle)
             .navigationBarItems(
-                leading: Button(isEditing ? locale.cancelTitle : locale.closeTitle) {
-                    if isEditing {
-                        isEditing = false
-                        wrapper.word = originalWord
-                    } else {
-                        presentationMode.wrappedValue.dismiss()
-                    }
-                },
-                trailing: Button(isEditing ? locale.saveTitle : locale.editTitle) {
-                    if isEditing {
-                        updateWord()
-                    } else {
-                        isEditing = true
-                    }
-                }
+                leading: ButtonNav(
+                    style: isEditing ? .close(ThemeManager.shared.currentThemeStyle) : .back(ThemeManager.shared.currentThemeStyle),
+                    onTap: {
+                        if isEditing {
+                            isEditing = false
+                            wrapper.word = originalWord
+                        } else {
+                            presentationMode.wrappedValue.dismiss()
+                        }
+                    },
+                    isPressed: $isPressedLeading
+                ),
+                trailing: ButtonNav(
+                    style: isEditing ? .save(ThemeManager.shared.currentThemeStyle) : .edit(ThemeManager.shared.currentThemeStyle),
+                    onTap: {
+                        if isEditing {
+                            updateWord()
+                        } else {
+                            isEditing = true
+                        }
+                    },
+                    isPressed: $isPressedTrailing
+                )
                 .disabled(isEditing && isSaveDisabled)
-                .foregroundColor(isEditing && isSaveDisabled ? style.disabledColor : style.accentColor)
             )
         }
     }

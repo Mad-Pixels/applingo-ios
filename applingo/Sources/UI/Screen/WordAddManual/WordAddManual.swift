@@ -12,10 +12,12 @@ struct WordAddManual: View {
     
     @State private var selectedDictionary: DictionaryItemModel?
     @State private var wordItem = WordItemModel.empty()
-    @State private var hintText: String = ""
     @State private var descriptionText: String = ""
-    @State private var isShowingAlert = false
     @State private var errorMessage: String = ""
+    @State private var hintText: String = ""
+    @State private var isPressedTrailing = false
+    @State private var isPressedLeading = false
+    @State private var isShowingAlert = false
     
     init(
         isPresented: Binding<Bool>,
@@ -57,12 +59,20 @@ struct WordAddManual: View {
             .navigationBarTitleDisplayMode(.inline)
             .navigationTitle(locale.navigationTitle)
             .navigationBarItems(
-                leading: Button(locale.cancelTitle) {
-                    presentationMode.wrappedValue.dismiss()
-                },
-                trailing: Button(locale.saveTitle) {
-                    save()
-                }
+                leading: ButtonNav(
+                    style: .back(ThemeManager.shared.currentThemeStyle),
+                    onTap: {
+                        presentationMode.wrappedValue.dismiss()
+                    },
+                    isPressed: $isPressedLeading
+                ),
+                trailing: ButtonNav(
+                    style: .save(ThemeManager.shared.currentThemeStyle, disabled: isSaveDisabled),
+                    onTap: {
+                        save()
+                    },
+                    isPressed: $isPressedTrailing
+                )
                 .disabled(isSaveDisabled)
             )
         }

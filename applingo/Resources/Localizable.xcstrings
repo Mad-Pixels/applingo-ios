@@ -206,6 +206,9 @@
         }
       }
     },
+    "Back Button" : {
+
+    },
     "Back to GameMode" : {
 
     },
@@ -338,6 +341,9 @@
           }
         }
       }
+    },
+    "Close Button" : {
+
     },
     "Close FullScreen" : {
 
@@ -693,6 +699,9 @@
           }
         }
       }
+    },
+    "Edit Button" : {
+
     },
     "Empty list" : {
 
@@ -2260,6 +2269,9 @@
           }
         }
       }
+    },
+    "Save Button" : {
+
     },
     "sea|ים||large body of water" : {
 
