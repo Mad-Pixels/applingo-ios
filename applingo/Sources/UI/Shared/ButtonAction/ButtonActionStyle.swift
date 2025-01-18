@@ -28,7 +28,7 @@ extension ButtonActionStyle {
             font: .body.bold(),
             height: 45,
             cornerRadius: 8,
-            padding: EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16)
+            padding: EdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8)
         )
     }
     
@@ -39,7 +39,7 @@ extension ButtonActionStyle {
             font: .body.bold(),
             height: 45,
             cornerRadius: 8,
-            padding: EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16)
+            padding: EdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8)
         )
     }
 }
