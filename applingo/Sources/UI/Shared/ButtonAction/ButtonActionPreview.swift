@@ -39,7 +39,7 @@ private struct ButtonPreview: View {
                         action: {
                             print("Action tapped")
                         },
-                        style: .themed(theme)
+                        style: .action(theme)
                     )
                 }
                 
@@ -53,12 +53,12 @@ private struct ButtonPreview: View {
                         action: {
                             print("Cancel tapped")
                         },
-                        style: .asCancel(theme)
+                        style: .cancel(theme)
                     )
                 }
                 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Disabled Button")
+                    Text("Themed Button")
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     
@@ -66,7 +66,7 @@ private struct ButtonPreview: View {
                         title: "Disabled Action",
                         action: {},
                         disabled: true,
-                        style: .asAction(theme)
+                        style: .action(theme)
                     )
                 }
             }

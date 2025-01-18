@@ -4,6 +4,7 @@ struct DarkTheme: AppTheme {
     // Main text colors
     let textPrimary = Color(hex: "f5f7f4")
     let textSecondary = Color(hex: "9ca3af")
+    let textContrast = Color(hex: "1a1a1a")
     
     // Main background colors
     let backgroundPrimary = Color(hex: "131512")

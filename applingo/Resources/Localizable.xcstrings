@@ -627,9 +627,6 @@
         }
       }
     },
-    "Disabled Button" : {
-
-    },
     "Disabled state" : {
 
     },
@@ -2571,6 +2568,9 @@
           }
         }
       }
+    },
+    "Themed Button" : {
+
     },
     "This is a default section body." : {
 

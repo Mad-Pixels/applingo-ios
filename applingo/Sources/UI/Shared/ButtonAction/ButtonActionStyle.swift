@@ -12,7 +12,7 @@ struct ButtonActionStyle {
 extension ButtonActionStyle {
     static func themed(_ theme: AppTheme) -> ButtonActionStyle {
         return ButtonActionStyle(
-            backgroundColor: theme.accentDark,
+            backgroundColor: theme.accentPrimary,
             textColor: theme.accentContrast,
             font: .body.bold(),
             height: 45,
@@ -21,10 +21,10 @@ extension ButtonActionStyle {
         )
     }
     
-    static func asAction(_ theme: AppTheme) -> ButtonActionStyle {
+    static func action(_ theme: AppTheme) -> ButtonActionStyle {
         return ButtonActionStyle(
-            backgroundColor: theme.accentDark,
-            textColor: theme.accentContrast,
+            backgroundColor: theme.accentPrimary,
+            textColor: theme.textContrast,
             font: .body.bold(),
             height: 45,
             cornerRadius: 8,
@@ -32,7 +32,7 @@ extension ButtonActionStyle {
         )
     }
     
-    static func asCancel(_ theme: AppTheme) -> ButtonActionStyle {
+    static func cancel(_ theme: AppTheme) -> ButtonActionStyle {
         return ButtonActionStyle(
             backgroundColor: theme.errorBackgroundColor,
             textColor: theme.errorPrimaryColor,

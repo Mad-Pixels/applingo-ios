@@ -39,6 +39,7 @@ struct DictionaryRemoteList: View {
                     locale: locale,
                     onFilter: { isShowingFilterView = true }
                 )
+                .padding(.bottom, 42)
             }
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarItems(

@@ -4,6 +4,7 @@ struct LightTheme: AppTheme {
     // Main text colors
     let textPrimary = Color(hex: "1a1a1a")
     let textSecondary = Color(hex: "666666")
+    let textContrast = Color(hex: "f5f7f4")
     
     // Main background colors
     let backgroundPrimary = Color.white

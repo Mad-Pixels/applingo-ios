@@ -4,6 +4,7 @@ protocol AppTheme {
     // Main text colors
     var textPrimary: Color { get }
     var textSecondary: Color { get }
+    var textContrast: Color { get }
     
     // Main background colors
     var backgroundPrimary: Color { get }
