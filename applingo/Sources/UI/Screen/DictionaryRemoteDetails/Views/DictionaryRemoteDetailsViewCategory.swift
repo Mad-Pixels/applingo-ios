@@ -36,8 +36,8 @@ struct DictionaryRemoteDetailsViewCategory: View {
                     isEditing: false
                 )
             }
+            .padding(.horizontal, 8)
+            .background(Color.clear)
         }
-        .padding(.horizontal, 8)
-        .background(Color.clear)
     }
 }

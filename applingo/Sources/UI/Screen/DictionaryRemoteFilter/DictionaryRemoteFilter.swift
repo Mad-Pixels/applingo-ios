@@ -7,9 +7,10 @@ struct DictionaryRemoteFilter: View {
     @StateObject private var categoryGetter = CategoryRemoteGetterViewModel()
     
     @Binding var apiRequestParams: ApiDictionaryQueryRequestModel
+    @State private var selectedSortBy: ApiDictionaryQueryRequestModel.SortBy = .date
     @State private var selectedFrontCategory: CategoryItem?
     @State private var selectedBackCategory: CategoryItem?
-    @State private var selectedSortBy: ApiDictionaryQueryRequestModel.SortBy = .date
+    @State private var isPressedTrailing = false
     
     init(
         apiRequestParams: Binding<ApiDictionaryQueryRequestModel>,
@@ -25,34 +26,38 @@ struct DictionaryRemoteFilter: View {
     }
     
     var body: some View {
-        BaseScreen(screen: .dictionariesRemoteFilter,title: locale.navigationTitle) {
-            VStack(spacing: 0) {
-                Form {
+        BaseScreen(
+            screen: .dictionariesRemoteFilter,
+            title: locale.navigationTitle
+        ) {
+            ScrollView {
+                VStack(spacing: style.spacing) {
                     DictionaryRemoteFilterViewFilter(
                         categoryGetter: categoryGetter,
                         selectedFrontCategory: $selectedFrontCategory,
                         selectedBackCategory: $selectedBackCategory,
                         locale: locale
                     )
-                            
+                    .padding(style.padding)
+                    
                     DictionaryRemoteFilterViewSort(
                         selectedSortBy: $selectedSortBy,
                         locale: locale
                     )
+                    .padding(style.padding)
                 }
-                    
-                DictionaryRemoteFilterViewActions(
-                    locale: locale,
-                    onSave: saveFilters,
-                    onReset: resetFilters
-                )
+                .padding(style.padding)
             }
             .navigationTitle(locale.navigationTitle)
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarItems(
-                trailing: Button(locale.closeTitle) {
-                    presentationMode.wrappedValue.dismiss()
-                }
+                trailing: ButtonNav(
+                    style: .close(ThemeManager.shared.currentThemeStyle),
+                    onTap: {
+                        presentationMode.wrappedValue.dismiss()
+                    },
+                    isPressed: $isPressedTrailing
+                )
             )
         }
         .navigationTitle(locale.navigationTitle)
@@ -76,6 +81,12 @@ struct DictionaryRemoteFilter: View {
                 selectedBackCategory = firstCategory
             }
         }
+        
+        DictionaryRemoteFilterViewActions(
+            locale: locale,
+            onSave: saveFilters,
+            onReset: resetFilters
+        )
     }
     
     private func saveFilters() {

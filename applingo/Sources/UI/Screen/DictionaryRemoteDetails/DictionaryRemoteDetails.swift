@@ -48,18 +48,6 @@ struct DictionaryRemoteDetails: View {
                 }
                 .padding(style.padding)
                 
-                if isDownloading {
-                    ProgressView(locale.downloadingTitle)
-                        .progressViewStyle(CircularProgressViewStyle())
-                        .padding(style.padding)
-                } else {
-                    ButtonAction(
-                        title: locale.downloadTitle,
-                        action: downloadDictionary,
-                        style: .action(ThemeManager.shared.currentThemeStyle)
-                    )
-                    .padding(.bottom, 42)
-                }
             }
             .disabled(isDownloading)
             .navigationTitle(locale.navigationTitle)
@@ -72,6 +60,18 @@ struct DictionaryRemoteDetails: View {
                     },
                     isPressed: $isPressedTrailing
                 )
+            )
+        }
+        
+        if isDownloading {
+            ProgressView(locale.downloadingTitle)
+                .progressViewStyle(CircularProgressViewStyle())
+                .padding(style.padding)
+        } else {
+            ButtonAction(
+                title: locale.downloadTitle,
+                action: downloadDictionary,
+                style: .action(ThemeManager.shared.currentThemeStyle)
             )
         }
     }

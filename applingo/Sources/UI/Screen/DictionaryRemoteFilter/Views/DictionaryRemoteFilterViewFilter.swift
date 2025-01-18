@@ -25,6 +25,10 @@ struct DictionaryRemoteFilterViewFilter: View {
                 ProgressView()
                     .frame(maxWidth: .infinity)
             } else {
+                SectionHeader(
+                    title: locale.sortByTitle,
+                    style: .titled(themeManager.currentThemeStyle)
+                )
                 HStack {
                     ItemPicker(
                         selectedValue: $selectedFrontCategory,
@@ -34,9 +38,6 @@ struct DictionaryRemoteFilterViewFilter: View {
                         Text(category?.code ?? "")
                     }
                     .frame(maxWidth: .infinity)
-                    
-                    // Стрелка между пикерами
-                    //ArrowDivider()
                     
                     ItemPicker(
                         selectedValue: $selectedBackCategory,
