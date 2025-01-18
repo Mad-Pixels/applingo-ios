@@ -1,10 +1,10 @@
 import SwiftUI
 
-struct ButtonNav1: View {
+struct ButtonMenu: View {
     private let title: String
     private let subtitle: String?
     private let icon: String?
-    private let style: ButtonNavStyle1
+    private let style: ButtonMenuStyle
     private let isSelected: Bool
     private let action: () -> Void
 
@@ -13,7 +13,7 @@ struct ButtonNav1: View {
         subtitle: String? = nil,
         icon: String? = nil,
         isSelected: Bool = false,
-        style: ButtonNavStyle1 = .themed(LightTheme()),
+        style: ButtonMenuStyle = .themed(LightTheme()),
         action: @escaping () -> Void
     ) {
         self.title = title
