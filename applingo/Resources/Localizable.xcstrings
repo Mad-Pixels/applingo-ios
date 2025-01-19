@@ -2043,9 +2043,6 @@
         }
       }
     },
-    "Not enough words to play" : {
-
-    },
     "NotEnoughWords" : {
       "extractionState" : "manual",
       "localizations" : {

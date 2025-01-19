@@ -1,31 +1,20 @@
 import SwiftUI
 
 struct GameMode: View {
-    @Binding var isCoverPresented: Bool  // Флаг для закрытия всего
+    @Binding var isCoverPresented: Bool
+    let gameType: GameType
+    @Binding var selectedMode: GameModeEnum
+    @Binding var showGameContent: Bool
+    
     @StateObject private var style: GameModeStyle = .themed(ThemeManager.shared.currentThemeStyle)
     private let locale: GameModeLocale = GameModeLocale()
-    
-    // Режимы
-    @Binding var selectedMode: GameModeEnum
-    let startGame: () -> Void
-
-    // Анимация + пуш
     @State private var isAnimating = false
-    @State private var showQuizGame = false
-
-    // Упрощённый init (можно расширять по желанию)
-    init(
-        isCoverPresented: Binding<Bool>,
-        selectedMode: Binding<GameModeEnum> = .constant(.practice),
-        startGame: @escaping () -> Void = {}
-    ) {
-        self._isCoverPresented = isCoverPresented
-        self._selectedMode = selectedMode
-        self.startGame = startGame
-    }
-
+    
     var body: some View {
         ZStack {
+            MainBackground()
+                .edgesIgnoringSafeArea(.all)
+            
             VStack(spacing: style.spacing) {
                 Text(locale.selectModeTitle.uppercased())
                     .font(style.titleStyle.font)
@@ -41,58 +30,62 @@ struct GameMode: View {
                         title: locale.practiceTitle,
                         description: locale.practiceDescription,
                         style: style,
-                        isSelected: false,
+                        isSelected: selectedMode == .practice,
                         onSelect: {
                             selectMode(.practice)
                         }
                     )
+                    
                     GameModeViewCard(
                         mode: .survival,
                         icon: "heart.fill",
                         title: locale.survivalTitle,
                         description: locale.survivalDescription,
                         style: style,
-                        isSelected: false,
+                        isSelected: selectedMode == .survival,
                         onSelect: {
                             selectMode(.survival)
                         }
                     )
+                    
                     GameModeViewCard(
                         mode: .timeAttack,
                         icon: "timer",
                         title: locale.timeAttackTitle,
                         description: locale.timeAttackDescription,
                         style: style,
-                        isSelected: false,
+                        isSelected: selectedMode == .timeAttack,
                         onSelect: {
                             selectMode(.timeAttack)
                         }
                     )
                 }
-
-                // NavigationLink → QuizGameContent
-//                NavigationLink(isActive: $showQuizGame) {
-//                    Quiz(
-//                        isPresented: $showQuizGame,
-//                        closeFullScreen: $isCoverPresented  // Тоже прокидываем
-//                    )
-//                } label: {
-//                    EmptyView()
-//                }
-                .hidden()
             }
+            .padding(style.padding)
         }
+        .navigationBarTitle("Game Mode", displayMode: .inline)
         .toolbar {
-            // «Крестик» справа закрывает всё
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
-                    isCoverPresented = false // Закрыть полный экран
+                    isCoverPresented = false
                 }) {
                     Image(systemName: "xmark")
                 }
             }
         }
-        .navigationBarTitle("Game Mode", displayMode: .inline)
+        .background(
+            NavigationLink(isActive: $showGameContent) {
+                makeGameContent()
+                    .navigationBarBackButtonHidden(true)
+                    .navigationBarItems(
+                        leading: Button(action: { showGameContent = false }) {
+                            Image(systemName: "chevron.left")
+                        }
+                    )
+            } label: {
+                EmptyView()
+            }
+        )
         .onAppear {
             withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
                 isAnimating = true
@@ -103,8 +96,19 @@ struct GameMode: View {
     private func selectMode(_ mode: GameModeEnum) {
         selectedMode = mode
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-            showQuizGame = true
-            startGame()
+            showGameContent = true
+        }
+    }
+    
+    @ViewBuilder
+    private func makeGameContent() -> some View {
+        switch gameType {
+        case .quiz:
+            GameQuiz()
+        case .match:
+            GameQuiz() // Замените на GameMatch() когда будет реализован
+        case .swipe:
+            GameQuiz() // Замените на GameSwipe() когда будет реализован
         }
     }
 }
