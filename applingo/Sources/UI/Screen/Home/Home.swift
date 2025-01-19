@@ -7,12 +7,6 @@ struct Home: View {
     init(style: HomeStyle? = nil) {
         let initialStyle = style ?? .themed(ThemeManager.shared.currentThemeStyle)
         _style = StateObject(wrappedValue: initialStyle)
-        
-//        let appearance = UINavigationBarAppearance()
-//        appearance.configureWithTransparentBackground()
-//        UINavigationBar.appearance().standardAppearance = appearance
-//        UINavigationBar.appearance().compactAppearance = appearance
-//        UINavigationBar.appearance().scrollEdgeAppearance = appearance
     }
     
     var body: some View {
@@ -23,36 +17,36 @@ struct Home: View {
             Color.clear
             
             ZStack {
-//                MainBackground()
-//                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-//                    .ignoresSafeArea()
+                MainBackground()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .ignoresSafeArea()
                 
                 VStack {
                     Spacer()
                     
-//                    VStack(spacing: style.spacing) {
-//                        ButtonIcon(
-//                            title: locale.quizTitle,
-//                            icon: "laser.burst",
-//                            style: .asGameSelect(ThemeManager.shared.currentThemeStyle.quizTheme)
-//                        )
-//                        
-//                        ButtonIcon(
-//                            title: locale.matchHuntTitle,
-//                            icon: "puzzlepiece",
-//                            style: .asGameSelect(ThemeManager.shared.currentThemeStyle.matchTheme)
-//                        )
-//                        
-//                        ButtonIcon(
-//                            title: locale.verifyItTitle,
-//                            icon: "number",
-//                            style: .asGameSelect(ThemeManager.shared.currentThemeStyle.swipeTheme)
-//                        )
-//                    }
-//                    .padding(style.padding)
-//                    .glassBackground()
-//                    .padding(.horizontal, 24)
-                    
+                    VStack(spacing: style.spacing) {
+                        ButtonIcon(
+                            title: locale.quizTitle,
+                            icon: "laser.burst",
+                            style: .asGameSelect(ThemeManager.shared.currentThemeStyle.quizTheme)
+                        )
+                        
+                        ButtonIcon(
+                            title: locale.matchHuntTitle,
+                            icon: "puzzlepiece",
+                            style: .asGameSelect(ThemeManager.shared.currentThemeStyle.matchTheme)
+                        )
+                        
+                        ButtonIcon(
+                            title: locale.verifyItTitle,
+                            icon: "number",
+                            style: .asGameSelect(ThemeManager.shared.currentThemeStyle.swipeTheme)
+                        )
+                    }
+                    .padding(style.padding)
+                    .glassBackground()
+                    .padding(.horizontal, 24)
+
                     Spacer()
                 }
             }
