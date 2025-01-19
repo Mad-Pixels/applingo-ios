@@ -4,7 +4,7 @@ struct Home: View {
     @StateObject private var style: HomeStyle
     @StateObject private var locale = HomeLocale()
     @State private var showGameMode = false
-    @State private var selectedGame: GameType = .quiz // Сразу инициализируем значением
+    @State private var selectedGame: GameType = .quiz
     
     init(style: HomeStyle? = nil) {
         let initialStyle = style ?? .themed(ThemeManager.shared.currentThemeStyle)
@@ -58,14 +58,7 @@ struct Home: View {
             .padding(.horizontal, 24)
         }
         .fullScreenCover(isPresented: $showGameMode) {
-            NavigationView {
-                GameMode(
-                    isCoverPresented: $showGameMode,
-                    gameType: selectedGame,
-                    selectedMode: .constant(.practice),
-                    showGameContent: .constant(false)
-                )
-            }
+            GameMode(game: selectedGame, isPresented: $showGameMode)
         }
     }
 }

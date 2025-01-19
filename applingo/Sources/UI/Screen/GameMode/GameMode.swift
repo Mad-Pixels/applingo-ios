@@ -1,94 +1,94 @@
 import SwiftUI
 
 struct GameMode: View {
-    @Binding var isCoverPresented: Bool
-    let gameType: GameType
-    @Binding var selectedMode: GameModeEnum
-    @Binding var showGameContent: Bool
+    let game: GameType
+    @Binding var isPresented: Bool
     
-    @StateObject private var style: GameModeStyle = .themed(ThemeManager.shared.currentThemeStyle)
     private let locale: GameModeLocale = GameModeLocale()
+    @StateObject private var style: GameModeStyle = .themed(ThemeManager.shared.currentThemeStyle)
+    @State private var selectedMode: GameModeEnum = .practice
+    @State private var showGameContent = false
     @State private var isAnimating = false
     
     var body: some View {
-        ZStack {
-            MainBackground()
-                .edgesIgnoringSafeArea(.all)
-            
-            VStack(spacing: style.spacing) {
-                Text(locale.selectModeTitle.uppercased())
-                    .font(style.titleStyle.font)
-                    .foregroundColor(style.titleStyle.color)
-                    .padding(.top)
-                    .opacity(isAnimating ? 1 : 0)
-                    .offset(y: isAnimating ? 0 : 20)
+        NavigationView {
+            ZStack {
+                MainBackground()
+                    .edgesIgnoringSafeArea(.all)
+                
+                VStack(spacing: style.spacing) {
+                    Text(locale.selectModeTitle.uppercased())
+                        .font(style.titleStyle.font)
+                        .foregroundColor(style.titleStyle.color)
+                        .padding(.top)
+                        .opacity(isAnimating ? 1 : 0)
+                        .offset(y: isAnimating ? 0 : 20)
 
-                VStack(spacing: style.cardSpacing) {
-                    GameModeViewCard(
-                        mode: .practice,
-                        icon: "graduationcap.fill",
-                        title: locale.practiceTitle,
-                        description: locale.practiceDescription,
-                        style: style,
-                        isSelected: selectedMode == .practice,
-                        onSelect: {
-                            selectMode(.practice)
-                        }
-                    )
-                    
-                    GameModeViewCard(
-                        mode: .survival,
-                        icon: "heart.fill",
-                        title: locale.survivalTitle,
-                        description: locale.survivalDescription,
-                        style: style,
-                        isSelected: selectedMode == .survival,
-                        onSelect: {
-                            selectMode(.survival)
-                        }
-                    )
-                    
-                    GameModeViewCard(
-                        mode: .timeAttack,
-                        icon: "timer",
-                        title: locale.timeAttackTitle,
-                        description: locale.timeAttackDescription,
-                        style: style,
-                        isSelected: selectedMode == .timeAttack,
-                        onSelect: {
-                            selectMode(.timeAttack)
-                        }
-                    )
+                    VStack(spacing: style.cardSpacing) {
+                        GameModeViewCard(
+                            mode: .practice,
+                            icon: "graduationcap.fill",
+                            title: locale.practiceTitle,
+                            description: locale.practiceDescription,
+                            style: style,
+                            isSelected: selectedMode == .practice,
+                            onSelect: {
+                                selectMode(.practice)
+                            }
+                        )
+                        
+                        GameModeViewCard(
+                            mode: .survival,
+                            icon: "heart.fill",
+                            title: locale.survivalTitle,
+                            description: locale.survivalDescription,
+                            style: style,
+                            isSelected: selectedMode == .survival,
+                            onSelect: {
+                                selectMode(.survival)
+                            }
+                        )
+                        
+                        GameModeViewCard(
+                            mode: .timeAttack,
+                            icon: "timer",
+                            title: locale.timeAttackTitle,
+                            description: locale.timeAttackDescription,
+                            style: style,
+                            isSelected: selectedMode == .timeAttack,
+                            onSelect: {
+                                selectMode(.timeAttack)
+                            }
+                        )
+                    }
+                }
+                .padding(style.padding)
+            }
+            .navigationBarTitle("Game Mode", displayMode: .inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: { isPresented = false }) {
+                        Image(systemName: "xmark")
+                    }
                 }
             }
-            .padding(style.padding)
-        }
-        .navigationBarTitle("Game Mode", displayMode: .inline)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: {
-                    isCoverPresented = false
-                }) {
-                    Image(systemName: "xmark")
+            .background(
+                NavigationLink(isActive: $showGameContent) {
+                    makeGameContent()
+                        .navigationBarBackButtonHidden(true)
+                        .navigationBarItems(
+                            leading: Button(action: { showGameContent = false }) {
+                                Image(systemName: "chevron.left")
+                            }
+                        )
+                } label: {
+                    EmptyView()
                 }
-            }
-        }
-        .background(
-            NavigationLink(isActive: $showGameContent) {
-                makeGameContent()
-                    .navigationBarBackButtonHidden(true)
-                    .navigationBarItems(
-                        leading: Button(action: { showGameContent = false }) {
-                            Image(systemName: "chevron.left")
-                        }
-                    )
-            } label: {
-                EmptyView()
-            }
-        )
-        .onAppear {
-            withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
-                isAnimating = true
+            )
+            .onAppear {
+                withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                    isAnimating = true
+                }
             }
         }
     }
@@ -102,13 +102,13 @@ struct GameMode: View {
     
     @ViewBuilder
     private func makeGameContent() -> some View {
-        switch gameType {
+        switch game {
         case .quiz:
             GameQuiz()
         case .match:
-            GameQuiz() // Замените на GameMatch() когда будет реализован
+            GameQuiz() // Заменить на GameMatch когда будет готов
         case .swipe:
-            GameQuiz() // Замените на GameSwipe() когда будет реализован
+            GameQuiz() // Заменить на GameSwipe когда будет готов
         }
     }
 }
