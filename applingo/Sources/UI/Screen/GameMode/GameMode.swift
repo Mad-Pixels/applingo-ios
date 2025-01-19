@@ -11,7 +11,7 @@ struct GameMode: View {
     @State private var isAnimating = false
     
     var body: some View {
-        NavigationView {
+        BaseGameScreen(title: "Game Mode") {
             ZStack {
                 MainBackground()
                     .edgesIgnoringSafeArea(.all)
@@ -64,7 +64,6 @@ struct GameMode: View {
                 }
                 .padding(style.padding)
             }
-            .navigationBarTitle("Game Mode", displayMode: .inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: { isPresented = false }) {
