@@ -1,4 +1,4 @@
-protocol GameProtocol {
+protocol AbstractGame {
     // Базовые характеристики игры
     var type: GameType { get }
     var minimumWordsRequired: Int { get }

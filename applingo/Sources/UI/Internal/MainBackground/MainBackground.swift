@@ -1,24 +1,24 @@
 import SwiftUI
 
 struct MainBackground: View {
-    @ObservedObject private var manager = MainBackgroundManager.shared
+    @StateObject private var manager = MainBackgroundManager.shared
     
     var body: some View {
-        let theme = ThemeManager.shared.currentThemeStyle
+        ZStack {
+            let theme = ThemeManager.shared.currentThemeStyle
+            let words = manager.backgroundWords
             
-        GeometryReader { geometry in
-            ZStack {
-                ForEach(manager.backgroundWords, id: \.id) { word in
+            if !words.isEmpty {
+                ForEach(words, id: \.id) { word in
                     Text(word.word)
                         .font(Font(word.font))
                         .position(word.position)
                         .foregroundColor(theme.textSecondary.opacity(word.opacity))
                 }
             }
-            .frame(width: geometry.size.width, height: geometry.size.height)
-            .onAppear {
-                manager.generateIfNeeded(for: geometry.size)
-            }
+        }
+        .onAppear {
+            manager.generateIfNeeded(for: UIScreen.main.bounds.size)
         }
     }
 }

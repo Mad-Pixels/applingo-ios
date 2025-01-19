@@ -2,10 +2,12 @@ import SwiftUI
 
 final class MainBackgroundManager: ObservableObject {
     static let shared = MainBackgroundManager()
-    
+   
     @Published private(set) var backgroundWords: [(id: UUID, word: String, position: CGPoint, font: UIFont, opacity: Double)] = []
-    private var hasGenerated = false
-    
+   
+    private static var isFirstLaunchGenerated = false
+    private let lock = NSLock()
+   
     private let languages = [
         "HELLO", "BONJOUR", "HOLA", "CIAO", "ПРИВЕТ", "HALLO", "你好", "こんにちは", "안녕하세요", "مرحبا", "שָׁלוֹם",
         "NAMASTE", "SAWADEE", "MERHABA", "OLÁ", "ЗДРАВЕЙТЕ", "ΓΕΙΑ ΣΑΣ", "JAMBO", "BONGU", "XIN CHÀO",
@@ -36,7 +38,7 @@ final class MainBackgroundManager: ObservableObject {
         "FUTURE", "AVENIR", "FUTURO", "FUTURO", "БУДУЩЕЕ", "ZUKUNFT", "未来", "未来", "미래", "مستقبل", "עָתִיד",
         "DREAM", "RÊVE", "SUEÑO", "SOGNO", "МЕЧТА", "TRAUM", "梦想", "夢", "꿈", "حلم", "חֲלוֹם"
     ]
-    
+   
     private let padding: CGFloat = 2
     private let maxWords = 200
     private let minFontSize: CGFloat = 14
@@ -44,24 +46,35 @@ final class MainBackgroundManager: ObservableObject {
     private let minOpacity: Double = 0.1
     private let maxOpacity: Double = 0.2
     private let maxAttempts = 100
-    
+   
     private init() {}
-    
+   
     func generateIfNeeded(for size: CGSize) {
-        guard !hasGenerated else { return }
+        lock.lock()
+        defer { lock.unlock() }
+       
+        guard !MainBackgroundManager.isFirstLaunchGenerated else { return }
+        guard size.width > 0 && size.height > 0 else { return }
         generateBackground(for: size)
-        hasGenerated = true
+        MainBackgroundManager.isFirstLaunchGenerated = true
     }
-    
+   
     private func generateBackground(for size: CGSize) {
-        backgroundWords.removeAll()
+        var newWords: [
+            (id: UUID, word: String, position: CGPoint, font: UIFont, opacity: Double)
+        ] = []
         var occupiedRects: [CGRect] = []
+
+        guard size.width > (padding * 2) && size.height > (padding * 2) else { return }
 
         for _ in 0..<maxWords {
             let word = languages.randomElement() ?? "Hello"
             let font = generateRandomFont()
             let textSize = word.size(withAttributes: [.font: font])
-            
+           
+            guard textSize.width < size.width - (padding * 2),
+                  textSize.height < size.height - (padding * 2) else { continue }
+           
             if let position = findAvailablePosition(
                 for: textSize,
                 in: size,
@@ -73,10 +86,10 @@ final class MainBackgroundManager: ObservableObject {
                     width: textSize.width,
                     height: textSize.height
                 ).insetBy(dx: -padding, dy: -padding)
-                
+               
                 occupiedRects.append(expandedRect)
-                
-                backgroundWords.append((
+               
+                newWords.append((
                     id: UUID(),
                     word: word,
                     position: CGPoint(
@@ -88,11 +101,13 @@ final class MainBackgroundManager: ObservableObject {
                 ))
             }
         }
+       
+        self.backgroundWords = newWords
     }
-    
+   
     private func generateRandomFont() -> UIFont {
         let fontSize = CGFloat.random(in: minFontSize...maxFontSize)
-        
+       
         switch Int.random(in: 0...4) {
         case 0:
             return .systemFont(ofSize: fontSize, weight: .regular)
@@ -106,37 +121,44 @@ final class MainBackgroundManager: ObservableObject {
             return .systemFont(ofSize: fontSize, weight: .medium)
         }
     }
-    
+   
     private func findAvailablePosition(
         for size: CGSize,
         in boundingSize: CGSize,
         avoiding occupiedRects: [CGRect]
     ) -> CGPoint? {
+        let minX = padding
+        let minY = padding
         let maxX = boundingSize.width - size.width - padding
         let maxY = boundingSize.height - size.height - padding
-        
+       
+        guard maxX > minX && maxY > minY else { return nil }
+       
         for _ in 0..<maxAttempts {
-            let x = CGFloat.random(in: padding...maxX)
-            let y = CGFloat.random(in: padding...maxY)
+            let x = CGFloat.random(in: minX...maxX)
+            let y = CGFloat.random(in: minY...maxY)
+           
             let proposedRect = CGRect(x: x, y: y, width: size.width, height: size.height)
             let expandedRect = proposedRect.insetBy(dx: -padding, dy: -padding)
-            
+           
             let hasSignificantOverlap = occupiedRects.contains { existing in
                 let intersection = existing.intersection(expandedRect)
                 return intersection.width > size.width * 0.3
                     || intersection.height > size.height * 0.3
             }
-            
+           
             if !hasSignificantOverlap {
                 return CGPoint(x: x, y: y)
             }
         }
-        
+       
         return nil
     }
-    
+   
     func reset() {
-        hasGenerated = false
+        lock.lock()
+        defer { lock.unlock() }
         backgroundWords.removeAll()
+        MainBackgroundManager.isFirstLaunchGenerated = false
     }
 }

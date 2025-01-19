@@ -26,9 +26,6 @@ struct GameMode: View {
 
     var body: some View {
         ZStack {
-            MainBackground()
-                .edgesIgnoringSafeArea(.all)
-            
             VStack(spacing: style.spacing) {
                 Text(locale.selectModeTitle.uppercased())
                     .font(style.titleStyle.font)
@@ -74,14 +71,14 @@ struct GameMode: View {
                 }
 
                 // NavigationLink → QuizGameContent
-                NavigationLink(isActive: $showQuizGame) {
-                    QuizGameContent(
-                        isPresented: $showQuizGame,
-                        closeFullScreen: $isCoverPresented  // Тоже прокидываем
-                    )
-                } label: {
-                    EmptyView()
-                }
+//                NavigationLink(isActive: $showQuizGame) {
+//                    Quiz(
+//                        isPresented: $showQuizGame,
+//                        closeFullScreen: $isCoverPresented  // Тоже прокидываем
+//                    )
+//                } label: {
+//                    EmptyView()
+//                }
                 .hidden()
             }
         }

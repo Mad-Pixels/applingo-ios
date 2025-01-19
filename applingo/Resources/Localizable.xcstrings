@@ -209,9 +209,6 @@
     "Back Button" : {
 
     },
-    "Back to GameMode" : {
-
-    },
     "Cancel" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -343,9 +340,6 @@
       }
     },
     "Close Button" : {
-
-    },
-    "Close FullScreen" : {
 
     },
     "ComposeTheTranslation" : {
@@ -1976,9 +1970,6 @@
     "Low progress" : {
 
     },
-    "Match Hunt Game Content" : {
-
-    },
     "MatchHunt" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2170,9 +2161,6 @@
           }
         }
       }
-    },
-    "Quiz Game" : {
-
     },
     "Quiz Game Content" : {
 
@@ -2641,9 +2629,6 @@
           }
         }
       }
-    },
-    "Verify It Game Content" : {
-
     },
     "VerifyIt" : {
       "extractionState" : "manual",

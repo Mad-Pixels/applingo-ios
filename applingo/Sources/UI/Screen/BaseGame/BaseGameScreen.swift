@@ -3,22 +3,18 @@ import SwiftUI
 struct BaseGameScreen<Content: View>: View {
     @Environment(\.presentationMode) private var presentationMode
     
-    private let game: GameProtocol
+    private let game: AbstractGame
     private let content: Content
     
     @State private var selectedMode: GameModeEnum = .practice
     @State private var showGame = false
-    
-    // Добавляем флаг для передачи в GameMode
-    @Binding var isCoverPresented: Bool
+    @State private var isCoverPresented = true 
     
     init(
-        game: GameProtocol,
-        isCoverPresented: Binding<Bool>,
+        game: AbstractGame,
         @ViewBuilder content: () -> Content
     ) {
         self.game = game
-        self._isCoverPresented = isCoverPresented
         self.content = content()
     }
     
@@ -35,7 +31,6 @@ struct BaseGameScreen<Content: View>: View {
                         }
                     )
             } label: {
-                // Теперь передаем isCoverPresented
                 GameMode(
                     isCoverPresented: $isCoverPresented,
                     selectedMode: $selectedMode,
