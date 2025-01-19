@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct DictionaryRowModel {
+struct DictionaryLocalRowModel {
     let title: String
     let category: String
     let subcategory: String

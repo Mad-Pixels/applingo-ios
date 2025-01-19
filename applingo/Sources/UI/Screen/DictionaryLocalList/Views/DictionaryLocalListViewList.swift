@@ -18,7 +18,7 @@ struct DictionaryLocalListViewList: View {
    }
    
    var body: some View {
-       ItemList<DictionaryItemModel, DictionaryRow>(
+       ItemList<DictionaryItemModel, DictionaryLocalRow>(
            items: $dictionaryGetter.dictionaries,
            style: .themed(themeManager.currentThemeStyle),
            isLoadingPage: dictionaryGetter.isLoadingPage,
@@ -30,8 +30,8 @@ struct DictionaryLocalListViewList: View {
            onDelete: delete,
            onItemTap: onDictionarySelect
        ) { dictionary in
-           DictionaryRow(
-            model: DictionaryRowModel(
+           DictionaryLocalRow(
+            model: DictionaryLocalRowModel(
                 title: dictionary.displayName,
                 category: dictionary.category,
                 subcategory: dictionary.subcategory,

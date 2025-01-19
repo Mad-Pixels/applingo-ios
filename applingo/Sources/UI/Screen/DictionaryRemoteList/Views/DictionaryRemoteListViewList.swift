@@ -17,7 +17,7 @@ struct DictionaryRemoteListViewList: View {
    }
    
    var body: some View {
-       ItemList<DictionaryItemModel, DictionaryRow>(
+       ItemList<DictionaryItemModel, DictionaryRemoteRow>(
            items: $dictionaryGetter.dictionaries,
            style: .themed(themeManager.currentThemeStyle),
            isLoadingPage: dictionaryGetter.isLoadingPage,
@@ -28,14 +28,13 @@ struct DictionaryRemoteListViewList: View {
            },
            onItemTap: onDictionarySelect
        ) { dictionary in
-           DictionaryRow(
-            model: DictionaryRowModel(
+           DictionaryRemoteRow(
+            model: DictionaryRemoteRowModel(
                 title: dictionary.displayName,
                 category: dictionary.category,
                 subcategory: dictionary.subcategory,
                 description: dictionary.description,
-                wordsCount: 1234,
-                isActive: dictionary.isActive
+                wordsCount: 1234
             ),
 
                style: .themed(themeManager.currentThemeStyle),

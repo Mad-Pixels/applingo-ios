@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct DictionaryRowStyle {
+struct DictionaryRemoteRowStyle {
     let titleColor: Color
     let accentColor: Color
     let subtitleColor: Color
@@ -9,8 +9,8 @@ struct DictionaryRowStyle {
     let wordCountFont: Font
     let spacing: CGFloat
     
-    static func themed(_ theme: AppTheme) -> DictionaryRowStyle {
-        DictionaryRowStyle(
+    static func themed(_ theme: AppTheme) -> DictionaryRemoteRowStyle {
+        DictionaryRemoteRowStyle(
             titleColor: theme.textPrimary,
             accentColor: theme.accentPrimary,
             subtitleColor: theme.textSecondary,

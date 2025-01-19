@@ -1,16 +1,16 @@
 import SwiftUI
 
-struct DictionaryRow_Previews: PreviewProvider {
+struct DictionaryLocalRow_Previews: PreviewProvider {
     static var previews: some View {
-        DictionaryRowPreview()
+        DictionaryLocalRowPreview()
             .previewDisplayName("Dictionary Row Component")
             .previewLayout(.sizeThatFits)
             .padding()
     }
 }
 
-private struct DictionaryRowPreview: View {
-    static let previewModel = DictionaryRowModel(
+private struct DictionaryLocalRowPreview: View {
+    static let previewModel = DictionaryLocalRowModel(
         title: "English - Russian",
         category: "Language",
         subcategory: "Basic",
@@ -19,7 +19,7 @@ private struct DictionaryRowPreview: View {
         isActive: true
     )
     
-    static let languageModel = DictionaryRowModel(
+    static let languageModel = DictionaryLocalRowModel(
         title: "Language Model",
         category: "Language",
         subcategory: "ru-en",
@@ -28,7 +28,7 @@ private struct DictionaryRowPreview: View {
         isActive: true
     )
     
-    static let inactiveModel = DictionaryRowModel(
+    static let inactiveModel = DictionaryLocalRowModel(
         title: "Spanish - Russian",
         category: "Language",
         subcategory: "Advanced",
@@ -37,7 +37,7 @@ private struct DictionaryRowPreview: View {
         isActive: false
     )
     
-    static let longTextModel = DictionaryRowModel(
+    static let longTextModel = DictionaryLocalRowModel(
         title: "This is a very long dictionary title",
         category: "Special",
         subcategory: "Professional Terms",
@@ -71,7 +71,7 @@ private struct DictionaryRowPreview: View {
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     
-                    DictionaryRow(
+                    DictionaryLocalRow(
                         model: Self.previewModel,
                         style: .themed(theme),
                         onTap: { print("Tapped active dictionary") },
@@ -87,7 +87,7 @@ private struct DictionaryRowPreview: View {
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     
-                    DictionaryRow(
+                    DictionaryLocalRow(
                         model: Self.languageModel,
                         style: .themed(theme),
                         onTap: { print("Tapped active dictionary") },
@@ -103,7 +103,7 @@ private struct DictionaryRowPreview: View {
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     
-                    DictionaryRow(
+                    DictionaryLocalRow(
                         model: Self.inactiveModel,
                         style: .themed(theme),
                         onTap: { print("Tapped inactive dictionary") },
@@ -119,7 +119,7 @@ private struct DictionaryRowPreview: View {
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     
-                    DictionaryRow(
+                    DictionaryLocalRow(
                         model: Self.longTextModel,
                         style: .themed(theme),
                         onTap: { print("Tapped long text dictionary") },

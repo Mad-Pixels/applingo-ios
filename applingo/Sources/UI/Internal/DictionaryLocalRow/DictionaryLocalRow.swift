@@ -1,8 +1,8 @@
 import SwiftUI
 
-struct DictionaryRow: View {
-    let model: DictionaryRowModel
-    let style: DictionaryRowStyle
+struct DictionaryLocalRow: View {
+    let model: DictionaryLocalRowModel
+    let style: DictionaryLocalRowStyle
     let onTap: () -> Void
     let onToggle: (Bool) -> Void
     
