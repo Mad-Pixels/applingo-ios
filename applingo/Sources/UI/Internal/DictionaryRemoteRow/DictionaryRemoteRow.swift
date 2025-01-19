@@ -3,8 +3,12 @@ import SwiftUI
 struct DictionaryRemoteRow: View {
     let model: DictionaryRemoteRowModel
     let style: DictionaryRemoteRowStyle
+    let dictionary: DictionaryItemModel
     let onTap: () -> Void
     let onToggle: (Bool) -> Void
+    
+    @State private var isDownloadPressed = false
+    @State private var isDownloading = false
     
     var body: some View {
         SectionBody {
@@ -42,10 +46,43 @@ struct DictionaryRemoteRow: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 
-                
+                ButtonNav(
+                    style: .download(ThemeManager.shared.currentThemeStyle, disabled: !true),
+                    onTap: downloadDictionary,
+                    isPressed: $isDownloadPressed
+                )
+                .disabled(!true)
             }
         }
         .contentShape(Rectangle())
         .onTapGesture(perform: onTap)
+    }
+    
+    private func downloadDictionary() {
+        isDownloading = true
+        Task {
+            do {
+                let fileURL = try await RepositoryCache.shared.downloadDictionary(dictionary)
+                let (downloadedDictionary, words) = try CSVManager.shared.parse(
+                    url: fileURL,
+                    dictionaryItem: dictionary
+                )
+                try CSVManager.shared.saveToDatabase(dictionary: downloadedDictionary, words: words)
+                try? FileManager.default.removeItem(at: fileURL)
+                
+                await MainActor.run {
+                    isDownloading = false
+                    NotificationCenter.default.post(name: .dictionaryListShouldUpdate, object: nil)
+                }
+            } catch {
+                await MainActor.run {
+                    isDownloading = false
+                    ErrorManager.shared.process(
+                        error,
+                        screen: .dictionariesRemote
+                    )
+                }
+            }
+        }
     }
 }

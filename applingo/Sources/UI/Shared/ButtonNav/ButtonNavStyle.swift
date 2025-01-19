@@ -56,4 +56,16 @@ struct ButtonNavStyle {
             iconSize: 14
         )
     }
+    
+    static func download(_ theme: AppTheme, disabled: Bool = false) -> ButtonNavStyle {
+        ButtonNavStyle(
+            icon: "square.and.arrow.down",
+            backgroundColor: theme.backgroundSecondary,
+            activeBackgroundColor: theme.backgroundSecondary.opacity(0.8),
+            iconColor: disabled ? theme.textSecondary.opacity(0.35) : theme.textSecondary,
+            size: 32,
+            cornerRadius: 16,
+            iconSize: 14
+        )
+    }
 }

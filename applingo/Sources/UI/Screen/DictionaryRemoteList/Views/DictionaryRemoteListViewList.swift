@@ -38,6 +38,7 @@ struct DictionaryRemoteListViewList: View {
             ),
 
                style: .themed(themeManager.currentThemeStyle),
+            dictionary: dictionary,
                onTap: {
                    onDictionarySelect(dictionary)
                },
