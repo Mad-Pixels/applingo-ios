@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct ButtonIconStyle {
+    let pattern: DynamicPatternModel
     let backgroundColor: Color
     let foregroundColor: Color
     let iconColor: Color
@@ -17,11 +18,12 @@ struct ButtonIconStyle {
 }
 
 extension ButtonIconStyle {
-    static func themed(_ theme: AppTheme, color: Color) -> ButtonIconStyle {
+    static func themed(_ theme: AppTheme) -> ButtonIconStyle {
         ButtonIconStyle(
+            pattern: theme.mainPattern,
             backgroundColor: theme.backgroundPrimary,
             foregroundColor: theme.textPrimary,
-            iconColor: color,
+            iconColor: theme.cardBorder,
             font: .body.bold(),
             iconSize: 75,
             iconRotation: 45,
@@ -34,8 +36,9 @@ extension ButtonIconStyle {
         )
     }
 
-    static func asGameSelect(_ gameTheme: GameTheme) -> ButtonIconStyle {
+    static func asGameSelect(_ theme: AppTheme, _ gameTheme: GameTheme) -> ButtonIconStyle {
         ButtonIconStyle(
+            pattern: theme.mainPattern,
             backgroundColor: gameTheme.main.opacity(0.1),
             foregroundColor: .white,
             iconColor: gameTheme.main,

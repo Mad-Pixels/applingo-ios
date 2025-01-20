@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct DynamicPaletteConfig {
+struct DynamicPatternConfig {
     let opacities: [CGFloat]
     let numberOfPaths: Int
     let numberOfSplashes: Int
@@ -9,7 +9,7 @@ struct DynamicPaletteConfig {
     let maxRadius: CGFloat
     let minRadius: CGFloat
 
-    static let `default` = DynamicPaletteConfig(
+    static let `default` = DynamicPatternConfig(
         opacities: [0.95, 0.9, 0.98],
         numberOfPaths: 8,
         numberOfSplashes: 50,

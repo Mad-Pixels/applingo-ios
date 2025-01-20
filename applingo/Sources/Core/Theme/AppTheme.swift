@@ -40,6 +40,9 @@ protocol AppTheme {
     var errorSecondaryColor: Color { get }
     var errorBackgroundColor: Color { get }
     
+    // Patterns
+    var mainPattern: DynamicPatternModel { get }
+    
     // Game themes
     var quizTheme: GameTheme { get }
     var matchTheme: GameTheme { get }

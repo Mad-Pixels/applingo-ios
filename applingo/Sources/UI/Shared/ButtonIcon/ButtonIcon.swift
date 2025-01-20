@@ -10,10 +10,7 @@ struct ButtonIcon: View {
         title: String,
         icon: String,
         action: @escaping () -> Void = {},
-        style: ButtonIconStyle = .themed(
-            ThemeManager.shared.currentThemeStyle,
-            color: ThemeManager.shared.currentThemeStyle.accentPrimary
-        )
+        style: ButtonIconStyle = .themed(ThemeManager.shared.currentThemeStyle)
     ) {
         self.title = title
         self.icon = icon
@@ -41,31 +38,15 @@ struct ButtonIcon: View {
             }
             .frame(maxWidth: .infinity)
             .frame(height: style.height)
-            .background(DynamicPalette(
-                model: DynamicPaletteModel(colors: [
-                    Color(red: 0.6, green: 0.7, blue: 0.75), // Приглушенный голубой
-                                        Color(red: 0.75, green: 0.6, blue: 0.7), // Приглушенный розовый
-                                        Color(red: 0.7, green: 0.75, blue: 0.65), // Приглушенный зеленый
-                                        Color(red: 0.65, green: 0.65, blue: 0.75), // Приглушенный фиолетовый
-                                        Color(red: 0.75, green: 0.75, blue: 0.65)
-                   
-                ]),
-                size: CGSize(width: 250, height:  100)
-            ))
+            .background(style.backgroundColor)
             .cornerRadius(style.cornerRadius)
             .overlay(
                 GeometryReader { geometry in
                     RoundedRectangle(cornerRadius: style.cornerRadius)
                         .strokeBorder(.clear, lineWidth: 8)
                         .background(
-                            DynamicPalette(
-                                model: DynamicPaletteModel(colors: [
-                                    Color(red: 0.8, green: 0.9, blue: 0.95), // Светло-голубой
-                                    Color(red: 0.95, green: 0.8, blue: 0.9), // Нежно-розовый
-                                    Color(red: 0.9, green: 0.95, blue: 0.85), // Светло-зеленый
-                                    Color(red: 0.85, green: 0.85, blue: 0.95), // Светло-фиолетовый
-                                    Color(red: 0.95, green: 0.95, blue: 0.85) // Светло-кремовый
-                                ]),
+                            DynamicPattern(
+                                model: style.pattern,
                                 size: CGSize(width: geometry.size.width * 2, height: geometry.size.height * 2)
                             )
                         )

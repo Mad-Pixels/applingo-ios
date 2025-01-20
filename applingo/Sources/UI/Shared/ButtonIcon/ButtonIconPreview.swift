@@ -29,13 +29,13 @@ private struct ButtonSelectGamePreview: View {
             ButtonIcon(
                 title: "Play Game",
                 icon: "gamecontroller.fill",
-                style: .themed(theme, color: theme.accentPrimary)
+                style: .themed(theme)
             )
             
             ButtonIcon(
                 title: "Quiz",
                 icon: "gearshape.fill",
-                style: .asGameSelect(theme.quizTheme)
+                style: .asGameSelect(theme, theme.quizTheme)
             )
         }
         .padding()

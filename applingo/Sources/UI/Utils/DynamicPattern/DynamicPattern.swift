@@ -1,14 +1,14 @@
 import SwiftUI
 
-struct DynamicPalette: View {
-    let config: DynamicPaletteConfig
-    let model: DynamicPaletteModel
+struct DynamicPattern: View {
+    let config: DynamicPatternConfig
+    let model: DynamicPatternModel
     let size: CGSize
     
     init(
-        model: DynamicPaletteModel,
+        model: DynamicPatternModel,
         size: CGSize,
-        config: DynamicPaletteConfig = .default
+        config: DynamicPatternConfig = .default
     ) {
         self.config = config
         self.model = model

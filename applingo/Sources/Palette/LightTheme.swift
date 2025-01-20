@@ -40,6 +40,16 @@ struct LightTheme: AppTheme {
     var errorSecondaryColor: Color { Color(hex: "ef4444") }
     var errorBackgroundColor: Color { Color(hex: "fee2e2") }
         
+    // Patterns
+    var mainPattern = DynamicPatternModel(colors: [
+        Color(red: 0.75, green: 0.75, blue: 0.85),
+        Color(red: 0.85, green: 0.75, blue: 0.75),
+        Color(red: 0.75, green: 0.85, blue: 0.75),
+        Color(red: 0.85, green: 0.85, blue: 0.75),
+        Color(red: 0.8, green: 0.8, blue: 0.8),
+        Color(red: 0.85, green: 0.85, blue: 0.85)
+    ])
+    
     // Quiz game
     var quizTheme: GameTheme {
         GameTheme(

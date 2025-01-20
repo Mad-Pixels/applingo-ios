@@ -35,7 +35,9 @@ struct Home: View {
                         game = .quiz
                         gameStart = true
                     },
-                    style: .asGameSelect(ThemeManager.shared.currentThemeStyle.quizTheme)
+                    style: .asGameSelect(
+                        ThemeManager.shared.currentThemeStyle,
+                        ThemeManager.shared.currentThemeStyle.quizTheme)
                 )
                
                 ButtonIcon(
@@ -45,7 +47,9 @@ struct Home: View {
                         game = .match
                         gameStart = true
                     },
-                    style: .asGameSelect(ThemeManager.shared.currentThemeStyle.matchTheme)
+                    style: .asGameSelect(
+                        ThemeManager.shared.currentThemeStyle,
+                        ThemeManager.shared.currentThemeStyle.matchTheme)
                 )
                
                 ButtonIcon(
@@ -55,7 +59,9 @@ struct Home: View {
                         game = .swipe
                         gameStart = true
                     },
-                    style: .asGameSelect(ThemeManager.shared.currentThemeStyle.swipeTheme)
+                    style: .asGameSelect(
+                        ThemeManager.shared.currentThemeStyle,
+                        ThemeManager.shared.currentThemeStyle.swipeTheme)
                 )
             }
             .padding(style.padding)

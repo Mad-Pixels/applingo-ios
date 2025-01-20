@@ -1,5 +1,5 @@
 import SwiftUI
 
-struct DynamicPaletteModel {
+struct DynamicPatternModel {
     let colors: [Color]
 }
