@@ -10,4 +10,8 @@ class Quiz: ObservableObject, AbstractGame {
     
     func start(mode: GameModeEnum) {}
     func end() {}
+    
+    func makeView() -> AnyView {
+        AnyView(GameQuiz())
+    }
 }

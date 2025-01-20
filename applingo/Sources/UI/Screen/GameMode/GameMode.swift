@@ -86,7 +86,7 @@ struct GameMode: View {
             )
             .background(
                 NavigationLink(isActive: $showGameContent) {
-                    makeGameContent()
+                    game.makeView()
                         .navigationBarBackButtonHidden(true)
                         .navigationBarItems(
                             leading: ButtonNav(
@@ -113,18 +113,6 @@ struct GameMode: View {
         selectedMode = mode
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             showGameContent = true
-        }
-    }
-    
-    @ViewBuilder
-    private func makeGameContent() -> some View {
-        switch game.type {
-        case .quiz:
-            GameQuiz()
-        case .match:
-            GameQuiz()
-        case .swipe:
-            GameQuiz()
         }
     }
 }

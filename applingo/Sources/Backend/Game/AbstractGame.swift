@@ -1,3 +1,5 @@
+import SwiftUI
+
 protocol AbstractGame {
     // Base part
     var availableModes: [GameModeEnum] { get }
@@ -11,4 +13,8 @@ protocol AbstractGame {
     // Action
     func start(mode: GameModeEnum)
     func end()
+    
+    // View
+    @ViewBuilder
+    func makeView() -> AnyView
 }
