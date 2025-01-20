@@ -110,9 +110,9 @@ struct GameMode: View {
         case .quiz:
             GameQuiz()
         case .match:
-            GameQuiz() // Заменить на GameMatch когда будет готов
+            GameQuiz()
         case .swipe:
-            GameQuiz() // Заменить на GameSwipe когда будет готов
+            GameQuiz()
         }
     }
 }
