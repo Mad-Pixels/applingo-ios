@@ -13,7 +13,7 @@ struct GameMode: View {
     @State private var isAnimating = false
     
     var body: some View {
-        BaseGameScreen(title: "") {
+        BaseGameScreen(screen: .game) {
             ZStack {
                 VStack(spacing: style.spacing) {
                     Text(locale.selectModeTitle.uppercased())

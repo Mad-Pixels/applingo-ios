@@ -1,13 +1,13 @@
 protocol AbstractGame {
-    // Базовые характеристики игры
+    // Base part
     var type: GameType { get }
     var minimumWordsRequired: Int { get }
     var availableModes: [GameModeEnum] { get }
     
-    // Состояние и условия
+    // State
     var isReadyToPlay: Bool { get }
     
-    // Действия
+    // Action
     func start(mode: GameModeEnum)
     func end()
 }
