@@ -4,12 +4,12 @@ struct DictionaryRemoteDetails: View {
     @Environment(\.presentationMode) private var presentationMode
     @StateObject private var style: DictionaryRemoteDetailsStyle
     @StateObject private var locale = DictionaryRemoteDetailsLocale()
-   
+
     @State private var editedDictionary: DictionaryItemModel
     @State private var isPressedTrailing = false
     @State private var isDownloading = false
     @Binding var isPresented: Bool
-   
+
     init(
         dictionary: DictionaryItemModel,
         isPresented: Binding<Bool>,
@@ -20,7 +20,7 @@ struct DictionaryRemoteDetails: View {
         _editedDictionary = State(initialValue: dictionary)
         _isPresented = isPresented
     }
-   
+
     var body: some View {
         BaseScreen(
             screen: .dictionariesRemoteDetail,
@@ -33,13 +33,13 @@ struct DictionaryRemoteDetails: View {
                         locale: locale,
                         style: style
                     )
-                        
+
                     DictionaryRemoteDetailsViewCategory(
                         dictionary: editedDictionary,
                         locale: locale,
                         style: style
                     )
-                   
+
                     DictionaryRemoteDetailsViewAdditional(
                         dictionary: editedDictionary,
                         locale: locale,
@@ -47,22 +47,23 @@ struct DictionaryRemoteDetails: View {
                     )
                 }
                 .padding(style.padding)
-                
             }
             .disabled(isDownloading)
             .navigationTitle(locale.navigationTitle)
             .navigationBarTitleDisplayMode(.inline)
-            .navigationBarItems(
-                trailing: ButtonNav(
-                    style: .close(ThemeManager.shared.currentThemeStyle),
-                    onTap: {
-                        presentationMode.wrappedValue.dismiss()
-                    },
-                    isPressed: $isPressedTrailing
-                )
-            )
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    ButtonNav(
+                        style: .close(ThemeManager.shared.currentThemeStyle),
+                        onTap: {
+                            presentationMode.wrappedValue.dismiss()
+                        },
+                        isPressed: $isPressedTrailing
+                    )
+                }
+            }
         }
-        
+
         if isDownloading {
             ProgressView(locale.downloadingTitle)
                 .progressViewStyle(CircularProgressViewStyle())
@@ -75,7 +76,7 @@ struct DictionaryRemoteDetails: View {
             )
         }
     }
-   
+
     private func downloadDictionary() {
         isDownloading = true
         Task {
@@ -87,7 +88,7 @@ struct DictionaryRemoteDetails: View {
                 )
                 try CSVManager.shared.saveToDatabase(dictionary: dictionary, words: words)
                 try? FileManager.default.removeItem(at: fileURL)
-               
+
                 await MainActor.run {
                     isDownloading = false
                     NotificationCenter.default.post(name: .dictionaryListShouldUpdate, object: nil)

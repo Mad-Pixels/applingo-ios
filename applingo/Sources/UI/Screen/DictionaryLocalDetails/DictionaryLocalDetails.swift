@@ -6,15 +6,15 @@ struct DictionaryLocalDetails: View {
     @StateObject private var locale = DictionaryLocalDetailsLocale()
     @StateObject private var dictionaryAction = DictionaryLocalActionViewModel()
     @StateObject private var wrapper: EditableDictionaryWrapper
-    
+
     @Binding var isPresented: Bool
     let refresh: () -> Void
     private let originalDictionary: DictionaryItemModel
-    
+
     @State private var isEditing = false
     @State private var isPressedLeading = false
     @State private var isPressedTrailing = false
-   
+
     init(
         dictionary: DictionaryItemModel,
         isPresented: Binding<Bool>,
@@ -28,7 +28,7 @@ struct DictionaryLocalDetails: View {
         self.refresh = refresh
         self.originalDictionary = dictionary
     }
-    
+
     var body: some View {
         BaseScreen(
             screen: .dictionariesLocalDetail,
@@ -42,14 +42,14 @@ struct DictionaryLocalDetails: View {
                         style: style,
                         isEditing: isEditing
                     )
-                        
+
                     DictionaryLocalDetailsViewCategory(
                         dictionary: wrapper,
                         locale: locale,
                         style: style,
                         isEditing: isEditing
                     )
-                   
+
                     DictionaryLocalDetailsViewAdditional(
                         dictionary: wrapper,
                         locale: locale,
@@ -62,36 +62,40 @@ struct DictionaryLocalDetails: View {
             .keyboardAdaptive()
             .background(style.backgroundColor)
             .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle(locale.navigationTitle)
-            .navigationBarItems(
-                leading: ButtonNav(
-                    style: isEditing ? .close(ThemeManager.shared.currentThemeStyle) : .back(ThemeManager.shared.currentThemeStyle),
-                    onTap: {
-                        if isEditing {
-                            isEditing = false
-                            wrapper.dictionary = originalDictionary
-                        } else {
-                            presentationMode.wrappedValue.dismiss()
-                        }
-                    },
-                    isPressed: $isPressedLeading
-                ),
-                trailing: ButtonNav(
-                    style: isEditing ? .save(ThemeManager.shared.currentThemeStyle) : .edit(ThemeManager.shared.currentThemeStyle),
-                    onTap: {
-                        if isEditing {
-                            updateDictionary()
-                        } else {
-                            isEditing = true
-                        }
-                    },
-                    isPressed: $isPressedTrailing
-                )
-                .disabled(isEditing && isSaveDisabled)
-            )
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    ButtonNav(
+                        style: isEditing ? .close(ThemeManager.shared.currentThemeStyle) : .back(ThemeManager.shared.currentThemeStyle),
+                        onTap: {
+                            if isEditing {
+                                isEditing = false
+                                wrapper.dictionary = originalDictionary
+                            } else {
+                                presentationMode.wrappedValue.dismiss()
+                            }
+                        },
+                        isPressed: $isPressedLeading
+                    )
+                }
+                
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    ButtonNav(
+                        style: isEditing ? .save(ThemeManager.shared.currentThemeStyle) : .edit(ThemeManager.shared.currentThemeStyle),
+                        onTap: {
+                            if isEditing {
+                                updateDictionary()
+                            } else {
+                                isEditing = true
+                            }
+                        },
+                        isPressed: $isPressedTrailing
+                    )
+                    .disabled(isEditing && isSaveDisabled)
+                }
+            }
         }
     }
-   
+
     private var isSaveDisabled: Bool {
         wrapper.dictionary.displayName.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).isEmpty ||
         wrapper.dictionary.category.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).isEmpty ||
@@ -99,7 +103,7 @@ struct DictionaryLocalDetails: View {
         wrapper.dictionary.author.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).isEmpty ||
         wrapper.dictionary.description.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).isEmpty
     }
-   
+
     private func updateDictionary() {
         dictionaryAction.update(wrapper.dictionary) { _ in
             self.isEditing = false

@@ -6,10 +6,10 @@ struct WordAddManual: View {
     @StateObject private var locale = WordAddManualLocale()
     @StateObject private var wordsAction = WordsLocalActionViewModel()
     @StateObject private var dictionaryGetter = DictionaryLocalGetterViewModel()
-    
+
     @Binding var isPresented: Bool
     let refresh: () -> Void
-    
+
     @State private var selectedDictionary: DictionaryItemModel?
     @State private var wordItem = WordItemModel.empty()
     @State private var descriptionText: String = ""
@@ -18,7 +18,7 @@ struct WordAddManual: View {
     @State private var isPressedTrailing = false
     @State private var isPressedLeading = false
     @State private var isShowingAlert = false
-    
+
     init(
         isPresented: Binding<Bool>,
         refresh: @escaping () -> Void,
@@ -29,7 +29,7 @@ struct WordAddManual: View {
         let initialStyle = style ?? .themed(ThemeManager.shared.currentThemeStyle)
         _style = StateObject(wrappedValue: initialStyle)
     }
-    
+
     var body: some View {
         BaseScreen(
             screen: .wordsAdd,
@@ -44,7 +44,7 @@ struct WordAddManual: View {
                         locale: locale,
                         style: style
                     )
-                        
+
                     WordAddManualViewAdditional(
                         hint: $hintText,
                         description: $descriptionText,
@@ -57,24 +57,28 @@ struct WordAddManual: View {
             .keyboardAdaptive()
             .background(style.backgroundColor)
             .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle(locale.navigationTitle)
-            .navigationBarItems(
-                leading: ButtonNav(
-                    style: .back(ThemeManager.shared.currentThemeStyle),
-                    onTap: {
-                        presentationMode.wrappedValue.dismiss()
-                    },
-                    isPressed: $isPressedLeading
-                ),
-                trailing: ButtonNav(
-                    style: .save(ThemeManager.shared.currentThemeStyle, disabled: isSaveDisabled),
-                    onTap: {
-                        save()
-                    },
-                    isPressed: $isPressedTrailing
-                )
-                .disabled(isSaveDisabled)
-            )
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    ButtonNav(
+                        style: .back(ThemeManager.shared.currentThemeStyle),
+                        onTap: {
+                            presentationMode.wrappedValue.dismiss()
+                        },
+                        isPressed: $isPressedLeading
+                    )
+                }
+
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    ButtonNav(
+                        style: .save(ThemeManager.shared.currentThemeStyle, disabled: isSaveDisabled),
+                        onTap: {
+                            save()
+                        },
+                        isPressed: $isPressedTrailing
+                    )
+                    .disabled(isSaveDisabled)
+                }
+            }
         }
         .onChange(of: hintText) { wordItem.hint = $0 }
         .onChange(of: descriptionText) { wordItem.description = $0 }
@@ -84,15 +88,15 @@ struct WordAddManual: View {
             }
         }
     }
-    
+
     private var isSaveDisabled: Bool {
         wordItem.frontText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ||
         wordItem.backText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
-    
+
     private func save() {
         guard let selectedDictionary = selectedDictionary else { return }
-        
+
         let newWord = WordItemModel(
             id: wordItem.id,
             tableName: selectedDictionary.tableName,
@@ -105,7 +109,7 @@ struct WordAddManual: View {
             weight: wordItem.weight,
             fail: wordItem.fail
         )
-        
+
         wordsAction.save(newWord) { result in
             if case .success = result {
                 presentationMode.wrappedValue.dismiss()

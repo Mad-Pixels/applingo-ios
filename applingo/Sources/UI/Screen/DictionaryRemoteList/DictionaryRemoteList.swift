@@ -8,9 +8,9 @@ struct DictionaryRemoteList: View {
     @State private var selectedDictionary: DictionaryItemModel?
     @State private var isShowingFilterView = false
     @State private var isPressedTrailing = false
-    
+
     @Binding var isPresented: Bool
-    
+
     var body: some View {
         BaseScreen(
             screen: .dictionariesRemote,
@@ -22,7 +22,7 @@ struct DictionaryRemoteList: View {
                     locale: locale
                 )
                 .padding()
-                
+
                 DictionaryRemoteListViewList(
                     locale: locale,
                     dictionaryGetter: dictionaryGetter,
@@ -42,15 +42,17 @@ struct DictionaryRemoteList: View {
                 .padding(.bottom, 42)
             }
             .navigationBarTitleDisplayMode(.inline)
-            .navigationBarItems(
-                trailing: ButtonNav(
-                    style: .close(ThemeManager.shared.currentThemeStyle),
-                    onTap: {
-                        presentationMode.wrappedValue.dismiss()
-                    },
-                    isPressed: $isPressedTrailing
-                )
-            )
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    ButtonNav(
+                        style: .close(ThemeManager.shared.currentThemeStyle),
+                        onTap: {
+                            presentationMode.wrappedValue.dismiss()
+                        },
+                        isPressed: $isPressedTrailing
+                    )
+                }
+            }
         }
         .sheet(isPresented: $isShowingFilterView) {
             DictionaryRemoteFilter(apiRequestParams: $apiRequestParams)

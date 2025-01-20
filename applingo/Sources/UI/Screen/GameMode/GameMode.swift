@@ -74,15 +74,17 @@ struct GameMode: View {
                 }
             }
             .padding(style.padding)
-            .navigationBarItems(
-                trailing: ButtonNav(
-                    style: .close(ThemeManager.shared.currentThemeStyle),
-                    onTap: {
-                        isPresented = false
-                    },
-                    isPressed: $isPressedTrailing
-                )
-            )
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    ButtonNav(
+                        style: .close(ThemeManager.shared.currentThemeStyle),
+                        onTap: {
+                            isPresented = false
+                        },
+                        isPressed: $isPressedTrailing
+                    )
+                }
+            }
             .onAppear {
                 withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
                     isAnimating = true

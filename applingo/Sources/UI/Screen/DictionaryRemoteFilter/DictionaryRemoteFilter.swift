@@ -5,13 +5,13 @@ struct DictionaryRemoteFilter: View {
     @StateObject private var style: DictionaryRemoteFilterStyle
     @StateObject private var locale = DictionaryRemoteFilterLocale()
     @StateObject private var categoryGetter = CategoryRemoteGetterViewModel()
-    
+
     @Binding var apiRequestParams: ApiDictionaryQueryRequestModel
     @State private var selectedSortBy: ApiDictionaryQueryRequestModel.SortBy = .date
     @State private var selectedFrontCategory: CategoryItem?
     @State private var selectedBackCategory: CategoryItem?
     @State private var isPressedTrailing = false
-    
+
     init(
         apiRequestParams: Binding<ApiDictionaryQueryRequestModel>,
         style: DictionaryRemoteFilterStyle? = nil
@@ -19,12 +19,12 @@ struct DictionaryRemoteFilter: View {
         self._apiRequestParams = apiRequestParams
         let initialStyle = style ?? .themed(ThemeManager.shared.currentThemeStyle)
         _style = StateObject(wrappedValue: initialStyle)
-        
+
         if let sortBy = apiRequestParams.wrappedValue.sortBy {
             _selectedSortBy = State(initialValue: sortBy == "rating" ? .rating : .date)
         }
     }
-    
+
     var body: some View {
         BaseScreen(
             screen: .dictionariesRemoteFilter,
@@ -39,7 +39,7 @@ struct DictionaryRemoteFilter: View {
                         locale: locale
                     )
                     .padding(style.padding)
-                    
+
                     DictionaryRemoteFilterViewSort(
                         selectedSortBy: $selectedSortBy,
                         locale: locale
@@ -50,23 +50,18 @@ struct DictionaryRemoteFilter: View {
             }
             .navigationTitle(locale.navigationTitle)
             .navigationBarTitleDisplayMode(.inline)
-            .navigationBarItems(
-                trailing: ButtonNav(
-                    style: .close(ThemeManager.shared.currentThemeStyle),
-                    onTap: {
-                        presentationMode.wrappedValue.dismiss()
-                    },
-                    isPressed: $isPressedTrailing
-                )
-            )
-        }
-        .navigationTitle(locale.navigationTitle)
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationBarItems(
-            trailing: Button(locale.closeTitle) {
-                presentationMode.wrappedValue.dismiss()
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    ButtonNav(
+                        style: .close(ThemeManager.shared.currentThemeStyle),
+                        onTap: {
+                            presentationMode.wrappedValue.dismiss()
+                        },
+                        isPressed: $isPressedTrailing
+                    )
+                }
             }
-        )
+        }
         .onAppear {
             categoryGetter.setFrame(.dictionaryRemoteFilter)
             categoryGetter.get { _ in }
@@ -81,14 +76,14 @@ struct DictionaryRemoteFilter: View {
                 selectedBackCategory = firstCategory
             }
         }
-        
+
         DictionaryRemoteFilterViewActions(
             locale: locale,
             onSave: saveFilters,
             onReset: resetFilters
         )
     }
-    
+
     private func saveFilters() {
         let frontCategoryName = selectedFrontCategory?.code ?? ""
         let backCategoryName = selectedBackCategory?.code ?? ""
@@ -96,7 +91,7 @@ struct DictionaryRemoteFilter: View {
         apiRequestParams.sortBy = selectedSortBy.rawValue
         presentationMode.wrappedValue.dismiss()
     }
-    
+
     private func resetFilters() {
         apiRequestParams.subcategory = nil
         apiRequestParams.sortBy = nil
