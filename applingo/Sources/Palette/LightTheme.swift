@@ -55,7 +55,16 @@ struct LightTheme: AppTheme {
         GameTheme(
             main: Color(hex: "f87171"),
             dark: Color(hex: "7f1d1d"),
-            light: Color(hex: "ef4444")
+            light: Color(hex: "ef4444"),
+            
+            pattern: DynamicPatternModel(colors: [
+                Color(red: 0.75, green: 0.75, blue: 0.85),
+                Color(red: 0.85, green: 0.75, blue: 0.75),
+                Color(red: 0.75, green: 0.85, blue: 0.75),
+                Color(red: 0.85, green: 0.85, blue: 0.75),
+                Color(red: 0.8, green: 0.8, blue: 0.8),
+                Color(red: 0.85, green: 0.85, blue: 0.85)
+            ])
         )
     }
     
@@ -64,7 +73,16 @@ struct LightTheme: AppTheme {
         GameTheme(
             main: Color(hex: "4b5563"),
             dark: Color(hex: "f8a009"),
-            light: Color(hex: "e38c10")
+            light: Color(hex: "e38c10"),
+            
+            pattern: DynamicPatternModel(colors: [
+                Color(red: 0.75, green: 0.75, blue: 0.85),
+                Color(red: 0.85, green: 0.75, blue: 0.75),
+                Color(red: 0.75, green: 0.85, blue: 0.75),
+                Color(red: 0.85, green: 0.85, blue: 0.75),
+                Color(red: 0.8, green: 0.8, blue: 0.8),
+                Color(red: 0.85, green: 0.85, blue: 0.85)
+            ])
         )
     }
     
@@ -73,7 +91,16 @@ struct LightTheme: AppTheme {
         GameTheme(
             main: Color(hex: "4b5563"),
             dark: Color(hex: "f8a009"),
-            light: Color(hex: "e38c10")
+            light: Color(hex: "e38c10"),
+            
+            pattern: DynamicPatternModel(colors: [
+                Color(red: 0.75, green: 0.75, blue: 0.85),
+                Color(red: 0.85, green: 0.75, blue: 0.75),
+                Color(red: 0.75, green: 0.85, blue: 0.75),
+                Color(red: 0.85, green: 0.85, blue: 0.75),
+                Color(red: 0.8, green: 0.8, blue: 0.8),
+                Color(red: 0.85, green: 0.85, blue: 0.85)
+            ])
         )
     }
 }

@@ -73,6 +73,17 @@ struct GameMode: View {
                     )
                 }
             }
+            .background(
+                GeometryReader { geometry in
+                        DynamicPattern(
+                            model: style.pattern,
+                            size: CGSize(width: geometry.size.width, height: geometry.size.height)
+                        )
+                        .mask(
+                            RoundedRectangle(cornerRadius: 12)
+                        )
+                    }
+            )
             .padding(style.padding)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {

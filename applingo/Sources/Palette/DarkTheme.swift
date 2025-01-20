@@ -55,7 +55,16 @@ struct DarkTheme: AppTheme {
         GameTheme(
             main: Color(hex: "f87171"),
             dark: Color(hex: "7f1d1d"),
-            light: Color(hex: "ef4444")
+            light: Color(hex: "ef4444"),
+            
+            pattern: DynamicPatternModel(colors: [
+                Color(red: 0.2, green: 0.25, blue: 0.35),
+                Color(red: 0.3, green: 0.2, blue: 0.25),
+                Color(red: 0.25, green: 0.3, blue: 0.2),
+                Color(red: 0.35, green: 0.35, blue: 0.25),
+                Color(red: 0.3, green: 0.3, blue: 0.3),
+                Color(red: 0.4, green: 0.4, blue: 0.45)
+            ])
         )
     }
         
@@ -64,7 +73,16 @@ struct DarkTheme: AppTheme {
         GameTheme(
             main: Color(hex: "4b5563"),
             dark: Color(hex: "f8a009"),
-            light: Color(hex: "e38c10")
+            light: Color(hex: "e38c10"),
+            
+            pattern: DynamicPatternModel(colors: [
+                Color(red: 0.2, green: 0.25, blue: 0.35),
+                Color(red: 0.3, green: 0.2, blue: 0.25),
+                Color(red: 0.25, green: 0.3, blue: 0.2),
+                Color(red: 0.35, green: 0.35, blue: 0.25),
+                Color(red: 0.3, green: 0.3, blue: 0.3),
+                Color(red: 0.4, green: 0.4, blue: 0.45)
+            ])
         )
     }
     
@@ -73,7 +91,16 @@ struct DarkTheme: AppTheme {
         GameTheme(
             main: Color(hex: "4b5563"),
             dark: Color(hex: "f8a009"),
-            light: Color(hex: "e38c10")
+            light: Color(hex: "e38c10"),
+            
+            pattern: DynamicPatternModel(colors: [
+                Color(red: 0.2, green: 0.25, blue: 0.35),
+                Color(red: 0.3, green: 0.2, blue: 0.25),
+                Color(red: 0.25, green: 0.3, blue: 0.2),
+                Color(red: 0.35, green: 0.35, blue: 0.25),
+                Color(red: 0.3, green: 0.3, blue: 0.3),
+                Color(red: 0.4, green: 0.4, blue: 0.45)
+            ])
         )
     }
 }
