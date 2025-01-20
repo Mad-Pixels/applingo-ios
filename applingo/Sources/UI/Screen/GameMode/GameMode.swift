@@ -86,17 +86,19 @@ struct GameMode: View {
             )
             .background(
                 NavigationLink(isActive: $showGameContent) {
-                    game.makeView()
-                        .navigationBarBackButtonHidden(true)
-                        .navigationBarItems(
-                            leading: ButtonNav(
-                                style: .back(ThemeManager.shared.currentThemeStyle),
-                                onTap: {
-                                    showGameContent = false
-                                },
-                                isPressed: $isPressedLeading
+                    BaseGameScreen(screen: .game, game: game) {
+                        game.makeView()
+                            .navigationBarBackButtonHidden(true)
+                            .navigationBarItems(
+                                leading: ButtonNav(
+                                    style: .back(ThemeManager.shared.currentThemeStyle),
+                                    onTap: {
+                                        showGameContent = false
+                                    },
+                                    isPressed: $isPressedLeading
+                                )
                             )
-                        )
+                    }
                 } label: {
                     EmptyView()
                 }
