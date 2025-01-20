@@ -1,8 +1,9 @@
 protocol AbstractGame {
     // Base part
-    var type: GameType { get }
-    var minimumWordsRequired: Int { get }
     var availableModes: [GameModeEnum] { get }
+    var minimumWordsRequired: Int { get }
+    var theme: GameTheme { get }
+    var type: GameType { get }
     
     // State
     var isReadyToPlay: Bool { get }

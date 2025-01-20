@@ -5,17 +5,28 @@ struct Home: View {
     @StateObject private var locale = HomeLocale()
     @State private var game: GameType = .quiz
     @State private var gameStart = false
-    
+   
     init(style: HomeStyle? = nil) {
         let initialStyle = style ?? .themed(ThemeManager.shared.currentThemeStyle)
         _style = StateObject(wrappedValue: initialStyle)
     }
-    
+
+    private func makeGame(type: GameType) -> any AbstractGame {
+        switch type {
+        case .quiz:
+            return Quiz()
+        case .match:
+            return Quiz()
+        case .swipe:
+            return Quiz()
+        }
+    }
+
     var body: some View {
         ZStack {
             MainBackground()
                 .edgesIgnoringSafeArea(.all)
-            
+           
             VStack(spacing: style.spacing) {
                 ButtonIcon(
                     title: locale.quizTitle,
@@ -26,7 +37,7 @@ struct Home: View {
                     },
                     style: .asGameSelect(ThemeManager.shared.currentThemeStyle.quizTheme)
                 )
-                
+               
                 ButtonIcon(
                     title: locale.matchHuntTitle,
                     icon: "puzzlepiece",
@@ -36,7 +47,7 @@ struct Home: View {
                     },
                     style: .asGameSelect(ThemeManager.shared.currentThemeStyle.matchTheme)
                 )
-                
+               
                 ButtonIcon(
                     title: locale.verifyItTitle,
                     icon: "number",
@@ -52,7 +63,7 @@ struct Home: View {
             .padding(.horizontal, 24)
         }
         .fullScreenCover(isPresented: $gameStart) {
-            GameMode(game: game, isPresented: $gameStart)
+            GameMode(game: makeGame(type: game), isPresented: $gameStart)
         }
     }
 }
