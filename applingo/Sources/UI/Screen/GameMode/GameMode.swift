@@ -7,15 +7,14 @@ struct GameMode: View {
     private let locale: GameModeLocale = GameModeLocale()
     @StateObject private var style: GameModeStyle = .themed(ThemeManager.shared.currentThemeStyle)
     @State private var selectedMode: GameModeEnum = .practice
+    @State private var isPressedTrailing = false
+    @State private var isPressedLeading = false
     @State private var showGameContent = false
     @State private var isAnimating = false
     
     var body: some View {
-        BaseGameScreen(title: "Game Mode") {
+        BaseGameScreen(title: "") {
             ZStack {
-                MainBackground()
-                    .edgesIgnoringSafeArea(.all)
-                
                 VStack(spacing: style.spacing) {
                     Text(locale.selectModeTitle.uppercased())
                         .font(style.titleStyle.font)
@@ -64,21 +63,27 @@ struct GameMode: View {
                 }
                 .padding(style.padding)
             }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: { isPresented = false }) {
-                        Image(systemName: "xmark")
-                    }
-                }
-            }
+            .navigationBarItems(
+                trailing: ButtonNav(
+                    style: .close(ThemeManager.shared.currentThemeStyle),
+                    onTap: {
+                        isPresented = false
+                    },
+                    isPressed: $isPressedTrailing
+                )
+            )
             .background(
                 NavigationLink(isActive: $showGameContent) {
                     makeGameContent()
                         .navigationBarBackButtonHidden(true)
                         .navigationBarItems(
-                            leading: Button(action: { showGameContent = false }) {
-                                Image(systemName: "chevron.left")
-                            }
+                            leading: ButtonNav(
+                                style: .back(ThemeManager.shared.currentThemeStyle),
+                                onTap: {
+                                    showGameContent = false
+                                },
+                                isPressed: $isPressedLeading
+                            )
                         )
                 } label: {
                     EmptyView()

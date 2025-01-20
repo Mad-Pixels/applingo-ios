@@ -27,5 +27,7 @@ struct BaseGameScreen<Content: View>: View {
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationTitle(title)
         }
+        .navigationViewStyle(.stack)
+        .navigationBarColor(color: .clear)
     }
 }
