@@ -33,9 +33,7 @@ struct BaseScreen<Content: View>: View {
                 .background(themeManager.currentThemeStyle.backgroundPrimary)
                 .navigationBarTitleDisplayMode(.large)
                 .navigationTitle(title)
-                .customKeyboardToolbar(
-                    buttonTitle: "Done"
-                )
+                .customKeyboardToolbar(buttonTitle: "Done")
                 .withScreenTracker(screen)
                 .withErrorTracker(screen)
                 .withLocaleTracker()

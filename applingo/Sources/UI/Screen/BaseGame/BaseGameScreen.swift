@@ -22,16 +22,12 @@ struct BaseGameScreen<Content: View>: View {
     }
     
     var body: some View {
-        NavigationView {
-            content
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(themeManager.currentThemeStyle.backgroundPrimary)
-                .withScreenTracker(screen)
-                .withErrorTracker(screen)
-                .withLocaleTracker()
-                .withThemeTracker()
-        }
-        .navigationViewStyle(.stack)
-        .navigationBarColor(color: .clear)
+        content
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(themeManager.currentThemeStyle.backgroundPrimary)
+            .withScreenTracker(screen)
+            .withErrorTracker(screen)
+            .withLocaleTracker()
+            .withThemeTracker()
     }
 }
