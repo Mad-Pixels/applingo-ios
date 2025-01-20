@@ -21,9 +21,12 @@ struct BaseGameScreen<Content: View>: View {
     var body: some View {
         NavigationView {
             content
-                .id("\(themeManager.currentTheme.rawValue)_\(localeManager.viewId)")
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                 .background(themeManager.currentThemeStyle.backgroundPrimary)
+                .withScreenTracker(screen)
+                .withErrorTracker(screen)
+                .withLocaleTracker()
+                .withThemeTracker()
         }
         .navigationViewStyle(.stack)
         .navigationBarColor(color: .clear)
