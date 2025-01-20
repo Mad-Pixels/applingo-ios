@@ -29,7 +29,6 @@ struct BaseScreen<Content: View>: View {
     var body: some View {
         NavigationStack {
             content
-                .id("\(themeManager.currentTheme.rawValue)_\(localeManager.viewId)")
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                 .background(themeManager.currentThemeStyle.backgroundPrimary)
                 .navigationBarTitleDisplayMode(.large)
