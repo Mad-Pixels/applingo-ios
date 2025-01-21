@@ -57,6 +57,8 @@ class Quiz: ObservableObject, AbstractGame {
     }
     
     func start(mode: GameModeType) {
+        state.currentMode = mode
+        
         switch mode {
         case .survival:
             state.survivalState = GameState.SurvivalState(lives: 3)
