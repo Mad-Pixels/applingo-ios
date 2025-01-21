@@ -1,12 +1,12 @@
 import SwiftUI
 
 final class GameModeStyle: ObservableObject {
-    let pattern: DynamicPatternModel
     let backgroundColor: Color
     let padding: EdgeInsets
     let spacing: CGFloat
     let cardSpacing: CGFloat
     let titleStyle: TextStyle
+    let colors: [Color]
     
     struct TextStyle {
         let font: Font
@@ -19,14 +19,15 @@ final class GameModeStyle: ObservableObject {
         spacing: CGFloat,
         cardSpacing: CGFloat,
         titleStyle: TextStyle,
-        pattern: DynamicPatternModel
+        pattern: DynamicPatternModel,
+        colors: [Color]
     ) {
         self.backgroundColor = backgroundColor
         self.padding = padding
         self.spacing = spacing
         self.cardSpacing = cardSpacing
         self.titleStyle = titleStyle
-        self.pattern = pattern
+        self.colors = colors
     }
 }
 
@@ -41,7 +42,8 @@ extension GameModeStyle {
                 font: .system(.title, design: .rounded).weight(.bold),
                 color: theme.textPrimary
             ),
-            pattern: theme.mainPattern
+            pattern: theme.mainPattern,
+            colors: [gameTheme.main, gameTheme.dark, gameTheme.light]
         )
     }
 }

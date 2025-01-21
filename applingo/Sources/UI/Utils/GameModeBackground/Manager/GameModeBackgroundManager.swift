@@ -16,17 +16,19 @@ final class GameModeBackgroundManager: ObservableObject {
     
     private init() {}
     
-    func generateIfNeeded(for size: CGSize) {
+    func generateIfNeeded(for size: CGSize, using colors: [Color]) {
         lock.lock()
         defer { lock.unlock() }
         
         guard !GameModeBackgroundManager.isFirstLaunchGenerated else { return }
         guard size.width > 0 && size.height > 0 else { return }
-        generateBackground(for: size)
+        generateBackground(for: size, using: colors)
         GameModeBackgroundManager.isFirstLaunchGenerated = true
     }
-    private let padding: CGFloat = 5
-    private func generateBackground(for size: CGSize) {
+    
+    private let padding: CGFloat = 3
+    
+    private func generateBackground(for size: CGSize, using colors: [Color]) {
         var shapes: [BackgroundShape] = []
         var occupiedRects: [CGRect] = []
             
@@ -49,7 +51,8 @@ final class GameModeBackgroundManager: ObservableObject {
                     id: UUID(),
                     position: CGPoint(x: x, y: y),
                     size: shapeSize,
-                    opacity: Double.random(in: minOpacity...maxOpacity)
+                    opacity: Double.random(in: minOpacity...maxOpacity),
+                    color: colors.randomElement() ?? .blue
                 ))
             }
         }

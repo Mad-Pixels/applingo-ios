@@ -4,24 +4,27 @@ struct GameModeBackgroundViewShape: View {
     let shape: BackgroundShape
     let theme: AppTheme
     let offset: CGPoint
+    @ObservedObject private var themeManager = ThemeManager.shared
    
+    private var themeOpacityMultiplier: Double {
+        themeManager.currentTheme == .dark ? 4.4 : 7.5
+    }
+    
+    private var blurRadius: CGFloat {
+        themeManager.currentTheme == .dark ? 12 : 8
+    }
+    
     var body: some View {
         ZStack {
             Circle()
-                .fill(theme.accentPrimary.opacity(0.15))
-                .frame(width: shape.size, height: shape.size)
-                .blur(radius: shape.size * 0.35)
-                .offset(x: 10, y: 10)
-           
-            Circle()
-                .fill(theme.accentPrimary.opacity(shape.opacity * 1.2))
+                .fill(shape.color.opacity(shape.opacity * themeOpacityMultiplier))
                 .frame(width: shape.size, height: shape.size)
                 .overlay(
                     Circle()
                         .fill(
                             RadialGradient(
                                 colors: [
-                                    .white.opacity(0.4),
+                                    .white.opacity(themeManager.currentTheme == .dark ? 0.2 : 0.1),
                                     .clear
                                 ],
                                 center: .topLeading,
@@ -31,16 +34,10 @@ struct GameModeBackgroundViewShape: View {
                         )
                         .scaleEffect(0.9)
                 )
-
-            Circle()
-                .fill(.white.opacity(0.2))
-                .frame(width: shape.size * 0.3, height: shape.size * 0.3)
-                .blur(radius: shape.size * 0.05)
-                .offset(x: -shape.size * 0.2, y: -shape.size * 0.2)
+                .blur(radius: blurRadius)
         }
-        .blur(radius: abs(offset.x + offset.y) * 0.25)
         .rotationEffect(.degrees(
-            (offset.x + offset.y) * 2.1
+            (offset.x + offset.y) * 1.5
         ))
         .offset(x: offset.x, y: offset.y)
     }

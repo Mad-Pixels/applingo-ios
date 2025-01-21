@@ -6,11 +6,17 @@ struct GameModeBackground: View {
     
     private let parallaxStrength: CGFloat = 180
     
+    let colors: [Color]
+    
+    init(_ colors: [Color]) {
+        self.colors = colors
+    }
+    
     var body: some View {
         ZStack {
             let theme = ThemeManager.shared.currentThemeStyle
             let shapes = manager.backgroundShapes
-            
+                
             if !shapes.isEmpty {
                 ForEach(shapes, id: \.id) { shape in
                     GameModeBackgroundViewShape(
@@ -26,7 +32,7 @@ struct GameModeBackground: View {
             }
         }
         .onAppear {
-            manager.generateIfNeeded(for: UIScreen.main.bounds.size)
+            manager.generateIfNeeded(for: UIScreen.main.bounds.size, using: colors)
         }
     }
 }

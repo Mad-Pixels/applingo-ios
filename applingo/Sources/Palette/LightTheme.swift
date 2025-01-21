@@ -53,9 +53,9 @@ struct LightTheme: AppTheme {
     // Quiz game
     var quizTheme: GameTheme {
         GameTheme(
-            main: Color(hex: "f87171"),
-            dark: Color(hex: "7f1d1d"),
-            light: Color(hex: "ef4444")
+            main: Color(hex: "E83371"),
+            dark: Color(hex: "A22358"),
+            light: Color(hex: "F280B3")
         )
     }
     
