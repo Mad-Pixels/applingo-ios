@@ -31,7 +31,7 @@ struct ButtonMenu: View {
                     Image(systemName: icon)
                         .font(.system(size: style.iconSize))
                         .foregroundColor(style.iconColor)
-                        .frame(width: 56, height: 56)
+                        .frame(width: 42, height: 42)
                         .background(
                             Circle()
                                 .fill(style.backgroundColor)
