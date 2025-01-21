@@ -6,6 +6,7 @@ struct BaseScreen<Content: View>: View {
     
     private let style: BaseScreenStyle
     private let screen: ScreenType
+    private let alignment: Alignment
     private let content: Content
     private let title: String?
     
@@ -13,12 +14,14 @@ struct BaseScreen<Content: View>: View {
         screen: ScreenType,
         title: String? = nil,
         style: BaseScreenStyle = .default,
+        alignment: Alignment = .top,
         @ViewBuilder content: () -> Content
     ) {
         self.content = content()
         self.screen = screen
         self.style = style
         self.title = title
+        self.alignment = alignment
         
         BaseNavigationConfigurator.configure(
             with: ThemeManager.shared.currentThemeStyle,
@@ -29,7 +32,7 @@ struct BaseScreen<Content: View>: View {
     var body: some View {
         NavigationStack {
             content
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: alignment)
                 .background(themeManager.currentThemeStyle.backgroundPrimary)
                 .navigationBarTitleDisplayMode(.inline)
                 .customKeyboardToolbar(buttonTitle: "Done")
