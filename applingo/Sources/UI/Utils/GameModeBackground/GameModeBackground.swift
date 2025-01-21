@@ -2,6 +2,9 @@ import SwiftUI
 
 struct GameModeBackground: View {
     @StateObject private var manager = GameModeBackgroundManager.shared
+    @StateObject private var motionManager = MotionManager.shared
+    
+    private let parallaxStrength: CGFloat = 180
     
     var body: some View {
         ZStack {
@@ -10,34 +13,20 @@ struct GameModeBackground: View {
             
             if !shapes.isEmpty {
                 ForEach(shapes, id: \.id) { shape in
-                    ShapeView(shape: shape, theme: theme)
-                        .position(shape.position)
+                    GameModeBackgroundViewShape(
+                        shape: shape,
+                        theme: theme,
+                        offset: CGPoint(
+                            x: CGFloat(motionManager.roll) * parallaxStrength * (shape.opacity * 2),
+                            y: CGFloat(motionManager.pitch) * parallaxStrength * (shape.opacity * 2)
+                        )
+                    )
+                    .position(shape.position)
                 }
             }
         }
         .onAppear {
             manager.generateIfNeeded(for: UIScreen.main.bounds.size)
         }
-    }
-}
-
-private struct ShapeView: View {
-    let shape: BackgroundShape
-    let theme: AppTheme
-    @State private var isAnimating = false
-    
-    var body: some View {
-        Circle()
-            .fill(theme.accentPrimary.opacity(shape.opacity))
-            .frame(width: shape.size, height: shape.size)
-            .rotationEffect(.degrees(isAnimating ? 360 : 0))
-            .onAppear {
-                withAnimation(
-                    .linear(duration: Double.random(in: 20...40))
-                    .repeatForever(autoreverses: false)
-                ) {
-                    isAnimating = true
-                }
-            }
     }
 }
