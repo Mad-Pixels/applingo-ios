@@ -18,7 +18,7 @@ extension View {
         cornerRadius: CGFloat = 16,
         opacity: CGFloat = 0.85
     ) -> some View {
-        let adjustedOpacity = ThemeManager.shared.currentTheme == .dark ? opacity : 0.95 // фиксированное значение для светлой темы
+        let adjustedOpacity = ThemeManager.shared.currentTheme == .dark ? opacity : 0.98 // фиксированное значение для светлой темы
         return modifier(GlassBackgroundModifier(
             cornerRadius: cornerRadius,
             opacity: adjustedOpacity
