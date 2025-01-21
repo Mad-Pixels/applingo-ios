@@ -68,7 +68,7 @@ extension ButtonActionStyle {
             pattern: theme.mainPattern,
             patternBorder: true,
             patternBackground: false,
-            backgroundColor: theme.textPrimary,
+            backgroundColor: theme.backgroundPrimary,
             textColor: theme.textPrimary,
             font: .body.bold(),
             height: 80,

@@ -3,7 +3,6 @@ import SwiftUI
 struct GameMode: View {
     let game: any AbstractGame
     @Binding var isPresented: Bool
-
     private let locale: GameModeLocale = GameModeLocale()
     @StateObject private var style: GameModeStyle
     @State private var selectedMode: GameModeEnum = .practice
@@ -26,72 +25,60 @@ struct GameMode: View {
     }
 
     var body: some View {
-        BaseScreen(screen: .game, title: "") {
-            VStack(spacing: style.spacing) {
-                Text(locale.selectModeTitle.uppercased())
-                    .font(style.titleStyle.font)
-                    .foregroundColor(style.titleStyle.color)
-                    .padding(.top)
-                    .opacity(isAnimating ? 1 : 0)
-                    .offset(y: isAnimating ? 0 : 20)
-
-                VStack(spacing: style.cardSpacing) {
-                    GameModeViewCard(
-                        mode: .practice,
-                        icon: "graduationcap.fill",
-                        title: locale.practiceTitle,
-                        description: locale.practiceDescription,
-                        style: style,
-                        isSelected: selectedMode == .practice,
-                        onSelect: {
-                            selectMode(.practice)
-                        }
-                    )
-
-                    GameModeViewCard(
-                        mode: .survival,
-                        icon: "heart.fill",
-                        title: locale.survivalTitle,
-                        description: locale.survivalDescription,
-                        style: style,
-                        isSelected: selectedMode == .survival,
-                        onSelect: {
-                            selectMode(.survival)
-                        }
-                    )
-
-                    GameModeViewCard(
-                        mode: .timeAttack,
-                        icon: "timer",
-                        title: locale.timeAttackTitle,
-                        description: locale.timeAttackDescription,
-                        style: style,
-                        isSelected: selectedMode == .timeAttack,
-                        onSelect: {
-                            selectMode(.timeAttack)
-                        }
-                    )
-                }
-            }
-            .background(
-                GeometryReader { geometry in
-                        DynamicPattern(
-                            model: style.pattern,
-                            size: CGSize(width: geometry.size.width, height: geometry.size.height)
+        BaseScreen(screen: .game) {
+            ZStack {
+                Image(systemName: "graduationcap.fill")
+                    .font(.system(size: 300))
+                    .foregroundColor(.blue.opacity(0.05))
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
+                    .offset(x: 80, y: 80)
+                
+                VStack(spacing: style.spacing) {
+                    Text(locale.selectModeTitle.uppercased())
+                        .font(style.titleStyle.font)
+                        .foregroundColor(style.titleStyle.color)
+                        .opacity(isAnimating ? 1 : 0)
+                        .offset(y: isAnimating ? 0 : 20)
+                    
+                    VStack(spacing: style.cardSpacing) {
+                        GameModeViewCard(
+                            mode: .practice,
+                            icon: "graduationcap.fill",
+                            title: locale.practiceTitle,
+                            description: locale.practiceDescription,
+                            style: style,
+                            isSelected: selectedMode == .practice,
+                            onSelect: { selectMode(.practice) }
                         )
-                        .mask(
-                            RoundedRectangle(cornerRadius: 12)
+                        
+                        GameModeViewCard(
+                            mode: .survival,
+                            icon: "heart.fill",
+                            title: locale.survivalTitle,
+                            description: locale.survivalDescription,
+                            style: style,
+                            isSelected: selectedMode == .survival,
+                            onSelect: { selectMode(.survival) }
+                        )
+                        
+                        GameModeViewCard(
+                            mode: .timeAttack,
+                            icon: "timer",
+                            title: locale.timeAttackTitle,
+                            description: locale.timeAttackDescription,
+                            style: style,
+                            isSelected: selectedMode == .timeAttack,
+                            onSelect: { selectMode(.timeAttack) }
                         )
                     }
-            )
-            .padding(style.padding)
+                }
+                .padding(style.padding)
+            }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     ButtonNav(
                         style: .close(ThemeManager.shared.currentThemeStyle),
-                        onTap: {
-                            isPresented = false
-                        },
+                        onTap: { isPresented = false },
                         isPressed: $isPressedTrailing
                     )
                 }
@@ -102,7 +89,10 @@ struct GameMode: View {
                 }
             }
             if showGameContent {
-                GameModeViewGame(game: game, showGameContent: $showGameContent)
+                GameModeViewGame(
+                    game: game,
+                    showGameContent: $showGameContent
+                )
             }
         }
     }

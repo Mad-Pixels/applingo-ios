@@ -23,24 +23,27 @@ struct Home: View {
     }
 
     var body: some View {
-        ZStack {
-            MainBackground()
-                .edgesIgnoringSafeArea(.all)
-           
-            VStack(spacing: style.spacing) {
-                ButtonAction(
-                    title: locale.quizTitle.uppercased(),
-                    action: {
-                        game = .quiz
-                        gameStart = true
-                    },
-                    style: .menu(
-                        ThemeManager.shared.currentThemeStyle)
-                )
+        BaseScreen(screen: .game) {
+            ZStack {
+                MainBackground()
+                    .edgesIgnoringSafeArea(.all)
+               
+                VStack(spacing: style.spacing) {
+                    ButtonAction(
+                        title: locale.quizTitle.uppercased(),
+                        action: {
+                            game = .quiz
+                            gameStart = true
+                        },
+                        style: .menu(
+                            ThemeManager.shared.currentThemeStyle
+                        )
+                    )
+                }
+                .padding(style.padding)
+                .glassBackground()
+                .padding(.horizontal, 24)
             }
-            .padding(style.padding)
-            .glassBackground()
-            .padding(.horizontal, 24)
         }
         .fullScreenCover(isPresented: $gameStart) {
             GameMode(game: makeGame(type: game), isPresented: $gameStart)

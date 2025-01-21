@@ -7,11 +7,11 @@ struct BaseScreen<Content: View>: View {
     private let style: BaseScreenStyle
     private let screen: ScreenType
     private let content: Content
-    private let title: String
+    private let title: String?
     
     init(
         screen: ScreenType,
-        title: String,
+        title: String? = nil,
         style: BaseScreenStyle = .default,
         @ViewBuilder content: () -> Content
     ) {
@@ -31,13 +31,13 @@ struct BaseScreen<Content: View>: View {
             content
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                 .background(themeManager.currentThemeStyle.backgroundPrimary)
-                .navigationBarTitleDisplayMode(.large)
-                .navigationTitle(title)
+                .navigationBarTitleDisplayMode(.inline)
                 .customKeyboardToolbar(buttonTitle: "Done")
                 .withScreenTracker(screen)
                 .withErrorTracker(screen)
                 .withLocaleTracker()
                 .withThemeTracker()
+                .applyTitle(title)
         }
         .onChange(of: themeManager.currentTheme) { _ in
             BaseNavigationConfigurator.configure(
