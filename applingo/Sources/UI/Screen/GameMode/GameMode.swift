@@ -47,6 +47,7 @@ struct GameMode: View {
                             isSelected: selectedMode == .practice,
                             onSelect: { selectMode(.practice) }
                         )
+                        .padding(.horizontal, 16)
                         
                         GameModeViewCard(
                             mode: .survival,
@@ -57,6 +58,7 @@ struct GameMode: View {
                             isSelected: selectedMode == .survival,
                             onSelect: { selectMode(.survival) }
                         )
+                        .padding(.horizontal, 16)
                         
                         GameModeViewCard(
                             mode: .timeAttack,
@@ -67,7 +69,11 @@ struct GameMode: View {
                             isSelected: selectedMode == .timeAttack,
                             onSelect: { selectMode(.timeAttack) }
                         )
+                        .padding(.horizontal, 16)
                     }
+                    .padding(.vertical, 24)
+                    .glassBackground()
+                    
                 }
                 .padding(style.padding)
             }
