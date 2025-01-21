@@ -1,20 +1,21 @@
 import SwiftUI
 
 protocol AbstractGame {
-    // Base part
-    var availableModes: [GameModeEnum] { get }
+    var availableModes: [GameModeType] { get }
     var minimumWordsRequired: Int { get }
     var theme: GameTheme { get }
     var type: GameType { get }
     
-    // State
+    var scoring: AbstractGameScoring { get }
+    var stats: AbstractGameStats { get }
+    var state: GameState { get }
+    
     var isReadyToPlay: Bool { get }
     
-    // Action
-    func start(mode: GameModeEnum)
+    func start(mode: GameModeType)
     func end()
+    func handleAnswer(correct: Bool, responseTime: TimeInterval, isSpecialCard: Bool)
     
-    // View
     @ViewBuilder
     func makeView() -> AnyView
 }
