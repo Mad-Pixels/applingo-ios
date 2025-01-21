@@ -96,6 +96,7 @@ struct GameMode: View {
     private func selectMode(_ mode: GameModeType) {
         selectedMode = mode
         game.state.currentMode = mode
+        game.start(mode: mode)
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             showGameContent = true
         }

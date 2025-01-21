@@ -57,6 +57,14 @@ class Quiz: ObservableObject, AbstractGame {
     }
     
     func start(mode: GameModeType) {
+        switch mode {
+        case .survival:
+            state.survivalState = GameState.SurvivalState(lives: 3)
+        case .time:
+            state.timeState = GameState.TimeState(timeLeft: 120) // 2 минуты
+        case .practice:
+            break
+        }
     }
     
     func end() {
