@@ -1,7 +1,8 @@
 import SwiftUI
 
-class BaseGameStats: ObservableObject, AbstractGameStats {
-    @Published var score: Int = 0
-    @Published var perfectStreaks: Int = 0
-    @Published var averageResponseTime: TimeInterval = 0
+class BaseGameStats: AbstractGameStats {
+    var score: Int = 0
+    var accuracy: Double = 0
+    var perfectStreaks: Int = 0
+    var averageResponseTime: TimeInterval = 0
 }

@@ -20,7 +20,13 @@
         }
       }
     },
+    "%lld%%" : {
+
+    },
     "%lld%% progress" : {
+
+    },
+    "Accuracy" : {
 
     },
     "Action Button" : {
@@ -2252,6 +2258,9 @@
     "Save Button" : {
 
     },
+    "Score" : {
+
+    },
     "sea|ים||large body of water" : {
 
     },
@@ -2477,6 +2486,9 @@
           }
         }
       }
+    },
+    "Streak" : {
+
     },
     "sun;שמש;;the main star" : {
 

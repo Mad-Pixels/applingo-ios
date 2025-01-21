@@ -25,7 +25,7 @@ class Quiz: ObservableObject, AbstractGame {
         )
     }
     
-    lazy var gameView: some View = GameQuiz()
+    lazy var gameView: some View = GameQuiz(game: self)
     
     var isReadyToPlay: Bool { true }
     
