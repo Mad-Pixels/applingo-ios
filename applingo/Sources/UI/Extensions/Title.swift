@@ -6,7 +6,7 @@ extension View {
             if let title = title {
                 self.navigationTitle(title)
             } else {
-                self.navigationBarHidden(true)
+                self
             }
         }
     }
