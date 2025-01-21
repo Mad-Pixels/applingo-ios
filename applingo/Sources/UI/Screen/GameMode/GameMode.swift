@@ -27,11 +27,8 @@ struct GameMode: View {
     var body: some View {
         BaseScreen(screen: .game, alignment: .center) {
             ZStack {
-//                Image(systemName: "graduationcap.fill")
-//                    .font(.system(size: 300))
-//                    .foregroundColor(.blue.opacity(0.05))
-//                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
-//                    .offset(x: 80, y: 80)
+                GameModeBackground()
+                    .edgesIgnoringSafeArea(.all)
                 
                 VStack(spacing: style.spacing) {
                     Text(locale.selectModeTitle.uppercased())
@@ -74,6 +71,7 @@ struct GameMode: View {
                 }
                 .padding(style.padding)
             }
+            .toolbarBackground(.clear, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     ButtonNav(
