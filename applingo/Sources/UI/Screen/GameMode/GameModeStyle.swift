@@ -39,9 +39,9 @@ extension GameModeStyle {
             cardSpacing: 16,
             titleStyle: TextStyle(
                 font: .system(.title, design: .rounded).weight(.bold),
-                color: gameTheme.dark
+                color: theme.textPrimary
             ),
-            pattern: gameTheme.pattern
+            pattern: theme.mainPattern
         )
     }
 }
