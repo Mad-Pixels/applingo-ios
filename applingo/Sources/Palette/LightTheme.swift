@@ -42,12 +42,12 @@ struct LightTheme: AppTheme {
         
     // Patterns
     var mainPattern = DynamicPatternModel(colors: [
-        Color(red: 0.75, green: 0.75, blue: 0.85),
-        Color(red: 0.85, green: 0.75, blue: 0.75),
-        Color(red: 0.75, green: 0.85, blue: 0.75),
-        Color(red: 0.85, green: 0.85, blue: 0.75),
-        Color(red: 0.8, green: 0.8, blue: 0.8),
-        Color(red: 0.85, green: 0.85, blue: 0.85)
+        Color(red: 0.12, green: 0.38, blue: 0.69),
+        Color(red: 0.80, green: 0.50, blue: 0.83),
+        Color(red: 0.47, green: 0.65, blue: 0.88),
+        Color(red: 0.83, green: 0.10, blue: 0.53),
+        Color(red: 0.09, green: 0.59, blue: 0.88),
+        Color(red: 0.85, green: 0.85, blue: 0.86)
     ])
     
     // Quiz game
@@ -58,12 +58,12 @@ struct LightTheme: AppTheme {
             light: Color(hex: "ef4444"),
             
             pattern: DynamicPatternModel(colors: [
-                Color(red: 0.75, green: 0.75, blue: 0.85),
-                Color(red: 0.85, green: 0.75, blue: 0.75),
-                Color(red: 0.75, green: 0.85, blue: 0.75),
-                Color(red: 0.85, green: 0.85, blue: 0.75),
-                Color(red: 0.8, green: 0.8, blue: 0.8),
-                Color(red: 0.85, green: 0.85, blue: 0.85)
+                Color(red: 0.12, green: 0.38, blue: 0.69),
+                Color(red: 0.80, green: 0.50, blue: 0.83),
+                Color(red: 0.47, green: 0.65, blue: 0.88),
+                Color(red: 0.83, green: 0.10, blue: 0.53),
+                Color(red: 0.09, green: 0.59, blue: 0.88),
+                Color(red: 0.85, green: 0.85, blue: 0.86)
             ])
         )
     }

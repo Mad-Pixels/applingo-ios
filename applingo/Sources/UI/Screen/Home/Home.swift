@@ -28,40 +28,14 @@ struct Home: View {
                 .edgesIgnoringSafeArea(.all)
            
             VStack(spacing: style.spacing) {
-                ButtonIcon(
-                    title: locale.quizTitle,
-                    icon: "laser.burst",
+                ButtonAction(
+                    title: locale.quizTitle.uppercased(),
                     action: {
                         game = .quiz
                         gameStart = true
                     },
-                    style: .asGameSelect(
-                        ThemeManager.shared.currentThemeStyle,
-                        ThemeManager.shared.currentThemeStyle.quizTheme)
-                )
-               
-                ButtonIcon(
-                    title: locale.matchHuntTitle,
-                    icon: "puzzlepiece",
-                    action: {
-                        game = .match
-                        gameStart = true
-                    },
-                    style: .asGameSelect(
-                        ThemeManager.shared.currentThemeStyle,
-                        ThemeManager.shared.currentThemeStyle.matchTheme)
-                )
-               
-                ButtonIcon(
-                    title: locale.verifyItTitle,
-                    icon: "number",
-                    action: {
-                        game = .swipe
-                        gameStart = true
-                    },
-                    style: .asGameSelect(
-                        ThemeManager.shared.currentThemeStyle,
-                        ThemeManager.shared.currentThemeStyle.swipeTheme)
+                    style: .menu(
+                        ThemeManager.shared.currentThemeStyle)
                 )
             }
             .padding(style.padding)
