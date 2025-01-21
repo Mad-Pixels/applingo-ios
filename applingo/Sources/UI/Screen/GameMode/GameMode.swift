@@ -5,7 +5,7 @@ struct GameMode: View {
     @Binding var isPresented: Bool
     private let locale: GameModeLocale = GameModeLocale()
     @StateObject private var style: GameModeStyle
-    @State private var selectedMode: GameModeEnum = .practice
+    @State private var selectedMode: GameModeType = .practice
     @State private var isPressedTrailing = false
     @State private var showGameContent = false
     @State private var isAnimating = false
@@ -31,49 +31,8 @@ struct GameMode: View {
                     .edgesIgnoringSafeArea(.all)
                 
                 VStack(spacing: style.spacing) {
-                    Text(locale.selectModeTitle.uppercased())
-                        .font(style.titleStyle.font)
-                        .foregroundColor(style.titleStyle.color)
-                        .opacity(isAnimating ? 1 : 0)
-                        .offset(y: isAnimating ? 0 : 20)
-                    
-                    VStack(spacing: style.cardSpacing) {
-                        GameModeViewCard(
-                            mode: .practice,
-                            icon: "graduationcap.fill",
-                            title: locale.practiceTitle,
-                            description: locale.practiceDescription,
-                            style: style,
-                            isSelected: selectedMode == .practice,
-                            onSelect: { selectMode(.practice) }
-                        )
-                        .padding(.horizontal, 16)
-                        
-                        GameModeViewCard(
-                            mode: .survival,
-                            icon: "heart.fill",
-                            title: locale.survivalTitle,
-                            description: locale.survivalDescription,
-                            style: style,
-                            isSelected: selectedMode == .survival,
-                            onSelect: { selectMode(.survival) }
-                        )
-                        .padding(.horizontal, 16)
-                        
-                        GameModeViewCard(
-                            mode: .timeAttack,
-                            icon: "timer",
-                            title: locale.timeAttackTitle,
-                            description: locale.timeAttackDescription,
-                            style: style,
-                            isSelected: selectedMode == .timeAttack,
-                            onSelect: { selectMode(.timeAttack) }
-                        )
-                        .padding(.horizontal, 16)
-                    }
-                    .padding(.vertical, 24)
-                    .glassBackground()
-                    
+                    titleView
+                    modesListView
                 }
                 .padding(style.padding)
             }
@@ -95,14 +54,48 @@ struct GameMode: View {
             if showGameContent {
                 GameModeViewGame(
                     game: game,
+                    mode: selectedMode,
                     showGameContent: $showGameContent
                 )
             }
         }
     }
-
-    private func selectMode(_ mode: GameModeEnum) {
+    
+    private var titleView: some View {
+        Text(locale.selectModeTitle.uppercased())
+            .font(style.titleStyle.font)
+            .foregroundColor(style.titleStyle.color)
+            .opacity(isAnimating ? 1 : 0)
+            .offset(y: isAnimating ? 0 : 20)
+    }
+    
+    private var modesListView: some View {
+        VStack(spacing: style.cardSpacing) {
+            ForEach(game.availableModes, id: \.self) { mode in
+                modeCard(for: mode)
+            }
+        }
+        .padding(.vertical, 24)
+        .glassBackground()
+    }
+    
+    private func modeCard(for mode: GameModeType) -> some View {
+        let model = game.getModeModel(mode)
+        return GameModeViewCard(
+            mode: mode,
+            icon: model.icon,
+            title: model.title,
+            description: model.description,
+            style: style,
+            isSelected: selectedMode == mode,
+            onSelect: { selectMode(mode) }
+        )
+        .padding(.horizontal, 16)
+    }
+    
+    private func selectMode(_ mode: GameModeType) {
         selectedMode = mode
+        game.state.currentMode = mode
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             showGameContent = true
         }

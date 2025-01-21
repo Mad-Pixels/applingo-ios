@@ -45,6 +45,17 @@ class Quiz: ObservableObject, AbstractGame {
         }
     }
     
+    func getModeModel(_ type: GameModeType) -> GameModeModel {
+        switch type {
+        case .practice:
+            return .practice(locale: GameModeLocale())
+        case .survival:
+            return .survival(locale: GameModeLocale())
+        case .time:
+            return .time(locale: GameModeLocale())
+        }
+    }
+    
     func start(mode: GameModeType) {
     }
     

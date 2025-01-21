@@ -15,6 +15,7 @@ protocol AbstractGame {
     func start(mode: GameModeType)
     func end()
     func handleAnswer(correct: Bool, responseTime: TimeInterval, isSpecialCard: Bool)
+    func getModeModel(_ type: GameModeType) -> GameModeModel
     
     @ViewBuilder
     func makeView() -> AnyView
