@@ -1,12 +1,5 @@
 import SwiftUI
 
-struct BackgroundShape: Identifiable {
-    let id: UUID
-    var position: CGPoint
-    var size: CGFloat
-    var opacity: Double
-}
-
 final class GameModeBackgroundManager: ObservableObject {
     static let shared = GameModeBackgroundManager()
     
@@ -32,22 +25,34 @@ final class GameModeBackgroundManager: ObservableObject {
         generateBackground(for: size)
         GameModeBackgroundManager.isFirstLaunchGenerated = true
     }
-    
+    private let padding: CGFloat = 5
     private func generateBackground(for size: CGSize) {
         var shapes: [BackgroundShape] = []
-        
+        var occupiedRects: [CGRect] = []
+            
         for _ in 0..<maxShapes {
-            shapes.append(BackgroundShape(
-                id: UUID(),
-                position: CGPoint(
-                    x: CGFloat.random(in: 0...size.width),
-                    y: CGFloat.random(in: 0...size.height)
-                ),
-                size: CGFloat.random(in: minSize...maxSize),
-                opacity: Double.random(in: minOpacity...maxOpacity)
-            ))
+            let shapeSize = CGFloat.random(in: minSize...maxSize)
+            let x = CGFloat.random(in: padding...(size.width - padding))
+            let y = CGFloat.random(in: padding...(size.height - padding))
+                
+            let newRect = CGRect(
+                x: x - shapeSize/2,
+                y: y - shapeSize/2,
+                width: shapeSize,
+                height: shapeSize
+            ).insetBy(dx: -padding/2, dy: -padding/2)
+                
+            if !occupiedRects.contains(where: { $0.intersects(newRect) }) {
+                occupiedRects.append(newRect)
+                    
+                shapes.append(BackgroundShape(
+                    id: UUID(),
+                    position: CGPoint(x: x, y: y),
+                    size: shapeSize,
+                    opacity: Double.random(in: minOpacity...maxOpacity)
+                ))
+            }
         }
-        
         self.backgroundShapes = shapes
     }
     
