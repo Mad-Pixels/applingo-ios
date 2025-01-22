@@ -14,6 +14,20 @@ struct LingocardApp: App {
     private let dbName = "LingocardDB.sqlite"
 
     init() {
+        do {
+            try AppDatabase.shared.connect(dbName: dbName)
+        } catch {
+            let appError = AppErrorModel(
+                type: .database,
+                message: "Failed to connect to database",
+                localized: LanguageManager.shared.localizedString(for: "ErrMain").capitalizedFirstLetter,
+                original: error,
+                additional: ["error": error.localizedDescription]
+            )
+            ErrorManager1.shared.setError(appError: appError, frame: .main, source: .initialization)
+        }
+        
+        
         Logger.initializeLogger()
         do {
             try DatabaseManager.shared.connect(dbName: dbName)

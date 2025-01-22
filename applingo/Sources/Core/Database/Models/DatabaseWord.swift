@@ -2,7 +2,7 @@ import Foundation
 import GRDB
 
 struct DatabaseWord: Identifiable, Codable, Equatable {
-    static let databaseTableName = "Words"
+    static let databaseTableName = "word"
     
     internal let id: Int
     internal let created: Int

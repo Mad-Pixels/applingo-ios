@@ -57,31 +57,32 @@ final class AppDatabase: ObservableObject {
         var migrator = DatabaseMigrator()
         
         migrator.registerMigration("createDictionary") { db in
-            try DictionaryItemModel.createTable(in: db)
+            try DatabaseDictionary.createTable(in: db)
             Logger.debug("[AppDatabase]: 'Dictionary' table created successfully")
             
-            let internalDictionary = DictionaryItemModel(
-                key: "internal",
-                displayName: "Main",
-                tableName: "Internal",
-                description: "LingoCards default dictionary",
-                category: "LingoCards",
+            let internalDictionary = DatabaseDictionary(
+                name: "Main",
+                author: "MadPixels",
+                category: "AppLingo",
                 subcategory: "internal",
-                author: "LingoCards"
+                description: "AppLingo default dictionary"
             )
-            if try DictionaryItemModel
-                .filter(Column("displayName") == internalDictionary.displayName)
+            
+            if try DatabaseDictionary
+                .filter(Column("name") == internalDictionary.name)
                 .fetchOne(db) == nil {
                 try internalDictionary.insert(db)
-                Logger.debug("[AppDatabase]: 'Internal' dictionary entry added successfully")
+                Logger.debug("[AppDatabase]: 'Main' dictionary entry added successfully")
             } else {
-                Logger.debug("[AppDatabase]: 'Internal' dictionary entry already exists")
+                Logger.debug("[AppDatabase]: 'Main' dictionary entry already exists")
             }
         }
+        
         migrator.registerMigration("createWords") { db in
-            try WordItemModel.createTable(in: db)
+            try DatabaseWord.createTable(in: db)
             Logger.debug("[AppDatabase]: 'Words' table created successfully")
         }
+        
         return migrator
     }
 }
