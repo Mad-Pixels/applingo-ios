@@ -12,7 +12,7 @@ class HapticFeedback: AbstractGameFeedback {
    }
    
    func play() {
-       HapticManager.shared.playHapticPattern(
+       HardwareHaptic.shared.playHapticPattern(
            intensity: intensity,
            sharpness: sharpness,
            count: count

@@ -4,7 +4,7 @@ import IQKeyboardManagerSwift
 @main
 struct LingocardApp: App {
     @StateObject private var languageManager = LanguageManager.shared
-    @StateObject private var hapticManager = HapticManager.shared
+    @StateObject private var hapticManager = HardwareHaptic.shared
     @StateObject private var themeManager = ThemeManager.shared
     @StateObject private var errorManager = ErrorManager1.shared
     //@StateObject private var frameManager = FrameManager.shared
