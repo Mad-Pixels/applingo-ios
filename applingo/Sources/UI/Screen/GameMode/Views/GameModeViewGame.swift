@@ -23,6 +23,13 @@ struct GameModeViewGame: View {
                             isPressed: $isPressedLeading
                         )
                     }
+                    
+                    ToolbarItem(placement: .principal) {
+                        GameTab(
+                            game: game,
+                            style: .themed(ThemeManager.shared.currentThemeStyle)
+                        )
+                    }
                 }
         }
         .ignoresSafeArea()

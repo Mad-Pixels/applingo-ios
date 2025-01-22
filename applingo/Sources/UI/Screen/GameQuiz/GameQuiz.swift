@@ -14,10 +14,7 @@ struct GameQuiz: View {
     var body: some View {
         ZStack {
             VStack(spacing: 20) {
-                GameTab(
-                    game: game,
-                    style: .themed(ThemeManager.shared.currentThemeStyle)
-                )
+                
                 Text("Quiz Game Content")
                     .font(.largeTitle)
             }
