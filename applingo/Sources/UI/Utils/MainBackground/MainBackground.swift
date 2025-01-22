@@ -2,7 +2,7 @@ import SwiftUI
 
 struct MainBackground: View {
     @StateObject private var manager = MainBackgroundManager.shared
-    @StateObject private var motionManager = MotionManager.shared
+    @StateObject private var motionManager = HardwareMotion.shared
     
     private let parallaxStrength: CGFloat = 60
     

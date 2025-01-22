@@ -2,7 +2,7 @@ import SwiftUI
 
 struct GameModeBackground: View {
     @StateObject private var manager = GameModeBackgroundManager.shared
-    @StateObject private var motionManager = MotionManager.shared
+    @StateObject private var motionManager = HardwareMotion.shared
     
     private let parallaxStrength: CGFloat = 180
     

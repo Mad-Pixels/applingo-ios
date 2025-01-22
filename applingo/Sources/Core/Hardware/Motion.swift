@@ -1,7 +1,7 @@
 import CoreMotion
 
-final class MotionManager: ObservableObject {
-    static let shared = MotionManager()
+final class HardwareMotion: ObservableObject {
+    static let shared = HardwareMotion()
     
     @Published private(set) var roll: Double = 0
     @Published private(set) var pitch: Double = 0
