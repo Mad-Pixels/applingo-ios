@@ -2,9 +2,9 @@ import Foundation
 import Combine
 import GRDB
 
-final class DatabaseManager: ObservableObject {
+final class AppDatabase: ObservableObject {
     @Published private(set) var isConnected: Bool = false
-    static let shared = DatabaseManager()
+    static let shared = AppDatabase()
     
     private var dbQueue: DatabaseQueue?
     private var databaseURL: URL?
