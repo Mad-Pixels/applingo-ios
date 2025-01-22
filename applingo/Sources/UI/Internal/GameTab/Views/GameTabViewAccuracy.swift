@@ -5,14 +5,9 @@ struct GameTabViewAccuracy: View {
     let style: GameTabStyle
     
     var body: some View {
-        VStack(spacing: 4) {
-            Text("Accuracy")
-                .font(style.titleFont)
-                .foregroundColor(style.textSecondaryColor)
-            
-            Text("\(Int(accuracy * 100))%")
-                .font(style.valueFont)
-                .foregroundColor(style.textPrimaryColor)
-        }
+        Text("\(Int(accuracy * 100))%")
+            .font(style.valueFont)
+            .foregroundColor(style.textPrimaryColor)
+            .monospacedDigit()
     }
 }
