@@ -15,7 +15,7 @@ struct DictionaryItemModel: Identifiable, Codable, Equatable, Hashable {
 
     var createdAt: Int
     var isPublic: Bool
-    var isActive: Bool
+    var isActive: Bool 
     
     init(
         id: Int? = nil,
