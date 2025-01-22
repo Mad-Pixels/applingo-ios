@@ -5,7 +5,7 @@ struct GameModeViewCard: View {
    let icon: String
    let title: String
    let description: String
-   let style: GameModeStyle
+    let style: GameTheme
    let isSelected: Bool
    let onSelect: () -> Void
    @EnvironmentObject private var themeManager: ThemeManager
@@ -16,7 +16,7 @@ struct GameModeViewCard: View {
             subtitle: description,
             icon: icon,
             isSelected: true,
-            style: .themed(themeManager.currentThemeStyle),
+            style: .game(themeManager.currentThemeStyle, style),
             action: onSelect
         )
     }

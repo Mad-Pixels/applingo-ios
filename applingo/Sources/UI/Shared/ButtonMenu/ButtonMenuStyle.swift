@@ -32,19 +32,19 @@ extension ButtonMenuStyle {
         )
     }
     
-    static func asGameSelect(_ gameTheme: GameTheme) -> ButtonMenuStyle {
+    static func game(_ theme: AppTheme, _ gameTheme: GameTheme) -> ButtonMenuStyle {
         ButtonMenuStyle(
-            backgroundColor: gameTheme.main.opacity(0.1),
-            foregroundColor: .white,
-            iconColor: gameTheme.main,
-            font: .title3.bold(),
-            iconSize: 24,
+            backgroundColor: theme.backgroundPrimary,
+            foregroundColor: theme.textPrimary,
+            iconColor: gameTheme.dark,
+            font: .body.bold(),
+            iconSize: 36,
             padding: EdgeInsets(top: 16, leading: 24, bottom: 16, trailing: 24),
-            height: 80,
-            cornerRadius: 20,
-            borderColor: gameTheme.dark,
-            borderWidth: 2,
-            shadowColor: gameTheme.dark.opacity(0.5)
+            height: 70,
+            cornerRadius: 16,
+            borderColor: theme is DarkTheme ? .white.opacity(0.1) : .clear,
+            borderWidth: theme is DarkTheme ? 1 : 0,
+            shadowColor: theme.cardBorder
         )
     }
 }

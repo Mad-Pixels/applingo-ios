@@ -86,7 +86,7 @@ struct GameMode: View {
             icon: model.icon,
             title: model.title,
             description: model.description,
-            style: style,
+            style: game.theme,
             isSelected: selectedMode == mode,
             onSelect: { selectMode(mode) }
         )
