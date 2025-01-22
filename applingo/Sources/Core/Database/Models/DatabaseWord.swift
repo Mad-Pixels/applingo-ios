@@ -6,6 +6,7 @@ struct DatabaseWord: Identifiable, Codable, Equatable {
     
     internal let id: Int
     internal let created: Int
+    internal let dictionaryId: Int
     
     var description: String
     var frontText: String
@@ -17,6 +18,7 @@ struct DatabaseWord: Identifiable, Codable, Equatable {
     var fail: Int
     
     init(
+        dictionaryId: Int,
         description: String,
         frontText: String,
         backText: String,
@@ -25,6 +27,7 @@ struct DatabaseWord: Identifiable, Codable, Equatable {
         created: Int = Int(Date().timeIntervalSince1970),
         id: Int = -1
     ) {
+        self.dictionaryId = dictionaryId
         self.description = description
         self.frontText = frontText
         self.backText = backText
@@ -62,6 +65,8 @@ extension DatabaseWord: FetchableRecord, PersistableRecord {
     static func createTable(in db: Database) throws {
         try db.create(table: databaseTableName, ifNotExists: true) { t in
             t.autoIncrementedPrimaryKey("id")
+            t.column("dictionaryId", .integer).notNull()
+                .references(DatabaseDictionary.databaseTableName)
             
             t.column("created", .integer).notNull()
             t.column("success", .integer).notNull()
@@ -74,11 +79,16 @@ extension DatabaseWord: FetchableRecord, PersistableRecord {
         }
         
         try db.create(index: "words_created_idx",
-                     on: databaseTableName,
-                     columns: ["created"])
+                      on: databaseTableName,
+                      columns: ["created"])
+                
+        try db.create(index: "words_dictionary_idx",
+                      on: databaseTableName,
+                      columns: ["dictionaryId"])
     }
     
     func encode(to container: inout PersistenceContainer) throws {
+        container["dictionaryId"] = dictionaryId
         container["description"] = description
         container["frontText"] = frontText
         container["backText"] = backText
