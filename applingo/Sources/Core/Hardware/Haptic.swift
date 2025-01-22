@@ -1,8 +1,8 @@
 import CoreHaptics
 import SwiftUI
 
-final class HapticManage1r: ObservableObject {
-    static let shared = HapticManage1r()
+final class HapticManager: ObservableObject {
+    static let shared = HapticManager()
     private var engine: CHHapticEngine?
     
     private init() {

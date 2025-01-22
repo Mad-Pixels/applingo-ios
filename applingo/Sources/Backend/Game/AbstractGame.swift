@@ -1,6 +1,9 @@
 import SwiftUI
 
 protocol AbstractGame {
+    associatedtype ValidationAnswer
+    var validation: any AbstractGameValidation { get }
+    
     var availableModes: [GameModeType] { get }
     var minimumWordsRequired: Int { get }
     var theme: GameTheme { get }
@@ -14,7 +17,8 @@ protocol AbstractGame {
     
     func start(mode: GameModeType)
     func end()
-    func handleAnswer(correct: Bool, responseTime: TimeInterval, isSpecialCard: Bool)
+    func validateAnswer(_ answer: ValidationAnswer) -> GameValidationResult
+    func updateStats(correct: Bool, responseTime: TimeInterval, isSpecialCard: Bool)
     func getModeModel(_ type: GameModeType) -> GameModeModel
     
     @ViewBuilder
