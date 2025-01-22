@@ -1,11 +1,18 @@
 import SwiftUI
 
 class QuizValidation: BaseGameValidation {
+    private var currentCard: QuizCard?
+    
+    func setCurrentCard(_ card: QuizCard) {
+        self.currentCard = card
+    }
+    
     override func validate(answer: Any) -> GameValidationResult {
-        guard let answer = answer as? String else {
+        guard let answer = answer as? String,
+              let card = currentCard else {
             return .incorrect
         }
-        // Логика валидации строкового ответа
-        return .correct
+        
+        return answer == card.correctAnswer ? .correct : .incorrect
     }
 }

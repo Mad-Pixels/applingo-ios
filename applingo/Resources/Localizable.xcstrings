@@ -1935,6 +1935,9 @@
         }
       }
     },
+    "Loading..." : {
+
+    },
     "LogSettings" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2158,9 +2161,6 @@
           }
         }
       }
-    },
-    "Quiz Game Content" : {
-
     },
     "Randomize" : {
 

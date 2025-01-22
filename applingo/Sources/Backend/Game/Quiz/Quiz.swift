@@ -7,6 +7,7 @@ class Quiz: ObservableObject, AbstractGame {
     let availableModes: [GameModeType] = [.practice, .survival, .time]
     let minimumWordsRequired: Int = 12
     let scoring: AbstractGameScoring
+    let cacheGetter = GameCacheGetterViewModel()
         
     lazy private(set) var stats: AbstractGameStats = {
         BaseGameStats()
@@ -31,7 +32,7 @@ class Quiz: ObservableObject, AbstractGame {
         )
     }
         
-    lazy var gameView: some View = GameQuiz(game: self)
+    lazy var gameView: some View = GameQuiz(game: self).environmentObject(cacheGetter)
     
     var isReadyToPlay: Bool { true }
     
@@ -70,6 +71,7 @@ class Quiz: ObservableObject, AbstractGame {
     
     func start(mode: GameModeType) {
         state.currentMode = mode
+        cacheGetter.initializeCache()
         
         switch mode {
         case .survival:
@@ -82,5 +84,6 @@ class Quiz: ObservableObject, AbstractGame {
     }
     
     func end() {
+        cacheGetter.clearCache()
     }
 }
