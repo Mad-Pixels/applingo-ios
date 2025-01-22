@@ -11,10 +11,6 @@ struct GameTabViewStreak: View {
                 .foregroundColor(style.textSecondaryColor)
             
             HStack(spacing: 4) {
-                Image(systemName: "flame.fill")
-                    .font(.system(size: style.iconSize))
-                    .foregroundColor(style.accentColor)
-                
                 Text("\(streak)")
                     .font(style.valueFont)
                     .foregroundColor(style.textPrimaryColor)
