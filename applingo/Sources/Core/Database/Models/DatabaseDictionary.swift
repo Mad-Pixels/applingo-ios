@@ -86,13 +86,14 @@ extension DatabaseDictionary: FetchableRecord, PersistableRecord {
     static func createTable(in db: Database) throws {
         try db.create(table: databaseTableName, ifNotExists: true) { t in
             t.autoIncrementedPrimaryKey("id")
-            t.column("name", .text).notNull()
-            t.column("author", .text).notNull()
-            t.column("category", .text).notNull()
+            
             t.column("subcategory", .text).notNull()
             t.column("description", .text).notNull()
             t.column("created", .integer).notNull()
             t.column("active", .boolean).notNull()
+            t.column("category", .text).notNull()
+            t.column("author", .text).notNull()
+            t.column("name", .text).notNull()
             t.column("uniq", .text).unique()
         }
         
@@ -102,13 +103,13 @@ extension DatabaseDictionary: FetchableRecord, PersistableRecord {
     }
     
     func encode(to container: inout PersistenceContainer) throws {
-        container["name"] = name
-        container["author"] = author
-        container["category"] = category
         container["subcategory"] = subcategory
         container["description"] = description
+        container["category"] = category
         container["created"] = created
+        container["author"] = author
         container["active"] = active
+        container["name"] = name
         container["uniq"] = uniq
     }
 }

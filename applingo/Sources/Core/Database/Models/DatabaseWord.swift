@@ -62,14 +62,15 @@ extension DatabaseWord: FetchableRecord, PersistableRecord {
     static func createTable(in db: Database) throws {
         try db.create(table: databaseTableName, ifNotExists: true) { t in
             t.autoIncrementedPrimaryKey("id")
-            t.column("frontText", .text).notNull()
-            t.column("backText", .text).notNull()
-            t.column("description", .text)
-            t.column("hint", .text)
+            
             t.column("created", .integer).notNull()
             t.column("success", .integer).notNull()
+            t.column("frontText", .text).notNull()
             t.column("weight", .integer).notNull()
+            t.column("backText", .text).notNull()
             t.column("fail", .integer).notNull()
+            t.column("description", .text)
+            t.column("hint", .text)
         }
         
         try db.create(index: "words_created_idx",
