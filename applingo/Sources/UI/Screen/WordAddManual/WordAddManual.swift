@@ -104,7 +104,7 @@ struct WordAddManual: View {
             backText: wordItem.backText,
             description: descriptionText.isEmpty ? nil : descriptionText,
             hint: hintText.isEmpty ? nil : hintText,
-            createdAt: wordItem.createdAt,
+            created: wordItem.created,
             success: wordItem.success,
             weight: wordItem.weight,
             fail: wordItem.fail

@@ -2,15 +2,16 @@ import Foundation
 import GRDB
 
 struct DatabaseModelWord: Identifiable, Codable, Equatable {
-    static let databaseTableName = "Words"
+    static let databaseTableName = "words"
     
-    var id: Int?
+    internal let id: Int?
+    internal let created: Int
+    
     var tableName: String
     var frontText: String
     var backText: String
     var description: String?
     var hint: String?
-    var createdAt: Int
     var success: Int
     var weight: Int
     var fail: Int
@@ -22,7 +23,7 @@ struct DatabaseModelWord: Identifiable, Codable, Equatable {
         backText: String,
         description: String? = nil,
         hint: String? = nil,
-        createdAt: Int = Int(Date().timeIntervalSince1970),
+        created: Int = Int(Date().timeIntervalSince1970),
         success: Int = 0,
         weight: Int = 500,
         fail: Int = 0
@@ -33,7 +34,7 @@ struct DatabaseModelWord: Identifiable, Codable, Equatable {
         self.backText = backText
         self.description = description
         self.hint = hint
-        self.createdAt = createdAt
+        self.created = created
         self.success = success
         self.weight = weight
         self.fail = fail
@@ -49,12 +50,13 @@ struct DatabaseModelWord: Identifiable, Codable, Equatable {
         )
     }
     
-    var formattedCreatedAt: String {
-        let date = Date(timeIntervalSince1970: TimeInterval(createdAt))
+    var date: String {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
         formatter.timeStyle = .short
-        return formatter.string(from: date)
+        return formatter.string(
+            from: Date(timeIntervalSince1970: TimeInterval(created))
+        )
     }
     
     func toString() -> String {
@@ -66,10 +68,10 @@ struct DatabaseModelWord: Identifiable, Codable, Equatable {
         - Back Text: \(backText)
         - Description: \(description ?? "None")
         - Hint: \(hint ?? "None")
-        - Created At: \(formattedCreatedAt)
         - Success Count: \(success)
         - Weight: \(weight)
         - Fail Count: \(fail)
+        - Created: \(date)
         """
     }
     
@@ -91,7 +93,7 @@ extension DatabaseModelWord: FetchableRecord, PersistableRecord {
             t.column("backText", .text).notNull()
             t.column("description", .text)
             t.column("hint", .text)
-            t.column("createdAt", .integer).notNull()
+            t.column("created", .integer).notNull()
             t.column("success", .integer).notNull()
             t.column("weight", .integer).notNull()
             t.column("fail", .integer).notNull()
@@ -109,7 +111,7 @@ extension DatabaseModelWord: Hashable {
             hasher.combine(tableName)
             hasher.combine(frontText)
             hasher.combine(backText)
-            hasher.combine(createdAt)
+            hasher.combine(created)
         }
     }
     
@@ -121,6 +123,6 @@ extension DatabaseModelWord: Hashable {
         return lhs.tableName == rhs.tableName &&
             lhs.frontText == rhs.frontText &&
             lhs.backText == rhs.backText &&
-            lhs.createdAt == rhs.createdAt
+            lhs.created == rhs.created
     }
 }
