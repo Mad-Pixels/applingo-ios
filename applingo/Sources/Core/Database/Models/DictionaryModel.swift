@@ -14,16 +14,12 @@ struct DictionaryItemModel: Identifiable, Codable, Equatable, Hashable {
     var author: String
     var name: String
     
-    
-    var tableName: String
-    
     var isPublic: Bool
     var isActive: Bool 
     
     init(
         uuid: String,
         name: String,
-        tableName: String,
         description: String,
         category: String,
         subcategory: String,
@@ -36,7 +32,6 @@ struct DictionaryItemModel: Identifiable, Codable, Equatable, Hashable {
     ) {
         self.uuid = uuid
         self.name = name
-        self.tableName = tableName
         self.description = description
         self.category = category
         self.subcategory = subcategory
@@ -65,7 +60,6 @@ struct DictionaryItemModel: Identifiable, Codable, Equatable, Hashable {
         - ID: \(id ?? -1)
         - UUID: \(uuid)
         - Name: \(name)
-        - Table Name: \(tableName)
         - Description: \(description)
         - Category: \(category)
         - Subcategory: \(subcategory)
@@ -90,7 +84,6 @@ extension DictionaryItemModel: FetchableRecord, PersistableRecord {
         try db.create(table: databaseTableName, ifNotExists: true) { t in
             t.autoIncrementedPrimaryKey("id").unique()
             t.column("name", .text).notNull()
-            t.column("tableName", .text).notNull()
             t.column("description", .text).notNull()
             t.column("category", .text).notNull()
             t.column("subcategory", .text).notNull()

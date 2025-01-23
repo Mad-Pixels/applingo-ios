@@ -59,7 +59,7 @@ struct DictionaryLocalListViewList: View {
    private func delete(at offsets: IndexSet) {
        offsets.forEach { index in
            let dictionary = dictionaryGetter.dictionaries[index]
-           if dictionary.tableName != "Internal" {
+           if dictionary.uuid != "Internal" {
                dictionaryAction.delete(dictionary) { result in
                    if case .success = result {
                        dictionaryGetter.dictionaries.remove(at: index)

@@ -17,7 +17,7 @@ class RepositoryWord: WordRepositoryProtocol {
         guard !activeDictionaries.isEmpty else {
             return []
         }
-        let activeDisplayNames = activeDictionaries.map { $0.tableName } as [DatabaseValueConvertible]
+        let activeDisplayNames = activeDictionaries.map { $0.uuid } as [DatabaseValueConvertible]
         
         return try dbQueue.read { db -> [WordItemModel] in
             var sql: String
@@ -85,7 +85,7 @@ class RepositoryWord: WordRepositoryProtocol {
         }
         guard !activeDictionaries.isEmpty else { return [] }
 
-        let activeDisplayNames = activeDictionaries.map { $0.tableName }
+        let activeDisplayNames = activeDictionaries.map { $0.uuid }
         let randomCount = Int(Double(count) * 0.6)
         let weightedCount = count - randomCount
             

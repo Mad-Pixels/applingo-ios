@@ -63,7 +63,6 @@ final class AppDatabase: ObservableObject {
             let internalDictionary = DictionaryItemModel(
                 uuid: "internal",
                 name: "Main",
-                tableName: "Internal",
                 description: "LingoCards default dictionary",
                 category: "LingoCards",
                 subcategory: "internal",
