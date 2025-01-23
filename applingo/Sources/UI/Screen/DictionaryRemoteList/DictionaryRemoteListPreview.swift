@@ -10,19 +10,19 @@ import SwiftUI
                     DictionaryItemModel(
                         uuid: "en_basic",
                         name: "English Basic",
-                        description: "Basic English vocabulary",
+                        author: "John Doe",
                         category: "Language",
                         subcategory: "English",
-                        author: "John Doe",
+                        description: "Basic English vocabulary",
                         id: 1
                     ),
                     DictionaryItemModel(
                         uuid: "es_basic",
                         name: "Spanish Basic",
-                        description: "Spanish vocabulary",
+                        author: "Maria Garcia",
                         category: "Language",
                         subcategory: "Spanish",
-                        author: "Maria Garcia",
+                        description: "Spanish vocabulary",
                         id: 2
                     )
                 ]

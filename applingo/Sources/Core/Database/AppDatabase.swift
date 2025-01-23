@@ -63,10 +63,10 @@ final class AppDatabase: ObservableObject {
             let internalDictionary = DictionaryItemModel(
                 uuid: "internal",
                 name: "Main",
-                description: "LingoCards default dictionary",
+                author: "LingoCards",
                 category: "LingoCards",
                 subcategory: "internal",
-                author: "LingoCards"
+                description: "LingoCards default dictionary"
             )
             if try DictionaryItemModel
                 .filter(Column("name") == internalDictionary.name)

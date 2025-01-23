@@ -35,18 +35,18 @@ final class CSVManager {
             DictionaryItemModel(
                 uuid: existing.uuid,
                 name: existing.name,
-                description: existing.description,
+                author: existing.author,
                 category: existing.category,
                 subcategory: existing.subcategory,
-                author: existing.author
+                description: existing.description
             )
         } ?? DictionaryItemModel(
             uuid: url.lastPathComponent,
             name: url.deletingPathExtension().lastPathComponent,
-            description: "Imported from local file: '\(url.lastPathComponent)'",
+            author: "local user",
             category: "Local",
             subcategory: "personal",
-            author: "local user"
+            description: "Imported from local file: '\(url.lastPathComponent)'"
         )
         
         let words = try parseCSV(at: url, tableName: tableName)

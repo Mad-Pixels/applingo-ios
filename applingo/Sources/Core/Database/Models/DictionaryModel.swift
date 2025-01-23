@@ -12,30 +12,28 @@ struct DictionaryItemModel: Identifiable, Codable, Equatable, Hashable {
     var subcategory: String
     var category: String
     var author: String
+    var isActive: Bool
     var name: String
-    
-    var isActive: Bool 
     
     init(
         uuid: String,
         name: String,
-        description: String,
+        author: String,
         category: String,
         subcategory: String,
-        author: String,
-        isActive: Bool = true,
+        description: String,
         
         created: Int = Int(Date().timeIntervalSince1970),
+        isActive: Bool = true,
         id: Int? = nil
     ) {
+        self.subcategory = subcategory
+        self.description = description
+        self.isActive = isActive
+        self.category = category
+        self.author = author
         self.uuid = uuid
         self.name = name
-        self.description = description
-        self.category = category
-        self.subcategory = subcategory
-        self.author = author
-        
-        self.isActive = isActive
         
         self.created = created
         self.id = id
@@ -57,12 +55,12 @@ struct DictionaryItemModel: Identifiable, Codable, Equatable, Hashable {
         - ID: \(id ?? -1)
         - UUID: \(uuid)
         - Name: \(name)
-        - Description: \(description)
+        - Author: \(author)
         - Category: \(category)
         - Subcategory: \(subcategory)
-        - Author: \(author)
-        - Created: \(date)
+        - Description: \(description)
         - Active: \(isActive ? "Yes" : "No")
+        - Created: \(date)
         """
     }
     

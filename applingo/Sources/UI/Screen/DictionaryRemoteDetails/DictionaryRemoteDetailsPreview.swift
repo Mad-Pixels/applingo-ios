@@ -6,10 +6,10 @@ import SwiftUI
            dictionary: DictionaryItemModel(
             uuid: "en_basic",
                name: "English Basic",
+            author: "John Doe",
+            category: "Language",
+            subcategory: "English",
                description: "Basic English vocabulary for beginners",
-               category: "Language",
-               subcategory: "English",
-               author: "John Doe",
                id: 1
            ),
            isPresented: .constant(true)
@@ -24,10 +24,10 @@ struct ScreenDictionaryDetail_Previews: PreviewProvider {
        let mockDictionary = DictionaryItemModel(
         uuid: "en_basic",
            name: "English Basic",
+        author: "John Doe",
+        category: "Language",
+        subcategory: "English",
            description: "Basic English vocabulary for beginners",
-           category: "Language",
-           subcategory: "English",
-           author: "John Doe",
            id: 1
        )
        

@@ -51,10 +51,10 @@ class RepositoryAPI: ApiRepositoryProtocol {
             DictionaryItemModel(
                 uuid: dictionaryItem.dictionary,
                 name: dictionaryItem.name,
-                description: dictionaryItem.description,
+                author: dictionaryItem.author,
                 category: dictionaryItem.category,
                 subcategory: dictionaryItem.subcategory,
-                author: dictionaryItem.author,
+                description: dictionaryItem.description,
                 
                 created: dictionaryItem.createdAt,
                 id: UUID().hashValue
