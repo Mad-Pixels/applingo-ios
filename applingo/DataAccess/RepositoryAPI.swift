@@ -49,7 +49,7 @@ class RepositoryAPI: ApiRepositoryProtocol {
         
         let dictionaries = response.data.items.map { dictionaryItem in
             DictionaryItemModel(
-                key: dictionaryItem.dictionary,
+                uuid: dictionaryItem.dictionary,
                 name: dictionaryItem.name,
                 tableName: dictionaryItem.dictionary,
                 description: dictionaryItem.description,

@@ -5,6 +5,7 @@ struct DictionaryItemModel: Identifiable, Codable, Equatable, Hashable {
     static let databaseTableName = "dictionary"
     
     internal let id: Int?
+    internal let uuid: String
     internal let created: Int
     
     var description: String
@@ -13,7 +14,6 @@ struct DictionaryItemModel: Identifiable, Codable, Equatable, Hashable {
     var author: String
     var name: String
     
-    var key: String
     
     var tableName: String
     
@@ -21,7 +21,7 @@ struct DictionaryItemModel: Identifiable, Codable, Equatable, Hashable {
     var isActive: Bool 
     
     init(
-        key: String,
+        uuid: String,
         name: String,
         tableName: String,
         description: String,
@@ -34,7 +34,7 @@ struct DictionaryItemModel: Identifiable, Codable, Equatable, Hashable {
         created: Int = Int(Date().timeIntervalSince1970),
         id: Int? = nil
     ) {
-        self.key = key
+        self.uuid = uuid
         self.name = name
         self.tableName = tableName
         self.description = description
@@ -63,7 +63,7 @@ struct DictionaryItemModel: Identifiable, Codable, Equatable, Hashable {
         """
         DictionaryItemModel:
         - ID: \(id ?? -1)
-        - Key: \(key)
+        - UUID: \(uuid)
         - Name: \(name)
         - Table Name: \(tableName)
         - Description: \(description)
@@ -98,7 +98,7 @@ extension DictionaryItemModel: FetchableRecord, PersistableRecord {
             t.column("created", .integer).notNull()
             t.column("isPublic", .boolean).notNull()
             t.column("isActive", .boolean).notNull()
-            t.column("key", .text).unique()
+            t.column("uuid", .text).unique()
         }
         try db.create(index: "Dictionary_created_idx", on: databaseTableName, columns: ["created"])
     }

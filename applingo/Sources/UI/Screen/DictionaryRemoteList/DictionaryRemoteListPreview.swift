@@ -8,7 +8,7 @@ import SwiftUI
                 let getter = DictionaryRemoteGetterViewModel()
                 getter.dictionaries = [
                     DictionaryItemModel(
-                        key: "en_basic",
+                        uuid: "en_basic",
                         name: "English Basic",
                         tableName: "en_basic",
                         description: "Basic English vocabulary",
@@ -18,7 +18,7 @@ import SwiftUI
                         id: 1
                     ),
                     DictionaryItemModel(
-                        key: "es_basic",
+                        uuid: "es_basic",
                         name: "Spanish Basic",
                         tableName: "es_basic",
                         description: "Spanish vocabulary",
