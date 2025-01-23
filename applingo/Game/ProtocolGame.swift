@@ -5,7 +5,7 @@ protocol GameViewProtocol: View {
 }
 
 protocol GameResultProtocol {
-    var word: WordItemModel { get }
+    var word: DatabaseModelWord { get }
     var isCorrect: Bool { get }
     var responseTime: TimeInterval { get }
     var isSpecial: Bool { get }
@@ -54,7 +54,7 @@ protocol GameSpecialConfigProtocol {
 protocol GameSpecialProtocol {
     var config: GameSpecialConfigProtocol { get }
     
-    func isSpecial(_ item: WordItemModel) -> Bool
+    func isSpecial(_ item: DatabaseModelWord) -> Bool
     func modifiers() -> [AnyViewModifier]
 }
 
@@ -99,7 +99,7 @@ protocol GameFlowProtocol {
 }
 
 protocol GameSpecialServiceProtocol {
-    func isSpecial(_ item: WordItemModel) -> Bool
+    func isSpecial(_ item: DatabaseModelWord) -> Bool
     func getActiveSpecial() -> (any GameSpecialScoringProtocol)?
     func getModifiers() -> [AnyViewModifier]
 }
@@ -117,7 +117,7 @@ protocol AnyViewModifierProtocol {
 }
 
 struct AnyGameSpecial: GameSpecialProtocol, GameSpecialScoringProtocol {
-    private let _isSpecial: (WordItemModel) -> Bool
+    private let _isSpecial: (DatabaseModelWord) -> Bool
     private let _modifiers: () -> [AnyViewModifier]
     private let _modifyScoreForCorrectAnswer: (Int) -> Int
     private let _modifyScoreForWrongAnswer: (Int) -> Int
@@ -133,7 +133,7 @@ struct AnyGameSpecial: GameSpecialProtocol, GameSpecialScoringProtocol {
         self._config = special.config
     }
     
-    func isSpecial(_ item: WordItemModel) -> Bool {
+    func isSpecial(_ item: DatabaseModelWord) -> Bool {
         _isSpecial(item)
     }
     

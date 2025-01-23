@@ -5,7 +5,7 @@ struct WordList: View {
     @StateObject private var locale = WordListLocale()
     @StateObject private var wordsGetter = WordsLocalGetterViewModel()
     
-    @State private var selectedWord: WordItemModel?
+    @State private var selectedWord: DatabaseModelWord?
     @State private var isShowingDetailView = false
     @State private var isShowingAddView = false
     

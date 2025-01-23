@@ -5,12 +5,12 @@ struct WordListViewList: View {
     @StateObject private var wordsAction = WordsLocalActionViewModel()
     @ObservedObject var wordsGetter: WordsLocalGetterViewModel
     private let locale: WordListLocale
-    let onWordSelect: (WordItemModel) -> Void
+    let onWordSelect: (DatabaseModelWord) -> Void
     
     init(
         locale: WordListLocale,
         wordsGetter: WordsLocalGetterViewModel,
-        onWordSelect: @escaping (WordItemModel) -> Void
+        onWordSelect: @escaping (DatabaseModelWord) -> Void
     ) {
         self.locale = locale
         self.wordsGetter = wordsGetter
@@ -18,7 +18,7 @@ struct WordListViewList: View {
     }
     
     var body: some View {
-        ItemList<WordItemModel, WordRow>(
+        ItemList<DatabaseModelWord, WordRow>(
             items: $wordsGetter.words,
             style: .themed(themeManager.currentThemeStyle),
             isLoadingPage: wordsGetter.isLoadingPage,

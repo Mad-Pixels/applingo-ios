@@ -20,7 +20,7 @@ class GameSpecialService: ObservableObject {
         GameSpecialService(specials: specials + newSpecials)
     }
     
-    func isSpecial(_ item: WordItemModel) -> Bool {
+    func isSpecial(_ item: DatabaseModelWord) -> Bool {
         let isSpecial = specials.contains { $0.isSpecial(item) }
         return isSpecial
     }
@@ -72,7 +72,7 @@ final class SpecialGoldCard: GameSpecialProtocol, GameSpecialScoringProtocol {
         self._showSuccessEffect = showSuccessEffect
     }
     
-    func isSpecial(_ item: WordItemModel) -> Bool {
+    func isSpecial(_ item: DatabaseModelWord) -> Bool {
         guard item.weight <= config.weightThreshold else { return false }
         return Double.random(in: 0...1) < config.chance
     }

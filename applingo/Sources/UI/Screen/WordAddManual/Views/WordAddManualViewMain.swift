@@ -2,14 +2,14 @@ import SwiftUI
 
 struct WordAddManualViewMain: View {
     @EnvironmentObject private var themeManager: ThemeManager
-    @Binding var wordItem: WordItemModel
+    @Binding var wordItem: DatabaseModelWord
     @Binding var selectedDictionary: DatabaseModelDictionary?
     let dictionaries: [DatabaseModelDictionary]
     private let locale: WordAddManualLocale
     private let style: WordAddManualStyle
     
     init(
-        wordItem: Binding<WordItemModel>,
+        wordItem: Binding<DatabaseModelWord>,
         selectedDictionary: Binding<DatabaseModelDictionary?>,
         dictionaries: [DatabaseModelDictionary],
         locale: WordAddManualLocale,

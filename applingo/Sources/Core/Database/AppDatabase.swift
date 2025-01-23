@@ -78,7 +78,7 @@ final class AppDatabase: ObservableObject {
             }
         }
         migrator.registerMigration("createWords") { db in
-            try WordItemModel.createTable(in: db)
+            try DatabaseModelWord.createTable(in: db)
             Logger.debug("[DatabaseManager]: 'Words' table created successfully")
         }
         return migrator

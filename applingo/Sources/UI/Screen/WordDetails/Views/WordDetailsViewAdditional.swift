@@ -2,14 +2,14 @@ import SwiftUI
 
 struct WordDetailsViewAdditional: View {
     @EnvironmentObject private var themeManager: ThemeManager
-    @Binding var word: WordItemModel
+    @Binding var word: DatabaseModelWord
     let tableName: String
     private let locale: WordDetailsLocale
     private let style: WordDetailsStyle
     let isEditing: Bool
     
     init(
-        word: Binding<WordItemModel>,
+        word: Binding<DatabaseModelWord>,
         tableName: String,
         locale: WordDetailsLocale,
         style: WordDetailsStyle,

@@ -2,7 +2,7 @@ import Foundation
 import Combine
 
 final class GameCacheGetterViewModel: BaseDatabaseViewModel {
-    @Published private(set) var cache: [WordItemModel] = []
+    @Published private(set) var cache: [DatabaseModelWord] = []
     @Published private(set) var isLoadingCache = false
     
     private let wordRepository: WordRepositoryProtocol
@@ -114,7 +114,7 @@ final class GameCacheGetterViewModel: BaseDatabaseViewModel {
         )
     }
     
-    func removeFromCache(_ item: WordItemModel) {
+    func removeFromCache(_ item: DatabaseModelWord) {
         cache.removeAll { $0.id == item.id }
     }
     

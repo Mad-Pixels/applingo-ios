@@ -109,7 +109,7 @@ struct GameQuizContent: View {
         )
     }
     
-    private func handleOptionTap(_ option: WordItemModel) {
+    private func handleOptionTap(_ option: DatabaseModelWord) {
         guard let question = currentQuestion,
               !cardState.isInteractionDisabled else { return }
         
@@ -123,7 +123,7 @@ struct GameQuizContent: View {
         isCorrect ? handleCorrectAnswer(option) : handleWrongAnswer(option)
     }
     
-    private func isAnswerCorrect(selected: WordItemModel, question: GameQuizCardModel) -> Bool {
+    private func isAnswerCorrect(selected: DatabaseModelWord, question: GameQuizCardModel) -> Bool {
         let selectedText = question.isReversed ? selected.frontText : selected.backText
         let correctText = question.isReversed ? question.correctAnswer.frontText : question.correctAnswer.backText
         
@@ -144,7 +144,7 @@ struct GameQuizContent: View {
         return !Set(selectedVariants).intersection(correctVariants).isEmpty
     }
         
-    private func handleCorrectAnswer(_ option: WordItemModel) {
+    private func handleCorrectAnswer(_ option: DatabaseModelWord) {
         guard let question = currentQuestion else { return }
         
         let result = createGameResult(for: option, isCorrect: true)
@@ -156,7 +156,7 @@ struct GameQuizContent: View {
         }
     }
 
-    private func handleWrongAnswer(_ option: WordItemModel) {
+    private func handleWrongAnswer(_ option: DatabaseModelWord) {
         wrongAnswerFeedback.trigger()
         
         let result = createGameResult(for: option, isCorrect: false)
@@ -170,7 +170,7 @@ struct GameQuizContent: View {
         }
     }
     
-    private func createGameResult(for option: WordItemModel, isCorrect: Bool) -> GameVerifyResultModel {
+    private func createGameResult(for option: DatabaseModelWord, isCorrect: Bool) -> GameVerifyResultModel {
         guard let question = currentQuestion else {
             fatalError("Attempting to create result without question")
         }

@@ -1,12 +1,12 @@
 import SwiftUI
 
 struct WordDetailsViewStatistic: View {
-    private let word: WordItemModel
+    private let word: DatabaseModelWord
     private let locale: WordDetailsLocale
     private let style: WordDetailsStyle
     
     init(
-        word: WordItemModel,
+        word: DatabaseModelWord,
         locale: WordDetailsLocale,
         style: WordDetailsStyle
     ) {

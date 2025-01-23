@@ -10,7 +10,7 @@ struct WordDetails: View {
 
     @Binding var isPresented: Bool
     let refresh: () -> Void
-    private let originalWord: WordItemModel
+    private let originalWord: DatabaseModelWord
 
     @State private var isEditing = false
     @State private var isShowingAlert = false
@@ -19,7 +19,7 @@ struct WordDetails: View {
     @State private var errorMessage: String = ""
 
     init(
-        word: WordItemModel,
+        word: DatabaseModelWord,
         isPresented: Binding<Bool>,
         refresh: @escaping () -> Void,
         style: WordDetailsStyle? = nil

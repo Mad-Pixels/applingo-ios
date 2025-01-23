@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct CompWordRowView: View {
-    let word: WordItemModel
+    let word: DatabaseModelWord
     let onTap: () -> Void
 
     var body: some View {

@@ -15,7 +15,7 @@ private struct GameLettersContent: View {
     @EnvironmentObject var gameAction: GameActionViewModel
     
     @State private var hintState = GameHintState(isShowing: false, wasUsed: false)
-    @State private var currentWord: WordItemModel?
+    @State private var currentWord: DatabaseModelWord?
     @State private var scrambledLetters: [Character] = []
     @State private var selectedLetters: [Character] = []
     @State private var showAnswerFeedback = false
@@ -115,7 +115,7 @@ private struct GameLettersContent: View {
         hintPenalty = 0
     }
     
-    private func setupNewWord(_ word: WordItemModel) {
+    private func setupNewWord(_ word: DatabaseModelWord) {
         let targetWord = word.backText.lowercased()
         var letters = Array(targetWord)
         
@@ -184,7 +184,7 @@ private struct GameLettersContent: View {
         showFeedbackAndGenerateNewWord()
     }
     
-    private func createGameResult(word: WordItemModel, isCorrect: Bool) -> GameVerifyResultModel {
+    private func createGameResult(word: DatabaseModelWord, isCorrect: Bool) -> GameVerifyResultModel {
         GameVerifyResultModel(
             word: word,
             isCorrect: isCorrect,

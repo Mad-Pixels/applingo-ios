@@ -2,7 +2,7 @@ import Foundation
 import Combine
 
 final class WordsLocalGetterViewModel: BaseDatabaseViewModel {
-    @Published var words: [WordItemModel] = []
+    @Published var words: [DatabaseModelWord] = []
     @Published var isLoadingPage = false
     @Published var searchText: String = "" {
         didSet {
@@ -77,7 +77,7 @@ final class WordsLocalGetterViewModel: BaseDatabaseViewModel {
         )
     }
 
-    func loadMoreWordsIfNeeded(currentItem word: WordItemModel?) {
+    func loadMoreWordsIfNeeded(currentItem word: DatabaseModelWord?) {
         guard
             let word = word,
             let index = words.firstIndex(where: { $0.id == word.id }),
@@ -96,7 +96,7 @@ final class WordsLocalGetterViewModel: BaseDatabaseViewModel {
         self.frame = newFrame
     }
 
-    private func processFetchedWords(_ fetchedWords: [WordItemModel]) {
+    private func processFetchedWords(_ fetchedWords: [DatabaseModelWord]) {
         if fetchedWords.isEmpty {
             hasMorePages = false
         } else {

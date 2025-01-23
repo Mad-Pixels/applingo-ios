@@ -59,7 +59,7 @@ final class GameActionViewModel: BaseDatabaseViewModel {
         specialService = specialService.withSpecial(special)
     }
     
-    func isSpecial(_ item: WordItemModel) -> Bool {
+    func isSpecial(_ item: DatabaseModelWord) -> Bool {
         specialService.isSpecial(item)
     }
     
@@ -102,7 +102,7 @@ final class GameActionViewModel: BaseDatabaseViewModel {
             .store(in: &cancellables)
     }
     
-    private func updateWordStats(word: WordItemModel, isCorrect: Bool) -> WordItemModel {
+    private func updateWordStats(word: DatabaseModelWord, isCorrect: Bool) -> DatabaseModelWord {
         var updatedWord = word
         
         if isCorrect {
@@ -117,7 +117,7 @@ final class GameActionViewModel: BaseDatabaseViewModel {
         return updatedWord
     }
     
-    private func update(_ word: WordItemModel, completion: @escaping (Result<Void, Error>) -> Void) {
+    private func update(_ word: DatabaseModelWord, completion: @escaping (Result<Void, Error>) -> Void) {
         performDatabaseOperation(
             { try self.wordRepository.update(word) },
             successHandler: { _ in },

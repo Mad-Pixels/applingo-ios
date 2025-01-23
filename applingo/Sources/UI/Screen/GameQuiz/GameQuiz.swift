@@ -19,7 +19,7 @@ struct GameQuiz: View {
         guard cache.count >= 4 else { return }
         
         // Получаем 4 уникальных слова
-        var selectedWords: Set<WordItemModel> = []
+        var selectedWords: Set<DatabaseModelWord> = []
         var attempts = 0
         let maxAttempts = 20
         

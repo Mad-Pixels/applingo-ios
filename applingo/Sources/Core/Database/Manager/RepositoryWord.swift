@@ -11,7 +11,7 @@ class RepositoryWord: WordRepositoryProtocol {
         searchText: String?,
         offset: Int,
         limit: Int
-    ) throws -> [WordItemModel] {
+    ) throws -> [DatabaseModelWord] {
         let searchText = searchText?.lowercased()
         let activeDictionaries = try fetchActive()
         guard !activeDictionaries.isEmpty else {
@@ -19,7 +19,7 @@ class RepositoryWord: WordRepositoryProtocol {
         }
         let activeDisplayNames = activeDictionaries.map { $0.guid } as [DatabaseValueConvertible]
         
-        return try dbQueue.read { db -> [WordItemModel] in
+        return try dbQueue.read { db -> [DatabaseModelWord] in
             var sql: String
             var allArguments: [DatabaseValueConvertible] = []
             var conditions: [String] = []
@@ -40,7 +40,7 @@ class RepositoryWord: WordRepositoryProtocol {
                     WHEN LOWER(frontText) LIKE LOWER(? || '%') OR LOWER(backText) LIKE LOWER(? || '%') THEN 2
                     WHEN LOWER(frontText) LIKE LOWER('%' || ? || '%') OR LOWER(backText) LIKE LOWER('%' || ? || '%') THEN 3
                     ELSE 4 END AS relevance
-                FROM \(WordItemModel.databaseTableName)
+                FROM \(DatabaseModelWord.databaseTableName)
                 """
                 
                 let relevanceArguments: [DatabaseValueConvertible] = [
@@ -54,7 +54,7 @@ class RepositoryWord: WordRepositoryProtocol {
                 allArguments.append("%\(searchText.lowercased())%")
                 allArguments.append("%\(searchText.lowercased())%")
             } else {
-                sql = "SELECT * FROM \(WordItemModel.databaseTableName)"
+                sql = "SELECT * FROM \(DatabaseModelWord.databaseTableName)"
             }
             if !conditions.isEmpty {
                 sql += " WHERE " + conditions.joined(separator: " AND ")
@@ -70,7 +70,7 @@ class RepositoryWord: WordRepositoryProtocol {
             
             Logger.debug("[RepositoryWord]: fetch with SQL \(sql) and arguments \(allArguments)")
             
-            let request = SQLRequest<WordItemModel>(
+            let request = SQLRequest<DatabaseModelWord>(
                 sql: sql,
                 arguments: StatementArguments(allArguments)
             )
@@ -78,7 +78,7 @@ class RepositoryWord: WordRepositoryProtocol {
         }
     }
     
-    func fetchCache(count: Int) throws -> [WordItemModel] {
+    func fetchCache(count: Int) throws -> [DatabaseModelWord] {
         let activeDictionaries = try fetchActive()
         guard !activeDictionaries.isEmpty else {
             return []
@@ -89,9 +89,9 @@ class RepositoryWord: WordRepositoryProtocol {
         let randomCount = Int(Double(count) * 0.6)
         let weightedCount = count - randomCount
             
-        return try dbQueue.read { db -> [WordItemModel] in
+        return try dbQueue.read { db -> [DatabaseModelWord] in
             let baseSQL = """
-                FROM \(WordItemModel.databaseTableName)
+                FROM \(DatabaseModelWord.databaseTableName)
                 WHERE tableName IN (\(activeDisplayNames.map { "'\($0)'" }.joined(separator: ",")))
             """
             let randomSQL = """
@@ -110,13 +110,13 @@ class RepositoryWord: WordRepositoryProtocol {
             Logger.debug("[RepositoryWord]: fetchCache - Random SQL: \(randomSQL)")
             Logger.debug("[RepositoryWord]: fetchCache - Weighted SQL: \(weightedSQL)")
                 
-            var result = try WordItemModel.fetchAll(db, sql: randomSQL)
-            result.append(contentsOf: try WordItemModel.fetchAll(db, sql: weightedSQL))
+            var result = try DatabaseModelWord.fetchAll(db, sql: randomSQL)
+            result.append(contentsOf: try DatabaseModelWord.fetchAll(db, sql: weightedSQL))
             return result.shuffled()
         }
     }
 
-    func save(_ word: WordItemModel) throws {
+    func save(_ word: DatabaseModelWord) throws {
         var fmtWord = word
         fmtWord.fmt()
         
@@ -126,7 +126,7 @@ class RepositoryWord: WordRepositoryProtocol {
         Logger.debug("[RepositoryWord]: save - \(word)")
     }
     
-    func update(_ word: WordItemModel) throws {
+    func update(_ word: DatabaseModelWord) throws {
         var fmtWord = word
         fmtWord.fmt()
         
@@ -136,7 +136,7 @@ class RepositoryWord: WordRepositoryProtocol {
         Logger.debug("[RepositoryWord]: update - \(word)")
     }
     
-    func delete(_ word: WordItemModel) throws {
+    func delete(_ word: DatabaseModelWord) throws {
         _ = try dbQueue.write { db in
             try word.delete(db)
         }

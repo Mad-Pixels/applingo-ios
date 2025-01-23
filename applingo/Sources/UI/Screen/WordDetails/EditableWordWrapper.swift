@@ -1,9 +1,9 @@
 import SwiftUI
 
 class WordWrapper: ObservableObject {
-    @Published var word: WordItemModel
+    @Published var word: DatabaseModelWord
     
-    init(word: WordItemModel) {
+    init(word: DatabaseModelWord) {
         self.word = word
     }
 }

@@ -18,7 +18,7 @@ struct GameScoreAnimationModel: Identifiable, Equatable {
 }
 
 struct GameVerifyResultModel: GameResultProtocol {
-    let word: WordItemModel
+    let word: DatabaseModelWord
     let isCorrect: Bool
     let responseTime: TimeInterval
     let isSpecial: Bool
@@ -52,15 +52,15 @@ enum GameDragStateModel {
 }
 
 struct GameVerifyCardModel {
-    let frontWord: WordItemModel
+    let frontWord: DatabaseModelWord
     let backText: String
     let isMatch: Bool
     let isSpecial: Bool
 }
 
 struct GameQuizCardModel: Equatable {
-    let correctWord: WordItemModel
-    let options: [WordItemModel]
+    let correctWord: DatabaseModelWord
+    let options: [DatabaseModelWord]
     let isReversed: Bool
     let isSpecial: Bool
     
@@ -68,7 +68,7 @@ struct GameQuizCardModel: Equatable {
         isReversed ? correctWord.backText : correctWord.frontText
     }
     
-    var correctAnswer: WordItemModel {
+    var correctAnswer: DatabaseModelWord {
         correctWord
     }
     
@@ -90,8 +90,8 @@ struct QuizCardState {
 }
 
 struct MatchCardState {
-    var leftWords: [WordItemModel] = []
-    var rightWords: [WordItemModel] = []
+    var leftWords: [DatabaseModelWord] = []
+    var rightWords: [DatabaseModelWord] = []
     var matchedIndices: Set<Int> = []
     var selectedLeftIndex: Int?
     var selectedRightIndex: Int?

@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct CompGameMatchWordView: View {
-    let word: WordItemModel
+    let word: DatabaseModelWord
     let showTranslation: Bool
     let isSelected: Bool
     let isMatched: Bool

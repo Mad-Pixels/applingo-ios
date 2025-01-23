@@ -2,7 +2,7 @@ import SwiftUI
 
 #Preview("Word Detail Screen") {
     WordDetails(
-        word: WordItemModel.empty(),
+        word: DatabaseModelWord.empty(),
         isPresented: .constant(true),
         refresh: {}
     )

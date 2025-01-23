@@ -8,7 +8,7 @@ struct CompGameQuizCardView: View {
     let hintState: GameHintState
     let style: GameCardStyle
     let specialService: GameSpecialService
-    let onOptionSelected: (WordItemModel) -> Void
+    let onOptionSelected: (DatabaseModelWord) -> Void
     let onHintTap: () -> Void
     
     var body: some View {
@@ -46,7 +46,7 @@ struct CompGameQuizCardView: View {
         .padding(.horizontal, GameCardStyle.Layout.horizontalPadding)
     }
 
-    private func isCorrectOption(_ option: WordItemModel) -> Bool {
+    private func isCorrectOption(_ option: DatabaseModelWord) -> Bool {
         let optionText = question.isReversed ? option.frontText : option.backText
         let correctText = question.isReversed ? question.correctAnswer.frontText : question.correctAnswer.backText
         
@@ -83,7 +83,7 @@ struct CompGameQuizCardView: View {
         }
     }
     
-    private func optionButton(for option: WordItemModel) -> some View {
+    private func optionButton(for option: DatabaseModelWord) -> some View {
         Button(action: { onOptionSelected(option) }) {
             Text(optionText(for: option))
                 .font(GameCardStyle.Typography.titleFont)
@@ -105,7 +105,7 @@ struct CompGameQuizCardView: View {
         .disabled(cardState.isInteractionDisabled)
     }
     
-    private func optionText(for option: WordItemModel) -> String {
+    private func optionText(for option: DatabaseModelWord) -> String {
         question.isReversed ? option.frontText : option.backText
     }
 }

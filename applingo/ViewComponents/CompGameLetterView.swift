@@ -42,7 +42,7 @@ struct CompGameLetterButton: View {
 
 struct CompGameLetterContentSections {
     struct WordSection: View {
-        let word: WordItemModel
+        let word: DatabaseModelWord
         let style: GameCardStyle
         
         var body: some View {

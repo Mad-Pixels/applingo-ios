@@ -15,7 +15,7 @@ final class WordsLocalActionViewModel: BaseDatabaseViewModel {
         }
     }
     
-    func save(_ word: WordItemModel, completion: @escaping (Result<Void, Error>) -> Void) {
+    func save(_ word: DatabaseModelWord, completion: @escaping (Result<Void, Error>) -> Void) {
         performDatabaseOperation(
             { try self.wordRepository.save(word) },
             successHandler: { _ in },
@@ -27,7 +27,7 @@ final class WordsLocalActionViewModel: BaseDatabaseViewModel {
         )
     }
 
-    func update(_ word: WordItemModel, completion: @escaping (Result<Void, Error>) -> Void) {
+    func update(_ word: DatabaseModelWord, completion: @escaping (Result<Void, Error>) -> Void) {
         performDatabaseOperation(
             { try self.wordRepository.update(word) },
             successHandler: { _ in },
@@ -40,7 +40,7 @@ final class WordsLocalActionViewModel: BaseDatabaseViewModel {
     }
 
     
-    func delete(_ word: WordItemModel, completion: @escaping (Result<Void, Error>) -> Void) {
+    func delete(_ word: DatabaseModelWord, completion: @escaping (Result<Void, Error>) -> Void) {
         performDatabaseOperation(
             { try self.wordRepository.delete(word) },
             successHandler: { _ in },
@@ -52,7 +52,7 @@ final class WordsLocalActionViewModel: BaseDatabaseViewModel {
         )
     }
     
-    func dictionaryDisplayName(_ word: WordItemModel) -> String {
+    func dictionaryDisplayName(_ word: DatabaseModelWord) -> String {
         do {
             return try self.dictionaryRepository.fetchDisplayName(byTableName: word.tableName)
         } catch {

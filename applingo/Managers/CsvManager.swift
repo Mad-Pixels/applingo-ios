@@ -28,7 +28,7 @@ final class CSVManager {
     func parse(
         url: URL,
         dictionaryItem: DatabaseModelDictionary? = nil
-    ) throws -> (dictionary: DatabaseModelDictionary, words: [WordItemModel]) {
+    ) throws -> (dictionary: DatabaseModelDictionary, words: [DatabaseModelWord]) {
         let tableName = "dict-\(UUID().uuidString.prefix(8))"
         
         let dictionary = dictionaryItem.map { existing in
@@ -54,7 +54,7 @@ final class CSVManager {
         return (dictionary, words)
     }
     
-    func saveToDatabase(dictionary: DatabaseModelDictionary, words: [WordItemModel]) throws {
+    func saveToDatabase(dictionary: DatabaseModelDictionary, words: [DatabaseModelWord]) throws {
         guard let dbQueue = AppDatabase.shared.databaseQueue else {
             throw CSVManagerError.databaseConnectionNotEstablished
         }
@@ -71,7 +71,7 @@ final class CSVManager {
         }
     }
     
-    private func parseCSV(at url: URL, tableName: String) throws -> [WordItemModel] {
+    private func parseCSV(at url: URL, tableName: String) throws -> [DatabaseModelWord] {
         let content = try String(contentsOf: url, encoding: .utf8)
         let separator = detectCsvSeparator(in: content)
         Logger.debug("[CSVManager]: Detected separator: \(separator)")

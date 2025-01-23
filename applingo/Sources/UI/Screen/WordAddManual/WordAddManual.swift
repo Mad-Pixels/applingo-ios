@@ -11,7 +11,7 @@ struct WordAddManual: View {
     let refresh: () -> Void
 
     @State private var selectedDictionary: DatabaseModelDictionary?
-    @State private var wordItem = WordItemModel.empty()
+    @State private var wordItem = DatabaseModelWord.empty()
     @State private var descriptionText: String = ""
     @State private var errorMessage: String = ""
     @State private var hintText: String = ""
@@ -97,7 +97,7 @@ struct WordAddManual: View {
     private func save() {
         guard let selectedDictionary = selectedDictionary else { return }
 
-        let newWord = WordItemModel(
+        let newWord = DatabaseModelWord(
             id: wordItem.id,
             tableName: selectedDictionary.guid,
             frontText: wordItem.frontText,

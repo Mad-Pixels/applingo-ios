@@ -6,7 +6,7 @@ struct QuizModelCard {
     let options: [String]     // Все варианты ответов
     let showingFront: Bool    // Показываем ли frontText в вопросе
     
-    init(correctWord: WordItemModel, allWords: [WordItemModel], showingFront: Bool) {
+    init(correctWord: DatabaseModelWord, allWords: [DatabaseModelWord], showingFront: Bool) {
         self.showingFront = showingFront
         self.question = showingFront ? correctWord.frontText : correctWord.backText
         self.correctAnswer = showingFront ? correctWord.backText : correctWord.frontText

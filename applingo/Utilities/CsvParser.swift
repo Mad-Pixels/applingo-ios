@@ -43,8 +43,8 @@ func parseCsvLines(
     lines: [String],
     separator: String,
     tableName: String
-) throws -> [WordItemModel] {
-    var wordItems = [WordItemModel]()
+) throws -> [DatabaseModelWord] {
+    var wordItems = [DatabaseModelWord]()
     
     for line in lines {
         let columns = parseCsvLine(line: line, separator: separator)
@@ -56,7 +56,7 @@ func parseCsvLines(
         let description = columns.count > 3 ? columns[3] : nil
         
         guard !frontText.isEmpty && !backText.isEmpty else { continue }
-        let wordItem = WordItemModel(
+        let wordItem = DatabaseModelWord(
             tableName: tableName,
             frontText: frontText,
             backText: backText,

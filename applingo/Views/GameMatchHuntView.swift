@@ -123,7 +123,7 @@ private struct GameMatchHuntContent: View {
     private func generateNewPairs() {
         guard cacheGetter.cache.count >= 12 else { return }
         
-        var wordsSet = Set<WordItemModel>()
+        var wordsSet = Set<DatabaseModelWord>()
         while wordsSet.count < 6 {
             if let word = cacheGetter.cache.randomElement() {
                 wordsSet.insert(word)
@@ -181,8 +181,8 @@ private struct GameMatchHuntContent: View {
     }
     
     private func processMatchResult(
-        leftWord: WordItemModel,
-        rightWord: WordItemModel,
+        leftWord: DatabaseModelWord,
+        rightWord: DatabaseModelWord,
         leftIndex: Int,
         rightIndex: Int
     ) {
@@ -206,7 +206,7 @@ private struct GameMatchHuntContent: View {
         }
     }
     
-    private func isMatchCorrect(leftWord: WordItemModel, rightWord: WordItemModel) -> Bool {
+    private func isMatchCorrect(leftWord: DatabaseModelWord, rightWord: DatabaseModelWord) -> Bool {
         let leftText = leftWord.backText
         let rightText = rightWord.backText
         
@@ -223,7 +223,7 @@ private struct GameMatchHuntContent: View {
         return !Set(leftVariants).intersection(rightVariants).isEmpty
     }
     
-    private func handleCorrectMatch(leftIndex: Int, rightIndex: Int, word: WordItemModel) {
+    private func handleCorrectMatch(leftIndex: Int, rightIndex: Int, word: DatabaseModelWord) {
         withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
             matchState.matchedIndices.insert(leftIndex)
             matchState.matchedIndices.insert(rightIndex + matchState.leftWords.count)
@@ -263,8 +263,8 @@ private struct GameMatchHuntContent: View {
         updateMatchedWords(with: newWords)
     }
     
-    private func generateNewWords() -> [WordItemModel] {
-        var wordsSet = Set<WordItemModel>()
+    private func generateNewWords() -> [DatabaseModelWord] {
+        var wordsSet = Set<DatabaseModelWord>()
         while wordsSet.count < 3 {
             if let word = cacheGetter.cache.randomElement() {
                 wordsSet.insert(word)
@@ -273,7 +273,7 @@ private struct GameMatchHuntContent: View {
         return Array(wordsSet)
     }
     
-    private func updateMatchedWords(with newWords: [WordItemModel]) {
+    private func updateMatchedWords(with newWords: [DatabaseModelWord]) {
         let matchedLeftIndices = matchState.matchedIndices.filter { $0 < matchState.leftWords.count }
         let matchedRightIndices = matchState.matchedIndices
             .filter { $0 >= matchState.leftWords.count }

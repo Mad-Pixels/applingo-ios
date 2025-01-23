@@ -18,13 +18,13 @@ protocol WordRepositoryProtocol {
         searchText: String?,
         offset: Int,
         limit: Int
-    ) throws -> [WordItemModel]
+    ) throws -> [DatabaseModelWord]
     func fetchCache(
         count: Int
-    ) throws -> [WordItemModel]
-    func save(_ word: WordItemModel) throws
-    func update(_ word: WordItemModel) throws
-    func delete(_ word: WordItemModel) throws
+    ) throws -> [DatabaseModelWord]
+    func save(_ word: DatabaseModelWord) throws
+    func update(_ word: DatabaseModelWord) throws
+    func delete(_ word: DatabaseModelWord) throws
 }
 
 protocol ApiRepositoryProtocol {
