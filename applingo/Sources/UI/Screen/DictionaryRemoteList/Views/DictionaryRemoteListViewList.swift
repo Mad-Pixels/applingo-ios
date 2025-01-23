@@ -4,12 +4,12 @@ struct DictionaryRemoteListViewList: View {
    @EnvironmentObject private var themeManager: ThemeManager
    @ObservedObject var dictionaryGetter: DictionaryRemoteGetterViewModel
    private let locale: DictionaryRemoteListLocale
-   let onDictionarySelect: (DictionaryItemModel) -> Void
+   let onDictionarySelect: (DatabaseModelDictionary) -> Void
    
    init(
        locale: DictionaryRemoteListLocale,
        dictionaryGetter: DictionaryRemoteGetterViewModel,
-       onDictionarySelect: @escaping (DictionaryItemModel) -> Void
+       onDictionarySelect: @escaping (DatabaseModelDictionary) -> Void
    ) {
        self.locale = locale
        self.dictionaryGetter = dictionaryGetter
@@ -17,7 +17,7 @@ struct DictionaryRemoteListViewList: View {
    }
    
    var body: some View {
-       ItemList<DictionaryItemModel, DictionaryRemoteRow>(
+       ItemList<DatabaseModelDictionary, DictionaryRemoteRow>(
            items: $dictionaryGetter.dictionaries,
            style: .themed(themeManager.currentThemeStyle),
            isLoadingPage: dictionaryGetter.isLoadingPage,

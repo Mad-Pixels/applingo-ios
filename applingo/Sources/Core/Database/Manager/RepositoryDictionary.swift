@@ -11,9 +11,9 @@ class RepositoryDictionary: DictionaryRepositoryProtocol {
         searchText: String?,
         offset: Int,
         limit: Int
-    ) throws -> [DictionaryItemModel] {
+    ) throws -> [DatabaseModelDictionary] {
         return try dbQueue.read { db in
-            var sql = "SELECT * FROM \(DictionaryItemModel.databaseTableName)"
+            var sql = "SELECT * FROM \(DatabaseModelDictionary.databaseTableName)"
             var arguments: [DatabaseValueConvertible] = []
             
             if let searchText = searchText, !searchText.isEmpty {
@@ -25,14 +25,14 @@ class RepositoryDictionary: DictionaryRepositoryProtocol {
             arguments.append(offset)
             
             Logger.debug("[RepositoryDictionary]: fetch - SQL: \(sql), Arguments: \(arguments)")
-            return try DictionaryItemModel.fetchAll(db, sql: sql, arguments: StatementArguments(arguments))
+            return try DatabaseModelDictionary.fetchAll(db, sql: sql, arguments: StatementArguments(arguments))
         }
     }
     
     func fetchDisplayName(byTableName tableName: String) throws -> String {
         return try dbQueue.read { db in
             let sql = """
-            SELECT name FROM \(DictionaryItemModel.databaseTableName)
+            SELECT name FROM \(DatabaseModelDictionary.databaseTableName)
             WHERE tableName = ?
             """
             let arguments: [DatabaseValueConvertible] = [tableName]
@@ -42,7 +42,7 @@ class RepositoryDictionary: DictionaryRepositoryProtocol {
         }
     }
     
-    func save(_ dictionary: DictionaryItemModel) throws {
+    func save(_ dictionary: DatabaseModelDictionary) throws {
         var fmtDictionary = dictionary
         fmtDictionary.fmt()
         
@@ -52,7 +52,7 @@ class RepositoryDictionary: DictionaryRepositoryProtocol {
         Logger.debug("[RepositoryDictionary]: save - \(dictionary.name) with ID \(dictionary.id)")
     }
     
-    func update(_ dictionary: DictionaryItemModel) throws {
+    func update(_ dictionary: DatabaseModelDictionary) throws {
         var fmtDictionary = dictionary
         fmtDictionary.fmt()
         
@@ -65,14 +65,14 @@ class RepositoryDictionary: DictionaryRepositoryProtocol {
     func updateStatus(dictionaryID: Int, newStatus: Bool) throws {
         try dbQueue.write { db in
             try db.execute(
-                sql: "UPDATE \(DictionaryItemModel.databaseTableName) SET isActive = ? WHERE id = ?",
+                sql: "UPDATE \(DatabaseModelDictionary.databaseTableName) SET isActive = ? WHERE id = ?",
                 arguments: [newStatus, dictionaryID]
             )
         }
         Logger.debug("[RepositoryDictionary]: updateStatus - ID \(dictionaryID) set to isActive = \(newStatus)")
     }
     
-    func delete(_ dictionary: DictionaryItemModel) throws {
+    func delete(_ dictionary: DatabaseModelDictionary) throws {
         try dbQueue.write { db in
             let wordsDeleteSQL = "DELETE FROM \(WordItemModel.databaseTableName) WHERE tableName = ?"
             try db.execute(sql: wordsDeleteSQL, arguments: [dictionary.guid])

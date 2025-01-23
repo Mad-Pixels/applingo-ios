@@ -1,12 +1,12 @@
 import SwiftUI
 
 struct DictionaryRemoteDetailsViewAdditional: View {
-    let dictionary: DictionaryItemModel
+    let dictionary: DatabaseModelDictionary
     private let locale: DictionaryRemoteDetailsLocale
     private let style: DictionaryRemoteDetailsStyle
     
     init(
-        dictionary: DictionaryItemModel,
+        dictionary: DatabaseModelDictionary,
         locale: DictionaryRemoteDetailsLocale,
         style: DictionaryRemoteDetailsStyle
     ) {

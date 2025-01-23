@@ -5,12 +5,12 @@ struct DictionaryLocalListViewList: View {
    @ObservedObject var dictionaryGetter: DictionaryLocalGetterViewModel
    @StateObject private var dictionaryAction = DictionaryLocalActionViewModel()
    private let locale: DictionaryLocalListLocale
-   let onDictionarySelect: (DictionaryItemModel) -> Void
+   let onDictionarySelect: (DatabaseModelDictionary) -> Void
    
    init(
        locale: DictionaryLocalListLocale,
        dictionaryGetter: DictionaryLocalGetterViewModel,
-       onDictionarySelect: @escaping (DictionaryItemModel) -> Void
+       onDictionarySelect: @escaping (DatabaseModelDictionary) -> Void
    ) {
        self.locale = locale
        self.dictionaryGetter = dictionaryGetter
@@ -18,7 +18,7 @@ struct DictionaryLocalListViewList: View {
    }
    
    var body: some View {
-       ItemList<DictionaryItemModel, DictionaryLocalRow>(
+       ItemList<DatabaseModelDictionary, DictionaryLocalRow>(
            items: $dictionaryGetter.dictionaries,
            style: .themed(themeManager.currentThemeStyle),
            isLoadingPage: dictionaryGetter.isLoadingPage,
@@ -79,7 +79,7 @@ struct DictionaryLocalListViewList: View {
        }
    }
    
-   private func updateStatus(_ dictionary: DictionaryItemModel, newStatus: Bool) {
+   private func updateStatus(_ dictionary: DatabaseModelDictionary, newStatus: Bool) {
        guard let dictionaryID = dictionary.id else { return }
        dictionaryAction.updateStatus(dictionaryID: dictionaryID, newStatus: newStatus) { result in
            if case .success = result {

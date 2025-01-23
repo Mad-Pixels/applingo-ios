@@ -5,13 +5,13 @@ struct DictionaryRemoteDetails: View {
     @StateObject private var style: DictionaryRemoteDetailsStyle
     @StateObject private var locale = DictionaryRemoteDetailsLocale()
 
-    @State private var editedDictionary: DictionaryItemModel
+    @State private var editedDictionary: DatabaseModelDictionary
     @State private var isPressedTrailing = false
     @State private var isDownloading = false
     @Binding var isPresented: Bool
 
     init(
-        dictionary: DictionaryItemModel,
+        dictionary: DatabaseModelDictionary,
         isPresented: Binding<Bool>,
         style: DictionaryRemoteDetailsStyle? = nil
     ) {

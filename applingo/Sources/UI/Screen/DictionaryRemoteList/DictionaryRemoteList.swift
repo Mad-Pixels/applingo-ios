@@ -5,7 +5,7 @@ struct DictionaryRemoteList: View {
     @StateObject private var locale = DictionaryRemoteListLocale()
     @StateObject private var dictionaryGetter = DictionaryRemoteGetterViewModel()
     @State private var apiRequestParams = ApiDictionaryQueryRequestModel()
-    @State private var selectedDictionary: DictionaryItemModel?
+    @State private var selectedDictionary: DatabaseModelDictionary?
     @State private var isShowingFilterView = false
     @State private var isPressedTrailing = false
 

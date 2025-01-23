@@ -1,9 +1,9 @@
 import SwiftUI
 //
 class EditableDictionaryWrapper: ObservableObject {
-    @Published var dictionary: DictionaryItemModel
+    @Published var dictionary: DatabaseModelDictionary
     
-    init(dictionary: DictionaryItemModel) {
+    init(dictionary: DatabaseModelDictionary) {
         self.dictionary = dictionary
     }
 }

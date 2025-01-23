@@ -11,7 +11,7 @@ private struct CacheEntry<T> {
 }
 
 private struct DictionaryCacheEntry {
-    let items: [DictionaryItemModel]
+    let items: [DatabaseModelDictionary]
     let lastEvaluated: String?
     let request: ApiDictionaryQueryRequestModel?
     let timestamp: Date
@@ -60,7 +60,7 @@ final class RepositoryCache: ApiRepositoryProtocol {
     func getDictionaries(
         request: ApiDictionaryQueryRequestModel? = nil
     ) async throws -> (
-        dictionaries: [DictionaryItemModel],
+        dictionaries: [DatabaseModelDictionary],
         lastEvaluated: String?
     ) {
         if let cacheEntry = findValidDictionaryCacheEntry(for: request) {
@@ -84,7 +84,7 @@ final class RepositoryCache: ApiRepositoryProtocol {
         return (dictionaries: dictionaries, lastEvaluated: lastEvaluated)
     }
     
-    func downloadDictionary(_ dictionary: DictionaryItemModel) async throws -> URL {
+    func downloadDictionary(_ dictionary: DatabaseModelDictionary) async throws -> URL {
         return try await repository.downloadDictionary(dictionary)
     }
     

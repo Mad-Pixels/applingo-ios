@@ -143,10 +143,10 @@ class RepositoryWord: WordRepositoryProtocol {
         Logger.debug("[RepositoryWord]: delete - \(word)")
     }
     
-    private func fetchActive() throws -> [DictionaryItemModel] {
+    private func fetchActive() throws -> [DatabaseModelDictionary] {
         let activeDictionaries = try dbQueue.read { db in
-            let sql = "SELECT * FROM \(DictionaryItemModel.databaseTableName) WHERE isActive = 1"
-            return try DictionaryItemModel.fetchAll(db, sql: sql)
+            let sql = "SELECT * FROM \(DatabaseModelDictionary.databaseTableName) WHERE isActive = 1"
+            return try DatabaseModelDictionary.fetchAll(db, sql: sql)
         }
         guard !activeDictionaries.isEmpty else {
             return []

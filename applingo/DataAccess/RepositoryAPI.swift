@@ -17,7 +17,7 @@ class RepositoryAPI: ApiRepositoryProtocol {
     func getDictionaries(
         request: ApiDictionaryQueryRequestModel? = nil
     ) async throws -> (
-        dictionaries: [DictionaryItemModel],
+        dictionaries: [DatabaseModelDictionary],
         lastEvaluated: String?
     ) {
         let endpoint = "/v1/dictionaries"
@@ -48,7 +48,7 @@ class RepositoryAPI: ApiRepositoryProtocol {
         let response = try JSONDecoder().decode(ApiDictionaryQueryResponseModel.self, from: data)
         
         let dictionaries = response.data.items.map { dictionaryItem in
-            DictionaryItemModel(
+            DatabaseModelDictionary(
                 guid: dictionaryItem.dictionary,
                 name: dictionaryItem.name,
                 author: dictionaryItem.author,
@@ -63,7 +63,7 @@ class RepositoryAPI: ApiRepositoryProtocol {
         return (dictionaries: dictionaries, lastEvaluated: response.data.lastEvaluated)
     }
     
-    func downloadDictionary(_ dictionary: DictionaryItemModel) async throws -> URL {
+    func downloadDictionary(_ dictionary: DatabaseModelDictionary) async throws -> URL {
         let endpoint = "/v1/urls"
         let body = try? JSONSerialization.data(
             withJSONObject: ApiDictionaryDownloadRequestModel(

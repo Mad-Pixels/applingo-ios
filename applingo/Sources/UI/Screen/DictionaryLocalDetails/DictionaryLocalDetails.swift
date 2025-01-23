@@ -9,14 +9,14 @@ struct DictionaryLocalDetails: View {
 
     @Binding var isPresented: Bool
     let refresh: () -> Void
-    private let originalDictionary: DictionaryItemModel
+    private let originalDictionary: DatabaseModelDictionary
 
     @State private var isEditing = false
     @State private var isPressedLeading = false
     @State private var isPressedTrailing = false
 
     init(
-        dictionary: DictionaryItemModel,
+        dictionary: DatabaseModelDictionary,
         isPresented: Binding<Bool>,
         refresh: @escaping () -> Void,
         style: DictionaryLocalDetailsStyle? = nil

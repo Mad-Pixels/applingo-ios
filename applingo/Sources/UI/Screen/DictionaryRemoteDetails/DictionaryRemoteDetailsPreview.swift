@@ -3,7 +3,7 @@ import SwiftUI
 #Preview("Dictionary Detail Screen") {
    NavigationView {
        DictionaryRemoteDetails(
-           dictionary: DictionaryItemModel(
+           dictionary: DatabaseModelDictionary(
             guid: "en_basic",
                name: "English Basic",
             author: "John Doe",
@@ -21,7 +21,7 @@ import SwiftUI
 
 struct ScreenDictionaryDetail_Previews: PreviewProvider {
    static var previews: some View {
-       let mockDictionary = DictionaryItemModel(
+       let mockDictionary = DatabaseModelDictionary(
         guid: "en_basic",
            name: "English Basic",
         author: "John Doe",

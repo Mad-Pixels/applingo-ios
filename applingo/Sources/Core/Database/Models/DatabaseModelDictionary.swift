@@ -1,7 +1,7 @@
 import Foundation
 import GRDB
 
-struct DictionaryItemModel: Identifiable, Codable, Equatable, Hashable {
+struct DatabaseModelDictionary: Identifiable, Codable, Equatable, Hashable {
     static let databaseTableName = "dictionary"
     
     internal let id: Int?
@@ -73,7 +73,7 @@ struct DictionaryItemModel: Identifiable, Codable, Equatable, Hashable {
     }
 }
 
-extension DictionaryItemModel {
+extension DatabaseModelDictionary {
     var searchableText: String {
         return [name, author, description]
             .map { $0.lowercased() }
@@ -86,7 +86,7 @@ extension DictionaryItemModel {
     }
 }
 
-extension DictionaryItemModel: FetchableRecord, PersistableRecord {
+extension DatabaseModelDictionary: FetchableRecord, PersistableRecord {
     static func createTable(in db: Database) throws {
         try db.create(table: databaseTableName, ifNotExists: true) { t in
             t.autoIncrementedPrimaryKey("id").unique()

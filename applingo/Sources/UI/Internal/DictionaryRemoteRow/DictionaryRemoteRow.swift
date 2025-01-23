@@ -3,7 +3,7 @@ import SwiftUI
 struct DictionaryRemoteRow: View {
     let model: DictionaryRemoteRowModel
     let style: DictionaryRemoteRowStyle
-    let dictionary: DictionaryItemModel
+    let dictionary: DatabaseModelDictionary
     let onTap: () -> Void
     let onToggle: (Bool) -> Void
     

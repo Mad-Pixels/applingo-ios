@@ -2,7 +2,7 @@ import Foundation
 import Combine
 
 final class DictionaryLocalGetterViewModel: BaseDatabaseViewModel {
-    @Published var dictionaries: [DictionaryItemModel] = []
+    @Published var dictionaries: [DatabaseModelDictionary] = []
     @Published var isLoadingPage = false
     @Published var searchText: String = "" {
         didSet {
@@ -77,7 +77,7 @@ final class DictionaryLocalGetterViewModel: BaseDatabaseViewModel {
         )
     }
     
-    func loadMoreDictionariesIfNeeded(currentItem: DictionaryItemModel?) {
+    func loadMoreDictionariesIfNeeded(currentItem: DatabaseModelDictionary?) {
         guard
             let dictionary = currentItem,
             let index = dictionaries.firstIndex(where: { $0.id == dictionary.id }),
@@ -96,7 +96,7 @@ final class DictionaryLocalGetterViewModel: BaseDatabaseViewModel {
         self.frame = newFrame
     }
     
-    private func processFetchedDictionaries(_ fetchedDictionaries: [DictionaryItemModel]) {
+    private func processFetchedDictionaries(_ fetchedDictionaries: [DatabaseModelDictionary]) {
         if fetchedDictionaries.isEmpty {
             hasMorePages = false
         } else {

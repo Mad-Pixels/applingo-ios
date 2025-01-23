@@ -15,7 +15,7 @@ final class DictionaryLocalActionViewModel: BaseDatabaseViewModel {
         super.init()
     }
 
-    func save(_ dictionary: DictionaryItemModel, completion: @escaping (Result<Void, Error>) -> Void) {
+    func save(_ dictionary: DatabaseModelDictionary, completion: @escaping (Result<Void, Error>) -> Void) {
         performDatabaseOperation(
             { try self.dictionaryRepository.save(dictionary) },
             successHandler: { _ in },
@@ -29,7 +29,7 @@ final class DictionaryLocalActionViewModel: BaseDatabaseViewModel {
     
     
 
-    func update(_ dictionary: DictionaryItemModel, completion: @escaping (Result<Void, Error>) -> Void) {
+    func update(_ dictionary: DatabaseModelDictionary, completion: @escaping (Result<Void, Error>) -> Void) {
         performDatabaseOperation(
             { try self.dictionaryRepository.update(dictionary) },
             successHandler: { _ in },
@@ -41,7 +41,7 @@ final class DictionaryLocalActionViewModel: BaseDatabaseViewModel {
         )
     }
 
-    func delete(_ dictionary: DictionaryItemModel, completion: @escaping (Result<Void, Error>) -> Void) {
+    func delete(_ dictionary: DatabaseModelDictionary, completion: @escaping (Result<Void, Error>) -> Void) {
         performDatabaseOperation(
             { try self.dictionaryRepository.delete(dictionary) },
             successHandler: { _ in },

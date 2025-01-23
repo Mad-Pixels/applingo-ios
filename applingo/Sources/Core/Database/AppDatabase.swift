@@ -57,10 +57,10 @@ final class AppDatabase: ObservableObject {
         var migrator = DatabaseMigrator()
         
         migrator.registerMigration("createDictionary") { db in
-            try DictionaryItemModel.createTable(in: db)
+            try DatabaseModelDictionary.createTable(in: db)
             Logger.debug("[DatabaseManager]: 'Dictionary' table created successfully")
             
-            let internalDictionary = DictionaryItemModel(
+            let internalDictionary = DatabaseModelDictionary(
                 guid: "internal",
                 name: "Main",
                 author: "LingoCards",
@@ -68,7 +68,7 @@ final class AppDatabase: ObservableObject {
                 subcategory: "internal",
                 description: "LingoCards default dictionary"
             )
-            if try DictionaryItemModel
+            if try DatabaseModelDictionary
                 .filter(Column("name") == internalDictionary.name)
                 .fetchOne(db) == nil {
                 try internalDictionary.insert(db)

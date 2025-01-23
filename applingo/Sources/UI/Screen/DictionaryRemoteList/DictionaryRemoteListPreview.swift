@@ -7,7 +7,7 @@ import SwiftUI
             dictionaryGetter: {
                 let getter = DictionaryRemoteGetterViewModel()
                 getter.dictionaries = [
-                    DictionaryItemModel(
+                    DatabaseModelDictionary(
                         guid: "en_basic",
                         name: "English Basic",
                         author: "John Doe",
@@ -16,7 +16,7 @@ import SwiftUI
                         description: "Basic English vocabulary",
                         id: 1
                     ),
-                    DictionaryItemModel(
+                    DatabaseModelDictionary(
                         guid: "es_basic",
                         name: "Spanish Basic",
                         author: "Maria Garcia",

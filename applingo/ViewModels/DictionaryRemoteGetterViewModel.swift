@@ -2,7 +2,7 @@ import Foundation
 import Combine
 
 final class DictionaryRemoteGetterViewModel: BaseApiViewModel {
-    @Published var dictionaries: [DictionaryItemModel] = []
+    @Published var dictionaries: [DatabaseModelDictionary] = []
     @Published var isLoadingPage = false
     @Published var searchText: String = "" {
         didSet {
@@ -13,7 +13,7 @@ final class DictionaryRemoteGetterViewModel: BaseApiViewModel {
         }
     }
     
-    private var allDictionaries: [DictionaryItemModel] = []
+    private var allDictionaries: [DatabaseModelDictionary] = []
     private var currentRequest: ApiDictionaryQueryRequestModel?
     private var hasMorePages = true
     private var lastEvaluated: String?
@@ -79,7 +79,7 @@ final class DictionaryRemoteGetterViewModel: BaseApiViewModel {
         )
     }
     
-    func loadMoreDictionariesIfNeeded(currentItem: DictionaryItemModel?) {
+    func loadMoreDictionariesIfNeeded(currentItem: DatabaseModelDictionary?) {
         guard let currentItem = currentItem,
               let index = dictionaries.firstIndex(where: { $0.id == currentItem.id }),
               index >= dictionaries.count - 5,
@@ -101,7 +101,7 @@ final class DictionaryRemoteGetterViewModel: BaseApiViewModel {
         self.frame = newFrame
     }
     
-    private func processFetchedDictionaries(_ fetchedDictionaries: [DictionaryItemModel], lastEvaluated: String?) {
+    private func processFetchedDictionaries(_ fetchedDictionaries: [DatabaseModelDictionary], lastEvaluated: String?) {
         if fetchedDictionaries.isEmpty {
             hasMorePages = false
         } else {

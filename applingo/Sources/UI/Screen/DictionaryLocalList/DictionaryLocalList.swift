@@ -5,7 +5,7 @@ struct DictionaryLocalList: View {
     @StateObject private var locale = DictionaryLocalListLocale()
     @StateObject private var dictionaryGetter = DictionaryLocalGetterViewModel()
 
-    @State private var selectedDictionary: DictionaryItemModel?
+    @State private var selectedDictionary: DatabaseModelDictionary?
     @State private var isShowingInstructions = false
     @State private var isShowingRemoteList = false
    

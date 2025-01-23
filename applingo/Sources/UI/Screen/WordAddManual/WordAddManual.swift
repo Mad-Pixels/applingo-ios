@@ -10,7 +10,7 @@ struct WordAddManual: View {
     @Binding var isPresented: Bool
     let refresh: () -> Void
 
-    @State private var selectedDictionary: DictionaryItemModel?
+    @State private var selectedDictionary: DatabaseModelDictionary?
     @State private var wordItem = WordItemModel.empty()
     @State private var descriptionText: String = ""
     @State private var errorMessage: String = ""

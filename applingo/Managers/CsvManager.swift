@@ -27,12 +27,12 @@ final class CSVManager {
     
     func parse(
         url: URL,
-        dictionaryItem: DictionaryItemModel? = nil
-    ) throws -> (dictionary: DictionaryItemModel, words: [WordItemModel]) {
+        dictionaryItem: DatabaseModelDictionary? = nil
+    ) throws -> (dictionary: DatabaseModelDictionary, words: [WordItemModel]) {
         let tableName = "dict-\(UUID().uuidString.prefix(8))"
         
         let dictionary = dictionaryItem.map { existing in
-            DictionaryItemModel(
+            DatabaseModelDictionary(
                 guid: existing.guid,
                 name: existing.name,
                 author: existing.author,
@@ -40,7 +40,7 @@ final class CSVManager {
                 subcategory: existing.subcategory,
                 description: existing.description
             )
-        } ?? DictionaryItemModel(
+        } ?? DatabaseModelDictionary(
             guid: url.lastPathComponent,
             name: url.deletingPathExtension().lastPathComponent,
             author: "local user",
@@ -54,7 +54,7 @@ final class CSVManager {
         return (dictionary, words)
     }
     
-    func saveToDatabase(dictionary: DictionaryItemModel, words: [WordItemModel]) throws {
+    func saveToDatabase(dictionary: DatabaseModelDictionary, words: [WordItemModel]) throws {
         guard let dbQueue = AppDatabase.shared.databaseQueue else {
             throw CSVManagerError.databaseConnectionNotEstablished
         }

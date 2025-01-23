@@ -3,7 +3,7 @@ import SwiftUI
 #Preview("Dictionary Detail Screen") {
    NavigationView {
        DictionaryLocalDetails(
-        dictionary: DictionaryItemModel(
+        dictionary: DatabaseModelDictionary(
             guid: "en_basic",
                name: "English Basic",
             author: "John Doe",
@@ -22,7 +22,7 @@ import SwiftUI
 
 struct ScreenDictionaryLocalDetail_Previews: PreviewProvider {
    static var previews: some View {
-       let mockDictionary = DictionaryItemModel(
+       let mockDictionary = DatabaseModelDictionary(
         guid: "en_basic",
            name: "English Basic",
         author: "John Doe",

@@ -5,10 +5,10 @@ protocol DictionaryRepositoryProtocol {
         searchText: String?,
         offset: Int,
         limit: Int
-    ) throws -> [DictionaryItemModel]
-    func save(_ dictionary: DictionaryItemModel) throws
-    func update(_ dictionary: DictionaryItemModel) throws
-    func delete(_ dictionary: DictionaryItemModel) throws
+    ) throws -> [DatabaseModelDictionary]
+    func save(_ dictionary: DatabaseModelDictionary) throws
+    func update(_ dictionary: DatabaseModelDictionary) throws
+    func delete(_ dictionary: DatabaseModelDictionary) throws
     func updateStatus(dictionaryID: Int, newStatus: Bool) throws
     func fetchDisplayName(byTableName tableName: String) throws -> String
 }
@@ -31,8 +31,8 @@ protocol ApiRepositoryProtocol {
     func getDictionaries(
         request: ApiDictionaryQueryRequestModel?
     ) async throws -> (
-        dictionaries: [DictionaryItemModel], lastEvaluated: String?
+        dictionaries: [DatabaseModelDictionary], lastEvaluated: String?
     )
-    func downloadDictionary(_ dictionary: DictionaryItemModel) async throws -> URL
+    func downloadDictionary(_ dictionary: DatabaseModelDictionary) async throws -> URL
     func getCategories() async throws -> CategoryItemModel
 }
