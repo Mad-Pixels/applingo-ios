@@ -56,7 +56,6 @@ class RepositoryAPI: ApiRepositoryProtocol {
                 subcategory: dictionaryItem.subcategory,
                 author: dictionaryItem.author,
                 
-                isPublic: dictionaryItem.isPublic,
                 created: dictionaryItem.createdAt,
                 id: UUID().hashValue
             )

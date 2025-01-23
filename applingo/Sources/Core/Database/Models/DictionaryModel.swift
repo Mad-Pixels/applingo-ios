@@ -14,7 +14,6 @@ struct DictionaryItemModel: Identifiable, Codable, Equatable, Hashable {
     var author: String
     var name: String
     
-    var isPublic: Bool
     var isActive: Bool 
     
     init(
@@ -24,7 +23,6 @@ struct DictionaryItemModel: Identifiable, Codable, Equatable, Hashable {
         category: String,
         subcategory: String,
         author: String,
-        isPublic: Bool = true,
         isActive: Bool = true,
         
         created: Int = Int(Date().timeIntervalSince1970),
@@ -37,7 +35,6 @@ struct DictionaryItemModel: Identifiable, Codable, Equatable, Hashable {
         self.subcategory = subcategory
         self.author = author
         
-        self.isPublic = isPublic
         self.isActive = isActive
         
         self.created = created
@@ -65,7 +62,6 @@ struct DictionaryItemModel: Identifiable, Codable, Equatable, Hashable {
         - Subcategory: \(subcategory)
         - Author: \(author)
         - Created: \(date)
-        - Public: \(isPublic ? "Yes" : "No")
         - Active: \(isActive ? "Yes" : "No")
         """
     }
@@ -89,7 +85,6 @@ extension DictionaryItemModel: FetchableRecord, PersistableRecord {
             t.column("subcategory", .text).notNull()
             t.column("author", .text).notNull()
             t.column("created", .integer).notNull()
-            t.column("isPublic", .boolean).notNull()
             t.column("isActive", .boolean).notNull()
             t.column("uuid", .text).unique()
         }
