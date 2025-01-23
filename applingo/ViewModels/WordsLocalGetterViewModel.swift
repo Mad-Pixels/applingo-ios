@@ -21,7 +21,7 @@ final class WordsLocalGetterViewModel: BaseDatabaseViewModel {
     private var currentPage = 0
 
     override init() {
-        if let dbQueue = DatabaseManager.shared.databaseQueue {
+        if let dbQueue = AppDatabase.shared.databaseQueue {
             self.wordRepository = RepositoryWord(dbQueue: dbQueue)
         } else {
             fatalError("Database is not connected")

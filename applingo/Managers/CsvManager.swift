@@ -57,7 +57,7 @@ final class CSVManager {
     }
     
     func saveToDatabase(dictionary: DictionaryItemModel, words: [WordItemModel]) throws {
-        guard let dbQueue = DatabaseManager.shared.databaseQueue else {
+        guard let dbQueue = AppDatabase.shared.databaseQueue else {
             throw CSVManagerError.databaseConnectionNotEstablished
         }
         

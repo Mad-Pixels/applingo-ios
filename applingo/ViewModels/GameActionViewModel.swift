@@ -24,7 +24,7 @@ final class GameActionViewModel: BaseDatabaseViewModel {
     }
     
     override init() {
-        guard let dbQueue = DatabaseManager.shared.databaseQueue else {
+        guard let dbQueue = AppDatabase.shared.databaseQueue else {
             fatalError("Database is not connected")
         }
         self.wordRepository = RepositoryWord(dbQueue: dbQueue)

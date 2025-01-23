@@ -16,7 +16,7 @@ struct LingocardApp: App {
     init() {
         Logger.initializeLogger()
         do {
-            try DatabaseManager.shared.connect(dbName: dbName)
+            try AppDatabase.shared.connect(dbName: dbName)
         } catch {
             let appError = AppErrorModel(
                 type: .database,
@@ -38,7 +38,7 @@ struct LingocardApp: App {
                 .environmentObject(errorManager)
                 .environmentObject(themeManager)
                 //.environmentObject(frameManager)
-                .environmentObject(DatabaseManager.shared)
+                .environmentObject(AppDatabase.shared)
         }
     }
 }

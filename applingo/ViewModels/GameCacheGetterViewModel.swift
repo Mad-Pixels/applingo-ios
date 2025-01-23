@@ -14,7 +14,7 @@ final class GameCacheGetterViewModel: BaseDatabaseViewModel {
     private var cancellationToken = UUID()
     
     override init() {
-        guard let dbQueue = DatabaseManager.shared.databaseQueue else {
+        guard let dbQueue = AppDatabase.shared.databaseQueue else {
             fatalError("Database is not connected")
         }
         self.wordRepository = RepositoryWord(dbQueue: dbQueue)

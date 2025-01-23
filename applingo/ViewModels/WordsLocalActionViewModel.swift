@@ -7,7 +7,7 @@ final class WordsLocalActionViewModel: BaseDatabaseViewModel {
     private var frame: AppFrameModel = .main
 
     override init() {
-        if let dbQueue = DatabaseManager.shared.databaseQueue {
+        if let dbQueue = AppDatabase.shared.databaseQueue {
             self.dictionaryRepository = RepositoryDictionary(dbQueue: dbQueue)
             self.wordRepository = RepositoryWord(dbQueue: dbQueue)
         } else {
