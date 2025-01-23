@@ -62,7 +62,7 @@ final class AppDatabase: ObservableObject {
             
             let internalDictionary = DictionaryItemModel(
                 key: "internal",
-                displayName: "Main",
+                name: "Main",
                 tableName: "Internal",
                 description: "LingoCards default dictionary",
                 category: "LingoCards",
@@ -70,7 +70,7 @@ final class AppDatabase: ObservableObject {
                 author: "LingoCards"
             )
             if try DictionaryItemModel
-                .filter(Column("displayName") == internalDictionary.displayName)
+                .filter(Column("name") == internalDictionary.name)
                 .fetchOne(db) == nil {
                 try internalDictionary.insert(db)
                 Logger.debug("[DatabaseManager]: 'Internal' dictionary entry added successfully")

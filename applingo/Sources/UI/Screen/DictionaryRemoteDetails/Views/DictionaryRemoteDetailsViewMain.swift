@@ -25,7 +25,7 @@ struct DictionaryRemoteDetailsViewMain: View {
            
             VStack(spacing: style.spacing) {
                 InputText(
-                    text: .constant(dictionary.displayName),
+                    text: .constant(dictionary.name),
                     placeholder: locale.displayNameTitle,
                     isEditing: false
                 )

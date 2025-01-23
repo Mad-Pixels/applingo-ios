@@ -34,7 +34,7 @@ final class CSVManager {
         let dictionary = dictionaryItem.map { existing in
             DictionaryItemModel(
                 key: existing.tableName,
-                displayName: existing.displayName,
+                name: existing.name,
                 tableName: tableName,
                 description: existing.description,
                 category: existing.category,
@@ -43,7 +43,7 @@ final class CSVManager {
             )
         } ?? DictionaryItemModel(
             key: url.lastPathComponent,
-            displayName: url.deletingPathExtension().lastPathComponent,
+            name: url.deletingPathExtension().lastPathComponent,
             tableName: tableName,
             description: "Imported from local file: '\(url.lastPathComponent)'",
             category: "Local",

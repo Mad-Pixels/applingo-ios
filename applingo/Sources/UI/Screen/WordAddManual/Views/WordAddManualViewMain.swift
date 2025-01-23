@@ -50,7 +50,7 @@ struct WordAddManualViewMain: View {
                     items: dictionaries,
                     style: .themed(themeManager.currentThemeStyle)
                 ) { dictionary in
-                    Text(dictionary?.displayName ?? "")
+                    Text(dictionary?.name ?? "")
                 }
             }
             .padding(.horizontal, 8)

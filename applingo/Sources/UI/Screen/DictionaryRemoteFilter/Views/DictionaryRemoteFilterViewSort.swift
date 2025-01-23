@@ -19,7 +19,7 @@ struct DictionaryRemoteFilterViewSort: View {
             title: locale.sortByTitle,
             style: .themed(ThemeManager.shared.currentThemeStyle, type: .segmented)
         ) { sortBy in
-            Text(sortBy.displayName)
+            Text(sortBy.name)
         }
     }
 }

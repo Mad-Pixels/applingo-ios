@@ -29,8 +29,8 @@ struct DictionaryLocalDetailsViewMain: View {
             VStack(spacing: style.spacing) {
                 InputText(
                     text: Binding(
-                        get: { dictionary.dictionary.displayName },
-                        set: { dictionary.dictionary.displayName = $0 }
+                        get: { dictionary.dictionary.name },
+                        set: { dictionary.dictionary.name = $0 }
                     ),
                     title: locale.displayNameTitle.capitalizedFirstLetter,
                     placeholder: locale.displayNameTitle,

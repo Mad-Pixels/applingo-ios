@@ -5,7 +5,7 @@ import SwiftUI
        DictionaryLocalDetails(
            dictionary: DictionaryItemModel(
                key: "en_basic",
-               displayName: "English Basic",
+               name: "English Basic",
                tableName: "en_basic",
                description: "Basic English vocabulary",
                category: "Language",
@@ -25,7 +25,7 @@ struct ScreenDictionaryLocalDetail_Previews: PreviewProvider {
    static var previews: some View {
        let mockDictionary = DictionaryItemModel(
            key: "en_basic",
-           displayName: "English Basic",
+           name: "English Basic",
            tableName: "en_basic",
            description: "Basic English vocabulary",
            category: "Language",

@@ -32,7 +32,7 @@ struct DictionaryLocalListViewList: View {
        ) { dictionary in
            DictionaryLocalRow(
             model: DictionaryLocalRowModel(
-                title: dictionary.displayName,
+                title: dictionary.name,
                 category: dictionary.category,
                 subcategory: dictionary.subcategory,
                 description: dictionary.description,

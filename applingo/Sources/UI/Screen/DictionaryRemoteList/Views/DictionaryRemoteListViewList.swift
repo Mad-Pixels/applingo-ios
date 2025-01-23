@@ -30,7 +30,7 @@ struct DictionaryRemoteListViewList: View {
        ) { dictionary in
            DictionaryRemoteRow(
             model: DictionaryRemoteRowModel(
-                title: dictionary.displayName,
+                title: dictionary.name,
                 category: dictionary.category,
                 subcategory: dictionary.subcategory,
                 description: dictionary.description,

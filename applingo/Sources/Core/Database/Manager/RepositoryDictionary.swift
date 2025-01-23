@@ -17,7 +17,7 @@ class RepositoryDictionary: DictionaryRepositoryProtocol {
             var arguments: [DatabaseValueConvertible] = []
             
             if let searchText = searchText, !searchText.isEmpty {
-                sql += " WHERE displayName LIKE ?"
+                sql += " WHERE name LIKE ?"
                 arguments.append("%\(searchText)%")
             }
             sql += " ORDER BY id ASC LIMIT ? OFFSET ?"
@@ -32,7 +32,7 @@ class RepositoryDictionary: DictionaryRepositoryProtocol {
     func fetchDisplayName(byTableName tableName: String) throws -> String {
         return try dbQueue.read { db in
             let sql = """
-            SELECT displayName FROM \(DictionaryItemModel.databaseTableName)
+            SELECT name FROM \(DictionaryItemModel.databaseTableName)
             WHERE tableName = ?
             """
             let arguments: [DatabaseValueConvertible] = [tableName]
@@ -49,7 +49,7 @@ class RepositoryDictionary: DictionaryRepositoryProtocol {
         try dbQueue.write { db in
             try fmtDictionary.insert(db)
         }
-        Logger.debug("[RepositoryDictionary]: save - \(dictionary.displayName) with ID \(dictionary.id)")
+        Logger.debug("[RepositoryDictionary]: save - \(dictionary.name) with ID \(dictionary.id)")
     }
     
     func update(_ dictionary: DictionaryItemModel) throws {
@@ -59,7 +59,7 @@ class RepositoryDictionary: DictionaryRepositoryProtocol {
         try dbQueue.write { db in
             try fmtDictionary.update(db)
         }
-        Logger.debug("[RepositoryDictionary]: update - \(dictionary.displayName) with ID \(dictionary.id)")
+        Logger.debug("[RepositoryDictionary]: update - \(dictionary.name) with ID \(dictionary.id)")
     }
     
     func updateStatus(dictionaryID: Int, newStatus: Bool) throws {
@@ -79,7 +79,7 @@ class RepositoryDictionary: DictionaryRepositoryProtocol {
             Logger.debug("[RepositoryDictionary]: delete - associated words for tableName \(dictionary.tableName)")
             
             try dictionary.delete(db)
-            Logger.debug("[RepositoryDictionary]: delete - \(dictionary.displayName) with ID \(dictionary.id)")
+            Logger.debug("[RepositoryDictionary]: delete - \(dictionary.name) with ID \(dictionary.id)")
         }
     }
 }

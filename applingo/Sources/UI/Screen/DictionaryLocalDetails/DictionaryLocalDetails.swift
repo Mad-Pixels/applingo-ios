@@ -97,7 +97,7 @@ struct DictionaryLocalDetails: View {
     }
 
     private var isSaveDisabled: Bool {
-        wrapper.dictionary.displayName.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).isEmpty ||
+        wrapper.dictionary.name.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).isEmpty ||
         wrapper.dictionary.category.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).isEmpty ||
         wrapper.dictionary.subcategory.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).isEmpty ||
         wrapper.dictionary.author.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).isEmpty ||

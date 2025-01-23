@@ -11,9 +11,10 @@ struct DictionaryItemModel: Identifiable, Codable, Equatable, Hashable {
     var subcategory: String
     var category: String
     var author: String
+    var name: String
     
     var key: String
-    var displayName: String
+    
     var tableName: String
     
     var isPublic: Bool
@@ -21,7 +22,7 @@ struct DictionaryItemModel: Identifiable, Codable, Equatable, Hashable {
     
     init(
         key: String,
-        displayName: String,
+        name: String,
         tableName: String,
         description: String,
         category: String,
@@ -34,7 +35,7 @@ struct DictionaryItemModel: Identifiable, Codable, Equatable, Hashable {
         id: Int? = nil
     ) {
         self.key = key
-        self.displayName = displayName
+        self.name = name
         self.tableName = tableName
         self.description = description
         self.category = category
@@ -63,7 +64,7 @@ struct DictionaryItemModel: Identifiable, Codable, Equatable, Hashable {
         DictionaryItemModel:
         - ID: \(id ?? -1)
         - Key: \(key)
-        - Display Name: \(displayName)
+        - Name: \(name)
         - Table Name: \(tableName)
         - Description: \(description)
         - Category: \(category)
@@ -76,11 +77,11 @@ struct DictionaryItemModel: Identifiable, Codable, Equatable, Hashable {
     }
     
     mutating func fmt() {
-        self.displayName = displayName.trimmedTrailingWhitespace
         self.description = description.trimmedTrailingWhitespace
         self.subcategory = subcategory.trimmedTrailingWhitespace
         self.category = category.trimmedTrailingWhitespace
         self.author = author.trimmedTrailingWhitespace
+        self.name = name.trimmedTrailingWhitespace
     }
 }
 
@@ -88,7 +89,7 @@ extension DictionaryItemModel: FetchableRecord, PersistableRecord {
     static func createTable(in db: Database) throws {
         try db.create(table: databaseTableName, ifNotExists: true) { t in
             t.autoIncrementedPrimaryKey("id").unique()
-            t.column("displayName", .text).notNull()
+            t.column("name", .text).notNull()
             t.column("tableName", .text).notNull()
             t.column("description", .text).notNull()
             t.column("category", .text).notNull()
@@ -105,7 +106,7 @@ extension DictionaryItemModel: FetchableRecord, PersistableRecord {
 
 extension DictionaryItemModel {
     var searchableText: String {
-        return [displayName, author, description]
+        return [name, author, description]
             .map { $0.lowercased() }
             .joined(separator: " ")
     }

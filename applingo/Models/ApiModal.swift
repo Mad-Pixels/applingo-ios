@@ -54,7 +54,7 @@ struct ApiDictionaryQueryRequestModel: Codable, Equatable {
 }
 
 extension ApiDictionaryQueryRequestModel.SortBy {
-    var displayName: String {
+    var name: String {
         switch self {
         case .date:
             return LanguageManager.shared.localizedString(for: "DateCreated")
