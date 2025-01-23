@@ -99,7 +99,7 @@ struct WordAddManual: View {
 
         let newWord = DatabaseModelWord(
             id: wordItem.id,
-            tableName: selectedDictionary.guid,
+            dictionary: selectedDictionary.guid,
             frontText: wordItem.frontText,
             backText: wordItem.backText,
             description: descriptionText.isEmpty ? nil : descriptionText,

@@ -54,11 +54,11 @@ final class WordsLocalActionViewModel: BaseDatabaseViewModel {
     
     func dictionaryDisplayName(_ word: DatabaseModelWord) -> String {
         do {
-            return try self.dictionaryRepository.fetchDisplayName(byTableName: word.tableName)
+            return try self.dictionaryRepository.fetchDisplayName(byTableName: word.dictionary)
         } catch {
             let appError = AppErrorModel(
                 type: .database,
-                message: "Failed to fetch dictionary display name for tableName \(word.tableName)",
+                message: "Failed to fetch dictionary display name for tableName \(word.dictionary)",
                 localized: LanguageManager.shared.localizedString(for: "ErrDatabaseDefault"),
                 original: error,
                 additional: ["word": word.toString()]

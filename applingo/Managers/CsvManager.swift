@@ -64,7 +64,7 @@ final class CSVManager {
             Logger.debug("[CSVManager]: Created dictionary entry: \(dictionary.guid)")
             
             for var wordItem in words {
-                wordItem.tableName = dictionary.guid
+                wordItem.dictionary = dictionary.guid
                 try wordItem.insert(db)
             }
             Logger.debug("[CSVManager]: Inserted \(words.count) word items for table \(dictionary.guid)")

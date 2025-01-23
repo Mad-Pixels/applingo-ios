@@ -26,7 +26,7 @@ class RepositoryWord: WordRepositoryProtocol {
             
             if !activeDisplayNames.isEmpty {
                 let placeholders = activeDisplayNames.map { _ in "?" }.joined(separator: ", ")
-                conditions.append("tableName IN (\(placeholders))")
+                conditions.append("dictionary IN (\(placeholders))")
                 allArguments.append(contentsOf: activeDisplayNames)
             }
             
@@ -92,7 +92,7 @@ class RepositoryWord: WordRepositoryProtocol {
         return try dbQueue.read { db -> [DatabaseModelWord] in
             let baseSQL = """
                 FROM \(DatabaseModelWord.databaseTableName)
-                WHERE tableName IN (\(activeDisplayNames.map { "'\($0)'" }.joined(separator: ",")))
+                WHERE dictionary IN (\(activeDisplayNames.map { "'\($0)'" }.joined(separator: ",")))
             """
             let randomSQL = """
                 SELECT *

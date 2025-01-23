@@ -57,7 +57,7 @@ func parseCsvLines(
         
         guard !frontText.isEmpty && !backText.isEmpty else { continue }
         let wordItem = DatabaseModelWord(
-            tableName: tableName,
+            dictionary: tableName,
             frontText: frontText,
             backText: backText,
             description: description,

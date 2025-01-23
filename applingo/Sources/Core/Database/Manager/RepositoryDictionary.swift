@@ -33,7 +33,7 @@ class RepositoryDictionary: DictionaryRepositoryProtocol {
         return try dbQueue.read { db in
             let sql = """
             SELECT name FROM \(DatabaseModelDictionary.databaseTableName)
-            WHERE tableName = ?
+            WHERE dictionary = ?
             """
             let arguments: [DatabaseValueConvertible] = [tableName]
             
@@ -74,7 +74,7 @@ class RepositoryDictionary: DictionaryRepositoryProtocol {
     
     func delete(_ dictionary: DatabaseModelDictionary) throws {
         try dbQueue.write { db in
-            let wordsDeleteSQL = "DELETE FROM \(DatabaseModelWord.databaseTableName) WHERE tableName = ?"
+            let wordsDeleteSQL = "DELETE FROM \(DatabaseModelWord.databaseTableName) WHERE dictionary = ?"
             try db.execute(sql: wordsDeleteSQL, arguments: [dictionary.guid])
             Logger.debug("[RepositoryDictionary]: delete - associated words for tableName \(dictionary.guid)")
             

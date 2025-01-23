@@ -7,7 +7,9 @@ struct DatabaseModelWord: Identifiable, Codable, Equatable {
     internal let id: Int?
     internal let created: Int
     
-    var tableName: String
+    var dictionary: String
+    
+    
     var frontText: String
     var backText: String
     var description: String?
@@ -18,7 +20,7 @@ struct DatabaseModelWord: Identifiable, Codable, Equatable {
 
     init(
         id: Int? = nil,
-        tableName: String,
+        dictionary: String,
         frontText: String,
         backText: String,
         description: String? = nil,
@@ -29,7 +31,7 @@ struct DatabaseModelWord: Identifiable, Codable, Equatable {
         fail: Int = 0
     ) {
         self.id = id
-        self.tableName = tableName
+        self.dictionary = dictionary
         self.frontText = frontText
         self.backText = backText
         self.description = description
@@ -44,7 +46,7 @@ struct DatabaseModelWord: Identifiable, Codable, Equatable {
     
     static func empty() -> DatabaseModelWord {
         return DatabaseModelWord(
-            tableName: "",
+            dictionary: "",
             frontText: "",
             backText: ""
         )
@@ -63,7 +65,7 @@ struct DatabaseModelWord: Identifiable, Codable, Equatable {
         """
         WordItemModel:
         - ID: \(id ?? -1)
-        - Table Name: \(tableName)
+        - Dictionary: \(dictionary)
         - Front Text: \(frontText)
         - Back Text: \(backText)
         - Description: \(description ?? "None")
@@ -88,7 +90,7 @@ extension DatabaseModelWord: FetchableRecord, PersistableRecord {
     static func createTable(in db: Database) throws {
         try db.create(table: databaseTableName, ifNotExists: true) { t in
             t.autoIncrementedPrimaryKey("id").unique()
-            t.column("tableName", .text).notNull()
+            t.column("dictionary", .text).notNull()
             t.column("frontText", .text).notNull()
             t.column("backText", .text).notNull()
             t.column("description", .text)
@@ -98,8 +100,8 @@ extension DatabaseModelWord: FetchableRecord, PersistableRecord {
             t.column("weight", .integer).notNull()
             t.column("fail", .integer).notNull()
         }
-        try db.create(index: "Words_tableName_idx", on: databaseTableName, columns: ["tableName"])
-        try db.create(index: "Words_createdAt_idx", on: databaseTableName, columns: ["createdAt"])
+        try db.create(index: "words_dictionary_idx", on: databaseTableName, columns: ["dictionary"])
+        try db.create(index: "words_created_idx", on: databaseTableName, columns: ["created"])
     }
 }
 
@@ -108,7 +110,7 @@ extension DatabaseModelWord: Hashable {
         hasher.combine(id)
         
         if id == nil {
-            hasher.combine(tableName)
+            hasher.combine(dictionary)
             hasher.combine(frontText)
             hasher.combine(backText)
             hasher.combine(created)
@@ -120,7 +122,7 @@ extension DatabaseModelWord: Hashable {
             return lhsId == rhsId
         }
         
-        return lhs.tableName == rhs.tableName &&
+        return lhs.dictionary == rhs.dictionary &&
             lhs.frontText == rhs.frontText &&
             lhs.backText == rhs.backText &&
             lhs.created == rhs.created
