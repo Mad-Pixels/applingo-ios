@@ -98,16 +98,19 @@ struct WordAddManual: View {
         guard let selectedDictionary = selectedDictionary else { return }
 
         let newWord = DatabaseModelWord(
-            id: wordItem.id,
             dictionary: selectedDictionary.guid,
             frontText: wordItem.frontText,
             backText: wordItem.backText,
+            
+            weight: wordItem.weight,
+            success: wordItem.success,
+            fail: wordItem.fail,
+            
             description: descriptionText.isEmpty ? nil : descriptionText,
             hint: hintText.isEmpty ? nil : hintText,
+            
             created: wordItem.created,
-            success: wordItem.success,
-            weight: wordItem.weight,
-            fail: wordItem.fail
+            id: wordItem.id
         )
 
         wordsAction.save(newWord) { result in

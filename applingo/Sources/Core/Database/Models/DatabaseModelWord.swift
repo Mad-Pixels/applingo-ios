@@ -5,30 +5,33 @@ struct DatabaseModelWord: Identifiable, Codable, Equatable {
     static let databaseTableName = "words"
     
     internal let id: Int?
+    internal let uuid: String
     internal let created: Int
     
+    var description: String?
     var dictionary: String
-    
-    
     var frontText: String
     var backText: String
-    var description: String?
     var hint: String?
+    
     var success: Int
     var weight: Int
     var fail: Int
 
     init(
-        id: Int? = nil,
         dictionary: String,
         frontText: String,
         backText: String,
+        
+        weight: Int = 500,
+        success: Int = 0,
+        fail: Int = 0,
+        
         description: String? = nil,
         hint: String? = nil,
+        
         created: Int = Int(Date().timeIntervalSince1970),
-        success: Int = 0,
-        weight: Int = 500,
-        fail: Int = 0
+        id: Int? = nil
     ) {
         self.id = id
         self.dictionary = dictionary
@@ -41,6 +44,7 @@ struct DatabaseModelWord: Identifiable, Codable, Equatable {
         self.weight = weight
         self.fail = fail
         
+        self.uuid = UUID().uuidString
         self.fmt()
     }
     
@@ -90,6 +94,8 @@ extension DatabaseModelWord: FetchableRecord, PersistableRecord {
     static func createTable(in db: Database) throws {
         try db.create(table: databaseTableName, ifNotExists: true) { t in
             t.autoIncrementedPrimaryKey("id").unique()
+            t.column("uuid", .text).unique()
+            
             t.column("dictionary", .text).notNull()
             t.column("frontText", .text).notNull()
             t.column("backText", .text).notNull()
