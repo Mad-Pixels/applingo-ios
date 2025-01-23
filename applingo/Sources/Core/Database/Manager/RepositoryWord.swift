@@ -80,39 +80,34 @@ class RepositoryWord: WordRepositoryProtocol {
     
     func fetchCache(count: Int) throws -> [DatabaseModelWord] {
         let activeDictionaries = try fetchActive()
-        guard !activeDictionaries.isEmpty else {
+        guard !activeDictionaries.isEmpty else { return [] }
+        
+        let dictionariesByCategory = Dictionary(grouping: activeDictionaries) {
+            $0.subcategory
+        }
+        
+        // Берем случайную группу !!!!!
+        guard let selectedGroup = dictionariesByCategory.randomElement() else {
             return []
         }
-        guard !activeDictionaries.isEmpty else { return [] }
-
-        let activeDisplayNames = activeDictionaries.map { $0.guid }
-        let randomCount = Int(Double(count) * 0.6)
-        let weightedCount = count - randomCount
-            
-        return try dbQueue.read { db -> [DatabaseModelWord] in
-            let baseSQL = """
+        let guids = selectedGroup.value.map { $0.guid }
+        
+        let sql = """
+            WITH UniqueWords AS (
+                SELECT *, ROW_NUMBER() OVER (PARTITION BY frontText, backText ORDER BY weight) as rn
                 FROM \(DatabaseModelWord.databaseTableName)
-                WHERE dictionary IN (\(activeDisplayNames.map { "'\($0)'" }.joined(separator: ",")))
-            """
-            let randomSQL = """
-                SELECT *
-                \(baseSQL)
-                ORDER BY RANDOM()
-                LIMIT \(randomCount)
-            """
-            let weightedSQL = """
-                SELECT *
-                \(baseSQL)
-                ORDER BY weight ASC
-                LIMIT \(weightedCount)
-            """
+                WHERE dictionary IN (\(guids.map { _ in "?" }.joined(separator: ",")))
+            )
+            SELECT * FROM UniqueWords 
+            WHERE rn = 1
+            ORDER BY (CASE WHEN RANDOM() < 0.6 THEN RANDOM() ELSE weight END)
+            LIMIT ?
+        """
 
-            Logger.debug("[RepositoryWord]: fetchCache - Random SQL: \(randomSQL)")
-            Logger.debug("[RepositoryWord]: fetchCache - Weighted SQL: \(weightedSQL)")
-                
-            var result = try DatabaseModelWord.fetchAll(db, sql: randomSQL)
-            result.append(contentsOf: try DatabaseModelWord.fetchAll(db, sql: weightedSQL))
-            return result.shuffled()
+        return try dbQueue.read { db in
+            var arguments = guids as [DatabaseValueConvertible]
+            arguments.append(count)
+            return try DatabaseModelWord.fetchAll(db, sql: sql, arguments: StatementArguments(arguments))
         }
     }
 

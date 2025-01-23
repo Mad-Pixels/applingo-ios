@@ -33,18 +33,20 @@ struct DatabaseModelWord: Identifiable, Codable, Equatable {
         created: Int = Int(Date().timeIntervalSince1970),
         id: Int? = nil
     ) {
-        self.id = id
+        self.description = description
         self.dictionary = dictionary
         self.frontText = frontText
         self.backText = backText
-        self.description = description
-        self.hint = hint
-        self.created = created
+        
         self.success = success
         self.weight = weight
         self.fail = fail
+        self.hint = hint
         
         self.uuid = UUID().uuidString
+        self.created = created
+        self.id = id
+        
         self.fmt()
     }
     
@@ -69,14 +71,15 @@ struct DatabaseModelWord: Identifiable, Codable, Equatable {
         """
         WordItemModel:
         - ID: \(id ?? -1)
+        - UUID: \(uuid)
         - Dictionary: \(dictionary)
-        - Front Text: \(frontText)
-        - Back Text: \(backText)
+        - FrontText: \(frontText)
+        - BackText: \(backText)
         - Description: \(description ?? "None")
         - Hint: \(hint ?? "None")
-        - Success Count: \(success)
+        - SuccessCount: \(success)
+        - FailCount: \(fail)
         - Weight: \(weight)
-        - Fail Count: \(fail)
         - Created: \(date)
         """
     }
@@ -97,22 +100,23 @@ extension DatabaseModelWord: FetchableRecord, PersistableRecord {
             t.column("uuid", .text).unique()
             
             t.column("dictionary", .text).notNull()
+            t.column("success", .integer).notNull()
+            t.column("created", .integer).notNull()
+            t.column("weight", .integer).notNull()
             t.column("frontText", .text).notNull()
             t.column("backText", .text).notNull()
+            t.column("fail", .integer).notNull()
             t.column("description", .text)
             t.column("hint", .text)
-            t.column("created", .integer).notNull()
-            t.column("success", .integer).notNull()
-            t.column("weight", .integer).notNull()
-            t.column("fail", .integer).notNull()
         }
         try db.create(index: "words_dictionary_idx", on: databaseTableName, columns: ["dictionary"])
         try db.create(index: "words_created_idx", on: databaseTableName, columns: ["created"])
+        try db.create(index: "words_text_unique_idx", on: databaseTableName, columns: ["frontText", "backText", "dictionary"], unique: true)
     }
 }
 
 extension DatabaseModelWord: Hashable {
-    func hash(into hasher: inout Hasher) {
+    func hash1(into hasher: inout Hasher) {
         hasher.combine(id)
         
         if id == nil {

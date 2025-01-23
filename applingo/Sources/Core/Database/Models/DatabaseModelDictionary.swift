@@ -100,6 +100,8 @@ extension DatabaseModelDictionary: FetchableRecord, PersistableRecord {
             t.column("author", .text).notNull()
             t.column("name", .text).notNull()
         }
+        try db.create(index: "dictionary_category_idx", on: databaseTableName, columns: ["category", "subcategory"])
         try db.create(index: "dictionary_created_idx", on: databaseTableName, columns: ["created"])
+        try db.create(index: "dictionary_active_idx", on: databaseTableName, columns: ["isActive"])
     }
 }
