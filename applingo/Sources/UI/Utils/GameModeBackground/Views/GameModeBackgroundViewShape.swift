@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct GameModeBackgroundViewShape: View {
-    let shape: BackgroundShape
+    let shape: GameModeBackgroundModelShape
     let theme: AppTheme
     let offset: CGPoint
     @ObservedObject private var themeManager = ThemeManager.shared

@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct BackgroundShape: Identifiable {
+struct GameModeBackgroundModelShape: Identifiable {
     let id: UUID
     var position: CGPoint
     var size: CGFloat

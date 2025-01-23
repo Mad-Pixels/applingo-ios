@@ -3,7 +3,7 @@ import SwiftUI
 final class GameModeBackgroundManager: ObservableObject {
     static let shared = GameModeBackgroundManager()
     
-    @Published private(set) var backgroundShapes: [BackgroundShape] = []
+    @Published private(set) var backgroundShapes: [GameModeBackgroundModelShape] = []
     
     private static var isFirstLaunchGenerated = false
     private let lock = NSLock()
@@ -29,7 +29,7 @@ final class GameModeBackgroundManager: ObservableObject {
     private let padding: CGFloat = 3
     
     private func generateBackground(for size: CGSize, using colors: [Color]) {
-        var shapes: [BackgroundShape] = []
+        var shapes: [GameModeBackgroundModelShape] = []
         var occupiedRects: [CGRect] = []
             
         for _ in 0..<maxShapes {
@@ -47,7 +47,7 @@ final class GameModeBackgroundManager: ObservableObject {
             if !occupiedRects.contains(where: { $0.intersects(newRect) }) {
                 occupiedRects.append(newRect)
                     
-                shapes.append(BackgroundShape(
+                shapes.append(GameModeBackgroundModelShape(
                     id: UUID(),
                     position: CGPoint(x: x, y: y),
                     size: shapeSize,
