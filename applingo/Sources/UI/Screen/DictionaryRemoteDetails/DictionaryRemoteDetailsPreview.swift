@@ -4,7 +4,7 @@ import SwiftUI
    NavigationView {
        DictionaryRemoteDetails(
            dictionary: DictionaryItemModel(
-            uuid: "en_basic",
+            guid: "en_basic",
                name: "English Basic",
             author: "John Doe",
             category: "Language",
@@ -22,7 +22,7 @@ import SwiftUI
 struct ScreenDictionaryDetail_Previews: PreviewProvider {
    static var previews: some View {
        let mockDictionary = DictionaryItemModel(
-        uuid: "en_basic",
+        guid: "en_basic",
            name: "English Basic",
         author: "John Doe",
         category: "Language",

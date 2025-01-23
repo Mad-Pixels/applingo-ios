@@ -61,7 +61,7 @@ final class AppDatabase: ObservableObject {
             Logger.debug("[DatabaseManager]: 'Dictionary' table created successfully")
             
             let internalDictionary = DictionaryItemModel(
-                uuid: "internal",
+                guid: "internal",
                 name: "Main",
                 author: "LingoCards",
                 category: "LingoCards",

@@ -33,7 +33,7 @@ final class CSVManager {
         
         let dictionary = dictionaryItem.map { existing in
             DictionaryItemModel(
-                uuid: existing.uuid,
+                guid: existing.guid,
                 name: existing.name,
                 author: existing.author,
                 category: existing.category,
@@ -41,7 +41,7 @@ final class CSVManager {
                 description: existing.description
             )
         } ?? DictionaryItemModel(
-            uuid: url.lastPathComponent,
+            guid: url.lastPathComponent,
             name: url.deletingPathExtension().lastPathComponent,
             author: "local user",
             category: "Local",
@@ -61,13 +61,13 @@ final class CSVManager {
         
         try dbQueue.write { db in
             try dictionary.insert(db)
-            Logger.debug("[CSVManager]: Created dictionary entry: \(dictionary.uuid)")
+            Logger.debug("[CSVManager]: Created dictionary entry: \(dictionary.guid)")
             
             for var wordItem in words {
-                wordItem.tableName = dictionary.uuid
+                wordItem.tableName = dictionary.guid
                 try wordItem.insert(db)
             }
-            Logger.debug("[CSVManager]: Inserted \(words.count) word items for table \(dictionary.uuid)")
+            Logger.debug("[CSVManager]: Inserted \(words.count) word items for table \(dictionary.guid)")
         }
     }
     

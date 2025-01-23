@@ -75,8 +75,8 @@ class RepositoryDictionary: DictionaryRepositoryProtocol {
     func delete(_ dictionary: DictionaryItemModel) throws {
         try dbQueue.write { db in
             let wordsDeleteSQL = "DELETE FROM \(WordItemModel.databaseTableName) WHERE tableName = ?"
-            try db.execute(sql: wordsDeleteSQL, arguments: [dictionary.uuid])
-            Logger.debug("[RepositoryDictionary]: delete - associated words for tableName \(dictionary.uuid)")
+            try db.execute(sql: wordsDeleteSQL, arguments: [dictionary.guid])
+            Logger.debug("[RepositoryDictionary]: delete - associated words for tableName \(dictionary.guid)")
             
             try dictionary.delete(db)
             Logger.debug("[RepositoryDictionary]: delete - \(dictionary.name) with ID \(dictionary.id)")

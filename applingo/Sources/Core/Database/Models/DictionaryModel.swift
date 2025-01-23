@@ -5,7 +5,7 @@ struct DictionaryItemModel: Identifiable, Codable, Equatable, Hashable {
     static let databaseTableName = "dictionary"
     
     internal let id: Int?
-    internal let uuid: String
+    internal let guid: String
     internal let created: Int
     
     var description: String
@@ -16,7 +16,7 @@ struct DictionaryItemModel: Identifiable, Codable, Equatable, Hashable {
     var name: String
     
     init(
-        uuid: String,
+        guid: String,
         name: String,
         author: String,
         category: String,
@@ -32,7 +32,7 @@ struct DictionaryItemModel: Identifiable, Codable, Equatable, Hashable {
         self.isActive = isActive
         self.category = category
         self.author = author
-        self.uuid = uuid
+        self.guid = guid
         self.name = name
         
         self.created = created
@@ -53,7 +53,7 @@ struct DictionaryItemModel: Identifiable, Codable, Equatable, Hashable {
         """
         DictionaryItemModel:
         - ID: \(id ?? -1)
-        - UUID: \(uuid)
+        - GUID: \(guid)
         - Name: \(name)
         - Author: \(author)
         - Category: \(category)
@@ -90,7 +90,7 @@ extension DictionaryItemModel: FetchableRecord, PersistableRecord {
     static func createTable(in db: Database) throws {
         try db.create(table: databaseTableName, ifNotExists: true) { t in
             t.autoIncrementedPrimaryKey("id").unique()
-            t.column("uuid", .text).unique()
+            t.column("guid", .text).unique()
             
             t.column("description", .text).notNull()
             t.column("subcategory", .text).notNull()

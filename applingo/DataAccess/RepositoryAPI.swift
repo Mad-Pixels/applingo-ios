@@ -49,7 +49,7 @@ class RepositoryAPI: ApiRepositoryProtocol {
         
         let dictionaries = response.data.items.map { dictionaryItem in
             DictionaryItemModel(
-                uuid: dictionaryItem.dictionary,
+                guid: dictionaryItem.dictionary,
                 name: dictionaryItem.name,
                 author: dictionaryItem.author,
                 category: dictionaryItem.category,
@@ -67,7 +67,7 @@ class RepositoryAPI: ApiRepositoryProtocol {
         let endpoint = "/v1/urls"
         let body = try? JSONSerialization.data(
             withJSONObject: ApiDictionaryDownloadRequestModel(
-                dictionary: dictionary.uuid
+                dictionary: dictionary.guid
             ).toDictionary()
         )
 
