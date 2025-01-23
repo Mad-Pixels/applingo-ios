@@ -1,9 +1,9 @@
 import SwiftUI
 
 class QuizValidation: BaseGameValidation {
-    private var currentCard: QuizCard?
+    private var currentCard: QuizModelCard?
     
-    func setCurrentCard(_ card: QuizCard) {
+    func setCurrentCard(_ card: QuizModelCard) {
         self.currentCard = card
     }
     

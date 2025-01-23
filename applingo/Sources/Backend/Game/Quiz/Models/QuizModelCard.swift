@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct QuizCard {
+struct QuizModelCard {
     let question: String      // Текст вопроса (frontText или backText)
     let correctAnswer: String // Правильный ответ (противоположный текст)
     let options: [String]     // Все варианты ответов

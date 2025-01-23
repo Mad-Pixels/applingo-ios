@@ -6,7 +6,7 @@ struct GameQuiz: View {
     @StateObject private var locale = GameQuizLocale()
     @EnvironmentObject var cacheGetter: GameCacheGetterViewModel
     
-    @State private var currentCard: QuizCard?
+    @State private var currentCard: QuizModelCard?
     
     init(game: Quiz, style: GameQuizStyle? = nil) {
         self.game = game
@@ -46,7 +46,7 @@ struct GameQuiz: View {
         let correctWord = wordsArray[0] // Можно рандомно выбирать
         let showingFront = Bool.random()
         
-        currentCard = QuizCard(
+        currentCard = QuizModelCard(
             correctWord: correctWord,
             allWords: wordsArray,
             showingFront: showingFront
