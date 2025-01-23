@@ -4,14 +4,14 @@ import SwiftUI
    NavigationView {
        DictionaryRemoteDetails(
            dictionary: DictionaryItemModel(
-               id: 1,
                key: "en_basic",
                displayName: "English Basic",
                tableName: "en_basic",
                description: "Basic English vocabulary for beginners",
                category: "Language",
                subcategory: "English",
-               author: "John Doe"
+               author: "John Doe",
+               id: 1
            ),
            isPresented: .constant(true)
        )
@@ -23,14 +23,14 @@ import SwiftUI
 struct ScreenDictionaryDetail_Previews: PreviewProvider {
    static var previews: some View {
        let mockDictionary = DictionaryItemModel(
-           id: 1,
            key: "en_basic",
            displayName: "English Basic",
            tableName: "en_basic",
            description: "Basic English vocabulary for beginners",
            category: "Language",
            subcategory: "English",
-           author: "John Doe"
+           author: "John Doe",
+           id: 1
        )
        
        Group {

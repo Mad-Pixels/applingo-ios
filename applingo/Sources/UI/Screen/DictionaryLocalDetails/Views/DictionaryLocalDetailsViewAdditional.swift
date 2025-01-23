@@ -38,7 +38,7 @@ struct DictionaryLocalDetailsViewAdditional: View {
                 )
                    
                 InputText(
-                    text: .constant(dictionary.dictionary.formattedCreatedAt),
+                    text: .constant(dictionary.dictionary.date),
                     title: locale.createdAtTitle.capitalizedFirstLetter,
                     placeholder: locale.createdAtTitle,
                     isEditing: false

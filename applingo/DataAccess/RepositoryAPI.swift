@@ -49,7 +49,6 @@ class RepositoryAPI: ApiRepositoryProtocol {
         
         let dictionaries = response.data.items.map { dictionaryItem in
             DictionaryItemModel(
-                id: UUID().hashValue,
                 key: dictionaryItem.dictionary,
                 displayName: dictionaryItem.name,
                 tableName: dictionaryItem.dictionary,
@@ -57,8 +56,10 @@ class RepositoryAPI: ApiRepositoryProtocol {
                 category: dictionaryItem.category,
                 subcategory: dictionaryItem.subcategory,
                 author: dictionaryItem.author,
-                createdAt: dictionaryItem.createdAt,
-                isPublic: dictionaryItem.isPublic
+                
+                isPublic: dictionaryItem.isPublic,
+                created: dictionaryItem.createdAt,
+                id: UUID().hashValue
             )
         }
         return (dictionaries: dictionaries, lastEvaluated: response.data.lastEvaluated)

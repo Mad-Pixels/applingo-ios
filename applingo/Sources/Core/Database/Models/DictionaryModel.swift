@@ -2,23 +2,24 @@ import Foundation
 import GRDB
 
 struct DictionaryItemModel: Identifiable, Codable, Equatable, Hashable {
-    static let databaseTableName = "Dictionary"
+    static let databaseTableName = "dictionary"
     
-    var id: Int?
+    internal let id: Int?
+    internal let created: Int
+    
+    var description: String
+    var subcategory: String
+    var category: String
+    var author: String
+    
     var key: String
     var displayName: String
     var tableName: String
-    var description: String
-    var category: String
-    var subcategory: String
-    var author: String
-
-    var createdAt: Int
+    
     var isPublic: Bool
     var isActive: Bool 
     
     init(
-        id: Int? = nil,
         key: String,
         displayName: String,
         tableName: String,
@@ -26,11 +27,12 @@ struct DictionaryItemModel: Identifiable, Codable, Equatable, Hashable {
         category: String,
         subcategory: String,
         author: String,
-        createdAt: Int = Int(Date().timeIntervalSince1970),
         isPublic: Bool = true,
-        isActive: Bool = true
+        isActive: Bool = true,
+        
+        created: Int = Int(Date().timeIntervalSince1970),
+        id: Int? = nil
     ) {
-        self.id = id
         self.key = key
         self.displayName = displayName
         self.tableName = tableName
@@ -38,23 +40,22 @@ struct DictionaryItemModel: Identifiable, Codable, Equatable, Hashable {
         self.category = category
         self.subcategory = subcategory
         self.author = author
-        self.createdAt = createdAt
+        
         self.isPublic = isPublic
         self.isActive = isActive
         
+        self.created = created
+        self.id = id
         self.fmt()
     }
 
-    var subTitle: String {
-        "[\(category)] \(subcategory)"
-    }
-
-    var formattedCreatedAt: String {
-        let date = Date(timeIntervalSince1970: TimeInterval(createdAt))
+    var date: String {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
         formatter.timeStyle = .short
-        return formatter.string(from: date)
+        return formatter.string(
+            from: Date(timeIntervalSince1970: TimeInterval(created))
+        )
     }
     
     func toString() -> String {
@@ -68,7 +69,7 @@ struct DictionaryItemModel: Identifiable, Codable, Equatable, Hashable {
         - Category: \(category)
         - Subcategory: \(subcategory)
         - Author: \(author)
-        - Created At: \(formattedCreatedAt)
+        - Created: \(date)
         - Public: \(isPublic ? "Yes" : "No")
         - Active: \(isActive ? "Yes" : "No")
         """
@@ -93,12 +94,12 @@ extension DictionaryItemModel: FetchableRecord, PersistableRecord {
             t.column("category", .text).notNull()
             t.column("subcategory", .text).notNull()
             t.column("author", .text).notNull()
-            t.column("createdAt", .integer).notNull()
+            t.column("created", .integer).notNull()
             t.column("isPublic", .boolean).notNull()
             t.column("isActive", .boolean).notNull()
             t.column("key", .text).unique()
         }
-        try db.create(index: "Dictionary_createdAt_idx", on: databaseTableName, columns: ["createdAt"])
+        try db.create(index: "Dictionary_created_idx", on: databaseTableName, columns: ["created"])
     }
 }
 

@@ -49,7 +49,7 @@ class RepositoryDictionary: DictionaryRepositoryProtocol {
         try dbQueue.write { db in
             try fmtDictionary.insert(db)
         }
-        Logger.debug("[RepositoryDictionary]: save - \(dictionary.displayName) with ID \(dictionary.id ?? -1)")
+        Logger.debug("[RepositoryDictionary]: save - \(dictionary.displayName) with ID \(dictionary.id)")
     }
     
     func update(_ dictionary: DictionaryItemModel) throws {
@@ -59,7 +59,7 @@ class RepositoryDictionary: DictionaryRepositoryProtocol {
         try dbQueue.write { db in
             try fmtDictionary.update(db)
         }
-        Logger.debug("[RepositoryDictionary]: update - \(dictionary.displayName) with ID \(dictionary.id ?? -1)")
+        Logger.debug("[RepositoryDictionary]: update - \(dictionary.displayName) with ID \(dictionary.id)")
     }
     
     func updateStatus(dictionaryID: Int, newStatus: Bool) throws {
@@ -79,7 +79,7 @@ class RepositoryDictionary: DictionaryRepositoryProtocol {
             Logger.debug("[RepositoryDictionary]: delete - associated words for tableName \(dictionary.tableName)")
             
             try dictionary.delete(db)
-            Logger.debug("[RepositoryDictionary]: delete - \(dictionary.displayName) with ID \(dictionary.id ?? -1)")
+            Logger.debug("[RepositoryDictionary]: delete - \(dictionary.displayName) with ID \(dictionary.id)")
         }
     }
 }
