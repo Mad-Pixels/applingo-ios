@@ -1,14 +1,14 @@
 import SwiftUI
 
 struct ButtonFloatingMultiple: View {
-    let items: [ButtonFloatingIconAction]
+    let items: [ButtonFloatingModelIconAction]
     let style: ButtonFloatingStyle
     
     @State private var isOpen = false
     @State private var iconRotation: Double = 0
 
     init(
-        items: [ButtonFloatingIconAction],
+        items: [ButtonFloatingModelIconAction],
         style: ButtonFloatingStyle = .themed(ThemeManager.shared.currentThemeStyle)
     ) {
         self.items = items

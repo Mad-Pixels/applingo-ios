@@ -48,13 +48,13 @@ private struct FloatingButtonPreview: View {
                 
                 ButtonFloatingMultiple(
                     items: [
-                        ButtonFloatingIconAction(
+                        ButtonFloatingModelIconAction(
                             icon: "heart.fill"
                         ) { print("Heart!") },
-                        ButtonFloatingIconAction(
+                        ButtonFloatingModelIconAction(
                             icon: "bookmark.fill"
                         ) { print("Bookmark!") },
-                        ButtonFloatingIconAction(
+                        ButtonFloatingModelIconAction(
                             icon: "paperplane.fill"
                         ) { print("Paper plane!") }
                     ],

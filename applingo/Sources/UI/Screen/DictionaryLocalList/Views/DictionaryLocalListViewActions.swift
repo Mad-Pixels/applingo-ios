@@ -18,11 +18,11 @@ struct DictionaryLocalListViewActions: View {
    var body: some View {
        ButtonFloatingMultiple(
            items: [
-            ButtonFloatingIconAction(
+            ButtonFloatingModelIconAction(
                    icon: "tray.and.arrow.down",
                    action: onImport
                ),
-            ButtonFloatingIconAction(
+            ButtonFloatingModelIconAction(
                    icon: "arrow.down.circle",
                    action: onDownload
                )

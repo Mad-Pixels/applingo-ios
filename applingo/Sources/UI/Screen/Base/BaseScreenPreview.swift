@@ -37,7 +37,6 @@ struct BaseScreenPreview<Content: View>: View {
         self.error = error
         self.content = content()
         
-        // Инициализируем состояния
         ThemeManager.shared.setTheme(to: theme)
         if let error = error {
             ErrorManager.shared.currentError = error
