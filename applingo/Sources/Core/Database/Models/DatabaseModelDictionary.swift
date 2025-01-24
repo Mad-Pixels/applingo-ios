@@ -64,25 +64,23 @@ struct DatabaseModelDictionary: Identifiable, Codable, Equatable, Hashable {
         """
     }
     
+    static func new() -> DatabaseModelDictionary {
+        return DatabaseModelDictionary(
+            guid: "-1",
+            name: "",
+            author: "",
+            category: "",
+            subcategory: "",
+            description: ""
+        )
+    }
+    
     mutating func fmt() {
         self.description = description.trimmedTrailingWhitespace
         self.subcategory = subcategory.trimmedTrailingWhitespace
         self.category = category.trimmedTrailingWhitespace
         self.author = author.trimmedTrailingWhitespace
         self.name = name.trimmedTrailingWhitespace
-    }
-}
-
-extension DatabaseModelDictionary {
-    var searchableText: String {
-        return [name, author, description]
-            .map { $0.lowercased() }
-            .joined(separator: " ")
-    }
-    
-    func matches(searchText: String) -> Bool {
-        if searchText.isEmpty { return true }
-        return searchableText.contains(searchText.lowercased())
     }
 }
 
@@ -103,5 +101,18 @@ extension DatabaseModelDictionary: FetchableRecord, PersistableRecord {
         try db.create(index: "dictionary_category_idx", on: databaseTableName, columns: ["category", "subcategory"])
         try db.create(index: "dictionary_created_idx", on: databaseTableName, columns: ["created"])
         try db.create(index: "dictionary_active_idx", on: databaseTableName, columns: ["isActive"])
+    }
+}
+
+extension DatabaseModelDictionary {
+    var searchableText: String {
+        return [name, author, description]
+            .map { $0.lowercased() }
+            .joined(separator: " ")
+    }
+    
+    func matches(searchText: String) -> Bool {
+        if searchText.isEmpty { return true }
+        return searchableText.contains(searchText.lowercased())
     }
 }

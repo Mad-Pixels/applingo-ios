@@ -1,7 +1,7 @@
 import Foundation
 import GRDB
 
-struct DatabaseModelWord: Identifiable, Codable, Equatable {
+struct DatabaseModelWord: Identifiable, Codable, Equatable, Hashable {
     static let databaseTableName = "words"
     
     internal let id: Int?
@@ -49,15 +49,7 @@ struct DatabaseModelWord: Identifiable, Codable, Equatable {
         
         self.fmt()
     }
-    
-    static func empty() -> DatabaseModelWord {
-        return DatabaseModelWord(
-            dictionary: "",
-            frontText: "",
-            backText: ""
-        )
-    }
-    
+
     var date: String {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
@@ -82,6 +74,14 @@ struct DatabaseModelWord: Identifiable, Codable, Equatable {
         - Weight: \(weight)
         - Created: \(date)
         """
+    }
+    
+    static func new() -> DatabaseModelWord {
+        return DatabaseModelWord(
+            dictionary: "",
+            frontText: "",
+            backText: ""
+        )
     }
     
     mutating func fmt() {
@@ -112,29 +112,5 @@ extension DatabaseModelWord: FetchableRecord, PersistableRecord {
         try db.create(index: "words_dictionary_idx", on: databaseTableName, columns: ["dictionary"])
         try db.create(index: "words_created_idx", on: databaseTableName, columns: ["created"])
         try db.create(index: "words_text_unique_idx", on: databaseTableName, columns: ["frontText", "backText", "dictionary"], unique: true)
-    }
-}
-
-extension DatabaseModelWord: Hashable {
-    func hash1(into hasher: inout Hasher) {
-        hasher.combine(id)
-        
-        if id == nil {
-            hasher.combine(dictionary)
-            hasher.combine(frontText)
-            hasher.combine(backText)
-            hasher.combine(created)
-        }
-    }
-    
-    static func == (lhs: DatabaseModelWord, rhs: DatabaseModelWord) -> Bool {
-        if let lhsId = lhs.id, let rhsId = rhs.id {
-            return lhsId == rhsId
-        }
-        
-        return lhs.dictionary == rhs.dictionary &&
-            lhs.frontText == rhs.frontText &&
-            lhs.backText == rhs.backText &&
-            lhs.created == rhs.created
     }
 }
