@@ -11,7 +11,7 @@ struct WordAddManual: View {
     let refresh: () -> Void
 
     @State private var selectedDictionary: DatabaseModelDictionary?
-    @State private var wordItem = DatabaseModelWord.empty()
+    @State private var wordItem = DatabaseModelWord.new()
     @State private var descriptionText: String = ""
     @State private var errorMessage: String = ""
     @State private var hintText: String = ""

@@ -47,7 +47,7 @@ final class DictionaryLocalGetterViewModel: BaseDatabaseViewModel {
 
         performDatabaseOperation(
             { try self.dictionaryRepository.fetch(
-                searchText: self.searchText,
+                search: self.searchText,
                 offset: self.currentPage * self.itemsPerPage,
                 limit: self.itemsPerPage
             ) },

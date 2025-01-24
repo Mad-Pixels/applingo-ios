@@ -2,7 +2,7 @@ import Foundation
 
 protocol DictionaryRepositoryProtocol {
     func fetch(
-        searchText: String?,
+        search: String?,
         offset: Int,
         limit: Int
     ) throws -> [DatabaseModelDictionary]
