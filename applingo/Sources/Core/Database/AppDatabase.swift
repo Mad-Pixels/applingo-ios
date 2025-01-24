@@ -60,14 +60,7 @@ final class AppDatabase: ObservableObject {
             try DatabaseModelDictionary.createTable(in: db)
             Logger.debug("[DatabaseManager]: 'Dictionary' table created successfully")
             
-            let internalDictionary = DatabaseModelDictionary(
-                guid: "internal",
-                name: "Main",
-                author: "LingoCards",
-                category: "LingoCards",
-                subcategory: "internal",
-                description: "LingoCards default dictionary"
-            )
+            let internalDictionary = DatabaseModelDictionary.newInternal()
             if try DatabaseModelDictionary
                 .filter(Column("name") == internalDictionary.name)
                 .fetchOne(db) == nil {

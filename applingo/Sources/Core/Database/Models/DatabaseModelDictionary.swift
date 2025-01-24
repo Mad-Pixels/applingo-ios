@@ -75,6 +75,17 @@ struct DatabaseModelDictionary: Identifiable, Codable, Equatable, Hashable {
         )
     }
     
+    static func newInternal() -> DatabaseModelDictionary {
+        return DatabaseModelDictionary(
+            guid: "internal",
+            name: "Main",
+            author: "MadPixels",
+            category: "AppLingo",
+            subcategory: "internal",
+            description: "AppLingo default dictionary"
+        )
+    }
+    
     mutating func fmt() {
         self.description = description.trimmedTrailingWhitespace
         self.subcategory = subcategory.trimmedTrailingWhitespace
