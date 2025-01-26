@@ -118,7 +118,7 @@ final class DatabaseManagerWord {
             }
         }
         Logger.debug(
-            "[RepositoryWord]: save - \(word)"
+            "[Word]: save - \(word)"
         )
     }
     
@@ -137,7 +137,7 @@ final class DatabaseManagerWord {
             }
         }
         Logger.debug(
-            "[RepositoryWord]: update - \(word)"
+            "[Word]: update - \(word)"
         )
     }
     
@@ -154,7 +154,7 @@ final class DatabaseManagerWord {
             }
         }
         Logger.debug(
-            "[RepositoryWord]: delete - \(word)"
+            "[Word]: delete - \(word)"
         )
     }
     

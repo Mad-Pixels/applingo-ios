@@ -16,7 +16,9 @@ final class AppDatabase: ObservableObject {
     
     func connect(dbName: String) throws {
         guard dbQueue == nil else {
-            Logger.debug("[Database]: Already connected")
+            Logger.debug(
+                "[Database]: Already connected"
+            )
             throw DatabaseError.alreadyConnected
         }
         
@@ -33,11 +35,15 @@ final class AppDatabase: ObservableObject {
             dbQueue = try DatabaseQueue(path: databaseURL!.path, configuration: config)
             
             if let dbQueue = dbQueue {
-                Logger.debug("[DatabaseManager]: Migration started at path: \(databaseURL!.path)")
+                Logger.debug(
+                    "[Database]: Migration started at path: \(databaseURL!.path)"
+                )
                 do {
                     try migrator.migrate(dbQueue)
                     isConnected = true
-                    Logger.debug("[DatabaseManager]: Connection established")
+                    Logger.debug(
+                        "[Database]: Connection established"
+                    )
                 } catch {
                     throw DatabaseError.migrationFailed(error.localizedDescription)
                 }
@@ -50,7 +56,7 @@ final class AppDatabase: ObservableObject {
     func disconnect() {
         dbQueue = nil
         isConnected = false
-        Logger.debug("[DatabaseManager]: Disconnected")
+        Logger.debug("[Database]: Disconnected")
     }
 
     private var migrator: DatabaseMigrator {
@@ -58,21 +64,29 @@ final class AppDatabase: ObservableObject {
         
         migrator.registerMigration("createDictionary") { db in
             try DatabaseModelDictionary.createTable(in: db)
-            Logger.debug("[DatabaseManager]: 'Dictionary' table created successfully")
+            Logger.debug(
+                "[Database]: 'Dictionary' table created successfully"
+            )
             
             let internalDictionary = DatabaseModelDictionary.newInternal()
             if try DatabaseModelDictionary
                 .filter(Column("name") == internalDictionary.name)
                 .fetchOne(db) == nil {
                 try internalDictionary.insert(db)
-                Logger.debug("[DatabaseManager]: 'Internal' dictionary entry added successfully")
+                Logger.debug(
+                    "[Database]: 'Internal' dictionary entry added successfully"
+                )
             } else {
-                Logger.debug("[DatabaseManager]: 'Internal' dictionary entry already exists")
+                Logger.debug(
+                    "[Database]: 'Internal' dictionary entry already exists"
+                )
             }
         }
         migrator.registerMigration("createWords") { db in
             try DatabaseModelWord.createTable(in: db)
-            Logger.debug("[DatabaseManager]: 'Words' table created successfully")
+            Logger.debug(
+                "[Database]: 'Words' table created successfully"
+            )
         }
         return migrator
     }
