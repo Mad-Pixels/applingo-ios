@@ -2,13 +2,13 @@ import SwiftUI
 
 struct ChartBar: View {
    let title: String
-   let data: [BarData]
+   let data: [ChartBarModel]
    let height: CGFloat
    let style: ChartBarStyle
    
    init(
        title: String,
-       data: [BarData],
+       data: [ChartBarModel],
        height: CGFloat = 160,
        style: ChartBarStyle = .themed(ThemeManager.shared.currentThemeStyle)
    ) {

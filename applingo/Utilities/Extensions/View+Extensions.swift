@@ -25,22 +25,22 @@ extension View {
         ))
     }
     
-    func gameCardStyle(_ style: GameCardStyle) -> some View {
-        modifier(style.makeBaseModifier())
-    }
-    
-    func gameCardSpecialEffects(
-        style: GameCardStyle,
-        isSpecial: Bool,
-        specialService: GameSpecialService
-    ) -> some View {
-        modifier(
-            style.makeSpecialEffectsModifier(
-                isSpecial: isSpecial,
-                specialService: specialService
-            )
-        )
-    }
+//    func gameCardStyle(_ style: GameCardStyle) -> some View {
+//        modifier(style.makeBaseModifier())
+//    }
+//    
+//    func gameCardSpecialEffects(
+//        style: GameCardStyle,
+//        isSpecial: Bool,
+//        specialService: GameSpecialService
+//    ) -> some View {
+//        modifier(
+//            style.makeSpecialEffectsModifier(
+//                isSpecial: isSpecial,
+//                specialService: specialService
+//            )
+//        )
+//    }
     
     func withVisualFeedback<F: GameFeedbackVisualProtocol>(_ feedback: F) -> some View {
         modifier(feedback.modifier())

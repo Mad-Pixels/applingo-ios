@@ -23,9 +23,9 @@ private struct BarChartPreview: View {
            ChartBar(
                title: "Sample Data",
                data: [
-                   BarData(value: 30, label: "A", color: theme.accentPrimary),
-                   BarData(value: 50, label: "B", color: theme.success),
-                   BarData(value: 20, label: "C", color: theme.warning)
+                ChartBarModel(value: 30, label: "A", color: theme.accentPrimary),
+                ChartBarModel(value: 50, label: "B", color: theme.success),
+                ChartBarModel(value: 20, label: "C", color: theme.warning)
                ],
                style: .themed(theme)
            )
@@ -33,9 +33,9 @@ private struct BarChartPreview: View {
            ChartBar(
                title: "Equal Values",
                data: [
-                   BarData(value: 33.33, label: "X", color: theme.accentPrimary),
-                   BarData(value: 33.33, label: "Y", color: theme.success),
-                   BarData(value: 33.33, label: "Z", color: theme.warning)
+                ChartBarModel(value: 33.33, label: "X", color: theme.accentPrimary),
+                ChartBarModel(value: 33.33, label: "Y", color: theme.success),
+                ChartBarModel(value: 33.33, label: "Z", color: theme.warning)
                ],
                style: .themed(theme)
            )

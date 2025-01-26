@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct ChartBarItem: View {
-   let data: BarData
+   let data: ChartBarModel
    let maxHeight: CGFloat
    let totalValue: Double
    let style: ChartBarStyle

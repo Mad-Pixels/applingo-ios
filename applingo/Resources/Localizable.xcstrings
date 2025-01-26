@@ -1,9 +1,6 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "" : {
-
-    },
     "%lld" : {
       "localizations" : {
         "en" : {
@@ -2306,6 +2303,7 @@
 
     },
     "Select" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

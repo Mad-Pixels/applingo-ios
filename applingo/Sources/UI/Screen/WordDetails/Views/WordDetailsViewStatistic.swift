@@ -27,8 +27,8 @@ struct WordDetailsViewStatistic: View {
                 ChartBar(
                     title: locale.answersTitle,
                     data: [
-                        BarData(value: Double(word.fail), label: "fail", color: .red),
-                        BarData(value: Double(word.success), label: "success", color: .green)
+                        ChartBarModel(value: Double(word.fail), label: "fail", color: .red),
+                        ChartBarModel(value: Double(word.success), label: "success", color: .green)
                     ]
                 )
             }
