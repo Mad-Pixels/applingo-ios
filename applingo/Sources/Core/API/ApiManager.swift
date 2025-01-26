@@ -1,46 +1,6 @@
 import Foundation
 import CryptoKit
 
-enum HTTPMethod: String {
-    case get = "GET"
-    case post = "POST"
-}
-
-enum APIError: Error, LocalizedError {
-    case baseURLNotConfigured
-    case invalidBaseURL(url: String)
-    case invalidEndpointURL(endpoint: String)
-    case invalidAPIResponse
-    case apiErrorMessage(message: String, statusCode: Int)
-    case httpError(statusCode: Int)
-    case s3Error(message: String)
-    case emptyDictionary
-    case invalidCSVFormat(message: String)
-    
-    var errorDescription: String? {
-        switch self {
-        case .baseURLNotConfigured:
-            return "API base URL is not configured"
-        case .invalidBaseURL(let url):
-            return "Invalid base URL: \(url)"
-        case .invalidEndpointURL(let endpoint):
-            return "Invalid endpoint URL: \(endpoint)"
-        case .invalidAPIResponse:
-            return "Invalid API response"
-        case .apiErrorMessage(let message, let statusCode):
-            return "API error (\(statusCode)): \(message)"
-        case .httpError(let statusCode):
-            return "HTTP error: \(statusCode)"
-        case .s3Error(let message):
-            return "Failed to download dictionary: \(message)"
-        case .emptyDictionary:
-            return "Dictionary is empty or contains no valid words"
-        case .invalidCSVFormat(let message):
-            return "Invalid CSV format: \(message)"
-        }
-    }
-}
-
 class APIManager {
     static let shared = APIManager()
     
@@ -66,7 +26,7 @@ class APIManager {
         
         if let httpResponse = urlResponse as? HTTPURLResponse,
            !(200...299).contains(httpResponse.statusCode) {
-            throw APIError.httpError(statusCode: httpResponse.statusCode)
+            throw APIError.httpError(status: httpResponse.statusCode)
         }
 
         let firstBytes = try String(contentsOf: localURL, encoding: .utf8).prefix(1000)
@@ -116,7 +76,7 @@ class APIManager {
             if let apiErrorMessage = try? JSONDecoder().decode(ApiErrorMessageModel.self, from: data) {
                 throw APIError.apiErrorMessage(message: apiErrorMessage.message, statusCode: httpResponse.statusCode)
             } else {
-                throw APIError.httpError(statusCode: httpResponse.statusCode)
+                throw APIError.httpError(status: httpResponse.statusCode)
             }
         }
         return data
