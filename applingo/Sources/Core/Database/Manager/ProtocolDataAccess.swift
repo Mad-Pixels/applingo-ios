@@ -13,19 +13,19 @@ protocol DictionaryRepositoryProtocol {
     func fetchDisplayName(byTableName tableName: String) throws -> String
 }
 
-protocol WordRepositoryProtocol {
-    func fetch(
-        searchText: String?,
-        offset: Int,
-        limit: Int
-    ) throws -> [DatabaseModelWord]
-    func fetchCache(
-        count: Int
-    ) throws -> [DatabaseModelWord]
-    func save(_ word: DatabaseModelWord) throws
-    func update(_ word: DatabaseModelWord) throws
-    func delete(_ word: DatabaseModelWord) throws
-}
+//protocol WordRepositoryProtocol {
+//    func fetch(
+//        searchText: String?,
+//        offset: Int,
+//        limit: Int
+//    ) throws -> [DatabaseModelWord]
+//    func fetchCache(
+//        count: Int
+//    ) throws -> [DatabaseModelWord]
+//    func save(_ word: DatabaseModelWord) throws
+//    func update(_ word: DatabaseModelWord) throws
+//    func delete(_ word: DatabaseModelWord) throws
+//}
 
 protocol ApiRepositoryProtocol {
     func getDictionaries(

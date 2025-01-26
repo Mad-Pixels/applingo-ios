@@ -13,7 +13,7 @@ final class WordsLocalGetterViewModel: BaseDatabaseViewModel {
     }
 
     private var cancellables = Set<AnyCancellable>()
-    private let wordRepository: WordRepositoryProtocol
+    private let wordRepository: RepositoryWord
     private var cancellationToken = UUID()
     private var frame: AppFrameModel = .main
     private let itemsPerPage: Int = 50
@@ -21,11 +21,11 @@ final class WordsLocalGetterViewModel: BaseDatabaseViewModel {
     private var currentPage = 0
 
     override init() {
-        if let dbQueue = AppDatabase.shared.databaseQueue {
-            self.wordRepository = RepositoryWord(dbQueue: dbQueue)
-        } else {
+        guard let dbQueue = AppDatabase.shared.databaseQueue else {
             fatalError("Database is not connected")
         }
+
+        self.wordRepository = RepositoryWord(dbQueue: dbQueue)
         super.init()
     }
 
@@ -87,11 +87,11 @@ final class WordsLocalGetterViewModel: BaseDatabaseViewModel {
         else { return }
         get()
     }
-    
+
     func clear() {
         words = []
     }
-    
+
     func setFrame(_ newFrame: AppFrameModel) {
         self.frame = newFrame
     }

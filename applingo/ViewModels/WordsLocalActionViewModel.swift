@@ -2,19 +2,19 @@ import Foundation
 import Combine
 
 final class WordsLocalActionViewModel: BaseDatabaseViewModel {
-    private let dictionaryRepository: DictionaryRepositoryProtocol
-    private let wordRepository: WordRepositoryProtocol
+    private let dictionaryRepository: RepositoryDictionary
+    private let wordRepository: RepositoryWord
     private var frame: AppFrameModel = .main
 
     override init() {
-        if let dbQueue = AppDatabase.shared.databaseQueue {
-            self.dictionaryRepository = RepositoryDictionary(dbQueue: dbQueue)
-            self.wordRepository = RepositoryWord(dbQueue: dbQueue)
-        } else {
+        guard let dbQueue = AppDatabase.shared.databaseQueue else {
             fatalError("Database is not connected")
         }
+
+        self.dictionaryRepository = RepositoryDictionary(dbQueue: dbQueue)
+        self.wordRepository = RepositoryWord(dbQueue: dbQueue)
     }
-    
+
     func save(_ word: DatabaseModelWord, completion: @escaping (Result<Void, Error>) -> Void) {
         performDatabaseOperation(
             { try self.wordRepository.save(word) },
@@ -39,7 +39,6 @@ final class WordsLocalActionViewModel: BaseDatabaseViewModel {
         )
     }
 
-    
     func delete(_ word: DatabaseModelWord, completion: @escaping (Result<Void, Error>) -> Void) {
         performDatabaseOperation(
             { try self.wordRepository.delete(word) },
@@ -51,7 +50,7 @@ final class WordsLocalActionViewModel: BaseDatabaseViewModel {
             completion: completion
         )
     }
-    
+
     func dictionaryDisplayName(_ word: DatabaseModelWord) -> String {
         do {
             return try self.dictionaryRepository.fetchDisplayName(byTableName: word.dictionary)
