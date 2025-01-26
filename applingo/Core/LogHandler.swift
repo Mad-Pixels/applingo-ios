@@ -110,7 +110,7 @@ final class LogHandler: ObservableObject {
                 let endpoint = "/v1/reports"
                 let body = try JSONEncoder().encode(log)
                     
-                _ = try await APIManager.shared.request(
+                _ = try await AppAPI.shared.request(
                     endpoint: endpoint,
                     method: .post,
                     body: body

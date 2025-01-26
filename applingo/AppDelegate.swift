@@ -27,8 +27,8 @@ struct LingocardApp: App {
             )
             ErrorManager1.shared.setError(appError: appError, frame: .main, source: .initialization)
         }
-        APIManager.configure(baseURL: apiUrl, token: apiToken)
-        _ = RepositoryCache.shared
+        AppAPI.configure(baseURL: apiUrl, token: apiToken)
+        _ = ApiManagerCache.shared
     }
 
     var body: some Scene {

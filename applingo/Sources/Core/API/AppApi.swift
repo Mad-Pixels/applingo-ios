@@ -1,34 +1,67 @@
 import Foundation
 import CryptoKit
 
-class APIManager {
-    static let shared = APIManager()
-    
+final class AppAPI: ObservableObject {
+    // MARK: - Constants
+    private enum Constants {
+        static let contentType = "application/json"
+        static let authHeader = "x-api-auth"
+        static let loggerTag = "[AppAPI]"
+    }
+   
+    // MARK: - Properties
+    @Published private(set) var isConfigured: Bool = false
+    static let shared = AppAPI()
+   
     private let session: URLSession
     private var baseURL: String = ""
     private var token: String = ""
-
+   
+    // MARK: - Init
     private init(session: URLSession = .shared) {
         self.session = session
     }
-    
+   
+    // MARK: - Configuration
     static func configure(baseURL: String, token: String) {
         shared.baseURL = baseURL
         shared.token = token
+        shared.isConfigured = true
     }
-    
+   
+    // MARK: - Public Methods
     func downloadS3(from urlString: String) async throws -> URL {
         guard let url = URL(string: urlString) else {
             throw APIError.invalidEndpointURL(endpoint: urlString)
         }
-        
+       
         let (localURL, urlResponse) = try await session.download(from: url)
-        
+        return try validateS3Response(localURL: localURL, urlResponse: urlResponse)
+    }
+   
+    func request(
+        endpoint: String,
+        method: HTTPMethodType,
+        queryItems: [URLQueryItem]? = nil,
+        body: Data? = nil
+    ) async throws -> Data {
+        guard !baseURL.isEmpty else { throw APIError.baseURLNotConfigured }
+       
+        let url = try buildURL(endpoint: endpoint, queryItems: queryItems)
+        let request = try signRequest(for: url, method: method, body: body)
+       
+        Logger.debug("\(Constants.loggerTag): sent request - \(request)")
+        let (data, response) = try await session.data(for: request)
+        return try handleResponse(response: response, data: data)
+    }
+   
+    // MARK: - Private Methods
+    private func validateS3Response(localURL: URL, urlResponse: URLResponse) throws -> URL {
         if let httpResponse = urlResponse as? HTTPURLResponse,
            !(200...299).contains(httpResponse.statusCode) {
             throw APIError.httpError(status: httpResponse.statusCode)
         }
-
+       
         let firstBytes = try String(contentsOf: localURL, encoding: .utf8).prefix(1000)
         if firstBytes.contains("<Error>") {
             if firstBytes.contains("NoSuchBucket") {
@@ -43,64 +76,54 @@ class APIManager {
         }
         return localURL
     }
-    
-    func request(endpoint: String, method: HTTPMethod, queryItems: [URLQueryItem]? = nil, body: Data? = nil) async throws -> Data {
-       guard !baseURL.isEmpty else {
-           throw APIError.baseURLNotConfigured
-       }
-
-       guard var urlComponents = URLComponents(string: baseURL) else {
-           throw APIError.invalidBaseURL(url: baseURL)
-       }
-
-       urlComponents.path += endpoint
-       urlComponents.queryItems = queryItems
-
-       guard let url = urlComponents.url else {
-           throw APIError.invalidEndpointURL(endpoint: endpoint)
-       }
-
-       let request = try signRequest(for: url, method: method, body: body)
-       Logger.debug("[APIManager]: sent request - \(request)")
-
-       let (data, response) = try await session.data(for: request)
-       return try handleResponse(response: response, data: data)
+   
+    private func buildURL(endpoint: String, queryItems: [URLQueryItem]?) throws -> URL {
+        guard var components = URLComponents(string: baseURL) else {
+            throw APIError.invalidBaseURL(url: baseURL)
+        }
+       
+        components.path += endpoint
+        components.queryItems = queryItems
+       
+        guard let url = components.url else {
+            throw APIError.invalidEndpointURL(endpoint: endpoint)
+        }
+        return url
     }
-    
+   
     private func handleResponse(response: URLResponse, data: Data) throws -> Data {
         guard let httpResponse = response as? HTTPURLResponse else {
             throw APIError.invalidAPIResponse
         }
-
-        guard httpResponse.statusCode == 200 || httpResponse.statusCode == 201  else {
+       
+        guard httpResponse.statusCode == 200 || httpResponse.statusCode == 201 else {
             if let apiErrorMessage = try? JSONDecoder().decode(ApiErrorMessageModel.self, from: data) {
-                throw APIError.apiErrorMessage(message: apiErrorMessage.message, statusCode: httpResponse.statusCode)
+                throw APIError.apiErrorMessage(
+                    message: apiErrorMessage.message,
+                    statusCode: httpResponse.statusCode
+                )
             } else {
                 throw APIError.httpError(status: httpResponse.statusCode)
             }
         }
         return data
     }
-    
-    private func signRequest(for url: URL, method: HTTPMethod, body: Data? = nil) throws -> URLRequest {
+   
+    private func signRequest(for url: URL, method: HTTPMethodType, body: Data? = nil) throws -> URLRequest {
         var request = URLRequest(url: url)
         request.httpMethod = method.rawValue
-
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
+        request.setValue(Constants.contentType, forHTTPHeaderField: "Content-Type")
+       
         let timestamp = String(Int(Date().timeIntervalSince1970))
         let signature = generateSignature(timestamp: timestamp)
-            
-        let combinedAuth = "\(timestamp):::\(signature)"
-        request.setValue(combinedAuth, forHTTPHeaderField: "x-api-auth")
-            
+        request.setValue("\(timestamp):::\(signature)", forHTTPHeaderField: Constants.authHeader)
+       
         if method == .post, let body = body {
             request.httpBody = body
         }
         return request
     }
-
-    
+   
     private func generateSignature(timestamp: String) -> String {
         let key = SymmetricKey(data: Data(token.utf8))
         let dataToSign = Data(timestamp.utf8)

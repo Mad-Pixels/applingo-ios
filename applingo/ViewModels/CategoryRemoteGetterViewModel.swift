@@ -7,9 +7,9 @@ final class CategoryRemoteGetterViewModel: BaseApiViewModel {
     @Published var isLoadingPage = false
 
     private var frame: AppFrameModel = .main
-    private let repository: RepositoryAPI
+    private let repository: ApiManagerRequest
 
-    init(repository: RepositoryAPI = RepositoryAPI()) {
+    init(repository: ApiManagerRequest = ApiManagerRequest()) {
         self.repository = repository
         super.init()
     }
@@ -18,7 +18,7 @@ final class CategoryRemoteGetterViewModel: BaseApiViewModel {
         self.isLoadingPage = true
 
         if forceFetch {
-            RepositoryCache.shared.clearCache()
+            ApiManagerCache.shared.clearCache()
         }
 
         performApiOperation(

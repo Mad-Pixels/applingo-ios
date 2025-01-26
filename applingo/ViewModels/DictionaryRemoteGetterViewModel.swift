@@ -52,7 +52,7 @@ final class DictionaryRemoteGetterViewModel: BaseApiViewModel {
         Logger.debug("[DictionaryRemoteGetterViewModel] Making request with params: \(request)")
         performApiOperation(
             {
-                return try await RepositoryCache.shared.getDictionaries(request: request)
+                return try await ApiManagerCache.shared.getDictionaries(request: request)
             },
             successHandler: { [weak self] result in
                 guard let self = self else { return }

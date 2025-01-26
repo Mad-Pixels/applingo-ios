@@ -62,7 +62,7 @@ struct DictionaryRemoteRow: View {
         isDownloading = true
         Task {
             do {
-                let fileURL = try await RepositoryCache.shared.downloadDictionary(dictionary)
+                let fileURL = try await ApiManagerCache.shared.downloadDictionary(dictionary)
                 let (downloadedDictionary, words) = try CSVManager.shared.parse(
                     url: fileURL,
                     dictionaryItem: dictionary
