@@ -26,4 +26,14 @@ struct SectionHeaderStyle {
             padding: EdgeInsets(top: 0, leading: 16, bottom: 10, trailing: 16)
         )
     }
+    
+    static func heading(_ theme: AppTheme) -> SectionHeaderStyle {
+       SectionHeaderStyle(
+            titleColor: theme.textPrimary,
+            separatorColor: theme.textSecondary.opacity(0),
+            titleFont: .system(size: 18, weight: .bold),
+            spacing: 0,
+            padding: EdgeInsets(top: 0, leading: 0, bottom: 8, trailing: 0)
+        )
+    }
 }

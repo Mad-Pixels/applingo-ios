@@ -25,12 +25,22 @@ struct DictionaryImport: View {
         ) {
             ScrollView {
                 VStack(spacing: style.spacing) {
-                    DictionaryImportViewColumns(
+                    DictionaryImportViewTitle(
                         locale: locale,
                         style: style
                     )
                     
-                    DictionaryImportViewExamples(
+                    DictionaryImportViewTable(
+                        locale: locale,
+                        style: style
+                    )
+                    
+                    DictionaryImportViewDescription(
+                        locale: locale,
+                        style: style
+                    )
+                    
+                    DictionaryImportViewNote(
                         locale: locale,
                         style: style
                     )
@@ -53,7 +63,7 @@ struct DictionaryImport: View {
         }
         
         ButtonAction(
-            title: "locale.importTitle",
+            title: locale.importCSVTitle,
             action: showImporter,
             style: .action(ThemeManager.shared.currentThemeStyle)
         )

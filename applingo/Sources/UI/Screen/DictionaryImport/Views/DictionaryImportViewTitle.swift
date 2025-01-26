@@ -1,0 +1,37 @@
+import SwiftUI
+
+struct DictionaryImportViewTitle: View {
+    private let locale: DictionaryImportLocale
+    private let style: DictionaryImportStyle
+    
+    init(
+        locale: DictionaryImportLocale,
+        style: DictionaryImportStyle
+    ) {
+        self.locale = locale
+        self.style = style
+    }
+    
+    var body: some View {
+        SectionBody {
+            VStack(alignment: .leading, spacing: style.sectionSpacing) {
+                Image(systemName: "info.circle.fill")
+                    .font(.system(size: 42))
+                    .foregroundColor(style.accentColor)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(.bottom, 16)
+                
+                SectionHeader(
+                    title: locale.titleHeader.uppercased(),
+                    style: .heading(ThemeManager.shared.currentThemeStyle)
+                )
+                
+                Text(locale.titleBody)
+                    .padding(.top, 4)
+                    .padding(.leading, 4)
+            }
+            .padding(.vertical, 12)
+            .padding(.horizontal, 8)
+        }
+    }
+}

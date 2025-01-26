@@ -613,6 +613,142 @@
         }
       }
     },
+    "DictionaryImportViewTableBody" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Do not use headers in the table"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не используйте заголовки в таблице"
+          }
+        }
+      }
+    },
+    "DictionaryImportViewTableColumnA" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Word/Phrase"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Слово/Фраза"
+          }
+        }
+      }
+    },
+    "DictionaryImportViewTableColumnB" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Defenition"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Перевод"
+          }
+        }
+      }
+    },
+    "DictionaryImportViewTableColumnC" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hint"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Подсказка"
+          }
+        }
+      }
+    },
+    "DictionaryImportViewTableColumnD" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Description"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Описание"
+          }
+        }
+      }
+    },
+    "DictionaryImportViewTableHeader" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Create Table"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Создание таблицы"
+          }
+        }
+      }
+    },
+    "DictionaryImportViewTitleBody" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "To add a new dictionary to the application, you need to upload a file containing the words in a table format, such as Excel or CSV."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Для добавления нового словаря в приложение необходимо загрузить файл со словами в формате таблицы, например, Excel или CSV."
+          }
+        }
+      }
+    },
+    "DictionaryImportViewTitleHeader" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add dictionary"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Добавить словарь"
+          }
+        }
+      }
+    },
     "Disabled state" : {
 
     },
@@ -1804,6 +1940,9 @@
           }
         }
       }
+    },
+    "Key 1" : {
+      "extractionState" : "manual"
     },
     "Language" : {
       "extractionState" : "manual",
