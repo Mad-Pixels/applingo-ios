@@ -2,8 +2,8 @@ import Foundation
 import Combine
 
 final class WordsLocalActionViewModel: BaseDatabaseViewModel {
-    private let dictionaryRepository: RepositoryDictionary
-    private let wordRepository: RepositoryWord
+    private let dictionaryRepository: DatabaseManagerDictionary
+    private let wordRepository: DatabaseManagerWord
     private var frame: AppFrameModel = .main
 
     override init() {
@@ -11,8 +11,8 @@ final class WordsLocalActionViewModel: BaseDatabaseViewModel {
             fatalError("Database is not connected")
         }
 
-        self.dictionaryRepository = RepositoryDictionary(dbQueue: dbQueue)
-        self.wordRepository = RepositoryWord(dbQueue: dbQueue)
+        self.dictionaryRepository = DatabaseManagerDictionary(dbQueue: dbQueue)
+        self.wordRepository = DatabaseManagerWord(dbQueue: dbQueue)
     }
 
     func save(_ word: DatabaseModelWord, completion: @escaping (Result<Void, Error>) -> Void) {

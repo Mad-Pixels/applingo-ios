@@ -13,7 +13,7 @@ final class WordsLocalGetterViewModel: BaseDatabaseViewModel {
     }
 
     private var cancellables = Set<AnyCancellable>()
-    private let wordRepository: RepositoryWord
+    private let wordRepository: DatabaseManagerWord
     private var cancellationToken = UUID()
     private var frame: AppFrameModel = .main
     private let itemsPerPage: Int = 50
@@ -25,7 +25,7 @@ final class WordsLocalGetterViewModel: BaseDatabaseViewModel {
             fatalError("Database is not connected")
         }
 
-        self.wordRepository = RepositoryWord(dbQueue: dbQueue)
+        self.wordRepository = DatabaseManagerWord(dbQueue: dbQueue)
         super.init()
     }
 

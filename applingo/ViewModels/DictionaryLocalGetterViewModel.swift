@@ -13,7 +13,7 @@ final class DictionaryLocalGetterViewModel: BaseDatabaseViewModel {
     }
 
     private var cancellables = Set<AnyCancellable>()
-    private let dictionaryRepository: RepositoryDictionary
+    private let dictionaryRepository: DatabaseManagerDictionary
     private var cancellationToken = UUID()
     private var frame: AppFrameModel = .main
     private let itemsPerPage: Int = 50
@@ -25,7 +25,7 @@ final class DictionaryLocalGetterViewModel: BaseDatabaseViewModel {
             fatalError("Database is not connected")
         }
 
-        self.dictionaryRepository = RepositoryDictionary(dbQueue: dbQueue)
+        self.dictionaryRepository = DatabaseManagerDictionary(dbQueue: dbQueue)
         super.init()
     }
 

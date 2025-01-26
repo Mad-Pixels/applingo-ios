@@ -5,7 +5,7 @@ final class GameCacheGetterViewModel: BaseDatabaseViewModel {
     @Published private(set) var cache: [DatabaseModelWord] = []
     @Published private(set) var isLoadingCache = false
 
-    private let wordRepository: RepositoryWord
+    private let wordRepository: DatabaseManagerWord
     private let cacheThreshold: Int = 20
     private let cacheSize: Int = 100
 
@@ -17,7 +17,7 @@ final class GameCacheGetterViewModel: BaseDatabaseViewModel {
         guard let dbQueue = AppDatabase.shared.databaseQueue else {
             fatalError("Database is not connected")
         }
-        self.wordRepository = RepositoryWord(dbQueue: dbQueue)
+        self.wordRepository = DatabaseManagerWord(dbQueue: dbQueue)
         super.init()
         setupCacheObserver()
     }

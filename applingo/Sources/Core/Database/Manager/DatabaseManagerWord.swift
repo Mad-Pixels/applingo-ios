@@ -1,6 +1,6 @@
 import GRDB
 
-class RepositoryWord {
+class DatabaseManagerWord {
     private let dbQueue: DatabaseQueue
     
     init(dbQueue: DatabaseQueue) {

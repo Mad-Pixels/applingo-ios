@@ -3,7 +3,7 @@ import Combine
 import GRDB
 
 final class DictionaryLocalActionViewModel: BaseDatabaseViewModel {
-    private let dictionaryRepository: RepositoryDictionary
+    private let dictionaryRepository: DatabaseManagerDictionary
     private var frame: AppFrameModel = .main
 
     override init() {
@@ -11,7 +11,7 @@ final class DictionaryLocalActionViewModel: BaseDatabaseViewModel {
             fatalError("Database is not connected")
         }
 
-        self.dictionaryRepository = RepositoryDictionary(dbQueue: dbQueue)
+        self.dictionaryRepository = DatabaseManagerDictionary(dbQueue: dbQueue)
         super.init()
     }
 
