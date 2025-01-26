@@ -1,6 +1,6 @@
 import GRDB
 
-class RepositoryDictionary: DictionaryRepositoryProtocol {
+class RepositoryDictionary {
     private let dbQueue: DatabaseQueue
     
     init(dbQueue: DatabaseQueue) {

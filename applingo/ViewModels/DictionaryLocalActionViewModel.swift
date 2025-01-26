@@ -3,15 +3,15 @@ import Combine
 import GRDB
 
 final class DictionaryLocalActionViewModel: BaseDatabaseViewModel {
-    private let dictionaryRepository: DictionaryRepositoryProtocol
+    private let dictionaryRepository: RepositoryDictionary
     private var frame: AppFrameModel = .main
 
     override init() {
-        if let dbQueue = AppDatabase.shared.databaseQueue {
-            self.dictionaryRepository = RepositoryDictionary(dbQueue: dbQueue)
-        } else {
+        guard let dbQueue = AppDatabase.shared.databaseQueue else {
             fatalError("Database is not connected")
         }
+
+        self.dictionaryRepository = RepositoryDictionary(dbQueue: dbQueue)
         super.init()
     }
 
@@ -26,8 +26,6 @@ final class DictionaryLocalActionViewModel: BaseDatabaseViewModel {
             completion: completion
         )
     }
-    
-    
 
     func update(_ dictionary: DatabaseModelDictionary, completion: @escaping (Result<Void, Error>) -> Void) {
         performDatabaseOperation(
@@ -52,7 +50,6 @@ final class DictionaryLocalActionViewModel: BaseDatabaseViewModel {
             completion: completion
         )
     }
-
 
     func updateStatus(dictionaryID: Int, newStatus: Bool, completion: @escaping (Result<Void, Error>) -> Void) {
         performDatabaseOperation(

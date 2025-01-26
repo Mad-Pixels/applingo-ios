@@ -1,17 +1,17 @@
 import Foundation
 
-protocol DictionaryRepositoryProtocol {
-    func fetch(
-        search: String?,
-        offset: Int,
-        limit: Int
-    ) throws -> [DatabaseModelDictionary]
-    func save(_ dictionary: DatabaseModelDictionary) throws
-    func update(_ dictionary: DatabaseModelDictionary) throws
-    func delete(_ dictionary: DatabaseModelDictionary) throws
-    func updateStatus(dictionaryID: Int, newStatus: Bool) throws
-    func fetchDisplayName(byTableName tableName: String) throws -> String
-}
+//protocol DictionaryRepositoryProtocol {
+//    func fetch(
+//        search: String?,
+//        offset: Int,
+//        limit: Int
+//    ) throws -> [DatabaseModelDictionary]
+//    func save(_ dictionary: DatabaseModelDictionary) throws
+//    func update(_ dictionary: DatabaseModelDictionary) throws
+//    func delete(_ dictionary: DatabaseModelDictionary) throws
+//    func updateStatus(dictionaryID: Int, newStatus: Bool) throws
+//    func fetchDisplayName(byTableName tableName: String) throws -> String
+//}
 
 //protocol WordRepositoryProtocol {
 //    func fetch(

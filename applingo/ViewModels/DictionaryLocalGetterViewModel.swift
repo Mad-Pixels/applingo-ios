@@ -13,7 +13,7 @@ final class DictionaryLocalGetterViewModel: BaseDatabaseViewModel {
     }
 
     private var cancellables = Set<AnyCancellable>()
-    private let dictionaryRepository: DictionaryRepositoryProtocol
+    private let dictionaryRepository: RepositoryDictionary
     private var cancellationToken = UUID()
     private var frame: AppFrameModel = .main
     private let itemsPerPage: Int = 50
@@ -21,11 +21,11 @@ final class DictionaryLocalGetterViewModel: BaseDatabaseViewModel {
     private var currentPage = 0
 
     override init() {
-        if let dbQueue = AppDatabase.shared.databaseQueue {
-            self.dictionaryRepository = RepositoryDictionary(dbQueue: dbQueue)
-        } else {
+        guard let dbQueue = AppDatabase.shared.databaseQueue else {
             fatalError("Database is not connected")
         }
+
+        self.dictionaryRepository = RepositoryDictionary(dbQueue: dbQueue)
         super.init()
     }
 
@@ -76,7 +76,7 @@ final class DictionaryLocalGetterViewModel: BaseDatabaseViewModel {
             }
         )
     }
-    
+
     func loadMoreDictionariesIfNeeded(currentItem: DatabaseModelDictionary?) {
         guard
             let dictionary = currentItem,
@@ -91,11 +91,11 @@ final class DictionaryLocalGetterViewModel: BaseDatabaseViewModel {
     func clear() {
         dictionaries = []
     }
-    
+
     func setFrame(_ newFrame: AppFrameModel) {
         self.frame = newFrame
     }
-    
+
     private func processFetchedDictionaries(_ fetchedDictionaries: [DatabaseModelDictionary]) {
         if fetchedDictionaries.isEmpty {
             hasMorePages = false
