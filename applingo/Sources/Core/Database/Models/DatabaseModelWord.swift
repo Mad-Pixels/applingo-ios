@@ -8,11 +8,11 @@ struct DatabaseModelWord: Identifiable, Codable, Equatable, Hashable {
     internal let uuid: String
     internal let created: Int
     
-    var description: String?
+    var description: String
     var dictionary: String
     var frontText: String
     var backText: String
-    var hint: String?
+    var hint: String
     
     var success: Int
     var weight: Int
@@ -27,8 +27,8 @@ struct DatabaseModelWord: Identifiable, Codable, Equatable, Hashable {
         success: Int = 0,
         fail: Int = 0,
         
-        description: String? = nil,
-        hint: String? = nil,
+        description: String = "",
+        hint: String = "",
         
         created: Int = Int(Date().timeIntervalSince1970),
         id: Int? = nil
@@ -67,8 +67,8 @@ struct DatabaseModelWord: Identifiable, Codable, Equatable, Hashable {
         - Dictionary: \(dictionary)
         - FrontText: \(frontText)
         - BackText: \(backText)
-        - Description: \(description ?? "None")
-        - Hint: \(hint ?? "None")
+        - Description: \(description)
+        - Hint: \(hint)
         - SuccessCount: \(success)
         - FailCount: \(fail)
         - Weight: \(weight)
@@ -87,9 +87,8 @@ struct DatabaseModelWord: Identifiable, Codable, Equatable, Hashable {
     mutating func fmt() {
         self.frontText = frontText.trimmedTrailingWhitespace.lowercased()
         self.backText = backText.trimmedTrailingWhitespace.lowercased()
-        self.hint = hint?.trimmedTrailingWhitespace.lowercased()
-        
-        self.description = description?.trimmedTrailingWhitespace
+        self.hint = hint.trimmedTrailingWhitespace.lowercased()
+        self.description = description.trimmedTrailingWhitespace
     }
 }
 
@@ -99,6 +98,7 @@ extension DatabaseModelWord: FetchableRecord, PersistableRecord {
             t.autoIncrementedPrimaryKey("id").unique()
             t.column("uuid", .text).unique()
             
+            t.column("description", .text).notNull()
             t.column("dictionary", .text).notNull()
             t.column("success", .integer).notNull()
             t.column("created", .integer).notNull()
@@ -106,11 +106,10 @@ extension DatabaseModelWord: FetchableRecord, PersistableRecord {
             t.column("frontText", .text).notNull()
             t.column("backText", .text).notNull()
             t.column("fail", .integer).notNull()
-            t.column("description", .text)
-            t.column("hint", .text)
+            t.column("hint", .text).notNull()
         }
+        try db.create(index: "words_text_unique_idx", on: databaseTableName, columns: ["frontText", "backText", "dictionary"], unique: true)
         try db.create(index: "words_dictionary_idx", on: databaseTableName, columns: ["dictionary"])
         try db.create(index: "words_created_idx", on: databaseTableName, columns: ["created"])
-        try db.create(index: "words_text_unique_idx", on: databaseTableName, columns: ["frontText", "backText", "dictionary"], unique: true)
     }
 }

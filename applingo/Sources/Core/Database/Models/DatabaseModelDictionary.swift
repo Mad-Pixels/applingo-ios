@@ -8,20 +8,25 @@ struct DatabaseModelDictionary: Identifiable, Codable, Equatable, Hashable {
     internal let guid: String
     internal let created: Int
     
+    var level: DictionaryLevelType
     var description: String
     var subcategory: String
     var category: String
     var author: String
     var isActive: Bool
+    var topic: String
     var name: String
     
     init(
         guid: String,
-        name: String,
-        author: String,
-        category: String,
-        subcategory: String,
-        description: String,
+        
+        name: String = "",
+        topic: String = "",
+        author: String = "",
+        category: String = "",
+        subcategory: String = "",
+        description: String = "",
+        level: DictionaryLevelType = .beginner,
         
         created: Int = Int(Date().timeIntervalSince1970),
         isActive: Bool = true,
@@ -32,6 +37,8 @@ struct DatabaseModelDictionary: Identifiable, Codable, Equatable, Hashable {
         self.isActive = isActive
         self.category = category
         self.author = author
+        self.topic = topic
+        self.level = level
         self.guid = guid
         self.name = name
         
@@ -58,21 +65,16 @@ struct DatabaseModelDictionary: Identifiable, Codable, Equatable, Hashable {
         - Author: \(author)
         - Category: \(category)
         - Subcategory: \(subcategory)
+        - Topic: \(topic)
         - Description: \(description)
+        - LeveL: \(level.rawValue)
         - Active: \(isActive ? "Yes" : "No")
         - Created: \(date)
         """
     }
     
     static func new() -> DatabaseModelDictionary {
-        return DatabaseModelDictionary(
-            guid: "-1",
-            name: "",
-            author: "",
-            category: "",
-            subcategory: "",
-            description: ""
-        )
+        return DatabaseModelDictionary(guid: "-1")
     }
     
     static func newInternal() -> DatabaseModelDictionary {
@@ -107,11 +109,14 @@ extension DatabaseModelDictionary: FetchableRecord, PersistableRecord {
             t.column("isActive", .boolean).notNull()
             t.column("created", .integer).notNull()
             t.column("author", .text).notNull()
+            t.column("level", .text).notNull()
+            t.column("topic", .text).notNull()
             t.column("name", .text).notNull()
         }
         try db.create(index: "dictionary_category_idx", on: databaseTableName, columns: ["category", "subcategory"])
         try db.create(index: "dictionary_created_idx", on: databaseTableName, columns: ["created"])
         try db.create(index: "dictionary_active_idx", on: databaseTableName, columns: ["isActive"])
+        try db.create(index: "dictionary_level_idx", on: databaseTableName, columns: ["level"])
     }
 }
 

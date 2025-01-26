@@ -40,8 +40,8 @@ struct WordDetailsViewAdditional: View {
                 
                 InputText(
                     text: Binding(
-                        get: { word.hint ?? "" },
-                        set: { word.hint = $0.isEmpty ? nil : $0 }
+                        get: { word.hint },
+                        set: { word.hint = $0.isEmpty ? "" : $0 }
                     ),
                     title: locale.hintPlaceholder.capitalizedFirstLetter,
                     placeholder: locale.hintPlaceholder,
@@ -50,8 +50,8 @@ struct WordDetailsViewAdditional: View {
                 
                 InputTextArea(
                     text: Binding(
-                        get: { word.description ?? "" },
-                        set: { word.description = $0.isEmpty ? nil : $0 }
+                        get: { word.description },
+                        set: { word.description = $0.isEmpty ? "" : $0 }
                     ),
                     title: locale.descriptionPlaceholder.capitalizedFirstLetter,
                     placeholder: locale.descriptionPlaceholder,

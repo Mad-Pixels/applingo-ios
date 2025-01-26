@@ -60,8 +60,8 @@ func parseCsvLines(
             dictionary: tableName,
             frontText: frontText,
             backText: backText,
-            description: description,
-            hint: hint
+            description: description ?? "",
+            hint: hint ?? ""
         )
         wordItems.append(wordItem)
     }
