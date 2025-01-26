@@ -5,21 +5,22 @@ final class CategoryRemoteGetterViewModel: BaseApiViewModel {
     @Published var frontCategories: [CategoryItem] = []
     @Published var backCategories: [CategoryItem] = []
     @Published var isLoadingPage = false
-    
+
     private var frame: AppFrameModel = .main
-    private let repository: ApiRepositoryProtocol
-    
-    init(repository: ApiRepositoryProtocol = RepositoryCache.shared) {
+    private let repository: RepositoryAPI
+
+    init(repository: RepositoryAPI = RepositoryAPI()) {
         self.repository = repository
         super.init()
     }
-    
+
     func get(forceFetch: Bool = false, completion: @escaping (Result<Void, Error>) -> Void) {
         self.isLoadingPage = true
-        
+
         if forceFetch {
-            (repository as? RepositoryCache)?.clearCache()
+            RepositoryCache.shared.clearCache()
         }
+
         performApiOperation(
             {
                 return try await self.repository.getCategories()
@@ -44,11 +45,11 @@ final class CategoryRemoteGetterViewModel: BaseApiViewModel {
             }
         )
     }
-    
+
     func setFrame(_ newFrame: AppFrameModel) {
         self.frame = newFrame
     }
-    
+
     func clear() {
         frontCategories = []
         backCategories = []

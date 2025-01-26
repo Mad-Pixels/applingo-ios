@@ -1,6 +1,6 @@
 import Foundation
 
-class RepositoryAPI: ApiRepositoryProtocol {
+class RepositoryAPI {
     func getCategories() async throws -> CategoryItemModel {
         let endpoint = "/v1/subcategories"
         

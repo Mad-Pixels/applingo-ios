@@ -85,12 +85,14 @@ class RepositoryWord {
         let dictionariesByCategory = Dictionary(grouping: activeDictionaries) {
             $0.subcategory
         }
-        
+        print(dictionariesByCategory)
         // Берем случайную группу !!!!!
         guard let selectedGroup = dictionariesByCategory.randomElement() else {
             return []
         }
         let guids = selectedGroup.value.map { $0.guid }
+        print(selectedGroup)
+        print(guids)
         
         let sql = """
             WITH UniqueWords AS (
