@@ -35,6 +35,7 @@ final class ApiManagerRequest {
        
        let response = try JSONDecoder().decode(ApiDictionaryQueryResponseModel.self, from: data)
        
+       print(response.data)
        let dictionaries = response.data.items.map { dictionaryItem in
            DatabaseModelDictionary(
                guid: dictionaryItem.dictionary,
