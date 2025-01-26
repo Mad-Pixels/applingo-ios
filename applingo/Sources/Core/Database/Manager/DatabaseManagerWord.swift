@@ -44,7 +44,7 @@ final class DatabaseManagerWord {
     
     // MARK: - Public Methods
     func fetch(
-        searchText: String?,
+        search: String?,
         offset: Int,
         limit: Int
     ) throws -> [DatabaseModelWord] {
@@ -56,13 +56,15 @@ final class DatabaseManagerWord {
         
         return try dbQueue.read { db in
             let (sql, arguments) = try buildFetchQuery(
-                searchText: searchText?.lowercased(),
+                search: search?.lowercased(),
                 activeDictionaries: activeDictionaries,
                 limit: limit,
                 offset: offset
             )
             
-            Logger.debug("[RepositoryWord]: fetch with SQL \(sql) and arguments \(arguments)")
+            Logger.debug(
+                "[Word]: fetch with SQL \(sql) and arguments \(arguments)"
+            )
             do {
                 return try DatabaseModelWord.fetchAll(db, sql: sql, arguments: StatementArguments(arguments))
             } catch {
@@ -75,9 +77,13 @@ final class DatabaseManagerWord {
         guard count > 0 else { throw DatabaseError.invalidLimit(count) }
         
         let activeDictionaries = try fetchActive()
-        guard !activeDictionaries.isEmpty else { throw DatabaseError.emptyActiveDictionaries }
+        guard !activeDictionaries.isEmpty else {
+            throw DatabaseError.emptyActiveDictionaries
+        }
         
-        guard let selectedGroup = Dictionary(grouping: activeDictionaries) { $0.subcategory }.randomElement() else {
+        guard let selectedGroup = Dictionary(
+            grouping: activeDictionaries, by: { $0.subcategory }
+        ).randomElement() else {
             throw DatabaseError.csvImportFailed("No valid dictionary groups found")
         }
         
@@ -111,7 +117,9 @@ final class DatabaseManagerWord {
                 throw DatabaseError.csvImportFailed("Failed to save word: \(error.localizedDescription)")
             }
         }
-        Logger.debug("[RepositoryWord]: save - \(word)")
+        Logger.debug(
+            "[RepositoryWord]: save - \(word)"
+        )
     }
     
     func update(_ word: DatabaseModelWord) throws {
@@ -128,11 +136,13 @@ final class DatabaseManagerWord {
                 throw DatabaseError.updateFailed(error.localizedDescription)
             }
         }
-        Logger.debug("[RepositoryWord]: update - \(word)")
+        Logger.debug(
+            "[RepositoryWord]: update - \(word)"
+        )
     }
     
     func delete(_ word: DatabaseModelWord) throws {
-        guard let id = word.id else {
+        guard word.id != nil else {
             throw DatabaseError.invalidWord("Word has no ID")
         }
         
@@ -143,7 +153,9 @@ final class DatabaseManagerWord {
                 throw DatabaseError.deleteFailed(error.localizedDescription)
             }
         }
-        Logger.debug("[RepositoryWord]: delete - \(word)")
+        Logger.debug(
+            "[RepositoryWord]: delete - \(word)"
+        )
     }
     
     // MARK: - Private Methods
@@ -170,7 +182,7 @@ final class DatabaseManagerWord {
     }
     
     private func buildFetchQuery(
-        searchText: String?,
+        search: String?,
         activeDictionaries: [DatabaseModelDictionary],
         limit: Int,
         offset: Int
@@ -184,9 +196,8 @@ final class DatabaseManagerWord {
         conditions.append("dictionary IN (\(placeholders))")
         arguments.append(contentsOf: activeGuids)
         
-        if let trimmedSearch = searchText?.trimmingCharacters(in: .whitespacesAndNewlines),
+        if let trimmedSearch = search?.trimmingCharacters(in: .whitespacesAndNewlines),
            !trimmedSearch.isEmpty {
-            sql = SQL.searchSelect
             let relevanceArgs = Array(repeating: trimmedSearch, count: 6)
             arguments = relevanceArgs + arguments
             
@@ -194,6 +205,7 @@ final class DatabaseManagerWord {
             arguments.append("%\(trimmedSearch)%")
             arguments.append("%\(trimmedSearch)%")
             
+            sql = SQL.searchSelect
             sql += " WHERE " + conditions.joined(separator: " AND ")
             sql += " ORDER BY relevance ASC, id ASC"
         } else {

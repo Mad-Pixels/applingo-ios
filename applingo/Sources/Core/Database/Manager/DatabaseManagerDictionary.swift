@@ -47,8 +47,8 @@ final class DatabaseManagerDictionary {
         guard offset >= 0 else { throw DatabaseError.invalidOffset(offset) }
         
         return try dbQueue.read { db in
-            var sql = SQL.fetch
             var arguments: [DatabaseValueConvertible] = []
+            var sql = SQL.fetch
             
             if let search = search, !search.isEmpty {
                 sql += SQL.search
@@ -58,7 +58,9 @@ final class DatabaseManagerDictionary {
             sql += " ORDER BY id ASC LIMIT ? OFFSET ?"
             arguments += [limit, offset]
             
-            Logger.debug("[RepositoryDictionary]: fetch - SQL: \(sql), Arguments: \(arguments)")
+            Logger.debug(
+                "[Dictionary]: fetch - SQL: \(sql), Arguments: \(arguments)"
+            )
             do {
                 return try DatabaseModelDictionary.fetchAll(db, sql: sql, arguments: StatementArguments(arguments))
             } catch {
@@ -73,7 +75,9 @@ final class DatabaseManagerDictionary {
         }
         
         return try dbQueue.read { db in
-            Logger.debug("[RepositoryDictionary]: getDisplayName - SQL: \(SQL.fetchName), Arguments: [\(tableName)]")
+            Logger.debug(
+                "[Dictionary]: getDisplayName - SQL: \(SQL.fetchName), Arguments: [\(tableName)]"
+            )
             do {
                 return try String.fetchOne(db, sql: SQL.fetchName, arguments: [tableName]) ?? ""
             } catch {
@@ -95,7 +99,9 @@ final class DatabaseManagerDictionary {
                 throw DatabaseError.csvImportFailed("Failed to save dictionary: \(error.localizedDescription)")
             }
         }
-        Logger.debug("[RepositoryDictionary]: save - \(dictionary.name) with ID \(String(describing: dictionary.id))")
+        Logger.debug(
+            "[Dictionary]: save - \(dictionary.name) with ID \(String(describing: dictionary.id))"
+        )
     }
     
     func update(_ dictionary: DatabaseModelDictionary) throws {
@@ -111,7 +117,9 @@ final class DatabaseManagerDictionary {
                 throw DatabaseError.updateFailed("Failed to update dictionary: \(error.localizedDescription)")
             }
         }
-        Logger.debug("[RepositoryDictionary]: update - \(dictionary.name) with ID \(String(describing: dictionary.id))")
+        Logger.debug(
+            "[Dictionary]: update - \(dictionary.name) with ID \(String(describing: dictionary.id))"
+        )
     }
     
     func updateStatus(dictionaryID: Int, newStatus: Bool) throws {
@@ -126,11 +134,13 @@ final class DatabaseManagerDictionary {
                 throw DatabaseError.updateFailed("Failed to update dictionary status: \(error.localizedDescription)")
             }
         }
-        Logger.debug("[RepositoryDictionary]: updateStatus - ID \(dictionaryID) set to isActive = \(newStatus)")
+        Logger.debug(
+            "[Dictionary]: updateStatus - ID \(dictionaryID) set to isActive = \(newStatus)"
+        )
     }
     
     func delete(_ dictionary: DatabaseModelDictionary) throws {
-        guard let id = dictionary.id else {
+        guard dictionary.id != nil else {
             throw DatabaseError.invalidWord("Dictionary has no ID")
         }
         
@@ -142,7 +152,9 @@ final class DatabaseManagerDictionary {
                 throw DatabaseError.deleteFailed("Failed to delete dictionary: \(error.localizedDescription)")
             }
         }
-        Logger.debug("[RepositoryDictionary]: delete - \(dictionary.name) with ID \(String(describing: dictionary.id))")
+        Logger.debug(
+            "[Dictionary]: delete - \(dictionary.name) with ID \(String(describing: dictionary.id))"
+        )
     }
     
     private func formatDictionary(_ dictionary: DatabaseModelDictionary) -> DatabaseModelDictionary {

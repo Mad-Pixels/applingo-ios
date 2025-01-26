@@ -47,7 +47,7 @@ final class WordsLocalGetterViewModel: BaseDatabaseViewModel {
 
         performDatabaseOperation(
             { try self.wordRepository.fetch(
-                searchText: self.searchText,
+                search: self.searchText,
                 offset: self.currentPage * self.itemsPerPage,
                 limit: self.itemsPerPage
             ) },
