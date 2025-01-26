@@ -270,15 +270,6 @@
         }
       }
     },
-    "cat,חתול,,household pet" : {
-
-    },
-    "cat,חתול,animal" : {
-
-    },
-    "cat,חתול,animal,household pet" : {
-
-    },
     "Category" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -312,6 +303,7 @@
 
     },
     "Close" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2255,15 +2247,6 @@
     "Score" : {
 
     },
-    "sea|ים||large body of water" : {
-
-    },
-    "sea|ים|water|" : {
-
-    },
-    "sea|ים|water|large body of water" : {
-
-    },
     "Search" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2483,15 +2466,6 @@
       }
     },
     "Streak" : {
-
-    },
-    "sun;שמש;;the main star" : {
-
-    },
-    "sun;שמש;sky" : {
-
-    },
-    "sun;שמש;sky;the main star" : {
 
     },
     "SurvivalDescription" : {

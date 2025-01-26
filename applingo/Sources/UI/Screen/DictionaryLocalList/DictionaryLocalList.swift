@@ -58,11 +58,8 @@ struct DictionaryLocalList: View {
            
         }
         .sheet(isPresented: $isShowingInstructions) {
-            CompDictionaryInstructionView(
-                isShowingFileImporter: $isShowingInstructions,
-                onClose: {
-                    isShowingInstructions = false
-                }
+            DictionaryImport(
+                isShowingFileImporter: $isShowingInstructions
             )
         }
         .fullScreenCover(isPresented: $isShowingRemoteList) {
