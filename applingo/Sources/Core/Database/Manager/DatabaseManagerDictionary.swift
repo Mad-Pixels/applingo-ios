@@ -14,7 +14,7 @@ final class DatabaseManagerDictionary {
             OR description LIKE ?)
         """
         
-        static let fetchDisplayName = """
+        static let fetchName = """
             SELECT name 
             FROM \(DatabaseModelDictionary.databaseTableName)
             WHERE guid = ?
@@ -67,15 +67,15 @@ final class DatabaseManagerDictionary {
         }
     }
     
-    func fetchDisplayName(byTableName tableName: String) throws -> String {
+    func fetchName(byTableName tableName: String) throws -> String {
         guard !tableName.isEmpty else {
             throw DatabaseError.invalidSearchParameters
         }
         
         return try dbQueue.read { db in
-            Logger.debug("[RepositoryDictionary]: getDisplayName - SQL: \(SQL.fetchDisplayName), Arguments: [\(tableName)]")
+            Logger.debug("[RepositoryDictionary]: getDisplayName - SQL: \(SQL.fetchName), Arguments: [\(tableName)]")
             do {
-                return try String.fetchOne(db, sql: SQL.fetchDisplayName, arguments: [tableName]) ?? ""
+                return try String.fetchOne(db, sql: SQL.fetchName, arguments: [tableName]) ?? ""
             } catch {
                 throw DatabaseError.csvImportFailed("Failed to fetch display name: \(error.localizedDescription)")
             }

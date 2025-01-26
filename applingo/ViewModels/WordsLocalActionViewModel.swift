@@ -53,7 +53,7 @@ final class WordsLocalActionViewModel: BaseDatabaseViewModel {
 
     func dictionaryDisplayName(_ word: DatabaseModelWord) -> String {
         do {
-            return try self.dictionaryRepository.fetchDisplayName(byTableName: word.dictionary)
+            return try self.dictionaryRepository.fetchName(byTableName: word.dictionary)
         } catch {
             let appError = AppErrorModel(
                 type: .database,
