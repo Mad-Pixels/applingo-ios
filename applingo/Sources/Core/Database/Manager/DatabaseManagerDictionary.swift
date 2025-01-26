@@ -1,98 +1,157 @@
 import GRDB
 
-class DatabaseManagerDictionary {
+final class DatabaseManagerDictionary {
+    // MARK: - Constants
+    private enum SQL {
+        static let fetch = """
+            SELECT * FROM \(DatabaseModelDictionary.databaseTableName)
+            WHERE 1=1
+        """
+        
+        static let search = """
+            AND (name LIKE ? 
+            OR author LIKE ? 
+            OR description LIKE ?)
+        """
+        
+        static let fetchDisplayName = """
+            SELECT name 
+            FROM \(DatabaseModelDictionary.databaseTableName)
+            WHERE guid = ?
+        """
+        
+        static let deleteWords = """
+            DELETE FROM \(DatabaseModelWord.databaseTableName) 
+            WHERE dictionary = ?
+        """
+        
+        static let updateStatus = """
+            UPDATE \(DatabaseModelDictionary.databaseTableName) 
+            SET isActive = ? 
+            WHERE id = ?
+        """
+    }
+
     private let dbQueue: DatabaseQueue
     
     init(dbQueue: DatabaseQueue) {
         self.dbQueue = dbQueue
     }
-   
+    
     func fetch(
         search: String?,
         offset: Int,
         limit: Int
-    ) throws -> [
-        DatabaseModelDictionary
-    ] {
+    ) throws -> [DatabaseModelDictionary] {
+        guard limit > 0 else { throw DatabaseError.invalidLimit(limit) }
+        guard offset >= 0 else { throw DatabaseError.invalidOffset(offset) }
+        
         return try dbQueue.read { db in
-            var sql = "SELECT * FROM \(DatabaseModelDictionary.databaseTableName)"
+            var sql = SQL.fetch
             var arguments: [DatabaseValueConvertible] = []
-           
+            
             if let search = search, !search.isEmpty {
-                sql += """
-                    WHERE name LIKE ? 
-                    OR author LIKE ? 
-                    OR description LIKE ?
-                """
-                arguments += [
-                    "%\(search)%",
-                    "%\(search)%",
-                    "%\(search)%"
-                ]
+                sql += SQL.search
+                arguments += ["%\(search)%", "%\(search)%", "%\(search)%"]
             }
             
             sql += " ORDER BY id ASC LIMIT ? OFFSET ?"
-            arguments.append(limit)
-            arguments.append(offset)
-           
-            Logger.debug("[RepositoryDictionary]: fetch - SQL: \(sql), Arguments: \(arguments)")
-            return try DatabaseModelDictionary.fetchAll(db, sql: sql, arguments: StatementArguments(arguments))
-        }
-    }
-
-    func fetchDisplayName(byTableName tableName: String) throws -> String {
-        try dbQueue.read { db in
-            let sql = """
-            SELECT \(Column("name")) 
-            FROM \(DatabaseModelDictionary.databaseTableName)
-            WHERE \(Column("guid")) = ?
-            """
-            let arguments: [DatabaseValueConvertible] = [tableName]
+            arguments += [limit, offset]
             
-            Logger.debug("[RepositoryDictionary]: getDisplayName - SQL: \(sql), Arguments: \(arguments)")
-            return try String.fetchOne(db, sql: sql, arguments: StatementArguments(arguments)) ?? ""
+            Logger.debug("[RepositoryDictionary]: fetch - SQL: \(sql), Arguments: \(arguments)")
+            do {
+                return try DatabaseModelDictionary.fetchAll(db, sql: sql, arguments: StatementArguments(arguments))
+            } catch {
+                throw DatabaseError.csvImportFailed("Failed to fetch dictionaries: \(error.localizedDescription)")
+            }
         }
     }
-   
+    
+    func fetchDisplayName(byTableName tableName: String) throws -> String {
+        guard !tableName.isEmpty else {
+            throw DatabaseError.invalidSearchParameters
+        }
+        
+        return try dbQueue.read { db in
+            Logger.debug("[RepositoryDictionary]: getDisplayName - SQL: \(SQL.fetchDisplayName), Arguments: [\(tableName)]")
+            do {
+                return try String.fetchOne(db, sql: SQL.fetchDisplayName, arguments: [tableName]) ?? ""
+            } catch {
+                throw DatabaseError.csvImportFailed("Failed to fetch display name: \(error.localizedDescription)")
+            }
+        }
+    }
+    
     func save(_ dictionary: DatabaseModelDictionary) throws {
-        var fmtDictionary = dictionary
-        fmtDictionary.fmt()
-       
+        guard isValidDictionary(dictionary) else {
+            throw DatabaseError.invalidWord("Invalid dictionary data")
+        }
+        
+        let formattedDictionary = formatDictionary(dictionary)
         try dbQueue.write { db in
-            try fmtDictionary.insert(db)
+            do {
+                try formattedDictionary.insert(db)
+            } catch {
+                throw DatabaseError.csvImportFailed("Failed to save dictionary: \(error.localizedDescription)")
+            }
         }
         Logger.debug("[RepositoryDictionary]: save - \(dictionary.name) with ID \(String(describing: dictionary.id))")
     }
-   
+    
     func update(_ dictionary: DatabaseModelDictionary) throws {
-        var fmtDictionary = dictionary
-        fmtDictionary.fmt()
-       
+        guard isValidDictionary(dictionary) else {
+            throw DatabaseError.invalidWord("Invalid dictionary data")
+        }
+        
+        let formattedDictionary = formatDictionary(dictionary)
         try dbQueue.write { db in
-            try fmtDictionary.update(db)
+            do {
+                try formattedDictionary.update(db)
+            } catch {
+                throw DatabaseError.updateFailed("Failed to update dictionary: \(error.localizedDescription)")
+            }
         }
         Logger.debug("[RepositoryDictionary]: update - \(dictionary.name) with ID \(String(describing: dictionary.id))")
     }
-   
+    
     func updateStatus(dictionaryID: Int, newStatus: Bool) throws {
+        guard dictionaryID > 0 else {
+            throw DatabaseError.invalidWord("Invalid dictionary ID")
+        }
+        
         try dbQueue.write { db in
-            try db.execute(
-                sql: "UPDATE \(DatabaseModelDictionary.databaseTableName) SET isActive = ? WHERE id = ?",
-                arguments: [newStatus, dictionaryID]
-            )
+            do {
+                try db.execute(sql: SQL.updateStatus, arguments: [newStatus, dictionaryID])
+            } catch {
+                throw DatabaseError.updateFailed("Failed to update dictionary status: \(error.localizedDescription)")
+            }
         }
         Logger.debug("[RepositoryDictionary]: updateStatus - ID \(dictionaryID) set to isActive = \(newStatus)")
     }
-   
+    
     func delete(_ dictionary: DatabaseModelDictionary) throws {
+        guard let id = dictionary.id else {
+            throw DatabaseError.invalidWord("Dictionary has no ID")
+        }
+        
         try dbQueue.write { db in
-            try db.execute(sql: """
-                DELETE FROM \(DatabaseModelWord.databaseTableName) 
-                WHERE \(Column("dictionary")) = ?
-            """, arguments: [dictionary.guid])
-            
-            try dictionary.delete(db)
+            do {
+                try db.execute(sql: SQL.deleteWords, arguments: [dictionary.guid])
+                try dictionary.delete(db)
+            } catch {
+                throw DatabaseError.deleteFailed("Failed to delete dictionary: \(error.localizedDescription)")
+            }
         }
         Logger.debug("[RepositoryDictionary]: delete - \(dictionary.name) with ID \(String(describing: dictionary.id))")
+    }
+    
+    private func formatDictionary(_ dictionary: DatabaseModelDictionary) -> DatabaseModelDictionary {
+        var formatted = dictionary
+        formatted.fmt()
+        return formatted
+    }
+    
+    private func isValidDictionary(_ dictionary: DatabaseModelDictionary) -> Bool {
+        !dictionary.name.isEmpty && !dictionary.guid.isEmpty
     }
 }
