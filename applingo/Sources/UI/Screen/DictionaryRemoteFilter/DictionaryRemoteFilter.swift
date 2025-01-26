@@ -7,7 +7,7 @@ struct DictionaryRemoteFilter: View {
     @StateObject private var categoryGetter = CategoryRemoteGetterViewModel()
 
     @Binding var apiRequestParams: ApiDictionaryQueryRequestModel
-    @State private var selectedSortBy: ApiDictionaryQueryRequestModel.SortBy = .date
+    @State private var selectedSortBy: ApiSortType = .date
     @State private var selectedFrontCategory: CategoryItem?
     @State private var selectedBackCategory: CategoryItem?
     @State private var isPressedTrailing = false
@@ -85,11 +85,11 @@ struct DictionaryRemoteFilter: View {
     }
 
     private func saveFilters() {
-        let frontCategoryName = selectedFrontCategory?.code ?? ""
-        let backCategoryName = selectedBackCategory?.code ?? ""
-        apiRequestParams.subcategory = "\(frontCategoryName)-\(backCategoryName)".lowercased()
-        apiRequestParams.sortBy = selectedSortBy.rawValue
-        presentationMode.wrappedValue.dismiss()
+       let frontCategoryName = selectedFrontCategory?.code ?? ""
+       let backCategoryName = selectedBackCategory?.code ?? ""
+       apiRequestParams.subcategory = "\(frontCategoryName)-\(backCategoryName)".lowercased()
+       apiRequestParams.sortBy = selectedSortBy.rawValue
+       presentationMode.wrappedValue.dismiss()
     }
 
     private func resetFilters() {

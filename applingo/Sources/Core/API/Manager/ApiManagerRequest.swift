@@ -53,7 +53,7 @@ final class ApiManagerRequest {
    func downloadDictionary(_ dictionary: DatabaseModelDictionary) async throws -> URL {
        let body = try? JSONSerialization.data(
            withJSONObject: ApiDictionaryDownloadRequestModel(
-               dictionary: dictionary.guid
+            from: dictionary.guid
            ).toDictionary()
        )
 
