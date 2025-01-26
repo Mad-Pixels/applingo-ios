@@ -42,19 +42,19 @@ extension View {
 //        )
 //    }
     
-    func withVisualFeedback<F: GameFeedbackVisualProtocol>(_ feedback: F) -> some View {
-        modifier(feedback.modifier())
-    }
-    
-    func withHapticFeedback(_ feedback: GameFeedbackHapticProtocol) -> some View {
-        onAppear {
-            feedback.playHaptic()
-        }
-    }
-    
-    func withSpecial(_ special: GameSpecialProtocol) -> some View {
-        environment(\.specialService, GameSpecialService().withSpecial(special))
-    }
+//    func withVisualFeedback<F: GameFeedbackVisualProtocol>(_ feedback: F) -> some View {
+//        modifier(feedback.modifier())
+//    }
+//    
+//    func withHapticFeedback(_ feedback: GameFeedbackHapticProtocol) -> some View {
+//        onAppear {
+//            feedback.playHaptic()
+//        }
+//    }
+//    
+//    func withSpecial(_ special: GameSpecialProtocol) -> some View {
+//        environment(\.specialService, GameSpecialService().withSpecial(special))
+//    }
     
     func applySpecialEffects(_ modifiers: [AnyViewModifier]) -> some View {
         return modifiers.reduce(AnyView(self)) { currentView, modifier in
