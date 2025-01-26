@@ -79,7 +79,8 @@ struct DictionaryRemoteRow: View {
                     isDownloading = false
                     ErrorManager.shared.process(
                         error,
-                        screen: .dictionariesRemote
+                        screen: .dictionariesRemote,
+                        metadata: [:]
                     )
                 }
             }

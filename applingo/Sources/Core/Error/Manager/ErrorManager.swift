@@ -36,20 +36,26 @@ final class ErrorManager: ObservableObject {
         Logger.debug("[ErrorManager]: Initialize manager")
     }
     
-    func process(_ error: Error, screen: ScreenType) {
+    func process(_ error: Error, screen: ScreenType, metadata: [String: Any]) {
         queue.async { [weak self] in
             guard let self = self else { return }
             
+            // Пытаемся получить AppError через процессоры
             let appError = self.processors
                 .compactMap { $0.process(error) }
-                .first ?? self.createDefaultError(from: error, screen: screen)
-            
-            self.handlers.forEach { $0.handle(appError) }
-            self.reporters.forEach { $0.report(appError) }
-            
-            if appError.type.isUserFacing {
+                .first
+                ?? self.createDefaultError(from: error, screen: screen)
+                
+            // Добавляем метаданные в context (если нужно)
+            let modifiedAppError = appError.withAdditionalMetadata(metadata)
+                
+            // Вызываем обработчики и репортеры
+            self.handlers.forEach { $0.handle(modifiedAppError) }
+            self.reporters.forEach { $0.report(modifiedAppError) }
+                
+            if modifiedAppError.type.isUserFacing {
                 DispatchQueue.main.async {
-                    self.currentError = appError
+                    self.currentError = modifiedAppError
                 }
             }
         }

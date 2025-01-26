@@ -32,3 +32,25 @@ struct AppError: Identifiable {
         self.action = action
     }
 }
+
+extension AppError {
+    func withAdditionalMetadata(_ extra: [String: Any]) -> AppError {
+        let combinedMetadata = context.metadata.merging(extra) { current, _ in current }
+        let newContext = AppErrorContext(
+            source: context.source,
+            screen: context.screen,
+            metadata: combinedMetadata,
+            severity: context.severity
+        )
+        return AppError(
+            type: type,
+            originalError: originalError,
+            context: newContext,
+            timestamp: timestamp,
+            title: title,
+            message: message,
+            actionTitle: actionTitle,
+            action: action
+        )
+    }
+}
