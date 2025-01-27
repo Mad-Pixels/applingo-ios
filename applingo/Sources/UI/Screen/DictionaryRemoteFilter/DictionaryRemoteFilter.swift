@@ -4,7 +4,7 @@ struct DictionaryRemoteFilter: View {
     @Environment(\.presentationMode) var presentationMode
     @StateObject private var style: DictionaryRemoteFilterStyle
     @StateObject private var locale = DictionaryRemoteFilterLocale()
-    @StateObject private var categoryGetter = CategoryRemoteGetterViewModel()
+    @StateObject private var categoryGetter = CategoryFetcher()
 
     @Binding var apiRequestParams: ApiDictionaryQueryRequestModel
     @State private var selectedSortBy: ApiSortType = .date
@@ -63,7 +63,7 @@ struct DictionaryRemoteFilter: View {
             }
         }
         .onAppear {
-            categoryGetter.setFrame(.dictionaryRemoteFilter)
+            //categoryGetter.setFrame(.dictionaryRemoteFilter)
             categoryGetter.get { _ in }
         }
         .onChange(of: categoryGetter.frontCategories) { frontCategories in

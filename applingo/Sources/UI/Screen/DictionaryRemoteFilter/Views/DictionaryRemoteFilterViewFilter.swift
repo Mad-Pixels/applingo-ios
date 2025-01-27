@@ -2,13 +2,13 @@ import SwiftUI
 
 struct DictionaryRemoteFilterViewFilter: View {
     @EnvironmentObject private var themeManager: ThemeManager
-    @ObservedObject var categoryGetter: CategoryRemoteGetterViewModel
+    @ObservedObject var categoryGetter: CategoryFetcher
     @Binding var selectedFrontCategory: CategoryItem?
     @Binding var selectedBackCategory: CategoryItem?
     private let locale: DictionaryRemoteFilterLocale
     
     init(
-            categoryGetter: CategoryRemoteGetterViewModel,
+            categoryGetter: CategoryFetcher,
             selectedFrontCategory: Binding<CategoryItem?>,
             selectedBackCategory: Binding<CategoryItem?>,
             locale: DictionaryRemoteFilterLocale

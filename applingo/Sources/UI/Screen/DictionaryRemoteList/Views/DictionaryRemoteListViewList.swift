@@ -2,13 +2,13 @@ import SwiftUI
 
 struct DictionaryRemoteListViewList: View {
    @EnvironmentObject private var themeManager: ThemeManager
-   @ObservedObject var dictionaryGetter: DictionaryRemoteGetterViewModel
+    @ObservedObject var dictionaryGetter: DictionaryFetcher
    private let locale: DictionaryRemoteListLocale
    let onDictionarySelect: (DatabaseModelDictionary) -> Void
    
    init(
        locale: DictionaryRemoteListLocale,
-       dictionaryGetter: DictionaryRemoteGetterViewModel,
+       dictionaryGetter: DictionaryFetcher,
        onDictionarySelect: @escaping (DatabaseModelDictionary) -> Void
    ) {
        self.locale = locale
@@ -46,7 +46,7 @@ struct DictionaryRemoteListViewList: View {
            )
        }
        .onAppear {
-           dictionaryGetter.setFrame(.dictionaryRemoteList)
+           //dictionaryGetter.setFrame(.dictionaryRemoteList)
            dictionaryGetter.resetPagination(with: ApiDictionaryQueryRequestModel())
        }
    }

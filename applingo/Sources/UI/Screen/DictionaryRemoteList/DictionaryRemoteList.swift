@@ -3,7 +3,7 @@ import SwiftUI
 struct DictionaryRemoteList: View {
     @Environment(\.presentationMode) var presentationMode
     @StateObject private var locale = DictionaryRemoteListLocale()
-    @StateObject private var dictionaryGetter = DictionaryRemoteGetterViewModel()
+    @StateObject private var dictionaryGetter = DictionaryFetcher()
     @State private var apiRequestParams = ApiDictionaryQueryRequestModel()
     @State private var selectedDictionary: DatabaseModelDictionary?
     @State private var isShowingFilterView = false
@@ -68,7 +68,7 @@ struct DictionaryRemoteList: View {
             .environmentObject(LocaleManager.shared)
         }
         .onAppear {
-            dictionaryGetter.setFrame(.dictionaryRemoteList)
+            //dictionaryGetter.setFrame(.dictionaryRemoteList)
             dictionaryGetter.resetPagination(with: apiRequestParams)
         }
         .onChange(of: apiRequestParams) { newParams in

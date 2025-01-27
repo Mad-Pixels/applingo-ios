@@ -5,7 +5,7 @@ import SwiftUI
         DictionaryRemoteListViewList(
             locale: DictionaryRemoteListLocale(),
             dictionaryGetter: {
-                let getter = DictionaryRemoteGetterViewModel()
+                let getter = DictionaryFetcher()
                 getter.dictionaries = [
                     DatabaseModelDictionary(
                         guid: "en_basic",

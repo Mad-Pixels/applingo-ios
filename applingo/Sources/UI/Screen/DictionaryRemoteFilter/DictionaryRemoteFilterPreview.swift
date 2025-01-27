@@ -12,7 +12,7 @@ import SwiftUI
 
 struct DictionaryRemoteFilterPreview_Previews: PreviewProvider {
    static var previews: some View {
-       let categoryGetter = CategoryRemoteGetterViewModel()
+       let categoryGetter = CategoryFetcher()
        categoryGetter.frontCategories = [
            CategoryItem(code: "EN"),
            CategoryItem(code: "ES"),
