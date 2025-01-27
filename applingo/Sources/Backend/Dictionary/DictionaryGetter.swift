@@ -21,10 +21,10 @@ final class DictionaryGetter: ProcessDatabase {
     private let itemsPerPage: Int = 50
 
     // Указываем экран (при необходимости)
-    private let screenType: ScreenType = .dictionariesLocal
+    private let screenType: ScreenType = .DictionaryLocalList
     
     // Сохраняем frame, если нужно
-    private var frame: ScreenType = .main
+    private var frame: ScreenType = .Home
 
     override init() {
         guard let dbQueue = AppDatabase.shared.databaseQueue else {

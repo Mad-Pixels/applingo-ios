@@ -7,7 +7,7 @@ struct GameModeViewGame: View {
     @State private var isPressedLeading = false
 
     var body: some View {
-        BaseGameScreen(screen: .game, game: game) {
+        BaseGameScreen(screen: .GameMode, game: game) {
             game.makeView()
                 .onAppear {
                     game.start(mode: mode)

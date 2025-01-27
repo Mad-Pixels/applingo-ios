@@ -7,7 +7,7 @@ final class CategoryFetcher: ProcessApi {
     @Published var isLoadingPage = false
 
     private let repository: ApiManagerRequest
-    private let screenType: ScreenType = .dictionariesRemoteFilter
+    private let screenType: ScreenType = .DictionaryRemoteFilter
 
     init(repository: ApiManagerRequest = ApiManagerRequest()) {
         self.repository = repository

@@ -23,7 +23,7 @@ struct DictionaryRemoteDetails: View {
 
     var body: some View {
         BaseScreen(
-            screen: .dictionariesRemoteDetail,
+            screen: .DictionaryRemoteDetails,
             title: locale.navigationTitle
         ) {
             ScrollView {
@@ -99,7 +99,7 @@ struct DictionaryRemoteDetails: View {
                     isDownloading = false
                     ErrorManager.shared.process(
                         error,
-                        screen: .dictionariesRemoteDetail,
+                        screen: .DictionaryRemoteDetails,
                         metadata: [:]
                     )
                 }

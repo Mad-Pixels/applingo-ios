@@ -20,7 +20,7 @@ struct DictionaryImport: View {
     
     var body: some View {
         BaseScreen(
-            screen: .dictionariesLocal,
+            screen: .DictionaryImport,
             title: locale.navigationTitle
         ) {
             ScrollView {

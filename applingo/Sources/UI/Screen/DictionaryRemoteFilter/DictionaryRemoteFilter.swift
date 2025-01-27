@@ -27,7 +27,7 @@ struct DictionaryRemoteFilter: View {
 
     var body: some View {
         BaseScreen(
-            screen: .dictionariesRemoteFilter,
+            screen: .DictionaryRemoteFilter,
             title: locale.navigationTitle
         ) {
             ScrollView {

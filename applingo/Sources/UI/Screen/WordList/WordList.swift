@@ -16,7 +16,7 @@ struct WordList: View {
     
     var body: some View {
         BaseScreen(
-            screen: .words,
+            screen: .WordList,
             title: locale.navigationTitle
         ) {
             VStack(spacing: 0) {

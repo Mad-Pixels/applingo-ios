@@ -50,8 +50,8 @@ struct DictionaryLocalListViewList: View {
             )
         }
         .onAppear {
-            dictionaryAction.setFrame(.dictionariesLocal)
-            dictionaryGetter.setFrame(.dictionariesLocal)
+            dictionaryAction.setFrame(.DictionaryLocalList)
+            dictionaryGetter.setFrame(.DictionaryLocalList)
             dictionaryGetter.resetPagination()
         }
     }
@@ -73,7 +73,7 @@ struct DictionaryLocalListViewList: View {
                     }
                     ErrorManager.shared.process(
                         InternalDictionaryError(),
-                        screen: .dictionariesLocal,
+                        screen: .DictionaryLocalList,
                         metadata: [:]
                     )
             }

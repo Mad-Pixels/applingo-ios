@@ -64,7 +64,7 @@ final class WordGetter: ProcessDatabase {
                 self.processFetchedWords(fetchedWords)
                 self.isLoadingPage = false
             },
-            screen: .words,               // например, .words — свой ScreenType
+            screen: .WordList,               // например, .words — свой ScreenType
             metadata: ["searchText": searchText],  // если хотим логировать
             completion: { [weak self] result in
                 guard let self = self else { return }

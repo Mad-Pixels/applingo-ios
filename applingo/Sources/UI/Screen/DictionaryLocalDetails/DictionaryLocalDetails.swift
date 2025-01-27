@@ -31,7 +31,7 @@ struct DictionaryLocalDetails: View {
 
     var body: some View {
         BaseScreen(
-            screen: .dictionariesLocalDetail,
+            screen: .DictionaryLocalDetails,
             title: locale.navigationTitle
         ) {
             ScrollView {

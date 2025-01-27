@@ -74,7 +74,7 @@ final class AppStorage {
     // MARK: - Active Screen
     /// The currently active screen in the application.
     var activeScreen: ScreenType {
-        get { ScreenType(rawValue: temporary.getValue(for: "screen")) ?? .game }
+        get { ScreenType(rawValue: temporary.getValue(for: "screen")) ?? .GameMode }
         set { temporary.setValue(newValue.rawValue, for: "screen") }
     }
     

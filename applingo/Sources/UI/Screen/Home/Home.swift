@@ -23,7 +23,7 @@ struct Home: View {
     }
 
     var body: some View {
-        BaseScreen(screen: .game) {
+        BaseScreen(screen: .Home) {
             ZStack {
                 MainBackground()
                     .edgesIgnoringSafeArea(.all)

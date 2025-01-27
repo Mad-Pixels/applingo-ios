@@ -34,7 +34,7 @@ struct WordDetails: View {
 
     var body: some View {
         BaseScreen(
-            screen: .wordsDetail,
+            screen: .WordDetails,
             title: locale.navigationTitle
         ) {
             ScrollView {

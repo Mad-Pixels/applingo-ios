@@ -13,7 +13,7 @@ struct DictionaryRemoteList: View {
 
     var body: some View {
         BaseScreen(
-            screen: .dictionariesRemote,
+            screen: .DictionaryRemoteList,
             title: locale.navigationTitle
         ) {
             VStack(spacing: 0) {

@@ -10,7 +10,10 @@ struct Settings: View {
     }
 
     var body: some View {
-        BaseScreen(screen: .settings, title: locale.navigationTitle) {
+        BaseScreen(
+            screen: .Settings,
+            title: locale.navigationTitle
+        ) {
             List {
                 SettingsViewTheme()
                     .listRowBackground(Color.clear)

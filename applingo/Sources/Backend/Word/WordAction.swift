@@ -7,7 +7,7 @@ final class WordAction: ProcessDatabase {
     
     // В данном примере можно хранить информацию о "экране" или об источнике ошибки
     // Например, если у вас есть enum ScreenType, вы можете указать его здесь.
-    private let screenType: ScreenType = .words
+    private let screenType: ScreenType = .WordList
     
     override init() {
         guard let dbQueue = AppDatabase.shared.databaseQueue else {

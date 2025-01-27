@@ -19,7 +19,7 @@ final class DictionaryFetcher: ProcessApi {
     private var lastEvaluated: String?
     
     /// Чтобы отличать этот экран от других
-    private let screenType: ScreenType = .dictionariesRemote
+    private let screenType: ScreenType = .DictionaryRemoteList
     
     private var cancellationToken = UUID()
 

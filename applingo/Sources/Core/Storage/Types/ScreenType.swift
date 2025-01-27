@@ -1,13 +1,14 @@
 enum ScreenType: String {
-    case dictionariesLocal
-    case dictionariesLocalDetail
-    case dictionariesRemote
-    case dictionariesRemoteDetail
-    case dictionariesRemoteFilter
-    case words
-    case wordsDetail
-    case wordsAdd
-    case settings
-    case game
-    case main
+    case DictionaryImport
+    case DictionaryLocalList
+    case DictionaryLocalDetails
+    case DictionaryRemoteList
+    case DictionaryRemoteDetails
+    case DictionaryRemoteFilter
+    case WordList
+    case WordDetails
+    case WordAddManual
+    case Settings
+    case GameMode
+    case Home
 }

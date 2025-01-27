@@ -12,7 +12,7 @@ final class WordCache: ProcessDatabase {
     
     private var cancellables = Set<AnyCancellable>()
     private var cancellationToken = UUID()
-    private var frame: ScreenType = .main
+    private var frame: ScreenType = .Home
     
     override init() {
         guard let dbQueue = AppDatabase.shared.databaseQueue else {
@@ -74,7 +74,7 @@ final class WordCache: ProcessDatabase {
                         self.isLoadingCache = false
                     }
                 },
-                screen: .words,
+                screen: .WordList,
                 metadata: ["operation": "initializeCache", "frameType": frame.rawValue],
                 completion: { [weak self] result in
                     guard let self = self,
@@ -135,7 +135,7 @@ final class WordCache: ProcessDatabase {
                         self.isLoadingCache = false
                     }
                 },
-                screen: .words,
+                screen: .WordList,
                 metadata: [
                     "operation": "refillCache",
                     "currentCount": String(self.cache.count),

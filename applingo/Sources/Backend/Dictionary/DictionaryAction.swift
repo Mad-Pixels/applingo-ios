@@ -6,10 +6,10 @@ final class DictionaryAction: ProcessDatabase {
     private let dictionaryRepository: DatabaseManagerDictionary
     
     // Если необходимо указывать экран:
-    private let screenType: ScreenType = .dictionariesLocal
+    private let screenType: ScreenType = .DictionaryLocalList
     
     // Если хотите продолжать хранить frame, можно оставлять это поле
-    private var frame: ScreenType = .main
+    private var frame: ScreenType = .Home
 
     override init() {
         guard let dbQueue = AppDatabase.shared.databaseQueue else {

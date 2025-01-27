@@ -16,7 +16,7 @@ struct DictionaryLocalList: View {
    
     var body: some View {
         BaseScreen(
-            screen: .dictionariesLocal,
+            screen: .DictionaryLocalList,
             title: locale.navigationTitle
         ) {
             VStack(spacing: 0) {

@@ -25,7 +25,10 @@ struct GameMode: View {
     }
 
     var body: some View {
-        BaseScreen(screen: .game, alignment: .center) {
+        BaseScreen(
+            screen: .GameMode,
+            alignment: .center
+        ) {
             ZStack {
                 GameModeBackground(style.colors)
                     .edgesIgnoringSafeArea(.all)

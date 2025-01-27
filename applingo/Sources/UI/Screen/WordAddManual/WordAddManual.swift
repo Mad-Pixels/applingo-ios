@@ -32,7 +32,7 @@ struct WordAddManual: View {
 
     var body: some View {
         BaseScreen(
-            screen: .wordsAdd,
+            screen: .WordAddManual,
             title: locale.navigationTitle
         ) {
             ScrollView {

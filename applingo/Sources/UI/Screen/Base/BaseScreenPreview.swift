@@ -59,7 +59,7 @@ struct BaseScreenPreview<Content: View>: View {
 
 #Preview("Light Theme") {
     PreviewContainerView {
-        BaseScreenPreview(theme: .light, screen: .settings) {
+        BaseScreenPreview(theme: .light, screen: .Settings) {
             VStack(spacing: 20) {
                 Text("Content Example")
                     .foregroundColor(ThemeManager.shared.currentThemeStyle.textPrimary)
@@ -72,7 +72,7 @@ struct BaseScreenPreview<Content: View>: View {
 
 #Preview("Dark Theme") {
     PreviewContainerView {
-        BaseScreenPreview(theme: .dark, screen: .words) {
+        BaseScreenPreview(theme: .dark, screen: .WordList) {
             VStack(spacing: 20) {
                 Text("Content Example")
                     .foregroundColor(ThemeManager.shared.currentThemeStyle.textPrimary)
@@ -87,12 +87,12 @@ struct BaseScreenPreview<Content: View>: View {
     PreviewContainerView {
         BaseScreenPreview(
             theme: .light,
-            screen: .words,
+            screen: .WordList,
             error: AppError(
                 type: .network(statusCode: 404),
                 context: AppErrorContext(
                     source: .network,
-                    screen: .words,
+                    screen: .WordList,
                     metadata: ["url": "https://api.example.com"],
                     severity: .error
                 ),
