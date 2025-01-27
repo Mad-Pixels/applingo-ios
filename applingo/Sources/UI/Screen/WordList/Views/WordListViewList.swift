@@ -2,7 +2,7 @@ import SwiftUI
 
 struct WordListViewList: View {
     @EnvironmentObject private var themeManager: ThemeManager
-    @StateObject private var wordsAction = WordsLocalActionViewModel()
+    @StateObject private var wordsAction = WordAction()
     @ObservedObject var wordsGetter = WordGetter()
     private let locale: WordListLocale
     let onWordSelect: (DatabaseModelWord) -> Void

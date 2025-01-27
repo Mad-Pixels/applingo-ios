@@ -4,7 +4,7 @@ struct WordAddManual: View {
     @Environment(\.presentationMode) private var presentationMode
     @StateObject private var style: WordAddManualStyle
     @StateObject private var locale = WordAddManualLocale()
-    @StateObject private var wordsAction = WordsLocalActionViewModel()
+    @StateObject private var wordsAction = WordAction()
     @StateObject private var dictionaryGetter = DictionaryLocalGetterViewModel()
 
     @Binding var isPresented: Bool
