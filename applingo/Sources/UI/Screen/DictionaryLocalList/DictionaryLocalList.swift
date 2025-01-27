@@ -3,7 +3,7 @@ import SwiftUI
 struct DictionaryLocalList: View {
     @StateObject private var style: DictionaryLocalListStyle
     @StateObject private var locale = DictionaryLocalListLocale()
-    @StateObject private var dictionaryGetter = DictionaryLocalGetterViewModel()
+    @StateObject private var dictionaryGetter = DictionaryGetter()
 
     @State private var selectedDictionary: DatabaseModelDictionary?
     @State private var isShowingInstructions = false

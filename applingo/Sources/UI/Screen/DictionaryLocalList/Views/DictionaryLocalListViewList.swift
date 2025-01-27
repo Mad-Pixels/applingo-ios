@@ -2,14 +2,14 @@ import SwiftUI
 
 struct DictionaryLocalListViewList: View {
     @EnvironmentObject private var themeManager: ThemeManager
-    @ObservedObject var dictionaryGetter: DictionaryLocalGetterViewModel
-    @StateObject private var dictionaryAction = DictionaryLocalActionViewModel()
+    @ObservedObject var dictionaryGetter: DictionaryGetter
+    @StateObject private var dictionaryAction = DictionaryAction()
     private let locale: DictionaryLocalListLocale
     let onDictionarySelect: (DatabaseModelDictionary) -> Void
    
     init(
         locale: DictionaryLocalListLocale,
-        dictionaryGetter: DictionaryLocalGetterViewModel,
+        dictionaryGetter: DictionaryGetter,
         onDictionarySelect: @escaping (DatabaseModelDictionary) -> Void
     ) {
         self.locale = locale

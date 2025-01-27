@@ -5,7 +5,7 @@ struct WordAddManual: View {
     @StateObject private var style: WordAddManualStyle
     @StateObject private var locale = WordAddManualLocale()
     @StateObject private var wordsAction = WordAction()
-    @StateObject private var dictionaryGetter = DictionaryLocalGetterViewModel()
+    @StateObject private var dictionaryGetter = DictionaryGetter()
 
     @Binding var isPresented: Bool
     let refresh: () -> Void

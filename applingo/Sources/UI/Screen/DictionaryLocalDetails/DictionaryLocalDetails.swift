@@ -4,7 +4,7 @@ struct DictionaryLocalDetails: View {
     @Environment(\.presentationMode) private var presentationMode
     @StateObject private var style: DictionaryLocalDetailsStyle
     @StateObject private var locale = DictionaryLocalDetailsLocale()
-    @StateObject private var dictionaryAction = DictionaryLocalActionViewModel()
+    @StateObject private var dictionaryAction = DictionaryAction()
     @StateObject private var wrapper: EditableDictionaryWrapper
 
     @Binding var isPresented: Bool
