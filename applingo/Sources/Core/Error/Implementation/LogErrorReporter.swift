@@ -2,6 +2,7 @@ import Foundation
 
 struct LogErrorReporter: ErrorReporter {
     func report(_ error: AppError) {
+        // Используем Logger.error и передаём AppError
         Logger.error("""
             [Error Report]
             Type: \(error.type)
@@ -11,7 +12,8 @@ struct LogErrorReporter: ErrorReporter {
             Message: \(error.message)
             Metadata: \(error.context.metadata)
             """,
-            type: .api
+            appError: error, // Передаём AppError в логгер
+            metadata: error.context.metadata // Дополнительно добавляем метаданные
         )
     }
 }

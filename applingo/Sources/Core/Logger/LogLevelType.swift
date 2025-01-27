@@ -1,6 +1,8 @@
 import CocoaLumberjackSwift
 import Foundation
 
+// MARK: - LogLevel Enum
+
 enum LogLevel: Int {
     case verbose = 0
     case debug = 1
@@ -8,6 +10,9 @@ enum LogLevel: Int {
     case warning = 3
     case error = 4
     
+    // MARK: - Lumberjack Level Mapping
+    
+    /// Maps the custom `LogLevel` to `DDLogLevel` used by CocoaLumberjack.
     var lumberjackLevel: DDLogLevel {
         switch self {
         case .info:     return .info
@@ -18,6 +23,9 @@ enum LogLevel: Int {
         }
     }
     
+    // MARK: - Lumberjack Flag Mapping
+    
+    /// Maps the custom `LogLevel` to `DDLogFlag` used by CocoaLumberjack.
     var flag: DDLogFlag {
         switch self {
         case .info:     return .info
