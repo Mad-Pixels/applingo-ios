@@ -1,6 +1,9 @@
 import Foundation
 
+/// An enum representing database-related errors with user-friendly descriptions.
 enum DatabaseError: Error, LocalizedError {
+    // MARK: - Error Cases
+    
     case connectionNotEstablished
     case emptyActiveDictionaries
     case invalidSearchParameters
@@ -16,6 +19,9 @@ enum DatabaseError: Error, LocalizedError {
     case invalidLimit(Int)
     case wordNotFound(Int)
     
+    // MARK: - LocalizedError Conformance
+    
+    /// Provides a user-friendly description of the error.
     var errorDescription: String? {
         switch self {
         case .connectionFailed(let details):
@@ -31,19 +37,19 @@ enum DatabaseError: Error, LocalizedError {
         case .invalidOffset(let offset):
             return "Invalid offset value: \(offset)"
         case .emptyActiveDictionaries:
-            return "No active dictionaries found"
+            return "No active dictionaries found."
         case .invalidSearchParameters:
-            return "Invalid search parameters provided"
+            return "Invalid search parameters provided."
         case .invalidWord(let details):
             return "Invalid word data: \(details)"
         case .wordNotFound(let id):
-            return "Word with id \(id) not found"
+            return "Word with ID \(id) not found."
         case .duplicateWord(let word):
             return "Word already exists: \(word)"
         case .updateFailed(let details):
-            return "Failed to update word: \(details)"
+            return "Failed to update word. Details: \(details)"
         case .deleteFailed(let details):
-            return "Failed to delete word: \(details)"
+            return "Failed to delete word. Details: \(details)"
         case .alreadyConnected:
             return "Database is already connected."
         }

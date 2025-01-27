@@ -1,13 +1,16 @@
 import Foundation
 import GRDB
 
+/// Represents a dictionary entity in the database, with fields for metadata, author, and categorization.
 struct DatabaseModelDictionary: Identifiable, Codable, Equatable, Hashable {
+    // MARK: - Constants
     static let databaseTableName = "dictionary"
-    
+
+    // MARK: - Properties
     internal let id: Int?
     internal let guid: String
     internal let created: Int
-    
+
     var level: DictionaryLevelType
     var description: String
     var subcategory: String
@@ -16,7 +19,10 @@ struct DatabaseModelDictionary: Identifiable, Codable, Equatable, Hashable {
     var isActive: Bool
     var topic: String
     var name: String
-    
+
+    // MARK: - Initialization
+
+    /// Initializes a new instance of `DatabaseModelDictionary`.
     init(
         guid: String,
         
@@ -26,7 +32,7 @@ struct DatabaseModelDictionary: Identifiable, Codable, Equatable, Hashable {
         category: String = "",
         subcategory: String = "",
         description: String = "",
-        level: DictionaryLevelType = .beginner,
+        level: DictionaryLevelType = .undefined,
         
         created: Int = Int(Date().timeIntervalSince1970),
         isActive: Bool = true,
@@ -44,18 +50,23 @@ struct DatabaseModelDictionary: Identifiable, Codable, Equatable, Hashable {
         
         self.created = created
         self.id = id
+        
         self.fmt()
     }
 
-    var date: String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .short
-        return formatter.string(
-            from: Date(timeIntervalSince1970: TimeInterval(created))
-        )
+    // MARK: - Methods
+
+    /// Formats the dictionary details to ensure consistency (e.g., trimming whitespace).
+    mutating func fmt() {
+        self.subcategory = subcategory.trimmedTrailingWhitespace.lowercased()
+        self.category = category.trimmedTrailingWhitespace.lowercased()
+        self.topic = topic.trimmedTrailingWhitespace.lowercased()
+        self.description = description.trimmedTrailingWhitespace
+        self.author = author.trimmedTrailingWhitespace
+        self.name = name.trimmedTrailingWhitespace
     }
-    
+
+    /// Converts the dictionary object into a readable string.
     func toString() -> String {
         """
         DictionaryItemModel:
@@ -67,37 +78,46 @@ struct DatabaseModelDictionary: Identifiable, Codable, Equatable, Hashable {
         - Subcategory: \(subcategory)
         - Topic: \(topic)
         - Description: \(description)
-        - LeveL: \(level.rawValue)
+        - Level: \(level.rawValue)
         - Active: \(isActive ? "Yes" : "No")
         - Created: \(date)
         """
     }
-    
+
+    /// Provides a formatted date string for the dictionary's creation timestamp.
+    var date: String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .short
+        return formatter.string(
+            from: Date(timeIntervalSince1970: TimeInterval(created))
+        )
+    }
+
+    /// Returns a new empty dictionary object.
     static func new() -> DatabaseModelDictionary {
         return DatabaseModelDictionary(guid: "-1")
     }
-    
+
+    /// Returns a new default internal dictionary object.
     static func newInternal() -> DatabaseModelDictionary {
         return DatabaseModelDictionary(
             guid: "internal",
             name: "Main",
+            topic: "internal",
             author: "MadPixels",
             category: "AppLingo",
             subcategory: "internal",
             description: "AppLingo default dictionary"
         )
     }
-    
-    mutating func fmt() {
-        self.description = description.trimmedTrailingWhitespace
-        self.subcategory = subcategory.trimmedTrailingWhitespace
-        self.category = category.trimmedTrailingWhitespace
-        self.author = author.trimmedTrailingWhitespace
-        self.name = name.trimmedTrailingWhitespace
-    }
 }
 
+// MARK: - Database Record Conformance
+
 extension DatabaseModelDictionary: FetchableRecord, PersistableRecord {
+    /// Creates the `dictionary` table in the database if it doesn't already exist.
+    /// - Parameter db: The GRDB database instance.
     static func createTable(in db: Database) throws {
         try db.create(table: databaseTableName, ifNotExists: true) { t in
             t.autoIncrementedPrimaryKey("id").unique()
@@ -113,20 +133,51 @@ extension DatabaseModelDictionary: FetchableRecord, PersistableRecord {
             t.column("topic", .text).notNull()
             t.column("name", .text).notNull()
         }
-        try db.create(index: "dictionary_category_idx", on: databaseTableName, columns: ["category", "subcategory"])
-        try db.create(index: "dictionary_created_idx", on: databaseTableName, columns: ["created"])
-        try db.create(index: "dictionary_active_idx", on: databaseTableName, columns: ["isActive"])
-        try db.create(index: "dictionary_level_idx", on: databaseTableName, columns: ["level"])
+        Logger.debug("[Database] Created dictionary table structure")
+        
+        try db.create(
+            index: "dictionary_category_idx",
+            on: databaseTableName,
+            columns: ["category", "subcategory"]
+        )
+        Logger.debug("[Database] Created index on category and subcategory columns")
+        
+        try db.create(
+            index: "dictionary_created_idx",
+            on: databaseTableName,
+            columns: ["created"]
+        )
+        Logger.debug("[Database] Created index on created column")
+        
+        try db.create(
+            index: "dictionary_active_idx",
+            on: databaseTableName,
+            columns: ["isActive"]
+        )
+        Logger.debug("[Database] Created index on isActive column")
+        
+        try db.create(
+            index: "dictionary_level_idx",
+            on: databaseTableName,
+            columns: ["level"]
+        )
+        Logger.debug("[Database] Created index on level column")
     }
 }
 
+// MARK: - Search Methods
+
 extension DatabaseModelDictionary {
+    /// Returns a combined searchable text for this dictionary.
     var searchableText: String {
         return [name, author, description]
             .map { $0.lowercased() }
             .joined(separator: " ")
     }
-    
+
+    /// Checks if the dictionary matches the provided search text.
+    /// - Parameter searchText: The search string.
+    /// - Returns: `true` if the dictionary matches, otherwise `false`.
     func matches(searchText: String) -> Bool {
         if searchText.isEmpty { return true }
         return searchableText.contains(searchText.lowercased())

@@ -1,9 +1,12 @@
 import Foundation
 import GRDB
 
+/// Represents a word entity in the database, with fields for dictionary, text, metadata, and stats.
 struct DatabaseModelWord: Identifiable, Codable, Equatable, Hashable {
+    // MARK: - Constants
     static let databaseTableName = "words"
-    
+
+    // MARK: - Properties
     internal let id: Int?
     internal let uuid: String
     internal let created: Int
@@ -18,6 +21,7 @@ struct DatabaseModelWord: Identifiable, Codable, Equatable, Hashable {
     var weight: Int
     var fail: Int
 
+    // MARK: - Initialization
     init(
         dictionary: String,
         frontText: String,
@@ -50,15 +54,17 @@ struct DatabaseModelWord: Identifiable, Codable, Equatable, Hashable {
         self.fmt()
     }
 
-    var date: String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .short
-        return formatter.string(
-            from: Date(timeIntervalSince1970: TimeInterval(created))
-        )
+    // MARK: - Methods
+
+    /// Formats the word details to ensure consistency (e.g., trimming whitespace, converting to lowercase).
+    mutating func fmt() {
+        self.frontText = frontText.trimmedTrailingWhitespace.lowercased()
+        self.backText = backText.trimmedTrailingWhitespace.lowercased()
+        self.hint = hint.trimmedTrailingWhitespace.lowercased()
+        self.description = description.trimmedTrailingWhitespace
     }
-    
+
+    /// Converts the word object into a readable string.
     func toString() -> String {
         """
         WordItemModel:
@@ -76,6 +82,17 @@ struct DatabaseModelWord: Identifiable, Codable, Equatable, Hashable {
         """
     }
     
+    /// Provides a formatted date string for the word's creation timestamp.
+    var date: String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .short
+        return formatter.string(
+            from: Date(timeIntervalSince1970: TimeInterval(created))
+        )
+    }
+
+    /// Returns a new empty word object.
     static func new() -> DatabaseModelWord {
         return DatabaseModelWord(
             dictionary: "",
@@ -83,16 +100,13 @@ struct DatabaseModelWord: Identifiable, Codable, Equatable, Hashable {
             backText: ""
         )
     }
-    
-    mutating func fmt() {
-        self.frontText = frontText.trimmedTrailingWhitespace.lowercased()
-        self.backText = backText.trimmedTrailingWhitespace.lowercased()
-        self.hint = hint.trimmedTrailingWhitespace.lowercased()
-        self.description = description.trimmedTrailingWhitespace
-    }
 }
 
+// MARK: - Database Record Conformance
+
 extension DatabaseModelWord: FetchableRecord, PersistableRecord {
+    /// Creates the `words` table in the database if it doesn't already exist.
+    /// - Parameter db: The GRDB database instance.
     static func createTable(in db: Database) throws {
         try db.create(table: databaseTableName, ifNotExists: true) { t in
             t.autoIncrementedPrimaryKey("id").unique()
@@ -108,8 +122,28 @@ extension DatabaseModelWord: FetchableRecord, PersistableRecord {
             t.column("fail", .integer).notNull()
             t.column("hint", .text).notNull()
         }
-        try db.create(index: "words_text_unique_idx", on: databaseTableName, columns: ["frontText", "backText", "dictionary"], unique: true)
-        try db.create(index: "words_dictionary_idx", on: databaseTableName, columns: ["dictionary"])
-        try db.create(index: "words_created_idx", on: databaseTableName, columns: ["created"])
+        Logger.debug("[Database] Created words table structure")
+        
+        try db.create(
+            index: "words_text_unique_idx",
+            on: databaseTableName,
+            columns: ["frontText", "backText", "dictionary"],
+            unique: true
+        )
+        Logger.debug("[Database] Created unique index for frontText, backText, and dictionary")
+        
+        try db.create(
+            index: "words_dictionary_idx",
+            on: databaseTableName,
+            columns: ["dictionary"]
+        )
+        Logger.debug("[Database] Created index on dictionary column")
+        
+        try db.create(
+            index: "words_created_idx",
+            on: databaseTableName,
+            columns: ["created"]
+        )
+        Logger.debug("[Database] Created index on created column")
     }
 }
