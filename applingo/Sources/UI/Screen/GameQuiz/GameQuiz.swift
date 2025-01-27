@@ -4,7 +4,7 @@ struct GameQuiz: View {
     @ObservedObject var game: Quiz
     @StateObject private var style: GameQuizStyle
     @StateObject private var locale = GameQuizLocale()
-    @EnvironmentObject var cacheGetter: GameCacheGetterViewModel
+    @EnvironmentObject var cacheGetter: WordCache
     
     @State private var currentCard: QuizModelCard?
     

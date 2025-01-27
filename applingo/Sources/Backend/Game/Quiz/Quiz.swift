@@ -7,7 +7,7 @@ class Quiz: ObservableObject, AbstractGame {
     let availableModes: [GameModeType] = [.practice, .survival, .time]
     let minimumWordsRequired: Int = 12
     let scoring: AbstractGameScoring
-    let cacheGetter = GameCacheGetterViewModel()
+    let cacheGetter = WordCache()
         
     lazy private(set) var stats: AbstractGameStats = {
         BaseGameStats()
