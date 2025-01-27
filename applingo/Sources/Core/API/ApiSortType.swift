@@ -4,8 +4,8 @@ enum ApiSortType: String, CaseIterable {
     
     var name: String {
         switch self {
-        case .date: return LanguageManager.shared.localizedString(for: "DateCreated")
-        case .rating: return LanguageManager.shared.localizedString(for: "Rating")
+        case .date: return LocaleManager.shared.localizedString(for: "DateCreated")
+        case .rating: return LocaleManager.shared.localizedString(for: "Rating")
         }
     }
 }

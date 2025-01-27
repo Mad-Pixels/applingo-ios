@@ -3,11 +3,8 @@ import IQKeyboardManagerSwift
 
 @main
 struct LingocardApp: App {
-    @StateObject private var languageManager = LanguageManager.shared
     @StateObject private var hapticManager = HardwareHaptic.shared
     @StateObject private var themeManager = ThemeManager.shared
-    @StateObject private var errorManager = ErrorManager1.shared
-    //@StateObject private var frameManager = FrameManager.shared
     
     private let apiUrl = GlobalConfig.apiURL
     private let apiToken = GlobalConfig.apiToken
@@ -18,14 +15,7 @@ struct LingocardApp: App {
         do {
             try AppDatabase.shared.connect(dbName: dbName)
         } catch {
-            let appError = AppErrorModel(
-                type: .database,
-                message: "Failed to connect to database",
-                localized: LanguageManager.shared.localizedString(for: "ErrMain").capitalizedFirstLetter,
-                original: error,
-                additional: ["error": error.localizedDescription]
-            )
-            ErrorManager1.shared.setError(appError: appError, frame: .main, source: .initialization)
+
         }
         AppAPI.configure(baseURL: apiUrl, token: apiToken)
         _ = ApiManagerCache.shared
@@ -34,10 +24,7 @@ struct LingocardApp: App {
     var body: some Scene {
         WindowGroup {
             Main()
-                .environmentObject(languageManager)
-                .environmentObject(errorManager)
                 .environmentObject(themeManager)
-                //.environmentObject(frameManager)
                 .environmentObject(AppDatabase.shared)
         }
     }
