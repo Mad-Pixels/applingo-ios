@@ -55,9 +55,10 @@ struct Logger {
         }
         
         let resolvedMessage = message()
-        let formattedMessage = "\(resolvedMessage)\(formatMetadata(metadata))"
+        let contextInfo = formatContext(function: function, file: file, line: line)
+        let metadataInfo = formatMetadata(metadata)
+        let formattedMessage = "\(resolvedMessage)\(metadataInfo)\(contextInfo)"
         
-        // CocoaLumberjack message
         let ddMessage = DDLogMessage(
             message: formattedMessage,
             level: level.lumberjackLevel,
@@ -146,9 +147,13 @@ struct Logger {
     /// Now it's `[String: Any]` to match `AppErrorContext.metadata`.
     private static func formatMetadata(_ metadata: [String: Any]?) -> String {
         guard let metadata = metadata, !metadata.isEmpty else { return "" }
-        
-        // Example: operation=fetchUser, page=2
         let pairs = metadata.map { "\($0.key)=\($0.value)" }.joined(separator: ", ")
         return " | Metadata: " + pairs
+    }
+    
+    /// Format context information (file, function, line) into a readable string
+    private static func formatContext(function: String, file: String, line: UInt) -> String {
+        let fileName = (file as NSString).lastPathComponent
+        return " | \(fileName):\(line) \(function)"
     }
 }

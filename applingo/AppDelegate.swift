@@ -12,6 +12,7 @@ struct LingocardApp: App {
 
     init() {
         Logger.initializeLogger()
+        Logger.debug("asd")
         do {
             try AppDatabase.shared.connect(dbName: dbName)
         } catch {
