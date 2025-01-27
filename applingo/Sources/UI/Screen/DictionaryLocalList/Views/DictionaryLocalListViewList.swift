@@ -50,8 +50,8 @@ struct DictionaryLocalListViewList: View {
             )
         }
         .onAppear {
-            dictionaryAction.setFrame(.tabDictionaries)
-            dictionaryGetter.setFrame(.tabDictionaries)
+            dictionaryAction.setFrame(.dictionariesLocal)
+            dictionaryGetter.setFrame(.dictionariesLocal)
             dictionaryGetter.resetPagination()
         }
     }

@@ -9,7 +9,7 @@ final class DictionaryAction: ProcessDatabase {
     private let screenType: ScreenType = .dictionariesLocal
     
     // Если хотите продолжать хранить frame, можно оставлять это поле
-    private var frame: AppFrameModel = .main
+    private var frame: ScreenType = .main
 
     override init() {
         guard let dbQueue = AppDatabase.shared.databaseQueue else {
@@ -86,7 +86,7 @@ final class DictionaryAction: ProcessDatabase {
 
     // MARK: - Frame
 
-    func setFrame(_ newFrame: AppFrameModel) {
+    func setFrame(_ newFrame: ScreenType) {
         self.frame = newFrame
     }
 }

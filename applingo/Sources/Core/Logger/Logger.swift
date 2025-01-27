@@ -93,41 +93,73 @@ struct Logger {
     /// Shortcut for logging an info-level message.
     static func info(
         _ message: @autoclosure () -> String,
+        metadata: [String: Any]? = nil,
         file: String = #file,
         function: String = #function,
         line: UInt = #line
     ) {
-        log(message(), level: .info, function: function, file: file, line: line)
+        log(
+            message(),
+            level: .info,
+            metadata: metadata,
+            function: function,
+            file: file,
+            line: line
+        )
     }
 
     /// Shortcut for logging a debug-level message.
     static func debug(
         _ message: @autoclosure () -> String,
+        metadata: [String: Any]? = nil,
         file: String = #file,
         function: String = #function,
         line: UInt = #line
     ) {
-        log(message(), level: .debug, function: function, file: file, line: line)
+        log(
+            message(),
+            level: .debug,
+            metadata: metadata,
+            function: function,
+            file: file,
+            line: line
+        )
     }
 
     /// Shortcut for logging a warning-level message.
     static func warning(
         _ message: @autoclosure () -> String,
+        metadata: [String: Any]? = nil,
         file: String = #file,
         function: String = #function,
         line: UInt = #line
     ) {
-        log(message(), level: .warning, function: function, file: file, line: line)
+        log(
+            message(),
+            level: .warning,
+            metadata: metadata,
+            function: function,
+            file: file,
+            line: line
+        )
     }
 
     /// Shortcut for logging a verbose-level message.
     static func verbose(
         _ message: @autoclosure () -> String,
+        metadata: [String: Any]? = nil,
         file: String = #file,
         function: String = #function,
         line: UInt = #line
     ) {
-        log(message(), level: .verbose, function: function, file: file, line: line)
+        log(
+            message(),
+            level: .verbose,
+            metadata: metadata,
+            function: function,
+            file: file,
+            line: line
+        )
     }
     
     // MARK: - Private Helpers

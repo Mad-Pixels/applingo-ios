@@ -3,16 +3,15 @@ import IQKeyboardManagerSwift
 
 @main
 struct LingocardApp: App {
-    @StateObject private var hapticManager = HardwareHaptic.shared
+//    @StateObject private var hapticManager = HardwareHaptic.shared
     @StateObject private var themeManager = ThemeManager.shared
     
+    private let dbName = "AppLingoDB.sqlite"
     private let apiUrl = GlobalConfig.apiURL
     private let apiToken = GlobalConfig.apiToken
-    private let dbName = "LingocardDB.sqlite"
-
+    
     init() {
         Logger.initializeLogger()
-        Logger.debug("asd")
         do {
             try AppDatabase.shared.connect(dbName: dbName)
         } catch {

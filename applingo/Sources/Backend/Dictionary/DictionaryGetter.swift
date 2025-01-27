@@ -24,7 +24,7 @@ final class DictionaryGetter: ProcessDatabase {
     private let screenType: ScreenType = .dictionariesLocal
     
     // Сохраняем frame, если нужно
-    private var frame: AppFrameModel = .main
+    private var frame: ScreenType = .main
 
     override init() {
         guard let dbQueue = AppDatabase.shared.databaseQueue else {
@@ -118,7 +118,7 @@ final class DictionaryGetter: ProcessDatabase {
         dictionaries.removeAll()
     }
 
-    func setFrame(_ newFrame: AppFrameModel) {
+    func setFrame(_ newFrame: ScreenType) {
         self.frame = newFrame
     }
 }

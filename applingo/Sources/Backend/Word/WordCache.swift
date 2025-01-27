@@ -12,7 +12,7 @@ final class WordCache: ProcessDatabase {
     
     private var cancellables = Set<AnyCancellable>()
     private var cancellationToken = UUID()
-    private var frame: AppFrameModel = .main
+    private var frame: ScreenType = .main
     
     override init() {
         guard let dbQueue = AppDatabase.shared.databaseQueue else {
@@ -170,7 +170,7 @@ final class WordCache: ProcessDatabase {
         }
     }
     
-    func setFrame(_ newFrame: AppFrameModel) {
+    func setFrame(_ newFrame: ScreenType) {
         self.frame = newFrame
     }
     
