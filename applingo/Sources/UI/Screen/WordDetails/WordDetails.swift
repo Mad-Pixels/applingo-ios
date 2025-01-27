@@ -5,7 +5,7 @@ struct WordDetails: View {
     @Environment(\.presentationMode) private var presentationMode
     @StateObject private var style: WordDetailsStyle
     @StateObject private var locale = WordDetailsLocale()
-    @StateObject private var wordsAction = WordsLocalActionViewModel()
+    @StateObject private var wordsAction = WordAction()
     @StateObject private var wrapper: WordWrapper
 
     @Binding var isPresented: Bool

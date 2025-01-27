@@ -3,13 +3,13 @@ import SwiftUI
 struct WordListViewList: View {
     @EnvironmentObject private var themeManager: ThemeManager
     @StateObject private var wordsAction = WordsLocalActionViewModel()
-    @ObservedObject var wordsGetter: WordsLocalGetterViewModel
+    @ObservedObject var wordsGetter = WordGetter()
     private let locale: WordListLocale
     let onWordSelect: (DatabaseModelWord) -> Void
     
     init(
         locale: WordListLocale,
-        wordsGetter: WordsLocalGetterViewModel,
+        wordsGetter: WordGetter,
         onWordSelect: @escaping (DatabaseModelWord) -> Void
     ) {
         self.locale = locale
@@ -43,8 +43,6 @@ struct WordListViewList: View {
             )
         }
         .onAppear {
-            wordsAction.setFrame(.tabWords)
-            wordsGetter.setFrame(.tabWords)
             wordsGetter.resetPagination()
         }
     }

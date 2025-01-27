@@ -3,7 +3,7 @@ import SwiftUI
 struct WordList: View {
     @StateObject private var style: WordListStyle
     @StateObject private var locale = WordListLocale()
-    @StateObject private var wordsGetter = WordsLocalGetterViewModel()
+    @StateObject private var wordsGetter = WordGetter()
     
     @State private var selectedWord: DatabaseModelWord?
     @State private var isShowingDetailView = false
