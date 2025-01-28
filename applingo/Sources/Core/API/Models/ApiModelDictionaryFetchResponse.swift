@@ -1,7 +1,7 @@
 import Foundation
 
 /// A model representing the response for a dictionary download request from the API.
-struct ApiDictionaryDownloadResponseModel: Codable {
+struct ApiModelDictionaryFetchResponse: Codable {
     // MARK: - Properties
 
     /// The data payload containing the download information.

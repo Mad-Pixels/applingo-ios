@@ -4,7 +4,7 @@ struct DictionaryRemoteList: View {
     @Environment(\.presentationMode) var presentationMode
     @StateObject private var locale = DictionaryRemoteListLocale()
     @StateObject private var dictionaryGetter = DictionaryFetcher()
-    @State private var apiRequestParams = ApiDictionaryQueryRequestModel()
+    @State private var apiRequestParams = ApiModelDictionaryQueryRequest()
     @State private var selectedDictionary: DatabaseModelDictionary?
     @State private var isShowingFilterView = false
     @State private var isPressedTrailing = false

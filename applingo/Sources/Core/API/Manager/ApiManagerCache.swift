@@ -25,7 +25,7 @@ final class ApiManagerCache {
     private let request: ApiManagerRequest
     
     /// Cached categories with their metadata (e.g., TTL and timestamp).
-    private var categoriesCache: CategoryCacheEntry<CategoryItemModel>?
+    private var categoriesCache: CategoryCacheEntry<ApiModelCategoryItem>?
     
     /// Cached dictionaries with their metadata and associated request parameters.
     private var dictionariesCache: [DictionaryCacheEntry] = []
@@ -44,9 +44,9 @@ final class ApiManagerCache {
     // MARK: - Public Methods
     
     /// Fetches categories, either from cache or the API.
-    /// - Returns: A `CategoryItemModel` containing the fetched categories.
+    /// - Returns: A `ApiModelCategoryItem` containing the fetched categories.
     /// - Throws: An error if the API request fails.
-    func getCategories() async throws -> CategoryItemModel {
+    func getCategories() async throws -> ApiModelCategoryItem {
         if let cache = categoriesCache, cache.isValid {
             Logger.debug(
                 "\(Constants.loggerTag): getCategories - returned from cache"
@@ -72,7 +72,7 @@ final class ApiManagerCache {
     /// - Returns: A tuple containing the fetched dictionaries and the `lastEvaluated` value (if any).
     /// - Throws: An error if the API request fails.
     func getDictionaries(
-        request: ApiDictionaryQueryRequestModel? = nil
+        request: ApiModelDictionaryQueryRequest? = nil
     ) async throws -> (
         dictionaries: [DatabaseModelDictionary],
         lastEvaluated: String?
@@ -133,7 +133,7 @@ final class ApiManagerCache {
     /// - Parameter request: The query request model.
     /// - Returns: A valid `DictionaryCacheEntry` if one exists, otherwise `nil`.
     private func findValidDictionaryCacheEntry(
-        for request: ApiDictionaryQueryRequestModel?
+        for request: ApiModelDictionaryQueryRequest?
     ) -> DictionaryCacheEntry? {
         dictionariesCache.first { $0.isValid && $0.request == request }
     }
@@ -146,7 +146,7 @@ final class ApiManagerCache {
     private func updateDictionariesCache(
         dictionaries: [DatabaseModelDictionary],
         lastEvaluated: String?,
-        request: ApiDictionaryQueryRequestModel?
+        request: ApiModelDictionaryQueryRequest?
     ) {
         let entry = DictionaryCacheEntry(
             request: request,

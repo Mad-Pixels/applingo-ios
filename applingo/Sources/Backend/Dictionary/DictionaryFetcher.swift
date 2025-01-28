@@ -14,7 +14,7 @@ final class DictionaryFetcher: ProcessApi {
     }
     
     private var allDictionaries: [DatabaseModelDictionary] = []
-    private var currentRequest: ApiDictionaryQueryRequestModel?
+    private var currentRequest: ApiModelDictionaryQueryRequest?
     private var hasMorePages = true
     private var lastEvaluated: String?
     
@@ -29,7 +29,7 @@ final class DictionaryFetcher: ProcessApi {
     
     // MARK: - Pagination
     
-    func resetPagination(with request: ApiDictionaryQueryRequestModel? = nil) {
+    func resetPagination(with request: ApiModelDictionaryQueryRequest? = nil) {
         if let request = request {
             currentRequest = request
         }
@@ -42,13 +42,13 @@ final class DictionaryFetcher: ProcessApi {
         get()
     }
     
-    func get(queryRequest: ApiDictionaryQueryRequestModel? = nil) {
+    func get(queryRequest: ApiModelDictionaryQueryRequest? = nil) {
         guard !isLoadingPage, hasMorePages else { return }
         
         let currentToken = cancellationToken
         isLoadingPage = true
         
-        var request = queryRequest ?? currentRequest ?? ApiDictionaryQueryRequestModel()
+        var request = queryRequest ?? currentRequest ?? ApiModelDictionaryQueryRequest()
         request.isPublic = true
         request.lastEvaluated = lastEvaluated
         

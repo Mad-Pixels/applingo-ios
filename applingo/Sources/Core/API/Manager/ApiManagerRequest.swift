@@ -19,16 +19,16 @@ final class ApiManagerRequest {
     // MARK: - Public Methods
     
     /// Fetches the list of categories from the API.
-    /// - Returns: A `CategoryItemModel` containing the fetched categories.
+    /// - Returns: A `ApiModelCategoryItem` containing the fetched categories.
     /// - Throws: An error if the API request fails or decoding fails.
-    func getCategories() async throws -> CategoryItemModel {
+    func getCategories() async throws -> ApiModelCategoryItem {
         Logger.debug("\(Constants.loggerTag): Fetching categories from API...")
         
         let data = try await AppAPI.shared.request(
             endpoint: Endpoints.categories,
             method: .get
         )
-        let response = try JSONDecoder().decode(ApiCategoryGetResponseModel.self, from: data)
+        let response = try JSONDecoder().decode(ApiModelCategoryGetResponse.self, from: data)
         
         Logger.debug(
             "\(Constants.loggerTag): Fetched categories",
@@ -42,7 +42,7 @@ final class ApiManagerRequest {
     /// - Returns: A tuple containing the fetched dictionaries and the `lastEvaluated` value (if any).
     /// - Throws: An error if the API request fails or decoding fails.
     func getDictionaries(
-        request: ApiDictionaryQueryRequestModel? = nil
+        request: ApiModelDictionaryQueryRequest? = nil
     ) async throws -> (dictionaries: [DatabaseModelDictionary], lastEvaluated: String?) {
         Logger.debug(
             "\(Constants.loggerTag): Fetching dictionaries from API...",
@@ -56,7 +56,7 @@ final class ApiManagerRequest {
             queryItems: queryItems.isEmpty ? nil : queryItems
         )
         
-        let response = try JSONDecoder().decode(ApiDictionaryQueryResponseModel.self, from: data)
+        let response = try JSONDecoder().decode(ApiModelDictionaryQueryResponse.self, from: data)
         Logger.debug(
             "\(Constants.loggerTag): Dictionaries fetched from API",
             metadata: [
@@ -91,7 +91,7 @@ final class ApiManagerRequest {
         )
         
         let body = try? JSONSerialization.data(
-            withJSONObject: ApiDictionaryDownloadRequestModel(
+            withJSONObject: ApiModelDictionaryFetchRequest(
                 from: dictionary.guid
             ).toDictionary()
         )
@@ -102,7 +102,7 @@ final class ApiManagerRequest {
             body: body
         )
         
-        let response = try JSONDecoder().decode(ApiDictionaryDownloadResponseModel.self, from: data)
+        let response = try JSONDecoder().decode(ApiModelDictionaryFetchResponse.self, from: data)
         
         Logger.debug(
             "\(Constants.loggerTag): Pre-signed URL fetched",
@@ -123,7 +123,7 @@ final class ApiManagerRequest {
     /// Builds query parameters for a dictionary API request.
     /// - Parameter request: A request model containing query parameters. Defaults to `nil`.
     /// - Returns: An array of `URLQueryItem` representing the query parameters.
-    private func buildDictionaryQueryItems(from request: ApiDictionaryQueryRequestModel?) -> [URLQueryItem] {
+    private func buildDictionaryQueryItems(from request: ApiModelDictionaryQueryRequest?) -> [URLQueryItem] {
         var items: [URLQueryItem] = []
         
         guard let request = request else { return items }

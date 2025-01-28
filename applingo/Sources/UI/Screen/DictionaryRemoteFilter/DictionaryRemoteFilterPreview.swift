@@ -3,7 +3,7 @@ import SwiftUI
 #Preview("Dictionary Filter Screen") {
    NavigationView {
        DictionaryRemoteFilter(
-           apiRequestParams: .constant(ApiDictionaryQueryRequestModel())
+           apiRequestParams: .constant(ApiModelDictionaryQueryRequest())
        )
    }
    .environmentObject(ThemeManager.shared)
@@ -28,7 +28,7 @@ struct DictionaryRemoteFilterPreview_Previews: PreviewProvider {
            // Light theme
            NavigationView {
                DictionaryRemoteFilter(
-                   apiRequestParams: .constant(ApiDictionaryQueryRequestModel())
+                   apiRequestParams: .constant(ApiModelDictionaryQueryRequest())
                )
            }
            .environmentObject(ThemeManager.shared)
@@ -38,7 +38,7 @@ struct DictionaryRemoteFilterPreview_Previews: PreviewProvider {
            // Dark theme
            NavigationView {
                DictionaryRemoteFilter(
-                   apiRequestParams: .constant(ApiDictionaryQueryRequestModel())
+                   apiRequestParams: .constant(ApiModelDictionaryQueryRequest())
                )
            }
            .environmentObject(ThemeManager.shared)
@@ -48,7 +48,7 @@ struct DictionaryRemoteFilterPreview_Previews: PreviewProvider {
            // Loading state
            NavigationView {
                DictionaryRemoteFilter(
-                   apiRequestParams: .constant(ApiDictionaryQueryRequestModel())
+                   apiRequestParams: .constant(ApiModelDictionaryQueryRequest())
                )
            }
            .environmentObject(ThemeManager.shared)

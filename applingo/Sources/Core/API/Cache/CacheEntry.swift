@@ -20,7 +20,7 @@ struct CategoryCacheEntry<T> {
 /// Represents a cache entry for dictionaries with a validity check.
 struct DictionaryCacheEntry {
     /// The request model used to fetch the dictionaries, if applicable.
-    let request: ApiDictionaryQueryRequestModel?
+    let request: ApiModelDictionaryQueryRequest?
     
     /// The cached list of dictionaries.
     let items: [DatabaseModelDictionary]

@@ -47,7 +47,7 @@ struct DictionaryRemoteListViewList: View {
        }
        .onAppear {
            //dictionaryGetter.setFrame(.dictionaryRemoteList)
-           dictionaryGetter.resetPagination(with: ApiDictionaryQueryRequestModel())
+           dictionaryGetter.resetPagination(with: ApiModelDictionaryQueryRequest())
        }
    }
 }

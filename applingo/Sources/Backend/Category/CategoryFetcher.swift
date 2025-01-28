@@ -26,7 +26,7 @@ final class CategoryFetcher: ProcessApi {
             {
                 try await self.repository.getCategories()
             },
-            success: { [weak self] (categoryItemModel: CategoryItemModel) in
+            success: { [weak self] (categoryItemModel: ApiModelCategoryItem) in
                 guard let self = self else { return }
                 
                 self.frontCategories = categoryItemModel.frontCategory

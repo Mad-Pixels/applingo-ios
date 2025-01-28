@@ -8,7 +8,7 @@ struct CategoryItem: Codable, Equatable, Hashable {
     }
 }
 
-struct CategoryItemModel: Codable, Equatable, Hashable {
+struct ApiModelCategoryItem: Codable, Equatable, Hashable {
     let frontCategory: [CategoryItem]
     let backCategory: [CategoryItem]
     

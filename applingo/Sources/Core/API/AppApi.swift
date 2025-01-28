@@ -161,7 +161,7 @@ final class AppAPI: ObservableObject {
         )
 
         guard httpResponse.statusCode == 200 || httpResponse.statusCode == 201 else {
-            if let apiErrorMessage = try? JSONDecoder().decode(ApiErrorMessageModel.self, from: data) {
+            if let apiErrorMessage = try? JSONDecoder().decode(ApiModelErrorResponse.self, from: data) {
                 throw APIError.apiErrorMessage(
                     message: apiErrorMessage.message,
                     statusCode: httpResponse.statusCode

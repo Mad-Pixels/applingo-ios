@@ -6,14 +6,14 @@ struct DictionaryRemoteFilter: View {
     @StateObject private var locale = DictionaryRemoteFilterLocale()
     @StateObject private var categoryGetter = CategoryFetcher()
 
-    @Binding var apiRequestParams: ApiDictionaryQueryRequestModel
+    @Binding var apiRequestParams: ApiModelDictionaryQueryRequest
     @State private var selectedSortBy: ApiSortType = .date
     @State private var selectedFrontCategory: CategoryItem?
     @State private var selectedBackCategory: CategoryItem?
     @State private var isPressedTrailing = false
 
     init(
-        apiRequestParams: Binding<ApiDictionaryQueryRequestModel>,
+        apiRequestParams: Binding<ApiModelDictionaryQueryRequest>,
         style: DictionaryRemoteFilterStyle? = nil
     ) {
         self._apiRequestParams = apiRequestParams

@@ -1,7 +1,7 @@
 import Foundation
 
 /// A model representing a request for querying dictionaries via the API.
-struct ApiDictionaryQueryRequestModel: Codable, Equatable {
+struct ApiModelDictionaryQueryRequest: Codable, Equatable {
     // MARK: - Properties
 
     /// The subcategory to filter the dictionaries.
