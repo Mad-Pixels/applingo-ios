@@ -67,7 +67,7 @@ final class AppStorage {
     // MARK: - Log Sending
     /// Whether the application is configured to send logs.
     var sendLogs: Bool {
-        get { permanent.getValue(for: "sendLogs") == "true" }
+        get { permanent.getValue(for: "sendLogs") != "true" }
         set { permanent.setValue(String(newValue), for: "sendLogs") }
     }
     
