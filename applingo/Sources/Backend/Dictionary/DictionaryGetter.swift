@@ -20,11 +20,8 @@ final class DictionaryGetter: ProcessDatabase {
     private var currentPage = 0
     private let itemsPerPage: Int = 50
 
-    // Указываем экран (при необходимости)
-    private let screenType: ScreenType = .DictionaryLocalList
+    private var screen: ScreenType = .Home
     
-    // Сохраняем frame, если нужно
-    private var frame: ScreenType = .Home
 
     override init() {
         guard let dbQueue = AppDatabase.shared.databaseQueue else {
@@ -32,6 +29,21 @@ final class DictionaryGetter: ProcessDatabase {
         }
         self.dictionaryRepository = DatabaseManagerDictionary(dbQueue: dbQueue)
         super.init()
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleDictionaryUpdate),
+            name: .dictionaryListShouldUpdate,
+            object: nil
+        )
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    @objc private func handleDictionaryUpdate() {
+        resetPagination()
     }
 
     // MARK: - Pagination Logic
@@ -69,13 +81,13 @@ final class DictionaryGetter: ProcessDatabase {
                 self.processFetchedDictionaries(fetchedDictionaries)
                 self.isLoadingPage = false
             },
-            screen: screenType,
+            screen: screen,
             metadata: [
                 "operation": "getDictionaries",
                 "searchText": searchText,
                 "currentPage": "\(currentPage)",
                 "itemsPerPage": "\(itemsPerPage)",
-                "frame": frame.rawValue
+                "frame": screen.rawValue
             ],
             completion: { [weak self] result in
                 guard let self = self else { return }
@@ -118,7 +130,7 @@ final class DictionaryGetter: ProcessDatabase {
         dictionaries.removeAll()
     }
 
-    func setFrame(_ newFrame: ScreenType) {
-        self.frame = newFrame
+    func setFrame(_ screen: ScreenType) {
+        self.screen = screen
     }
 }

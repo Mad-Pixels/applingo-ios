@@ -47,6 +47,8 @@ struct DictionaryRemoteList: View {
                     ButtonNav(
                         style: .close(ThemeManager.shared.currentThemeStyle),
                         onTap: {
+                            AppStorage.shared.activeScreen = .DictionaryLocalList
+                            NotificationCenter.default.post(name: .dictionaryListShouldUpdate, object: nil)
                             presentationMode.wrappedValue.dismiss()
                         },
                         isPressed: $isPressedTrailing
@@ -68,7 +70,6 @@ struct DictionaryRemoteList: View {
             .environmentObject(LocaleManager.shared)
         }
         .onAppear {
-            //dictionaryGetter.setFrame(.dictionaryRemoteList)
             dictionaryGetter.resetPagination(with: apiRequestParams)
         }
         .onChange(of: apiRequestParams) { newParams in
