@@ -73,7 +73,6 @@ final class ApiManagerRequest {
                 category: dictionaryItem.category,
                 subcategory: dictionaryItem.subcategory,
                 description: dictionaryItem.description,
-                created: dictionaryItem.createdAt,
                 id: UUID().hashValue
             )
         }

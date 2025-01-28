@@ -21,13 +21,10 @@ struct ApiModelDictionaryItem: Codable {
     let description: String
     
     /// The creation timestamp of the dictionary.
-    let createdAt: Int
+    let created: Int
     
     /// The rating of the dictionary.
     let rating: Int
-    
-    /// A flag indicating whether the dictionary is public.
-    let isPublic: Bool
     
     /// The dictionary language level
     let level: String
@@ -39,8 +36,6 @@ struct ApiModelDictionaryItem: Codable {
     let words: Int
     
     enum CodingKeys: String, CodingKey {
-        case name, category, subcategory, author, dictionary, description, rating, level, topic, words
-        case createdAt = "created"
-        case isPublic = "public"
+        case name, category, subcategory, author, dictionary, description, rating, level, topic, words, created
     }
 }
