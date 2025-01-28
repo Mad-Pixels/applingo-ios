@@ -1,11 +1,13 @@
 import SwiftUI
 
 struct DictionaryRemoteRowModel {
-    let title: String
-    let category: String
     let subcategory: String
     let description: String
-    let wordsCount: Int
+    let category: String
+    let title: String
+    let level: String
+    let topic: String
+    let words: Int
     
     var languagePair: (from: String, to: String)? {
         let components = subcategory.split(separator: "-")
@@ -30,6 +32,6 @@ struct DictionaryRemoteRowModel {
     var formattedWordCount: String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
-        return "\(formatter.string(from: NSNumber(value: wordsCount)) ?? String(wordsCount)) words"
+        return "\(formatter.string(from: NSNumber(value: words)) ?? String(words)) words"
     }
 }

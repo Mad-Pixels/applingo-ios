@@ -1,12 +1,12 @@
 import SwiftUI
 
 struct DictionaryRemoteDetailsViewAdditional: View {
-    let dictionary: DatabaseModelDictionary
+    let dictionary: ApiModelDictionaryItem
     private let locale: DictionaryRemoteDetailsLocale
     private let style: DictionaryRemoteDetailsStyle
     
     init(
-        dictionary: DatabaseModelDictionary,
+        dictionary: ApiModelDictionaryItem,
         locale: DictionaryRemoteDetailsLocale,
         style: DictionaryRemoteDetailsStyle
     ) {
@@ -31,7 +31,7 @@ struct DictionaryRemoteDetailsViewAdditional: View {
                 )
                 
                 InputText(
-                    text: .constant(dictionary.date),
+                    text: .constant("dictionary.date"),
                     placeholder: locale.createdAtTitle,
                     isEditing: false
                 )

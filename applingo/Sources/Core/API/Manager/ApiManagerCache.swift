@@ -11,9 +11,6 @@ final class ApiManagerCache {
         
         /// Time-to-live (TTL) for cached dictionaries, in seconds.
         static let dictionariesTTL: TimeInterval = 900
-        
-        /// Tag for logging messages from this class.
-        static let loggerTag = "[ApiCache]"
     }
     
     // MARK: - Properties
@@ -37,7 +34,7 @@ final class ApiManagerCache {
     private init(request: ApiManagerRequest = ApiManagerRequest()) {
         self.request = request
         Logger.debug(
-            "\(Constants.loggerTag): initialized singleton instance"
+            "[Cache]: initialized singleton instance"
         )
     }
     
@@ -49,7 +46,7 @@ final class ApiManagerCache {
     func getCategories() async throws -> ApiModelCategoryItem {
         if let cache = categoriesCache, cache.isValid {
             Logger.debug(
-                "\(Constants.loggerTag): getCategories - returned from cache"
+                "[Cache]: getCategories - returned from cache"
             )
             return cache.value
         }
@@ -62,7 +59,7 @@ final class ApiManagerCache {
         )
         
         Logger.debug(
-            "\(Constants.loggerTag): getCategories - fetched from API"
+            "[Cache]: getCategories - fetched from API"
         )
         return categories
     }
@@ -74,12 +71,12 @@ final class ApiManagerCache {
     func getDictionaries(
         request: ApiModelDictionaryQueryRequest? = nil
     ) async throws -> (
-        dictionaries: [DatabaseModelDictionary],
+        dictionaries: [ApiModelDictionaryItem],
         lastEvaluated: String?
     ) {
         if let cache = findValidDictionaryCacheEntry(for: request) {
             Logger.debug(
-                "\(Constants.loggerTag): getDictionaries - returned from cache",
+                "[Cache]: getDictionaries - returned from cache",
                 metadata: [
                     "request": String(describing: request),
                     "cachedItems": cache.items.count
@@ -96,7 +93,7 @@ final class ApiManagerCache {
         )
         
         Logger.debug(
-            "\(Constants.loggerTag): getDictionaries - fetched from API",
+            "[Cache]: getDictionaries - fetched from API",
             metadata: [
                 "request": String(describing: request),
                 "fetchedItems": dictionaries.count
@@ -109,9 +106,9 @@ final class ApiManagerCache {
     /// - Parameter dictionary: The dictionary to download.
     /// - Returns: A URL pointing to the downloaded dictionary file.
     /// - Throws: An error if the download fails.
-    func downloadDictionary(_ dictionary: DatabaseModelDictionary) async throws -> URL {
+    func downloadDictionary(_ dictionary: ApiModelDictionaryItem) async throws -> URL {
         Logger.debug(
-            "\(Constants.loggerTag): downloadDictionary - downloading",
+            "[Cache]: downloadDictionary - downloading",
             metadata: ["dictionary": dictionary.name]
         )
         return try await request.downloadDictionary(dictionary)
@@ -123,7 +120,7 @@ final class ApiManagerCache {
         categoriesCache = nil
         
         Logger.debug(
-            "\(Constants.loggerTag): cache cleared"
+            "[Cache]: cache cleared"
         )
     }
     
@@ -144,7 +141,7 @@ final class ApiManagerCache {
     ///   - lastEvaluated: The `lastEvaluated` value from the API response.
     ///   - request: The request parameters used to fetch the dictionaries.
     private func updateDictionariesCache(
-        dictionaries: [DatabaseModelDictionary],
+        dictionaries: [ApiModelDictionaryItem],
         lastEvaluated: String?,
         request: ApiModelDictionaryQueryRequest?
     ) {
@@ -159,7 +156,7 @@ final class ApiManagerCache {
         dictionariesCache.append(entry)
         
         Logger.debug(
-            "\(Constants.loggerTag): updated dictionaries cache",
+            "[Cache]: updated dictionaries cache",
             metadata: [
                 "request": String(describing: request),
                 "cachedItems": dictionaries.count

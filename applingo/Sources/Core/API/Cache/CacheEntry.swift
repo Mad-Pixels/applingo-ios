@@ -23,7 +23,7 @@ struct DictionaryCacheEntry {
     let request: ApiModelDictionaryQueryRequest?
     
     /// The cached list of dictionaries.
-    let items: [DatabaseModelDictionary]
+    let items: [ApiModelDictionaryItem]
     
     /// The last evaluated key for pagination purposes.
     let lastEvaluated: String?

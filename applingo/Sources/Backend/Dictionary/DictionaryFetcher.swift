@@ -2,7 +2,7 @@ import Foundation
 import Combine
 
 final class DictionaryFetcher: ProcessApi {
-    @Published var dictionaries: [DatabaseModelDictionary] = []
+    @Published var dictionaries: [ApiModelDictionaryItem] = []
     @Published var isLoadingPage = false
     @Published var searchText: String = "" {
         didSet {
@@ -13,7 +13,7 @@ final class DictionaryFetcher: ProcessApi {
         }
     }
     
-    private var allDictionaries: [DatabaseModelDictionary] = []
+    private var allDictionaries: [ApiModelDictionaryItem] = []
     private var currentRequest: ApiModelDictionaryQueryRequest?
     private var hasMorePages = true
     private var lastEvaluated: String?
@@ -59,7 +59,7 @@ final class DictionaryFetcher: ProcessApi {
                 // Асинхронный запрос к вашему ApiManagerCache
                 try await ApiManagerCache.shared.getDictionaries(request: request)
             },
-            success: { [weak self] (result: ([DatabaseModelDictionary], String?)) in
+            success: { [weak self] (result: ([ApiModelDictionaryItem], String?)) in
                 guard let self = self else { return }
                 guard currentToken == self.cancellationToken else {
                     self.isLoadingPage = false
@@ -88,7 +88,7 @@ final class DictionaryFetcher: ProcessApi {
         )
     }
     
-    func loadMoreDictionariesIfNeeded(currentItem: DatabaseModelDictionary?) {
+    func loadMoreDictionariesIfNeeded(currentItem: ApiModelDictionaryItem?) {
         guard
             let currentItem = currentItem,
             let index = dictionaries.firstIndex(where: { $0.id == currentItem.id }),
@@ -110,7 +110,7 @@ final class DictionaryFetcher: ProcessApi {
     
     // MARK: - Helpers
     
-    private func processFetchedDictionaries(_ fetched: [DatabaseModelDictionary], lastEvaluated: String?) {
+    private func processFetchedDictionaries(_ fetched: [ApiModelDictionaryItem], lastEvaluated: String?) {
         if fetched.isEmpty {
             hasMorePages = false
         } else {

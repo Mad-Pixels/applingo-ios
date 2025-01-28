@@ -3,7 +3,7 @@ import SwiftUI
 struct DictionaryRemoteRow: View {
     let model: DictionaryRemoteRowModel
     let style: DictionaryRemoteRowStyle
-    let dictionary: DatabaseModelDictionary
+    let dictionary: ApiModelDictionaryItem
     let onTap: () -> Void
     let onToggle: (Bool) -> Void
     
@@ -35,7 +35,17 @@ struct DictionaryRemoteRow: View {
                     }
                     
                     HStack(spacing: 4) {
-                        Image(systemName: "book.closed")
+                        Image(systemName: "graduationcap")
+                            .font(.system(size: 11))
+                            .foregroundColor(style.accentColor)
+                        
+                        Text(model.level)
+                            .font(style.wordCountFont)
+                            .foregroundColor(style.subtitleColor)
+                    }
+                    
+                    HStack(spacing: 4) {
+                        Image(systemName: "book")
                             .font(.system(size: 11))
                             .foregroundColor(style.accentColor)
                         
@@ -65,7 +75,16 @@ struct DictionaryRemoteRow: View {
                 let fileURL = try await ApiManagerCache.shared.downloadDictionary(dictionary)
                 let (downloadedDictionary, words) = try CSVManager.shared.parse(
                     url: fileURL,
-                    dictionaryItem: dictionary
+                    dictionaryItem: DatabaseModelDictionary(
+                        guid: dictionary.dictionary,
+                        name: dictionary.name,
+                        topic: dictionary.topic,
+                        author: dictionary.author,
+                        category: dictionary.category,
+                        subcategory: dictionary.subcategory,
+                        description: dictionary.description,
+                        level: .undefined
+                    )
                 )
                 try CSVManager.shared.saveToDatabase(dictionary: downloadedDictionary, words: words)
                 try? FileManager.default.removeItem(at: fileURL)

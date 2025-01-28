@@ -10,28 +10,22 @@ final class ApiManagerRequest {
         static let categories = "/v1/subcategories"
         static let urls = "/v1/urls"
     }
-    
-    /// Constants for logging and other configurations.
-    private enum Constants {
-        static let loggerTag = "[ApiRequest]"
-    }
-    
+        
     // MARK: - Public Methods
     
     /// Fetches the list of categories from the API.
     /// - Returns: A `ApiModelCategoryItem` containing the fetched categories.
     /// - Throws: An error if the API request fails or decoding fails.
     func getCategories() async throws -> ApiModelCategoryItem {
-        Logger.debug("\(Constants.loggerTag): Fetching categories from API...")
+        Logger.debug("[API]: Fetching categories from API...")
         
         let data = try await AppAPI.shared.request(
             endpoint: Endpoints.categories,
             method: .get
         )
         let response = try JSONDecoder().decode(ApiModelCategoryGetResponse.self, from: data)
-        
         Logger.debug(
-            "\(Constants.loggerTag): Fetched categories",
+            "[API]: Fetched categories",
             metadata: ["categories": String(describing: response.data)]
         )
         return response.data
@@ -43,9 +37,9 @@ final class ApiManagerRequest {
     /// - Throws: An error if the API request fails or decoding fails.
     func getDictionaries(
         request: ApiModelDictionaryQueryRequest? = nil
-    ) async throws -> (dictionaries: [DatabaseModelDictionary], lastEvaluated: String?) {
+    ) async throws -> (dictionaries: [ApiModelDictionaryItem], lastEvaluated: String?) {
         Logger.debug(
-            "\(Constants.loggerTag): Fetching dictionaries from API...",
+            "[API]: Fetching dictionaries from API...",
             metadata: ["request": String(describing: request)]
         )
         
@@ -58,40 +52,29 @@ final class ApiManagerRequest {
         
         let response = try JSONDecoder().decode(ApiModelDictionaryQueryResponse.self, from: data)
         Logger.debug(
-            "\(Constants.loggerTag): Dictionaries fetched from API",
+            "[API]: Dictionaries fetched from API",
             metadata: [
                 "fetchedItems": response.data.items.count,
                 "lastEvaluated": response.data.lastEvaluated ?? "None"
             ]
         )
-        
-        let dictionaries = response.data.items.map { dictionaryItem in
-            DatabaseModelDictionary(
-                guid: dictionaryItem.dictionary,
-                name: dictionaryItem.name,
-                author: dictionaryItem.author,
-                category: dictionaryItem.category,
-                subcategory: dictionaryItem.subcategory,
-                description: dictionaryItem.description,
-                id: UUID().hashValue
-            )
-        }
-        return (dictionaries: dictionaries, lastEvaluated: response.data.lastEvaluated)
+
+        return (dictionaries: response.data.items, lastEvaluated: response.data.lastEvaluated)
     }
     
     /// Downloads a dictionary using a pre-signed URL from the API.
     /// - Parameter dictionary: The dictionary to download.
     /// - Returns: A local URL to the downloaded file.
     /// - Throws: An error if the API request or the download fails.
-    func downloadDictionary(_ dictionary: DatabaseModelDictionary) async throws -> URL {
+    func downloadDictionary(_ dictionary: ApiModelDictionaryItem) async throws -> URL {
         Logger.debug(
-            "\(Constants.loggerTag): Requesting pre-signed URL for dictionary download...",
+            "[API]: Requesting pre-signed URL for dictionary download...",
             metadata: ["dictionary": dictionary.name]
         )
         
         let body = try? JSONSerialization.data(
             withJSONObject: ApiModelDictionaryFetchRequest(
-                from: dictionary.guid
+                from: dictionary.dictionary
             ).toDictionary()
         )
         
@@ -104,14 +87,14 @@ final class ApiManagerRequest {
         let response = try JSONDecoder().decode(ApiModelDictionaryFetchResponse.self, from: data)
         
         Logger.debug(
-            "\(Constants.loggerTag): Pre-signed URL fetched",
+            "[API]: Pre-signed URL fetched",
             metadata: ["url": response.data.url]
         )
         
         let fileURL = try await AppAPI.shared.downloadS3(from: response.data.url)
         
         Logger.debug(
-            "\(Constants.loggerTag): Dictionary downloaded successfully",
+            "[API]: Dictionary downloaded successfully",
             metadata: ["fileURL": fileURL.path]
         )
         return fileURL
@@ -141,7 +124,7 @@ final class ApiManagerRequest {
         }
         
         Logger.debug(
-            "\(Constants.loggerTag): Built query items",
+            "[API]: Built query items",
             metadata: ["queryItems": items.map { $0.name + "=" + ($0.value ?? "") }]
         )
         

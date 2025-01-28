@@ -5,13 +5,13 @@ struct DictionaryRemoteDetails: View {
     @StateObject private var style: DictionaryRemoteDetailsStyle
     @StateObject private var locale = DictionaryRemoteDetailsLocale()
 
-    @State private var editedDictionary: DatabaseModelDictionary
+    @State private var editedDictionary: ApiModelDictionaryItem
     @State private var isPressedTrailing = false
     @State private var isDownloading = false
     @Binding var isPresented: Bool
 
     init(
-        dictionary: DatabaseModelDictionary,
+        dictionary: ApiModelDictionaryItem,
         isPresented: Binding<Bool>,
         style: DictionaryRemoteDetailsStyle? = nil
     ) {
@@ -84,7 +84,16 @@ struct DictionaryRemoteDetails: View {
                 let fileURL = try await ApiManagerCache.shared.downloadDictionary(editedDictionary)
                 let (dictionary, words) = try CSVManager.shared.parse(
                     url: fileURL,
-                    dictionaryItem: editedDictionary
+                    dictionaryItem: DatabaseModelDictionary(
+                        guid: editedDictionary.dictionary,
+                        name: editedDictionary.name,
+                        topic: editedDictionary.topic,
+                        author: editedDictionary.author,
+                        category: editedDictionary.category,
+                        subcategory: editedDictionary.subcategory,
+                        description: editedDictionary.description,
+                        level: .undefined
+                    )
                 )
                 try CSVManager.shared.saveToDatabase(dictionary: dictionary, words: words)
                 try? FileManager.default.removeItem(at: fileURL)

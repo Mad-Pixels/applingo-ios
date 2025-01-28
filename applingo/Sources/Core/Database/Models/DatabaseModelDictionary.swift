@@ -164,22 +164,3 @@ extension DatabaseModelDictionary: FetchableRecord, PersistableRecord {
         Logger.debug("[Database] Created index on level column")
     }
 }
-
-// MARK: - Search Methods
-
-extension DatabaseModelDictionary {
-    /// Returns a combined searchable text for this dictionary.
-    var searchableText: String {
-        return [name, author, description]
-            .map { $0.lowercased() }
-            .joined(separator: " ")
-    }
-
-    /// Checks if the dictionary matches the provided search text.
-    /// - Parameter searchText: The search string.
-    /// - Returns: `true` if the dictionary matches, otherwise `false`.
-    func matches(searchText: String) -> Bool {
-        if searchText.isEmpty { return true }
-        return searchableText.contains(searchText.lowercased())
-    }
-}
