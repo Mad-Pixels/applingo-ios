@@ -58,8 +58,11 @@ struct ApiDictionaryQueryResponseModel: Codable {
         /// The dictionary topic
         let topic: String
         
+        /// The dictionary words count
+        let words: Int
+        
         enum CodingKeys: String, CodingKey {
-            case name, category, subcategory, author, dictionary, description, rating, level, topic
+            case name, category, subcategory, author, dictionary, description, rating, level, topic, words
             case createdAt = "created"
             case isPublic = "public"
         }
