@@ -31,11 +31,11 @@ struct DictionaryLocalRow: View {
                     }
                     
                     HStack(spacing: 4) {
-                        Image(systemName: "book.closed")
+                        Image(systemName: "graduationcap")
                             .font(.system(size: 11))
                             .foregroundColor(style.accentColor)
                         
-                        Text(model.formattedWordCount)
+                        Text(model.level.rawValue)
                             .font(style.wordCountFont)
                             .foregroundColor(style.subtitleColor)
                     }

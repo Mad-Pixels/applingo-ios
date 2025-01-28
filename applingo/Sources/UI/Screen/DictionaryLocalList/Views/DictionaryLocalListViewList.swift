@@ -36,7 +36,7 @@ struct DictionaryLocalListViewList: View {
                     category: dictionary.category,
                     subcategory: dictionary.subcategory,
                     description: dictionary.description,
-                    wordsCount: 1234,
+                    level: dictionary.level,
                     isActive: dictionary.isActive
                 ),
                

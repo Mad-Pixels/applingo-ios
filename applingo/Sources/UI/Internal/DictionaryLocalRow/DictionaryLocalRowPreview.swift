@@ -15,7 +15,7 @@ private struct DictionaryLocalRowPreview: View {
         category: "Language",
         subcategory: "Basic",
         description: "Common English words and phrases",
-        wordsCount: 1234,
+        level: .advanced,
         isActive: true
     )
     
@@ -24,7 +24,7 @@ private struct DictionaryLocalRowPreview: View {
         category: "Language",
         subcategory: "ru-en",
         description: "Common English words and phrases",
-        wordsCount: 1234,
+        level: .advanced,
         isActive: true
     )
     
@@ -33,7 +33,7 @@ private struct DictionaryLocalRowPreview: View {
         category: "Language",
         subcategory: "Advanced",
         description: "Advanced Spanish vocabulary",
-        wordsCount: 567,
+        level: .beginner,
         isActive: false
     )
     
@@ -42,7 +42,7 @@ private struct DictionaryLocalRowPreview: View {
         category: "Special",
         subcategory: "Professional Terms",
         description: "A very detailed description of the dictionary content",
-        wordsCount: 999,
+        level: .beginner,
         isActive: true
     )
     
