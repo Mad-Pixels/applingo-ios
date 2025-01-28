@@ -18,41 +18,9 @@ struct DictionaryRemoteRow: View {
                         .font(style.titleFont)
                         .foregroundColor(style.titleColor)
                     
-                    if let pair = model.languagePair {
-                        HStack(spacing: 4) {
-                            FlagIcon(code: pair.from,
-                                   style: .themed(ThemeManager.shared.currentThemeStyle))
-                            Image(systemName: "arrow.right")
-                                .font(.system(size: 11))
-                                .foregroundColor(style.subtitleColor)
-                            FlagIcon(code: pair.to,
-                                   style: .themed(ThemeManager.shared.currentThemeStyle))
-                        }
-                    } else {
-                        Text(model.subtitle)
-                            .font(style.subtitleFont)
-                            .foregroundColor(style.subtitleColor)
-                    }
+                    DictionaryRemoteRowViewSubcategory(model: model, style: style)
                     
-                    HStack(spacing: 4) {
-                        Image(systemName: "graduationcap")
-                            .font(.system(size: 11))
-                            .foregroundColor(style.accentColor)
-                        
-                        Text(model.level)
-                            .font(style.wordCountFont)
-                            .foregroundColor(style.subtitleColor)
-                    }
-                    
-                    HStack(spacing: 4) {
-                        Image(systemName: "book")
-                            .font(.system(size: 11))
-                            .foregroundColor(style.accentColor)
-                        
-                        Text(model.formattedWordCount)
-                            .font(style.wordCountFont)
-                            .foregroundColor(style.subtitleColor)
-                    }
+                    DictionaryRemoteRowViewMetadata(model: model, style: style)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 
