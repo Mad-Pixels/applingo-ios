@@ -8,13 +8,19 @@ struct DictionaryRemoteRowViewRight: View {
         VStack(alignment: .leading, spacing: 4) {
             if let pair = model.languagePair {
                 HStack(spacing: 4) {
-                    FlagIcon(code: pair.from,
-                             style: .themed(ThemeManager.shared.currentThemeStyle))
+                    FlagIcon(
+                        code: pair.from,
+                        style: .themed(ThemeManager.shared.currentThemeStyle)
+                    )
+                    
                     Image(systemName: "arrow.right")
                         .font(.system(size: 11))
                         .foregroundColor(style.subtitleColor)
-                    FlagIcon(code: pair.to,
-                             style: .themed(ThemeManager.shared.currentThemeStyle))
+                    
+                    FlagIcon(
+                        code: pair.to,
+                        style: .themed(ThemeManager.shared.currentThemeStyle)
+                    )
                 }
             } else {
                 HStack(spacing: 4) {
