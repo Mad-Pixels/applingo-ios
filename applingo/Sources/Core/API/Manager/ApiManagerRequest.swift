@@ -57,7 +57,6 @@ final class ApiManagerRequest {
         )
         
         let response = try JSONDecoder().decode(ApiDictionaryQueryResponseModel.self, from: data)
-        
         Logger.debug(
             "\(Constants.loggerTag): Dictionaries fetched from API",
             metadata: [

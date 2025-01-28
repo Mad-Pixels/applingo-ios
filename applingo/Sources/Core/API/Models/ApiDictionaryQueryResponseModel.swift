@@ -52,8 +52,14 @@ struct ApiDictionaryQueryResponseModel: Codable {
         /// A flag indicating whether the dictionary is public.
         let isPublic: Bool
         
+        /// The dictionary language level
+        let level: String
+        
+        /// The dictionary topic
+        let topic: String
+        
         enum CodingKeys: String, CodingKey {
-            case name, category, subcategory, author, dictionary, description, rating
+            case name, category, subcategory, author, dictionary, description, rating, level, topic
             case createdAt = "created"
             case isPublic = "public"
         }
