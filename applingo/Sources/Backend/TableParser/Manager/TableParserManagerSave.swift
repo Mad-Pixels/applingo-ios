@@ -53,7 +53,7 @@ final class TableParserManagerSave {
                     for word in words {
                         // Аналогично создаём DatabaseModelWord.
                         // Если тебе нужно хранить frontText/backText/description/hint — передай их.
-                        var dbWord = DatabaseModelWord(
+                        let dbWord = DatabaseModelWord(
                             dictionary: dbDictionary.guid,  // Привязываем к новому словарю
                             frontText: word.frontText,
                             backText: word.backText,
@@ -62,7 +62,7 @@ final class TableParserManagerSave {
                         )
                         
                         // Сохраняем word в БД
-                        try dbWord.insert(db)
+                        try dbWord.upsert(db)
                     }
                 }
                 
