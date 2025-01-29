@@ -31,7 +31,7 @@ struct DictionaryRemoteDetailsViewAdditional: View {
                 )
                 
                 InputText(
-                    text: .constant("dictionary.date"),
+                    text: .constant(dictionary.date),
                     placeholder: locale.createdAtTitle,
                     isEditing: false
                 )

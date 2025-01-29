@@ -60,4 +60,13 @@ extension ApiModelDictionaryItem {
         if searchText.isEmpty { return true }
         return searchableText.contains(searchText.lowercased())
     }
+    
+    /// Provides a formatted date string for the dictionary's creation date.
+    var date: String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        return formatter.string(
+            from: Date(timeIntervalSince1970: TimeInterval(created))
+        )
+    }
 }
