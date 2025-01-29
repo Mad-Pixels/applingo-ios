@@ -2,26 +2,32 @@ import Foundation
 
 /// Data model representing the dictionary-level metadata for table parsing.
 public struct TableParserModelDictionary: Codable {
-    public let guid: String
-    public let name: String
-    public let author: String
-    public let category: String
-    public let subcategory: String
-    public let description: String
+    let guid: String
+    let name: String
+    let topic: String
+    let author: String
+    let category: String
+    let subcategory: String
+    let description: String
+    let level: DictionaryLevelType
     
-    public init(
+    init(
         guid: String,
         name: String,
+        topic: String,
         author: String,
         category: String,
         subcategory: String,
-        description: String
+        description: String,
+        level: DictionaryLevelType
     ) {
         self.guid = guid
         self.name = name
+        self.topic = topic
         self.author = author
         self.category = category
         self.subcategory = subcategory
         self.description = description
+        self.level = level
     }
 }

@@ -38,10 +38,12 @@ final class TableParserManagerSave {
                     let dbDictionary = DatabaseModelDictionary(
                         guid: dictionary.guid,
                         name: dictionary.name,
+                        topic: dictionary.topic,
                         author: dictionary.author,
                         category: dictionary.category,
                         subcategory: dictionary.subcategory,
-                        description: dictionary.description
+                        description: dictionary.description,
+                        level: dictionary.level
                     )
                     
                     // 3. Сохраняем dictionary в БД

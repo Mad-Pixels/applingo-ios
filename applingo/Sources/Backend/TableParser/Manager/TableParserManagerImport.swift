@@ -60,10 +60,12 @@ public final class TableParserManagerImport {
             return TableParserModelDictionary(
                 guid: meta.guid,
                 name: meta.name,
+                topic: meta.topic,
                 author: meta.author,
                 category: meta.category,
                 subcategory: meta.subcategory,
-                description: meta.description
+                description: meta.description,
+                level: meta.level
             )
         }
         
@@ -71,10 +73,12 @@ public final class TableParserManagerImport {
         return TableParserModelDictionary(
             guid: url.lastPathComponent,
             name: baseName,
-            author: "local user",
-            category: "Local",
+            topic: "local",
+            author: "local",
+            category: "local",
             subcategory: "personal",
-            description: "Imported from local file: '\(url.lastPathComponent)'"
+            description: "Imported from local file: '\(url.lastPathComponent)'",
+            level: .undefined
         )
     }
 }

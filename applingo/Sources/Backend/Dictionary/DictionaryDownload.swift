@@ -23,10 +23,12 @@ actor DictionaryDownload {
         let dictionaryMetadata = TableParserModelDictionary(
             guid: dictionary.id,
             name: dictionary.name,
+            topic: dictionary.topic,
             author: dictionary.author,
             category: dictionary.category,
             subcategory: dictionary.subcategory,
-            description: "\(dictionary.description) (level: \(dictionary.level))"
+            description: dictionary.description,
+            level: DictionaryLevelType(rawValue: dictionary.level) ?? .undefined
         )
         
         // 4. Импортируем данные (парсинг) в (dictionaryModel, words).
