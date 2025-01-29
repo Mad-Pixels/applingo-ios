@@ -92,23 +92,27 @@ public final class TableParserParseCSV: AbstractTableParser {
                 continue
             }
             
-            do {
-                let word = try createWord(from: columns)
-                words.append(word)
-            } catch {
-                Logger.debug("[Parser]: Error creating word from line", metadata: [
-                    "line_index": "\(index)",
-                    "error": "\(error)"
+            if columns[0].isEmpty || columns[1].isEmpty {
+                Logger.debug("[Parser]: Skipping line due to empty front/back text", metadata: [
+                    "line_index": "\(index)"
                 ])
-                throw error
+                continue
             }
+            
+            let word = TableParserModelWord(
+                dictionary: UUID().uuidString,
+                frontText: columns[0],
+                backText: columns[1],
+                description: columns.count > 3 ? columns[3] : "",
+                hint: columns.count > 2 ? columns[2] : ""
+            )
+            words.append(word)
         }
         
         guard !words.isEmpty else {
-            Logger.debug("[Parser]: No valid words found after parsing")
+            Logger.debug("[Parser]: No valid words found after skipping invalid lines")
             throw TableParserError.parsingFailed("No valid word entries found in CSV file")
         }
-        
         return words
     }
     

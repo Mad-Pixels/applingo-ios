@@ -74,7 +74,7 @@ final class TableParserManagerSave {
                     "saved_count": "\(count)"
                 ])
             },
-            screen: .DictionaryImport,  // Подставь нужный ScreenType
+            screen: .DictionaryImport,
             metadata: [
                 "dictionary_guid": dictionary.guid
             ],
