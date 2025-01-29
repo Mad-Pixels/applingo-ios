@@ -46,6 +46,16 @@ struct DictionaryLocalDetailsViewMain: View {
                     placeholder: locale.descriptionTitle,
                     isEditing: isEditing
                 )
+                
+                InputText(
+                    text: Binding(
+                        get: { dictionary.dictionary.topic },
+                        set: { dictionary.dictionary.topic = $0 }
+                    ),
+                    title: locale.displayNameTitle.capitalizedFirstLetter,
+                    placeholder: locale.displayNameTitle,
+                    isEditing: isEditing
+                )
             }
             .padding(.horizontal, 8)
             .background(Color.clear)

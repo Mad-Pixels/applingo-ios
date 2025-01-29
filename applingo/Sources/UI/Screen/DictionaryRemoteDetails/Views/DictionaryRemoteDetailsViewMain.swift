@@ -35,6 +35,12 @@ struct DictionaryRemoteDetailsViewMain: View {
                     placeholder: locale.descriptionTitle,
                     isEditing: false
                 )
+                
+                InputText(
+                    text: .constant(dictionary.topic),
+                    placeholder: locale.displayNameTitle,
+                    isEditing: false
+                )
             }
             .padding(.horizontal, 8)
             .background(Color.clear)
