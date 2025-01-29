@@ -31,7 +31,7 @@ struct DictionaryRemoteList: View {
                     }
                 )
                 .safeAreaInset(edge: .bottom) {
-                    Color.clear.frame(height: 42)
+                    Color.clear.frame(height: 120)
                 }
             }
             .overlay(alignment: .bottomTrailing) {
