@@ -81,26 +81,10 @@ struct DictionaryRemoteDetails: View {
         isDownloading = true
         Task {
             do {
-                let fileURL = try await ApiManagerCache.shared.downloadDictionary(editedDictionary)
-                let (dictionary, words) = try CSVManager.shared.parse(
-                    url: fileURL,
-                    dictionaryItem: DatabaseModelDictionary(
-                        guid: editedDictionary.dictionary,
-                        name: editedDictionary.name,
-                        topic: editedDictionary.topic,
-                        author: editedDictionary.author,
-                        category: editedDictionary.category,
-                        subcategory: editedDictionary.subcategory,
-                        description: editedDictionary.description,
-                        level: .undefined
-                    )
-                )
-                try CSVManager.shared.saveToDatabase(dictionary: dictionary, words: words)
-                try? FileManager.default.removeItem(at: fileURL)
+                try await DictionaryDownload.shared.download(dictionary: editedDictionary)
 
                 await MainActor.run {
                     isDownloading = false
-                    NotificationCenter.default.post(name: .dictionaryListShouldUpdate, object: nil)
                     presentationMode.wrappedValue.dismiss()
                 }
             } catch {
