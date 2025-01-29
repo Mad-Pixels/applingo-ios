@@ -11,14 +11,14 @@ actor DictionaryDownload {
         let (dictionaryModel, words) = try CSVManager.shared.parse(
             url: fileURL,
             dictionaryItem: DatabaseModelDictionary(
-                guid: dictionary.dictionary,
+                guid: dictionary.id,
                 name: dictionary.name,
                 topic: dictionary.topic,
                 author: dictionary.author,
                 category: dictionary.category,
                 subcategory: dictionary.subcategory,
                 description: dictionary.description,
-                level: .undefined
+                level: DictionaryLevelType(rawValue: dictionary.level) ?? .undefined
             )
         )
         try CSVManager.shared.saveToDatabase(dictionary: dictionaryModel, words: words)
