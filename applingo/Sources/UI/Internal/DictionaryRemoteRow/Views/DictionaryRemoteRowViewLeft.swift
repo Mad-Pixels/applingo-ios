@@ -19,5 +19,14 @@ struct DictionaryRemoteRowViewLeft: View {
                 .foregroundColor(style.subtitleColor)
         }
         
+        HStack(spacing: 4) {
+            Image(systemName: "icloud.and.arrow.down")
+                .font(.system(size: 11))
+                .foregroundColor(style.accentColor)
+
+            Text("\(model.rating)")
+                .font(style.wordCountFont)
+                .foregroundColor(style.subtitleColor)
+        }
     }
 }

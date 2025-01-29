@@ -14,16 +14,11 @@ struct DictionaryRemoteRow: View {
         SectionBody {
             HStack(spacing: style.spacing) {
                 VStack(alignment: .leading, spacing: style.spacing / 2) {
-                    
-                    
-                    
                     DictionaryRemoteRowViewLeft(model: model, style: style)
-                    
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 
                 DictionaryRemoteRowViewRight(model: model, style: style)
-
             }
         }
         .contentShape(Rectangle())

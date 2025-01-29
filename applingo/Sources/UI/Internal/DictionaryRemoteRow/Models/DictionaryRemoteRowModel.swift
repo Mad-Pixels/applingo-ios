@@ -7,6 +7,7 @@ struct DictionaryRemoteRowModel {
     let title: String
     let level: String
     let topic: String
+    let rating: Int
     let words: Int
     
     var languagePair: (from: String, to: String)? {

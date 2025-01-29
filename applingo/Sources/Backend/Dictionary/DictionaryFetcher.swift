@@ -11,6 +11,8 @@ final class DictionaryFetcher: ProcessApi {
        static let minSearchResults = 5
        static let preloadThreshold = 5
    }
+    
+    private var screen: ScreenType = .Home
    
    // MARK: - Published Properties
    
@@ -57,6 +59,13 @@ final class DictionaryFetcher: ProcessApi {
        updateFilteredDictionaries()
        fetchDictionaries()
    }
+    
+    /// Sets the current screen type for tracking context in operations.
+    /// - Parameter screen: The screen type to set.
+    func setFrame(_ screen: ScreenType) {
+        Logger.debug("[Getter]: Setting frame", metadata: ["frame": screen.rawValue])
+        self.screen = screen
+    }
    
    func loadMoreDictionariesIfNeeded(currentItem: ApiModelDictionaryItem?) {
        guard let item = currentItem,

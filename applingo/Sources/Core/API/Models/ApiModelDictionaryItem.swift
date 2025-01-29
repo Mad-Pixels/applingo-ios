@@ -29,10 +29,10 @@ struct ApiModelDictionaryItem: Identifiable, Codable, Equatable, Hashable {
     /// The rating of the dictionary.
     let rating: Int
     
-    /// The dictionary language level
+    /// The dictionary language level.
     let level: String
     
-    /// The dictionary topic
+    /// The dictionary topic.
     let topic: String
     
     /// The dictionary words count.
