@@ -2,7 +2,7 @@
 /// Levels are based on common language proficiency frameworks.
 enum DictionaryLevelType: String, CaseIterable, Codable {
     /// Internal or undefined level, used for system-level dictionaries.
-    case undefined = "any"
+    case undefined = "UFO"
     
     /// Beginner level, equivalent to A1 in the CEFR framework.
     case beginner = "A1"

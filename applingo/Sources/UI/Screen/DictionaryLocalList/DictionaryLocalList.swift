@@ -34,7 +34,7 @@ struct DictionaryLocalList: View {
                     }
                 )
                 .safeAreaInset(edge: .bottom) {
-                    Color.clear.frame(height: 80)
+                    Color.clear.frame(height: 130)
                 }
             }
             .overlay(alignment: .bottomTrailing) {
