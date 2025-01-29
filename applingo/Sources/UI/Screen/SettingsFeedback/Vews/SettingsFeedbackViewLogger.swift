@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct SettingsViewLogger: View {
+struct SettingsFeedbackViewLogger: View {
     @EnvironmentObject private var themeManager: ThemeManager
     @ObservedObject private var logHandler = LogHandler.shared
     @StateObject private var locale = SettingsLocale()

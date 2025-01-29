@@ -37,12 +37,12 @@ struct Settings: View {
                     .listRowSeparator(.hidden)
                     .frame(maxWidth: .infinity)
                 
-                SettingsViewLogger()
+                SettingsViewFeedback()
                     .listRowBackground(Color.clear)
                     .listRowInsets(EdgeInsets(
                         top: style.spacing,
                         leading: style.padding.leading + 8,
-                        bottom: style.padding.bottom,
+                        bottom: 0,
                         trailing: style.padding.trailing + 8
                     ))
                     .listRowSeparator(.hidden)

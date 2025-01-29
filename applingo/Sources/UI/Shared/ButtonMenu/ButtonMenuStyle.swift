@@ -18,7 +18,7 @@ struct ButtonMenuStyle {
 extension ButtonMenuStyle {
     static func themed(_ theme: AppTheme) -> ButtonMenuStyle {
         ButtonMenuStyle(
-            backgroundColor: theme.backgroundPrimary,
+            backgroundColor: theme.backgroundSecondary,
             foregroundColor: theme.textPrimary,
             iconColor: theme.accentDark,
             font: .body.bold(),

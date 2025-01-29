@@ -1,15 +1,16 @@
 import SwiftUI
 
 struct GameModeViewCard: View {
-   let mode: GameModeType
-   let icon: String
-   let title: String
-   let description: String
+    @EnvironmentObject private var themeManager: ThemeManager
+    
+    let mode: GameModeType
+    let icon: String
+    let title: String
+    let description: String
     let style: GameTheme
-   let isSelected: Bool
-   let onSelect: () -> Void
-   @EnvironmentObject private var themeManager: ThemeManager
-   
+    let isSelected: Bool
+    let onSelect: () -> Void
+    
     var body: some View {
         ButtonMenu(
             title: title,
