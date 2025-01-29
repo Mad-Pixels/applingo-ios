@@ -21,8 +21,8 @@ enum CSVManagerError: Error, LocalizedError {
     }
 }
 
-final class CSVManager {
-    static let shared = CSVManager()
+final class CSVManager1 {
+    static let shared = CSVManager1()
     private init() {}
     
     func parse(

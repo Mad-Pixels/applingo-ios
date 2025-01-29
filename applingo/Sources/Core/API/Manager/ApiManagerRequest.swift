@@ -91,7 +91,15 @@ final class ApiManagerRequest {
             metadata: ["url": response.data.url]
         )
         
-        let fileURL = try await AppAPI.shared.downloadS3(from: response.data.url)
+        // Создаем URL с правильным именем файла
+        let tempDir = FileManager.default.temporaryDirectory
+        let destinationURL = tempDir.appendingPathComponent(dictionary.dictionary)
+        
+        // Скачиваем файл сразу в нужное место с нужным именем
+        let fileURL = try await AppAPI.shared.downloadS3(
+            from: response.data.url,
+            to: destinationURL
+        )
         
         Logger.debug(
             "[API]: Dictionary downloaded successfully",

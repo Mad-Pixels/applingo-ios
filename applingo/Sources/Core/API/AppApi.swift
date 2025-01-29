@@ -49,22 +49,41 @@ final class AppAPI: ObservableObject {
     // MARK: - Public Methods
 
     /// Downloads a file from an S3 URL.
-    /// - Parameter urlString: The S3 file URL.
+    /// - Parameters:
+    ///   - urlString: The S3 file URL.
+    ///   - destinationURL: Optional URL where to save the file. If nil, uses temporary location.
     /// - Returns: A local file URL.
-    func downloadS3(from urlString: String) async throws -> URL {
+    func downloadS3(from urlString: String, to destinationURL: URL? = nil) async throws -> URL {
         guard let url = URL(string: urlString) else {
             throw APIError.invalidEndpointURL(endpoint: urlString)
         }
 
         let (localURL, urlResponse) = try await session.download(from: url)
+        let validatedURL = try validateS3Response(localURL: localURL, urlResponse: urlResponse)
+        
+        // Если указан целевой URL, перемещаем файл
+        if let destinationURL = destinationURL {
+            try? FileManager.default.removeItem(at: destinationURL) // Удаляем если существует
+            try FileManager.default.moveItem(at: validatedURL, to: destinationURL)
+            
+            Logger.debug(
+                "[API]: Moved S3 file to destination",
+                metadata: [
+                    "from": validatedURL.path,
+                    "to": destinationURL.path
+                ]
+            )
+            return destinationURL
+        }
+        
         Logger.debug(
             "[API]: Downloaded S3 file",
             metadata: [
                 "url": url.absoluteString,
-                "localURL": localURL.path
+                "localURL": validatedURL.path
             ]
         )
-        return try validateS3Response(localURL: localURL, urlResponse: urlResponse)
+        return validatedURL
     }
 
     /// Makes an API request to the specified endpoint.
