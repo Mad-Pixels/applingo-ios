@@ -7,7 +7,6 @@ actor DictionaryDownload {
     
     func download(dictionary: ApiModelDictionaryItem) async throws {
         let fileURL = try await ApiManagerCache.shared.downloadDictionary(dictionary)
-        print(dictionary)
         let (dictionaryModel, words) = try CSVManager.shared.parse(
             url: fileURL,
             dictionaryItem: DatabaseModelDictionary(
