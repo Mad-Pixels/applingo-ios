@@ -1,26 +1,96 @@
 import Foundation
 import Combine
 
+/// Actor responsible for downloading and processing dictionaries.
+/// Handles the complete flow from downloading to saving in the database.
 actor DictionaryDownload {
     static let shared = DictionaryDownload()
     
-    private init() {}
+    private init() {
+        Logger.info("[Dictionary]: Initialized singleton instance")
+    }
     
     /// Downloads the dictionary from the API, parses it, and saves it to the local database.
     /// - Parameter dictionary: The model representing a dictionary item from the API.
     /// - Throws: Any network or parsing error that might occur.
     func download(dictionary: ApiModelDictionaryItem) async throws {
-        // 1. Скачиваем файл (CSV / TSV) из сети.
-        let fileURL = try await ApiManagerCache.shared.downloadDictionary(dictionary)
-        
-        // 2. Создаём менеджер импорта, который найдет подходящий парсер (CSV/TSV) и распарсит файл.
-        let importManager = TableParserManagerImport(
-            factory: TableParserFactory() // Внутри есть CSV и TSV парсеры.
+        Logger.info(
+            "[Dictionary]: Starting dictionary download",
+            metadata: [
+                "dictionaryId": dictionary.id,
+                "dictionaryName": dictionary.name
+            ]
         )
         
-        // 3. Преобразуем ApiModelDictionaryItem в TableParserModelDictionary
-        //    (здесь вы можете адаптировать поля, например, уровень словаря — level — можно положить в description).
-        let dictionaryMetadata = TableParserModelDictionary(
+        Logger.debug("[Dictionary]: Downloading dictionary file")
+        let fileURL = try await ApiManagerCache.shared.downloadDictionary(dictionary)
+        
+        Logger.info(
+            "[Dictionary]: File downloaded successfully",
+            metadata: ["fileURL": fileURL.absoluteString]
+        )
+        let importManager = TableParserManagerImport(
+            factory: TableParserFactory()
+        )
+        
+        let dictionaryMetadata = createDictionaryMetadata(from: dictionary)
+        Logger.debug(
+            "[Dictionary]: Created dictionary metadata",
+            metadata: [
+                "guid": dictionaryMetadata.guid,
+                "name": dictionaryMetadata.name
+            ]
+        )
+        
+        Logger.debug("[Dictionary]: Starting file parsing")
+        let (dictionaryModel, words) = try importManager.import(
+            from: fileURL,
+            dictionaryMetadata: dictionaryMetadata
+        )
+        Logger.info(
+            "[Dictionary]: Parsing completed",
+            metadata: [
+                "dictionaryId": dictionaryModel.guid,
+                "wordsCount": String(words.count)
+            ]
+        )
+        
+        let saver = TableParserManagerSave(processDatabase: ProcessDatabase())
+        Logger.debug("[Dictionary]: Saving to database")
+        
+        saver.saveToDatabase(dictionary: dictionaryModel, words: words)
+        Logger.info(
+            "[Dictionary]: Successfully saved to database",
+            metadata: [
+                "dictionaryId": dictionaryModel.guid,
+                "wordsCount": String(words.count)
+            ]
+        )
+        
+        cleanupDownloadedFile(at: fileURL)
+        await notifyDictionaryUpdate()
+        
+        Logger.info(
+            "[Dictionary]: Dictionary processing completed",
+            metadata: ["dictionaryId": dictionary.id]
+        )
+    }
+    
+    /// Creates dictionary metadata from API model
+    private func createDictionaryMetadata(from dictionary: ApiModelDictionaryItem) -> TableParserModelDictionary {
+        let level = DictionaryLevelType(rawValue: dictionary.level) ?? .undefined
+        
+        if level == .undefined {
+            Logger.warning(
+                "[Dictionary]: Undefined dictionary level",
+                metadata: [
+                    "dictionaryId": dictionary.id,
+                    "providedLevel": dictionary.level
+                ]
+            )
+        }
+        
+        return TableParserModelDictionary(
             guid: dictionary.id,
             name: dictionary.name,
             topic: dictionary.topic,
@@ -28,27 +98,33 @@ actor DictionaryDownload {
             category: dictionary.category,
             subcategory: dictionary.subcategory,
             description: dictionary.description,
-            level: DictionaryLevelType(rawValue: dictionary.level) ?? .undefined
+            level: level
         )
-        
-        // 4. Импортируем данные (парсинг) в (dictionaryModel, words).
-        let (dictionaryModel, words) = try importManager.import(
-            from: fileURL,
-            dictionaryMetadata: dictionaryMetadata
-        )
-        
-        // 5. Создаём менеджер сохранения, в который передаём ваш ProcessDatabase.
-        //    Предположим, что у вас где-то есть общий экземпляр ProcessDatabase.
-        let saver = TableParserManagerSave(processDatabase: ProcessDatabase())
-        
-        // 6. Сохраняем в локальную базу данных.
-        saver.saveToDatabase(dictionary: dictionaryModel, words: words)
-        
-        // 7. Удаляем загруженный файл, если он больше не нужен.
-        try? FileManager.default.removeItem(at: fileURL)
-        
-        // 8. Сообщаем всем заинтересованным компонентам, что словари обновились.
+    }
+    
+    /// Cleans up the downloaded file
+    private func cleanupDownloadedFile(at fileURL: URL) {
+        do {
+            try FileManager.default.removeItem(at: fileURL)
+            Logger.debug(
+                "[Dictionary]: Cleaned up temporary file",
+                metadata: ["fileURL": fileURL.absoluteString]
+            )
+        } catch {
+            Logger.warning(
+                "[Dictionary]: Failed to clean up temporary file",
+                metadata: [
+                    "fileURL": fileURL.absoluteString,
+                    "error": error.localizedDescription
+                ]
+            )
+        }
+    }
+    
+    /// Notifies observers about dictionary update
+    private func notifyDictionaryUpdate() async {
         await MainActor.run {
+            Logger.debug("[Dictionary]: Notifying about dictionary update")
             NotificationCenter.default.post(name: .dictionaryListShouldUpdate, object: nil)
         }
     }
