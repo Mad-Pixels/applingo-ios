@@ -6,8 +6,26 @@ import Combine
 actor DictionaryDownload {
     static let shared = DictionaryDownload()
     
-    private init() {
+    // MARK: - Private Properties
+    private var screen: ScreenType = .Home
+    
+    init() {
         Logger.info("[Dictionary]: Initialized singleton instance")
+    }
+    
+    // MARK: - Public Methods
+    
+    /// Sets the current screen type for operation tracking
+    /// - Parameter screen: The screen type to set
+    func setFrame(_ screen: ScreenType) {
+        Logger.debug(
+            "[Dictionary]: Setting frame",
+            metadata: [
+                "oldFrame": self.screen.rawValue,
+                "newFrame": screen.rawValue
+            ]
+        )
+        self.screen = screen
     }
     
     /// Downloads the dictionary from the API, parses it, and saves it to the local database.
