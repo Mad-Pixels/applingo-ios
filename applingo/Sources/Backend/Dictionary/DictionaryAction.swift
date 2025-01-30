@@ -26,7 +26,7 @@ final class DictionaryAction: ProcessDatabase {
     /// Sets the current screen type for operation tracking.
     /// - Parameter screen: The screen type to set.
     func setFrame(_ screen: ScreenType) {
-        Logger.debug("[DictionaryAction]: Setting frame", metadata: ["frame": screen.rawValue])
+        Logger.debug("[Dictionary]: Setting frame", metadata: ["frame": screen.rawValue])
         self.screen = screen
     }
     
@@ -99,7 +99,7 @@ final class DictionaryAction: ProcessDatabase {
         dictionary: DatabaseModelDictionary,
         completion: @escaping (Result<Void, Error>) -> Void
     ) {
-        Logger.debug("[DictionaryAction]: Performing dictionary operation", metadata: [
+        Logger.debug("[Dictionary]: Performing dictionary operation", metadata: [
             "operation": name,
             "dictionary": dictionary.name
         ])

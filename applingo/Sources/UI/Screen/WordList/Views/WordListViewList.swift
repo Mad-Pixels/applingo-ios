@@ -3,7 +3,7 @@ import SwiftUI
 struct WordListViewList: View {
     @EnvironmentObject private var themeManager: ThemeManager
     @StateObject private var wordsAction = WordAction()
-    @ObservedObject var wordsGetter = WordGetter()
+    @ObservedObject var wordsGetter: WordGetter
     private let locale: WordListLocale
     let onWordSelect: (DatabaseModelWord) -> Void
     
@@ -18,8 +18,13 @@ struct WordListViewList: View {
     }
     
     var body: some View {
+        let wordsBinding = Binding(
+            get: { wordsGetter.words },
+            set: { _ in }
+        )
+        
         ItemList<DatabaseModelWord, WordRow>(
-            items: $wordsGetter.words,
+            items: wordsBinding,
             style: .themed(themeManager.currentThemeStyle),
             isLoadingPage: wordsGetter.isLoadingPage,
             error: nil,
@@ -52,9 +57,7 @@ struct WordListViewList: View {
             let word = wordsGetter.words[index]
             wordsAction.delete(word) { result in
                 if case .success = result {
-                    if let index = wordsGetter.words.firstIndex(of: word) {
-                        wordsGetter.words.remove(at: index)
-                    }
+                    wordsGetter.removeWord(word)
                 }
             }
         }

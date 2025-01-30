@@ -26,7 +26,7 @@ final class WordAction: ProcessDatabase {
     /// Sets the current screen type for tracking context in operations.
     /// - Parameter screen: The screen type to set.
     func setFrame(_ screen: ScreenType) {
-        Logger.debug("[WordAction]: Setting frame", metadata: ["frame": screen.rawValue])
+        Logger.debug("[Word]: Setting frame", metadata: ["frame": screen.rawValue])
         self.screen = screen
     }
 
@@ -74,7 +74,7 @@ final class WordAction: ProcessDatabase {
     /// - Returns: The display name of the dictionary or an empty string if not found.
     func dictionary(_ word: DatabaseModelWord) -> String {
         do {
-            Logger.debug("[WordAction]: Fetching dictionary", metadata: [
+            Logger.debug("[Word]: Fetching dictionary", metadata: [
                 "dictionary": word.dictionary
             ])
             return try dictionaryRepository.fetchName(byTableName: word.dictionary)
@@ -97,7 +97,7 @@ final class WordAction: ProcessDatabase {
         word: DatabaseModelWord,
         completion: @escaping (Result<Void, Error>) -> Void
     ) {
-        Logger.debug("[WordAction]: Performing operation", metadata: [
+        Logger.debug("[Word]: Performing operation", metadata: [
             "operation": name,
             "word": word.frontText
         ])
