@@ -16,7 +16,7 @@ final class DictionaryParser: ProcessDatabase {
     ///   - url: The URL of the file to import.
     ///   - completion: Closure called after import completion.
     func importDictionary(from url: URL, completion: @escaping (Result<Void, Error>) -> Void) {
-        Logger.info(
+        Logger.debug(
             "[Dictionary]: Starting dictionary import",
             metadata: ["url": url.absoluteString]
         )
@@ -24,10 +24,6 @@ final class DictionaryParser: ProcessDatabase {
         performDatabaseOperation(
             {
                 guard url.startAccessingSecurityScopedResource() else {
-                    Logger.error(
-                        "[Dictionary]: Failed to access security scoped resource",
-                        metadata: ["url": url.absoluteString]
-                    )
                     ErrorManager.shared.process(
                         URLError(.noPermissionsToReadFile),
                         screen: self.screen,
@@ -42,17 +38,15 @@ final class DictionaryParser: ProcessDatabase {
                     url.stopAccessingSecurityScopedResource()
                     Logger.debug(
                         "[Dictionary]: Stopped accessing security scoped resource",
-                        metadata: ["url": url.absoluteString]
+                        metadata: [
+                            "url": url.absoluteString
+                        ]
                     )
                 }
                 
-                Logger.debug("[Dictionary]: Creating import manager")
                 let importManager = TableParserManagerImport()
-                
-                Logger.debug("[Dictionary]: Starting file parsing")
                 let (dictionaryModel, words) = try importManager.import(from: url)
-                
-                Logger.info(
+                Logger.debug(
                     "[Dictionary]: File parsed successfully",
                     metadata: [
                         "dictionaryName": dictionaryModel.name,
@@ -60,11 +54,9 @@ final class DictionaryParser: ProcessDatabase {
                     ]
                 )
                 
-                Logger.debug("[Dictionary]: Starting database save")
                 let saveManager = TableParserManagerSave(processDatabase: self)
                 saveManager.saveToDatabase(dictionary: dictionaryModel, words: words)
-                
-                Logger.info(
+                Logger.debug(
                     "[Dictionary]: Dictionary saved to database",
                     metadata: [
                         "dictionaryName": dictionaryModel.name,
@@ -82,15 +74,6 @@ final class DictionaryParser: ProcessDatabase {
                 "url": url.absoluteString
             ],
             completion: { result in
-                if case .failure(let error) = result {
-                    Logger.error(
-                        "[Dictionary]: Import failed",
-                        metadata: [
-                            "error": error.localizedDescription,
-                            "url": url.absoluteString
-                        ]
-                    )
-                }
                 completion(result)
             }
         )

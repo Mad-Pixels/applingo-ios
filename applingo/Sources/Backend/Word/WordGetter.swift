@@ -53,10 +53,13 @@ final class WordGetter: ProcessDatabase {
             return
         }
         
-        Logger.info("[Word]: Removing word at index", metadata: [
-            "index": String(index),
-            "word": words[index].frontText
-        ])
+        Logger.debug(
+            "[Word]: Removing word at index",
+            metadata: [
+                "index": String(index),
+                "word": words[index].frontText
+            ]
+        )
         words.remove(at: index)
     }
     
@@ -78,7 +81,7 @@ final class WordGetter: ProcessDatabase {
     
     /// Resets pagination and fetches the first page of words.
     func resetPagination() {
-        Logger.info("[Word]: Resetting pagination")
+        Logger.debug("[Word]: Resetting pagination")
         words.removeAll()
         
         currentPage = 0
@@ -100,7 +103,7 @@ final class WordGetter: ProcessDatabase {
         
         let currentToken = cancellationToken
         isLoadingPage = true
-        Logger.info(
+        Logger.debug(
             "[Word]: Fetching words",
             metadata: [
                 "searchText": searchText,
@@ -126,15 +129,7 @@ final class WordGetter: ProcessDatabase {
             completion: { [weak self] result in
                 guard let self = self, currentToken == self.cancellationToken else { return }
                 
-                if case .failure(let error) = result {
-                    Logger.error(
-                        "[Word]: Fetch failed",
-                        metadata: [
-                            "error": error.localizedDescription
-                        ]
-                    )
-                }
-                
+                if case .failure(let error) = result {}
                 self.isLoadingPage = false
             }
         )
@@ -158,7 +153,7 @@ final class WordGetter: ProcessDatabase {
     
     /// Clears all loaded words.
     func clear() {
-        Logger.info("[Word]: Clearing words")
+        Logger.debug("[Word]: Clearing words")
         words.removeAll()
     }
     
@@ -169,11 +164,11 @@ final class WordGetter: ProcessDatabase {
         DispatchQueue.main.async {
             if fetchedWords.isEmpty {
                 self.hasMorePages = false
-                Logger.info("[Word]: No more words to fetch")
+                Logger.debug("[Word]: No more words to fetch")
             } else {
                 self.currentPage += 1
                 self.words.append(contentsOf: fetchedWords)
-                Logger.info(
+                Logger.debug(
                     "[Word]: Words appended",
                     metadata: [
                         "fetchedCount": "\(fetchedWords.count)",

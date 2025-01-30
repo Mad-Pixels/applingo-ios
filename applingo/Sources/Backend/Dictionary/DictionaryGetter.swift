@@ -40,14 +40,12 @@ final class DictionaryGetter: ProcessDatabase {
     
     override init() {
         guard let dbQueue = AppDatabase.shared.databaseQueue else {
-            Logger.error("[Dictionary]: Database not connected")
             fatalError("Database is not connected")
         }
         
         self.dictionaryRepository = DatabaseManagerDictionary(dbQueue: dbQueue)
         super.init()
         
-        Logger.info("[Dictionary]: Initializing DictionaryGetter")
         setupNotifications()
     }
     
@@ -72,7 +70,7 @@ final class DictionaryGetter: ProcessDatabase {
             return
         }
         
-        Logger.info(
+        Logger.debug(
             "[Dictionary]: Removing dictionary at index",
             metadata: [
                 "index": String(index),
@@ -121,7 +119,7 @@ final class DictionaryGetter: ProcessDatabase {
     
     /// Resets pagination and fetches first page
     func resetPagination() {
-        Logger.info("[Dictionary]: Resetting pagination")
+        Logger.debug("[Dictionary]: Resetting pagination")
         dictionaries.removeAll()
         paginationState.reset()
         isLoadingPage = false
@@ -153,7 +151,7 @@ final class DictionaryGetter: ProcessDatabase {
         
         let currentToken = paginationState.token
         isLoadingPage = true
-        Logger.info(
+        Logger.debug(
             "[Dictionary]: Fetching dictionaries",
             metadata: [
                 "page": String(paginationState.currentPage),
@@ -184,16 +182,7 @@ final class DictionaryGetter: ProcessDatabase {
             ],
             completion: { [weak self] result in
                 guard let self = self, currentToken == self.paginationState.token else { return }
-                
-                if case .failure(let error) = result {
-                    Logger.error(
-                        "[Dictionary]: Fetch failed",
-                        metadata: [
-                            "error": error.localizedDescription
-                        ]
-                    )
-                    self.isLoadingPage = false
-                }
+                self.isLoadingPage = false
             }
         )
     }
@@ -223,7 +212,7 @@ final class DictionaryGetter: ProcessDatabase {
             
             paginationState.currentPage += 1
             dictionaries.append(contentsOf: validDictionaries)
-            Logger.info(
+            Logger.debug(
                 "[Dictionary]: Dictionaries appended",
                 metadata: [
                     "fetchedCount": String(validDictionaries.count),

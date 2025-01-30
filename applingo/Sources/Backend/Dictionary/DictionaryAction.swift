@@ -13,12 +13,10 @@ final class DictionaryAction: ProcessDatabase {
     
     override init() {
         guard let dbQueue = AppDatabase.shared.databaseQueue else {
-            Logger.error("[Dictionary]: Database not connected during initialization")
             fatalError("Database is not connected")
         }
         self.dictionaryRepository = DatabaseManagerDictionary(dbQueue: dbQueue)
         super.init()
-        Logger.info("[Dictionary]: Initialized successfully")
     }
         
     // MARK: - CRUD Operations
@@ -93,18 +91,10 @@ final class DictionaryAction: ProcessDatabase {
         newStatus: Bool,
         completion: @escaping (Result<Void, Error>) -> Void
     ) {
-        Logger.info(
-            "[Dictionary]: Updating dictionary status",
-            metadata: [
-                "dictionaryId": String(dictionaryID),
-                "newStatus": String(newStatus)
-            ]
-        )
-        
         performDatabaseOperation(
             { try self.dictionaryRepository.updateStatus(dictionaryID: dictionaryID, newStatus: newStatus) },
             success: { _ in
-                Logger.info(
+                Logger.debug(
                     "[Dictionary]: Status updated successfully",
                     metadata: [
                         "dictionaryId": String(dictionaryID),
@@ -127,25 +117,9 @@ final class DictionaryAction: ProcessDatabase {
         dictionary: DatabaseModelDictionary,
         completion: @escaping (Result<Void, Error>) -> Void
     ) {
-        Logger.debug(
-            "[Dictionary]: Performing operation",
-            metadata: [
-                "operation": name,
-                "dictionary": dictionary.name
-            ]
-        )
-        
         performDatabaseOperation(
             operation,
-            success: { _ in
-                Logger.info(
-                    "[Dictionary]: Operation completed successfully",
-                    metadata: [
-                        "operation": name,
-                        "dictionary": dictionary.name
-                    ]
-                )
-            },
+            success: { _ in },
             screen: screen,
             metadata: createMetadata(operation: name, dictionary: dictionary),
             completion: completion
@@ -155,21 +129,21 @@ final class DictionaryAction: ProcessDatabase {
     /// Creates metadata for dictionary operations
     private func createMetadata(operation: String, dictionary: DatabaseModelDictionary) -> [String: String] {
         [
-            "operation": operation,
             "dictionaryId": dictionary.id.map(String.init) ?? "nil",
             "dictionaryName": dictionary.name,
             "dictionaryGuid": dictionary.guid,
-            "frame": screen.rawValue
+            "screen": screen.rawValue,
+            "operation": operation
         ]
     }
     
     /// Creates metadata for status update operations
     private func createStatusMetadata(dictionaryID: Int, newStatus: Bool) -> [String: String] {
         [
-            "operation": "updateStatus",
             "dictionaryId": String(dictionaryID),
             "newStatus": String(newStatus),
-            "frame": screen.rawValue
+            "operation": "updateStatus",
+            "screen": screen.rawValue
         ]
     }
 }

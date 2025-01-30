@@ -6,17 +6,13 @@ import Combine
 actor DictionaryDownload {
     static let shared = DictionaryDownload()
     
-    init() {
-        Logger.info("[Dictionary]: Initialized singleton instance")
-    }
-    
     // MARK: - Public Methods
     
     /// Downloads the dictionary from the API, parses it, and saves it to the local database.
     /// - Parameter dictionary: The model representing a dictionary item from the API.
     /// - Throws: Any network or parsing error that might occur.
     func download(dictionary: ApiModelDictionaryItem) async throws {
-        Logger.info(
+        Logger.debug(
             "[Dictionary]: Starting dictionary download",
             metadata: [
                 "dictionaryId": dictionary.id,
@@ -24,12 +20,12 @@ actor DictionaryDownload {
             ]
         )
         
-        Logger.debug("[Dictionary]: Downloading dictionary file")
         let fileURL = try await ApiManagerCache.shared.downloadDictionary(dictionary)
-        
-        Logger.info(
+        Logger.debug(
             "[Dictionary]: File downloaded successfully",
-            metadata: ["fileURL": fileURL.absoluteString]
+            metadata: [
+                "fileURL": fileURL.absoluteString
+            ]
         )
         let importManager = TableParserManagerImport(
             factory: TableParserFactory()
@@ -44,12 +40,11 @@ actor DictionaryDownload {
             ]
         )
         
-        Logger.debug("[Dictionary]: Starting file parsing")
         let (dictionaryModel, words) = try importManager.import(
             from: fileURL,
             dictionaryMetadata: dictionaryMetadata
         )
-        Logger.info(
+        Logger.debug(
             "[Dictionary]: Parsing completed",
             metadata: [
                 "dictionaryId": dictionaryModel.guid,
@@ -58,10 +53,8 @@ actor DictionaryDownload {
         )
         
         let saver = TableParserManagerSave(processDatabase: ProcessDatabase())
-        Logger.debug("[Dictionary]: Saving to database")
-        
         saver.saveToDatabase(dictionary: dictionaryModel, words: words)
-        Logger.info(
+        Logger.debug(
             "[Dictionary]: Successfully saved to database",
             metadata: [
                 "dictionaryId": dictionaryModel.guid,
@@ -72,9 +65,11 @@ actor DictionaryDownload {
         cleanupDownloadedFile(at: fileURL)
         await notifyDictionaryUpdate()
         
-        Logger.info(
+        Logger.debug(
             "[Dictionary]: Dictionary processing completed",
-            metadata: ["dictionaryId": dictionary.id]
+            metadata: [
+                "dictionaryId": dictionary.id
+            ]
         )
     }
     
@@ -110,7 +105,9 @@ actor DictionaryDownload {
             try FileManager.default.removeItem(at: fileURL)
             Logger.debug(
                 "[Dictionary]: Cleaned up temporary file",
-                metadata: ["fileURL": fileURL.absoluteString]
+                metadata: [
+                    "fileURL": fileURL.absoluteString
+                ]
             )
         } catch {
             Logger.warning(

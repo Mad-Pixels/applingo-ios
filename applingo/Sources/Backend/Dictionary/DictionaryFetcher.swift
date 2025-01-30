@@ -33,7 +33,6 @@ final class DictionaryFetcher: ProcessApi {
     
     override init() {
         super.init()
-        Logger.info("[Dictionary]: Initialized")
     }
     
     // MARK: - Public Methods
@@ -41,14 +40,13 @@ final class DictionaryFetcher: ProcessApi {
     /// Resets pagination state and starts new fetch with optional request
     /// - Parameter request: Optional new request to use for fetching
     func resetPagination(with request: ApiModelDictionaryQueryRequest? = nil) {
-        Logger.info(
+        Logger.debug(
             "[Dictionary]: Resetting pagination",
             metadata: [
                 "hasRequest": String(request != nil),
                 "currentCount": String(allDictionaries.count)
             ]
         )
-        
         if let request = request {
             currentRequest = request
         }
@@ -76,15 +74,16 @@ final class DictionaryFetcher: ProcessApi {
                 "totalCount": String(dictionaries.count)
             ]
         )
-        
         fetchDictionaries()
     }
     
     /// Clears all loaded dictionaries and resets state
     func clear() {
-        Logger.info(
+        Logger.debug(
             "[Dictionary]: Clearing state",
-            metadata: ["totalCount": String(allDictionaries.count)]
+            metadata: [
+                "totalCount": String(allDictionaries.count)
+            ]
         )
         resetState()
         updateFilteredDictionaries()
@@ -101,7 +100,6 @@ final class DictionaryFetcher: ProcessApi {
                 "newValue": searchText
             ]
         )
-        
         updateFilteredDictionaries()
         
         if !searchText.isEmpty &&
@@ -121,8 +119,8 @@ final class DictionaryFetcher: ProcessApi {
     /// Resets all state variables to initial values
     private func resetState() {
         allDictionaries.removeAll()
-        hasMorePages = true
         isLoadingPage = false
+        hasMorePages = true
         lastEvaluated = nil
         token = UUID()
     }
@@ -139,7 +137,7 @@ final class DictionaryFetcher: ProcessApi {
             )
             return
         }
-        
+
         let currentToken = token
         isLoadingPage = true
         
@@ -147,7 +145,7 @@ final class DictionaryFetcher: ProcessApi {
         request.isPublic = true
         request.lastEvaluated = lastEvaluated
         
-        Logger.info(
+        Logger.debug(
             "[Dictionary]: Fetching dictionaries",
             metadata: [
                 "searchText": searchText,
@@ -169,16 +167,6 @@ final class DictionaryFetcher: ProcessApi {
             metadata: createMetadata(),
             completion: { [weak self] result in
                 guard let self = self else { return }
-                
-                if case .failure(let error) = result {
-                    Logger.error(
-                        "[Dictionary]: Fetch failed",
-                        metadata: [
-                            "error": error.localizedDescription
-                        ]
-                    )
-                }
-                
                 self.isLoadingPage = false
             }
         )
@@ -189,14 +177,14 @@ final class DictionaryFetcher: ProcessApi {
         let (fetchedDictionaries, newLastEvaluated) = result
         
         if fetchedDictionaries.isEmpty {
-            Logger.info("[Dictionary]: No more dictionaries to fetch")
+            Logger.debug("[Dictionary]: No more dictionaries to fetch")
             hasMorePages = false
         } else {
             allDictionaries.append(contentsOf: fetchedDictionaries)
             lastEvaluated = newLastEvaluated
             hasMorePages = (newLastEvaluated != nil)
             
-            Logger.info(
+            Logger.debug(
                 "[Dictionary]: Dictionaries fetched",
                 metadata: [
                     "fetchedCount": String(fetchedDictionaries.count),
@@ -204,7 +192,6 @@ final class DictionaryFetcher: ProcessApi {
                     "hasMorePages": String(hasMorePages)
                 ]
             )
-            
             updateFilteredDictionaries()
         }
         
@@ -214,7 +201,6 @@ final class DictionaryFetcher: ProcessApi {
             Logger.debug("[Dictionary]: Fetching more results to meet minimum requirement")
             fetchDictionaries()
         }
-        
         isLoadingPage = false
     }
     

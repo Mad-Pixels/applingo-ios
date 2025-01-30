@@ -66,9 +66,12 @@ final class WordAction: ProcessDatabase {
     /// - Returns: The display name of the dictionary or an empty string if not found.
     func dictionary(_ word: DatabaseModelWord) -> String {
         do {
-            Logger.debug("[Word]: Fetching dictionary", metadata: [
-                "dictionary": word.dictionary
-            ])
+            Logger.debug(
+                "[Word]: Fetching dictionary",
+                metadata: [
+                    "dictionary": word.dictionary
+                ]
+            )
             return try dictionaryRepository.fetchName(byTableName: word.dictionary)
         } catch {
             handleError(
@@ -89,11 +92,13 @@ final class WordAction: ProcessDatabase {
         word: DatabaseModelWord,
         completion: @escaping (Result<Void, Error>) -> Void
     ) {
-        Logger.debug("[Word]: Performing operation", metadata: [
-            "operation": name,
-            "word": word.frontText
-        ])
-        
+        Logger.debug(
+            "[Word]: Performing operation",
+            metadata: [
+                "operation": name,
+                "word": word.frontText
+            ]
+        )
         performDatabaseOperation(
             operation,
             success: { _ in },
