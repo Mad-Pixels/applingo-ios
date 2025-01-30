@@ -3,8 +3,7 @@ import Combine
 import GRDB
 
 /// A class responsible for performing CRUD operations on dictionaries in the database.
-///
-/// `DictionaryAction` handles saving, updating, deleting, and status changes for dictionaries.
+/// Provides validation and error handling for all dictionary operations.
 final class DictionaryAction: ProcessDatabase {
     // MARK: - Private Properties
     
@@ -15,28 +14,43 @@ final class DictionaryAction: ProcessDatabase {
     
     override init() {
         guard let dbQueue = AppDatabase.shared.databaseQueue else {
+            Logger.error("[Dictionary]: Database not connected during initialization")
             fatalError("Database is not connected")
         }
         self.dictionaryRepository = DatabaseManagerDictionary(dbQueue: dbQueue)
         super.init()
+        Logger.info("[Dictionary]: Initialized successfully")
     }
     
     // MARK: - Public Methods
     
-    /// Sets the current screen type for operation tracking.
-    /// - Parameter screen: The screen type to set.
+    /// Sets the current screen type for operation tracking
+    /// - Parameter screen: The screen type to set
     func setFrame(_ screen: ScreenType) {
-        Logger.debug("[Dictionary]: Setting frame", metadata: ["frame": screen.rawValue])
+        Logger.debug(
+            "[Dictionary]: Setting frame",
+            metadata: [
+                "oldFrame": self.screen.rawValue,
+                "newFrame": screen.rawValue
+            ]
+        )
         self.screen = screen
     }
     
     // MARK: - CRUD Operations
     
-    /// Saves a new dictionary to the database.
+    /// Saves a new dictionary to the database with validation
     /// - Parameters:
-    ///   - dictionary: The dictionary to save.
-    ///   - completion: Closure called with the result of the operation.
+    ///   - dictionary: The dictionary to save
+    ///   - completion: Called with the result of the operation
     func save(_ dictionary: DatabaseModelDictionary, completion: @escaping (Result<Void, Error>) -> Void) {
+        if dictionary.name.isEmpty {
+            Logger.warning(
+                "[Dictionary]: Attempted to save dictionary with empty name",
+                metadata: createMetadata(operation: "save", dictionary: dictionary)
+            )
+        }
+        
         performOperation(
             { try self.dictionaryRepository.save(dictionary) },
             operation: "save",
@@ -45,11 +59,18 @@ final class DictionaryAction: ProcessDatabase {
         )
     }
     
-    /// Updates an existing dictionary in the database.
+    /// Updates an existing dictionary in the database with validation
     /// - Parameters:
-    ///   - dictionary: The dictionary to update.
-    ///   - completion: Closure called with the result of the operation.
+    ///   - dictionary: The dictionary to update
+    ///   - completion: Called with the result of the operation
     func update(_ dictionary: DatabaseModelDictionary, completion: @escaping (Result<Void, Error>) -> Void) {
+        if dictionary.name.isEmpty {
+            Logger.warning(
+                "[Dictionary]: Attempted to update dictionary with empty name",
+                metadata: createMetadata(operation: "update", dictionary: dictionary)
+            )
+        }
+        
         performOperation(
             { try self.dictionaryRepository.update(dictionary) },
             operation: "update",
@@ -58,11 +79,18 @@ final class DictionaryAction: ProcessDatabase {
         )
     }
     
-    /// Deletes a dictionary from the database.
+    /// Deletes a dictionary from the database with validation
     /// - Parameters:
-    ///   - dictionary: The dictionary to delete.
-    ///   - completion: Closure called with the result of the operation.
+    ///   - dictionary: The dictionary to delete
+    ///   - completion: Called with the result of the operation
     func delete(_ dictionary: DatabaseModelDictionary, completion: @escaping (Result<Void, Error>) -> Void) {
+        if dictionary.guid == "Internal" {
+            Logger.warning(
+                "[Dictionary]: Attempted to delete internal dictionary",
+                metadata: createMetadata(operation: "delete", dictionary: dictionary)
+            )
+        }
+        
         performOperation(
             { try self.dictionaryRepository.delete(dictionary) },
             operation: "delete",
@@ -71,19 +99,35 @@ final class DictionaryAction: ProcessDatabase {
         )
     }
     
-    /// Updates the active status of a dictionary.
+    /// Updates the active status of a dictionary
     /// - Parameters:
-    ///   - dictionaryID: The ID of the dictionary to update.
-    ///   - newStatus: The new active status.
-    ///   - completion: Closure called with the result of the operation.
+    ///   - dictionaryID: The ID of the dictionary to update
+    ///   - newStatus: The new active status
+    ///   - completion: Called with the result of the operation
     func updateStatus(
         dictionaryID: Int,
         newStatus: Bool,
         completion: @escaping (Result<Void, Error>) -> Void
     ) {
+        Logger.info(
+            "[Dictionary]: Updating dictionary status",
+            metadata: [
+                "dictionaryId": String(dictionaryID),
+                "newStatus": String(newStatus)
+            ]
+        )
+        
         performDatabaseOperation(
             { try self.dictionaryRepository.updateStatus(dictionaryID: dictionaryID, newStatus: newStatus) },
-            success: { _ in },
+            success: { _ in
+                Logger.info(
+                    "[Dictionary]: Status updated successfully",
+                    metadata: [
+                        "dictionaryId": String(dictionaryID),
+                        "newStatus": String(newStatus)
+                    ]
+                )
+            },
             screen: screen,
             metadata: createStatusMetadata(dictionaryID: dictionaryID, newStatus: newStatus),
             completion: completion
@@ -92,42 +136,55 @@ final class DictionaryAction: ProcessDatabase {
     
     // MARK: - Private Methods
     
-    /// Performs a database operation with common metadata creation and error handling.
+    /// Performs a database operation with logging and error handling
     private func performOperation(
         _ operation: @escaping () throws -> Void,
         operation name: String,
         dictionary: DatabaseModelDictionary,
         completion: @escaping (Result<Void, Error>) -> Void
     ) {
-        Logger.debug("[Dictionary]: Performing dictionary operation", metadata: [
-            "operation": name,
-            "dictionary": dictionary.name
-        ])
+        Logger.debug(
+            "[Dictionary]: Performing operation",
+            metadata: [
+                "operation": name,
+                "dictionary": dictionary.name
+            ]
+        )
         
         performDatabaseOperation(
             operation,
-            success: { _ in },
+            success: { _ in
+                Logger.info(
+                    "[Dictionary]: Operation completed successfully",
+                    metadata: [
+                        "operation": name,
+                        "dictionary": dictionary.name
+                    ]
+                )
+            },
             screen: screen,
             metadata: createMetadata(operation: name, dictionary: dictionary),
             completion: completion
         )
     }
     
-    /// Creates metadata for dictionary operations.
+    /// Creates metadata for dictionary operations
     private func createMetadata(operation: String, dictionary: DatabaseModelDictionary) -> [String: String] {
         [
             "operation": operation,
-            "dictionary": dictionary.toString(),
+            "dictionaryId": dictionary.id.map(String.init) ?? "nil",
+            "dictionaryName": dictionary.name,
+            "dictionaryGuid": dictionary.guid,
             "frame": screen.rawValue
         ]
     }
     
-    /// Creates metadata for status update operations.
+    /// Creates metadata for status update operations
     private func createStatusMetadata(dictionaryID: Int, newStatus: Bool) -> [String: String] {
         [
             "operation": "updateStatus",
-            "dictionaryID": "\(dictionaryID)",
-            "newStatus": "\(newStatus)",
+            "dictionaryId": String(dictionaryID),
+            "newStatus": String(newStatus),
             "frame": screen.rawValue
         ]
     }
