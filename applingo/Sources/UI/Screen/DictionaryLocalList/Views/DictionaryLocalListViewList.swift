@@ -18,8 +18,13 @@ struct DictionaryLocalListViewList: View {
     }
    
     var body: some View {
+        let dictionariesBinding = Binding(
+            get: { dictionaryGetter.dictionaries },
+            set: { _ in }
+        )
+        
         ItemList<DatabaseModelDictionary, DictionaryLocalRow>(
-            items: $dictionaryGetter.dictionaries,
+            items: dictionariesBinding,
             style: .themed(themeManager.currentThemeStyle),
             isLoadingPage: dictionaryGetter.isLoadingPage,
             error: nil,
@@ -39,7 +44,6 @@ struct DictionaryLocalListViewList: View {
                     level: dictionary.level,
                     isActive: dictionary.isActive
                 ),
-               
                 style: .themed(themeManager.currentThemeStyle),
                 onTap: {
                     onDictionarySelect(dictionary)
@@ -58,33 +62,83 @@ struct DictionaryLocalListViewList: View {
    
     private func delete(at offsets: IndexSet) {
         offsets.forEach { index in
+            guard index < dictionaryGetter.dictionaries.count else {
+                Logger.warning("[DictionaryList]: Attempted to delete item at invalid index", metadata: [
+                    "index": String(index),
+                    "totalCount": String(dictionaryGetter.dictionaries.count)
+                ])
+                return
+            }
+            
             let dictionary = dictionaryGetter.dictionaries[index]
-            if dictionary.guid != "Internal" {
-                dictionaryAction.delete(dictionary) { result in
-                    if case .success = result {
-                        dictionaryGetter.dictionaries.remove(at: index)
-                    }
-                }
+            
+            if dictionary.guid == "Internal" {
+                handleInternalDictionaryDeletion()
+                return
+            }
+            
+            deleteDictionary(dictionary, at: index)
+        }
+    }
+    
+    private func deleteDictionary(_ dictionary: DatabaseModelDictionary, at index: Int) {
+        dictionaryAction.delete(dictionary) { result in
+            if case .success = result {
+                Logger.info("[DictionaryList]: Successfully deleted dictionary", metadata: [
+                    "dictionaryId": dictionary.id.map(String.init) ?? "nil",
+                    "name": dictionary.name
+                ])
+                dictionaryGetter.removeDictionary(at: index)
             } else {
-                struct InternalDictionaryError: LocalizedError {
-                    var errorDescription: String? {
-                        LocaleManager.shared.localizedString(for: "ErrDeleteInternalDictionary")
-                        }
-                    }
-                    ErrorManager.shared.process(
-                        InternalDictionaryError(),
-                        screen: .DictionaryLocalList,
-                        metadata: [:]
-                    )
+                Logger.error("[DictionaryList]: Failed to delete dictionary", metadata: [
+                    "dictionaryId": dictionary.id.map(String.init) ?? "nil",
+                    "name": dictionary.name
+                ])
             }
         }
     }
+    
+    private func handleInternalDictionaryDeletion() {
+        struct InternalDictionaryError: LocalizedError {
+            var errorDescription: String? {
+                LocaleManager.shared.localizedString(for: "ErrDeleteInternalDictionary")
+            }
+        }
+        
+        Logger.warning("[DictionaryList]: Attempted to delete internal dictionary")
+        
+        ErrorManager.shared.process(
+            InternalDictionaryError(),
+            screen: .DictionaryLocalList,
+            metadata: ["operation": "deleteDictionary", "type": "internal"]
+        )
+    }
    
     private func updateStatus(_ dictionary: DatabaseModelDictionary, newStatus: Bool) {
-        guard let dictionaryID = dictionary.id else { return }
+        guard let dictionaryID = dictionary.id else {
+            Logger.error("[DictionaryList]: Cannot update status - dictionary ID is nil", metadata: [
+                "dictionary": dictionary.name
+            ])
+            return
+        }
+        
+        Logger.debug("[DictionaryList]: Updating dictionary status", metadata: [
+            "dictionaryId": String(dictionaryID),
+            "oldStatus": String(dictionary.isActive),
+            "newStatus": String(newStatus)
+        ])
+        
         dictionaryAction.updateStatus(dictionaryID: dictionaryID, newStatus: newStatus) { result in
             if case .success = result {
+                Logger.info("[DictionaryList]: Successfully updated dictionary status", metadata: [
+                    "dictionaryId": String(dictionaryID),
+                    "newStatus": String(newStatus)
+                ])
                 dictionaryGetter.resetPagination()
+            } else {
+                Logger.error("[DictionaryList]: Failed to update dictionary status", metadata: [
+                    "dictionaryId": String(dictionaryID)
+                ])
             }
         }
     }
