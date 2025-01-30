@@ -20,7 +20,6 @@ final class WordGetter: ProcessDatabase {
     
     private let wordRepository: DatabaseManagerWord
     private var cancellables = Set<AnyCancellable>()
-    private var frame: ScreenType = .Home
     
     private var cancellationToken = UUID()
     private var hasMorePages = true
@@ -39,19 +38,6 @@ final class WordGetter: ProcessDatabase {
     }
     
     // MARK: - Public Methods
-    
-    /// Updates the current frame type for context tracking
-    /// - Parameter newFrame: The new frame type to set
-    func setFrame(_ newFrame: ScreenType) {
-        Logger.debug(
-            "[Word]: Setting frame",
-            metadata: [
-                "oldFrame": frame.rawValue,
-                "newFrame": newFrame.rawValue
-            ]
-        )
-        self.frame = newFrame
-    }
     
     /// Removes a word at the specified index
     /// - Parameter index: The index of the word to remove

@@ -27,7 +27,6 @@ final class DictionaryFetcher: ProcessApi {
     private var currentRequest: ApiModelDictionaryQueryRequest?
     private var hasMorePages = true
     private var lastEvaluated: String?
-    private var screen: ScreenType = .Home
     private var token = UUID()
     
     // MARK: - Initialization
@@ -57,19 +56,6 @@ final class DictionaryFetcher: ProcessApi {
         resetState()
         updateFilteredDictionaries()
         fetchDictionaries()
-    }
-    
-    /// Sets the current screen type for tracking context
-    /// - Parameter newScreen: The screen type to set
-    func setFrame(_ newScreen: ScreenType) {
-        Logger.debug(
-            "[Dictionary]: Setting frame",
-            metadata: [
-                "oldFrame": screen.rawValue,
-                "newFrame": newScreen.rawValue
-            ]
-        )
-        self.screen = newScreen
     }
     
     /// Loads more dictionaries if needed based on the current item

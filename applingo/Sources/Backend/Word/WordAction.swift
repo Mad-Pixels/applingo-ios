@@ -7,7 +7,6 @@ final class WordAction: ProcessDatabase {
     
     private let dictionaryRepository: DatabaseManagerDictionary
     private let wordRepository: DatabaseManagerWord
-    private var screen: ScreenType = .Home
     
     // MARK: - Initialization
     
@@ -22,13 +21,6 @@ final class WordAction: ProcessDatabase {
     }
     
     // MARK: - Public Methods
-    
-    /// Sets the current screen type for tracking context in operations.
-    /// - Parameter screen: The screen type to set.
-    func setFrame(_ screen: ScreenType) {
-        Logger.debug("[Word]: Setting frame", metadata: ["frame": screen.rawValue])
-        self.screen = screen
-    }
 
     /// Saves a new word to the database.
     /// - Parameters:

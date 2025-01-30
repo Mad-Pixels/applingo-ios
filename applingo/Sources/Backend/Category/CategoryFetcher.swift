@@ -13,7 +13,6 @@ final class CategoryFetcher: ProcessApi {
     // MARK: - Private Properties
     
     private let repository: ApiManagerRequest
-    private var frame: ScreenType = .DictionaryRemoteFilter
     
     // MARK: - Initialization
     
@@ -24,20 +23,7 @@ final class CategoryFetcher: ProcessApi {
     }
     
     // MARK: - Public Methods
-    
-    /// Sets the current frame type for tracking context
-    /// - Parameter newFrame: The frame type to set
-    func setFrame(_ newFrame: ScreenType) {
-        Logger.debug(
-            "[Category]: Setting frame",
-            metadata: [
-                "oldFrame": frame.rawValue,
-                "newFrame": newFrame.rawValue
-            ]
-        )
-        self.frame = newFrame
-    }
-    
+        
     /// Fetches categories from the API
     /// - Parameters:
     ///   - forceFetch: Whether to clear cache before fetching
@@ -71,7 +57,7 @@ final class CategoryFetcher: ProcessApi {
                 
                 self.handleFetchSuccess(categoryItemModel)
             },
-            screen: frame,
+            screen: screen,
             metadata: [
                 "operation": "getCategories",
                 "forceFetch": String(forceFetch)

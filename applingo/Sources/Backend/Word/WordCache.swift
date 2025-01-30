@@ -21,7 +21,6 @@ final class WordCache: ProcessDatabase {
     
     private var cancellables = Set<AnyCancellable>()
     private var cancellationToken = UUID()
-    private var frame: ScreenType = .Home
     
     // MARK: - Initialization
     
@@ -64,16 +63,6 @@ final class WordCache: ProcessDatabase {
     }
     
     // MARK: - Public Methods
-    
-    /// Sets the current frame type for tracking context in operations
-    /// - Parameter newFrame: The new frame type to set
-    func setFrame(_ newFrame: ScreenType) {
-        Logger.debug("[Word]: Setting frame", metadata: [
-            "oldFrame": frame.rawValue,
-            "newFrame": newFrame.rawValue
-        ])
-        self.frame = newFrame
-    }
     
     /// Initializes the cache with initial data
     func initializeCache() {
@@ -124,7 +113,7 @@ final class WordCache: ProcessDatabase {
                     }
                 },
                 screen: .WordList,
-                metadata: ["operation": "initializeCache", "frameType": frame.rawValue],
+                metadata: ["operation": "initializeCache", "screen": screen.rawValue],
                 completion: { [weak self] result in
                     guard let self = self, currentToken == self.cancellationToken else { return }
                     
@@ -293,7 +282,7 @@ final class WordCache: ProcessDatabase {
                     "operation": "refillCache",
                     "currentCount": String(self.cache.count),
                     "needCount": String(needCount),
-                    "frameType": frame.rawValue
+                    "screen": screen.rawValue
                 ],
                 completion: { [weak self] result in
                     guard let self = self, currentToken == self.cancellationToken else { return }

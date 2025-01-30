@@ -2,10 +2,6 @@ import Foundation
 
 /// A class responsible for handling dictionary import operations.
 final class DictionaryParser: ProcessDatabase {
-    // MARK: - Private Properties
-    
-    private var screen: ScreenType = .DictionaryLocalList
-    
     // MARK: - Initialization
     
     override init() {
@@ -14,19 +10,6 @@ final class DictionaryParser: ProcessDatabase {
     }
     
     // MARK: - Public Methods
-    
-    /// Sets the current screen type for tracking context
-    /// - Parameter newScreen: The screen type to set
-    func setFrame(_ newScreen: ScreenType) {
-        Logger.debug(
-            "[Dictionary]: Setting frame",
-            metadata: [
-                "oldFrame": screen.rawValue,
-                "newFrame": newScreen.rawValue
-            ]
-        )
-        self.screen = newScreen
-    }
     
     /// Imports a dictionary from a given URL.
     /// - Parameters:

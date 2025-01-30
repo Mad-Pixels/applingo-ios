@@ -19,7 +19,6 @@ final class DictionaryGetter: ProcessDatabase {
     // MARK: - Private Properties
     
     private let dictionaryRepository: DatabaseManagerDictionary
-    private var frame: ScreenType = .Home
     
     private struct PaginationState {
         var hasMorePages = true
@@ -58,19 +57,6 @@ final class DictionaryGetter: ProcessDatabase {
     }
     
     // MARK: - Public Methods
-    
-    /// Updates the current frame type for context tracking
-    /// - Parameter newFrame: The new frame type to set
-    func setFrame(_ newFrame: ScreenType) {
-        Logger.debug(
-            "[Dictionary]: Setting frame",
-            metadata: [
-                "oldFrame": frame.rawValue,
-                "newFrame": newFrame.rawValue
-            ]
-        )
-        self.frame = newFrame
-    }
     
     /// Removes a dictionary at the specified index
     /// - Parameter index: The index of the dictionary to remove
@@ -189,12 +175,12 @@ final class DictionaryGetter: ProcessDatabase {
                 
                 self.handleFetchSuccess(fetchedDictionaries)
             },
-            screen: frame,
+            screen: screen,
             metadata: [
                 "operation": "fetchDictionaries",
                 "page": String(paginationState.currentPage),
                 "searchText": searchText,
-                "frame": frame.rawValue
+                "frame": screen.rawValue
             ],
             completion: { [weak self] result in
                 guard let self = self, currentToken == self.paginationState.token else { return }

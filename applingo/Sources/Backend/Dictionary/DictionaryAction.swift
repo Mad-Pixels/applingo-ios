@@ -8,7 +8,6 @@ final class DictionaryAction: ProcessDatabase {
     // MARK: - Private Properties
     
     private let dictionaryRepository: DatabaseManagerDictionary
-    private var screen: ScreenType = .Home
     
     // MARK: - Initialization
     
@@ -21,22 +20,7 @@ final class DictionaryAction: ProcessDatabase {
         super.init()
         Logger.info("[Dictionary]: Initialized successfully")
     }
-    
-    // MARK: - Public Methods
-    
-    /// Sets the current screen type for operation tracking
-    /// - Parameter screen: The screen type to set
-    func setFrame(_ screen: ScreenType) {
-        Logger.debug(
-            "[Dictionary]: Setting frame",
-            metadata: [
-                "oldFrame": self.screen.rawValue,
-                "newFrame": screen.rawValue
-            ]
-        )
-        self.screen = screen
-    }
-    
+        
     // MARK: - CRUD Operations
     
     /// Saves a new dictionary to the database with validation
