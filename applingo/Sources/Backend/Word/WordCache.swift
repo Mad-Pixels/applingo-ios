@@ -23,67 +23,57 @@ final class WordCache: ProcessDatabase {
     private var cancellationToken = UUID()
     private var frame: ScreenType = .Home
     
-    // MARK: - Validation Errors
-    
-    enum CacheError: Error {
-        case invalidCacheSize
-        case invalidThreshold
-        case databaseNotConnected
-        case duplicateWord
-    }
-    
     // MARK: - Initialization
     
     /// Initializes the WordCache with custom cache parameters
     /// - Parameters:
-    ///   - cacheSize: The maximum number of items to store in cache (default: 100)
-    ///   - threshold: The minimum number of items before refilling (default: 20)
-    /// - Throws: CacheError if parameters are invalid or database is not connected
-    init(cacheSize: Int = 100, threshold: Int = 20) throws {
-        guard cacheSize > 0 else {
-            Logger.error(
-                "[Word]: Invalid cache size",
-                metadata: [
-                    "size": String(cacheSize)
-                ]
-            )
-            throw CacheError.invalidCacheSize
+    ///   - cacheSize: The maximum number of items to store in cache
+    ///   - threshold: The minimum number of items before refilling
+    init(cacheSize: Int = 100, threshold: Int = 20) {
+        if cacheSize <= 0 {
+            Logger.error("[Word]: Invalid cache size", metadata: ["size": String(cacheSize)])
+            fatalError("Invalid cache size")
         }
         
-        guard threshold > 0 && threshold < cacheSize else {
-            Logger.error(
-                "[Word]: Invalid threshold",
-                metadata: [
-                    "threshold": String(threshold),
-                    "cacheSize": String(cacheSize)
-                ]
-            )
-            throw CacheError.invalidThreshold
+        if threshold <= 0 || threshold >= cacheSize {
+            Logger.error("[Word]: Invalid threshold", metadata: [
+                "threshold": String(threshold),
+                "cacheSize": String(cacheSize)
+            ])
+            fatalError("Invalid threshold")
         }
         
         guard let dbQueue = AppDatabase.shared.databaseQueue else {
             Logger.error("[Word]: Database not connected")
-            throw CacheError.databaseNotConnected
+            fatalError("Database is not connected")
         }
         
         self.queue = DispatchQueue(label: "com.applingo.wordcache", attributes: .concurrent)
         self.wordRepository = DatabaseManagerWord(dbQueue: dbQueue)
         self.cacheThreshold = threshold
         self.cacheSize = cacheSize
+        
         super.init()
-        
-        Logger.info(
-            "[Word]: Initializing",
-            metadata: [
-                "cacheSize": String(cacheSize),
-                "threshold": String(threshold)
-            ]
-        )
-        
+            
+        Logger.info("[Word]: Initializing", metadata: [
+            "cacheSize": String(cacheSize),
+            "threshold": String(threshold)
+        ])
+            
         setupCacheObserver()
     }
     
     // MARK: - Public Methods
+    
+    /// Sets the current frame type for tracking context in operations
+    /// - Parameter newFrame: The new frame type to set
+    func setFrame(_ newFrame: ScreenType) {
+        Logger.debug("[Word]: Setting frame", metadata: [
+            "oldFrame": frame.rawValue,
+            "newFrame": newFrame.rawValue
+        ])
+        self.frame = newFrame
+    }
     
     /// Initializes the cache with initial data
     func initializeCache() {
@@ -125,23 +115,11 @@ final class WordCache: ProcessDatabase {
                             return
                         }
                         
-                        do {
-                            let uniqueWords = try self.validateAndFilterWords(fetchedWords)
-                            self.cache = uniqueWords
-                            Logger.info(
-                                "[Word]: Cache initialized",
-                                metadata: [
-                                    "wordCount": String(uniqueWords.count)
-                                ]
-                            )
-                        } catch {
-                            Logger.error(
-                                "[Word]: Failed to validate words",
-                                metadata: [
-                                    "error": error.localizedDescription
-                                ]
-                            )
-                        }
+                        let uniqueWords = self.validateAndFilterWords(fetchedWords)
+                        self.cache = uniqueWords
+                        Logger.info("[Word]: Cache initialized", metadata: [
+                            "wordCount": String(uniqueWords.count)
+                        ])
                         self.isLoadingCache = false
                     }
                 },
@@ -151,12 +129,9 @@ final class WordCache: ProcessDatabase {
                     guard let self = self, currentToken == self.cancellationToken else { return }
                     
                     if case .failure(let error) = result {
-                        Logger.error(
-                            "[Word]: Cache initialization failed",
-                            metadata: [
-                                "error": error.localizedDescription
-                            ]
-                        )
+                        Logger.error("[Word]: Cache initialization failed", metadata: [
+                            "error": error.localizedDescription
+                        ])
                         self.queue.async(flags: .barrier) {
                             self.isLoadingCache = false
                         }
@@ -169,13 +144,10 @@ final class WordCache: ProcessDatabase {
     /// Removes a specific word from the cache
     /// - Parameter item: The word to remove
     func removeFromCache(_ item: DatabaseModelWord) {
-        Logger.debug(
-            "[Word]: Removing item from cache",
-            metadata: [
-                "wordId": item.id.map(String.init) ?? "nil",
-                "word": item.frontText
-            ]
-        )
+        Logger.debug("[Word]: Removing item from cache", metadata: [
+            "wordId": item.id.map(String.init) ?? "nil",
+            "word": item.frontText
+        ])
         queue.async(flags: .barrier) {
             if let itemId = item.id {
                 self.cache.removeAll { $0.id == itemId }
@@ -185,30 +157,14 @@ final class WordCache: ProcessDatabase {
     
     /// Clears the entire cache and cancels ongoing operations
     func clearCache() {
-        Logger.info(
-            "[Word]: Clearing cache",
-            metadata: [
-                "cacheSize": String(cache.count)
-            ]
-        )
+        Logger.info("[Word]: Clearing cache", metadata: [
+            "cacheSize": String(cache.count)
+        ])
         queue.async(flags: .barrier) {
             self.cancellationToken = UUID()
             self.isLoadingCache = false
             self.cache.removeAll()
         }
-    }
-    
-    /// Updates the current frame type for context tracking
-    /// - Parameter newFrame: The new frame type to set
-    func setFrame(_ newFrame: ScreenType) {
-        Logger.debug(
-            "[Word]: Setting frame",
-            metadata: [
-                "oldFrame": frame.rawValue,
-                "newFrame": newFrame.rawValue
-            ]
-        )
-        self.frame = newFrame
     }
     
     // MARK: - Private Methods
@@ -224,13 +180,10 @@ final class WordCache: ProcessDatabase {
             .sink { [weak self] cache in
                 guard let self = self else { return }
                 
-                Logger.debug(
-                    "[Word]: Cache threshold reached",
-                    metadata: [
-                        "currentCount": String(cache.count),
-                        "threshold": String(self.cacheThreshold)
-                    ]
-                )
+                Logger.debug("[Word]: Cache threshold reached", metadata: [
+                    "currentCount": String(cache.count),
+                    "threshold": String(self.cacheThreshold)
+                ])
                 if !cache.isEmpty {
                     self.refillCache()
                 }
@@ -241,27 +194,31 @@ final class WordCache: ProcessDatabase {
     /// Validates and filters words for uniqueness
     /// - Parameter words: Array of words to validate
     /// - Returns: Array of unique valid words
-    /// - Throws: CacheError if validation fails
-    private func validateAndFilterWords(_ words: [DatabaseModelWord]) throws -> [DatabaseModelWord] {
+    private func validateAndFilterWords(_ words: [DatabaseModelWord]) -> [DatabaseModelWord] {
         var uniqueFrontText = Set<String>()
         var uniqueIds = Set<Int>()
         
         return words.filter { word in
-            guard !word.frontText.isEmpty else { return false }
-            guard let wordId = word.id else { return false }
+            guard !word.frontText.isEmpty else {
+                Logger.warning("[Word]: Empty word text found")
+                return false
+            }
+            guard let wordId = word.id else {
+                Logger.warning("[Word]: Word without ID found", metadata: [
+                    "word": word.frontText
+                ])
+                return false
+            }
             
             let lowercasedText = word.frontText.lowercased()
             let isUnique = uniqueFrontText.insert(lowercasedText).inserted
                 && uniqueIds.insert(wordId).inserted
             
             if !isUnique {
-                Logger.warning(
-                    "[Word]: Duplicate word filtered",
-                    metadata: [
-                        "wordId": String(wordId),
-                        "word": word.frontText
-                    ]
-                )
+                Logger.warning("[Word]: Duplicate word filtered", metadata: [
+                    "wordId": String(wordId),
+                    "word": word.frontText
+                ])
             }
             
             return isUnique
@@ -294,15 +251,13 @@ final class WordCache: ProcessDatabase {
             }
             
             let currentToken = self.cancellationToken
-            let existingIds = Set(self.cache.map { $0.id })
+            let existingIds = Set(self.cache.compactMap { $0.id })
             let existingFrontTexts = Set(self.cache.map { $0.frontText.lowercased() })
-            Logger.debug(
-                "[Word]: Starting cache refill",
-                metadata: [
-                    "needCount": String(needCount),
-                    "currentCount": String(self.cache.count)
-                ]
-            )
+            
+            Logger.debug("[Word]: Starting cache refill", metadata: [
+                "needCount": String(needCount),
+                "currentCount": String(self.cache.count)
+            ])
             
             self.performDatabaseOperation(
                 { try self.wordRepository.fetchCache(count: needCount) },
@@ -310,36 +265,25 @@ final class WordCache: ProcessDatabase {
                     guard let self = self, currentToken == self.cancellationToken else { return }
                     
                     self.queue.async(flags: .barrier) {
-                        do {
-                            let validatedWords = try self.validateAndFilterWords(fetchedWords)
-                            let newWords = validatedWords.filter { word in
-                                !existingIds.contains(word.id) &&
+                        let validatedWords = self.validateAndFilterWords(fetchedWords)
+                        let newWords = validatedWords.filter { word in
+                            guard let wordId = word.id else { return false }
+                            return !existingIds.contains(wordId) &&
                                 !existingFrontTexts.contains(word.frontText.lowercased())
+                        }
+                        
+                        if !newWords.isEmpty {
+                            let availableSpace = self.cacheSize - self.cache.count
+                            if availableSpace > 0 {
+                                let wordsToAdd = Array(newWords.prefix(availableSpace))
+                                self.cache.append(contentsOf: wordsToAdd)
+                                Logger.info("[Word]: Cache refilled", metadata: [
+                                    "addedWords": String(wordsToAdd.count),
+                                    "totalWords": String(self.cache.count)
+                                ])
                             }
-                            
-                            if !newWords.isEmpty {
-                                let availableSpace = self.cacheSize - self.cache.count
-                                if availableSpace > 0 {
-                                    let wordsToAdd = Array(newWords.prefix(availableSpace))
-                                    self.cache.append(contentsOf: wordsToAdd)
-                                    Logger.info(
-                                        "[Word]: Cache refilled",
-                                        metadata: [
-                                            "addedWords": String(wordsToAdd.count),
-                                            "totalWords": String(self.cache.count)
-                                        ]
-                                    )
-                                }
-                            } else {
-                                Logger.warning("[Word]: No new unique words found for refill")
-                            }
-                        } catch {
-                            Logger.error(
-                                "[Word]: Failed to validate refill words",
-                                metadata: [
-                                    "error": error.localizedDescription
-                                ]
-                            )
+                        } else {
+                            Logger.warning("[Word]: No new unique words found for refill")
                         }
                         self.isLoadingCache = false
                     }
@@ -354,12 +298,9 @@ final class WordCache: ProcessDatabase {
                 completion: { [weak self] result in
                     guard let self = self, currentToken == self.cancellationToken else { return }
                     if case .failure(let error) = result {
-                        Logger.error(
-                            "[Word]: Cache refill failed",
-                            metadata: [
-                                "error": error.localizedDescription
-                            ]
-                        )
+                        Logger.error("[Word]: Cache refill failed", metadata: [
+                            "error": error.localizedDescription
+                        ])
                         self.queue.async(flags: .barrier) {
                             self.isLoadingCache = false
                         }

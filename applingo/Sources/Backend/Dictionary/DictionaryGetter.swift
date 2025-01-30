@@ -37,14 +37,6 @@ final class DictionaryGetter: ProcessDatabase {
     private let itemsPerPage = 50
     private let preloadThreshold = 5
     
-    // MARK: - Errors
-    
-    enum DictionaryError: Error {
-        case invalidDictionary
-        case databaseNotConnected
-        case invalidPaginationState
-    }
-    
     // MARK: - Initialization
     
     override init() {
