@@ -17,8 +17,13 @@ struct DictionaryRemoteListViewList: View {
     }
    
     var body: some View {
+        let dictionariesBinding = Binding(
+            get: { dictionaryGetter.dictionaries },
+            set: { _ in }
+        )
+        
         ItemList<ApiModelDictionaryItem, DictionaryRemoteRow>(
-            items: $dictionaryGetter.dictionaries,
+            items: dictionariesBinding,
             style: .themed(themeManager.currentThemeStyle),
             isLoadingPage: dictionaryGetter.isLoadingPage,
             error: nil,
@@ -39,7 +44,6 @@ struct DictionaryRemoteListViewList: View {
                     rating: dictionary.rating,
                     words: dictionary.words
                 ),
-
                 style: .themed(themeManager.currentThemeStyle),
                 dictionary: dictionary,
                 onTap: {
