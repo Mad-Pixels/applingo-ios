@@ -48,7 +48,7 @@ struct WordDetails: View {
 
                     WordDetailsViewAdditional(
                         word: $wrapper.word,
-                        tableName: wordsAction.dictionaryDisplayName(wrapper.word),
+                        tableName: wordsAction.dictionary(wrapper.word),
                         locale: locale,
                         style: style,
                         isEditing: isEditing

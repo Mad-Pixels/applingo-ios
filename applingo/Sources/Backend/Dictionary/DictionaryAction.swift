@@ -9,7 +9,6 @@ final class DictionaryAction: ProcessDatabase {
     // MARK: - Private Properties
     
     private let dictionaryRepository: DatabaseManagerDictionary
-    private let screenType: ScreenType = .DictionaryLocalList
     private var screen: ScreenType = .Home
     
     // MARK: - Initialization
@@ -27,7 +26,7 @@ final class DictionaryAction: ProcessDatabase {
     /// Sets the current screen type for operation tracking.
     /// - Parameter screen: The screen type to set.
     func setFrame(_ screen: ScreenType) {
-        Logger.debug("[Action]: Setting frame", metadata: ["frame": screen.rawValue])
+        Logger.debug("[DictionaryAction]: Setting frame", metadata: ["frame": screen.rawValue])
         self.screen = screen
     }
     
@@ -85,7 +84,7 @@ final class DictionaryAction: ProcessDatabase {
         performDatabaseOperation(
             { try self.dictionaryRepository.updateStatus(dictionaryID: dictionaryID, newStatus: newStatus) },
             success: { _ in },
-            screen: screenType,
+            screen: screen,
             metadata: createStatusMetadata(dictionaryID: dictionaryID, newStatus: newStatus),
             completion: completion
         )
@@ -100,7 +99,7 @@ final class DictionaryAction: ProcessDatabase {
         dictionary: DatabaseModelDictionary,
         completion: @escaping (Result<Void, Error>) -> Void
     ) {
-        Logger.debug("[Action]: Performing dictionary operation", metadata: [
+        Logger.debug("[DictionaryAction]: Performing dictionary operation", metadata: [
             "operation": name,
             "dictionary": dictionary.name
         ])
@@ -108,7 +107,7 @@ final class DictionaryAction: ProcessDatabase {
         performDatabaseOperation(
             operation,
             success: { _ in },
-            screen: screenType,
+            screen: screen,
             metadata: createMetadata(operation: name, dictionary: dictionary),
             completion: completion
         )
