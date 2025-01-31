@@ -1,11 +1,18 @@
 import SwiftUI
 
+/// A view that displays additional details of a dictionary,
+/// such as the author and creation date.
 struct DictionaryLocalDetailsViewAdditional: View {
+    
+    // MARK: - Properties
+    
     let dictionary: EditableDictionaryWrapper
     private let locale: DictionaryLocalDetailsLocale
     private let style: DictionaryLocalDetailsStyle
     let isEditing: Bool
-   
+    
+    // MARK: - Initializer
+    
     init(
         dictionary: EditableDictionaryWrapper,
         locale: DictionaryLocalDetailsLocale,
@@ -17,7 +24,9 @@ struct DictionaryLocalDetailsViewAdditional: View {
         self.style = style
         self.isEditing = isEditing
     }
-   
+    
+    // MARK: - Body
+    
     var body: some View {
         VStack(spacing: style.spacing) {
             SectionHeader(
@@ -25,8 +34,9 @@ struct DictionaryLocalDetailsViewAdditional: View {
                 style: .titled(ThemeManager.shared.currentThemeStyle)
             )
             .padding(.top, 8)
-           
+            
             VStack(spacing: style.spacing) {
+                // Author input field
                 InputText(
                     text: Binding(
                         get: { dictionary.dictionary.author },
@@ -36,7 +46,7 @@ struct DictionaryLocalDetailsViewAdditional: View {
                     placeholder: locale.authorTitle,
                     isEditing: isEditing
                 )
-                   
+                // Creation date (non-editable)
                 InputText(
                     text: .constant(dictionary.dictionary.date),
                     title: locale.createdAtTitle.capitalizedFirstLetter,

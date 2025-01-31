@@ -1,11 +1,18 @@
 import SwiftUI
 
+/// A view that displays the main details of a dictionary,
+/// including the name, description, and topic.
 struct DictionaryLocalDetailsViewMain: View {
+    
+    // MARK: - Properties
+    
     let dictionary: EditableDictionaryWrapper
     private let locale: DictionaryLocalDetailsLocale
     private let style: DictionaryLocalDetailsStyle
     let isEditing: Bool
-   
+    
+    // MARK: - Initializer
+    
     init(
         dictionary: EditableDictionaryWrapper,
         locale: DictionaryLocalDetailsLocale,
@@ -17,7 +24,9 @@ struct DictionaryLocalDetailsViewMain: View {
         self.style = style
         self.isEditing = isEditing
     }
-   
+    
+    // MARK: - Body
+    
     var body: some View {
         VStack(spacing: style.spacing) {
             SectionHeader(
@@ -25,8 +34,9 @@ struct DictionaryLocalDetailsViewMain: View {
                 style: .titled(ThemeManager.shared.currentThemeStyle)
             )
             .padding(.top, 8)
-           
+            
             VStack(spacing: style.spacing) {
+                // Name input field
                 InputText(
                     text: Binding(
                         get: { dictionary.dictionary.name },
@@ -36,7 +46,7 @@ struct DictionaryLocalDetailsViewMain: View {
                     placeholder: locale.displayNameTitle,
                     isEditing: isEditing
                 )
-                   
+                // Description text area
                 InputTextArea(
                     text: Binding(
                         get: { dictionary.dictionary.description },
@@ -46,7 +56,7 @@ struct DictionaryLocalDetailsViewMain: View {
                     placeholder: locale.descriptionTitle,
                     isEditing: isEditing
                 )
-                
+                // Topic input field
                 InputText(
                     text: Binding(
                         get: { dictionary.dictionary.topic },

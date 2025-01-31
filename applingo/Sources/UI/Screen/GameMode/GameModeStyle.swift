@@ -1,6 +1,10 @@
 import SwiftUI
 
+/// Defines styling properties for the GameMode view.
 final class GameModeStyle: ObservableObject {
+    
+    // MARK: - Properties
+    
     let backgroundColor: Color
     let padding: EdgeInsets
     let spacing: CGFloat
@@ -8,10 +12,13 @@ final class GameModeStyle: ObservableObject {
     let titleStyle: TextStyle
     let colors: [Color]
     
+    /// Structure to define text styling.
     struct TextStyle {
         let font: Font
         let color: Color
     }
+    
+    // MARK: - Initializer
     
     init(
         backgroundColor: Color,
@@ -31,7 +38,10 @@ final class GameModeStyle: ObservableObject {
     }
 }
 
+// MARK: - Themed Style Extension
+
 extension GameModeStyle {
+    /// Returns a themed style based on the current app theme and game theme.
     static func themed(_ theme: AppTheme, gameTheme: GameTheme) -> GameModeStyle {
         GameModeStyle(
             backgroundColor: theme.backgroundPrimary,

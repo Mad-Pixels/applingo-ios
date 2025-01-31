@@ -1,11 +1,20 @@
 import Foundation
 
+/// Provides localized strings for the GameQuiz view.
 final class GameQuizLocale: ObservableObject {
+    
+    // MARK: - Private Strings
+    
     private enum Strings {
         static let learn = "Learn"
     }
     
+    // MARK: - Published Properties
+    
+    /// Navigation title for the quiz.
     @Published private(set) var navigationTitle: String
+    
+    // MARK: - Initialization
     
     init() {
         self.navigationTitle = Self.localizedString(for: .navigationTitle)
@@ -22,6 +31,8 @@ final class GameQuizLocale: ObservableObject {
         NotificationCenter.default.removeObserver(self)
     }
     
+    // MARK: - Localization Helper
+    
     private enum LocalizedKey {
         case navigationTitle
         
@@ -32,10 +43,8 @@ final class GameQuizLocale: ObservableObject {
         }
         
         var capitalized: Bool {
-            switch self {
-            case .navigationTitle: return true
-            default: return false
-            }
+            // Здесь всегда true, так как название должно быть с заглавной буквы.
+            true
         }
     }
     
@@ -43,6 +52,8 @@ final class GameQuizLocale: ObservableObject {
         let string = LocaleManager.shared.localizedString(for: key.key)
         return key.capitalized ? string.capitalizedFirstLetter : string
     }
+    
+    // MARK: - Notification Handler
     
     @objc private func localeDidChange() {
         navigationTitle = Self.localizedString(for: .navigationTitle)

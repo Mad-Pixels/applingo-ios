@@ -1,15 +1,30 @@
 import SwiftUI
 
+/// A view that displays the details of a remote dictionary item.
+/// It provides a UI for viewing dictionary details and downloading the dictionary.
 struct DictionaryRemoteDetails: View {
+    
+    // MARK: - Environment and State Properties
+    
     @Environment(\.presentationMode) private var presentationMode
     @StateObject private var style: DictionaryRemoteDetailsStyle
     @StateObject private var locale = DictionaryRemoteDetailsLocale()
-
+    
+    /// The edited dictionary model.
     @State private var editedDictionary: ApiModelDictionaryItem
     @State private var isPressedTrailing = false
     @State private var isDownloading = false
+    
+    /// Binding to control the presentation state.
     @Binding var isPresented: Bool
-
+    
+    // MARK: - Initializer
+    
+    /// Initializes a new instance of DictionaryRemoteDetails.
+    /// - Parameters:
+    ///   - dictionary: The remote dictionary item to display.
+    ///   - isPresented: Binding to the presentation state.
+    ///   - style: Optional style configuration; if nil, a themed style is applied.
     init(
         dictionary: ApiModelDictionaryItem,
         isPresented: Binding<Bool>,
@@ -20,12 +35,11 @@ struct DictionaryRemoteDetails: View {
         _editedDictionary = State(initialValue: dictionary)
         _isPresented = isPresented
     }
-
+    
+    // MARK: - Body
+    
     var body: some View {
-        BaseScreen(
-            screen: .DictionaryRemoteDetails,
-            title: locale.navigationTitle
-        ) {
+        BaseScreen(screen: .DictionaryRemoteDetails, title: locale.navigationTitle) {
             ScrollView {
                 VStack(spacing: style.spacing) {
                     DictionaryRemoteDetailsViewMain(
@@ -33,13 +47,13 @@ struct DictionaryRemoteDetails: View {
                         locale: locale,
                         style: style
                     )
-
+                    
                     DictionaryRemoteDetailsViewCategory(
                         dictionary: editedDictionary,
                         locale: locale,
                         style: style
                     )
-
+                    
                     DictionaryRemoteDetailsViewAdditional(
                         dictionary: editedDictionary,
                         locale: locale,
@@ -63,7 +77,7 @@ struct DictionaryRemoteDetails: View {
                 }
             }
         }
-
+        // Show a progress view if downloading; otherwise, display the download button.
         if isDownloading {
             ProgressView(locale.downloadingTitle)
                 .progressViewStyle(CircularProgressViewStyle())
@@ -76,13 +90,15 @@ struct DictionaryRemoteDetails: View {
             )
         }
     }
-
+    
+    // MARK: - Private Methods
+    
+    /// Initiates the download of the dictionary.
     private func downloadDictionary() {
         isDownloading = true
         Task {
             do {
                 try await DictionaryDownload.shared.download(dictionary: editedDictionary)
-
                 await MainActor.run {
                     isDownloading = false
                     presentationMode.wrappedValue.dismiss()

@@ -1,6 +1,10 @@
 import Foundation
 
+/// Provides localized strings for the WordList view.
 final class WordListLocale: ObservableObject {
+    
+    // MARK: - Private Strings
+    
     private enum Strings {
         static let words = "Words"
         static let search = "Search"
@@ -9,11 +13,15 @@ final class WordListLocale: ObservableObject {
         static let error = "Error"
     }
     
+    // MARK: - Published Properties
+    
     @Published private(set) var navigationTitle: String
     @Published private(set) var searchPlaceholder: String
     @Published private(set) var addTitle: String
     @Published private(set) var emptyMessage: String
     @Published private(set) var errorTitle: String
+    
+    // MARK: - Initialization
     
     init() {
         self.navigationTitle = Self.localizedString(for: .navigationTitle)
@@ -34,6 +42,8 @@ final class WordListLocale: ObservableObject {
         NotificationCenter.default.removeObserver(self)
     }
     
+    // MARK: - Localization Helper
+    
     private enum LocalizedKey {
         case navigationTitle
         case searchPlaceholder
@@ -53,8 +63,10 @@ final class WordListLocale: ObservableObject {
         
         var capitalized: Bool {
             switch self {
-            case .navigationTitle, .searchPlaceholder: return true
-            default: return false
+            case .navigationTitle, .searchPlaceholder:
+                return true
+            default:
+                return false
             }
         }
     }
@@ -63,6 +75,8 @@ final class WordListLocale: ObservableObject {
         let string = LocaleManager.shared.localizedString(for: key.key)
         return key.capitalized ? string.capitalizedFirstLetter : string
     }
+    
+    // MARK: - Notification Handler
     
     @objc private func localeDidChange() {
         navigationTitle = Self.localizedString(for: .navigationTitle)

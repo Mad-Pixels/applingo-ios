@@ -1,12 +1,26 @@
 import SwiftUI
 
+/// A view displaying the main section of the word details,
+/// including input fields for the front and back text.
 struct WordDetailsViewMain: View {
+    
+    // MARK: - Bindings and Properties
+    
     @EnvironmentObject private var themeManager: ThemeManager
     @Binding var word: DatabaseModelWord
     private let locale: WordDetailsLocale
     private let style: WordDetailsStyle
+    /// Flag indicating if editing is enabled.
     let isEditing: Bool
     
+    // MARK: - Initializer
+    
+    /// Initializes the main details view.
+    /// - Parameters:
+    ///   - word: Binding to the word model.
+    ///   - locale: Localization object.
+    ///   - style: Style configuration.
+    ///   - isEditing: Flag for editing mode.
     init(
         word: Binding<DatabaseModelWord>,
         locale: WordDetailsLocale,
@@ -18,6 +32,8 @@ struct WordDetailsViewMain: View {
         self.style = style
         self.isEditing = isEditing
     }
+    
+    // MARK: - Body
     
     var body: some View {
         VStack(spacing: style.spacing) {
@@ -34,7 +50,6 @@ struct WordDetailsViewMain: View {
                     placeholder: locale.wordPlaceholder,
                     isEditing: isEditing
                 )
-                    
                 InputText(
                     text: $word.backText,
                     title: locale.definitionPlaceholder.capitalizedFirstLetter,

@@ -1,15 +1,12 @@
 import SwiftUI
 
-/// Defines styling properties for the Home view.
-final class HomeStyle: ObservableObject {
+/// Defines styling properties for the Dictionary Remote List view.
+final class DictionaryRemoteListStyle: ObservableObject {
     
     // MARK: - Properties
     
-    /// The background color for the home screen.
     let backgroundColor: Color
-    /// Padding applied to the content.
     let padding: EdgeInsets
-    /// Spacing between elements.
     let spacing: CGFloat
     
     // MARK: - Initializer
@@ -23,13 +20,13 @@ final class HomeStyle: ObservableObject {
 
 // MARK: - Themed Style Extension
 
-extension HomeStyle {
+extension DictionaryRemoteListStyle {
     /// Returns a themed style based on the current application theme.
-    static func themed(_ theme: AppTheme) -> HomeStyle {
-        HomeStyle(
+    static func themed(_ theme: AppTheme) -> DictionaryRemoteListStyle {
+        DictionaryRemoteListStyle(
             backgroundColor: theme.backgroundPrimary,
-            padding: EdgeInsets(top: 32, leading: 24, bottom: 32, trailing: 24),
-            spacing: 20
+            padding: EdgeInsets(top: 0, leading: 16, bottom: 16, trailing: 16),
+            spacing: 16
         )
     }
 }

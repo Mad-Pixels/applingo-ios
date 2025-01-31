@@ -1,10 +1,13 @@
 import Foundation
 
+/// Provides localized strings for the SettingsFeedback view.
+/// (В данном примере используется та же локализация, что и для Settings,
+/// но при необходимости можно создать отдельный набор строк.)
 final class SettingsFeedbackLocale: ObservableObject {
+    
+    // MARK: - Private Strings
+    
     private enum Strings {
-        static let quiz = "Quiz"
-        static let matchHunt = "MatchHunt"
-        static let verifyIt = "VerifyIt"
         static let settings = "Settings"
         static let theme = "Theme"
         static let language = "Language"
@@ -12,11 +15,15 @@ final class SettingsFeedbackLocale: ObservableObject {
         static let sendErrorLogs = "Send Error Logs"
     }
     
+    // MARK: - Published Properties
+    
     @Published private(set) var navigationTitle: String
     @Published private(set) var themeTitle: String
     @Published private(set) var languageTitle: String
     @Published private(set) var logSettingsTitle: String
     @Published private(set) var sendErrorLogsTitle: String
+    
+    // MARK: - Initialization
     
     init() {
         self.navigationTitle = Self.localizedString(for: .settings)
@@ -37,6 +44,8 @@ final class SettingsFeedbackLocale: ObservableObject {
         NotificationCenter.default.removeObserver(self)
     }
     
+    // MARK: - Localization Helper
+    
     private enum LocalizedKey {
         case settings
         case theme
@@ -54,15 +63,15 @@ final class SettingsFeedbackLocale: ObservableObject {
             }
         }
         
-        var capitalized: Bool {
-            true
-        }
+        var capitalized: Bool { true }
     }
     
     private static func localizedString(for key: LocalizedKey) -> String {
         let string = LocaleManager.shared.localizedString(for: key.key)
         return key.capitalized ? string.capitalizedFirstLetter : string
     }
+    
+    // MARK: - Notification Handler
     
     @objc private func localeDidChange() {
         navigationTitle = Self.localizedString(for: .settings)

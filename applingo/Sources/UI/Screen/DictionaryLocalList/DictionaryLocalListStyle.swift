@@ -1,22 +1,27 @@
 import SwiftUI
 
+/// Defines styling properties for the Dictionary Local List view.
 final class DictionaryLocalListStyle: ObservableObject {
+    
+    // MARK: - Properties
+    
     let backgroundColor: Color
     let padding: EdgeInsets
     let spacing: CGFloat
     
-    init(
-        spacing: CGFloat,
-        padding: EdgeInsets,
-        backgroundColor: Color
-    ) {
+    // MARK: - Initializer
+    
+    init(spacing: CGFloat, padding: EdgeInsets, backgroundColor: Color) {
         self.spacing = spacing
         self.padding = padding
         self.backgroundColor = backgroundColor
     }
 }
 
+// MARK: - Themed Style Extension
+
 extension DictionaryLocalListStyle {
+    /// Returns a themed style based on the current application theme.
     static func themed(_ theme: AppTheme) -> DictionaryLocalListStyle {
         DictionaryLocalListStyle(
             spacing: 16,

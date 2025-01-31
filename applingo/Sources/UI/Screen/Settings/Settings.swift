@@ -1,19 +1,29 @@
 import SwiftUI
 
+/// A view that displays the settings screen.
+/// It contains sections for theme, language and feedback.
 struct Settings: View {
+    
+    // MARK: - State Objects
+    
+    /// Style configuration for the settings screen.
     @StateObject private var style: SettingsStyle
+    /// Localization object for settings texts.
     @StateObject private var locale = SettingsLocale()
-
+    
+    // MARK: - Initializer
+    
+    /// Initializes the Settings view.
+    /// - Parameter style: Optional style; if nil, a themed style is applied.
     init(style: SettingsStyle? = nil) {
         let initialStyle = style ?? .themed(ThemeManager.shared.currentThemeStyle)
         _style = StateObject(wrappedValue: initialStyle)
     }
-
+    
+    // MARK: - Body
+    
     var body: some View {
-        BaseScreen(
-            screen: .Settings,
-            title: locale.navigationTitle
-        ) {
+        BaseScreen(screen: .Settings, title: locale.navigationTitle) {
             List {
                 SettingsViewTheme()
                     .listRowBackground(Color.clear)

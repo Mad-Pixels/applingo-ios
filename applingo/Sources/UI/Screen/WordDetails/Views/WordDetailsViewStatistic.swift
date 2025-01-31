@@ -1,10 +1,22 @@
 import SwiftUI
 
+/// A view that displays statistics for the word,
+/// such as success and fail counts represented via a chart.
 struct WordDetailsViewStatistic: View {
+    
+    // MARK: - Properties
+    
     private let word: DatabaseModelWord
     private let locale: WordDetailsLocale
     private let style: WordDetailsStyle
     
+    // MARK: - Initializer
+    
+    /// Initializes the statistic view.
+    /// - Parameters:
+    ///   - word: The word model.
+    ///   - locale: Localization object.
+    ///   - style: Style configuration.
     init(
         word: DatabaseModelWord,
         locale: WordDetailsLocale,
@@ -14,6 +26,8 @@ struct WordDetailsViewStatistic: View {
         self.locale = locale
         self.style = style
     }
+    
+    // MARK: - Body
     
     var body: some View {
         VStack(spacing: style.spacing) {

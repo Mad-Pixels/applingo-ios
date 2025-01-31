@@ -1,6 +1,10 @@
 import Foundation
 
+/// Provides localized strings for the Settings view.
 final class SettingsLocale: ObservableObject {
+    
+    // MARK: - Private Strings
+    
     private enum Strings {
         static let quiz = "Quiz"
         static let matchHunt = "MatchHunt"
@@ -12,11 +16,15 @@ final class SettingsLocale: ObservableObject {
         static let sendErrorLogs = "Send Error Logs"
     }
     
+    // MARK: - Published Properties
+    
     @Published private(set) var navigationTitle: String
     @Published private(set) var themeTitle: String
     @Published private(set) var languageTitle: String
     @Published private(set) var logSettingsTitle: String
     @Published private(set) var sendErrorLogsTitle: String
+    
+    // MARK: - Initialization
     
     init() {
         self.navigationTitle = Self.localizedString(for: .settings)
@@ -37,6 +45,8 @@ final class SettingsLocale: ObservableObject {
         NotificationCenter.default.removeObserver(self)
     }
     
+    // MARK: - Localization Helper
+    
     private enum LocalizedKey {
         case settings
         case theme
@@ -54,15 +64,15 @@ final class SettingsLocale: ObservableObject {
             }
         }
         
-        var capitalized: Bool {
-            true
-        }
+        var capitalized: Bool { true }
     }
     
     private static func localizedString(for key: LocalizedKey) -> String {
         let string = LocaleManager.shared.localizedString(for: key.key)
         return key.capitalized ? string.capitalizedFirstLetter : string
     }
+    
+    // MARK: - Notification Handler
     
     @objc private func localeDidChange() {
         navigationTitle = Self.localizedString(for: .settings)

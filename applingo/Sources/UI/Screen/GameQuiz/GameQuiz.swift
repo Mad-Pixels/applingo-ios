@@ -1,31 +1,54 @@
 import SwiftUI
 
+/// A view that presents a quiz game interface.
+/// It generates quiz cards based on a word cache and handles user answers.
 struct GameQuiz: View {
+    
+    // MARK: - Properties
+    
+    /// The quiz game model.
     @ObservedObject var game: Quiz
+    
+    /// Style object for configuring the appearance of the quiz.
     @StateObject private var style: GameQuizStyle
+    
+    /// Localization object for quiz texts.
     @StateObject private var locale = GameQuizLocale()
+    
+    /// Environment object providing cached words.
     @EnvironmentObject var cacheGetter: WordCache
     
+    /// The current quiz card being displayed.
     @State private var currentCard: QuizModelCard?
     
+    // MARK: - Initializer
+    
+    /// Initializes the GameQuiz view.
+    /// - Parameters:
+    ///   - game: The quiz game model.
+    ///   - style: Optional style configuration; if nil, a themed style is applied.
     init(game: Quiz, style: GameQuizStyle? = nil) {
         self.game = game
         let initialStyle = style ?? .themed(ThemeManager.shared.currentThemeStyle)
         _style = StateObject(wrappedValue: initialStyle)
     }
     
+    // MARK: - Methods
+    
+    /// Generates a new quiz card using random words from the cache.
+    /// The method ensures that four unique words are selected based on their front/back texts.
     private func generateCard() {
         let cache = cacheGetter.cache
         guard cache.count >= 4 else { return }
         
-        // Получаем 4 уникальных слова
+        // Get 4 unique words.
         var selectedWords: Set<DatabaseModelWord> = []
         var attempts = 0
         let maxAttempts = 20
         
         while selectedWords.count < 4 && attempts < maxAttempts {
             if let word = cache.randomElement() {
-                // Проверяем уникальность frontText и backText
+                // Check for duplicate front/back texts.
                 let hasDuplicate = selectedWords.contains { existing in
                     existing.frontText == word.frontText ||
                     existing.frontText == word.backText ||
@@ -43,7 +66,7 @@ struct GameQuiz: View {
         guard selectedWords.count == 4 else { return }
         
         let wordsArray = Array(selectedWords)
-        let correctWord = wordsArray[0] // Можно рандомно выбирать
+        let correctWord = wordsArray[0] // Можно рандомно выбирать корректный ответ.
         let showingFront = Bool.random()
         
         currentCard = QuizModelCard(
@@ -52,24 +75,29 @@ struct GameQuiz: View {
             showingFront: showingFront
         )
         
-        if let validation = game.validation as? QuizValidation {
-            validation.setCurrentCard(currentCard!)
+        // Set the current card in the game validation if applicable.
+        if let validation = game.validation as? QuizValidation, let card = currentCard {
+            validation.setCurrentCard(card)
         }
     }
     
+    /// Handles the user's answer.
+    /// - Parameter answer: The answer text provided by the user.
     private func handleAnswer(_ answer: String) {
         let result = game.validateAnswer(answer)
         game.updateStats(
             correct: result == .correct,
-            responseTime: 0, // TODO: Добавить измерение времени
+            responseTime: 0, // TODO: Implement time measurement.
             isSpecialCard: false
         )
         
-        // После небольшой задержки генерируем новую карточку
+        // Generate a new card after a short delay.
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             generateCard()
         }
     }
+    
+    // MARK: - Body
     
     var body: some View {
         ZStack {

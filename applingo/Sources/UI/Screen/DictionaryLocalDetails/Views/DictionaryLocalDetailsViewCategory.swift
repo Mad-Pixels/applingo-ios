@@ -1,11 +1,17 @@
 import SwiftUI
 
+/// A view that displays and allows editing of the dictionary's category and subcategory.
 struct DictionaryLocalDetailsViewCategory: View {
+    
+    // MARK: - Properties
+    
     let dictionary: EditableDictionaryWrapper
     private let locale: DictionaryLocalDetailsLocale
     private let style: DictionaryLocalDetailsStyle
     let isEditing: Bool
-   
+    
+    // MARK: - Initializer
+    
     init(
         dictionary: EditableDictionaryWrapper,
         locale: DictionaryLocalDetailsLocale,
@@ -17,7 +23,9 @@ struct DictionaryLocalDetailsViewCategory: View {
         self.style = style
         self.isEditing = isEditing
     }
-   
+    
+    // MARK: - Body
+    
     var body: some View {
         VStack(spacing: style.spacing) {
             SectionHeader(
@@ -25,8 +33,9 @@ struct DictionaryLocalDetailsViewCategory: View {
                 style: .titled(ThemeManager.shared.currentThemeStyle)
             )
             .padding(.top, 8)
-           
+            
             VStack(spacing: style.spacing) {
+                // Category input field
                 InputText(
                     text: Binding(
                         get: { dictionary.dictionary.category },
@@ -36,7 +45,7 @@ struct DictionaryLocalDetailsViewCategory: View {
                     placeholder: locale.categoryTitle,
                     isEditing: isEditing
                 )
-                   
+                // Subcategory input field
                 InputText(
                     text: Binding(
                         get: { dictionary.dictionary.subcategory },

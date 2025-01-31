@@ -177,9 +177,6 @@
         }
       }
     },
-    "asd" : {
-
-    },
     "Back" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2484,6 +2481,9 @@
           }
         }
       }
+    },
+    "Send Feedback" : {
+
     },
     "SendErrorsLogs" : {
       "extractionState" : "manual",

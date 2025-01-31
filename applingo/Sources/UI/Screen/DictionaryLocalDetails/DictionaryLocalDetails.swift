@@ -1,20 +1,36 @@
 import SwiftUI
 
+/// A view that displays the details of a local dictionary and allows editing.
+/// It contains three sections: main details, category details, and additional details.
 struct DictionaryLocalDetails: View {
+    
+    // MARK: - Environment & State Properties
+    
     @Environment(\.presentationMode) private var presentationMode
     @StateObject private var style: DictionaryLocalDetailsStyle
     @StateObject private var locale = DictionaryLocalDetailsLocale()
     @StateObject private var dictionaryAction = DictionaryAction()
     @StateObject private var wrapper: EditableDictionaryWrapper
-
+    
+    /// Binding flag for the presentation state.
     @Binding var isPresented: Bool
+    /// Closure to refresh the parent view after changes.
     let refresh: () -> Void
+    /// The original dictionary used to restore data when canceling edits.
     private let originalDictionary: DatabaseModelDictionary
-
+    
     @State private var isEditing = false
     @State private var isPressedLeading = false
     @State private var isPressedTrailing = false
-
+    
+    // MARK: - Initializer
+    
+    /// Initializes a new instance of DictionaryLocalDetails.
+    /// - Parameters:
+    ///   - dictionary: The dictionary to display.
+    ///   - isPresented: Binding for the presentation state.
+    ///   - refresh: Closure executed to refresh the parent view after an update.
+    ///   - style: Optional style configuration; if nil, a themed style is applied.
     init(
         dictionary: DatabaseModelDictionary,
         isPresented: Binding<Bool>,
@@ -28,7 +44,9 @@ struct DictionaryLocalDetails: View {
         self.refresh = refresh
         self.originalDictionary = dictionary
     }
-
+    
+    // MARK: - Body
+    
     var body: some View {
         BaseScreen(
             screen: .DictionaryLocalDetails,
@@ -42,14 +60,12 @@ struct DictionaryLocalDetails: View {
                         style: style,
                         isEditing: isEditing
                     )
-
                     DictionaryLocalDetailsViewCategory(
                         dictionary: wrapper,
                         locale: locale,
                         style: style,
                         isEditing: isEditing
                     )
-
                     DictionaryLocalDetailsViewAdditional(
                         dictionary: wrapper,
                         locale: locale,
@@ -63,11 +79,13 @@ struct DictionaryLocalDetails: View {
             .background(style.backgroundColor)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                // MARK: - Toolbar Leading Item
                 ToolbarItem(placement: .navigationBarLeading) {
                     ButtonNav(
                         style: isEditing ? .close(ThemeManager.shared.currentThemeStyle) : .back(ThemeManager.shared.currentThemeStyle),
                         onTap: {
                             if isEditing {
+                                // Cancel editing and restore the original dictionary.
                                 isEditing = false
                                 wrapper.dictionary = originalDictionary
                             } else {
@@ -77,7 +95,7 @@ struct DictionaryLocalDetails: View {
                         isPressed: $isPressedLeading
                     )
                 }
-                
+                // MARK: - Toolbar Trailing Item
                 ToolbarItem(placement: .navigationBarTrailing) {
                     ButtonNav(
                         style: isEditing ? .save(ThemeManager.shared.currentThemeStyle) : .edit(ThemeManager.shared.currentThemeStyle),
@@ -95,19 +113,28 @@ struct DictionaryLocalDetails: View {
             }
         }
     }
-
+    
+    // MARK: - Private Computed Properties
+    
+    /// Determines whether the save action should be disabled.
     private var isSaveDisabled: Bool {
-        wrapper.dictionary.name.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).isEmpty ||
-        wrapper.dictionary.category.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).isEmpty ||
-        wrapper.dictionary.subcategory.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).isEmpty ||
-        wrapper.dictionary.author.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).isEmpty ||
-        wrapper.dictionary.description.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).isEmpty
+        let trimmed = { (string: String) -> String in
+            string.trimmingCharacters(in: .whitespacesAndNewlines)
+        }
+        return trimmed(wrapper.dictionary.name).isEmpty ||
+               trimmed(wrapper.dictionary.category).isEmpty ||
+               trimmed(wrapper.dictionary.subcategory).isEmpty ||
+               trimmed(wrapper.dictionary.author).isEmpty ||
+               trimmed(wrapper.dictionary.description).isEmpty
     }
-
+    
+    // MARK: - Private Methods
+    
+    /// Updates the dictionary using the dictionaryAction service.
     private func updateDictionary() {
         dictionaryAction.update(wrapper.dictionary) { _ in
-            self.isEditing = false
-            self.presentationMode.wrappedValue.dismiss()
+            isEditing = false
+            presentationMode.wrappedValue.dismiss()
             refresh()
         }
     }

@@ -1,31 +1,40 @@
 import SwiftUI
 
+/// A view that displays a list of local dictionaries with search, import, and download functionalities.
 struct DictionaryLocalList: View {
+    
+    // MARK: - State Objects
+    
     @StateObject private var style: DictionaryLocalListStyle
     @StateObject private var locale = DictionaryLocalListLocale()
     @StateObject private var dictionaryGetter = DictionaryGetter()
-
+    
+    // MARK: - Local State
+    
     @State private var selectedDictionary: DatabaseModelDictionary?
     @State private var isShowingInstructions = false
     @State private var isShowingRemoteList = false
    
+    // MARK: - Initializer
+    
+    /// Initializes the local dictionary list view with an optional style.
+    /// - Parameter style: Optional style configuration; if nil, a themed style is used.
     init(style: DictionaryLocalListStyle? = nil) {
         let initialStyle = style ?? .themed(ThemeManager.shared.currentThemeStyle)
         _style = StateObject(wrappedValue: initialStyle)
     }
-   
+    
+    // MARK: - Body
+    
     var body: some View {
-        BaseScreen(
-            screen: .DictionaryLocalList,
-            title: locale.navigationTitle
-        ) {
+        BaseScreen(screen: .DictionaryLocalList, title: locale.navigationTitle) {
             VStack(spacing: 0) {
                 DictionaryLocalListViewSearch(
                     searchText: $dictionaryGetter.searchText,
                     locale: locale
                 )
                 .padding()
-                       
+                
                 DictionaryLocalListViewList(
                     locale: locale,
                     dictionaryGetter: dictionaryGetter,
@@ -47,6 +56,7 @@ struct DictionaryLocalList: View {
             }
             .navigationBarTitleDisplayMode(.inline)
         }
+        // Present details view when a dictionary is selected.
         .sheet(item: $selectedDictionary) { dictionary in
             DictionaryLocalDetails(
                 dictionary: dictionary,
@@ -55,13 +65,14 @@ struct DictionaryLocalList: View {
                     dictionaryGetter.resetPagination()
                 }
             )
-           
         }
+        // Present import view.
         .sheet(isPresented: $isShowingInstructions) {
             DictionaryImport(
                 isShowingFileImporter: $isShowingInstructions
             )
         }
+        // Present remote list view as full screen.
         .fullScreenCover(isPresented: $isShowingRemoteList) {
             DictionaryRemoteList(isPresented: $isShowingRemoteList)
         }

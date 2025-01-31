@@ -1,31 +1,37 @@
 import SwiftUI
 
+/// A view that handles the import of dictionaries.
+/// Provides UI for selecting a CSV file to import dictionary data.
 struct DictionaryImport: View {
+    
+    // MARK: - Environment & State Properties
+    
     @Environment(\.presentationMode) private var presentationMode
     @StateObject private var style: DictionaryImportStyle
     @StateObject private var locale = DictionaryImportLocale()
     
-    // Флаг, управляющий показом системного диалога выбора файла
+    /// Binding flag that controls the presentation of the file importer dialog.
     @Binding var isShowingFileImporter: Bool
     
-    // Флаг для анимации нажатия на кнопку (для ButtonNav).
+    /// Flag to manage button press animation.
     @State private var isPressedTrailing = false
     
-    // Инициализатор
-    init(
-        isShowingFileImporter: Binding<Bool>,
-        style: DictionaryImportStyle? = nil
-    ) {
+    // MARK: - Initializer
+    
+    /// Initializes the DictionaryImport view.
+    /// - Parameters:
+    ///   - isShowingFileImporter: Binding flag for showing the file importer.
+    ///   - style: Optional style configuration; if nil, a themed style is applied.
+    init(isShowingFileImporter: Binding<Bool>, style: DictionaryImportStyle? = nil) {
         self._isShowingFileImporter = isShowingFileImporter
         let initialStyle = style ?? .themed(ThemeManager.shared.currentThemeStyle)
         _style = StateObject(wrappedValue: initialStyle)
     }
     
+    // MARK: - Body
+    
     var body: some View {
-        BaseScreen(
-            screen: .DictionaryImport,
-            title: locale.navigationTitle
-        ) {
+        BaseScreen(screen: .DictionaryImport, title: locale.navigationTitle) {
             ScrollView {
                 VStack(spacing: style.spacing) {
                     DictionaryImportViewTitle(locale: locale, style: style)
@@ -49,53 +55,53 @@ struct DictionaryImport: View {
                 }
             }
         }
-        
-        // Кнопка, по нажатию показываем диалог выбора файла
+        // Import CSV Button
         ButtonAction(
             title: locale.importCSVTitle,
-            action: {
-                isShowingFileImporter = true
-            },
+            action: { isShowingFileImporter = true },
             style: .action(ThemeManager.shared.currentThemeStyle)
         )
-        
-        // Собственно диалог выбора файла (.fileImporter)
+        // File Importer Dialog
         .fileImporter(
             isPresented: $isShowingFileImporter,
             allowedContentTypes: [
                 .plainText,
                 .commaSeparatedText
-                // Если нужен TSV, можно добавить .tabSeparatedText (iOS 15+).
+                // For TSV support on iOS 15+, you can add .tabSeparatedText.
             ],
             allowsMultipleSelection: false
         ) { result in
-            switch result {
-            case .success(let urls):
-                guard let fileURL = urls.first else {
-                    Logger.debug("[DictionaryImportView]: No file selected")
-                    return
-                }
-                
-                // Вызываем парсер
-                let parser = DictionaryParser()
-                
-                parser.importDictionary(from: fileURL) { importResult in
-                    switch importResult {
-                    case .success:
-                        Logger.debug("[DictionaryImportView]: Import successful")
-                        
-                    case .failure(let error):
-                        Logger.debug("[DictionaryImportView]: Import failed", metadata: [
-                            "error": "\(error)"
-                        ])
-                    }
-                }
-                
-            case .failure(let error):
-                Logger.debug("[DictionaryImportView]: File picker error", metadata: [
-                    "error": "\(error)"
-                ])
+            handleFileImport(result: result)
+        }
+    }
+    
+    // MARK: - Private Methods
+    
+    /// Handles the result of the file importer dialog.
+    /// - Parameter result: The result returned from the file importer.
+    private func handleFileImport(result: Result<[URL], Error>) {
+        switch result {
+        case .success(let urls):
+            guard let fileURL = urls.first else {
+                Logger.debug("[DictionaryImportView]: No file selected")
+                return
             }
+            // Call the parser to import the dictionary.
+            let parser = DictionaryParser()
+            parser.importDictionary(from: fileURL) { importResult in
+                switch importResult {
+                case .success:
+                    Logger.debug("[DictionaryImportView]: Import successful")
+                case .failure(let error):
+                    Logger.debug("[DictionaryImportView]: Import failed", metadata: [
+                        "error": "\(error)"
+                    ])
+                }
+            }
+        case .failure(let error):
+            Logger.debug("[DictionaryImportView]: File picker error", metadata: [
+                "error": "\(error)"
+            ])
         }
     }
 }

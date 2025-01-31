@@ -1,8 +1,14 @@
 import SwiftUI
 
+/// A view that displays the theme selection section in Settings.
 struct SettingsViewTheme: View {
+    
+    // MARK: - Environment and State Objects
+    
     @EnvironmentObject private var themeManager: ThemeManager
     @StateObject private var locale = SettingsLocale()
+    
+    // MARK: - Body
     
     var body: some View {
         ItemPicker(

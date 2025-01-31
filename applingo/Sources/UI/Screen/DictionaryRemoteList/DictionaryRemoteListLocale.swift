@@ -1,6 +1,10 @@
 import Foundation
 
+/// Provides localized strings for the Dictionary Remote List view.
 final class DictionaryRemoteListLocale: ObservableObject {
+    
+    // MARK: - Private Strings
+    
     private enum Strings {
         static let dictionaries = "Dictionaries"
         static let search = "Search"
@@ -11,6 +15,8 @@ final class DictionaryRemoteListLocale: ObservableObject {
         static let close = "Close"
     }
     
+    // MARK: - Published Properties
+    
     @Published private(set) var navigationTitle: String
     @Published private(set) var searchPlaceholder: String
     @Published private(set) var filterTitle: String
@@ -18,6 +24,8 @@ final class DictionaryRemoteListLocale: ObservableObject {
     @Published private(set) var emptyMessage: String
     @Published private(set) var errorTitle: String
     @Published private(set) var closeTitle: String
+    
+    // MARK: - Initialization
     
     init() {
         self.navigationTitle = Self.localizedString(for: .navigationTitle)
@@ -40,9 +48,10 @@ final class DictionaryRemoteListLocale: ObservableObject {
         NotificationCenter.default.removeObserver(self)
     }
     
+    // MARK: - Localization Helper
+    
     private enum LocalizedKey {
-        case navigationTitle, searchPlaceholder, filterTitle, backTitle
-        case emptyMessage, errorTitle, closeTitle
+        case navigationTitle, searchPlaceholder, filterTitle, backTitle, emptyMessage, errorTitle, closeTitle
         
         var key: String {
             switch self {
@@ -58,10 +67,10 @@ final class DictionaryRemoteListLocale: ObservableObject {
         
         var capitalized: Bool {
             switch self {
-            case .navigationTitle, .searchPlaceholder,
-                 .filterTitle, .backTitle:
+            case .navigationTitle, .searchPlaceholder, .filterTitle, .backTitle:
                 return true
-            default: return false
+            default:
+                return false
             }
         }
     }
@@ -70,6 +79,8 @@ final class DictionaryRemoteListLocale: ObservableObject {
         let string = LocaleManager.shared.localizedString(for: key.key)
         return key.capitalized ? string.capitalizedFirstLetter : string
     }
+    
+    // MARK: - Notification Handler
     
     @objc private func localeDidChange() {
         navigationTitle = Self.localizedString(for: .navigationTitle)

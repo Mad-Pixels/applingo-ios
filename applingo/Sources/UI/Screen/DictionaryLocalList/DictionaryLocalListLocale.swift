@@ -1,6 +1,10 @@
 import Foundation
 
+/// Provides localized strings for the Dictionary Local List view.
 final class DictionaryLocalListLocale: ObservableObject {
+    
+    // MARK: - Private Strings
+    
     private enum Strings {
         static let dictionaries = "Dictionaries"
         static let search = "Search"
@@ -10,12 +14,16 @@ final class DictionaryLocalListLocale: ObservableObject {
         static let error = "Error"
     }
     
+    // MARK: - Published Properties
+    
     @Published private(set) var navigationTitle: String
     @Published private(set) var searchPlaceholder: String
     @Published private(set) var importTitle: String
     @Published private(set) var downloadTitle: String
     @Published private(set) var emptyMessage: String
     @Published private(set) var errorTitle: String
+    
+    // MARK: - Initialization
     
     init() {
         self.navigationTitle = Self.localizedString(for: .navigationTitle)
@@ -36,6 +44,8 @@ final class DictionaryLocalListLocale: ObservableObject {
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
+    
+    // MARK: - Localization Helper
     
     private enum LocalizedKey {
         case navigationTitle
@@ -64,10 +74,13 @@ final class DictionaryLocalListLocale: ObservableObject {
         }
     }
     
+    /// Returns a localized string for the specified key.
     private static func localizedString(for key: LocalizedKey) -> String {
         let string = LocaleManager.shared.localizedString(for: key.key)
         return key.capitalized ? string.capitalizedFirstLetter : string
     }
+    
+    // MARK: - Notification Handler
     
     @objc private func localeDidChange() {
         navigationTitle = Self.localizedString(for: .navigationTitle)

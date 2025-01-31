@@ -1,10 +1,16 @@
 import SwiftUI
 
+/// Defines styling properties for the WordAddManual view.
 final class WordAddManualStyle: ObservableObject {
+    
+    // MARK: - Properties
+    
     let backgroundColor: Color
     let spacing: CGFloat
     let padding: EdgeInsets
     let sectionSpacing: CGFloat
+    
+    // MARK: - Initializer
     
     init(
         backgroundColor: Color,
@@ -19,7 +25,10 @@ final class WordAddManualStyle: ObservableObject {
     }
 }
 
+// MARK: - Themed Style Extension
+
 extension WordAddManualStyle {
+    /// Returns a themed style based on the current application theme.
     static func themed(_ theme: AppTheme) -> WordAddManualStyle {
         WordAddManualStyle(
             backgroundColor: theme.backgroundPrimary,

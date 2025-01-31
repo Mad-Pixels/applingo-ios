@@ -1,11 +1,24 @@
 import SwiftUI
 
+/// A view that displays the additional section for adding a word.
+/// This section includes inputs for hint and description.
 struct WordAddManualViewAdditional: View {
+    
+    // MARK: - Bindings and Properties
+    
     @Binding var hint: String
     @Binding var description: String
     private let locale: WordAddManualLocale
     private let style: WordAddManualStyle
     
+    // MARK: - Initializer
+    
+    /// Initializes the additional view.
+    /// - Parameters:
+    ///   - hint: Binding for the hint text.
+    ///   - description: Binding for the description text.
+    ///   - locale: Localization object.
+    ///   - style: Style configuration.
     init(
         hint: Binding<String>,
         description: Binding<String>,
@@ -17,6 +30,8 @@ struct WordAddManualViewAdditional: View {
         self.locale = locale
         self.style = style
     }
+    
+    // MARK: - Body
     
     var body: some View {
         VStack(spacing: style.spacing) {
@@ -33,7 +48,6 @@ struct WordAddManualViewAdditional: View {
                     placeholder: locale.hintPlaceholder,
                     isEditing: true
                 )
-                
                 InputTextArea(
                     text: $description,
                     title: locale.descriptionPlaceholder.capitalizedFirstLetter,
