@@ -121,6 +121,9 @@ final class ApiManagerRequest {
         if let subcategory = request.subcategory {
             items.append(URLQueryItem(name: "subcategory", value: subcategory))
         }
+        if let level = request.level {
+            items.append(URLQueryItem(name: "level", value: level))
+        }
         if let isPublic = request.isPublic {
             items.append(URLQueryItem(name: "public", value: isPublic ? "true" : "false"))
         }
