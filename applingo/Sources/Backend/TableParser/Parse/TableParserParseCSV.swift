@@ -133,48 +133,85 @@ public final class TableParserParseCSV: AbstractTableParser {
         return words
     }
     
-    /// Splits a single CSV line into columns, respecting quote rules.
-    /// - Parameter line: The line to parse.
+//    /// Splits a single CSV line into columns, respecting quote rules.
+//    /// - Parameter line: The line to parse.
+//    /// - Returns: An array of column values.
+//    private func parseLine(_ line: String) -> [String] {
+//        var result = [String]()
+//        var currentField = ""
+//        var insideQuotes = false
+//        var iterator = line.makeIterator()
+//        
+//        while let char = iterator.next() {
+//            if char == format.quoteCharacter {
+//                if insideQuotes {
+//                    // Look ahead to see if next is another quote (escape) or separator.
+//                    if let nextChar = iterator.next() {
+//                        if nextChar == format.quoteCharacter {
+//                            // Escaped quote
+//                            currentField.append(String(format.quoteCharacter))
+//                        } else {
+//                            // End quote
+//                            insideQuotes = false
+//                            if String(nextChar) != format.separator {
+//                                currentField.append(nextChar)
+//                            } else {
+//                                result.append(currentField)
+//                                currentField = ""
+//                            }
+//                        }
+//                    } else {
+//                        // No more characters, close quotes
+//                        insideQuotes = false
+//                    }
+//                } else {
+//                    // Start quotes
+//                    insideQuotes = true
+//                }
+//            } else if String(char) == format.separator && !insideQuotes {
+//                // We've hit a separator outside quotes
+//                result.append(currentField)
+//                currentField = ""
+//            } else {
+//                currentField.append(char)
+//            }
+//        }
+//        
+//        result.append(currentField)
+//        return result
+//    }
+    
+    /// Splits a CSV line into columns while properly handling quoted fields.
+    /// - Parameter line: The CSV line to parse.
     /// - Returns: An array of column values.
     private func parseLine(_ line: String) -> [String] {
         var result = [String]()
         var currentField = ""
         var insideQuotes = false
-        var iterator = line.makeIterator()
+        let separator = format.separator.first!
         
-        while let char = iterator.next() {
+        let characters = Array(line)
+        var i = 0
+        while i < characters.count {
+            let char = characters[i]
             if char == format.quoteCharacter {
                 if insideQuotes {
-                    // Look ahead to see if next is another quote (escape) or separator.
-                    if let nextChar = iterator.next() {
-                        if nextChar == format.quoteCharacter {
-                            // Escaped quote
-                            currentField.append(String(format.quoteCharacter))
-                        } else {
-                            // End quote
-                            insideQuotes = false
-                            if String(nextChar) != format.separator {
-                                currentField.append(nextChar)
-                            } else {
-                                result.append(currentField)
-                                currentField = ""
-                            }
-                        }
+                    if i + 1 < characters.count && characters[i + 1] == format.quoteCharacter {
+                        currentField.append(format.quoteCharacter)
+                        i += 1
                     } else {
-                        // No more characters, close quotes
                         insideQuotes = false
                     }
                 } else {
-                    // Start quotes
                     insideQuotes = true
                 }
-            } else if String(char) == format.separator && !insideQuotes {
-                // We've hit a separator outside quotes
+            } else if char == separator && !insideQuotes {
                 result.append(currentField)
                 currentField = ""
             } else {
                 currentField.append(char)
             }
+            i += 1
         }
         
         result.append(currentField)
