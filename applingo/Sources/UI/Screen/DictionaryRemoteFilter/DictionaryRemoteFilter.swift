@@ -7,6 +7,7 @@ struct DictionaryRemoteFilter: View {
     @StateObject private var categoryGetter = CategoryFetcher()
 
     @Binding var apiRequestParams: ApiModelDictionaryQueryRequest
+    @State private var selectedLevel: DictionaryLevelType = .undefined
     @State private var selectedSortBy: ApiSortType = .date
     @State private var selectedFrontCategory: CategoryItem?
     @State private var selectedBackCategory: CategoryItem?
@@ -19,6 +20,10 @@ struct DictionaryRemoteFilter: View {
         self._apiRequestParams = apiRequestParams
         let initialStyle = style ?? .themed(ThemeManager.shared.currentThemeStyle)
         _style = StateObject(wrappedValue: initialStyle)
+        
+        if let level = apiRequestParams.wrappedValue.level {
+            _selectedLevel = State(initialValue: DictionaryLevelType(rawValue: level) ?? .undefined)
+        }
 
         if let sortBy = apiRequestParams.wrappedValue.sortBy {
             _selectedSortBy = State(initialValue: sortBy == "rating" ? .rating : .date)
@@ -36,6 +41,12 @@ struct DictionaryRemoteFilter: View {
                         categoryGetter: categoryGetter,
                         selectedFrontCategory: $selectedFrontCategory,
                         selectedBackCategory: $selectedBackCategory,
+                        locale: locale
+                    )
+                    .padding(style.padding)
+                    
+                    DictionaryRemoteFilterViewLevel(
+                        selectedLevel: $selectedLevel,
                         locale: locale
                     )
                     .padding(style.padding)
@@ -63,7 +74,7 @@ struct DictionaryRemoteFilter: View {
             }
         }
         .onAppear {
-            //categoryGetter.setFrame(.dictionaryRemoteFilter)
+            categoryGetter.setScreen(.DictionaryRemoteFilter)
             categoryGetter.get { _ in }
         }
         .onChange(of: categoryGetter.frontCategories) { frontCategories in
@@ -89,12 +100,15 @@ struct DictionaryRemoteFilter: View {
        let backCategoryName = selectedBackCategory?.code ?? ""
        apiRequestParams.subcategory = "\(frontCategoryName)-\(backCategoryName)".lowercased()
        apiRequestParams.sortBy = selectedSortBy.rawValue
+        apiRequestParams.level = selectedLevel.rawValue
        presentationMode.wrappedValue.dismiss()
     }
 
     private func resetFilters() {
         apiRequestParams.subcategory = nil
         apiRequestParams.sortBy = nil
+        apiRequestParams.level = nil
+        selectedLevel = .undefined
         Logger.debug("Filters reset: all parameters cleared")
         presentationMode.wrappedValue.dismiss()
     }

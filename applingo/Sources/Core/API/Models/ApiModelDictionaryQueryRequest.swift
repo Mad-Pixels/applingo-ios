@@ -12,6 +12,9 @@ struct ApiModelDictionaryQueryRequest: Codable, Equatable {
 
     /// The field by which to sort the results.
     var sortBy: String?
+    
+    /// The level to filter the dictionaries.
+    var level: String?
 
     /// The last evaluated key for paginated queries.
     var lastEvaluated: String?
@@ -26,11 +29,13 @@ struct ApiModelDictionaryQueryRequest: Codable, Equatable {
     ///   - lastEvaluated: The last evaluated key for paginated queries.
     init(
         subcategory: String? = nil,
+        level: String? = nil,
         isPublic: Bool? = nil,
         sortBy: ApiSortType? = nil,
         lastEvaluated: String? = nil
     ) {
         self.subcategory = subcategory
+        self.level = level
         self.isPublic = isPublic
         self.sortBy = sortBy?.rawValue
         self.lastEvaluated = lastEvaluated
@@ -44,6 +49,9 @@ struct ApiModelDictionaryQueryRequest: Codable, Equatable {
         var dict: [String: Any] = [:]
         if let subcategory {
             dict["subcategory"] = subcategory
+        }
+        if let level {
+            dict["level"] = level
         }
         if let isPublic {
             dict["is_public"] = isPublic

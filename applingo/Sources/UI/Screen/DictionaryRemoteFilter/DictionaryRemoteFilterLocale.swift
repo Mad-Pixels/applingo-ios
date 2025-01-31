@@ -9,10 +9,12 @@ final class DictionaryRemoteFilterLocale: ObservableObject {
        static let reset = "Reset"
        static let close = "Close"
        static let error = "Error"
+       static let level = "Level"
    }
    
    @Published private(set) var navigationTitle: String
    @Published private(set) var dictionaryTitle: String
+    @Published private(set) var levelTitle: String
    @Published private(set) var sortByTitle: String
    @Published private(set) var saveTitle: String
    @Published private(set) var resetTitle: String
@@ -22,6 +24,7 @@ final class DictionaryRemoteFilterLocale: ObservableObject {
    init() {
        self.navigationTitle = Self.localizedString(for: .navigationTitle)
        self.dictionaryTitle = Self.localizedString(for: .dictionaryTitle)
+       self.levelTitle = Self.localizedString(for: .levelTitle)
        self.sortByTitle = Self.localizedString(for: .sortByTitle)
        self.saveTitle = Self.localizedString(for: .saveTitle)
        self.resetTitle = Self.localizedString(for: .resetTitle)
@@ -48,6 +51,7 @@ final class DictionaryRemoteFilterLocale: ObservableObject {
        case resetTitle
        case closeTitle
        case errorTitle
+       case levelTitle
        
        var key: String {
            switch self {
@@ -58,6 +62,7 @@ final class DictionaryRemoteFilterLocale: ObservableObject {
            case .resetTitle: return Strings.reset
            case .closeTitle: return Strings.close
            case .errorTitle: return Strings.error
+           case .levelTitle: return Strings.level
            }
        }
        
@@ -79,6 +84,7 @@ final class DictionaryRemoteFilterLocale: ObservableObject {
    @objc private func localeDidChange() {
        navigationTitle = Self.localizedString(for: .navigationTitle)
        dictionaryTitle = Self.localizedString(for: .dictionaryTitle)
+       levelTitle = Self.localizedString(for: .levelTitle)
        sortByTitle = Self.localizedString(for: .sortByTitle)
        saveTitle = Self.localizedString(for: .saveTitle)
        resetTitle = Self.localizedString(for: .resetTitle)
