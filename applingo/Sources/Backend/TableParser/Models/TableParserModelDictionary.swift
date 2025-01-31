@@ -10,6 +10,7 @@ public struct TableParserModelDictionary: Codable {
     let subcategory: String
     let description: String
     let level: DictionaryLevelType
+    let isLocal: Bool
     
     init(
         guid: String,
@@ -19,12 +20,14 @@ public struct TableParserModelDictionary: Codable {
         category: String,
         subcategory: String,
         description: String,
-        level: DictionaryLevelType
+        level: DictionaryLevelType,
+        isLocal: Bool
     ) {
         self.guid = guid
         self.name = name
         self.topic = topic
         self.author = author
+        self.isLocal = isLocal
         self.category = category
         self.subcategory = subcategory
         self.description = description

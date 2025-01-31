@@ -17,6 +17,7 @@ struct DatabaseModelDictionary: Identifiable, Codable, Equatable, Hashable {
     var category: String
     var author: String
     var isActive: Bool
+    var isLocal: Bool
     var topic: String
     var name: String
 
@@ -36,12 +37,14 @@ struct DatabaseModelDictionary: Identifiable, Codable, Equatable, Hashable {
         
         created: Int = Int(Date().timeIntervalSince1970),
         isActive: Bool = true,
+        isLocal: Bool = true,
         id: Int? = nil
     ) {
         self.subcategory = subcategory
         self.description = description
         self.isActive = isActive
         self.category = category
+        self.isLocal = isLocal
         self.author = author
         self.topic = topic
         self.level = level
@@ -79,6 +82,7 @@ struct DatabaseModelDictionary: Identifiable, Codable, Equatable, Hashable {
         - Topic: \(topic)
         - Description: \(description)
         - Level: \(level.rawValue)
+        - Local: \(isLocal ? "Yes" : "No")
         - Active: \(isActive ? "Yes" : "No")
         - Created: \(date)
         """
@@ -108,7 +112,8 @@ struct DatabaseModelDictionary: Identifiable, Codable, Equatable, Hashable {
             author: "MadPixels",
             category: "AppLingo",
             subcategory: "internal",
-            description: "AppLingo default dictionary"
+            description: "AppLingo default dictionary",
+            isLocal: true
         )
     }
 }
@@ -130,6 +135,7 @@ extension DatabaseModelDictionary: FetchableRecord, PersistableRecord {
             t.column("subcategory", .text).notNull()
             t.column("category", .text).notNull()
             t.column("isActive", .boolean).notNull()
+            t.column("islocal", .boolean).notNull()
             t.column("created", .integer).notNull()
             t.column("level", .text).notNull()
             t.column("topic", .text).notNull()

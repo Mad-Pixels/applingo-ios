@@ -95,7 +95,8 @@ actor DictionaryDownload {
             category: dictionary.category,
             subcategory: dictionary.subcategory,
             description: dictionary.description,
-            level: level
+            level: level,
+            isLocal: false
         )
     }
     

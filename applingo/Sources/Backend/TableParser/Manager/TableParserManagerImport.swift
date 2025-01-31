@@ -65,7 +65,8 @@ public final class TableParserManagerImport {
                 category: meta.category,
                 subcategory: meta.subcategory,
                 description: meta.description,
-                level: meta.level
+                level: meta.level,
+                isLocal: meta.isLocal
             )
         }
         
@@ -78,7 +79,8 @@ public final class TableParserManagerImport {
             category: "local",
             subcategory: "personal",
             description: "Imported from local file: '\(url.lastPathComponent)'",
-            level: .undefined
+            level: .undefined,
+            isLocal: true
         )
     }
 }
