@@ -1,94 +1,106 @@
 import Foundation
 
+/// Provides localized strings for the dictionary remote filter view.
+///
+/// This class manages localized UI text and updates dynamically when the locale changes.
 final class DictionaryRemoteFilterLocale: ObservableObject {
-   private enum Strings {
-       static let filter = "Filter"
-       static let dictionary = "Dictionary"
-       static let sortBy = "SortBy"
-       static let save = "Save"
-       static let reset = "Reset"
-       static let close = "Close"
-       static let error = "Error"
-       static let level = "Level"
-   }
    
-   @Published private(set) var navigationTitle: String
-   @Published private(set) var dictionaryTitle: String
+    // MARK: - Private Constants
+   
+    private enum Strings {
+        static let filter = "Filter"
+        static let dictionary = "Dictionary"
+        static let sortBy = "SortBy"
+        static let save = "Save"
+        static let reset = "Reset"
+        static let close = "Close"
+        static let error = "Error"
+        static let level = "Level"
+    }
+   
+    // MARK: - Published Properties
+   
+    @Published private(set) var navigationTitle: String
+    @Published private(set) var dictionaryTitle: String
     @Published private(set) var levelTitle: String
-   @Published private(set) var sortByTitle: String
-   @Published private(set) var saveTitle: String
-   @Published private(set) var resetTitle: String
-   @Published private(set) var closeTitle: String
-   @Published private(set) var errorTitle: String
+    @Published private(set) var sortByTitle: String
+    @Published private(set) var saveTitle: String
+    @Published private(set) var resetTitle: String
+    @Published private(set) var closeTitle: String
+    @Published private(set) var errorTitle: String
    
-   init() {
-       self.navigationTitle = Self.localizedString(for: .navigationTitle)
-       self.dictionaryTitle = Self.localizedString(for: .dictionaryTitle)
-       self.levelTitle = Self.localizedString(for: .levelTitle)
-       self.sortByTitle = Self.localizedString(for: .sortByTitle)
-       self.saveTitle = Self.localizedString(for: .saveTitle)
-       self.resetTitle = Self.localizedString(for: .resetTitle)
-       self.closeTitle = Self.localizedString(for: .closeTitle)
-       self.errorTitle = Self.localizedString(for: .errorTitle)
+    // MARK: - Initialization
+   
+    init() {
+        self.navigationTitle = Self.localizedString(for: .navigationTitle)
+        self.dictionaryTitle = Self.localizedString(for: .dictionaryTitle)
+        self.levelTitle = Self.localizedString(for: .levelTitle)
+        self.sortByTitle = Self.localizedString(for: .sortByTitle)
+        self.saveTitle = Self.localizedString(for: .saveTitle)
+        self.resetTitle = Self.localizedString(for: .resetTitle)
+        self.closeTitle = Self.localizedString(for: .closeTitle)
+        self.errorTitle = Self.localizedString(for: .errorTitle)
        
-       NotificationCenter.default.addObserver(
-           self,
-           selector: #selector(localeDidChange),
-           name: LocaleManager.localeDidChangeNotification,
-           object: nil
-       )
-   }
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(localeDidChange),
+            name: LocaleManager.localeDidChangeNotification,
+            object: nil
+        )
+    }
    
-   deinit {
-       NotificationCenter.default.removeObserver(self)
-   }
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
    
-   private enum LocalizedKey {
-       case navigationTitle
-       case dictionaryTitle
-       case sortByTitle
-       case saveTitle
-       case resetTitle
-       case closeTitle
-       case errorTitle
-       case levelTitle
+    // MARK: - Private Methods
+   
+    private enum LocalizedKey {
+        case navigationTitle
+        case dictionaryTitle
+        case sortByTitle
+        case saveTitle
+        case resetTitle
+        case closeTitle
+        case errorTitle
+        case levelTitle
        
-       var key: String {
-           switch self {
-           case .navigationTitle: return Strings.filter
-           case .dictionaryTitle: return Strings.dictionary
-           case .sortByTitle: return Strings.sortBy
-           case .saveTitle: return Strings.save
-           case .resetTitle: return Strings.reset
-           case .closeTitle: return Strings.close
-           case .errorTitle: return Strings.error
-           case .levelTitle: return Strings.level
-           }
-       }
+        var key: String {
+            switch self {
+            case .navigationTitle: return Strings.filter
+            case .dictionaryTitle: return Strings.dictionary
+            case .sortByTitle: return Strings.sortBy
+            case .saveTitle: return Strings.save
+            case .resetTitle: return Strings.reset
+            case .closeTitle: return Strings.close
+            case .errorTitle: return Strings.error
+            case .levelTitle: return Strings.level
+            }
+        }
        
-       var capitalized: Bool {
-           switch self {
-           case .navigationTitle, .saveTitle,
-                .resetTitle, .closeTitle:
-               return true
-           default: return false
-           }
-       }
-   }
+        var capitalized: Bool {
+            switch self {
+            case .navigationTitle, .saveTitle,
+                 .resetTitle, .closeTitle:
+                return true
+            default: return false
+            }
+        }
+    }
    
-   private static func localizedString(for key: LocalizedKey) -> String {
-       let string = LocaleManager.shared.localizedString(for: key.key)
-       return key.capitalized ? string.capitalizedFirstLetter : string
-   }
+    private static func localizedString(for key: LocalizedKey) -> String {
+        let string = LocaleManager.shared.localizedString(for: key.key)
+        return key.capitalized ? string.capitalizedFirstLetter : string
+    }
    
-   @objc private func localeDidChange() {
-       navigationTitle = Self.localizedString(for: .navigationTitle)
-       dictionaryTitle = Self.localizedString(for: .dictionaryTitle)
-       levelTitle = Self.localizedString(for: .levelTitle)
-       sortByTitle = Self.localizedString(for: .sortByTitle)
-       saveTitle = Self.localizedString(for: .saveTitle)
-       resetTitle = Self.localizedString(for: .resetTitle)
-       closeTitle = Self.localizedString(for: .closeTitle)
-       errorTitle = Self.localizedString(for: .errorTitle)
-   }
+    @objc private func localeDidChange() {
+        navigationTitle = Self.localizedString(for: .navigationTitle)
+        dictionaryTitle = Self.localizedString(for: .dictionaryTitle)
+        levelTitle = Self.localizedString(for: .levelTitle)
+        sortByTitle = Self.localizedString(for: .sortByTitle)
+        saveTitle = Self.localizedString(for: .saveTitle)
+        resetTitle = Self.localizedString(for: .resetTitle)
+        closeTitle = Self.localizedString(for: .closeTitle)
+        errorTitle = Self.localizedString(for: .errorTitle)
+    }
 }

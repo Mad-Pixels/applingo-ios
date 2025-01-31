@@ -1,10 +1,29 @@
 import SwiftUI
 
+/// Defines the styling for the Dictionary Remote Filter view.
+///
+/// This class manages UI properties such as background color, spacing,
+/// and padding to maintain consistent styling across themes.
 final class DictionaryRemoteFilterStyle: ObservableObject {
+    
+    // MARK: - Properties
+    
+    /// The background color of the filter view.
     let backgroundColor: Color
+    
+    /// The spacing between UI elements.
     let spacing: CGFloat
+    
+    /// The padding applied to the view.
     let padding: EdgeInsets
     
+    // MARK: - Initialization
+    
+    /// Initializes the style with given properties.
+    /// - Parameters:
+    ///   - backgroundColor: The background color for the filter view.
+    ///   - spacing: The spacing between UI elements.
+    ///   - padding: The padding applied to the filter view.
     init(
         backgroundColor: Color,
         spacing: CGFloat,
@@ -16,7 +35,12 @@ final class DictionaryRemoteFilterStyle: ObservableObject {
     }
 }
 
+// MARK: - Themed Styles
+
 extension DictionaryRemoteFilterStyle {
+    /// Returns a themed style based on the provided application theme.
+    /// - Parameter theme: The application theme.
+    /// - Returns: A styled `DictionaryRemoteFilterStyle` instance.
     static func themed(_ theme: AppTheme) -> DictionaryRemoteFilterStyle {
         DictionaryRemoteFilterStyle(
             backgroundColor: theme.backgroundPrimary,

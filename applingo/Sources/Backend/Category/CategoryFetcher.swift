@@ -6,8 +6,8 @@ import Combine
 final class CategoryFetcher: ProcessApi {
     // MARK: - Public Properties
     
-    @Published private(set) var frontCategories: [CategoryItem] = []
-    @Published private(set) var backCategories: [CategoryItem] = []
+    @Published var frontCategories: [CategoryItem] = []
+    @Published var backCategories: [CategoryItem] = []
     @Published private(set) var isLoadingPage = false
     
     // MARK: - Private Properties
