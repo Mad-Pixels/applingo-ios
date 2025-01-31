@@ -10,6 +10,7 @@ struct DatabaseModelDictionary: Identifiable, Codable, Equatable, Hashable {
     internal let id: Int?
     internal let guid: String
     internal let created: Int
+    internal let search: String
 
     var level: DictionaryLevelType
     var description: String
@@ -53,6 +54,12 @@ struct DatabaseModelDictionary: Identifiable, Codable, Equatable, Hashable {
         
         self.created = created
         self.id = id
+        
+        self.search = [
+            name,
+            author,
+            description
+        ].map { $0.lowercased() }.joined(separator: " ")
         
         self.fmt()
     }
@@ -128,17 +135,17 @@ extension DatabaseModelDictionary: FetchableRecord, PersistableRecord {
             t.autoIncrementedPrimaryKey("id").unique()
             t.column("guid", .text).unique()
             
-            t.column("description", .text).notNull().collate(.nocase)
-            t.column("author", .text).notNull().collate(.nocase)
-            t.column("name", .text).notNull().collate(.nocase)
-            
+            t.column("description", .text).notNull()
             t.column("subcategory", .text).notNull()
-            t.column("category", .text).notNull()
             t.column("isActive", .boolean).notNull()
             t.column("islocal", .boolean).notNull()
             t.column("created", .integer).notNull()
+            t.column("category", .text).notNull()
+            t.column("author", .text).notNull()
+            t.column("search", .text).notNull()
             t.column("level", .text).notNull()
             t.column("topic", .text).notNull()
+            t.column("name", .text).notNull()
         }
         Logger.debug("[Database] Created dictionary table structure")
         
@@ -169,5 +176,12 @@ extension DatabaseModelDictionary: FetchableRecord, PersistableRecord {
             columns: ["level"]
         )
         Logger.debug("[Database] Created index on level column")
+        
+        try db.create(
+            index: "dictionary_search_idx",
+            on: databaseTableName,
+            columns: ["search"]
+        )
+        Logger.debug("[Database] Created index on search column")
     }
 }

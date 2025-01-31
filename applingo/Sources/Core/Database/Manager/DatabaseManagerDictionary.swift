@@ -12,37 +12,21 @@ final class DatabaseManagerDictionary {
             WHERE 1=1
         """
         
-        /// Prioritized search query with relevance ranking
-        /// Priorities:
-        /// 1. Exact name match
-        /// 2. Name starts with search term
-        /// 3. Name contains search term
-        /// 4. Author contains search term
-        /// 5. Description contains search term
+        /// Base query to fetch words.
         static let search = """
-            AND (
-                CASE
-                    WHEN name = ? COLLATE NOCASE THEN 1
-                    WHEN name LIKE (? || '%') COLLATE NOCASE THEN 2
-                    WHEN name LIKE ('%' || ? || '%') COLLATE NOCASE THEN 3
-                    WHEN author LIKE ('%' || ? || '%') COLLATE NOCASE THEN 4
-                    WHEN description LIKE ('%' || ? || '%') COLLATE NOCASE THEN 5
-                    ELSE 6
-                END
-            ) < 6
+            AND search LIKE ?
         """
 
+        /// Query to search words with relevance ordering.
         static let searchOrder = """
             ORDER BY
                 CASE
-                    WHEN name = ? COLLATE NOCASE THEN 1
-                    WHEN name LIKE (? || '%') COLLATE NOCASE THEN 2
-                    WHEN name LIKE ('%' || ? || '%') COLLATE NOCASE THEN 3
-                    WHEN author LIKE ('%' || ? || '%') COLLATE NOCASE THEN 4
-                    WHEN description LIKE ('%' || ? || '%') COLLATE NOCASE THEN 5
-                    ELSE 6
+                    WHEN search = ? THEN 1
+                    WHEN search LIKE (? || '%') THEN 2
+                    WHEN search LIKE ('%' || ? || '%') THEN 3
+                    ELSE 4
                 END,
-                name COLLATE NOCASE ASC
+                name ASC
         """
         
         /// Query to fetch dictionary name by GUID
@@ -117,23 +101,21 @@ final class DatabaseManagerDictionary {
             var arguments: [DatabaseValueConvertible] = []
             var sql = SQL.fetch
             
-            if let search = search?.trimmingCharacters(in: .whitespacesAndNewlines), !search.isEmpty {
+            if let search = search?.trimmingCharacters(in: .whitespacesAndNewlines).lowercased(), !search.isEmpty {
                 sql += SQL.search
-                // Arguments for WHERE clause search conditions
-                arguments += [search] // Exact match
-                arguments += [search] // Starts with
-                arguments += [search] // Contains in name
-                arguments += [search] // Contains in author
-                arguments += [search] // Contains in description
+                let searchPattern = "%\(search)%"
+                arguments.append(searchPattern)
                 
                 sql += SQL.searchOrder
-                // Arguments for ORDER BY clause (same conditions)
-                arguments += [search, search, search, search, search]
+                arguments.append(search)
+                arguments.append(search)
+                arguments.append(searchPattern)
                 
                 Logger.debug(
                     "[Dictionary]: Applying search filter",
                     metadata: [
                         "searchTerm": search,
+                        "searchPattern": searchPattern,
                         "argumentsCount": String(arguments.count)
                     ]
                 )
