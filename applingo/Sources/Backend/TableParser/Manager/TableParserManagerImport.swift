@@ -22,27 +22,36 @@ public final class TableParserManagerImport {
         dictionaryMetadata: TableParserModelDictionary? = nil
     ) throws -> (dictionary: TableParserModelDictionary, words: [TableParserModelWord]) {
         
-        Logger.debug("[ParserManagerImport]: Starting import", metadata: [
-            "url": "\(url)"
-        ])
+        Logger.debug(
+            "[TableParser]: Starting import",
+            metadata: [
+                "url": "\(url)"
+            ]
+        )
         
         let parser = try factory.parser(for: url)
-        
-        Logger.debug("[ParserManagerImport]: Using parser", metadata: [
-            "parser_type": "\(type(of: parser))"
-        ])
+        Logger.debug(
+            "[TableParser]: Using parser",
+            metadata: [
+                "parser_type": "\(type(of: parser))"
+            ]
+        )
         
         let words = try parser.parse(url: url, encoding: .utf8)
-        
-        Logger.debug("[ParserManagerImport]: Parsed words", metadata: [
-            "words_count": "\(words.count)"
-        ])
+        Logger.debug(
+            "[TableParser]: Parsed words",
+            metadata: [
+                "words_count": "\(words.count)"
+            ]
+        )
         
         let dictionary = createDictionary(from: dictionaryMetadata, url: url)
-        
-        Logger.debug("[ParserManagerImport]: Created dictionary", metadata: [
-            "dictionary_guid": dictionary.guid
-        ])
+        Logger.debug(
+            "[ParserManagerImport]: Created dictionary",
+            metadata: [
+                "dictionary_guid": dictionary.guid
+            ]
+        )
         
         return (dictionary, words)
     }

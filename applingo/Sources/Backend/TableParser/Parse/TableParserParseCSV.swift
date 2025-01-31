@@ -26,7 +26,7 @@ public final class TableParserParseCSV: AbstractTableParser {
     /// - Returns: An array of `TableParserModelWord`.
     /// - Throws: `TableParserError` if the file is empty or has invalid columns.
     public func parse(url: URL, encoding: String.Encoding = .utf8) throws -> [TableParserModelWord] {
-        Logger.debug("[Parser]: Starting to parse CSV", metadata: [
+        Logger.debug("[TableParser]: Starting to parse CSV", metadata: [
             "url": "\(url)",
             "encoding": "\(encoding)"
         ])
@@ -35,9 +35,12 @@ public final class TableParserParseCSV: AbstractTableParser {
         do {
             content = try String(contentsOf: url, encoding: encoding)
         } catch {
-            Logger.debug("[Parser]: Failed to read file content", metadata: [
-                "error": "\(error)"
-            ])
+            Logger.debug(
+                "[TableParser]: Failed to read file content",
+                metadata: [
+                    "error": "\(error)"
+                ]
+            )
             throw TableParserError.fileReadFailed("Could not read file at \(url)")
         }
         
@@ -45,27 +48,33 @@ public final class TableParserParseCSV: AbstractTableParser {
             .components(separatedBy: .newlines)
             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
             .filter { !$0.isEmpty }
-        
-        Logger.debug("[Parser]: Number of non-empty lines", metadata: [
-            "count": "\(lines.count)"
-        ])
+        Logger.debug(
+            "[TableParser]: Number of non-empty lines",
+            metadata: [
+                "count": "\(lines.count)"
+            ]
+        )
         
         guard !lines.isEmpty else {
-            Logger.debug("[Parser]: File is empty")
+            Logger.debug("[TableParser]: File is empty")
             throw TableParserError.emptyFile
         }
         
         let dataLines = format.hasHeader ? Array(lines.dropFirst()) : lines
-        
-        Logger.debug("[Parser]: Number of data lines (after header drop)", metadata: [
-            "count": "\(dataLines.count)"
-        ])
+        Logger.debug(
+            "[TableParser]: Number of data lines (after header drop)",
+            metadata: [
+                "count": "\(dataLines.count)"
+            ]
+        )
         
         let words = try parseLines(dataLines)
-        
-        Logger.debug("[Parser]: Successfully parsed CSV lines", metadata: [
-            "words_count": "\(words.count)"
-        ])
+        Logger.debug(
+            "[TableParser]: Successfully parsed CSV lines",
+            metadata: [
+                "words_count": "\(words.count)"
+            ]
+        )
         
         return words
     }
@@ -79,23 +88,31 @@ public final class TableParserParseCSV: AbstractTableParser {
         
         for (index, line) in lines.enumerated() {
             let columns = parseLine(line)
-            
-            Logger.debug("[Parser]: Found columns in line", metadata: [
-                "line_index": "\(index)",
-                "columns_count": "\(columns.count)"
-            ])
+            Logger.debug(
+                "[TableParser]: Found columns in line",
+                metadata: [
+                    "line_index": "\(index)",
+                    "columns_count": "\(columns.count)"
+                ]
+            )
             
             guard columns.count >= 2 else {
-                Logger.debug("[Parser]: Skipping line due to insufficient columns", metadata: [
-                    "line_index": "\(index)"
-                ])
+                Logger.debug(
+                    "[Parser]: Skipping line due to insufficient columns",
+                    metadata: [
+                        "line_index": "\(index)"
+                    ]
+                )
                 continue
             }
             
             if columns[0].isEmpty || columns[1].isEmpty {
-                Logger.debug("[Parser]: Skipping line due to empty front/back text", metadata: [
-                    "line_index": "\(index)"
-                ])
+                Logger.debug(
+                    "[Parser]: Skipping line due to empty front/back text",
+                    metadata: [
+                        "line_index": "\(index)"
+                    ]
+                )
                 continue
             }
             
@@ -160,7 +177,6 @@ public final class TableParserParseCSV: AbstractTableParser {
             }
         }
         
-        // Append last field if not empty
         result.append(currentField)
         return result
     }
@@ -175,7 +191,7 @@ public final class TableParserParseCSV: AbstractTableParser {
         }
         
         return TableParserModelWord(
-            dictionary: UUID().uuidString, // Will be replaced later.
+            dictionary: UUID().uuidString,
             frontText: columns[0],
             backText: columns[1],
             description: columns.count > 3 ? columns[3] : "",

@@ -21,13 +21,13 @@ public final class TableParserFactory {
     public func parser(for url: URL) throws -> AbstractTableParser {
         let fileExtension = url.pathExtension
         
-        Logger.debug("[ParserFactory]: Looking for parser", metadata: [
+        Logger.debug("[TableParser]: Looking for parser", metadata: [
             "file_name": "\(url.lastPathComponent)",
             "file_extension": "\(fileExtension)"
         ])
         
         guard let parser = parsers.first(where: { $0.canHandle(fileExtension: fileExtension) }) else {
-            Logger.debug("[ParserFactory]: No parser found for extension", metadata: [
+            Logger.debug("[TableParser]: No parser found for extension", metadata: [
                 "extension": fileExtension
             ])
             throw TableParserError.unsupportedFormat

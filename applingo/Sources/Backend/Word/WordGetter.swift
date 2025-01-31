@@ -129,7 +129,7 @@ final class WordGetter: ProcessDatabase {
             completion: { [weak self] result in
                 guard let self = self, currentToken == self.cancellationToken else { return }
                 
-                if case .failure(let error) = result {}
+                if case .failure(_) = result {}
                 self.isLoadingPage = false
             }
         )
