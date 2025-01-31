@@ -142,10 +142,6 @@ final class DatabaseManagerDictionary {
                 )
                 return dictionaries
             } catch {
-                Logger.error(
-                    "[Dictionary]: Fetch failed",
-                    metadata: ["error": error.localizedDescription]
-                )
                 throw DatabaseError.csvImportFailed("Failed to fetch dictionaries: \(error.localizedDescription)")
             }
         }
@@ -245,10 +241,6 @@ final class DatabaseManagerDictionary {
                     ]
                 )
             } catch {
-                Logger.error(
-                    "[Dictionary]: Update failed",
-                    metadata: ["error": error.localizedDescription]
-                )
                 throw DatabaseError.updateFailed("Failed to update dictionary: \(error.localizedDescription)")
             }
         }
@@ -278,10 +270,6 @@ final class DatabaseManagerDictionary {
                     ]
                 )
             } catch {
-                Logger.error(
-                    "[Dictionary]: Status update failed",
-                    metadata: ["error": error.localizedDescription]
-                )
                 throw DatabaseError.updateFailed("Failed to update dictionary status: \(error.localizedDescription)")
             }
         }
@@ -292,10 +280,6 @@ final class DatabaseManagerDictionary {
     /// - Returns: Number of words in the dictionary
     func count(forDictionary dictionary: DatabaseModelDictionary) throws -> Int {
         guard !dictionary.guid.isEmpty else {
-            Logger.error(
-                "[Dictionary]: Empty GUID",
-                metadata: ["dictionary": dictionary.toString()]
-            )
             throw DatabaseError.invalidWord("Dictionary has no GUID")
         }
         
@@ -311,10 +295,6 @@ final class DatabaseManagerDictionary {
                 )
                 return count
             } catch {
-                Logger.error(
-                    "[Dictionary]: Count failed",
-                    metadata: ["error": error.localizedDescription]
-                )
                 throw DatabaseError.csvImportFailed("Failed to count words: \(error.localizedDescription)")
             }
         }
@@ -324,10 +304,6 @@ final class DatabaseManagerDictionary {
     /// - Parameter dictionary: The dictionary to delete
     func delete(_ dictionary: DatabaseModelDictionary) throws {
         guard let id = dictionary.id else {
-            Logger.error(
-                "[Dictionary]: Missing ID for delete",
-                metadata: ["dictionary": dictionary.toString()]
-            )
             throw DatabaseError.invalidWord("Dictionary has no ID")
         }
         
@@ -344,10 +320,6 @@ final class DatabaseManagerDictionary {
                     ]
                 )
             } catch {
-                Logger.error(
-                    "[Dictionary]: Delete failed",
-                    metadata: ["error": error.localizedDescription]
-                )
                 throw DatabaseError.deleteFailed("Failed to delete dictionary: \(error.localizedDescription)")
             }
         }
