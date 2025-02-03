@@ -1,10 +1,10 @@
 import SwiftUI
 
 // MARK: - DonutChart View
-/// A donut chart with a center value and a legend.
-/// - Left: The donut chart displays segments proportional to their values.
-/// - Center: A number (centerValue) is shown over the donut.
-/// - Right: A legend lists each segment’s label and value.
+/// An enhanced donut chart with a center value and legend.
+/// Left: The donut chart displays segments with a glowing radial gradient.
+/// Center: A pulsing number (centerValue) is shown over the donut.
+/// Right: A legend lists each segment’s label and value.
 struct DonutChart: View {
     let data: [DonutChartModel]
     let centerValue: String
@@ -30,11 +30,12 @@ struct DonutChart: View {
         data.reduce(0) { $0 + $1.value }
     }
     
+    @State private var pulse: Bool = false
+    
     var body: some View {
         HStack(spacing: 16) {
-            // Left: Donut Chart with overlaid center value.
+            // Left: Donut Chart with overlaid pulsing center value.
             ZStack {
-                // Draw each segment.
                 ForEach(Array(data.enumerated()), id: \.element.id) { index, segment in
                     DonutSlice(
                         index: index,
@@ -43,10 +44,13 @@ struct DonutChart: View {
                         style: style
                     )
                 }
-                // Center value text.
+                // Center value with pulsing animation.
                 Text(centerValue)
                     .font(style.centerValueFont)
                     .foregroundColor(style.centerValueColor)
+                    .scaleEffect(pulse ? 1.1 : 1.0)
+                    .animation(.easeInOut(duration: 1).repeatForever(autoreverses: true), value: pulse)
+                    .onAppear { pulse = true }
             }
             .frame(width: style.donutSize, height: style.donutSize)
             
@@ -68,7 +72,7 @@ struct DonutChart: View {
 }
 
 // MARK: - DonutSlice View
-/// Draws a single segment of the donut chart.
+/// Draws a single segment of the donut chart with a glowing overlay.
 struct DonutSlice: View {
     let index: Int
     let data: [DonutChartModel]
@@ -88,7 +92,6 @@ struct DonutSlice: View {
     }
     
     var body: some View {
-        // Draw an arc for this segment using a trimmed circle.
         Circle()
             .trim(from: CGFloat((startAngle.degrees + 90) / 360),
                   to: CGFloat((endAngle.degrees + 90) / 360))
@@ -97,6 +100,22 @@ struct DonutSlice: View {
                 style: StrokeStyle(lineWidth: style.lineWidth, lineCap: .round)
             )
             .rotationEffect(.degrees(-90))
+            .overlay(
+                // Add a radial gradient overlay for a glowing effect.
+                Circle()
+                    .trim(from: CGFloat((startAngle.degrees + 90) / 360),
+                          to: CGFloat((endAngle.degrees + 90) / 360))
+                    .stroke(
+                        RadialGradient(
+                            gradient: Gradient(colors: [data[index].color.opacity(0.7), data[index].color.opacity(0.1)]),
+                            center: .center,
+                            startRadius: 0,
+                            endRadius: style.lineWidth * 2
+                        ),
+                        style: StrokeStyle(lineWidth: style.lineWidth, lineCap: .round)
+                    )
+                    .rotationEffect(.degrees(-90))
+            )
             .animation(.easeInOut(duration: style.animationDuration), value: total)
     }
 }

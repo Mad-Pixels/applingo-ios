@@ -1,17 +1,15 @@
 import SwiftUI
 
 /// A view that displays statistics for the word,
-/// such as success and fail counts represented via a chart.
+/// such as success and fail counts represented via a donut chart.
 struct WordDetailsViewStatistic: View {
     
     // MARK: - Properties
-    
     private let word: DatabaseModelWord
     private let locale: WordDetailsLocale
     private let style: WordDetailsStyle
     
     // MARK: - Initializer
-    
     /// Initializes the statistic view.
     /// - Parameters:
     ///   - word: The word model.
@@ -28,7 +26,6 @@ struct WordDetailsViewStatistic: View {
     }
     
     // MARK: - Body
-    
     var body: some View {
         VStack(spacing: style.spacing) {
             SectionHeader(
@@ -38,12 +35,12 @@ struct WordDetailsViewStatistic: View {
             .padding(.top, 8)
             
             VStack(spacing: style.spacing) {
-                ChartBar(
-                    title: locale.answersTitle,
+                DonutChart(
                     data: [
-                        ChartBarModel(value: Double(word.fail), label: "fail", color: .red),
-                        ChartBarModel(value: Double(word.success), label: "success", color: .green)
-                    ]
+                        DonutChartModel(value: Double(word.fail), label: "fail", color: .red),
+                        DonutChartModel(value: Double(word.success), label: "success", color: .green)
+                    ],
+                    centerValue: "\(word.weight)"
                 )
             }
             .padding(.horizontal, 8)
