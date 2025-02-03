@@ -1,5 +1,7 @@
 import SwiftUI
 
+// MARK: - InputText View
+/// A text field with an optional title, icon, and custom styling.
 struct InputText: View {
     @Binding var text: String
     let title: String?
@@ -10,6 +12,14 @@ struct InputText: View {
     
     @FocusState private var isFocused: Bool
     
+    /// Initializes the InputText view.
+    /// - Parameters:
+    ///   - text: Binding to the text value.
+    ///   - title: Optional title displayed above the text field.
+    ///   - placeholder: Placeholder text for the field.
+    ///   - isEditing: A flag to enable/disable editing (default is true).
+    ///   - icon: Optional SF Symbol name to display.
+    ///   - style: The style for the text input. Defaults to themed style.
     init(
         text: Binding<String>,
         title: String? = nil,
@@ -26,10 +36,12 @@ struct InputText: View {
         self.style = style
     }
     
+    /// Determines the background color based on editing state.
     private var backgroundColor: Color {
         isEditing ? style.backgroundColor : style.disabledBackgroundColor
     }
     
+    /// Creates a border view with varying line width depending on focus.
     private var border: some View {
         RoundedRectangle(cornerRadius: style.cornerRadius)
             .stroke(style.borderColor, lineWidth: isFocused ? 6 : 2)
@@ -58,9 +70,7 @@ struct InputText: View {
                     .textFieldStyle(.plain)
                     .padding(style.padding)
                     .background(backgroundColor)
-                    .overlay(
-                        isEditing ? border : nil
-                    )
+                    .overlay(isEditing ? border : nil)
                     .cornerRadius(style.cornerRadius)
             }
         }

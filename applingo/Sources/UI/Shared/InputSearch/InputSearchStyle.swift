@@ -1,5 +1,7 @@
 import SwiftUI
 
+// MARK: - InputSearchStyle
+/// Defines the styling parameters for the InputSearch component.
 struct InputSearchStyle {
     let borderColor: Color
     let textColor: Color
@@ -16,6 +18,7 @@ struct InputSearchStyle {
 }
 
 extension InputSearchStyle {
+    /// Returns a themed style based on the provided AppTheme.
     static func themed(_ theme: AppTheme) -> InputSearchStyle {
         InputSearchStyle(
             borderColor: theme.accentContrast,

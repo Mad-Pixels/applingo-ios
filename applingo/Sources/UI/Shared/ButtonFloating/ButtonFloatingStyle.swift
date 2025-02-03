@@ -1,5 +1,7 @@
 import SwiftUI
 
+// MARK: - ButtonFloatingStyle
+/// Defines styling parameters for floating buttons.
 struct ButtonFloatingStyle {
     let mainButtonColor: Color
     let itemButtonColor: Color
@@ -12,6 +14,7 @@ struct ButtonFloatingStyle {
 }
 
 extension ButtonFloatingStyle {
+    /// Returns a themed style based on the provided AppTheme.
     static func themed(_ theme: AppTheme) -> ButtonFloatingStyle {
         ButtonFloatingStyle(
             mainButtonColor: theme.accentPrimary,

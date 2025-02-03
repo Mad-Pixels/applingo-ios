@@ -1,5 +1,7 @@
 import SwiftUI
 
+// MARK: - ButtonNavStyle
+/// Defines styling parameters for ButtonNav components.
 struct ButtonNavStyle {
     let icon: String
     let backgroundColor: Color
@@ -9,6 +11,7 @@ struct ButtonNavStyle {
     let cornerRadius: CGFloat
     let iconSize: CGFloat
     
+    /// Returns a style for a "back" button.
     static func back(_ theme: AppTheme) -> ButtonNavStyle {
         ButtonNavStyle(
             icon: "arrow.backward",
@@ -21,6 +24,7 @@ struct ButtonNavStyle {
         )
     }
     
+    /// Returns a style for a "close" button.
     static func close(_ theme: AppTheme) -> ButtonNavStyle {
         ButtonNavStyle(
             icon: "xmark",
@@ -33,6 +37,7 @@ struct ButtonNavStyle {
         )
     }
     
+    /// Returns a style for an "edit" button.
     static func edit(_ theme: AppTheme, disabled: Bool = false) -> ButtonNavStyle {
         ButtonNavStyle(
             icon: "scribble",
@@ -45,6 +50,7 @@ struct ButtonNavStyle {
         )
     }
     
+    /// Returns a style for a "save" button.
     static func save(_ theme: AppTheme, disabled: Bool = false) -> ButtonNavStyle {
         ButtonNavStyle(
             icon: "checkmark",
@@ -57,6 +63,7 @@ struct ButtonNavStyle {
         )
     }
     
+    /// Returns a style for a "download" button.
     static func download(_ theme: AppTheme, disabled: Bool = false) -> ButtonNavStyle {
         ButtonNavStyle(
             icon: "square.and.arrow.down",
@@ -69,6 +76,7 @@ struct ButtonNavStyle {
         )
     }
     
+    /// Returns a larger style for a "download" button.
     static func downloadLg(_ theme: AppTheme, disabled: Bool = false) -> ButtonNavStyle {
         ButtonNavStyle(
             icon: "square.and.arrow.down",

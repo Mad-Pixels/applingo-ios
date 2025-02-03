@@ -1,5 +1,7 @@
 import SwiftUI
 
+// MARK: - ButtonFloatingMultiple View
+/// A floating button that expands to show multiple action buttons when tapped.
 struct ButtonFloatingMultiple: View {
     let items: [ButtonFloatingModelIconAction]
     let style: ButtonFloatingStyle
@@ -7,6 +9,10 @@ struct ButtonFloatingMultiple: View {
     @State private var isOpen = false
     @State private var iconRotation: Double = 0
 
+    /// Initializes the ButtonFloatingMultiple view.
+    /// - Parameters:
+    ///   - items: An array of model actions containing an icon and an action closure.
+    ///   - style: The style for the floating button. Defaults to themed style.
     init(
         items: [ButtonFloatingModelIconAction],
         style: ButtonFloatingStyle = .themed(ThemeManager.shared.currentThemeStyle)
@@ -17,6 +23,7 @@ struct ButtonFloatingMultiple: View {
     
     var body: some View {
         ZStack {
+            // Transparent background overlay to close the menu when tapped
             if isOpen {
                 Color.black.opacity(0.01)
                     .ignoresSafeArea()
@@ -28,6 +35,7 @@ struct ButtonFloatingMultiple: View {
                     }
             }
             
+            // Main floating buttons stack positioned at bottom trailing
             ZStack(alignment: .bottomTrailing) {
                 if isOpen {
                     VStack(spacing: style.spacing) {
@@ -42,23 +50,18 @@ struct ButtonFloatingMultiple: View {
                                 Image(systemName: items[index].icon)
                                     .foregroundColor(.white)
                                     .font(.system(size: 20))
-                                    .frame(
-                                        width: style.itemButtonSize.width,
-                                        height: style.itemButtonSize.height
-                                    )
+                                    .frame(width: style.itemButtonSize.width, height: style.itemButtonSize.height)
                                     .background(style.itemButtonColor)
                                     .cornerRadius(style.cornerRadius)
-                                    .shadow(
-                                        color: style.shadowColor,
-                                        radius: style.shadowRadius
-                                    )
+                                    .shadow(color: style.shadowColor, radius: style.shadowRadius)
                             }
                         }
                     }
                     .transition(.scale.combined(with: .opacity))
                     .padding(.bottom, style.mainButtonSize.height + style.spacing)
                 }
-
+                
+                // Main button to toggle the floating menu
                 Button(action: {
                     withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {
                         isOpen.toggle()
@@ -68,16 +71,10 @@ struct ButtonFloatingMultiple: View {
                     Image(systemName: isOpen ? "xmark" : "plus")
                         .foregroundColor(.white)
                         .font(.system(size: 24))
-                        .frame(
-                            width: style.mainButtonSize.width,
-                            height: style.mainButtonSize.height
-                        )
+                        .frame(width: style.mainButtonSize.width, height: style.mainButtonSize.height)
                         .background(style.mainButtonColor)
                         .cornerRadius(style.cornerRadius)
-                        .shadow(
-                            color: style.shadowColor,
-                            radius: style.shadowRadius
-                        )
+                        .shadow(color: style.shadowColor, radius: style.shadowRadius)
                         .rotationEffect(.degrees(iconRotation))
                         .scaleEffect(isOpen ? 1.1 : 1.0)
                         .animation(.easeInOut(duration: 0.4), value: isOpen)

@@ -1,5 +1,7 @@
 import SwiftUI
 
+// MARK: - ButtonMenuStyle
+/// Defines styling parameters for the ButtonMenu component.
 struct ButtonMenuStyle {
     let backgroundColor: Color
     let foregroundColor: Color
@@ -13,9 +15,14 @@ struct ButtonMenuStyle {
     let borderColor: Color
     let borderWidth: CGFloat
     let shadowColor: Color
+
+    // Common parameters moved from the component
+    let hStackSpacing: CGFloat
+    let iconFrameSize: CGSize
 }
 
 extension ButtonMenuStyle {
+    /// Returns a themed style based on the provided AppTheme.
     static func themed(_ theme: AppTheme) -> ButtonMenuStyle {
         ButtonMenuStyle(
             backgroundColor: theme.backgroundSecondary,
@@ -26,12 +33,15 @@ extension ButtonMenuStyle {
             padding: EdgeInsets(top: 16, leading: 24, bottom: 16, trailing: 24),
             height: 70,
             cornerRadius: 16,
-            borderColor: theme is DarkTheme ? .white.opacity(0.1) : .clear,
+            borderColor: theme is DarkTheme ? Color.white.opacity(0.1) : .clear,
             borderWidth: theme is DarkTheme ? 1 : 0,
-            shadowColor: theme.cardBorder
+            shadowColor: theme.cardBorder,
+            hStackSpacing: 16,
+            iconFrameSize: CGSize(width: 42, height: 42)
         )
     }
     
+    /// Returns a style for game menus based on the provided AppTheme and GameTheme.
     static func game(_ theme: AppTheme, _ gameTheme: GameTheme) -> ButtonMenuStyle {
         ButtonMenuStyle(
             backgroundColor: theme.backgroundPrimary,
@@ -42,9 +52,11 @@ extension ButtonMenuStyle {
             padding: EdgeInsets(top: 16, leading: 24, bottom: 16, trailing: 24),
             height: 70,
             cornerRadius: 16,
-            borderColor: theme is DarkTheme ? .white.opacity(0.1) : .clear,
+            borderColor: theme is DarkTheme ? Color.white.opacity(0.1) : .clear,
             borderWidth: theme is DarkTheme ? 1 : 0,
-            shadowColor: theme.cardBorder
+            shadowColor: theme.cardBorder,
+            hStackSpacing: 16,
+            iconFrameSize: CGSize(width: 42, height: 42)
         )
     }
 }

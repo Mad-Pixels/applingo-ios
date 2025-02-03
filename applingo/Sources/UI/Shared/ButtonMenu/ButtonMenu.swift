@@ -1,5 +1,8 @@
 import SwiftUI
 
+// MARK: - ButtonMenu View
+/// A menu button that displays a title, an optional subtitle, and an optional icon.
+/// The button shows a chevron indicator and applies custom styling.
 struct ButtonMenu: View {
     private let title: String
     private let subtitle: String?
@@ -8,6 +11,14 @@ struct ButtonMenu: View {
     private let isSelected: Bool
     private let action: () -> Void
 
+    /// Initializes the ButtonMenu.
+    /// - Parameters:
+    ///   - title: The primary title text.
+    ///   - subtitle: Optional secondary text.
+    ///   - icon: Optional SF Symbol icon name.
+    ///   - isSelected: A flag indicating selection state.
+    ///   - style: The style to apply. Defaults to themed style using LightTheme.
+    ///   - action: The action to perform when tapped.
     init(
         title: String,
         subtitle: String? = nil,
@@ -26,12 +37,12 @@ struct ButtonMenu: View {
 
     var body: some View {
         Button(action: action) {
-            HStack(spacing: 16) {
+            HStack(spacing: style.hStackSpacing) {
                 if let icon = icon {
                     Image(systemName: icon)
                         .font(.system(size: style.iconSize))
                         .foregroundColor(style.iconColor)
-                        .frame(width: 42, height: 42)
+                        .frame(width: style.iconFrameSize.width, height: style.iconFrameSize.height)
                         .background(
                             Circle()
                                 .fill(style.backgroundColor)

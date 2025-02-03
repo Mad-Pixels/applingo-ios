@@ -1,5 +1,7 @@
 import SwiftUI
 
+// MARK: - ItemCheckboxStyle
+/// Defines the styling parameters for ItemCheckbox.
 struct ItemCheckboxStyle {
     let activeColor: Color
     let inactiveColor: Color
@@ -9,6 +11,7 @@ struct ItemCheckboxStyle {
 }
 
 extension ItemCheckboxStyle {
+    /// Returns a themed style based on the provided AppTheme.
     static func themed(_ theme: AppTheme) -> ItemCheckboxStyle {
         ItemCheckboxStyle(
             activeColor: theme.accentPrimary,
@@ -20,12 +23,15 @@ extension ItemCheckboxStyle {
     }
 }
 
+// MARK: - CheckboxToggleStyle
+/// A custom ToggleStyle that renders a checkbox.
 struct CheckboxToggleStyle: ToggleStyle {
     @Environment(\.isEnabled) private var isEnabled
     let style: ItemCheckboxStyle
 
     func makeBody(configuration: Configuration) -> some View {
         ZStack {
+            // Draw the checkbox background and border
             RoundedRectangle(cornerRadius: 8)
                 .stroke(
                     configuration.isOn ? style.activeColor : style.borderColor,
@@ -37,6 +43,7 @@ struct CheckboxToggleStyle: ToggleStyle {
                 )
                 .frame(width: style.size, height: style.size)
 
+            // Draw the checkmark
             Image(systemName: "checkmark")
                 .font(.system(size: style.size * 0.5, weight: .bold))
                 .foregroundColor(.white)

@@ -1,5 +1,7 @@
 import SwiftUI
 
+// MARK: - InputTextStyle
+/// Defines styling parameters for text input components.
 struct InputTextStyle {
     let textColor: Color
     let titleColor: Color
@@ -15,6 +17,7 @@ struct InputTextStyle {
     let iconSpacing: CGFloat
     let titleSpacing: CGFloat
     
+    /// Returns a themed style based on the provided AppTheme.
     static func themed(_ theme: AppTheme) -> InputTextStyle {
         InputTextStyle(
             textColor: theme.textPrimary,

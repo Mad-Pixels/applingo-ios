@@ -1,5 +1,7 @@
 import SwiftUI
 
+// MARK: - InputTextArea View
+/// A multi-line text editor with an optional title, icon, and custom styling.
 struct InputTextArea: View {
     @Binding var text: String
     let title: String?
@@ -11,6 +13,15 @@ struct InputTextArea: View {
     
     @FocusState private var isFocused: Bool
     
+    /// Initializes the InputTextArea view.
+    /// - Parameters:
+    ///   - text: Binding to the text value.
+    ///   - title: Optional title displayed above the text area.
+    ///   - placeholder: Placeholder text displayed when empty.
+    ///   - isEditing: A flag to enable/disable editing (default is true).
+    ///   - minHeight: Minimum height for the text area.
+    ///   - icon: Optional SF Symbol name to display.
+    ///   - style: The style for the text area. Defaults to themed style.
     init(
         text: Binding<String>,
         title: String? = nil,
@@ -22,6 +33,8 @@ struct InputTextArea: View {
     ) {
         self._text = text
         self.title = title
+        // For text area, we pass an empty string to the TextEditor since
+        // the placeholder is handled separately.
         self.placeholder = ""
         self.isEditing = isEditing
         self.minHeight = minHeight
@@ -29,10 +42,12 @@ struct InputTextArea: View {
         self.style = style
     }
     
+    /// Determines the background color based on editing state.
     private var backgroundColor: Color {
         isEditing ? style.backgroundColor : style.disabledBackgroundColor
     }
     
+    /// Creates a border view with varying line width depending on focus.
     private var border: some View {
         RoundedRectangle(cornerRadius: style.cornerRadius)
             .stroke(style.borderColor, lineWidth: isFocused ? 6 : 2)
@@ -73,9 +88,7 @@ struct InputTextArea: View {
                     }
                 }
                 .background(backgroundColor)
-                .overlay(
-                    isEditing ? border : nil
-                )
+                .overlay(isEditing ? border : nil)
                 .cornerRadius(style.cornerRadius)
             }
         }

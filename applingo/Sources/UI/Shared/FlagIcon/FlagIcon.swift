@@ -1,10 +1,16 @@
 import SwiftUI
 import FlagKit
 
+// MARK: - FlagIcon View
+/// Displays a flag icon based on a given code with custom styling.
 struct FlagIcon: View {
     let code: String
     let style: FlagIconStyle
-    
+
+    /// Initializes the FlagIcon view.
+    /// - Parameters:
+    ///   - code: The language or country code.
+    ///   - style: The style to apply. Defaults to themed style using the current theme.
     init(
         code: String,
         style: FlagIconStyle = .themed(ThemeManager.shared.currentThemeStyle)
@@ -19,9 +25,10 @@ struct FlagIcon: View {
         }
     }
 
+    /// Returns a view containing the flag image or a fallback text if no flag is found.
     private func flagCell(code: String) -> some View {
         let countryCode = convertToCountryCode(code.lowercased())
-
+        
         return Group {
             if let flag = Flag(countryCode: countryCode) {
                 Image(uiImage: flag.image(style: .circle))
@@ -29,12 +36,8 @@ struct FlagIcon: View {
                     .aspectRatio(contentMode: .fit)
                     .frame(width: style.flagSize, height: style.flagSize)
                     .overlay(
-                        Group {
-                            AnyView(
-                                Circle()
-                                    .stroke(style.borderColor, lineWidth: 1)
-                            )
-                        }
+                        Circle()
+                            .stroke(style.borderColor, lineWidth: 1)
                     )
             } else {
                 Text(code.uppercased())
@@ -42,12 +45,15 @@ struct FlagIcon: View {
                     .foregroundColor(style.codeColor)
                     .frame(width: style.flagSize, height: style.flagSize)
                     .background(style.fallbackBackgroundColor)
-                    .clipShape(AnyShape(Circle()))
+                    .clipShape(Circle())
             }
         }
         .shadow(color: style.shadowColor.opacity(0.1), radius: 2, x: 0, y: 1)
     }
     
+    /// Converts a given language code to a country code.
+    /// - Parameter languageCode: The input language code.
+    /// - Returns: The corresponding country code.
     private func convertToCountryCode(_ languageCode: String) -> String {
         switch languageCode.lowercased() {
         case "en": return "GB"

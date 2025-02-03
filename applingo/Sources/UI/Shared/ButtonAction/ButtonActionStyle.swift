@@ -1,5 +1,7 @@
 import SwiftUI
 
+// MARK: - ButtonActionStyle
+/// Defines the styling parameters for the ButtonAction component.
 struct ButtonActionStyle {
     let pattern: DynamicPatternModel
     let patternBorder: Bool
@@ -15,8 +17,9 @@ struct ButtonActionStyle {
 }
 
 extension ButtonActionStyle {
+    /// Returns a themed style based on the provided AppTheme.
     static func themed(_ theme: AppTheme) -> ButtonActionStyle {
-        return ButtonActionStyle(
+        ButtonActionStyle(
             pattern: theme.mainPattern,
             patternBorder: false,
             patternBackground: false,
@@ -31,8 +34,9 @@ extension ButtonActionStyle {
         )
     }
     
+    /// Returns an action style variant.
     static func action(_ theme: AppTheme) -> ButtonActionStyle {
-        return ButtonActionStyle(
+        ButtonActionStyle(
             pattern: theme.mainPattern,
             patternBorder: false,
             patternBackground: false,
@@ -47,8 +51,9 @@ extension ButtonActionStyle {
         )
     }
     
+    /// Returns a cancel style variant.
     static func cancel(_ theme: AppTheme) -> ButtonActionStyle {
-        return ButtonActionStyle(
+        ButtonActionStyle(
             pattern: theme.mainPattern,
             patternBorder: false,
             patternBackground: false,
@@ -63,6 +68,7 @@ extension ButtonActionStyle {
         )
     }
     
+    /// Returns a menu style variant.
     static func menu(_ theme: AppTheme) -> ButtonActionStyle {
         ButtonActionStyle(
             pattern: theme.mainPattern,
