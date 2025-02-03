@@ -13,7 +13,9 @@ struct DonutChartStyle {
     let centerValueColor: Color
     let animationDuration: Double
     let legendTitleColor: Color
-    let legendValueFont: Font
+    let legendTitleFont: Font
+    let emptyColor: Color
+    let chartPadding: EdgeInsets
 }
 
 extension DonutChartStyle {
@@ -30,7 +32,9 @@ extension DonutChartStyle {
             centerValueColor: theme.textPrimary,
             animationDuration: 0.5,
             legendTitleColor: theme.textPrimary,
-            legendValueFont: .system(size: 16).bold()
+            legendTitleFont: .system(size: 18, weight: .bold),
+            emptyColor: theme.backgroundPrimary,
+            chartPadding: EdgeInsets(top: 24, leading: 24, bottom: 24, trailing: 42)
         )
     }
 }

@@ -1,20 +1,17 @@
 import SwiftUI
 
 // MARK: - DonutChartViewLegend
-/// A view that displays the legend for the donut chart.
-/// If a legend title is provided, it is shown above the legend items.
+/// A view that displays the legend for the donut chart, with an optional title.
 struct DonutChartViewLegend: View {
     let data: [DonutChartModel]
     let style: DonutChartStyle
-    let legendTitle: String?
+    let legendTitle: String
 
     var body: some View {
         VStack(alignment: .leading, spacing: style.legendSpacing) {
-            if let title = legendTitle, !title.isEmpty {
-                Text(title)
-                    .font(style.legendValueFont)
-                    .foregroundColor(style.legendTitleColor)
-            }
+            Text(legendTitle)
+                .font(style.legendTitleFont)
+                .foregroundColor(style.legendColor)
             ForEach(data) { segment in
                 HStack(spacing: 12) {
                     RoundedRectangle(cornerRadius: 2)

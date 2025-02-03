@@ -6,8 +6,8 @@ struct DonutChartPreview: PreviewProvider {
     static var previews: some View {
         // Sample data for the donut chart
         let sampleData = [
-            DonutChartModel(value: 20, label: "A", color: .red),
-            DonutChartModel(value: 80, label: "B", color: .blue)
+            DonutChartModel(value: 50, label: "A", color: .red),
+            DonutChartModel(value: 30, label: "B", color: .blue)
         ]
         
         return Group {
