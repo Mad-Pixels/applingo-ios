@@ -37,14 +37,24 @@ struct WordDetailsViewStatistic: View {
             VStack(spacing: style.spacing) {
                 DonutChart(
                     data: [
-                        DonutChartModel(value: Double(word.fail), label: "fail", color: .red),
-                        DonutChartModel(value: Double(word.success), label: "success", color: .green)
+                        DonutChartModel(
+                            value: Double(word.fail),
+                            label: "fail",
+                            color: .red
+                        ),
+                        DonutChartModel(
+                            value: Double(word.success),
+                            label: "success",
+                            color: .green
+                        )
                     ],
-                    centerValue: "\(word.weight)"
+                    centerValue: "\(word.weight)",
+                    style: .themed(ThemeManager.shared.currentThemeStyle)
                 )
             }
             .padding(.horizontal, 8)
             .background(Color.clear)
         }
     }
+
 }

@@ -1,10 +1,3 @@
-//
-//  DonutChartPreview.swift
-//  applingo
-//
-//  Created by Igor Chelyshkin on 03/02/2025.
-//
-
 import SwiftUI
 
 // MARK: - DonutChartPreview
@@ -13,23 +6,30 @@ struct DonutChartPreview: PreviewProvider {
     static var previews: some View {
         // Sample data for the donut chart
         let sampleData = [
-            DonutChartModel(value: 40, label: "A", color: .red),
-            DonutChartModel(value: 30, label: "B", color: .blue),
-            DonutChartModel(value: 30, label: "C", color: .green)
+            DonutChartModel(value: 3, label: "A", color: .red),
+            DonutChartModel(value: 1, label: "B", color: .blue)
         ]
         
         return Group {
             // Light theme preview
-            DonutChart(data: sampleData, centerValue: "100")
-                .previewDisplayName("Donut Chart - Light")
-                .preferredColorScheme(.light)
-                .padding()
+            DonutChart(
+                data: sampleData,
+                centerValue: "100",
+                style: .themed(LightTheme())
+            )
+            .previewDisplayName("Donut Chart - Light")
+            .preferredColorScheme(.light)
+            .padding()
             
             // Dark theme preview
-            DonutChart(data: sampleData, centerValue: "100")
-                .previewDisplayName("Donut Chart - Dark")
-                .preferredColorScheme(.dark)
-                .padding()
+            DonutChart(
+                data: sampleData,
+                centerValue: "100",
+                style: .themed(DarkTheme())
+            )
+            .previewDisplayName("Donut Chart - Dark")
+            .preferredColorScheme(.dark)
+            .padding()
         }
     }
 }

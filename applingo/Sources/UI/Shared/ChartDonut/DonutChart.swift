@@ -1,10 +1,12 @@
 import SwiftUI
 
+import SwiftUI
+
 // MARK: - DonutChart View
-/// An enhanced donut chart with a center value and legend.
-/// Left: The donut chart displays segments with a glowing radial gradient.
-/// Center: A pulsing number (centerValue) is shown over the donut.
-/// Right: A legend lists each segment’s label and value.
+/// An enhanced donut chart with a static center value and legend.
+/// - Left: The donut chart displays segments with a glowing radial gradient.
+/// - Center: A number (centerValue) is shown inside a circle background.
+/// - Right: A legend lists each segment’s label and value.
 struct DonutChart: View {
     let data: [DonutChartModel]
     let centerValue: String
@@ -30,11 +32,9 @@ struct DonutChart: View {
         data.reduce(0) { $0 + $1.value }
     }
     
-    @State private var pulse: Bool = false
-    
     var body: some View {
         HStack(spacing: 16) {
-            // Left: Donut Chart with overlaid pulsing center value.
+            // Donut Chart (left) with interactive segments and a static center value.
             ZStack {
                 ForEach(Array(data.enumerated()), id: \.element.id) { index, segment in
                     DonutSlice(
@@ -44,17 +44,19 @@ struct DonutChart: View {
                         style: style
                     )
                 }
-                // Center value with pulsing animation.
+                // Center value with a circular background.
                 Text(centerValue)
                     .font(style.centerValueFont)
                     .foregroundColor(style.centerValueColor)
-                    .scaleEffect(pulse ? 1.1 : 1.0)
-                    .animation(.easeInOut(duration: 1).repeatForever(autoreverses: true), value: pulse)
-                    .onAppear { pulse = true }
+                    .frame(width: style.donutSize * 0.6, height: style.donutSize * 0.6)
+                    .background(
+                        Circle()
+                            .fill(Color.white.opacity(0.8))
+                    )
             }
             .frame(width: style.donutSize, height: style.donutSize)
             
-            // Right: Legend
+            // Legend (right side)
             VStack(alignment: .leading, spacing: style.legendSpacing) {
                 ForEach(data) { segment in
                     HStack {
@@ -71,14 +73,33 @@ struct DonutChart: View {
     }
 }
 
-// MARK: - DonutSlice View
+
+import SwiftUI
+
 /// Draws a single segment of the donut chart with a glowing overlay.
+/// The segment's line width is dynamically scaled using a non-linear (square-root) function,
+/// with a stronger difference between small and large segments.
 struct DonutSlice: View {
     let index: Int
     let data: [DonutChartModel]
     let total: Double
     let style: DonutChartStyle
 
+    // Current segment.
+    private var segment: DonutChartModel { data[index] }
+    
+    // Maximum value among segments.
+    private var maxValue: Double {
+        data.map { $0.value }.max() ?? style.lineWidth
+    }
+    
+    // Use a non-linear scaling (sqrt) with a larger range: factor from 0.5 to 1.0.
+    private var dynamicLineWidth: CGFloat {
+        let normalized = segment.value / maxValue
+        let factor = 0.5 + 0.5 * CGFloat(sqrt(normalized))
+        return style.lineWidth * factor
+    }
+    
     /// Computes the start angle for this segment.
     private var startAngle: Angle {
         let sum = data.prefix(index).reduce(0) { $0 + $1.value }
@@ -96,26 +117,32 @@ struct DonutSlice: View {
             .trim(from: CGFloat((startAngle.degrees + 90) / 360),
                   to: CGFloat((endAngle.degrees + 90) / 360))
             .stroke(
-                data[index].color,
-                style: StrokeStyle(lineWidth: style.lineWidth, lineCap: .round)
+                segment.color,
+                style: StrokeStyle(lineWidth: dynamicLineWidth, lineCap: .round)
             )
             .rotationEffect(.degrees(-90))
             .overlay(
-                // Add a radial gradient overlay for a glowing effect.
+                // Radial gradient overlay for a stronger glowing effect.
                 Circle()
                     .trim(from: CGFloat((startAngle.degrees + 90) / 360),
                           to: CGFloat((endAngle.degrees + 90) / 360))
                     .stroke(
                         RadialGradient(
-                            gradient: Gradient(colors: [data[index].color.opacity(0.7), data[index].color.opacity(0.1)]),
+                            gradient: Gradient(colors: [
+                                segment.color.opacity(0.9),
+                                segment.color.opacity(0.1)
+                            ]),
                             center: .center,
                             startRadius: 0,
-                            endRadius: style.lineWidth * 2
+                            endRadius: dynamicLineWidth * 3
                         ),
-                        style: StrokeStyle(lineWidth: style.lineWidth, lineCap: .round)
+                        style: StrokeStyle(lineWidth: dynamicLineWidth, lineCap: .round)
                     )
                     .rotationEffect(.degrees(-90))
             )
             .animation(.easeInOut(duration: style.animationDuration), value: total)
     }
 }
+
+
+
