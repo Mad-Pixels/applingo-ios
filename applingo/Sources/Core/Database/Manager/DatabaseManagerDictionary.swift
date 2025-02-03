@@ -148,26 +148,26 @@ final class DatabaseManagerDictionary {
     }
     
     /// Fetches dictionary name by its table name
-    /// - Parameter tableName: The table name to look up
+    /// - Parameter byGuid: The table guid to look up
     /// - Returns: The dictionary name or empty string
-    func fetchName(byTableName tableName: String) throws -> String {
-        guard !tableName.isEmpty else {
+    func fetchName(byGuid guid: String) throws -> String {
+        guard !guid.isEmpty else {
             Logger.error("[Dictionary]: Empty table name")
             throw DatabaseError.invalidSearchParameters
         }
         
         Logger.debug(
             "[Dictionary]: Fetching name",
-            metadata: ["tableName": tableName]
+            metadata: ["guid": guid]
         )
         
         return try dbQueue.read { db in
             do {
-                let name = try String.fetchOne(db, sql: SQL.fetchName, arguments: [tableName]) ?? ""
+                let name = try String.fetchOne(db, sql: SQL.fetchName, arguments: [guid]) ?? ""
                 Logger.info(
                     "[Dictionary]: Name fetched",
                     metadata: [
-                        "tableName": tableName,
+                        "guid": guid,
                         "name": name
                     ]
                 )

@@ -72,7 +72,7 @@ final class WordAction: ProcessDatabase {
                     "dictionary": word.dictionary
                 ]
             )
-            return try dictionaryRepository.fetchName(byTableName: word.dictionary)
+            return try dictionaryRepository.fetchName(byGuid: word.dictionary)
         } catch {
             handleError(
                 error,

@@ -59,7 +59,6 @@ struct WordAddManual: View {
         ) {
             ScrollView {
                 VStack(spacing: style.spacing) {
-                    // Main section for word input and dictionary selection.
                     WordAddManualViewMain(
                         wordItem: $wordItem,
                         selectedDictionary: $selectedDictionary,
@@ -67,7 +66,7 @@ struct WordAddManual: View {
                         locale: locale,
                         style: style
                     )
-                    // Additional section for hint and description.
+
                     WordAddManualViewAdditional(
                         hint: $hintText,
                         description: $descriptionText,
@@ -100,10 +99,8 @@ struct WordAddManual: View {
                 }
             }
         }
-        // Update word model with changes in hint and description text.
         .onChange(of: hintText) { wordItem.hint = $0 }
         .onChange(of: descriptionText) { wordItem.description = $0 }
-        // Select first dictionary if not selected.
         .onChange(of: dictionaryGetter.dictionaries) { dictionaries in
             if selectedDictionary == nil {
                 selectedDictionary = dictionaries.first
