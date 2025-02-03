@@ -21,13 +21,14 @@ final class ErrorManager: ObservableObject {
     
     init(
         processors: [ErrorProcessor] = [
-            NetworkErrorProcessor(),
+            DatabaseErrorProcessor(),
+            NetworkErrorProcessor()
         ],
         handlers: [ErrorHandler] = [
             AlertErrorHandler()
         ],
         reporters: [ErrorReporter] = [
-            LogErrorReporter(),
+            LogErrorReporter()
         ]
     ) {
         self.processors = processors
@@ -40,13 +41,13 @@ final class ErrorManager: ObservableObject {
         queue.async { [weak self] in
             guard let self = self else { return }
             
-            // Пытаемся получить AppError через процессоры
+            // Пробуем получить AppError через процессоры
             let appError = self.processors
                 .compactMap { $0.process(error) }
                 .first
                 ?? self.createDefaultError(from: error, screen: screen)
                 
-            // Добавляем метаданные в context (если нужно)
+            // Добавляем дополнительные метаданные
             let modifiedAppError = appError.withAdditionalMetadata(metadata)
                 
             // Вызываем обработчики и репортеры

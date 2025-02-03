@@ -60,8 +60,8 @@ final class DatabaseManagerWord {
         offset: Int,
         limit: Int
     ) throws -> [DatabaseModelWord] {
-        guard limit > 0 else { throw DatabaseError.invalidLimit(limit) }
-        guard offset >= 0 else { throw DatabaseError.invalidOffset(offset) }
+        guard limit > 0 else { throw DatabaseError.invalidLimit(limit: limit) }
+        guard offset >= 0 else { throw DatabaseError.invalidOffset(offset: offset) }
 
         let activeDictionaries = try fetchActive()
         guard !activeDictionaries.isEmpty else { throw DatabaseError.emptyActiveDictionaries }
@@ -85,24 +85,22 @@ final class DatabaseManagerWord {
             do {
                 return try DatabaseModelWord.fetchAll(db, sql: sql, arguments: StatementArguments(arguments))
             } catch {
-                throw DatabaseError.csvImportFailed("Failed to fetch words: \(error.localizedDescription)")
+                throw DatabaseError.csvImportFailed(details: "Failed to fetch words: \(error.localizedDescription)")
             }
         }
     }
 
     /// Fetches a cache of words for randomized use.
     func fetchCache(count: Int) throws -> [DatabaseModelWord] {
-        guard count > 0 else { throw DatabaseError.invalidLimit(count) }
+        guard count > 0 else { throw DatabaseError.invalidLimit(limit: count) }
 
         let activeDictionaries = try fetchActive()
         guard !activeDictionaries.isEmpty else {
             throw DatabaseError.emptyActiveDictionaries
         }
 
-        guard let selectedGroup = Dictionary(
-            grouping: activeDictionaries, by: { $0.subcategory }
-        ).randomElement() else {
-            throw DatabaseError.csvImportFailed("No valid dictionary groups found")
+        guard let selectedGroup = Dictionary(grouping: activeDictionaries, by: { $0.subcategory }).randomElement() else {
+            throw DatabaseError.csvImportFailed(details: "No valid dictionary groups found")
         }
 
         let guids = selectedGroup.value.map { $0.guid }
@@ -124,7 +122,7 @@ final class DatabaseManagerWord {
             do {
                 return try DatabaseModelWord.fetchAll(db, sql: sql, arguments: StatementArguments(arguments))
             } catch {
-                throw DatabaseError.csvImportFailed("Failed to fetch cache: \(error.localizedDescription)")
+                throw DatabaseError.csvImportFailed(details: "Failed to fetch cache: \(error.localizedDescription)")
             }
         }
     }
@@ -132,7 +130,7 @@ final class DatabaseManagerWord {
     /// Saves a word into the database.
     func save(_ word: DatabaseModelWord) throws {
         guard isValidWord(word) else {
-            throw DatabaseError.invalidWord("Invalid word data provided")
+            throw DatabaseError.invalidWord(details: "Invalid word data provided")
         }
         
         try dbQueue.write { db in
@@ -140,12 +138,12 @@ final class DatabaseManagerWord {
                 try formatWord(word).insert(db)
             } catch let dbError as GRDB.DatabaseError {
                 if dbError.resultCode == .SQLITE_CONSTRAINT {
-                    throw DatabaseError.duplicateWord(word.frontText)
+                    throw DatabaseError.duplicateWord(word: word.frontText)
                 } else {
-                    throw DatabaseError.csvImportFailed("Failed to save word: \(dbError.localizedDescription)")
+                    throw DatabaseError.csvImportFailed(details: "Failed to save word: \(dbError.localizedDescription)")
                 }
             } catch {
-                throw DatabaseError.csvImportFailed("Failed to save word: \(error.localizedDescription)")
+                throw DatabaseError.csvImportFailed(details: "Failed to save word: \(error.localizedDescription)")
             }
         }
         
@@ -162,7 +160,7 @@ final class DatabaseManagerWord {
     /// Updates an existing word in the database.
     func update(_ word: DatabaseModelWord) throws {
         guard isValidWord(word) else {
-            throw DatabaseError.invalidWord("Invalid word data provided")
+            throw DatabaseError.invalidWord(details: "Invalid word data provided")
         }
         
         try dbQueue.write { db in
@@ -170,12 +168,12 @@ final class DatabaseManagerWord {
                 try formatWord(word).update(db)
             } catch let dbError as GRDB.DatabaseError {
                 if dbError.resultCode == .SQLITE_CONSTRAINT {
-                    throw DatabaseError.duplicateWord(word.frontText)
+                    throw DatabaseError.duplicateWord(word: word.frontText)
                 } else {
-                    throw DatabaseError.updateFailed(dbError.localizedDescription)
+                    throw DatabaseError.updateFailed(details: dbError.localizedDescription)
                 }
             } catch {
-                throw DatabaseError.updateFailed(error.localizedDescription)
+                throw DatabaseError.updateFailed(details: error.localizedDescription)
             }
         }
         
@@ -192,14 +190,14 @@ final class DatabaseManagerWord {
     /// Deletes a word from the database.
     func delete(_ word: DatabaseModelWord) throws {
         guard word.id != nil else {
-            throw DatabaseError.invalidWord("Word has no ID")
+            throw DatabaseError.invalidWord(details: "Word has no ID")
         }
 
         try dbQueue.write { db in
             do {
                 try word.delete(db)
             } catch {
-                throw DatabaseError.deleteFailed(error.localizedDescription)
+                throw DatabaseError.deleteFailed(details: error.localizedDescription)
             }
         }
 
@@ -221,7 +219,7 @@ final class DatabaseManagerWord {
             do {
                 return try DatabaseModelDictionary.fetchAll(db, sql: SQL.fetchActive)
             } catch {
-                throw DatabaseError.csvImportFailed("Failed to fetch active dictionaries: \(error.localizedDescription)")
+                throw DatabaseError.csvImportFailed(details: "Failed to fetch active dictionaries: \(error.localizedDescription)")
             }
         }
     }

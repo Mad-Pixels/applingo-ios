@@ -2,7 +2,7 @@ import Foundation
 import Combine
 import GRDB
 
-/// A singleton class for managing the app's database connection, migrations, and operations.
+/// A singleton for managing the app's database connection, migrations, and operations.
 final class AppDatabase: ObservableObject {
     // MARK: - Properties
 
@@ -30,7 +30,7 @@ final class AppDatabase: ObservableObject {
 
     // MARK: - Public Methods
 
-    /// Connects to the database, creating and migrating tables if necessary.
+    /// Connects to the database, creating and performing migrations if necessary.
     /// - Parameter dbName: The name of the database file.
     /// - Throws: `DatabaseError` if the connection or migration fails.
     func connect(dbName: String) throws {
@@ -59,11 +59,11 @@ final class AppDatabase: ObservableObject {
                     isConnected = true
                     Logger.debug("[Database]: Connection established")
                 } catch {
-                    throw DatabaseError.migrationFailed(error.localizedDescription)
+                    throw DatabaseError.migrationFailed(details: error.localizedDescription)
                 }
             }
         } catch {
-            throw DatabaseError.connectionFailed(error.localizedDescription)
+            throw DatabaseError.connectionFailed(details: error.localizedDescription)
         }
     }
 
@@ -76,7 +76,7 @@ final class AppDatabase: ObservableObject {
 
     // MARK: - Private Properties
 
-    /// Configures and returns the database migrator for handling migrations.
+    /// Configures and returns the migrator for performing migrations.
     private var migrator: DatabaseMigrator {
         var migrator = DatabaseMigrator()
 

@@ -12,12 +12,12 @@ final class DatabaseManagerDictionary {
             WHERE 1=1
         """
         
-        /// Base query to fetch words.
+        /// Fragment of query to filter by search term.
         static let search = """
             AND search LIKE ?
         """
-
-        /// Query to search words with relevance ordering.
+        
+        /// Fragment of query for ordering by relevance.
         static let searchOrder = """
             ORDER BY
                 CASE
@@ -29,34 +29,34 @@ final class DatabaseManagerDictionary {
                 name ASC
         """
         
-        /// Query to fetch dictionary name by GUID
+        /// Query to fetch dictionary name by GUID.
         static let fetchName = """
             SELECT name 
             FROM \(DatabaseModelDictionary.databaseTableName)
             WHERE guid = ?
         """
         
-        /// Query to delete words from a dictionary
+        /// Query to delete words from a dictionary.
         static let deleteWords = """
             DELETE FROM \(DatabaseModelWord.databaseTableName) 
             WHERE dictionary = ?
         """
         
-        /// Query to update dictionary status
+        /// Query to update dictionary status.
         static let updateStatus = """
             UPDATE \(DatabaseModelDictionary.databaseTableName) 
             SET isActive = ? 
             WHERE id = ?
         """
         
-        /// Query to count words in a dictionary
+        /// Query to count words in a dictionary.
         static let countWords = """
             SELECT COUNT(*) 
             FROM \(DatabaseModelWord.databaseTableName) 
             WHERE dictionary = ?
         """
         
-        /// Query to fetch dictionary references (id, guid, name)
+        /// Query to fetch dictionary references (id, guid, name).
         static let fetchRefs = """
             SELECT id, guid, name FROM \(DatabaseModelDictionary.databaseTableName)
         """
@@ -68,8 +68,8 @@ final class DatabaseManagerDictionary {
     
     // MARK: - Initialization
     
-    /// Initializes the database manager for dictionaries
-    /// - Parameter dbQueue: A GRDB database queue instance
+    /// Initializes the database manager for dictionaries.
+    /// - Parameter dbQueue: A GRDB database queue instance.
     init(dbQueue: DatabaseQueue) {
         self.dbQueue = dbQueue
         Logger.info("[Dictionary]: DatabaseManagerDictionary initialized")
@@ -77,20 +77,20 @@ final class DatabaseManagerDictionary {
     
     // MARK: - Public Methods
     
-    /// Fetches dictionaries with prioritized search and pagination
+    /// Fetches dictionaries with prioritized search and pagination.
     /// - Parameters:
-    ///   - search: Optional search string for filtering
-    ///   - offset: Offset for pagination
-    ///   - limit: Maximum number of items to fetch
-    /// - Returns: Array of matching dictionaries, ordered by relevance
+    ///   - search: Optional search string for filtering.
+    ///   - offset: Offset for pagination.
+    ///   - limit: Maximum number of items to fetch.
+    /// - Returns: An array of matching dictionaries, ordered by relevance.
     func fetch(search: String?, offset: Int, limit: Int) throws -> [DatabaseModelDictionary] {
         guard limit > 0 else {
             Logger.error("[Dictionary]: Invalid limit", metadata: ["limit": String(limit)])
-            throw DatabaseError.invalidLimit(limit)
+            throw DatabaseError.invalidLimit(limit: limit)
         }
         guard offset >= 0 else {
             Logger.error("[Dictionary]: Invalid offset", metadata: ["offset": String(offset)])
-            throw DatabaseError.invalidOffset(offset)
+            throw DatabaseError.invalidOffset(offset: offset)
         }
         
         Logger.debug(
@@ -106,20 +106,21 @@ final class DatabaseManagerDictionary {
             var arguments: [DatabaseValueConvertible] = []
             var sql = SQL.fetch
             
-            if let search = search?.trimmingCharacters(in: .whitespacesAndNewlines).lowercased(), !search.isEmpty {
+            if let searchTerm = search?.trimmingCharacters(in: .whitespacesAndNewlines).lowercased(),
+               !searchTerm.isEmpty {
                 sql += SQL.search
-                let searchPattern = "%\(search)%"
+                let searchPattern = "%\(searchTerm)%"
                 arguments.append(searchPattern)
                 
                 sql += SQL.searchOrder
-                arguments.append(search)
-                arguments.append(search)
+                arguments.append(searchTerm)
+                arguments.append(searchTerm)
                 arguments.append(searchPattern)
                 
                 Logger.debug(
                     "[Dictionary]: Applying search filter",
                     metadata: [
-                        "searchTerm": search,
+                        "searchTerm": searchTerm,
                         "searchPattern": searchPattern,
                         "argumentsCount": String(arguments.count)
                     ]
@@ -147,17 +148,17 @@ final class DatabaseManagerDictionary {
                 )
                 return dictionaries
             } catch {
-                throw DatabaseError.csvImportFailed("Failed to fetch dictionaries: \(error.localizedDescription)")
+                throw DatabaseError.csvImportFailed(details: "Failed to fetch dictionaries: \(error.localizedDescription)")
             }
         }
     }
     
-    /// Fetches dictionary name by its table name
-    /// - Parameter byGuid: The table guid to look up
-    /// - Returns: The dictionary name or empty string
+    /// Fetches dictionary name by its GUID.
+    /// - Parameter guid: The GUID of the dictionary to look up.
+    /// - Returns: The dictionary name or an empty string if not found.
     func fetchName(byGuid guid: String) throws -> String {
         guard !guid.isEmpty else {
-            Logger.error("[Dictionary]: Empty table name")
+            Logger.error("[Dictionary]: Empty GUID")
             throw DatabaseError.invalidSearchParameters
         }
         
@@ -182,20 +183,20 @@ final class DatabaseManagerDictionary {
                     "[Dictionary]: Failed to fetch name",
                     metadata: ["error": error.localizedDescription]
                 )
-                throw DatabaseError.csvImportFailed("Failed to fetch display name: \(error.localizedDescription)")
+                throw DatabaseError.csvImportFailed(details: "Failed to fetch display name: \(error.localizedDescription)")
             }
         }
     }
     
-    /// Saves a new dictionary
-    /// - Parameter dictionary: The dictionary to save
+    /// Saves a new dictionary to the database.
+    /// - Parameter dictionary: The dictionary to save.
     func save(_ dictionary: DatabaseModelDictionary) throws {
         guard isValidDictionary(dictionary) else {
             Logger.error(
                 "[Dictionary]: Invalid dictionary",
                 metadata: ["dictionary": dictionary.toString()]
             )
-            throw DatabaseError.invalidWord("Invalid dictionary data")
+            throw DatabaseError.invalidWord(details: "Invalid dictionary data")
         }
         
         let formattedDictionary = formatDictionary(dictionary)
@@ -216,20 +217,20 @@ final class DatabaseManagerDictionary {
                     "[Dictionary]: Save failed",
                     metadata: ["error": error.localizedDescription]
                 )
-                throw DatabaseError.csvImportFailed("Failed to save dictionary: \(error.localizedDescription)")
+                throw DatabaseError.csvImportFailed(details: "Failed to save dictionary: \(error.localizedDescription)")
             }
         }
     }
     
-    /// Updates an existing dictionary
-    /// - Parameter dictionary: The dictionary to update
+    /// Updates an existing dictionary in the database.
+    /// - Parameter dictionary: The dictionary to update.
     func update(_ dictionary: DatabaseModelDictionary) throws {
         guard isValidDictionary(dictionary) else {
             Logger.error(
                 "[Dictionary]: Invalid dictionary for update",
                 metadata: ["dictionary": dictionary.toString()]
             )
-            throw DatabaseError.invalidWord("Invalid dictionary data")
+            throw DatabaseError.invalidWord(details: "Invalid dictionary data")
         }
         
         let formattedDictionary = formatDictionary(dictionary)
@@ -246,22 +247,22 @@ final class DatabaseManagerDictionary {
                     ]
                 )
             } catch {
-                throw DatabaseError.updateFailed("Failed to update dictionary: \(error.localizedDescription)")
+                throw DatabaseError.updateFailed(details: "Failed to update dictionary: \(error.localizedDescription)")
             }
         }
     }
     
-    /// Updates dictionary active status
+    /// Updates the active status of a dictionary.
     /// - Parameters:
-    ///   - dictionaryID: ID of the dictionary
-    ///   - newStatus: New active status
+    ///   - dictionaryID: The ID of the dictionary.
+    ///   - newStatus: The new active status.
     func updateStatus(dictionaryID: Int, newStatus: Bool) throws {
         guard dictionaryID > 0 else {
             Logger.error(
                 "[Dictionary]: Invalid dictionary ID",
                 metadata: ["dictionaryID": String(dictionaryID)]
             )
-            throw DatabaseError.invalidWord("Invalid dictionary ID")
+            throw DatabaseError.invalidWord(details: "Invalid dictionary ID")
         }
         
         try dbQueue.write { db in
@@ -275,17 +276,17 @@ final class DatabaseManagerDictionary {
                     ]
                 )
             } catch {
-                throw DatabaseError.updateFailed("Failed to update dictionary status: \(error.localizedDescription)")
+                throw DatabaseError.updateFailed(details: "Failed to update dictionary status: \(error.localizedDescription)")
             }
         }
     }
     
-    /// Counts words in a dictionary
-    /// - Parameter dictionary: The dictionary to count words for
-    /// - Returns: Number of words in the dictionary
+    /// Counts the number of words in the specified dictionary.
+    /// - Parameter dictionary: The dictionary to count words for.
+    /// - Returns: The number of words in the dictionary.
     func count(forDictionary dictionary: DatabaseModelDictionary) throws -> Int {
         guard !dictionary.guid.isEmpty else {
-            throw DatabaseError.invalidWord("Dictionary has no GUID")
+            throw DatabaseError.invalidWord(details: "Dictionary has no GUID")
         }
         
         return try dbQueue.read { db in
@@ -300,16 +301,16 @@ final class DatabaseManagerDictionary {
                 )
                 return count
             } catch {
-                throw DatabaseError.csvImportFailed("Failed to count words: \(error.localizedDescription)")
+                throw DatabaseError.csvImportFailed(details: "Failed to count words: \(error.localizedDescription)")
             }
         }
     }
     
-    /// Deletes a dictionary and its words
-    /// - Parameter dictionary: The dictionary to delete
+    /// Deletes a dictionary and its associated words.
+    /// - Parameter dictionary: The dictionary to delete.
     func delete(_ dictionary: DatabaseModelDictionary) throws {
         guard let id = dictionary.id else {
-            throw DatabaseError.invalidWord("Dictionary has no ID")
+            throw DatabaseError.invalidWord(details: "Dictionary has no ID")
         }
         
         try dbQueue.write { db in
@@ -325,29 +326,29 @@ final class DatabaseManagerDictionary {
                     ]
                 )
             } catch {
-                throw DatabaseError.deleteFailed("Failed to delete dictionary: \(error.localizedDescription)")
+                throw DatabaseError.deleteFailed(details: "Failed to delete dictionary: \(error.localizedDescription)")
             }
         }
     }
     
-    /// Fetches all dictionary references (name and guid) from the database.
+    /// Fetches dictionary references (id, guid, name) from the database.
     /// - Returns: An array of DictionaryRef objects.
     func fetchRefs() throws -> [DatabaseModelDictionaryRef] {
         try dbQueue.read { db in
             try DatabaseModelDictionaryRef.fetchAll(db, sql: SQL.fetchRefs)
         }
     }
-
+    
     // MARK: - Private Methods
     
-    /// Formats dictionary data for database operations
+    /// Formats dictionary data for database operations.
     private func formatDictionary(_ dictionary: DatabaseModelDictionary) -> DatabaseModelDictionary {
         var formatted = dictionary
         formatted.fmt()
         return formatted
     }
     
-    /// Validates dictionary data
+    /// Validates dictionary data.
     private func isValidDictionary(_ dictionary: DatabaseModelDictionary) -> Bool {
         !dictionary.name.isEmpty && !dictionary.guid.isEmpty
     }
