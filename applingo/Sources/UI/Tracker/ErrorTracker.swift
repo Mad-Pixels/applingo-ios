@@ -1,5 +1,7 @@
 import SwiftUI
 
+// MARK: - ErrorTracker ViewModifier
+/// Displays an alert when an error occurs.
 struct ErrorTracker: ViewModifier {
     @ObservedObject private var errorManager = ErrorManager.shared
     @EnvironmentObject private var themeManager: ThemeManager
@@ -26,6 +28,7 @@ struct ErrorTracker: ViewModifier {
     }
 }
 
+// Extension for easier usage of ErrorTracker
 extension View {
     func withErrorTracker(_ screen: ScreenType) -> some View {
         modifier(ErrorTracker(screen: screen))

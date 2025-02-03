@@ -1,5 +1,7 @@
 import SwiftUI
 
+// MARK: - ThemeTracker ViewModifier
+/// Applies the current theme and background to the view.
 struct ThemeTracker: ViewModifier {
     @ObservedObject private var themeManager = ThemeManager.shared
     
@@ -11,6 +13,7 @@ struct ThemeTracker: ViewModifier {
     }
 }
 
+// Extension for easier usage of ThemeTracker
 extension View {
     func withThemeTracker() -> some View {
         modifier(ThemeTracker())

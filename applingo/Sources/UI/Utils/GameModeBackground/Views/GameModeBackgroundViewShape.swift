@@ -1,15 +1,19 @@
 import SwiftUI
 
+// MARK: - GameModeBackgroundViewShape View
+/// Renders an individual background shape with theme effects.
 struct GameModeBackgroundViewShape: View {
     let shape: GameModeBackgroundModelShape
     let theme: AppTheme
     let offset: CGPoint
     @ObservedObject private var themeManager = ThemeManager.shared
-   
+
+    /// Multiplier for opacity based on current theme.
     private var themeOpacityMultiplier: Double {
         themeManager.currentTheme == .dark ? 4.4 : 7.5
     }
     
+    /// Blur radius based on current theme.
     private var blurRadius: CGFloat {
         themeManager.currentTheme == .dark ? 12 : 8
     }
@@ -36,9 +40,7 @@ struct GameModeBackgroundViewShape: View {
                 )
                 .blur(radius: blurRadius)
         }
-        .rotationEffect(.degrees(
-            (offset.x + offset.y) * 1.5
-        ))
+        .rotationEffect(.degrees((offset.x + offset.y) * 1.5))
         .offset(x: offset.x, y: offset.y)
     }
 }

@@ -1,10 +1,17 @@
 import SwiftUI
 
+// MARK: - DynamicPattern View
+/// Renders a dynamic pattern using canvas drawing.
 struct DynamicPattern: View {
     let config: DynamicPatternConfig
     let model: DynamicPatternModel
     let size: CGSize
-    
+
+    /// Initializes the dynamic pattern.
+    /// - Parameters:
+    ///   - model: Pattern model containing colors.
+    ///   - size: Canvas size.
+    ///   - config: Configuration for the pattern. Defaults to `.default`.
     init(
         model: DynamicPatternModel,
         size: CGSize,
@@ -17,13 +24,15 @@ struct DynamicPattern: View {
 
     var body: some View {
         Canvas { context, _ in
+            // Fill background with the first color
             context.fill(Path(CGRect(origin: .zero, size: size)), with: .color(model.colors[0]))
             
+            // Draw paths with subsequent colors
             for i in 1..<model.colors.count {
                 let mainPath = Path { path in
                     for _ in 0..<config.numberOfPaths {
-                        let x = CGFloat.random(in: -20...size.width+20)
-                        let y = CGFloat.random(in: -20...size.height+20)
+                        let x = CGFloat.random(in: -20...size.width + 20)
+                        let y = CGFloat.random(in: -20...size.height + 20)
                         var points: [CGPoint] = []
                         
                         for angle in stride(from: 0, to: 360, by: 20) {
@@ -54,16 +63,17 @@ struct DynamicPattern: View {
                 context.fill(mainPath, with: .color(model.colors[i]))
             }
             
+            // Draw splashes
             let splashes = Path { path in
                 for _ in 0..<config.numberOfSplashes {
-                    let x = CGFloat.random(in: -10...size.width+10)
-                    let y = CGFloat.random(in: -10...size.height+10)
-                    let size = CGFloat.random(in: 1...8)
+                    let x = CGFloat.random(in: -10...size.width + 10)
+                    let y = CGFloat.random(in: -10...size.height + 10)
+                    let splashSize = CGFloat.random(in: 1...8)
                     let randomAngle = CGFloat.random(in: 0...(2 * .pi))
                     
                     path.move(to: CGPoint(x: x, y: y))
                     path.addArc(center: CGPoint(x: x, y: y),
-                                radius: size,
+                                radius: splashSize,
                                 startAngle: Angle(radians: randomAngle),
                                 endAngle: Angle(radians: randomAngle + .pi * 1.7),
                                 clockwise: Bool.random())
@@ -74,17 +84,18 @@ struct DynamicPattern: View {
             context.opacity = 0.98
             context.fill(splashes, with: .color(model.colors[1]))
             
+            // Draw strokes
             for _ in 0..<config.numberOfStrokes {
                 let strokePath = Path { path in
-                    let startX = CGFloat.random(in: -10...size.width+10)
-                    let startY = CGFloat.random(in: -10...size.height+10)
+                    let startX = CGFloat.random(in: -10...size.width + 10)
+                    let startY = CGFloat.random(in: -10...size.height + 10)
                     path.move(to: CGPoint(x: startX, y: startY))
                     
                     for _ in 0..<3 {
                         let endX = startX + CGFloat.random(in: -20...20)
                         let endY = startY + CGFloat.random(in: -20...20)
-                        let controlX = (startX + endX)/2 + CGFloat.random(in: -10...10)
-                        let controlY = (startY + endY)/2 + CGFloat.random(in: -10...10)
+                        let controlX = (startX + endX) / 2 + CGFloat.random(in: -10...10)
+                        let controlY = (startY + endY) / 2 + CGFloat.random(in: -10...10)
                         
                         path.addQuadCurve(
                             to: CGPoint(x: endX, y: endY),
