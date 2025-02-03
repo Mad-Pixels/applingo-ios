@@ -1,5 +1,7 @@
 import SwiftUI
 
+// MARK: - ItemToggle View
+/// A toggle component with an optional header and custom styling.
 struct ItemToggle: View {
     @Binding var isOn: Bool
     let title: String
@@ -7,6 +9,13 @@ struct ItemToggle: View {
     let style: ItemToggleStyle
     let onChange: ((Bool) -> Void)?
     
+    /// Initializes the toggle.
+    /// - Parameters:
+    ///   - isOn: Binding to the toggle state.
+    ///   - title: The title of the toggle.
+    ///   - header: An optional header string.
+    ///   - style: The style for the toggle. Defaults to themed style using the current theme.
+    ///   - onChange: Closure to call when the value changes.
     init(
         isOn: Binding<Bool>,
         title: String,
@@ -24,6 +33,7 @@ struct ItemToggle: View {
     var body: some View {
         VStack(spacing: style.spacing) {
             if style.showHeader, let header = header {
+                // Display header using a titled SectionHeader style
                 SectionHeader(
                     title: LocaleManager.shared.localizedString(for: header),
                     style: .titled(ThemeManager.shared.currentThemeStyle)
@@ -37,6 +47,7 @@ struct ItemToggle: View {
         }
     }
     
+    /// The toggle content with custom text and tint.
     private var toggleContent: some View {
         Toggle(isOn: Binding(
             get: { isOn },

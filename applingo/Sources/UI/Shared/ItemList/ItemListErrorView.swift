@@ -1,5 +1,7 @@
 import SwiftUI
 
+// MARK: - ItemListErrorView
+/// Displays an error message for the list.
 struct ItemListErrorView: View {
     let error: Error
     let style: ItemListStyle

@@ -1,5 +1,7 @@
 import SwiftUI
 
+// MARK: - ItemListRow
+/// Represents a single row in the item list with tap and appearance handling.
 struct ItemListRow<Item: Identifiable, RowContent: View>: View {
     let item: Item
     let style: ItemListStyle

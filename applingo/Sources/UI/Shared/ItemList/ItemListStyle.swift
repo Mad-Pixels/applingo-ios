@@ -1,5 +1,7 @@
 import SwiftUI
 
+// MARK: - ItemListStyle
+/// Defines the styling parameters for the ItemList components.
 struct ItemListStyle {
     let backgroundColor: Color
     let ontapColor: Color
@@ -11,6 +13,7 @@ struct ItemListStyle {
 }
 
 extension ItemListStyle {
+    /// Returns a themed style based on the provided AppTheme.
     static func themed(_ theme: AppTheme) -> ItemListStyle {
         ItemListStyle(
             backgroundColor: theme.backgroundPrimary,

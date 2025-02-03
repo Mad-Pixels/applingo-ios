@@ -1,5 +1,7 @@
 import SwiftUI
 
+// MARK: - ItemListLoadingOverlay
+/// Displays an overlay with a loading indicator.
 struct ItemListLoadingOverlay: View {
     let style: ItemListStyle
     
