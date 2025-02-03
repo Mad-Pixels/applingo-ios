@@ -35,26 +35,29 @@ struct WordDetailsViewStatistic: View {
             .padding(.top, 8)
             
             VStack(spacing: style.spacing) {
-                DonutChart(
-                    data: [
-                        DonutChartModel(
-                            value: Double(word.fail),
-                            label: "fail",
-                            color: .red
-                        ),
-                        DonutChartModel(
-                            value: Double(word.success),
-                            label: "success",
-                            color: .green
-                        )
-                    ],
-                    centerValue: "\(word.weight)",
-                    style: .themed(ThemeManager.shared.currentThemeStyle)
-                )
+                SectionBody(
+                    style: .area(ThemeManager.shared.currentThemeStyle)
+                ){
+                    DonutChart(
+                        data: [
+                            DonutChartModel(
+                                value: Double(word.fail),
+                                label: "wrong",
+                                color: ThemeManager.shared.currentThemeStyle.success
+                            ),
+                            DonutChartModel(
+                                value: Double(word.success),
+                                label: "correct",
+                                color: ThemeManager.shared.currentThemeStyle.error
+                            )
+                        ],
+                        centerValue: "\(word.weight)",
+                        style: .themed(ThemeManager.shared.currentThemeStyle),
+                        legendTitle: "Answers"
+                    )
+                }
             }
             .padding(.horizontal, 8)
-            .background(Color.clear)
         }
     }
-
 }

@@ -3,14 +3,17 @@ import SwiftUI
 // MARK: - DonutChartStyle
 /// Defines styling parameters for the DonutChart component.
 struct DonutChartStyle {
-    let donutSize: CGFloat        // Diameter of the donut chart.
-    let lineWidth: CGFloat        // Thickness of the donut segments.
-    let legendSpacing: CGFloat    // Spacing between legend items.
-    let legendFont: Font          // Font for legend text.
-    let legendColor: Color        // Color for legend text.
-    let centerValueFont: Font     // Font for the central number.
-    let centerValueColor: Color   // Color for the central number.
-    let animationDuration: Double // Animation duration for drawing arcs.
+    let donutSize: CGFloat
+    let lineWidth: CGFloat
+    let legendSpacing: CGFloat
+    let legendFont: Font
+    let legendColor: Color
+    let centerValueBackground: Color
+    let centerValueFont: Font
+    let centerValueColor: Color
+    let animationDuration: Double
+    let legendTitleColor: Color
+    let legendValueFont: Font
 }
 
 extension DonutChartStyle {
@@ -22,9 +25,12 @@ extension DonutChartStyle {
             legendSpacing: 8,
             legendFont: .subheadline,
             legendColor: theme.textPrimary,
-            centerValueFont: .largeTitle.bold(),
+            centerValueBackground: theme.backgroundPrimary,
+            centerValueFont: .system(size: 16).bold(),
             centerValueColor: theme.textPrimary,
-            animationDuration: 0.5
+            animationDuration: 0.5,
+            legendTitleColor: theme.textPrimary,
+            legendValueFont: .system(size: 16).bold()
         )
     }
 }
