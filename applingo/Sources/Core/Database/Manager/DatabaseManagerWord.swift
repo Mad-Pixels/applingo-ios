@@ -134,15 +134,21 @@ final class DatabaseManagerWord {
         guard isValidWord(word) else {
             throw DatabaseError.invalidWord("Invalid word data provided")
         }
-
+        
         try dbQueue.write { db in
             do {
                 try formatWord(word).insert(db)
+            } catch let dbError as GRDB.DatabaseError {
+                if dbError.resultCode == .SQLITE_CONSTRAINT {
+                    throw DatabaseError.duplicateWord(word.frontText)
+                } else {
+                    throw DatabaseError.csvImportFailed("Failed to save word: \(dbError.localizedDescription)")
+                }
             } catch {
                 throw DatabaseError.csvImportFailed("Failed to save word: \(error.localizedDescription)")
             }
         }
-
+        
         Logger.debug(
             "[Word]: Save executed",
             metadata: [
@@ -158,15 +164,21 @@ final class DatabaseManagerWord {
         guard isValidWord(word) else {
             throw DatabaseError.invalidWord("Invalid word data provided")
         }
-
+        
         try dbQueue.write { db in
             do {
                 try formatWord(word).update(db)
+            } catch let dbError as GRDB.DatabaseError {
+                if dbError.resultCode == .SQLITE_CONSTRAINT {
+                    throw DatabaseError.duplicateWord(word.frontText)
+                } else {
+                    throw DatabaseError.updateFailed(dbError.localizedDescription)
+                }
             } catch {
                 throw DatabaseError.updateFailed(error.localizedDescription)
             }
         }
-
+        
         Logger.debug(
             "[Word]: Update executed",
             metadata: [
