@@ -6,38 +6,29 @@ struct WordAddManual: View {
     
     // MARK: - Environment and State Objects
     
-    /// Access to the presentation mode to dismiss the view.
     @Environment(\.presentationMode) private var presentationMode
-    /// Style configuration for the view.
     @StateObject private var style: WordAddManualStyle
-    /// Localization object for the view.
     @StateObject private var locale = WordAddManualLocale()
-    /// Object to handle word-related actions.
     @StateObject private var wordsAction = WordAction()
-    /// Object to fetch dictionaries.
     @StateObject private var dictionaryGetter = DictionaryGetter()
     
     // MARK: - Bindings and Local State
     
     /// Binding to control the presentation of this view.
     @Binding var isPresented: Bool
-    /// Closure to refresh parent view after a successful save.
     let refresh: () -> Void
     
     /// Currently selected dictionary.
     @State private var selectedDictionary: DatabaseModelDictionary?
-    /// The word model being edited.
     @State private var wordItem = DatabaseModelWord.new()
-    /// Additional description text for the word.
     @State private var descriptionText: String = ""
-    /// Additional hint text for the word.
     @State private var hintText: String = ""
-    /// Error message string.
     @State private var errorMessage: String = ""
     
     /// Flags for button animations.
     @State private var isPressedTrailing = false
     @State private var isPressedLeading = false
+    
     /// Flag to show alerts.
     @State private var isShowingAlert = false
     
