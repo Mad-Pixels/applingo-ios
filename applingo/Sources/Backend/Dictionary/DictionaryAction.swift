@@ -108,6 +108,14 @@ final class DictionaryAction: ProcessDatabase {
         )
     }
     
+    // MARK: - Fetch References
+
+    /// Fetches all dictionary references (with only name and guid).
+    /// - Returns: An array of DatabaseModelDictionaryRef objects.
+    func fetchRefs() throws -> [DatabaseModelDictionaryRef] {
+        try dictionaryRepository.fetchRefs()
+    }
+    
     // MARK: - Private Methods
     
     /// Performs a database operation with logging and error handling

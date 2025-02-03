@@ -10,7 +10,7 @@ struct WordAddManual: View {
     @StateObject private var style: WordAddManualStyle
     @StateObject private var locale = WordAddManualLocale()
     @StateObject private var wordsAction = WordAction()
-    @StateObject private var dictionaryGetter = DictionaryGetter()
+    @StateObject private var dictionaryAction = DictionaryAction()  // Используем DictionaryAction вместо DictionaryGetter
     
     // MARK: - Bindings and Local State
     
@@ -18,8 +18,10 @@ struct WordAddManual: View {
     @Binding var isPresented: Bool
     let refresh: () -> Void
     
-    /// Currently selected dictionary.
-    @State private var selectedDictionary: DatabaseModelDictionary?
+    /// Currently selected dictionary reference.
+    @State private var selectedDictionary: DatabaseModelDictionaryRef?
+    @State private var dictionaryRefs: [DatabaseModelDictionaryRef] = []
+    
     @State private var wordItem = DatabaseModelWord.new()
     @State private var descriptionText: String = ""
     @State private var hintText: String = ""
@@ -62,11 +64,11 @@ struct WordAddManual: View {
                     WordAddManualViewMain(
                         wordItem: $wordItem,
                         selectedDictionary: $selectedDictionary,
-                        dictionaries: dictionaryGetter.dictionaries,
+                        dictionaries: dictionaryRefs,
                         locale: locale,
                         style: style
                     )
-
+                    
                     WordAddManualViewAdditional(
                         hint: $hintText,
                         description: $descriptionText,
@@ -99,13 +101,19 @@ struct WordAddManual: View {
                 }
             }
         }
-        .onChange(of: hintText) { wordItem.hint = $0 }
-        .onChange(of: descriptionText) { wordItem.description = $0 }
-        .onChange(of: dictionaryGetter.dictionaries) { dictionaries in
-            if selectedDictionary == nil {
-                selectedDictionary = dictionaries.first
+        .onAppear {
+            do {
+                dictionaryRefs = try dictionaryAction.fetchRefs()
+                // Если выбранный словарь не установлен, выбираем первый из массива.
+                if selectedDictionary == nil, let first = dictionaryRefs.first {
+                    selectedDictionary = first
+                }
+            } catch {
+                Logger.error("[WordAddManual]: Failed to fetch dictionary references", metadata: ["error": error.localizedDescription])
             }
         }
+        .onChange(of: hintText) { wordItem.hint = $0 }
+        .onChange(of: descriptionText) { wordItem.description = $0 }
     }
     
     // MARK: - Helper Computed Properties
@@ -113,7 +121,8 @@ struct WordAddManual: View {
     /// Determines whether the save button should be disabled.
     private var isSaveDisabled: Bool {
         wordItem.frontText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ||
-        wordItem.backText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        wordItem.backText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ||
+        selectedDictionary == nil
     }
     
     // MARK: - Actions
@@ -123,7 +132,7 @@ struct WordAddManual: View {
         guard let selectedDictionary = selectedDictionary else { return }
         
         let newWord = DatabaseModelWord(
-            dictionary: selectedDictionary.guid,
+            dictionary: selectedDictionary.guid,  // Используем guid из DictionaryRef
             frontText: wordItem.frontText,
             backText: wordItem.backText,
             weight: wordItem.weight,

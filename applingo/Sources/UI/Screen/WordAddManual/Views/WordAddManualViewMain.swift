@@ -3,31 +3,26 @@ import SwiftUI
 /// A view that displays the main section for adding a word.
 /// It includes inputs for the front text, back text, and dictionary selection.
 struct WordAddManualViewMain: View {
-    
-    // MARK: - Environment and Bindings
-    
     @EnvironmentObject private var themeManager: ThemeManager
     @Binding var wordItem: DatabaseModelWord
-    @Binding var selectedDictionary: DatabaseModelDictionary?
+    @Binding var selectedDictionary: DatabaseModelDictionaryRef?
     
-    /// List of available dictionaries.
-    let dictionaries: [DatabaseModelDictionary]
+    /// List of available dictionary references.
+    let dictionaries: [DatabaseModelDictionaryRef]
     private let locale: WordAddManualLocale
     private let style: WordAddManualStyle
-    
-    // MARK: - Initializer
     
     /// Initializes the main view.
     /// - Parameters:
     ///   - wordItem: Binding to the word model.
-    ///   - selectedDictionary: Binding to the selected dictionary.
-    ///   - dictionaries: List of dictionaries.
+    ///   - selectedDictionary: Binding to the selected dictionary reference.
+    ///   - dictionaries: List of dictionary references.
     ///   - locale: Localization object.
     ///   - style: Style configuration.
     init(
         wordItem: Binding<DatabaseModelWord>,
-        selectedDictionary: Binding<DatabaseModelDictionary?>,
-        dictionaries: [DatabaseModelDictionary],
+        selectedDictionary: Binding<DatabaseModelDictionaryRef?>,
+        dictionaries: [DatabaseModelDictionaryRef],
         locale: WordAddManualLocale,
         style: WordAddManualStyle
     ) {
@@ -37,8 +32,6 @@ struct WordAddManualViewMain: View {
         self.locale = locale
         self.style = style
     }
-    
-    // MARK: - Body
     
     var body: some View {
         VStack(spacing: style.spacing) {

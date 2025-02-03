@@ -55,6 +55,11 @@ final class DatabaseManagerDictionary {
             FROM \(DatabaseModelWord.databaseTableName) 
             WHERE dictionary = ?
         """
+        
+        /// Query to fetch dictionary references (id, guid, name)
+        static let fetchRefs = """
+            SELECT id, guid, name FROM \(DatabaseModelDictionary.databaseTableName)
+        """
     }
     
     // MARK: - Properties
@@ -325,6 +330,14 @@ final class DatabaseManagerDictionary {
         }
     }
     
+    /// Fetches all dictionary references (name and guid) from the database.
+    /// - Returns: An array of DictionaryRef objects.
+    func fetchRefs() throws -> [DatabaseModelDictionaryRef] {
+        try dbQueue.read { db in
+            try DatabaseModelDictionaryRef.fetchAll(db, sql: SQL.fetchRefs)
+        }
+    }
+
     // MARK: - Private Methods
     
     /// Formats dictionary data for database operations
