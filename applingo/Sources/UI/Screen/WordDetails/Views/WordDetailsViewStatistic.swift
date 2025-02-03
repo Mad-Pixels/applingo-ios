@@ -51,7 +51,7 @@ struct WordDetailsViewStatistic: View {
                                 color: ThemeManager.shared.currentThemeStyle.error
                             )
                         ],
-                        centerValue: "\(word.weight)",
+                        centerValue: "\(Int(ceil(Double(word.weight / 100)))) / 10",
                         style: .themed(ThemeManager.shared.currentThemeStyle),
                         legendTitle: "Answers"
                     )
