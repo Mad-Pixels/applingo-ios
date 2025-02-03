@@ -10,7 +10,9 @@ struct ButtonNavStyle {
     let size: CGFloat
     let cornerRadius: CGFloat
     let iconSize: CGFloat
-    
+}
+
+extension ButtonNavStyle {
     /// Returns a style for a "back" button.
     static func back(_ theme: AppTheme) -> ButtonNavStyle {
         ButtonNavStyle(

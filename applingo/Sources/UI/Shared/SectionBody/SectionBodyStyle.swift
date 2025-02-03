@@ -8,7 +8,9 @@ struct SectionBodyStyle {
     let cornerRadius: CGFloat
     let shadowRadius: CGFloat
     let padding: EdgeInsets
+}
 
+extension SectionBodyStyle {
     /// Returns a themed style based on the provided AppTheme.
     static func themed(_ theme: AppTheme) -> SectionBodyStyle {
         SectionBodyStyle(

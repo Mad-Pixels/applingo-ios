@@ -16,7 +16,9 @@ struct InputTextStyle {
     let cornerRadius: CGFloat
     let iconSpacing: CGFloat
     let titleSpacing: CGFloat
-    
+}
+
+extension InputTextStyle {
     /// Returns a themed style based on the provided AppTheme.
     static func themed(_ theme: AppTheme) -> InputTextStyle {
         InputTextStyle(

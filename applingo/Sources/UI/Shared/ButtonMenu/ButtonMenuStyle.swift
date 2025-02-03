@@ -11,12 +11,9 @@ struct ButtonMenuStyle {
     let padding: EdgeInsets
     let height: CGFloat
     let cornerRadius: CGFloat
-
     let borderColor: Color
     let borderWidth: CGFloat
     let shadowColor: Color
-
-    // Common parameters moved from the component
     let hStackSpacing: CGFloat
     let iconFrameSize: CGSize
 }

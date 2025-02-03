@@ -10,7 +10,9 @@ struct FlagIconStyle {
     let shadowColor: Color
     let codeColor: Color
     let fallbackBackgroundColor: Color
-    
+}
+
+extension FlagIconStyle {
     /// Returns a themed style based on the provided AppTheme.
     static func themed(_ theme: AppTheme) -> FlagIconStyle {
         FlagIconStyle(

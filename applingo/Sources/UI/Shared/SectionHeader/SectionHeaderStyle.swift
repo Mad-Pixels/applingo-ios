@@ -8,7 +8,9 @@ struct SectionHeaderStyle {
     let titleFont: Font
     let spacing: CGFloat
     let padding: EdgeInsets
+}
 
+extension SectionHeaderStyle {
     /// Themed style based on the given theme.
     static func themed(_ theme: AppTheme) -> SectionHeaderStyle {
         SectionHeaderStyle(

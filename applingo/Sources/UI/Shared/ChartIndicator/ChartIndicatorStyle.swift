@@ -11,7 +11,9 @@ struct ChartIndicatorStyle {
     let glowRadius: CGFloat
     let glowOpacity: CGFloat
     let withGlowAnimation: Bool
-    
+}
+
+extension ChartIndicatorStyle {
     /// Returns a themed style based on the provided AppTheme.
     static func themed(_ theme: AppTheme) -> ChartIndicatorStyle {
         ChartIndicatorStyle(
