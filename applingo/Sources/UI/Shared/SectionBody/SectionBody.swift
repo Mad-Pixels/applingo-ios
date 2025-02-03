@@ -1,9 +1,15 @@
 import SwiftUI
 
+// MARK: - SectionBody View
+/// Wraps content in a styled container with padding, rounded background, and shadow.
 struct SectionBody<Content: View>: View {
     let style: SectionBodyStyle
     let content: Content
-    
+
+    /// Initializes the SectionBody with a style and content.
+    /// - Parameters:
+    ///   - style: The style for the section body. Defaults to themed style using the current theme.
+    ///   - content: A view builder for the content.
     init(
         style: SectionBodyStyle = .themed(ThemeManager.shared.currentThemeStyle),
         @ViewBuilder content: () -> Content
@@ -11,7 +17,7 @@ struct SectionBody<Content: View>: View {
         self.style = style
         self.content = content()
     }
-    
+
     var body: some View {
         content
             .padding(.horizontal, style.padding.leading)

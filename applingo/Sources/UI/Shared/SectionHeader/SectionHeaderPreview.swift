@@ -3,7 +3,7 @@ import SwiftUI
 struct SectionHeaderPreview_Previews: PreviewProvider {
     static var previews: some View {
         SectionHeaderPreview()
-            .previewDisplayName("Section Header Components (Light & Dark Mode)")
+            .previewDisplayName("Section Header Components")
             .previewLayout(.sizeThatFits)
             .padding()
     }
