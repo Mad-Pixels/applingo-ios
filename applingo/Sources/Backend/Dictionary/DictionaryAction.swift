@@ -18,7 +18,7 @@ final class DictionaryAction: ProcessDatabase {
         self.dictionaryRepository = DatabaseManagerDictionary(dbQueue: dbQueue)
         super.init()
     }
-        
+
     // MARK: - CRUD Operations
     
     /// Saves a new dictionary to the database with validation

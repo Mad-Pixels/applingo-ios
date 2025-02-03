@@ -1,13 +1,17 @@
 import SwiftUI
 
+// MARK: - MainBackgroundManager
+/// Manages generation and storage of background words.
 final class MainBackgroundManager: ObservableObject {
     static let shared = MainBackgroundManager()
    
+    /// Array of background words with associated properties.
     @Published private(set) var backgroundWords: [(id: UUID, word: String, position: CGPoint, font: UIFont, opacity: Double)] = []
    
     private static var isFirstLaunchGenerated = false
     private let lock = NSLock()
    
+    // MARK: - Constants
     private let languages = [
         "HELLO", "BONJOUR", "HOLA", "CIAO", "ПРИВЕТ", "HALLO", "你好", "こんにちは", "안녕하세요", "مرحبا", "שָׁלוֹם",
         "NAMASTE", "SAWADEE", "MERHABA", "OLÁ", "ЗДРАВЕЙТЕ", "ΓΕΙΑ ΣΑΣ", "JAMBO", "BONGU", "XIN CHÀO",
@@ -38,7 +42,6 @@ final class MainBackgroundManager: ObservableObject {
         "FUTURE", "AVENIR", "FUTURO", "FUTURO", "БУДУЩЕЕ", "ZUKUNFT", "未来", "未来", "미래", "مستقبل", "עָתִיד",
         "DREAM", "RÊVE", "SUEÑO", "SOGNO", "МЕЧТА", "TRAUM", "梦想", "夢", "꿈", "حلم", "חֲלוֹם"
     ]
-   
     private let padding: CGFloat = 2
     private let maxWords = 200
     private let minFontSize: CGFloat = 14
@@ -47,8 +50,12 @@ final class MainBackgroundManager: ObservableObject {
     private let maxOpacity: Double = 0.2
     private let maxAttempts = 100
    
+    // MARK: - Initializer
     private init() {}
    
+    // MARK: - Public Methods
+    /// Generates background words for the given size if not already generated.
+    /// - Parameter size: The available screen size.
     func generateIfNeeded(for size: CGSize) {
         lock.lock()
         defer { lock.unlock() }
@@ -59,10 +66,19 @@ final class MainBackgroundManager: ObservableObject {
         MainBackgroundManager.isFirstLaunchGenerated = true
     }
    
+    /// Resets the generated background words.
+    func reset() {
+        lock.lock()
+        defer { lock.unlock() }
+        backgroundWords.removeAll()
+        MainBackgroundManager.isFirstLaunchGenerated = false
+    }
+   
+    // MARK: - Private Methods
+    /// Generates background words based on the available size.
+    /// - Parameter size: The available screen size.
     private func generateBackground(for size: CGSize) {
-        var newWords: [
-            (id: UUID, word: String, position: CGPoint, font: UIFont, opacity: Double)
-        ] = []
+        var newWords: [(id: UUID, word: String, position: CGPoint, font: UIFont, opacity: Double)] = []
         var occupiedRects: [CGRect] = []
 
         guard size.width > (padding * 2) && size.height > (padding * 2) else { return }
@@ -75,11 +91,7 @@ final class MainBackgroundManager: ObservableObject {
             guard textSize.width < size.width - (padding * 2),
                   textSize.height < size.height - (padding * 2) else { continue }
            
-            if let position = findAvailablePosition(
-                for: textSize,
-                in: size,
-                avoiding: occupiedRects
-            ) {
+            if let position = findAvailablePosition(for: textSize, in: size, avoiding: occupiedRects) {
                 let expandedRect = CGRect(
                     x: position.x,
                     y: position.y,
@@ -92,10 +104,8 @@ final class MainBackgroundManager: ObservableObject {
                 newWords.append((
                     id: UUID(),
                     word: word,
-                    position: CGPoint(
-                        x: position.x + textSize.width/2,
-                        y: position.y + textSize.height/2
-                    ),
+                    position: CGPoint(x: position.x + textSize.width/2,
+                                      y: position.y + textSize.height/2),
                     font: font,
                     opacity: Double.random(in: minOpacity...maxOpacity)
                 ))
@@ -105,6 +115,8 @@ final class MainBackgroundManager: ObservableObject {
         self.backgroundWords = newWords
     }
    
+    /// Generates a random font with varying size and weight.
+    /// - Returns: A random UIFont.
     private func generateRandomFont() -> UIFont {
         let fontSize = CGFloat.random(in: minFontSize...maxFontSize)
        
@@ -122,6 +134,12 @@ final class MainBackgroundManager: ObservableObject {
         }
     }
    
+    /// Finds an available position for a word that avoids significant overlap.
+    /// - Parameters:
+    ///   - size: The size of the word's text.
+    ///   - boundingSize: The total available area.
+    ///   - occupiedRects: Rectangles that are already occupied.
+    /// - Returns: A CGPoint representing the position or nil if none found.
     private func findAvailablePosition(
         for size: CGSize,
         in boundingSize: CGSize,
@@ -143,8 +161,7 @@ final class MainBackgroundManager: ObservableObject {
            
             let hasSignificantOverlap = occupiedRects.contains { existing in
                 let intersection = existing.intersection(expandedRect)
-                return intersection.width > size.width * 0.3
-                    || intersection.height > size.height * 0.3
+                return intersection.width > size.width * 0.3 || intersection.height > size.height * 0.3
             }
            
             if !hasSignificantOverlap {
@@ -153,12 +170,5 @@ final class MainBackgroundManager: ObservableObject {
         }
        
         return nil
-    }
-   
-    func reset() {
-        lock.lock()
-        defer { lock.unlock() }
-        backgroundWords.removeAll()
-        MainBackgroundManager.isFirstLaunchGenerated = false
     }
 }

@@ -1,5 +1,7 @@
 import SwiftUI
 
+// MARK: - MainBackground View
+/// Displays the animated background with parallax effect.
 struct MainBackground: View {
     @StateObject private var manager = MainBackgroundManager.shared
     @StateObject private var motionManager = HardwareMotion.shared
@@ -28,3 +30,5 @@ struct MainBackground: View {
         }
     }
 }
+
+
