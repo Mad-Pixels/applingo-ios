@@ -10,7 +10,7 @@ struct WordAddManual: View {
     @StateObject private var style: WordAddManualStyle
     @StateObject private var locale = WordAddManualLocale()
     @StateObject private var wordsAction = WordAction()
-    @StateObject private var dictionaryAction = DictionaryAction()  // Используем DictionaryAction вместо DictionaryGetter
+    @StateObject private var dictionaryAction = DictionaryAction()
     
     // MARK: - Bindings and Local State
     

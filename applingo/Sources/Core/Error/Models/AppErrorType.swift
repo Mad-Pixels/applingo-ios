@@ -13,9 +13,9 @@ enum AppErrorType {
         case .validation, .ui: return true
         case .network(let statusCode):
             return (400...499).contains(statusCode)
-        case .database: return false
+        case .database: return true
         case .business: return true
-        case .unknown: return false
+        case .unknown: return true
         }
     }
     

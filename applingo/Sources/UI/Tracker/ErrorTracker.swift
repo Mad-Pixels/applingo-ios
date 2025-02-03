@@ -6,24 +6,19 @@ struct ErrorTracker: ViewModifier {
     @ObservedObject private var errorManager = ErrorManager.shared
     @EnvironmentObject private var themeManager: ThemeManager
     let screen: ScreenType
-    
+
     func body(content: Content) -> some View {
         content
-            .alert(
-                "error.title",
-                isPresented: Binding(
-                    get: { errorManager.currentError != nil },
-                    set: { if !$0 { errorManager.currentError = nil } }
-                ),
-                presenting: errorManager.currentError
-            ) { error in
-                Button(
-                    error.actionTitle ?? LocaleManager.shared.localizedString(for: "general.ok"),
-                    action: error.action ?? {}
+            .alert(item: $errorManager.currentError) { error in
+                Alert(
+                    title: Text(error.title),
+                    message: Text(error.message)
+                        .foregroundColor(themeManager.currentThemeStyle.errorPrimaryColor),
+                    dismissButton: .default(Text(error.actionTitle ?? LocaleManager.shared.localizedString(for: "general.ok"))) {
+                        errorManager.currentError = nil
+                        error.action?()
+                    }
                 )
-            } message: { error in
-                Text(error.message)
-                    .foregroundColor(themeManager.currentThemeStyle.errorPrimaryColor)
             }
     }
 }
