@@ -25,7 +25,7 @@ extension DictionaryRemoteListStyle {
     static func themed(_ theme: AppTheme) -> DictionaryRemoteListStyle {
         DictionaryRemoteListStyle(
             backgroundColor: theme.backgroundPrimary,
-            padding: EdgeInsets(top: 0, leading: 16, bottom: 16, trailing: 16),
+            padding: EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16),
             spacing: 16
         )
     }

@@ -77,15 +77,15 @@ struct DictionaryRemoteFilter: View {
                         locale: locale
                     )
                     .padding(style.padding)
-                    
-                    DictionaryRemoteFilterViewLevel(
-                        selectedLevel: $selectedLevel,
-                        locale: locale
-                    )
-                    .padding(style.padding)
 
                     DictionaryRemoteFilterViewSort(
                         selectedSortBy: $selectedSortBy,
+                        locale: locale
+                    )
+                    .padding(style.padding)
+                    
+                    DictionaryRemoteFilterViewLevel(
+                        selectedLevel: $selectedLevel,
                         locale: locale
                     )
                     .padding(style.padding)

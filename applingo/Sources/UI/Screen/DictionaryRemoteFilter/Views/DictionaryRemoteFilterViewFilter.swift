@@ -46,7 +46,7 @@ struct DictionaryRemoteFilterViewFilter: View {
     // MARK: - Body
     
     var body: some View {
-        Section(header: Text(locale.dictionaryTitle)) {
+        Section() {
             if categoryGetter.isLoadingPage {
                 ProgressView()
                     .frame(maxWidth: .infinity)
