@@ -766,6 +766,23 @@
         }
       }
     },
+    "screen.dictionaryRemoteFilter.subtitle.language" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Language pair"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Языковая пара"
+          }
+        }
+      }
+    },
     "screen.dictionaryRemoteFilter.subtitle.level" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -795,7 +812,7 @@
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Сортировать по"
+            "value" : "Сортировка"
           }
         }
       }

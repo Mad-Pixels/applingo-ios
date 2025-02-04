@@ -52,7 +52,7 @@ struct DictionaryRemoteFilterViewFilter: View {
                     .frame(maxWidth: .infinity)
             } else {
                 SectionHeader(
-                    title: locale.screenSubtitleSortBy,
+                    title: locale.screenSubtitleLanguage,
                     style: .titled(themeManager.currentThemeStyle)
                 )
                 HStack {
@@ -74,6 +74,7 @@ struct DictionaryRemoteFilterViewFilter: View {
                     }
                     .frame(maxWidth: .infinity)
                 }
+                .padding(.top, -24)
             }
         }
     }

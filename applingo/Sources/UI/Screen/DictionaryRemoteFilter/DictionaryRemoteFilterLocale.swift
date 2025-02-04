@@ -10,6 +10,7 @@ final class DictionaryRemoteFilterLocale: ObservableObject {
     private enum Strings {
         static let title = "screen.dictionaryRemoteFilter.title"
         static let subtitleSortBy = "screen.dictionaryRemoteFilter.subtitle.sortBy"
+        static let subtitleLanguage = "screen.dictionaryRemoteFilter.subtitle.language"
         static let subtitleLevel = "screen.dictionaryRemoteFilter.subtitle.level"
         static let buttonSave = "base.button.save"
         static let buttonReset = "base.button.reset"
@@ -20,6 +21,7 @@ final class DictionaryRemoteFilterLocale: ObservableObject {
    
     @Published private(set) var screenTitle: String
     @Published private(set) var screenSubtitleSortBy: String
+    @Published private(set) var screenSubtitleLanguage: String
     @Published private(set) var screenSubtitleLevel: String
     @Published private(set) var screenButtonSave: String
     @Published private(set) var screenButtonReset: String
@@ -30,6 +32,7 @@ final class DictionaryRemoteFilterLocale: ObservableObject {
     init() {
         self.screenTitle = Self.localizedString(for: .title)
         self.screenSubtitleSortBy = Self.localizedString(for: .subtitleSortBy)
+        self.screenSubtitleLanguage = Self.localizedString(for: .subtitleLanguage)
         self.screenSubtitleLevel = Self.localizedString(for: .subtitleLevel)
         self.screenButtonSave = Self.localizedString(for: .buttonSave)
         self.screenButtonReset = Self.localizedString(for: .buttonReset)
@@ -53,15 +56,17 @@ final class DictionaryRemoteFilterLocale: ObservableObject {
         case title
         case subtitleSortBy
         case subtitleLevel
+        case subtitleLanguage
         case buttonSave
         case buttonReset
         case buttonClose
-       
+        
         var key: String {
             switch self {
             case .title: return Strings.title
             case .subtitleSortBy: return Strings.subtitleSortBy
             case .subtitleLevel: return Strings.subtitleLevel
+            case .subtitleLanguage: return Strings.subtitleLanguage
             case .buttonSave: return Strings.buttonSave
             case .buttonReset: return Strings.buttonReset
             case .buttonClose: return Strings.buttonClose
@@ -77,6 +82,7 @@ final class DictionaryRemoteFilterLocale: ObservableObject {
         screenTitle = Self.localizedString(for: .title)
         screenSubtitleSortBy = Self.localizedString(for: .subtitleSortBy)
         screenSubtitleLevel = Self.localizedString(for: .subtitleLevel)
+        screenSubtitleLanguage = Self.localizedString(for: .subtitleLanguage)
         screenButtonSave = Self.localizedString(for: .buttonSave)
         screenButtonReset = Self.localizedString(for: .buttonReset)
         screenButtonClose = Self.localizedString(for: .buttonClose)
