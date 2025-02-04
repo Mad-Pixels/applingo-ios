@@ -54,7 +54,7 @@ struct Home: View {
                 
                 VStack(spacing: style.spacing) {
                     ButtonAction(
-                        title: locale.quizTitle.uppercased(),
+                        title: locale.screenGameQuiz.uppercased(),
                         action: {
                             game = .quiz
                             gameStart = true

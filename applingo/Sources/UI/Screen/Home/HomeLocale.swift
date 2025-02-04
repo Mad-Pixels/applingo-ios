@@ -6,26 +6,24 @@ final class HomeLocale: ObservableObject {
     // MARK: - Private Strings
     
     private enum Strings {
-        static let quiz = "Quiz"
-        static let matchHunt = "MatchHunt"
-        static let verifyIt = "VerifyIt"
+        static let gameQuiz = "screen.home.game.quiz"
+        static let gameMatchup = "screen.home.game.matchup"
+        static let gameSwipe = "screen.home.game.swipe"
     }
     
     // MARK: - Published Properties
     
     /// Title for the quiz button.
-    @Published private(set) var quizTitle: String
-    /// Title for the match hunt button.
-    @Published private(set) var matchHuntTitle: String
-    /// Title for the verify it button.
-    @Published private(set) var verifyItTitle: String
+    @Published private(set) var screenGameQuiz: String
+    @Published private(set) var screenGameMatchup: String
+    @Published private(set) var screenGameSwipe: String
     
     // MARK: - Initialization
     
     init() {
-        self.quizTitle = Self.localizedString(for: .quizTitle)
-        self.matchHuntTitle = Self.localizedString(for: .matchHuntTitle)
-        self.verifyItTitle = Self.localizedString(for: .verifyItTitle)
+        self.screenGameQuiz = Self.localizedString(for: .gameQuiz)
+        self.screenGameMatchup = Self.localizedString(for: .gameMatchup)
+        self.screenGameSwipe = Self.localizedString(for: .gameSwipe)
         
         NotificationCenter.default.addObserver(
             self,
@@ -42,34 +40,29 @@ final class HomeLocale: ObservableObject {
     // MARK: - Localization Helper
     
     private enum LocalizedKey {
-        case quizTitle
-        case matchHuntTitle
-        case verifyItTitle
+        case gameQuiz
+        case gameMatchup
+        case gameSwipe
         
         var key: String {
             switch self {
-            case .quizTitle: return Strings.quiz
-            case .matchHuntTitle: return Strings.matchHunt
-            case .verifyItTitle: return Strings.verifyIt
+            case .gameQuiz: return Strings.gameQuiz
+            case .gameMatchup: return Strings.gameMatchup
+            case .gameSwipe: return Strings.gameSwipe
             }
-        }
-        
-        var capitalized: Bool {
-            true
         }
     }
     
     /// Retrieves a localized string for the given key.
     private static func localizedString(for key: LocalizedKey) -> String {
-        let string = LocaleManager.shared.localizedString(for: key.key)
-        return key.capitalized ? string.capitalizedFirstLetter : string
+        return LocaleManager.shared.localizedString(for: key.key).uppercased()
     }
     
     // MARK: - Notification Handler
     
     @objc private func localeDidChange() {
-        quizTitle = Self.localizedString(for: .quizTitle)
-        matchHuntTitle = Self.localizedString(for: .matchHuntTitle)
-        verifyItTitle = Self.localizedString(for: .verifyItTitle)
+        screenGameQuiz = Self.localizedString(for: .gameQuiz)
+        screenGameMatchup = Self.localizedString(for: .gameMatchup)
+        screenGameSwipe = Self.localizedString(for: .gameSwipe)
     }
 }

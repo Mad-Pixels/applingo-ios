@@ -942,6 +942,57 @@
         }
       }
     },
+    "screen.home.game.matchup" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "matchup"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "совпадение"
+          }
+        }
+      }
+    },
+    "screen.home.game.quiz" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "quiz"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "квиз"
+          }
+        }
+      }
+    },
+    "screen.home.game.swipe" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "swipe"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "свайп"
+          }
+        }
+      }
+    },
     "screen.settings.description.feedback" : {
       "extractionState" : "manual",
       "localizations" : {
