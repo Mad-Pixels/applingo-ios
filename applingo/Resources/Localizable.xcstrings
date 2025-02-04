@@ -687,6 +687,23 @@
     "Score" : {
 
     },
+    "screen.dictionaryLocalList.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dictionaries"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Словари"
+          }
+        }
+      }
+    },
     "screen.dictionaryRemoteDetails.subtitle.additional" : {
       "extractionState" : "manual",
       "localizations" : {

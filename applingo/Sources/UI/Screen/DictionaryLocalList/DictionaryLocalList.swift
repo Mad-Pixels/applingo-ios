@@ -27,7 +27,7 @@ struct DictionaryLocalList: View {
     // MARK: - Body
     
     var body: some View {
-        BaseScreen(screen: .DictionaryLocalList, title: locale.navigationTitle) {
+        BaseScreen(screen: .DictionaryLocalList, title: locale.screenTitle) {
             VStack(spacing: 0) {
                 DictionaryLocalListViewSearch(
                     searchText: $dictionaryGetter.searchText,
