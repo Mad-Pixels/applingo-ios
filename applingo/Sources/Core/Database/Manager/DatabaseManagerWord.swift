@@ -85,7 +85,9 @@ final class DatabaseManagerWord {
             do {
                 return try DatabaseModelWord.fetchAll(db, sql: sql, arguments: StatementArguments(arguments))
             } catch {
-                throw DatabaseError.csvImportFailed(details: "Failed to fetch words: \(error.localizedDescription)")
+                throw DatabaseError.selectDataFailed(
+                    details: "Failed to fetch words: \(error.localizedDescription)"
+                )
             }
         }
     }
@@ -99,8 +101,9 @@ final class DatabaseManagerWord {
             throw DatabaseError.emptyActiveDictionaries
         }
 
+        // Use selectDataFailed for failure to retrieve valid groups.
         guard let selectedGroup = Dictionary(grouping: activeDictionaries, by: { $0.subcategory }).randomElement() else {
-            throw DatabaseError.csvImportFailed(details: "No valid dictionary groups found")
+            throw DatabaseError.selectDataFailed(details: "No valid dictionary groups found")
         }
 
         let guids = selectedGroup.value.map { $0.guid }
@@ -122,7 +125,7 @@ final class DatabaseManagerWord {
             do {
                 return try DatabaseModelWord.fetchAll(db, sql: sql, arguments: StatementArguments(arguments))
             } catch {
-                throw DatabaseError.csvImportFailed(details: "Failed to fetch cache: \(error.localizedDescription)")
+                throw DatabaseError.selectDataFailed(details: "Failed to fetch cache: \(error.localizedDescription)")
             }
         }
     }
@@ -140,10 +143,10 @@ final class DatabaseManagerWord {
                 if dbError.resultCode == .SQLITE_CONSTRAINT {
                     throw DatabaseError.duplicateWord(word: word.frontText)
                 } else {
-                    throw DatabaseError.csvImportFailed(details: "Failed to save word: \(dbError.localizedDescription)")
+                    throw DatabaseError.saveFailed(details: "Failed to save word: \(dbError.localizedDescription)")
                 }
             } catch {
-                throw DatabaseError.csvImportFailed(details: "Failed to save word: \(error.localizedDescription)")
+                throw DatabaseError.saveFailed(details: "Failed to save word: \(error.localizedDescription)")
             }
         }
         
@@ -219,7 +222,7 @@ final class DatabaseManagerWord {
             do {
                 return try DatabaseModelDictionary.fetchAll(db, sql: SQL.fetchActive)
             } catch {
-                throw DatabaseError.csvImportFailed(details: "Failed to fetch active dictionaries: \(error.localizedDescription)")
+                throw DatabaseError.selectDataFailed(details: "Failed to fetch active dictionaries: \(error.localizedDescription)")
             }
         }
     }
@@ -248,12 +251,12 @@ final class DatabaseManagerWord {
         var sql: String
         var arguments: [DatabaseValueConvertible] = []
         var conditions: [String] = []
-
+        
         let activeGuids = activeDictionaries.map { $0.guid } as [DatabaseValueConvertible]
         let placeholders = activeGuids.map { _ in "?" }.joined(separator: ", ")
         conditions.append("dictionary IN (\(placeholders))")
         arguments.append(contentsOf: activeGuids)
-
+        
         if let trimmedSearch = search?.trimmingCharacters(in: .whitespacesAndNewlines),
            !trimmedSearch.isEmpty {
             let relevanceArgs = Array(repeating: trimmedSearch, count: 6)
@@ -262,7 +265,7 @@ final class DatabaseManagerWord {
             conditions.append("(LOWER(frontText) LIKE ? OR LOWER(backText) LIKE ?)")
             arguments.append("%\(trimmedSearch)%")
             arguments.append("%\(trimmedSearch)%")
-
+            
             sql = SQL.searchSelect
             sql += " WHERE " + conditions.joined(separator: " AND ")
             sql += " ORDER BY relevance ASC, id ASC"
@@ -271,11 +274,11 @@ final class DatabaseManagerWord {
             sql += " WHERE " + conditions.joined(separator: " AND ")
             sql += " ORDER BY id ASC"
         }
-
+        
         sql += " LIMIT ? OFFSET ?"
         arguments.append(limit)
         arguments.append(offset)
-
+        
         return (sql, arguments)
     }
 }

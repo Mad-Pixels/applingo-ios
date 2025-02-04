@@ -14,8 +14,8 @@ final class ApiManagerRequest {
     // MARK: - Public Methods
     
     /// Fetches the list of categories from the API.
-    /// - Returns: A `ApiModelCategoryItem` containing the fetched categories.
-    /// - Throws: An error if the API request fails or decoding fails.
+    /// - Returns: An `ApiModelCategoryItem` containing the fetched categories.
+    /// - Throws: An `APIError` if the API request fails or decoding fails.
     func getCategories() async throws -> ApiModelCategoryItem {
         Logger.debug("[API]: Fetching categories from API...")
         
@@ -23,18 +23,25 @@ final class ApiManagerRequest {
             endpoint: Endpoints.categories,
             method: .get
         )
-        let response = try JSONDecoder().decode(ApiModelCategoryGetResponse.self, from: data)
-        Logger.debug(
-            "[API]: Fetched categories",
-            metadata: ["categories": String(describing: response.data)]
-        )
-        return response.data
+        
+        do {
+            let response = try JSONDecoder().decode(ApiModelCategoryGetResponse.self, from: data)
+            Logger.debug(
+                "[API]: Fetched categories",
+                metadata: [
+                    "categories": String(describing: response.data)
+                ]
+            )
+            return response.data
+        } catch {
+            throw APIError.invalidAPIResponse
+        }
     }
     
     /// Fetches dictionaries from the API based on the given query parameters.
     /// - Parameter request: A request model containing query parameters. Defaults to `nil`.
     /// - Returns: A tuple containing the fetched dictionaries and the `lastEvaluated` value (if any).
-    /// - Throws: An error if the API request fails or decoding fails.
+    /// - Throws: An `APIError` if the API request fails or decoding fails.
     func getDictionaries(
         request: ApiModelDictionaryQueryRequest? = nil
     ) async throws -> (dictionaries: [ApiModelDictionaryItem], lastEvaluated: String?) {
@@ -50,22 +57,25 @@ final class ApiManagerRequest {
             queryItems: queryItems.isEmpty ? nil : queryItems
         )
         
-        let response = try JSONDecoder().decode(ApiModelDictionaryQueryResponse.self, from: data)
-        Logger.debug(
-            "[API]: Dictionaries fetched from API",
-            metadata: [
-                "fetchedItems": response.data.items.count,
-                "lastEvaluated": response.data.lastEvaluated ?? "None"
-            ]
-        )
-
-        return (dictionaries: response.data.items, lastEvaluated: response.data.lastEvaluated)
+        do {
+            let response = try JSONDecoder().decode(ApiModelDictionaryQueryResponse.self, from: data)
+            Logger.debug(
+                "[API]: Dictionaries fetched from API",
+                metadata: [
+                    "fetchedItems": response.data.items.count,
+                    "lastEvaluated": response.data.lastEvaluated ?? "None"
+                ]
+            )
+            return (dictionaries: response.data.items, lastEvaluated: response.data.lastEvaluated)
+        } catch {
+            throw APIError.invalidAPIResponse
+        }
     }
     
     /// Downloads a dictionary using a pre-signed URL from the API.
     /// - Parameter dictionary: The dictionary to download.
     /// - Returns: A local URL to the downloaded file.
-    /// - Throws: An error if the API request or the download fails.
+    /// - Throws: An `APIError` if the API request or the download fails.
     func downloadDictionary(_ dictionary: ApiModelDictionaryItem) async throws -> URL {
         Logger.debug(
             "[API]: Requesting pre-signed URL for dictionary download...",
@@ -73,9 +83,7 @@ final class ApiManagerRequest {
         )
         
         let body = try? JSONSerialization.data(
-            withJSONObject: ApiModelDictionaryFetchRequest(
-                from: dictionary.dictionary
-            ).toDictionary()
+            withJSONObject: ApiModelDictionaryFetchRequest(from: dictionary.dictionary).toDictionary()
         )
         
         let data = try await AppAPI.shared.request(
@@ -84,28 +92,32 @@ final class ApiManagerRequest {
             body: body
         )
         
-        let response = try JSONDecoder().decode(ApiModelDictionaryFetchResponse.self, from: data)
-        
-        Logger.debug(
-            "[API]: Pre-signed URL fetched",
-            metadata: ["url": response.data.url]
-        )
-        
-        // Создаем URL с правильным именем файла
-        let tempDir = FileManager.default.temporaryDirectory
-        let destinationURL = tempDir.appendingPathComponent(dictionary.dictionary)
-        
-        // Скачиваем файл сразу в нужное место с нужным именем
-        let fileURL = try await AppAPI.shared.downloadS3(
-            from: response.data.url,
-            to: destinationURL
-        )
-        
-        Logger.debug(
-            "[API]: Dictionary downloaded successfully",
-            metadata: ["fileURL": fileURL.path]
-        )
-        return fileURL
+        do {
+            let response = try JSONDecoder().decode(ApiModelDictionaryFetchResponse.self, from: data)
+            Logger.debug(
+                "[API]: Pre-signed URL fetched",
+                metadata: ["url": response.data.url]
+            )
+            
+            // Create destination URL in the temporary directory using the dictionary name.
+            let tempDir = FileManager.default.temporaryDirectory
+            let destinationURL = tempDir.appendingPathComponent(dictionary.dictionary)
+            
+            // Download the file directly to the destination URL.
+            let fileURL = try await AppAPI.shared.downloadS3(
+                from: response.data.url,
+                to: destinationURL
+            )
+            
+            Logger.debug(
+                "[API]: Dictionary downloaded successfully",
+                metadata: ["fileURL": fileURL.path]
+            )
+            return fileURL
+        } catch {
+            // If decoding or download fails, classify the error appropriately.
+            throw APIError.s3Error(message: error.localizedDescription)
+        }
     }
     
     // MARK: - Private Methods

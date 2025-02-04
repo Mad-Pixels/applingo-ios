@@ -335,6 +335,28 @@
         }
       }
     },
+    "error.database.saveFailed" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed to save data. Please try again."
+          }
+        }
+      }
+    },
+    "error.database.selectDataFailed" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed to retrieve data. Please try again."
+          }
+        }
+      }
+    },
     "error.database.title" : {
       "extractionState" : "manual",
       "localizations" : {

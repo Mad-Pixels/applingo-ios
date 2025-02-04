@@ -6,11 +6,13 @@ enum DatabaseError: Error {
     case emptyActiveDictionaries
     case invalidSearchParameters
     case alreadyConnected
+    case selectDataFailed(details: String)
     case connectionFailed(details: String)
     case fileImportFailed(details: String)
     case migrationFailed(details: String)
     case duplicateWord(word: String)
     case updateFailed(details: String)
+    case saveFailed(details: String)
     case deleteFailed(details: String)
     case invalidWord(details: String)
     case invalidOffset(offset: Int)
@@ -29,6 +31,8 @@ extension DatabaseError {
             return "No active dictionaries found."
         case .invalidSearchParameters:
             return "Invalid search parameters provided."
+        case .selectDataFailed:
+            return "Failed to select data from the database."
         case .alreadyConnected:
             return "Database is already connected."
         case .connectionFailed(let details):
@@ -41,6 +45,8 @@ extension DatabaseError {
             return "Word already exists: \(word)"
         case .updateFailed(let details):
             return "Failed to update word. Details: \(details)"
+        case .saveFailed(let details):
+            return "Failed to save data. Details: \(details)"
         case .deleteFailed(let details):
             return "Failed to delete word. Details: \(details)"
         case .invalidWord(let details):
@@ -62,6 +68,8 @@ extension DatabaseError {
             return locale.connectionNotEstablished
         case .emptyActiveDictionaries:
             return locale.emptyActiveDictionaries
+        case .selectDataFailed:
+            return locale.selectDataFailed
         case .invalidSearchParameters:
             return locale.invalidSearchParameters
         case .alreadyConnected:
@@ -76,6 +84,8 @@ extension DatabaseError {
             return locale.duplicateWord
         case .updateFailed:
             return locale.updateFailed
+        case .saveFailed:
+            return locale.saveFailed
         case .deleteFailed:
             return locale.deleteFailed
         case .invalidWord:
@@ -99,7 +109,7 @@ extension DatabaseError {
         switch self {
         case .connectionNotEstablished, .connectionFailed, .migrationFailed:
             return .critical
-        case .fileImportFailed, .updateFailed, .deleteFailed:
+        case .fileImportFailed, .updateFailed, .deleteFailed, .selectDataFailed, .saveFailed:
             return .error
         case .emptyActiveDictionaries, .invalidSearchParameters, .alreadyConnected, .duplicateWord, .invalidWord, .invalidOffset, .invalidLimit, .wordNotFound:
             return .warning

@@ -148,7 +148,9 @@ final class DatabaseManagerDictionary {
                 )
                 return dictionaries
             } catch {
-                throw DatabaseError.csvImportFailed(details: "Failed to fetch dictionaries: \(error.localizedDescription)")
+                throw DatabaseError.selectDataFailed(
+                    details: "Failed to fetch dictionaries: \(error.localizedDescription)"
+                )
             }
         }
     }
@@ -183,7 +185,7 @@ final class DatabaseManagerDictionary {
                     "[Dictionary]: Failed to fetch name",
                     metadata: ["error": error.localizedDescription]
                 )
-                throw DatabaseError.csvImportFailed(details: "Failed to fetch display name: \(error.localizedDescription)")
+                throw DatabaseError.selectDataFailed(details: "Failed to fetch display name: \(error.localizedDescription)")
             }
         }
     }
@@ -217,7 +219,7 @@ final class DatabaseManagerDictionary {
                     "[Dictionary]: Save failed",
                     metadata: ["error": error.localizedDescription]
                 )
-                throw DatabaseError.csvImportFailed(details: "Failed to save dictionary: \(error.localizedDescription)")
+                throw DatabaseError.saveFailed(details: "Failed to save dictionary: \(error.localizedDescription)")
             }
         }
     }
@@ -301,7 +303,7 @@ final class DatabaseManagerDictionary {
                 )
                 return count
             } catch {
-                throw DatabaseError.csvImportFailed(details: "Failed to count words: \(error.localizedDescription)")
+                throw DatabaseError.selectDataFailed(details: "Failed to count words: \(error.localizedDescription)")
             }
         }
     }
