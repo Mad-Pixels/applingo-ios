@@ -7,7 +7,7 @@ enum DatabaseError: Error {
     case invalidSearchParameters
     case alreadyConnected
     case connectionFailed(details: String)
-    case csvImportFailed(details: String)
+    case fileImportFailed(details: String)
     case migrationFailed(details: String)
     case duplicateWord(word: String)
     case updateFailed(details: String)
@@ -33,8 +33,8 @@ extension DatabaseError {
             return "Database is already connected."
         case .connectionFailed(let details):
             return "Failed to connect to the database. Details: \(details)"
-        case .csvImportFailed(let details):
-            return "CSV import failed. Details: \(details)"
+        case .fileImportFailed(let details):
+            return "File import failed. Details: \(details)"
         case .migrationFailed(let details):
             return "Migration failed. Details: \(details)"
         case .duplicateWord(let word):
@@ -68,8 +68,8 @@ extension DatabaseError {
             return locale.alreadyConnected
         case .connectionFailed:
             return locale.connectionFailed
-        case .csvImportFailed:
-            return locale.csvImportFailed
+        case .fileImportFailed:
+            return locale.fileImportFailed
         case .migrationFailed:
             return locale.migrationFailed
         case .duplicateWord:
@@ -99,7 +99,7 @@ extension DatabaseError {
         switch self {
         case .connectionNotEstablished, .connectionFailed, .migrationFailed:
             return .critical
-        case .csvImportFailed, .updateFailed, .deleteFailed:
+        case .fileImportFailed, .updateFailed, .deleteFailed:
             return .error
         case .emptyActiveDictionaries, .invalidSearchParameters, .alreadyConnected, .duplicateWord, .invalidWord, .invalidOffset, .invalidLimit, .wordNotFound:
             return .warning

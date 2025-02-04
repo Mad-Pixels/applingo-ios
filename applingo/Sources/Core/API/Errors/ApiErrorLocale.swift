@@ -12,8 +12,6 @@ final class APIErrorLocale: ObservableObject {
     @Published var apiErrorMessage: String
     @Published var httpError: String
     @Published var s3Error: String
-    @Published var invalidCSVFormat: String
-    @Published var emptyDictionary: String
     @Published var errorTitle: String
     
     private init() {
@@ -25,8 +23,6 @@ final class APIErrorLocale: ObservableObject {
         self.apiErrorMessage = lm.localizedString(for: "error.api.apiErrorMessage")
         self.httpError = lm.localizedString(for: "error.api.httpError")
         self.s3Error = lm.localizedString(for: "error.api.s3Error")
-        self.invalidCSVFormat = lm.localizedString(for: "error.api.invalidCSVFormat")
-        self.emptyDictionary = lm.localizedString(for: "error.api.emptyDictionary")
         self.errorTitle = lm.localizedString(for: "error.api.title")
         
         NotificationCenter.default.addObserver(
@@ -50,8 +46,6 @@ final class APIErrorLocale: ObservableObject {
         self.apiErrorMessage = lm.localizedString(for: "error.api.apiErrorMessage")
         self.httpError = lm.localizedString(for: "error.api.httpError")
         self.s3Error = lm.localizedString(for: "error.api.s3Error")
-        self.invalidCSVFormat = lm.localizedString(for: "error.api.invalidCSVFormat")
-        self.emptyDictionary = lm.localizedString(for: "error.api.emptyDictionary")
         self.errorTitle = lm.localizedString(for: "error.api.title")
     }
 }

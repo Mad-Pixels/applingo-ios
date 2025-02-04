@@ -10,7 +10,7 @@ final class DatabaseErrorLocale: ObservableObject {
     @Published var invalidSearchParameters: String
     @Published var alreadyConnected: String
     @Published var connectionFailed: String
-    @Published var csvImportFailed: String
+    @Published var fileImportFailed: String
     @Published var migrationFailed: String
     @Published var duplicateWord: String
     @Published var updateFailed: String
@@ -28,7 +28,7 @@ final class DatabaseErrorLocale: ObservableObject {
         self.invalidSearchParameters = lm.localizedString(for: "error.database.invalidSearchParameters")
         self.alreadyConnected = lm.localizedString(for: "error.database.alreadyConnected")
         self.connectionFailed = lm.localizedString(for: "error.database.connectionFailed")
-        self.csvImportFailed = lm.localizedString(for: "error.database.csvImportFailed")
+        self.fileImportFailed = lm.localizedString(for: "error.database.fileImportFailed")
         self.migrationFailed = lm.localizedString(for: "error.database.migrationFailed")
         self.duplicateWord = lm.localizedString(for: "error.database.duplicateWord")
         self.updateFailed = lm.localizedString(for: "error.database.updateFailed")
@@ -58,7 +58,7 @@ final class DatabaseErrorLocale: ObservableObject {
         self.invalidSearchParameters = lm.localizedString(for: "error.database.invalidSearchParameters")
         self.alreadyConnected = lm.localizedString(for: "error.database.alreadyConnected")
         self.connectionFailed = lm.localizedString(for: "error.database.connectionFailed")
-        self.csvImportFailed = lm.localizedString(for: "error.database.csvImportFailed")
+        self.fileImportFailed = lm.localizedString(for: "error.database.fileImportFailed")
         self.migrationFailed = lm.localizedString(for: "error.database.migrationFailed")
         self.duplicateWord = lm.localizedString(for: "error.database.duplicateWord")
         self.updateFailed = lm.localizedString(for: "error.database.updateFailed")

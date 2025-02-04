@@ -8,9 +8,6 @@ enum APIError: Error, LocalizedError {
     /// The provided endpoint URL is invalid.
     case invalidEndpointURL(endpoint: String)
     
-    /// The provided CSV file format is invalid.
-    case invalidCSVFormat(message: String)
-    
     /// The provided base URL is invalid.
     case invalidBaseURL(url: String)
     
@@ -25,9 +22,6 @@ enum APIError: Error, LocalizedError {
     
     /// The API response is invalid.
     case invalidAPIResponse
-    
-    /// The dictionary is empty or contains no valid words.
-    case emptyDictionary
 
     /// Provides a human-readable description of the error.
     var errorDescription: String? {
@@ -46,10 +40,6 @@ enum APIError: Error, LocalizedError {
             return "HTTP error: \(status)"
         case .s3Error(let message):
             return "Failed to download dictionary: \(message)"
-        case .emptyDictionary:
-            return "Dictionary is empty or contains no valid words"
-        case .invalidCSVFormat(let message):
-            return "Invalid CSV format: \(message)"
         }
     }
 }
@@ -72,10 +62,6 @@ extension APIError {
             return "HTTP error: \(status)"
         case .s3Error(let message):
             return "Failed to download dictionary: \(message)"
-        case .emptyDictionary:
-            return "Dictionary is empty or contains no valid words."
-        case .invalidCSVFormat(let message):
-            return "Invalid CSV format: \(message)"
         }
     }
     
@@ -97,10 +83,6 @@ extension APIError {
             return locale.httpError
         case .s3Error:
             return locale.s3Error
-        case .emptyDictionary:
-            return locale.emptyDictionary
-        case .invalidCSVFormat:
-            return locale.invalidCSVFormat
         }
     }
     
@@ -114,10 +96,8 @@ extension APIError {
         switch self {
         case .baseURLNotConfigured, .invalidBaseURL, .invalidEndpointURL, .invalidAPIResponse:
             return .critical
-        case .apiErrorMessage, .httpError, .s3Error, .invalidCSVFormat:
+        case .apiErrorMessage, .httpError, .s3Error:
             return .error
-        case .emptyDictionary:
-            return .warning
         }
     }
 }
