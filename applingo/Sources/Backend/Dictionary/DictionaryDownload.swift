@@ -52,8 +52,8 @@ actor DictionaryDownload {
             ]
         )
         
-        let saver = TableParserManagerSave(processDatabase: ProcessDatabase())
-        saver.saveToDatabase(dictionary: dictionaryModel, words: words)
+        try TableParserManagerSave(processDatabase: ProcessDatabase())
+            .saveToDatabase(dictionary: dictionaryModel, words: words)
         Logger.debug(
             "[Dictionary]: Successfully saved to database",
             metadata: [

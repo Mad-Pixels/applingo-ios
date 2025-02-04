@@ -54,8 +54,8 @@ final class DictionaryParser: ProcessDatabase {
                     ]
                 )
                 
-                let saveManager = TableParserManagerSave(processDatabase: self)
-                saveManager.saveToDatabase(dictionary: dictionaryModel, words: words)
+                try TableParserManagerSave(processDatabase: self)
+                    .saveToDatabase(dictionary: dictionaryModel, words: words)
                 Logger.debug(
                     "[Dictionary]: Dictionary saved to database",
                     metadata: [
