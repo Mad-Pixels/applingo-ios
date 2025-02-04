@@ -135,6 +135,40 @@
         }
       }
     },
+    "component.GameTab.description.score" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "score"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "очки"
+          }
+        }
+      }
+    },
+    "component.GameTab.description.streak" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "streak"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "комбо"
+          }
+        }
+      }
+    },
     "Error: %@" : {
       "localizations" : {
         "en" : {
@@ -575,9 +609,6 @@
           }
         }
       }
-    },
-    "Score" : {
-
     },
     "screen.dictionaryLocalDetails.description.author" : {
       "extractionState" : "manual",
@@ -1576,9 +1607,6 @@
           }
         }
       }
-    },
-    "Streak" : {
-
     }
   },
   "version" : "1.0"

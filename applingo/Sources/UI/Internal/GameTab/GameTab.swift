@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct GameTab: View {
+    @StateObject private var locale = GameTabLocale()
+    
     let game: any AbstractGame
     let style: GameTabStyle
    
@@ -9,7 +11,8 @@ struct GameTab: View {
             HStack(spacing: style.spacing) {
                 GameTabViewScore(
                     score: game.stats.score,
-                    style: style
+                    style: style,
+                    locale: locale
                 )
                
                 Divider()
@@ -18,7 +21,8 @@ struct GameTab: View {
                
                 GameTabViewStreak(
                     streak: game.stats.perfectStreaks,
-                    style: style
+                    style: style,
+                    locale: locale
                 )
                
                 Divider()

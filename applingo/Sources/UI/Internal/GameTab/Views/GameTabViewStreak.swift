@@ -3,10 +3,11 @@ import SwiftUI
 struct GameTabViewStreak: View {
     let streak: Int
     let style: GameTabStyle
+    let locale: GameTabLocale
     
     var body: some View {
         VStack(spacing: 4) {
-            Text("Streak")
+            Text(locale.screenStreak)
                 .font(style.titleFont)
                 .foregroundColor(style.textSecondaryColor)
             

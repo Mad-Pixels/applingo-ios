@@ -3,10 +3,11 @@ import SwiftUI
 struct GameTabViewScore: View {
     let score: Int
     let style: GameTabStyle
+    let locale: GameTabLocale
     
     var body: some View {
         VStack(spacing: 4) {
-            Text("Score")
+            Text(locale.screenScore)
                 .font(style.titleFont)
                 .foregroundColor(style.textSecondaryColor)
             
