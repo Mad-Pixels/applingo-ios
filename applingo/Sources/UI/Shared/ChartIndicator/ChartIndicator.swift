@@ -90,6 +90,6 @@ struct ChartIndicator: View {
                 }
             }
         }
-        .accessibilityValue("\(Int(progress * 100))% progress")
+        .accessibilityValue("\(Int(progress * 100))%")
     }
 }

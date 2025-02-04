@@ -1,36 +1,7 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "%@: %lld" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@: %2$lld"
-          }
-        }
-      }
-    },
-    "%lld" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld"
-          }
-        }
-      }
-    },
     "%lld%%" : {
-
-    },
-    "%lld%% progress" : {
 
     },
     "base.button.close" : {
@@ -165,22 +136,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "комбо"
-          }
-        }
-      }
-    },
-    "Error: %@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Error: %@"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ошибка: %@"
           }
         }
       }
@@ -774,7 +729,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Описание"
           }
         }
@@ -876,7 +831,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Скачать словари"
           }
         }
@@ -893,7 +848,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Игра без ограничений"
           }
         }
@@ -910,7 +865,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "3 жизни"
           }
         }
@@ -927,7 +882,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Успей за 2 минуты"
           }
         }
@@ -1471,7 +1426,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Ошибки"
           }
         }

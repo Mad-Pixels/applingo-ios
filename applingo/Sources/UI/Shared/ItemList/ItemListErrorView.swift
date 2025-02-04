@@ -7,7 +7,7 @@ struct ItemListErrorView: View {
     let style: ItemListStyle
     
     var body: some View {
-        Text("Error: \(error.localizedDescription)")
+        Text(verbatim: "Error: \(error.localizedDescription)")
             .foregroundColor(style.errorColor)
             .listRowBackground(Color.clear)
             .padding(style.padding)

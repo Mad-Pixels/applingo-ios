@@ -12,7 +12,7 @@ struct GameTabViewStreak: View {
                 .foregroundColor(style.textSecondaryColor)
             
             HStack(spacing: 4) {
-                Text("\(streak)")
+                Text(verbatim: "\(streak)")
                     .font(style.valueFont)
                     .foregroundColor(style.textPrimaryColor)
             }

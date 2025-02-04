@@ -5,7 +5,7 @@ struct GameTabViewAccuracy: View {
     let style: GameTabStyle
     
     var body: some View {
-        Text("\(Int(accuracy * 100))%")
+        Text(verbatim: "\(Int(accuracy * 100))%")
             .font(style.valueFont)
             .foregroundColor(style.textPrimaryColor)
             .monospacedDigit()

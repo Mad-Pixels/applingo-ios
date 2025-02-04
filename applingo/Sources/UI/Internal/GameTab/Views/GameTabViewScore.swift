@@ -11,7 +11,7 @@ struct GameTabViewScore: View {
                 .font(style.titleFont)
                 .foregroundColor(style.textSecondaryColor)
             
-            Text("\(score)")
+            Text(verbatim: "\(score)")
                 .font(style.valueFont)
                 .foregroundColor(style.textPrimaryColor)
         }

@@ -17,7 +17,7 @@ struct DonutChartViewLegend: View {
                     RoundedRectangle(cornerRadius: 2)
                         .fill(segment.color)
                         .frame(width: 16, height: 16)
-                    Text("\(segment.label): \(Int(segment.value))")
+                    Text(verbatim: "\(segment.label): \(Int(segment.value))")
                         .font(style.legendFont)
                         .foregroundColor(style.legendColor)
                 }
