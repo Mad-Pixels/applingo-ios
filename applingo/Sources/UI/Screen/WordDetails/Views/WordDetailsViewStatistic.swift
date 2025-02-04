@@ -29,7 +29,7 @@ struct WordDetailsViewStatistic: View {
     var body: some View {
         VStack(spacing: style.spacing) {
             SectionHeader(
-                title: locale.statisticsTitle.capitalizedFirstLetter,
+                title: locale.screenSubtitleStatistic,
                 style: .titled(ThemeManager.shared.currentThemeStyle)
             )
             .padding(.top, 8)

@@ -41,7 +41,7 @@ struct WordDetailsViewAdditional: View {
     var body: some View {
         VStack(spacing: style.spacing) {
             SectionHeader(
-                title: locale.additionalTitle.capitalizedFirstLetter,
+                title: locale.screenSubtitleAdditional,
                 style: .titled(ThemeManager.shared.currentThemeStyle)
             )
             .padding(.top, 8)
@@ -49,8 +49,8 @@ struct WordDetailsViewAdditional: View {
             VStack(spacing: style.spacing) {
                 InputText(
                     text: .constant(tableName),
-                    title: locale.tableNamePlaceholder.capitalizedFirstLetter,
-                    placeholder: locale.tableNamePlaceholder,
+                    title: locale.screenDescriptionDictionary,
+                    placeholder: "",
                     isEditing: false
                 )
                 InputText(
@@ -58,8 +58,8 @@ struct WordDetailsViewAdditional: View {
                         get: { word.hint },
                         set: { word.hint = $0.isEmpty ? "" : $0 }
                     ),
-                    title: locale.hintPlaceholder.capitalizedFirstLetter,
-                    placeholder: locale.hintPlaceholder,
+                    title: locale.screenDescriptionHint,
+                    placeholder: "",
                     isEditing: isEditing
                 )
                 InputTextArea(
@@ -67,8 +67,8 @@ struct WordDetailsViewAdditional: View {
                         get: { word.description },
                         set: { word.description = $0.isEmpty ? "" : $0 }
                     ),
-                    title: locale.descriptionPlaceholder.capitalizedFirstLetter,
-                    placeholder: locale.descriptionPlaceholder,
+                    title: locale.screenDescriptionDescription,
+                    placeholder: "",
                     isEditing: isEditing
                 )
             }

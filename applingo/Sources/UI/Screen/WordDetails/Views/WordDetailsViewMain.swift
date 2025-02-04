@@ -38,7 +38,7 @@ struct WordDetailsViewMain: View {
     var body: some View {
         VStack(spacing: style.spacing) {
             SectionHeader(
-                title: locale.cardTitle.capitalizedFirstLetter,
+                title: locale.screenSubtitleWord,
                 style: .titled(ThemeManager.shared.currentThemeStyle)
             )
             .padding(.top, 8)
@@ -46,14 +46,14 @@ struct WordDetailsViewMain: View {
             VStack(spacing: style.spacing) {
                 InputText(
                     text: $word.frontText,
-                    title: locale.wordPlaceholder.capitalizedFirstLetter,
-                    placeholder: locale.wordPlaceholder,
+                    title: locale.screenDescriptionFrontText,
+                    placeholder: "",
                     isEditing: isEditing
                 )
                 InputText(
                     text: $word.backText,
-                    title: locale.definitionPlaceholder.capitalizedFirstLetter,
-                    placeholder: locale.definitionPlaceholder,
+                    title: locale.screenDescriptionBackText,
+                    placeholder: "",
                     isEditing: isEditing
                 )
             }

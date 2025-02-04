@@ -55,7 +55,7 @@ struct WordDetails: View {
     var body: some View {
         BaseScreen(
             screen: .WordDetails,
-            title: locale.navigationTitle
+            title: locale.screenTitle
         ) {
             ScrollView {
                 VStack(spacing: style.spacing) {
