@@ -27,7 +27,7 @@ extension InputTextStyle {
             placeholderColor: theme.textSecondary,
             backgroundColor: .clear,
             disabledBackgroundColor: theme.backgroundSecondary.opacity(0.5),
-            borderColor: theme.accentPrimary,
+            borderColor: theme.accentDark.opacity(0.5),
             iconColor: theme.textSecondary,
             titleFont: .system(size: 15, weight: .bold),
             textFont: .system(size: 14),
