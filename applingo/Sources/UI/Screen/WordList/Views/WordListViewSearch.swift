@@ -28,7 +28,7 @@ struct WordListViewSearch: View {
     var body: some View {
         InputSearch(
             text: $searchText,
-            placeholder: locale.searchPlaceholder,
+            placeholder: locale.screenSearch,
             style: .themed(ThemeManager.shared.currentThemeStyle)
         )
     }

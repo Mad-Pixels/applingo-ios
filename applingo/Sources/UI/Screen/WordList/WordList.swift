@@ -5,20 +5,14 @@ struct WordList: View {
     
     // MARK: - State Objects
     
-    /// Style configuration for the WordList view.
     @StateObject private var style: WordListStyle
-    /// Localization object for the WordList view.
     @StateObject private var locale = WordListLocale()
-    /// Object responsible for fetching words.
     @StateObject private var wordsGetter = WordGetter()
     
     // MARK: - Local State
     
-    /// The selected word from the list.
     @State private var selectedWord: DatabaseModelWord?
-    /// Flag to present the word details view.
     @State private var isShowingDetailView = false
-    /// Flag to present the add word view.
     @State private var isShowingAddView = false
     
     // MARK: - Initializer
@@ -35,7 +29,7 @@ struct WordList: View {
     var body: some View {
         BaseScreen(
             screen: .WordList,
-            title: locale.navigationTitle
+            title: locale.screenTitle
         ) {
             VStack(spacing: 0) {
                 WordListViewSearch(

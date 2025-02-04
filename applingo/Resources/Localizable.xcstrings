@@ -1098,6 +1098,23 @@
         }
       }
     },
+    "screen.wordList.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Words"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Слова"
+          }
+        }
+      }
+    },
     "Segmented Style" : {
 
     },

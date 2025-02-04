@@ -45,7 +45,7 @@ struct WordListViewList: View {
             style: .themed(themeManager.currentThemeStyle),
             isLoadingPage: wordsGetter.isLoadingPage,
             error: nil,
-            emptyListView: AnyView(Text(locale.emptyMessage)),
+            emptyListView: AnyView(Text(locale.screenNoWords)),
             onItemAppear: { word in
                 wordsGetter.loadMoreWordsIfNeeded(currentItem: word)
             },
