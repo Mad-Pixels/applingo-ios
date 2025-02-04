@@ -38,6 +38,23 @@
         }
       }
     },
+    "base.button.ok" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ok"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ok"
+          }
+        }
+      }
+    },
     "base.button.reset" : {
       "extractionState" : "manual",
       "localizations" : {

@@ -14,7 +14,7 @@ struct ErrorTracker: ViewModifier {
                     title: Text(error.title),
                     message: Text(error.message)
                         .foregroundColor(themeManager.currentThemeStyle.errorPrimaryColor),
-                    dismissButton: .default(Text(error.actionTitle ?? LocaleManager.shared.localizedString(for: "general.ok"))) {
+                    dismissButton: .default(Text(error.actionTitle ?? LocaleManager.shared.localizedString(for: "base.button.ok"))) {
                         errorManager.currentError = nil
                         error.action?()
                     }
