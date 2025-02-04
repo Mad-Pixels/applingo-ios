@@ -38,7 +38,7 @@ struct DictionaryRemoteFilterViewLevel: View {
             ItemPicker(
                 selectedValue: $selectedLevel,
                 items: DictionaryLevelType.allCases,
-                title: locale.levelTitle,
+                title: locale.screenSubtitleLevel,
                 style: .themed(themeManager.currentThemeStyle)
             ) { level in
                 Text(level.rawValue == "UFO"

@@ -8,34 +8,16 @@ struct DictionaryRemoteFilter: View {
     
     // MARK: - Properties
     
-    /// Manages the presentation mode.
     @Environment(\.presentationMode) var presentationMode
-    
-    /// Stores the UI style of the filter view.
+    @StateObject private var locale = DictionaryRemoteFilterLocale()
+    @StateObject private var categoryGetter = CategoryFetcher()
     @StateObject private var style: DictionaryRemoteFilterStyle
     
-    /// Stores the localization settings.
-    @StateObject private var locale = DictionaryRemoteFilterLocale()
-    
-    /// Fetches category data.
-    @StateObject private var categoryGetter = CategoryFetcher()
-    
-    /// API request parameters for filtering dictionaries.
     @Binding var apiRequestParams: ApiModelDictionaryQueryRequest
-    
-    /// The selected dictionary level.
     @State private var selectedLevel: DictionaryLevelType = .undefined
-    
-    /// The selected sorting option.
     @State private var selectedSortBy: ApiSortType = .date
-    
-    /// The selected front category.
     @State private var selectedFrontCategory: CategoryItem?
-    
-    /// The selected back category.
     @State private var selectedBackCategory: CategoryItem?
-    
-    /// State to track the button press.
     @State private var isPressedTrailing = false
     
     // MARK: - Initialization
@@ -66,7 +48,7 @@ struct DictionaryRemoteFilter: View {
     var body: some View {
         BaseScreen(
             screen: .DictionaryRemoteFilter,
-            title: locale.navigationTitle
+            title: locale.screenTitle
         ) {
             ScrollView {
                 VStack(spacing: style.spacing) {
@@ -92,7 +74,7 @@ struct DictionaryRemoteFilter: View {
                 }
                 .padding(style.padding)
             }
-            .navigationTitle(locale.navigationTitle)
+            .navigationTitle(locale.screenTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {

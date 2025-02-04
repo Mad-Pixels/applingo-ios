@@ -65,8 +65,7 @@ final class SettingsLocale: ObservableObject {
     }
     
     private static func localizedString(for key: LocalizedKey) -> String {
-        let string = LocaleManager.shared.localizedString(for: key.key)
-        return key.capitalized ? string.capitalizedFirstLetter : string
+        return LocaleManager.shared.localizedString(for: key.key)
     }
     
     // MARK: - Notification Handler

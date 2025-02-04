@@ -34,7 +34,7 @@ struct DictionaryRemoteFilterViewSort: View {
         ItemPicker(
             selectedValue: $selectedSortBy,
             items: ApiSortType.allCases,
-            title: locale.sortByTitle,
+            title: locale.screenSubtitleSortBy,
             style: .themed(ThemeManager.shared.currentThemeStyle, type: .segmented)
         ) { sortBy in
             Text(sortBy.name)
