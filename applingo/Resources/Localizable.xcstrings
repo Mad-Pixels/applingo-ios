@@ -333,7 +333,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Request processing error."
+            "value" : "Request processing error"
           }
         },
         "ru" : {
@@ -648,6 +648,9 @@
     "Inline Style" : {
 
     },
+    "Key" : {
+      "extractionState" : "manual"
+    },
     "Language dictionary" : {
 
     },
@@ -686,6 +689,108 @@
     },
     "Score" : {
 
+    },
+    "screen.dictionaryLocalDetails.description.author" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Author"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Автор"
+          }
+        }
+      }
+    },
+    "screen.dictionaryLocalDetails.description.createdAt" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Download date"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дата загрузки"
+          }
+        }
+      }
+    },
+    "screen.dictionaryLocalDetails.description.description" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Overview"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Детализация"
+          }
+        }
+      }
+    },
+    "screen.dictionaryLocalDetails.description.name" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Name"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Имя"
+          }
+        }
+      }
+    },
+    "screen.dictionaryLocalDetails.description.subcategory" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Group"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Группа"
+          }
+        }
+      }
+    },
+    "screen.dictionaryLocalDetails.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dictionary"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Словарь"
+          }
+        }
+      }
     },
     "screen.dictionaryLocalList.title" : {
       "extractionState" : "manual",

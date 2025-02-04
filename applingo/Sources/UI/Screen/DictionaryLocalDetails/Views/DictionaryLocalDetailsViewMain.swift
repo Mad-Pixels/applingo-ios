@@ -30,40 +30,29 @@ struct DictionaryLocalDetailsViewMain: View {
     var body: some View {
         VStack(spacing: style.spacing) {
             SectionHeader(
-                title: locale.dictionaryTitle.capitalizedFirstLetter,
+                title: locale.screenSubtitleDictionary,
                 style: .titled(ThemeManager.shared.currentThemeStyle)
             )
             .padding(.top, 8)
             
             VStack(spacing: style.spacing) {
-                // Name input field
                 InputText(
                     text: Binding(
                         get: { dictionary.dictionary.name },
                         set: { dictionary.dictionary.name = $0 }
                     ),
-                    title: locale.displayNameTitle.capitalizedFirstLetter,
-                    placeholder: locale.displayNameTitle,
+                    title: locale.screenDescriptionName,
+                    placeholder: "",
                     isEditing: isEditing
                 )
-                // Description text area
+                
                 InputTextArea(
                     text: Binding(
                         get: { dictionary.dictionary.description },
                         set: { dictionary.dictionary.description = $0 }
                     ),
-                    title: locale.descriptionTitle.capitalizedFirstLetter,
-                    placeholder: locale.descriptionTitle,
-                    isEditing: isEditing
-                )
-                // Topic input field
-                InputText(
-                    text: Binding(
-                        get: { dictionary.dictionary.topic },
-                        set: { dictionary.dictionary.topic = $0 }
-                    ),
-                    title: locale.displayNameTitle.capitalizedFirstLetter,
-                    placeholder: locale.displayNameTitle,
+                    title: locale.screenDescriptionDescription,
+                    placeholder: "",
                     isEditing: isEditing
                 )
             }

@@ -29,30 +29,29 @@ struct DictionaryLocalDetailsViewCategory: View {
     var body: some View {
         VStack(spacing: style.spacing) {
             SectionHeader(
-                title: locale.categoryTitle.capitalizedFirstLetter,
+                title: locale.screenSubtitleCategory,
                 style: .titled(ThemeManager.shared.currentThemeStyle)
             )
             .padding(.top, 8)
             
             VStack(spacing: style.spacing) {
-                // Category input field
                 InputText(
                     text: Binding(
                         get: { dictionary.dictionary.category },
                         set: { dictionary.dictionary.category = $0 }
                     ),
-                    title: locale.categoryTitle.capitalizedFirstLetter,
-                    placeholder: locale.categoryTitle,
+                    title: locale.screenDescriptionName,
+                    placeholder: "",
                     isEditing: isEditing
                 )
-                // Subcategory input field
+                
                 InputText(
                     text: Binding(
                         get: { dictionary.dictionary.subcategory },
                         set: { dictionary.dictionary.subcategory = $0 }
                     ),
-                    title: locale.subcategoryTitle.capitalizedFirstLetter,
-                    placeholder: locale.subcategoryTitle,
+                    title: locale.screenDescriptionSubcategory,
+                    placeholder: "",
                     isEditing: isEditing
                 )
             }

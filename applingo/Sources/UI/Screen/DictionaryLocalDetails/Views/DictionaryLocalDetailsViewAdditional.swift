@@ -30,27 +30,25 @@ struct DictionaryLocalDetailsViewAdditional: View {
     var body: some View {
         VStack(spacing: style.spacing) {
             SectionHeader(
-                title: locale.additionalTitle.capitalizedFirstLetter,
+                title: locale.screenSubtitleAdditional,
                 style: .titled(ThemeManager.shared.currentThemeStyle)
             )
             .padding(.top, 8)
             
             VStack(spacing: style.spacing) {
-                // Author input field
                 InputText(
                     text: Binding(
                         get: { dictionary.dictionary.author },
                         set: { dictionary.dictionary.author = $0 }
                     ),
-                    title: locale.authorTitle.capitalizedFirstLetter,
-                    placeholder: locale.authorTitle,
+                    title: locale.screenDescriptionAuthor,
+                    placeholder: "",
                     isEditing: isEditing
                 )
-                // Creation date (non-editable)
                 InputText(
                     text: .constant(dictionary.dictionary.date),
-                    title: locale.createdAtTitle.capitalizedFirstLetter,
-                    placeholder: locale.createdAtTitle,
+                    title: locale.screenDescriptionCreatedAt,
+                    placeholder: "",
                     isEditing: false
                 )
             }

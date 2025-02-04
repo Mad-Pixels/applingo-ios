@@ -6,56 +6,44 @@ final class DictionaryLocalDetailsLocale: ObservableObject {
     // MARK: - Private Strings
     
     private enum Strings {
-        static let details = "Details"
-        static let dictionary = "Dictionary"
-        static let displayName = "Display Name"
-        static let description = "Description"
-        static let category = "Category"
-        static let subcategory = "Subcategory"
-        static let additional = "Additional"
-        static let author = "Author"
-        static let createdAt = "Created At"
-        static let edit = "Edit"
-        static let save = "Save"
-        static let cancel = "Cancel"
-        static let close = "Close"
-        static let error = "Error"
+        static let title = "screen.dictionaryLocalDetails.title"
+        static let subtitleDictionary = "screen.dictionaryRemoteDetails.subtitle.dictionary"
+        static let subtitleCategory = "screen.dictionaryRemoteDetails.subtitle.category"
+        static let subtitleAdditional = "screen.dictionaryRemoteDetails.subtitle.additional"
+        static let descriptionName = "screen.dictionaryLocalDetails.description.name"
+        static let descriptionDescription = "screen.dictionaryLocalDetails.description.description"
+        static let descriptionCategory = "screen.dictionaryLocalDetails.description.category"
+        static let descriptionSubcategory = "screen.dictionaryLocalDetails.description.subcategory"
+        static let descriptionAuthor = "screen.dictionaryLocalDetails.description.author"
+        static let descriptionCreatedAt = "screen.dictionaryLocalDetails.description.createdAt"
     }
     
     // MARK: - Published Properties
     
-    @Published private(set) var navigationTitle: String
-    @Published private(set) var dictionaryTitle: String
-    @Published private(set) var displayNameTitle: String
-    @Published private(set) var descriptionTitle: String
-    @Published private(set) var categoryTitle: String
-    @Published private(set) var subcategoryTitle: String
-    @Published private(set) var additionalTitle: String
-    @Published private(set) var authorTitle: String
-    @Published private(set) var createdAtTitle: String
-    @Published private(set) var editTitle: String
-    @Published private(set) var saveTitle: String
-    @Published private(set) var cancelTitle: String
-    @Published private(set) var closeTitle: String
-    @Published private(set) var errorTitle: String
-    
+    @Published private(set) var screenTitle: String
+    @Published private(set) var screenSubtitleDictionary: String
+    @Published private(set) var screenSubtitleCategory: String
+    @Published private(set) var screenSubtitleAdditional: String
+    @Published private(set) var screenDescriptionName: String
+    @Published private(set) var screenDescriptionDescription: String
+    @Published private(set) var screenDescriptionCategory: String
+    @Published private(set) var screenDescriptionSubcategory: String
+    @Published private(set) var screenDescriptionAuthor: String
+    @Published private(set) var screenDescriptionCreatedAt: String
+
     // MARK: - Initialization
     
     init() {
-        self.navigationTitle = Self.localizedString(for: .navigationTitle)
-        self.dictionaryTitle = Self.localizedString(for: .dictionaryTitle)
-        self.displayNameTitle = Self.localizedString(for: .displayNameTitle)
-        self.descriptionTitle = Self.localizedString(for: .descriptionTitle)
-        self.categoryTitle = Self.localizedString(for: .categoryTitle)
-        self.subcategoryTitle = Self.localizedString(for: .subcategoryTitle)
-        self.additionalTitle = Self.localizedString(for: .additionalTitle)
-        self.authorTitle = Self.localizedString(for: .authorTitle)
-        self.createdAtTitle = Self.localizedString(for: .createdAtTitle)
-        self.editTitle = Self.localizedString(for: .editTitle)
-        self.saveTitle = Self.localizedString(for: .saveTitle)
-        self.cancelTitle = Self.localizedString(for: .cancelTitle)
-        self.closeTitle = Self.localizedString(for: .closeTitle)
-        self.errorTitle = Self.localizedString(for: .errorTitle)
+        self.screenTitle = Self.localizedString(for: .title)
+        self.screenSubtitleDictionary = Self.localizedString(for: .subtitleDictionary)
+        self.screenSubtitleCategory = Self.localizedString(for: .subtitleCategory)
+        self.screenSubtitleAdditional = Self.localizedString(for: .subtitleAdditional)
+        self.screenDescriptionName = Self.localizedString(for: .descriptionName)
+        self.screenDescriptionDescription = Self.localizedString(for: .descriptionDescription)
+        self.screenDescriptionCategory = Self.localizedString(for: .descriptionCategory)
+        self.screenDescriptionSubcategory = Self.localizedString(for: .descriptionSubcategory)
+        self.screenDescriptionAuthor = Self.localizedString(for: .descriptionAuthor)
+        self.screenDescriptionCreatedAt = Self.localizedString(for: .descriptionCreatedAt)
         
         NotificationCenter.default.addObserver(
             self,
@@ -72,62 +60,50 @@ final class DictionaryLocalDetailsLocale: ObservableObject {
     // MARK: - Localization Helper
     
     private enum LocalizedKey {
-        case navigationTitle, dictionaryTitle, displayNameTitle, descriptionTitle
-        case categoryTitle, subcategoryTitle, additionalTitle, authorTitle
-        case createdAtTitle, editTitle, saveTitle, cancelTitle, closeTitle, errorTitle
-        
+        case title
+        case subtitleDictionary
+        case subtitleCategory
+        case subtitleAdditional
+        case descriptionName
+        case descriptionDescription
+        case descriptionCategory
+        case descriptionSubcategory
+        case descriptionAuthor
+        case descriptionCreatedAt
+       
         var key: String {
             switch self {
-            case .navigationTitle: return Strings.details
-            case .dictionaryTitle: return Strings.dictionary
-            case .displayNameTitle: return Strings.displayName
-            case .descriptionTitle: return Strings.description
-            case .categoryTitle: return Strings.category
-            case .subcategoryTitle: return Strings.subcategory
-            case .additionalTitle: return Strings.additional
-            case .authorTitle: return Strings.author
-            case .createdAtTitle: return Strings.createdAt
-            case .editTitle: return Strings.edit
-            case .saveTitle: return Strings.save
-            case .cancelTitle: return Strings.cancel
-            case .closeTitle: return Strings.close
-            case .errorTitle: return Strings.error
-            }
-        }
-        
-        var capitalized: Bool {
-            switch self {
-            case .navigationTitle, .displayNameTitle,
-                 .editTitle, .saveTitle, .cancelTitle, .closeTitle:
-                return true
-            default:
-                return false
+            case .title: return Strings.title
+            case .subtitleDictionary: return Strings.subtitleDictionary
+            case .subtitleCategory: return Strings.subtitleCategory
+            case .subtitleAdditional: return Strings.subtitleAdditional
+            case .descriptionName: return Strings.descriptionName
+            case .descriptionDescription: return Strings.descriptionDescription
+            case .descriptionCategory: return Strings.descriptionCategory
+            case .descriptionSubcategory: return Strings.descriptionSubcategory
+            case .descriptionAuthor: return Strings.descriptionAuthor
+            case .descriptionCreatedAt: return Strings.descriptionCreatedAt
             }
         }
     }
     
     /// Returns a localized string for the specified key.
     private static func localizedString(for key: LocalizedKey) -> String {
-        let string = LocaleManager.shared.localizedString(for: key.key)
-        return key.capitalized ? string.capitalizedFirstLetter : string
+        return LocaleManager.shared.localizedString(for: key.key)
     }
     
     // MARK: - Notification Handler
     
     @objc private func localeDidChange() {
-        navigationTitle = Self.localizedString(for: .navigationTitle)
-        dictionaryTitle = Self.localizedString(for: .dictionaryTitle)
-        displayNameTitle = Self.localizedString(for: .displayNameTitle)
-        descriptionTitle = Self.localizedString(for: .descriptionTitle)
-        categoryTitle = Self.localizedString(for: .categoryTitle)
-        subcategoryTitle = Self.localizedString(for: .subcategoryTitle)
-        additionalTitle = Self.localizedString(for: .additionalTitle)
-        authorTitle = Self.localizedString(for: .authorTitle)
-        createdAtTitle = Self.localizedString(for: .createdAtTitle)
-        editTitle = Self.localizedString(for: .editTitle)
-        saveTitle = Self.localizedString(for: .saveTitle)
-        cancelTitle = Self.localizedString(for: .cancelTitle)
-        closeTitle = Self.localizedString(for: .closeTitle)
-        errorTitle = Self.localizedString(for: .errorTitle)
+        screenTitle = Self.localizedString(for: .title)
+        screenSubtitleDictionary = Self.localizedString(for: .subtitleDictionary)
+        screenSubtitleCategory = Self.localizedString(for: .subtitleCategory)
+        screenSubtitleAdditional = Self.localizedString(for: .subtitleAdditional)
+        screenDescriptionName = Self.localizedString(for: .descriptionName)
+        screenDescriptionDescription = Self.localizedString(for: .descriptionDescription)
+        screenDescriptionCategory = Self.localizedString(for: .descriptionCategory)
+        screenDescriptionSubcategory = Self.localizedString(for: .descriptionSubcategory)
+        screenDescriptionAuthor = Self.localizedString(for: .descriptionAuthor)
+        screenDescriptionCreatedAt = Self.localizedString(for: .descriptionCreatedAt)
     }
 }

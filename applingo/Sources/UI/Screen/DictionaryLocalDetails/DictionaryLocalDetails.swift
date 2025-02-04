@@ -50,7 +50,7 @@ struct DictionaryLocalDetails: View {
     var body: some View {
         BaseScreen(
             screen: .DictionaryLocalDetails,
-            title: locale.navigationTitle
+            title: locale.screenTitle
         ) {
             ScrollView {
                 VStack(spacing: style.spacing) {
