@@ -6,45 +6,36 @@ final class WordAddManualLocale: ObservableObject {
     // MARK: - Private Strings
     
     private enum Strings {
-        static let addWord = "AddWord"
-        static let card = "Card"
-        static let word = "Word"
-        static let definition = "Definition"
-        static let additional = "Additional"
-        static let hint = "Hint"
-        static let description = "Description"
-        static let save = "Save"
-        static let cancel = "Cancel"
-        static let error = "Error"
+        static let title = "screen.wordAddManual.title"
+        static let subtitleWord = "screen.wordAddManual.subtitle.word"
+        static let subtitleAdditional = "screen.wordAddManual.subtitle.additional"
+        static let descriptionFrontText = "screen.wordAddManual.description.frontText"
+        static let descriptionBackText = "screen.wordAddManual.description.backText"
+        static let descriptionHint = "screen.wordAddManual.description.hint"
+        static let descriptionDescription = "screen.wordAddManual.description.description"
     }
     
     // MARK: - Published Properties
     
-    @Published private(set) var navigationTitle: String
-    @Published private(set) var cardTitle: String
-    @Published private(set) var wordPlaceholder: String
-    @Published private(set) var definitionPlaceholder: String
-    @Published private(set) var additionalTitle: String
-    @Published private(set) var hintPlaceholder: String
-    @Published private(set) var descriptionPlaceholder: String
-    @Published private(set) var saveTitle: String
-    @Published private(set) var cancelTitle: String
-    @Published private(set) var errorTitle: String
+    @Published private(set) var screenTitle: String
+    @Published private(set) var screenSubtitleWord: String
+    @Published private(set) var screenSubtitleAdditional: String
+    @Published private(set) var screenDescriptionFrontText: String
+    @Published private(set) var screenDescriptionBackText: String
+    @Published private(set) var screenDescriptionHint: String
+    @Published private(set) var screenDescriptionDescription: String
     
     // MARK: - Initialization
     
     init() {
-        self.navigationTitle = Self.localizedString(for: .navigationTitle)
-        self.cardTitle = Self.localizedString(for: .cardTitle)
-        self.wordPlaceholder = Self.localizedString(for: .wordPlaceholder)
-        self.definitionPlaceholder = Self.localizedString(for: .definitionPlaceholder)
-        self.additionalTitle = Self.localizedString(for: .additionalTitle)
-        self.hintPlaceholder = Self.localizedString(for: .hintPlaceholder)
-        self.descriptionPlaceholder = Self.localizedString(for: .descriptionPlaceholder)
-        self.saveTitle = Self.localizedString(for: .saveTitle)
-        self.cancelTitle = Self.localizedString(for: .cancelTitle)
-        self.errorTitle = Self.localizedString(for: .errorTitle)
-        
+        self.screenTitle = Self.localizedString(for: .title)
+        self.screenSubtitleWord = Self.localizedString(for: .subtitleWord)
+        self.screenSubtitleAdditional = Self.localizedString(for: .subtitleAdditional)
+        self.screenDescriptionFrontText = Self.localizedString(for: .descriptionFrontText)
+        self.screenDescriptionBackText = Self.localizedString(for: .descriptionBackText)
+        self.screenDescriptionHint = Self.localizedString(for: .descriptionHint)
+        self.screenDescriptionDescription = Self.localizedString(for: .descriptionDescription)
+
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(localeDidChange),
@@ -60,52 +51,41 @@ final class WordAddManualLocale: ObservableObject {
     // MARK: - Localization Helper
     
     private enum LocalizedKey {
-        case navigationTitle
-        case cardTitle
-        case wordPlaceholder
-        case definitionPlaceholder
-        case additionalTitle
-        case hintPlaceholder
-        case descriptionPlaceholder
-        case saveTitle
-        case cancelTitle
-        case errorTitle
-        
+        case title
+        case subtitleWord
+        case subtitleAdditional
+        case descriptionFrontText
+        case descriptionBackText
+        case descriptionHint
+        case descriptionDescription
+       
         var key: String {
             switch self {
-            case .navigationTitle: return Strings.addWord
-            case .cardTitle: return Strings.card
-            case .wordPlaceholder: return Strings.word
-            case .definitionPlaceholder: return Strings.definition
-            case .additionalTitle: return Strings.additional
-            case .hintPlaceholder: return Strings.hint
-            case .descriptionPlaceholder: return Strings.description
-            case .saveTitle: return Strings.save
-            case .cancelTitle: return Strings.cancel
-            case .errorTitle: return Strings.error
+            case .title: return Strings.title
+            case .subtitleWord: return Strings.subtitleWord
+            case .subtitleAdditional: return Strings.subtitleAdditional
+            case .descriptionFrontText: return Strings.descriptionFrontText
+            case .descriptionBackText: return Strings.descriptionBackText
+            case .descriptionHint: return Strings.descriptionHint
+            case .descriptionDescription: return Strings.descriptionDescription
             }
         }
-        
-        var capitalized: Bool { true }
     }
     
+    /// Returns a localized string for the specified key.
     private static func localizedString(for key: LocalizedKey) -> String {
-        let string = LocaleManager.shared.localizedString(for: key.key)
-        return key.capitalized ? string.capitalizedFirstLetter : string
+        return LocaleManager.shared.localizedString(for: key.key)
     }
     
     // MARK: - Notification Handler
     
     @objc private func localeDidChange() {
-        navigationTitle = Self.localizedString(for: .navigationTitle)
-        cardTitle = Self.localizedString(for: .cardTitle)
-        wordPlaceholder = Self.localizedString(for: .wordPlaceholder)
-        definitionPlaceholder = Self.localizedString(for: .definitionPlaceholder)
-        additionalTitle = Self.localizedString(for: .additionalTitle)
-        hintPlaceholder = Self.localizedString(for: .hintPlaceholder)
-        descriptionPlaceholder = Self.localizedString(for: .descriptionPlaceholder)
-        saveTitle = Self.localizedString(for: .saveTitle)
-        cancelTitle = Self.localizedString(for: .cancelTitle)
-        errorTitle = Self.localizedString(for: .errorTitle)
+        screenTitle = Self.localizedString(for: .title)
+        screenSubtitleWord = Self.localizedString(for: .subtitleWord)
+        screenSubtitleAdditional = Self.localizedString(for: .subtitleAdditional)
+        screenDescriptionFrontText = Self.localizedString(for: .descriptionFrontText)
+        screenDescriptionBackText = Self.localizedString(for: .descriptionBackText)
+        screenDescriptionHint = Self.localizedString(for: .descriptionHint)
+        screenDescriptionDescription = Self.localizedString(for: .descriptionDescription)
     }
 }

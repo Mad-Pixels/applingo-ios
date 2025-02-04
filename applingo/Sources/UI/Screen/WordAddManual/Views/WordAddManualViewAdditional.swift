@@ -36,7 +36,7 @@ struct WordAddManualViewAdditional: View {
     var body: some View {
         VStack(spacing: style.spacing) {
             SectionHeader(
-                title: locale.additionalTitle.capitalizedFirstLetter,
+                title: locale.screenSubtitleAdditional,
                 style: .titled(ThemeManager.shared.currentThemeStyle)
             )
             .padding(.top, 8)
@@ -44,14 +44,14 @@ struct WordAddManualViewAdditional: View {
             VStack(spacing: style.spacing) {
                 InputText(
                     text: $hint,
-                    title: locale.hintPlaceholder.capitalizedFirstLetter,
-                    placeholder: locale.hintPlaceholder,
+                    title: locale.screenDescriptionHint,
+                    placeholder: "",
                     isEditing: true
                 )
                 InputTextArea(
                     text: $description,
-                    title: locale.descriptionPlaceholder.capitalizedFirstLetter,
-                    placeholder: locale.descriptionPlaceholder,
+                    title: locale.screenDescriptionDescription,
+                    placeholder: "",
                     isEditing: true
                 )
             }
