@@ -62,6 +62,23 @@
         }
       }
     },
+    "base.button.download" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Download"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Загрузить"
+          }
+        }
+      }
+    },
     "base.button.reset" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -670,6 +687,74 @@
     "Score" : {
 
     },
+    "screen.dictionaryRemoteDetails.subtitle.additional" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Additional"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дополнительно"
+          }
+        }
+      }
+    },
+    "screen.dictionaryRemoteDetails.subtitle.category" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Category"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Категория"
+          }
+        }
+      }
+    },
+    "screen.dictionaryRemoteDetails.subtitle.dictionary" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Description"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Описание"
+          }
+        }
+      }
+    },
+    "screen.dictionaryRemoteDetails.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dictionary"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Словарь"
+          }
+        }
+      }
+    },
     "screen.dictionaryRemoteFilter.subtitle.level" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -727,13 +812,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Remote Dictionary Hub"
+            "value" : "Download dictionaries"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Сервис скачивания словарей"
+            "state" : "needs_review",
+            "value" : "Скачать словари"
           }
         }
       }

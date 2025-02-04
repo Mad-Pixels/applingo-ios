@@ -39,7 +39,7 @@ struct DictionaryRemoteDetails: View {
     // MARK: - Body
     
     var body: some View {
-        BaseScreen(screen: .DictionaryRemoteDetails, title: locale.navigationTitle) {
+        BaseScreen(screen: .DictionaryRemoteDetails, title: locale.screenTitle) {
             ScrollView {
                 VStack(spacing: style.spacing) {
                     DictionaryRemoteDetailsViewMain(
@@ -63,7 +63,7 @@ struct DictionaryRemoteDetails: View {
                 .padding(style.padding)
             }
             .disabled(isDownloading)
-            .navigationTitle(locale.navigationTitle)
+            .navigationTitle(locale.screenTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -79,12 +79,12 @@ struct DictionaryRemoteDetails: View {
         }
         // Show a progress view if downloading; otherwise, display the download button.
         if isDownloading {
-            ProgressView(locale.downloadingTitle)
+            ProgressView(locale.screenButtonDownload)
                 .progressViewStyle(CircularProgressViewStyle())
                 .padding(style.padding)
         } else {
             ButtonAction(
-                title: locale.downloadTitle,
+                title: locale.screenButtonDownload,
                 action: downloadDictionary,
                 style: .action(ThemeManager.shared.currentThemeStyle)
             )

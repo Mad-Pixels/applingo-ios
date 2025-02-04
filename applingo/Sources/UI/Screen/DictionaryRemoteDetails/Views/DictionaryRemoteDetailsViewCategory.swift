@@ -32,7 +32,7 @@ struct DictionaryRemoteDetailsViewCategory: View {
     var body: some View {
         VStack(spacing: style.spacing) {
             SectionHeader(
-                title: locale.categoryTitle.capitalizedFirstLetter,
+                title: locale.screenSubtitleCategory,
                 style: .titled(ThemeManager.shared.currentThemeStyle)
             )
             .padding(.top, 8)
@@ -40,12 +40,12 @@ struct DictionaryRemoteDetailsViewCategory: View {
             VStack(spacing: style.spacing) {
                 InputText(
                     text: .constant(dictionary.category),
-                    placeholder: locale.categoryTitle,
+                    placeholder: "",
                     isEditing: false
                 )
                 InputText(
                     text: .constant(dictionary.subcategory),
-                    placeholder: locale.subcategoryTitle,
+                    placeholder: "",
                     isEditing: false
                 )
             }
