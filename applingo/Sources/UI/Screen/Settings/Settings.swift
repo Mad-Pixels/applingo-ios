@@ -23,7 +23,7 @@ struct Settings: View {
     // MARK: - Body
     
     var body: some View {
-        BaseScreen(screen: .Settings, title: locale.navigationTitle) {
+        BaseScreen(screen: .Settings, title: locale.screenTitle) {
             List {
                 SettingsViewTheme()
                     .listRowBackground(Color.clear)
@@ -64,7 +64,7 @@ struct Settings: View {
             .safeAreaInset(edge: .bottom) {
                 Color.clear.frame(height: 80)
             }
-            .navigationTitle(locale.navigationTitle)
+            .navigationTitle(locale.screenTitle)
             .navigationBarTitleDisplayMode(.large)
             .ignoresSafeArea(edges: .bottom)
         }

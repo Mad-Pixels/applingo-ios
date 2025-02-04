@@ -8,13 +8,22 @@ final class SettingsFeedbackStyle: ObservableObject {
     let backgroundColor: Color
     let padding: EdgeInsets
     let spacing: CGFloat
+    let font: Font
+    let textColor: Color
     
     // MARK: - Initializer
     
-    init(spacing: CGFloat, padding: EdgeInsets, backgroundColor: Color) {
+    init(spacing: CGFloat,
+         padding: EdgeInsets,
+         backgroundColor: Color,
+         font: Font,
+         textColor: Color
+    ) {
         self.spacing = spacing
         self.padding = padding
         self.backgroundColor = backgroundColor
+        self.font = font
+        self.textColor = textColor
     }
 }
 
@@ -26,7 +35,9 @@ extension SettingsFeedbackStyle {
         SettingsFeedbackStyle(
             spacing: 24,
             padding: EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16),
-            backgroundColor: theme.backgroundPrimary
+            backgroundColor: theme.backgroundPrimary,
+            font: .system(size: 13),
+            textColor: theme.textSecondary
         )
     }
 }

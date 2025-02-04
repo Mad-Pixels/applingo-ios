@@ -26,7 +26,7 @@ struct SettingsViewLocale: View {
         ItemPicker(
             selectedValue: selectedLocale,
             items: localeManager.supportedLocales,
-            title: locale.languageTitle,
+            title: locale.screenSubtitleLanguage,
             style: .themed(ThemeManager.shared.currentThemeStyle),
             onChange: { newLocale in
                 localeManager.setLocale(newLocale)

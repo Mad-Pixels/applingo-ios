@@ -1,21 +1,13 @@
 import SwiftUI
 
 /// A view that displays the feedback screen in the Settings section.
-/// It shows log-related options (например, отправку логов) и предоставляет возможность возврата к настройкам.
 struct SettingsFeedback: View {
     
     // MARK: - Environment and State Properties
     
-    /// Provides a dismiss action to close the current view.
     @Environment(\.dismiss) private var dismiss
-    
-    /// Style configuration for the feedback screen.
     @StateObject private var style: SettingsFeedbackStyle
-    
-    /// Localization object for feedback texts.
-    @StateObject private var locale = SettingsLocale()  // Можно использовать отдельный SettingsFeedbackLocale, если требуется отдельная локализация.
-    
-    /// Flag for back button animation.
+    @StateObject private var locale = SettingsFeedbackLocale()
     @State private var isPressedLeading = false
     
     // MARK: - Initializer
@@ -30,16 +22,10 @@ struct SettingsFeedback: View {
     // MARK: - Body
     
     var body: some View {
-        BaseScreen(screen: .SettingsFeedback, title: locale.navigationTitle) {
+        BaseScreen(screen: .SettingsFeedback, title: locale.screenTitle) {
             List {
-                SettingsFeedbackViewLogger()
+                SettingsFeedbackViewLogger(style: style)
                     .listRowBackground(Color.clear)
-                    .listRowInsets(EdgeInsets(
-                        top: style.spacing,
-                        leading: style.padding.leading + 8,
-                        bottom: style.padding.bottom,
-                        trailing: style.padding.trailing + 8
-                    ))
                     .listRowSeparator(.hidden)
                     .frame(maxWidth: .infinity)
             }
@@ -49,7 +35,7 @@ struct SettingsFeedback: View {
             .safeAreaInset(edge: .bottom) {
                 Color.clear.frame(height: 80)
             }
-            .navigationTitle(locale.navigationTitle)
+            .navigationTitle(locale.screenTitle)
             .navigationBarTitleDisplayMode(.large)
             .navigationBarBackButtonHidden(true)
             .toolbar {

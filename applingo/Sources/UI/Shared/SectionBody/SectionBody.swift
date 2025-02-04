@@ -32,5 +32,13 @@ struct SectionBody<Content: View>: View {
                         y: 2
                     )
             )
+            .overlay(
+                Group {
+                    if let borderWidth = style.borderWidth, let borderColor = style.borderColor {
+                        RoundedRectangle(cornerRadius: style.cornerRadius)
+                            .stroke(borderColor, lineWidth: borderWidth)
+                    }
+                }
+            )
     }
 }

@@ -1,36 +1,31 @@
 import Foundation
 
 /// Provides localized strings for the SettingsFeedback view.
-/// (В данном примере используется та же локализация, что и для Settings,
-/// но при необходимости можно создать отдельный набор строк.)
 final class SettingsFeedbackLocale: ObservableObject {
     
     // MARK: - Private Strings
     
     private enum Strings {
-        static let settings = "Settings"
-        static let theme = "Theme"
-        static let language = "Language"
-        static let logSettings = "Log Settings"
-        static let sendErrorLogs = "Send Error Logs"
+        static let title = "screen.settingsFeedback.title"
+        static let subtitleSendLogs = "screen.settingsFeedback.subtitle.sendLogs"
+        static let descriptionSendLogs = "screen.settingsFeedback.description.sendLogs"
+        static let textSendLogs = "screen.settingsFeedback.text.sendLogs"
     }
     
     // MARK: - Published Properties
     
-    @Published private(set) var navigationTitle: String
-    @Published private(set) var themeTitle: String
-    @Published private(set) var languageTitle: String
-    @Published private(set) var logSettingsTitle: String
-    @Published private(set) var sendErrorLogsTitle: String
+    @Published private(set) var screenTitle: String
+    @Published private(set) var screenSubtitleSendLogs: String
+    @Published private(set) var screenDescriptionSendLogs: String
+    @Published private(set) var screenTextSendLogs: String
     
     // MARK: - Initialization
     
     init() {
-        self.navigationTitle = Self.localizedString(for: .settings)
-        self.themeTitle = Self.localizedString(for: .theme)
-        self.languageTitle = Self.localizedString(for: .language)
-        self.logSettingsTitle = Self.localizedString(for: .logSettings)
-        self.sendErrorLogsTitle = Self.localizedString(for: .sendErrorLogs)
+        self.screenTitle = Self.localizedString(for: .title)
+        self.screenSubtitleSendLogs = Self.localizedString(for: .subtitleSendLogs)
+        self.screenDescriptionSendLogs = Self.localizedString(for: .descriptionSendLogs)
+        self.screenTextSendLogs = Self.localizedString(for: .textSendLogs)
         
         NotificationCenter.default.addObserver(
             self,
@@ -47,19 +42,17 @@ final class SettingsFeedbackLocale: ObservableObject {
     // MARK: - Localization Helper
     
     private enum LocalizedKey {
-        case settings
-        case theme
-        case language
-        case logSettings
-        case sendErrorLogs
+        case title
+        case subtitleSendLogs
+        case descriptionSendLogs
+        case textSendLogs
         
         var key: String {
             switch self {
-            case .settings: return Strings.settings
-            case .theme: return Strings.theme
-            case .language: return Strings.language
-            case .logSettings: return Strings.logSettings
-            case .sendErrorLogs: return Strings.sendErrorLogs
+            case .title: return Strings.title
+            case .subtitleSendLogs: return Strings.subtitleSendLogs
+            case .descriptionSendLogs: return Strings.descriptionSendLogs
+            case .textSendLogs: return Strings.textSendLogs
             }
         }
         
@@ -67,17 +60,15 @@ final class SettingsFeedbackLocale: ObservableObject {
     }
     
     private static func localizedString(for key: LocalizedKey) -> String {
-        let string = LocaleManager.shared.localizedString(for: key.key)
-        return key.capitalized ? string.capitalizedFirstLetter : string
+        return LocaleManager.shared.localizedString(for: key.key)
     }
     
     // MARK: - Notification Handler
     
     @objc private func localeDidChange() {
-        navigationTitle = Self.localizedString(for: .settings)
-        themeTitle = Self.localizedString(for: .theme)
-        languageTitle = Self.localizedString(for: .language)
-        logSettingsTitle = Self.localizedString(for: .logSettings)
-        sendErrorLogsTitle = Self.localizedString(for: .sendErrorLogs)
+        self.screenTitle = Self.localizedString(for: .title)
+        self.screenSubtitleSendLogs = Self.localizedString(for: .subtitleSendLogs)
+        self.screenDescriptionSendLogs = Self.localizedString(for: .descriptionSendLogs)
+        self.screenTextSendLogs = Self.localizedString(for: .textSendLogs)
     }
 }

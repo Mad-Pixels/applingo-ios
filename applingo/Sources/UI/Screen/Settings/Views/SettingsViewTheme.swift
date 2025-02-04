@@ -14,7 +14,7 @@ struct SettingsViewTheme: View {
         ItemPicker(
             selectedValue: $themeManager.currentTheme,
             items: themeManager.supportedThemes,
-            title: locale.themeTitle,
+            title: locale.screenSubtitleTheme,
             style: .themed(themeManager.currentThemeStyle, type: .segmented),
             onChange: { newTheme in
                 themeManager.setTheme(to: newTheme)

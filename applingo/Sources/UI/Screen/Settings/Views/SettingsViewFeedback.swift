@@ -6,13 +6,14 @@ struct SettingsViewFeedback: View {
     // MARK: - Environment
     
     @EnvironmentObject private var themeManager: ThemeManager
+    @StateObject private var locale = SettingsLocale()
     
     // MARK: - Body
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             SectionHeader(
-                title: "Feedback",  // Здесь можно заменить на локализованное значение, если требуется.
+                title: locale.screenSubtitleFeedback,
                 style: .titled(themeManager.currentThemeStyle)
             )
             .padding(.top, 8)
@@ -21,7 +22,7 @@ struct SettingsViewFeedback: View {
             SectionBody {
                 HStack {
                     NavigationLink(destination: SettingsFeedback()) {
-                        Text("Send Feedback")  // Замените на локализованный текст по необходимости.
+                        Text(locale.screenDescriptionFeedback)
                     }
                 }
                 .padding(.vertical, 8)

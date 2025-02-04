@@ -78,7 +78,7 @@ final class LocaleManager: ObservableObject {
     /// - Returns: A localized and formatted string.
     func localizedString(for key: String, arguments: CVarArg...) -> String {
         let format = bundle?.localizedString(forKey: key, value: nil, table: nil) ?? key
-        return String(format: format, arguments: arguments).lowercased()
+        return String(format: format, arguments: arguments)
     }
     
     // MARK: - Private Methods
