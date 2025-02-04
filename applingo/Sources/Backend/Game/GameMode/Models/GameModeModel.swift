@@ -10,8 +10,8 @@ struct GameModeModel {
         GameModeModel(
             type: .practice,
             icon: "graduationcap.fill",
-            title: locale.practiceTitle,
-            description: locale.practiceDescription
+            title: locale.screenSubtitlePractice,
+            description: locale.screenDescriptionPractice
         )
     }
     
@@ -19,8 +19,8 @@ struct GameModeModel {
         GameModeModel(
             type: .survival,
             icon: "heart.fill",
-            title: locale.survivalTitle,
-            description: locale.survivalDescription
+            title: locale.screenSubtitleSurvival,
+            description: locale.screenDescriptionSurvival
         )
     }
     
@@ -28,8 +28,8 @@ struct GameModeModel {
         GameModeModel(
             type: .time,
             icon: "timer",
-            title: locale.timeAttackTitle,
-            description: locale.timeAttackDescription
+            title: locale.screenSubtitleTime,
+            description: locale.screenDescriptionTime
         )
     }
 }

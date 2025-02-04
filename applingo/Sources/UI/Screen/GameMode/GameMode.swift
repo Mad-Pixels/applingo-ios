@@ -15,19 +15,10 @@ struct GameMode: View {
     /// Localization object for game mode texts.
     private let locale: GameModeLocale = GameModeLocale()
     
-    /// Style object for configuring the appearance of the GameMode view.
     @StateObject private var style: GameModeStyle
-    
-    /// The currently selected game mode.
     @State private var selectedMode: GameModeType = .practice
-    
-    /// Flag for button press animation in the toolbar.
     @State private var isPressedTrailing = false
-    
-    /// Flag to control when to show game content.
     @State private var showGameContent = false
-    
-    /// Flag to animate appearance of elements.
     @State private var isAnimating = false
     
     // MARK: - Initializer
@@ -95,7 +86,7 @@ struct GameMode: View {
     
     /// The title view displaying the mode selection prompt.
     private var titleView: some View {
-        Text(locale.selectModeTitle.uppercased())
+        Text(locale.screenTitle.uppercased())
             .font(style.titleStyle.font)
             .foregroundColor(style.titleStyle.color)
             .opacity(isAnimating ? 1 : 0)
