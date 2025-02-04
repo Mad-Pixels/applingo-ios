@@ -23,18 +23,6 @@ struct ButtonFloatingMultiple: View {
     
     var body: some View {
         ZStack {
-            // Transparent background overlay to close the menu when tapped
-            if isOpen {
-                Color.black.opacity(0.01)
-                    .ignoresSafeArea()
-                    .onTapGesture {
-                        withAnimation(.easeInOut(duration: 0.4)) {
-                            isOpen = false
-                            iconRotation = 0
-                        }
-                    }
-            }
-            
             // Main floating buttons stack positioned at bottom trailing
             ZStack(alignment: .bottomTrailing) {
                 if isOpen {
