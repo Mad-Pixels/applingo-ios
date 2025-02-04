@@ -67,7 +67,7 @@ private struct DictionaryLocalRowPreview: View {
             Group {
                 // Active dictionary
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Active dictionary")
+                    Text(verbatim: "Active dictionary")
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     
@@ -83,7 +83,7 @@ private struct DictionaryLocalRowPreview: View {
                 
                 // Language dictionary
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Language dictionary")
+                    Text(verbatim: "Language dictionary")
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     
@@ -99,7 +99,7 @@ private struct DictionaryLocalRowPreview: View {
                 
                 // Inactive dictionary
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Inactive dictionary")
+                    Text(verbatim: "Inactive dictionary")
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     
@@ -115,7 +115,7 @@ private struct DictionaryLocalRowPreview: View {
                 
                 // Long text example
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Long text")
+                    Text(verbatim: "Long text")
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     

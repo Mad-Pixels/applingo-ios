@@ -32,7 +32,7 @@ private struct SearchPreview: View {
             
             Group {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Empty State")
+                    Text(verbatim: "Empty State")
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     
@@ -44,7 +44,7 @@ private struct SearchPreview: View {
                 }
                 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("With Text")
+                    Text(verbatim: "With Text")
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     
@@ -56,7 +56,7 @@ private struct SearchPreview: View {
                 }
                 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Disabled State")
+                    Text(verbatim: "Disabled State")
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     

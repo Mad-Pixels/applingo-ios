@@ -33,7 +33,7 @@ private struct TogglePreview: View {
             
             Group {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Toggle without Header")
+                    Text(verbatim: "Toggle without Header")
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     
@@ -45,7 +45,7 @@ private struct TogglePreview: View {
                 }
                 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Disabled Toggle with Header")
+                    Text(verbatim: "Disabled Toggle with Header")
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     

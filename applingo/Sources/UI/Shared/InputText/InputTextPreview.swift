@@ -52,7 +52,7 @@ private struct TextInputPreview: View {
                 }
                 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Text Input without Title")
+                    Text(verbatim: "Text Input without Title")
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     
@@ -74,7 +74,7 @@ private struct TextInputPreview: View {
                 }
                 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Text Area")
+                    Text(verbatim: "Text Area")
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     
@@ -95,7 +95,7 @@ private struct TextInputPreview: View {
                 }
                 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Disabled Text Area")
+                    Text(verbatim: "Disabled Text Area")
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     

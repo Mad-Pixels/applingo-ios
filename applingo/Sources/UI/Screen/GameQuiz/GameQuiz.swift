@@ -117,7 +117,7 @@ struct GameQuiz: View {
                         }
                     }
                 } else {
-                    Text("Loading...")
+                    Text(verbatim: "Loading...")
                 }
             }
             .padding()

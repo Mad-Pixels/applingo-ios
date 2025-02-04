@@ -33,7 +33,7 @@ private struct CheckboxPreview: View {
             
             Group {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Default state")
+                    Text(verbatim: "Default state")
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     
@@ -47,7 +47,7 @@ private struct CheckboxPreview: View {
                 }
 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Checked state")
+                    Text(verbatim: "Checked state")
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     
@@ -58,7 +58,7 @@ private struct CheckboxPreview: View {
                 }
 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Disabled state")
+                    Text(verbatim: "Disabled state")
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     

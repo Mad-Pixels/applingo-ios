@@ -30,7 +30,7 @@ private struct SectionHeaderPreview: View {
             
             Group {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Default Header")
+                    Text(verbatim: "Default Header")
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     
@@ -41,7 +41,7 @@ private struct SectionHeaderPreview: View {
                 }
                 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Titled Header")
+                    Text(verbatim: "Titled Header")
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     
@@ -52,7 +52,7 @@ private struct SectionHeaderPreview: View {
                 }
                 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Custom Font & Colors")
+                    Text(verbatim: "Custom Font & Colors")
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     
@@ -69,7 +69,7 @@ private struct SectionHeaderPreview: View {
                 }
                 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Minimal Header")
+                    Text(verbatim: "Minimal Header")
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     

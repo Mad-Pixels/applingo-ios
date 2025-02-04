@@ -45,7 +45,7 @@ private struct PickerPreview: View {
             
             Group {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Wheel Style")
+                    Text(verbatim: "Wheel Style")
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     
@@ -65,7 +65,7 @@ private struct PickerPreview: View {
                 .shadow(color: .gray.opacity(0.2), radius: 4, x: 0, y: 2)
                 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Segmented Style")
+                    Text(verbatim: "Segmented Style")
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     
@@ -85,7 +85,7 @@ private struct PickerPreview: View {
                 .shadow(color: .gray.opacity(0.2), radius: 4, x: 0, y: 2)
                 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Menu Style")
+                    Text(verbatim: "Menu Style")
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     
@@ -105,7 +105,7 @@ private struct PickerPreview: View {
                 .shadow(color: .gray.opacity(0.2), radius: 4, x: 0, y: 2)
                 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Inline Style")
+                    Text(verbatim: "Inline Style")
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     

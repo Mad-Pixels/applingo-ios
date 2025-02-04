@@ -30,7 +30,7 @@ private struct ButtonPreview: View {
             
             Group {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Action Button")
+                    Text(verbatim: "Action Button")
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     
@@ -44,7 +44,7 @@ private struct ButtonPreview: View {
                 }
                 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Cancel Button")
+                    Text(verbatim: "Cancel Button")
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     
@@ -58,7 +58,7 @@ private struct ButtonPreview: View {
                 }
                 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Themed Button")
+                    Text(verbatim: "Themed Button")
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     

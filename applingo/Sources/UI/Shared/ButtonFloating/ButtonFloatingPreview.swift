@@ -27,7 +27,7 @@ private struct FloatingButtonPreview: View {
                 .foregroundColor(theme.textPrimary)
             
             VStack {
-                Text("Single Floating Button")
+                Text(verbatim: "Single Floating Button")
                     .font(.subheadline)
                     .foregroundColor(theme.textSecondary)
                 
@@ -42,7 +42,7 @@ private struct FloatingButtonPreview: View {
             }
 
             VStack {
-                Text("Multiple Floating Buttons")
+                Text(verbatim: "Multiple Floating Buttons")
                     .font(.subheadline)
                     .foregroundColor(theme.textSecondary)
                 

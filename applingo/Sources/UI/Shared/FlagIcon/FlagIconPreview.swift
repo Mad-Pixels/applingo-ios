@@ -30,7 +30,7 @@ private struct FlagIconPreview: View {
 
             Group {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("English to Russian")
+                    Text(verbatim: "English to Russian")
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
 
@@ -45,7 +45,7 @@ private struct FlagIconPreview: View {
                 }
 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("French to German")
+                    Text(verbatim: "French to German")
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
 
@@ -60,7 +60,7 @@ private struct FlagIconPreview: View {
                 }
 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Spanish to Italian")
+                    Text(verbatim: "Spanish to Italian")
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
 
@@ -75,7 +75,7 @@ private struct FlagIconPreview: View {
                 }
 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Fallback Example (unknown country code)")
+                    Text(verbatim: "Fallback Example (unknown country code)")
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
 

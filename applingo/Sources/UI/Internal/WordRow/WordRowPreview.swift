@@ -31,7 +31,7 @@ private struct WordRowPreview: View {
            Group {
                // Low progress word
                VStack(alignment: .leading, spacing: 8) {
-                   Text("Low progress")
+                   Text(verbatim: "Low progress")
                        .font(.subheadline)
                        .foregroundColor(theme.textSecondary)
                    
@@ -51,7 +51,7 @@ private struct WordRowPreview: View {
                
                // Medium progress word
                VStack(alignment: .leading, spacing: 8) {
-                   Text("Medium progress")
+                   Text(verbatim: "Medium progress")
                        .font(.subheadline)
                        .foregroundColor(theme.textSecondary)
                    
@@ -71,7 +71,7 @@ private struct WordRowPreview: View {
                
                // High progress word
                VStack(alignment: .leading, spacing: 8) {
-                   Text("High progress")
+                   Text(verbatim: "High progress")
                        .font(.subheadline)
                        .foregroundColor(theme.textSecondary)
                    
@@ -91,7 +91,7 @@ private struct WordRowPreview: View {
                
                // Long text example
                VStack(alignment: .leading, spacing: 8) {
-                   Text("Long text")
+                   Text(verbatim: "Long text")
                        .font(.subheadline)
                        .foregroundColor(theme.textSecondary)
                    

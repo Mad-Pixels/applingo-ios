@@ -33,18 +33,6 @@
     "%lld%% progress" : {
 
     },
-    "Action Button" : {
-
-    },
-    "Active dictionary" : {
-
-    },
-    "Animated example" : {
-
-    },
-    "Back Button" : {
-
-    },
     "base.button.close" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -146,51 +134,6 @@
           }
         }
       }
-    },
-    "Cancel Button" : {
-
-    },
-    "Checked state" : {
-
-    },
-    "Close Button" : {
-
-    },
-    "Custom Font & Colors" : {
-
-    },
-    "Default Header" : {
-
-    },
-    "Default state" : {
-
-    },
-    "Disabled state" : {
-
-    },
-    "Disabled State" : {
-
-    },
-    "Disabled Text Area" : {
-
-    },
-    "Disabled Toggle with Header" : {
-
-    },
-    "Edit Button" : {
-
-    },
-    "Empty list" : {
-
-    },
-    "Empty State" : {
-
-    },
-    "English to Russian" : {
-
-    },
-    "Error" : {
-
     },
     "Error: %@" : {
       "localizations" : {
@@ -632,57 +575,6 @@
           }
         }
       }
-    },
-    "Fallback Example (unknown country code)" : {
-
-    },
-    "French to German" : {
-
-    },
-    "High progress" : {
-
-    },
-    "Inactive dictionary" : {
-
-    },
-    "Inline Style" : {
-
-    },
-    "Language dictionary" : {
-
-    },
-    "Loading" : {
-
-    },
-    "Loading..." : {
-
-    },
-    "Long text" : {
-
-    },
-    "Low progress" : {
-
-    },
-    "Medium progress" : {
-
-    },
-    "Menu Style" : {
-
-    },
-    "Minimal Header" : {
-
-    },
-    "Multiple Floating Buttons" : {
-
-    },
-    "No items" : {
-
-    },
-    "Randomize" : {
-
-    },
-    "Save Button" : {
-
     },
     "Score" : {
 
@@ -1469,9 +1361,6 @@
         }
       }
     },
-    "Segmented Style" : {
-
-    },
     "Settings" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1501,37 +1390,7 @@
         }
       }
     },
-    "Single Floating Button" : {
-
-    },
-    "Spanish to Italian" : {
-
-    },
     "Streak" : {
-
-    },
-    "Text Area" : {
-
-    },
-    "Text Input without Title" : {
-
-    },
-    "Themed Button" : {
-
-    },
-    "Titled Header" : {
-
-    },
-    "Toggle without Header" : {
-
-    },
-    "Wheel Style" : {
-
-    },
-    "With items" : {
-
-    },
-    "With Text" : {
 
     }
   },

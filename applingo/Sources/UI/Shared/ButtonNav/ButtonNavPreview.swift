@@ -27,7 +27,7 @@ private struct ButtonNavPreview: View {
             
             HStack(spacing: 16) {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Back Button")
+                    Text(verbatim: "Back Button")
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     
@@ -39,7 +39,7 @@ private struct ButtonNavPreview: View {
                 }
                 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Close Button")
+                    Text(verbatim: "Close Button")
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     
@@ -51,7 +51,7 @@ private struct ButtonNavPreview: View {
                 }
                 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Edit Button")
+                    Text(verbatim: "Edit Button")
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     
@@ -63,7 +63,7 @@ private struct ButtonNavPreview: View {
                 }
                 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Save Button")
+                    Text(verbatim: "Save Button")
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     

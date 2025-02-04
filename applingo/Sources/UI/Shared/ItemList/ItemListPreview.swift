@@ -42,7 +42,7 @@ private struct ListPreview: View {
             
             Group {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Empty list")
+                    Text(verbatim: "Empty list")
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     
@@ -50,7 +50,7 @@ private struct ListPreview: View {
                         items: $emptyItems,
                         style: .themed(theme),
                         emptyListView: AnyView(
-                            Text("No items")
+                            Text(verbatim: "No items")
                                 .foregroundColor(theme.textSecondary)
                         )
                     ) { item in
@@ -64,7 +64,7 @@ private struct ListPreview: View {
                 }
                 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("With items")
+                    Text(verbatim: "With items")
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     
@@ -82,7 +82,7 @@ private struct ListPreview: View {
                 }
                 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Loading")
+                    Text(verbatim: "Loading")
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     
@@ -101,7 +101,7 @@ private struct ListPreview: View {
                 }
                 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Error")
+                    Text(verbatim: "Error")
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     

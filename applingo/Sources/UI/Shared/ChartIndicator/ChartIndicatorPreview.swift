@@ -32,7 +32,7 @@ private struct ChartIndicatorPreview: View {
             Group {
                 // Low progress
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Low progress")
+                    Text(verbatim: "Low progress")
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     
@@ -48,7 +48,7 @@ private struct ChartIndicatorPreview: View {
                 
                 // Medium progress
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Medium progress")
+                    Text(verbatim: "Medium progress")
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     
@@ -64,7 +64,7 @@ private struct ChartIndicatorPreview: View {
                 
                 // High progress
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("High progress")
+                    Text(verbatim: "High progress")
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     
@@ -80,7 +80,7 @@ private struct ChartIndicatorPreview: View {
                 
                 // Animated example
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Animated example")
+                    Text(verbatim: "Animated example")
                         .font(.subheadline)
                         .foregroundColor(theme.textSecondary)
                     
@@ -110,10 +110,12 @@ private struct AnimatedExample: View {
                 style: .themed(theme)
             )
             
-            Button("Randomize") {
+            Button(action: {
                 withAnimation {
                     weight = Int.random(in: 0...1000)
                 }
+            }) {
+                Text(verbatim: "Randomize")
             }
             .foregroundColor(theme.accentPrimary)
             .padding(.horizontal, 16)
