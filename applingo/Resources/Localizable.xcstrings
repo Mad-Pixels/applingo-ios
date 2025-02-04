@@ -1310,6 +1310,23 @@
         }
       }
     },
+    "screen.wordDetails.description.correctAnswers" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Correct"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Верно"
+          }
+        }
+      }
+    },
     "screen.wordDetails.description.createdAt" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1395,6 +1412,23 @@
         }
       }
     },
+    "screen.wordDetails.description.wrongAnswers" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wrong"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ошибки"
+          }
+        }
+      }
+    },
     "screen.wordDetails.subtitle.additional" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1425,6 +1459,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Статистика"
+          }
+        }
+      }
+    },
+    "screen.wordDetails.subtitle.statistic.count" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Answers"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ответы"
           }
         }
       }

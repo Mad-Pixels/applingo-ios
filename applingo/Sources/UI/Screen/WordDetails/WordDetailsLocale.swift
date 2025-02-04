@@ -10,6 +10,7 @@ final class WordDetailsLocale: ObservableObject {
         static let subtitleWord = "screen.wordDetails.subtitle.word"
         static let subtitleAdditional = "screen.wordDetails.subtitle.additional"
         static let subtitleStatistic = "screen.wordDetails.subtitle.statistic"
+        static let subtitleStatisticCount = "screen.wordDetails.subtitle.statistic.count"
         static let descriptionFrontText = "screen.wordDetails.description.frontText"
         static let descriptionBackText = "screen.wordDetails.description.backText"
         static let descriptionDictionary = "screen.wordDetails.description.dictionary"
@@ -17,6 +18,8 @@ final class WordDetailsLocale: ObservableObject {
         static let descriptionDescription = "screen.wordDetails.description.description"
         static let descriptionAuthor = "screen.wordDetails.description.author"
         static let descriptionCreatedAt = "screen.wordDetails.description.createdAt"
+        static let desctiptionWrongAnswers = "screen.wordDetails.description.wrongAnswers"
+        static let descriptionCorrectAnswers = "screen.wordDetails.description.correctAnswers"
     }
     
     // MARK: - Published Properties
@@ -25,6 +28,7 @@ final class WordDetailsLocale: ObservableObject {
     @Published private(set) var screenSubtitleWord: String
     @Published private(set) var screenSubtitleAdditional: String
     @Published private(set) var screenSubtitleStatistic: String
+    @Published private(set) var screenSubtitleStatisticCount: String
     @Published private(set) var screenDescriptionFrontText: String
     @Published private(set) var screenDescriptionBackText: String
     @Published private(set) var screenDescriptionDictionary: String
@@ -32,6 +36,8 @@ final class WordDetailsLocale: ObservableObject {
     @Published private(set) var screenDescriptionDescription: String
     @Published private(set) var screenDescriptionAuthor: String
     @Published private(set) var screenDescriptionCreatedAt: String
+    @Published private(set) var screenDesctiptionWrongAnswers: String
+    @Published private(set) var screenDescriptionCorrectAnswers: String
     
     // MARK: - Initialization
     
@@ -40,6 +46,7 @@ final class WordDetailsLocale: ObservableObject {
         self.screenSubtitleWord = Self.localizedString(for: .subtitleWord)
         self.screenSubtitleAdditional = Self.localizedString(for: .subtitleAdditional)
         self.screenSubtitleStatistic = Self.localizedString(for: .subtitleStatistic)
+        self.screenSubtitleStatisticCount = Self.localizedString(for: .subtitleStatistic)
         self.screenDescriptionFrontText = Self.localizedString(for: .descriptionFrontText)
         self.screenDescriptionBackText = Self.localizedString(for: .descriptionBackText)
         self.screenDescriptionDictionary = Self.localizedString(for: .descriptionDictionary)
@@ -47,6 +54,8 @@ final class WordDetailsLocale: ObservableObject {
         self.screenDescriptionDescription = Self.localizedString(for: .descriptionDescription)
         self.screenDescriptionAuthor = Self.localizedString(for: .descriptionAuthor)
         self.screenDescriptionCreatedAt = Self.localizedString(for: .descriptionCreatedAt)
+        self.screenDesctiptionWrongAnswers = Self.localizedString(for: .desctiptionWrongAnswers)
+        self.screenDescriptionCorrectAnswers = Self.localizedString(for: .descriptionCorrectAnswers)
 
         NotificationCenter.default.addObserver(
             self,
@@ -74,7 +83,9 @@ final class WordDetailsLocale: ObservableObject {
         case descriptionAuthor
         case descriptionCreatedAt
         case descriptionDictionary
-       
+        case descriptionCorrectAnswers
+        case desctiptionWrongAnswers
+        
         var key: String {
             switch self {
             case .title: return Strings.title
@@ -88,6 +99,8 @@ final class WordDetailsLocale: ObservableObject {
             case .descriptionDescription: return Strings.descriptionDescription
             case .descriptionAuthor: return Strings.descriptionAuthor
             case .descriptionCreatedAt: return Strings.descriptionCreatedAt
+            case .descriptionCorrectAnswers: return Strings.descriptionCorrectAnswers
+            case .desctiptionWrongAnswers: return Strings.desctiptionWrongAnswers
             }
         }
     }
@@ -104,6 +117,7 @@ final class WordDetailsLocale: ObservableObject {
         screenSubtitleWord = Self.localizedString(for: .subtitleWord)
         screenSubtitleAdditional = Self.localizedString(for: .subtitleAdditional)
         screenSubtitleStatistic = Self.localizedString(for: .subtitleStatistic)
+        screenSubtitleStatisticCount = Self.localizedString(for: .subtitleStatistic)
         screenDescriptionFrontText = Self.localizedString(for: .descriptionFrontText)
         screenDescriptionBackText = Self.localizedString(for: .descriptionBackText)
         screenDescriptionDictionary = Self.localizedString(for: .descriptionDescription)
@@ -111,5 +125,7 @@ final class WordDetailsLocale: ObservableObject {
         screenDescriptionDescription = Self.localizedString(for: .descriptionDescription)
         screenDescriptionAuthor = Self.localizedString(for: .descriptionAuthor)
         screenDescriptionCreatedAt = Self.localizedString(for: .descriptionCreatedAt)
+        screenDesctiptionWrongAnswers = Self.localizedString(for: .descriptionDictionary)
+        screenDescriptionCorrectAnswers = Self.localizedString(for: .descriptionDictionary)
     }
 }

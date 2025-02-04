@@ -42,18 +42,18 @@ struct WordDetailsViewStatistic: View {
                         data: [
                             DonutChartModel(
                                 value: Double(word.fail),
-                                label: "wrong",
+                                label: locale.screenDescriptionCorrectAnswers,
                                 color: ThemeManager.shared.currentThemeStyle.success
                             ),
                             DonutChartModel(
                                 value: Double(word.success),
-                                label: "correct",
+                                label: locale.screenDesctiptionWrongAnswers,
                                 color: ThemeManager.shared.currentThemeStyle.error
                             )
                         ],
                         centerValue: "\(Int(ceil(Double(word.weight / 100)))) / 10",
                         style: .themed(ThemeManager.shared.currentThemeStyle),
-                        legendTitle: "Answers"
+                        legendTitle: locale.screenSubtitleStatisticCount
                     )
                 }
             }
