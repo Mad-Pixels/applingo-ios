@@ -6,35 +6,23 @@ final class DictionaryRemoteListLocale: ObservableObject {
     // MARK: - Private Strings
     
     private enum Strings {
-        static let dictionaries = "Dictionaries"
-        static let search = "Search"
-        static let filter = "Filter"
-        static let back = "Back"
-        static let noWords = "NoWordsAvailable"
-        static let error = "Error"
-        static let close = "Close"
+        static let title = "screen.dictionaryRemoteList.title"
+        static let search = "base.text.search"
+        static let noWords = "base.text.noItems"
     }
     
     // MARK: - Published Properties
     
-    @Published private(set) var navigationTitle: String
-    @Published private(set) var searchPlaceholder: String
-    @Published private(set) var filterTitle: String
-    @Published private(set) var backTitle: String
-    @Published private(set) var emptyMessage: String
-    @Published private(set) var errorTitle: String
-    @Published private(set) var closeTitle: String
+    @Published private(set) var screenTitle: String
+    @Published private(set) var screenSearch: String
+    @Published private(set) var screenNoWords: String
     
     // MARK: - Initialization
     
     init() {
-        self.navigationTitle = Self.localizedString(for: .navigationTitle)
-        self.searchPlaceholder = Self.localizedString(for: .searchPlaceholder)
-        self.filterTitle = Self.localizedString(for: .filterTitle)
-        self.backTitle = Self.localizedString(for: .backTitle)
-        self.emptyMessage = Self.localizedString(for: .emptyMessage)
-        self.errorTitle = Self.localizedString(for: .errorTitle)
-        self.closeTitle = Self.localizedString(for: .closeTitle)
+        self.screenTitle = Self.localizedString(for: .title)
+        self.screenSearch = Self.localizedString(for: .search)
+        self.screenNoWords = Self.localizedString(for: .noWords)
         
         NotificationCenter.default.addObserver(
             self,
@@ -51,44 +39,28 @@ final class DictionaryRemoteListLocale: ObservableObject {
     // MARK: - Localization Helper
     
     private enum LocalizedKey {
-        case navigationTitle, searchPlaceholder, filterTitle, backTitle, emptyMessage, errorTitle, closeTitle
-        
+        case title
+        case search
+        case noWords
+       
         var key: String {
             switch self {
-            case .navigationTitle: return Strings.dictionaries
-            case .searchPlaceholder: return Strings.search
-            case .filterTitle: return Strings.filter
-            case .backTitle: return Strings.back
-            case .emptyMessage: return Strings.noWords
-            case .errorTitle: return Strings.error
-            case .closeTitle: return Strings.close
-            }
-        }
-        
-        var capitalized: Bool {
-            switch self {
-            case .navigationTitle, .searchPlaceholder, .filterTitle, .backTitle:
-                return true
-            default:
-                return false
+            case .title: return Strings.title
+            case .search: return Strings.search
+            case .noWords: return Strings.noWords
             }
         }
     }
     
     private static func localizedString(for key: LocalizedKey) -> String {
-        let string = LocaleManager.shared.localizedString(for: key.key)
-        return key.capitalized ? string.capitalizedFirstLetter : string
+        return LocaleManager.shared.localizedString(for: key.key)
     }
     
     // MARK: - Notification Handler
     
     @objc private func localeDidChange() {
-        navigationTitle = Self.localizedString(for: .navigationTitle)
-        searchPlaceholder = Self.localizedString(for: .searchPlaceholder)
-        filterTitle = Self.localizedString(for: .filterTitle)
-        backTitle = Self.localizedString(for: .backTitle)
-        emptyMessage = Self.localizedString(for: .emptyMessage)
-        errorTitle = Self.localizedString(for: .errorTitle)
-        closeTitle = Self.localizedString(for: .closeTitle)
+        screenTitle = Self.localizedString(for: .title)
+        screenSearch = Self.localizedString(for: .search)
+        screenNoWords = Self.localizedString(for: .noWords)
     }
 }

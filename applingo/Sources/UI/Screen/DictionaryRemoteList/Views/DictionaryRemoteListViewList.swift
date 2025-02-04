@@ -43,7 +43,7 @@ struct DictionaryRemoteListViewList: View {
             style: .themed(themeManager.currentThemeStyle),
             isLoadingPage: dictionaryGetter.isLoadingPage,
             error: nil,
-            emptyListView: AnyView(Text(locale.emptyMessage)),
+            emptyListView: AnyView(Text(locale.screenNoWords)),
             onItemAppear: { dictionary in
                 dictionaryGetter.loadMoreDictionariesIfNeeded(currentItem: dictionary)
             },

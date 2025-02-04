@@ -36,7 +36,7 @@ struct DictionaryRemoteList: View {
     var body: some View {
         BaseScreen(
             screen: .DictionaryRemoteList,
-            title: locale.navigationTitle
+            title: locale.screenTitle
         ) {
             VStack(spacing: style.spacing) {
                 DictionaryRemoteListViewSearch(
