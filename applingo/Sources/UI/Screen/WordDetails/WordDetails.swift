@@ -80,6 +80,7 @@ struct WordDetails: View {
                 }
                 .padding(style.padding)
             }
+            .padding(.bottom, style.padding.bottom)
             .keyboardAdaptive()
             .background(style.backgroundColor)
             .navigationBarTitleDisplayMode(.inline)

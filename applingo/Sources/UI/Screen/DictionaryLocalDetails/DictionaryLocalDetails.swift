@@ -75,6 +75,7 @@ struct DictionaryLocalDetails: View {
                 }
                 .padding(style.padding)
             }
+            .padding(.bottom, style.padding.bottom)
             .keyboardAdaptive()
             .background(style.backgroundColor)
             .navigationBarTitleDisplayMode(.inline)
@@ -85,7 +86,6 @@ struct DictionaryLocalDetails: View {
                         style: isEditing ? .close(ThemeManager.shared.currentThemeStyle) : .back(ThemeManager.shared.currentThemeStyle),
                         onTap: {
                             if isEditing {
-                                // Cancel editing and restore the original dictionary.
                                 isEditing = false
                                 wrapper.dictionary = originalDictionary
                             } else {
@@ -95,6 +95,7 @@ struct DictionaryLocalDetails: View {
                         isPressed: $isPressedLeading
                     )
                 }
+                
                 // MARK: - Toolbar Trailing Item
                 ToolbarItem(placement: .navigationBarTrailing) {
                     ButtonNav(
