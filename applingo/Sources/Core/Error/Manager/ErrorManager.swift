@@ -22,7 +22,7 @@ final class ErrorManager: ObservableObject {
     init(
         processors: [ErrorProcessor] = [
             DatabaseErrorProcessor(),
-            NetworkErrorProcessor()
+            APIErrorProcessor()
         ],
         handlers: [ErrorHandler] = [
             AlertErrorHandler()
