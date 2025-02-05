@@ -69,8 +69,8 @@ final class ParserManagerSave {
        Logger.debug(
            "[Parser]: Dictionary and words saved successfully",
            metadata: [
-               "dictionary_guid": dictionary.guid,
-               "saved_words_count": String(words.count)
+               "guid": dictionary.guid,
+               "words_count": String(words.count)
            ]
        )
    }
