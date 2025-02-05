@@ -49,7 +49,6 @@ final class TableParserManagerSave {
     ///   - words: An array of word models parsed from the file.
     /// - Throws: An error if any database operation (save/update) fails.
     func saveToDatabase(dictionary: TableParserModelDictionary, words: [TableParserModelWord]) throws {
-        // Step 1: Convert the parser model into a database model.
         let dbDictionary = DatabaseModelDictionary(
             guid: dictionary.guid,
             name: dictionary.name,
@@ -62,7 +61,6 @@ final class TableParserManagerSave {
             isLocal: dictionary.isLocal
         )
         
-        // Step 2: Save the dictionary using the dictionary manager.
         try dictionaryManager.save(dbDictionary)
         Logger.debug(
             "[Save]: Dictionary saved via manager",
@@ -73,7 +71,6 @@ final class TableParserManagerSave {
             ]
         )
         
-        // Step 3: Iterate through each parsed word, convert it into a database model, and save it.
         for word in words {
             let dbWord = DatabaseModelWord(
                 dictionary: dbDictionary.guid,
@@ -85,7 +82,6 @@ final class TableParserManagerSave {
             try wordManager.save(dbWord)
         }
         
-        // Step 4: Log the successful completion of the save operation.
         Logger.debug(
             "[Save]: Successfully saved items",
             metadata: [
