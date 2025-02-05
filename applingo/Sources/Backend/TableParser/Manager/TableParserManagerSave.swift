@@ -1,4 +1,5 @@
 import Foundation
+import GRDB
 
 /// A manager responsible for saving parsed table data into a database or any storage,
 /// utilizing the `ProcessDatabase` for asynchronous operations.
@@ -34,18 +35,23 @@ final class TableParserManagerSave {
                 isLocal: dictionary.isLocal
             )
             
-            try dbDictionary.insert(db)
-            
-            for word in words {
-                let dbWord = DatabaseModelWord(
-                    dictionary: dbDictionary.guid,
-                    frontText: word.frontText,
-                    backText: word.backText,
-                    description: word.description,
-                    hint: word.hint
+            do {
+                try dbDictionary.insert(db)
+                Logger.debug(
+                    "[Dictionary]: Dictionary saved",
+                    metadata: [
+                        "id": dbDictionary.id ?? -1,
+                        "guid": dbDictionary.guid,
+                        "name": dbDictionary.name
+                    ]
                 )
-                
-                try dbWord.upsert(db)
+            } catch let error as GRDB.DatabaseError {
+                if error.resultCode == .SQLITE_CONSTRAINT {
+                    throw DatabaseError.duplicateDictionary(dictionary: dbDictionary.name)
+                }
+                throw DatabaseError.saveFailed(details: error.localizedDescription)
+            } catch {
+                throw DatabaseError.saveFailed(details: error.localizedDescription)
             }
             
             Logger.debug(

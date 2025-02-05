@@ -216,12 +216,13 @@ final class DatabaseManagerDictionary {
                         "name": formattedDictionary.name
                     ]
                 )
+            } catch let error as GRDB.DatabaseError {
+                if error.resultCode == .SQLITE_CONSTRAINT {
+                    throw DatabaseError.duplicateDictionary(dictionary: formattedDictionary.name)
+                }
+                throw DatabaseError.saveFailed(details: error.localizedDescription)
             } catch {
-                Logger.error(
-                    "[Dictionary]: Save failed",
-                    metadata: ["error": error.localizedDescription]
-                )
-                throw DatabaseError.saveFailed(details: "Failed to save dictionary: \(error.localizedDescription)")
+                throw DatabaseError.saveFailed(details: error.localizedDescription)
             }
         }
     }
@@ -232,7 +233,9 @@ final class DatabaseManagerDictionary {
         guard isValidDictionary(dictionary) else {
             Logger.error(
                 "[Dictionary]: Invalid dictionary for update",
-                metadata: ["dictionary": dictionary.toString()]
+                metadata: [
+                    "dictionary": dictionary.toString()
+                ]
             )
             throw DatabaseError.invalidWord(details: "Invalid dictionary data")
         }
@@ -250,6 +253,11 @@ final class DatabaseManagerDictionary {
                         "name": formattedDictionary.name
                     ]
                 )
+            } catch let error as GRDB.DatabaseError {
+                if error.resultCode == .SQLITE_CONSTRAINT {
+                    throw DatabaseError.duplicateDictionary(dictionary: formattedDictionary.name)
+                }
+                throw DatabaseError.updateFailed(details: error.localizedDescription)
             } catch {
                 throw DatabaseError.updateFailed(details: "Failed to update dictionary: \(error.localizedDescription)")
             }
