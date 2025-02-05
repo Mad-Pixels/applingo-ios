@@ -20,12 +20,15 @@ struct DictionaryImportViewNote: View {
     var body: some View {
         SectionBody {
             VStack(alignment: .leading, spacing: style.sectionSpacing) {
-                Text(locale.tableBody)
-                    .padding(.top, 4)
-                    .padding(.leading, 4)
+                Text(locale.screenTextNote)
+                    .font(style.textFont)
+                    .foregroundColor(style.textColor)
+                    .multilineTextAlignment(.center)
             }
+            .frame(maxWidth: .infinity)
             .padding(.vertical, 12)
-            .padding(.horizontal, 8)
+            .padding(.horizontal, 4)
         }
+        .frame(maxWidth: .infinity)
     }
 }

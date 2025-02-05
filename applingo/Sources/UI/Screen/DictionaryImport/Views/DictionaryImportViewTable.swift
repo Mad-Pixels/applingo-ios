@@ -21,7 +21,7 @@ struct DictionaryImportViewTable: View {
         SectionBody {
             VStack(alignment: .leading, spacing: style.sectionSpacing) {
                 SectionHeader(
-                    title: locale.tableHeader.uppercased(),
+                    title: locale.screenSubtitleCreateTable,
                     style: .heading(ThemeManager.shared.currentThemeStyle)
                 )
                 

@@ -59,7 +59,7 @@ final class SettingsLocale: ObservableObject {
             case .subtitleFeedback: return Strings.subtitleFeedback
             case .descriptionFeedback: return Strings.descriptionFeedback
             }
-        }
+        } 
         
         var capitalized: Bool { true }
     }

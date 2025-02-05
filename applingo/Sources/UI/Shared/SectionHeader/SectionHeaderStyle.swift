@@ -38,7 +38,7 @@ extension SectionHeaderStyle {
         SectionHeaderStyle(
             titleColor: theme.textPrimary,
             separatorColor: theme.textSecondary.opacity(0),
-            titleFont: .system(size: 18, weight: .bold),
+            titleFont: .system(size: 24, weight: .bold),
             spacing: 0,
             padding: EdgeInsets(top: 0, leading: 0, bottom: 8, trailing: 0)
         )

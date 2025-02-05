@@ -26,7 +26,10 @@ struct DictionaryImport: View {
     
     var body: some View {
         VStack {
-            BaseScreen(screen: .DictionaryImport, title: locale.navigationTitle) {
+            BaseScreen(
+                screen: .DictionaryImport,
+                title: locale.screenTitle
+            ) {
                 ScrollView {
                     VStack(spacing: style.spacing) {
                         DictionaryImportViewTitle(locale: locale, style: style)
@@ -36,7 +39,6 @@ struct DictionaryImport: View {
                     }
                     .padding(style.padding)
                 }
-                .navigationTitle(locale.navigationTitle)
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {

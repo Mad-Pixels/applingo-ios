@@ -27,7 +27,7 @@ struct DictionaryImportViewTitle: View {
                     .padding(.bottom, 16)
                 
                 SectionHeader(
-                    title: locale.titleHeader.uppercased(),
+                    title: locale.screenSubtitleDictionaryAdd,
                     style: .heading(ThemeManager.shared.currentThemeStyle)
                 )
                 
