@@ -8,8 +8,10 @@ final class DatabaseManagerDictionary {
     private enum SQL {
         /// Base query for dictionary fetching
         static let fetch = """
-            SELECT * FROM \(DatabaseModelDictionary.databaseTableName)
+            SELECT *
+            FROM \(DatabaseModelDictionary.databaseTableName)
             WHERE 1=1
+            GROUP BY id
         """
         
         /// Fragment of query to filter by search term.

@@ -13,7 +13,12 @@ final class DatabaseManagerWord {
         
         /// Base query to fetch words.
         static let baseSelect = """
-            SELECT * FROM \(DatabaseModelWord.databaseTableName)
+            WITH UniqueWords AS (
+                SELECT w.*
+                FROM \(DatabaseModelWord.databaseTableName) w
+                GROUP BY w.id
+            )
+            SELECT * FROM UniqueWords
         """
         
         /// Query to search words with relevance ordering.
