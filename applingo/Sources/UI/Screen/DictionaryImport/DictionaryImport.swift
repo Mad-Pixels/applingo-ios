@@ -10,20 +10,14 @@ struct DictionaryImport: View {
     @StateObject private var style: DictionaryImportStyle
     @StateObject private var locale = DictionaryImportLocale()
     
-    /// Binding flag that controls the presentation of the file importer dialog.
-    @Binding var isShowingFileImporter: Bool
-    
-    /// Flag to manage button press animation.
+    @State private var isShowingFileImporter = false
     @State private var isPressedTrailing = false
     
     // MARK: - Initializer
     
     /// Initializes the DictionaryImport view.
-    /// - Parameters:
-    ///   - isShowingFileImporter: Binding flag for showing the file importer.
-    ///   - style: Optional style configuration; if nil, a themed style is applied.
-    init(isShowingFileImporter: Binding<Bool>, style: DictionaryImportStyle? = nil) {
-        self._isShowingFileImporter = isShowingFileImporter
+    /// - Parameter style: Optional style configuration; if nil, a themed style is applied.
+    init(style: DictionaryImportStyle? = nil) {
         let initialStyle = style ?? .themed(ThemeManager.shared.currentThemeStyle)
         _style = StateObject(wrappedValue: initialStyle)
     }
@@ -47,21 +41,23 @@ struct DictionaryImport: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     ButtonNav(
                         style: .close(ThemeManager.shared.currentThemeStyle),
-                        onTap: {
-                            presentationMode.wrappedValue.dismiss()
-                        },
+                        onTap: { presentationMode.wrappedValue.dismiss() },
                         isPressed: $isPressedTrailing
                     )
                 }
             }
+            .overlay(
+                VStack {
+                    Spacer()
+                    ButtonAction(
+                        title: locale.importCSVTitle,
+                        action: { isShowingFileImporter = true },
+                        style: .action(ThemeManager.shared.currentThemeStyle)
+                    )
+                    .padding()
+                }
+            )
         }
-        // Import CSV Button
-        ButtonAction(
-            title: locale.importCSVTitle,
-            action: { isShowingFileImporter = true },
-            style: .action(ThemeManager.shared.currentThemeStyle)
-        )
-        // File Importer Dialog
         .fileImporter(
             isPresented: $isShowingFileImporter,
             allowedContentTypes: [
@@ -83,23 +79,12 @@ struct DictionaryImport: View {
         switch result {
         case .success(let urls):
             guard let fileURL = urls.first else {
-                Logger.debug("[DictionaryImportView]: No file selected")
                 return
             }
-            // Call the parser to import the dictionary.
             let parser = DictionaryParser()
-            parser.importDictionary(from: fileURL) { importResult in
-                switch importResult {
-                case .success:
-                    Logger.debug("[DictionaryImportView]: Import successful")
-                case .failure(let error):
-                    Logger.debug("[DictionaryImportView]: Import failed", metadata: [
-                        "error": "\(error)"
-                    ])
-                }
-            }
+            parser.importDictionary(from: fileURL) { importResult in }
         case .failure(let error):
-            Logger.debug("[DictionaryImportView]: File picker error", metadata: [
+            Logger.debug("[Import]: File picker error", metadata: [
                 "error": "\(error)"
             ])
         }

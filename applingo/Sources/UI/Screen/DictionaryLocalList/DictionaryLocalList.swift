@@ -12,7 +12,7 @@ struct DictionaryLocalList: View {
     // MARK: - Local State
     
     @State private var selectedDictionary: DatabaseModelDictionary?
-    @State private var isShowingInstructions = false
+    @State private var isShowingImportSheet = false
     @State private var isShowingRemoteList = false
    
     // MARK: - Initializer
@@ -49,7 +49,7 @@ struct DictionaryLocalList: View {
             .overlay(alignment: .bottomTrailing) {
                 DictionaryLocalListViewActions(
                     locale: locale,
-                    onImport: { isShowingInstructions = true },
+                    onImport: { isShowingImportSheet = true },
                     onDownload: { isShowingRemoteList = true }
                 )
                 .padding(.bottom, 80)
@@ -67,10 +67,8 @@ struct DictionaryLocalList: View {
             )
         }
         // Present import view.
-        .sheet(isPresented: $isShowingInstructions) {
-            DictionaryImport(
-                isShowingFileImporter: $isShowingInstructions
-            )
+        .sheet(isPresented: $isShowingImportSheet) {
+            DictionaryImport()
         }
         // Present remote list view as full screen.
         .fullScreenCover(isPresented: $isShowingRemoteList) {
