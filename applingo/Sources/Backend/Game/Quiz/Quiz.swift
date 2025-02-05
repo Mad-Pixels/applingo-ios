@@ -8,17 +8,7 @@ class Quiz: ObservableObject, AbstractGame {
     let minimumWordsRequired: Int = 12
     let scoring: AbstractGameScoring
     
-    private(set) var cacheGetter: WordCache? = {
-        do {
-            return try WordCache()
-        } catch {
-            Logger.error(
-                "[Quiz]: Failed to initialize WordCache",
-                metadata: ["error": error.localizedDescription]
-            )
-            return nil
-        }
-    }()
+    private(set) var cacheGetter: WordCache? = WordCache()
         
     lazy private(set) var stats: AbstractGameStats = {
         BaseGameStats()
