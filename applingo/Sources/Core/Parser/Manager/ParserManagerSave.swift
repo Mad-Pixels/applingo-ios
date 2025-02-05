@@ -41,8 +41,12 @@ final class ParserManagerSave {
     /// 1. Converts the parser model (`ParserModelDictionary`) into a database model (`DatabaseModelDictionary`).
     /// 2. Saves the dictionary to the database using the `dictionaryManager`.
     /// 3. Iterates through each word in the provided array, converts it into a database model (`DatabaseModelWord`),
-    ///    and saves it using the `wordManager`.
+    ///    and saves it using the `wordManager` (via an upsert operation).
     /// 4. Logs the successful completion of the save operation.
+    ///
+    /// Note: All operations here are assumed to be executed within an existing transaction or
+    /// database context provided by the caller (e.g. via performDatabaseOperation), so no additional
+    /// dbQueue.write block is used here.
     ///
     /// - Parameters:
     ///   - dictionary: The dictionary model containing metadata parsed from the file.
@@ -81,7 +85,6 @@ final class ParserManagerSave {
             )
             try wordManager.upsert(dbWord)
         }
-        
         Logger.debug(
             "[Save]: Successfully saved items",
             metadata: [

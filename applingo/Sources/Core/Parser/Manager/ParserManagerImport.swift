@@ -1,4 +1,5 @@
 import Foundation
+import GRDB
 
 /// A manager responsible for importing table data and creating a dictionary-like model.
 public final class ParserManagerImport {
@@ -12,9 +13,17 @@ public final class ParserManagerImport {
     }
     
     /// Imports the content of a file at the specified URL, producing a tuple of `(ParserModelDictionary, [ParserModelWord])`.
+    ///
+    /// This method performs the following steps:
+    /// 1. Logs the start of the import process.
+    /// 2. Obtains a suitable parser from the factory based on the file extension.
+    /// 3. Parses the file to extract an array of `ParserModelWord`.
+    /// 4. Creates a `ParserModelDictionary` either from the provided metadata or based on the file name.
+    /// 5. Logs the creation of the dictionary object.
+    ///
     /// - Parameters:
     ///   - url: The URL of the file to import.
-    ///   - dictionaryMetadata: An optional pre-configured dictionary metadata object.
+    ///   - dictionaryMetadata: An optional pre-configured `ParserModelDictionary`.
     /// - Throws: `ParserError` if no suitable parser is found or parsing fails.
     /// - Returns: A tuple containing a `ParserModelDictionary` and an array of `ParserModelWord`.
     public func `import`(
@@ -56,7 +65,9 @@ public final class ParserManagerImport {
         return (dictionary, words)
     }
     
-    /// Creates a `ParserModelDictionary` from metadata if provided, otherwise from the file name.
+    /// Creates a `ParserModelDictionary` from the provided metadata, or if nil,
+    /// constructs one using the file name.
+    ///
     /// - Parameters:
     ///   - metadata: Optional pre-configured `ParserModelDictionary`.
     ///   - url: The URL to extract name information from if metadata is nil.

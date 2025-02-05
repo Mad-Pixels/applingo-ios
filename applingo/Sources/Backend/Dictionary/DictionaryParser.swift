@@ -5,6 +5,7 @@ import Foundation
 /// This class can use optional dictionary metadata (provided by DictionaryDownload)
 /// to correctly form the dictionary object.
 final class DictionaryParser: ProcessDatabase {
+    
     // MARK: - Initialization
     
     /// Initializes a new instance of `DictionaryParser`.
@@ -23,7 +24,7 @@ final class DictionaryParser: ProcessDatabase {
     /// 3. Parses the file using a table parser to extract dictionary metadata and words.
     ///    If `dictionaryMetadata` is provided, it is used to correctly form the dictionary object.
     /// 4. Retrieves the shared database queue from `AppDatabase` and creates database managers.
-    /// 5. Uses `TableParserManagerSave` to persist the parsed dictionary and words to the database.
+    /// 5. Uses `ParserManagerSave` to persist the parsed dictionary and words to the database.
     /// 6. Logs the completion of the save operation and notifies observers.
     ///
     /// - Parameters:
