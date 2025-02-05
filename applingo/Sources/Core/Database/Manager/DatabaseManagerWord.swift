@@ -47,11 +47,13 @@ final class DatabaseManagerWord {
 
     // MARK: - Properties
 
+    /// The GRDB database queue used for executing SQL queries.
     private let dbQueue: DatabaseQueue
 
     // MARK: - Initialization
 
-    /// Initializes the database manager for words.
+    /// Initializes the word database manager with the specified database queue.
+    ///
     /// - Parameter dbQueue: A GRDB database queue instance.
     init(dbQueue: DatabaseQueue) {
         self.dbQueue = dbQueue
@@ -59,7 +61,14 @@ final class DatabaseManagerWord {
 
     // MARK: - Public Methods
 
-    /// Fetches words from the database.
+    /// Fetches words from the database with optional search filtering and pagination.
+    ///
+    /// - Parameters:
+    ///   - search: An optional search string to filter words.
+    ///   - offset: The offset for pagination.
+    ///   - limit: The maximum number of words to return.
+    /// - Returns: An array of `DatabaseModelWord` objects that match the criteria.
+    /// - Throws: An error if the query fails.
     func fetch(
         search: String?,
         offset: Int,
@@ -67,10 +76,10 @@ final class DatabaseManagerWord {
     ) throws -> [DatabaseModelWord] {
         guard limit > 0 else { throw DatabaseError.invalidLimit(limit: limit) }
         guard offset >= 0 else { throw DatabaseError.invalidOffset(offset: offset) }
-
+        
         let activeDictionaries = try fetchActive()
         guard !activeDictionaries.isEmpty else { throw DatabaseError.emptyActiveDictionaries }
-
+        
         return try dbQueue.read { db in
             let (sql, arguments) = try buildFetchQuery(
                 search: search?.lowercased(),
@@ -86,35 +95,35 @@ final class DatabaseManagerWord {
                     "arguments": arguments.map { "\($0)" }.joined(separator: ", ")
                 ]
             )
-
+            
             do {
                 return try DatabaseModelWord.fetchAll(db, sql: sql, arguments: StatementArguments(arguments))
             } catch {
-                throw DatabaseError.selectDataFailed(
-                    details: "Failed to fetch words: \(error.localizedDescription)"
-                )
+                throw DatabaseError.selectDataFailed(details: "Failed to fetch words: \(error.localizedDescription)")
             }
         }
     }
-
-    /// Fetches a cache of words for randomized use.
+    
+    /// Fetches a randomized cache of words from the database.
+    ///
+    /// - Parameter count: The number of words to fetch.
+    /// - Returns: An array of cached `DatabaseModelWord` objects.
+    /// - Throws: An error if the query fails.
     func fetchCache(count: Int) throws -> [DatabaseModelWord] {
         guard count > 0 else { throw DatabaseError.invalidLimit(limit: count) }
-
+        
         let activeDictionaries = try fetchActive()
-        guard !activeDictionaries.isEmpty else {
-            throw DatabaseError.emptyActiveDictionaries
-        }
-
-        // Use selectDataFailed for failure to retrieve valid groups.
+        guard !activeDictionaries.isEmpty else { throw DatabaseError.emptyActiveDictionaries }
+        
+        // Group active dictionaries by subcategory and randomly select one group.
         guard let selectedGroup = Dictionary(grouping: activeDictionaries, by: { $0.subcategory }).randomElement() else {
             throw DatabaseError.selectDataFailed(details: "No valid dictionary groups found")
         }
-
+        
         let guids = selectedGroup.value.map { $0.guid }
         let placeholders = guids.map { _ in "?" }.joined(separator: ",")
         let sql = String(format: SQL.cacheSelect, placeholders)
-
+        
         Logger.debug(
             "[Word]: Fetch cache executed",
             metadata: [
@@ -122,11 +131,11 @@ final class DatabaseManagerWord {
                 "sql": sql
             ]
         )
-
+        
         return try dbQueue.read { db in
             var arguments = guids as [DatabaseValueConvertible]
             arguments.append(count)
-
+            
             do {
                 return try DatabaseModelWord.fetchAll(db, sql: sql, arguments: StatementArguments(arguments))
             } catch {
@@ -134,8 +143,11 @@ final class DatabaseManagerWord {
             }
         }
     }
-
+    
     /// Saves a word into the database.
+    ///
+    /// - Parameter word: The `DatabaseModelWord` object to be saved.
+    /// - Throws: An error if the word is invalid or the save operation fails.
     func save(_ word: DatabaseModelWord) throws {
         guard isValidWord(word) else {
             throw DatabaseError.invalidWord(details: "Invalid word data provided")
@@ -164,8 +176,11 @@ final class DatabaseManagerWord {
             ]
         )
     }
-
+    
     /// Updates an existing word in the database.
+    ///
+    /// - Parameter word: The `DatabaseModelWord` object to be updated.
+    /// - Throws: An error if the word is invalid or the update operation fails.
     func update(_ word: DatabaseModelWord) throws {
         guard isValidWord(word) else {
             throw DatabaseError.invalidWord(details: "Invalid word data provided")
@@ -194,13 +209,16 @@ final class DatabaseManagerWord {
             ]
         )
     }
-
+    
     /// Deletes a word from the database.
+    ///
+    /// - Parameter word: The `DatabaseModelWord` object to be deleted.
+    /// - Throws: An error if the word does not have an ID or if the deletion fails.
     func delete(_ word: DatabaseModelWord) throws {
         guard word.id != nil else {
             throw DatabaseError.invalidWord(details: "Word has no ID")
         }
-
+        
         try dbQueue.write { db in
             do {
                 try word.delete(db)
@@ -208,7 +226,7 @@ final class DatabaseManagerWord {
                 throw DatabaseError.deleteFailed(details: error.localizedDescription)
             }
         }
-
+        
         Logger.debug(
             "[Word]: Delete executed",
             metadata: [
@@ -218,10 +236,49 @@ final class DatabaseManagerWord {
             ]
         )
     }
-
+    
+    /// Upserts a word into the database.
+    ///
+    /// This method attempts to insert the word into the database. If a word with the same
+    /// frontText and backText already exists (as enforced by a UNIQUE constraint), the insertion is ignored.
+    ///
+    /// - Parameter word: The `DatabaseModelWord` object to upsert.
+    /// - Throws: An error if the upsert operation fails.
+    func upsert(_ word: DatabaseModelWord) throws {
+        guard isValidWord(word) else {
+            throw DatabaseError.invalidWord(details: "Invalid word data provided")
+        }
+        
+        try dbQueue.write { db in
+            do {
+                try formatWord(word).upsert(db)
+            } catch let dbError as GRDB.DatabaseError {
+                if dbError.resultCode == .SQLITE_CONSTRAINT {
+                    throw DatabaseError.duplicateWord(word: word.frontText)
+                } else {
+                    throw DatabaseError.saveFailed(details: "Failed to upsert word: \(dbError.localizedDescription)")
+                }
+            } catch {
+                throw DatabaseError.saveFailed(details: "Failed to upsert word: \(error.localizedDescription)")
+            }
+        }
+        
+        Logger.debug(
+            "[Word]: Upsert executed",
+            metadata: [
+                "frontText": word.frontText,
+                "backText": word.backText,
+                "uuid": word.uuid
+            ]
+        )
+    }
+    
     // MARK: - Private Methods
-
+    
     /// Fetches all active dictionaries from the database.
+    ///
+    /// - Returns: An array of active `DatabaseModelDictionary` objects.
+    /// - Throws: An error if the query fails.
     private func fetchActive() throws -> [DatabaseModelDictionary] {
         try dbQueue.read { db in
             do {
@@ -231,22 +288,37 @@ final class DatabaseManagerWord {
             }
         }
     }
-
+    
     /// Formats a word for insertion or update.
+    ///
+    /// - Parameter word: The `DatabaseModelWord` object to format.
+    /// - Returns: A formatted `DatabaseModelWord` object.
     private func formatWord(_ word: DatabaseModelWord) -> DatabaseModelWord {
         var formatted = word
         formatted.fmt()
         return formatted
     }
-
+    
     /// Validates if a word is suitable for database operations.
+    ///
+    /// - Parameter word: The `DatabaseModelWord` object to validate.
+    /// - Returns: `true` if the word is valid; otherwise, `false`.
     private func isValidWord(_ word: DatabaseModelWord) -> Bool {
         !word.frontText.isEmpty &&
         !word.backText.isEmpty &&
         !word.dictionary.isEmpty
     }
-
-    /// Builds a fetch query with dynamic conditions.
+    
+    /// Builds a SQL fetch query with dynamic conditions based on the search term,
+    /// active dictionaries, and pagination parameters.
+    ///
+    /// - Parameters:
+    ///   - search: An optional search string.
+    ///   - activeDictionaries: An array of active `DatabaseModelDictionary` objects.
+    ///   - limit: The maximum number of results to return.
+    ///   - offset: The offset for pagination.
+    /// - Returns: A tuple containing the SQL query string and an array of query arguments.
+    /// - Throws: An error if the query construction fails.
     private func buildFetchQuery(
         search: String?,
         activeDictionaries: [DatabaseModelDictionary],
@@ -266,7 +338,7 @@ final class DatabaseManagerWord {
            !trimmedSearch.isEmpty {
             let relevanceArgs = Array(repeating: trimmedSearch, count: 6)
             arguments = relevanceArgs + arguments
-
+            
             conditions.append("(LOWER(frontText) LIKE ? OR LOWER(backText) LIKE ?)")
             arguments.append("%\(trimmedSearch)%")
             arguments.append("%\(trimmedSearch)%")

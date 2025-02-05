@@ -56,30 +56,6 @@ struct DatabaseModelWord: Identifiable, Codable, Equatable, Hashable {
 
     // MARK: - Methods
     
-    /// Upsert method for skipping insert or update if wrod already exist (frontText, backText).
-    func upsert(_ db: Database) throws {
-        try db.execute(
-            sql: """
-            INSERT OR IGNORE INTO words
-                (uuid, created, description, dictionary, frontText, backText, hint, success, weight, fail)
-            VALUES
-                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
-            arguments: [
-                uuid,
-                created,
-                description,
-                dictionary,
-                frontText,
-                backText,
-                hint,
-                success,
-                weight,
-                fail
-            ]
-        )
-    }
-
     /// Formats the word details to ensure consistency (e.g., trimming whitespace, converting to lowercase).
     mutating func fmt() {
         self.frontText = frontText.trimmedTrailingWhitespace.lowercased()

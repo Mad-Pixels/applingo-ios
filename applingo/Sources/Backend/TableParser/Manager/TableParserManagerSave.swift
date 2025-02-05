@@ -79,7 +79,7 @@ final class TableParserManagerSave {
                 description: word.description,
                 hint: word.hint
             )
-            try wordManager.save(dbWord)
+            try wordManager.upsert(dbWord)
         }
         
         Logger.debug(
