@@ -5,24 +5,10 @@ import GRDB
 /// It utilizes the provided database managers to perform insert or update operations
 /// for both the dictionary and its associated words.
 final class ParserManagerSave {
-    
-    // MARK: - Properties
-    
-    /// The database operations processor.
     private let processDatabase: ProcessDatabase
-    /// Manager for handling dictionary-related database operations.
     private let dictionaryManager: DatabaseManagerDictionary
-    /// Manager for handling word-related database operations.
     private let wordManager: DatabaseManagerWord
-
-    // MARK: - Initialization
     
-    /// Initializes a new instance of `ParserManagerSave` with the given parameters.
-    ///
-    /// - Parameters:
-    ///   - processDatabase: An instance of `ProcessDatabase` used to wrap database operations.
-    ///   - dictionaryManager: The manager responsible for dictionary CRUD operations.
-    ///   - wordManager: The manager responsible for word CRUD operations.
     init(
         processDatabase: ProcessDatabase,
         dictionaryManager: DatabaseManagerDictionary,
@@ -33,26 +19,12 @@ final class ParserManagerSave {
         self.wordManager = wordManager
     }
     
-    // MARK: - Public Methods
-    
-    /// Saves the parsed dictionary and its associated words to the database.
-    ///
-    /// This method performs the following steps:
-    /// 1. Converts the parser model (`ParserModelDictionary`) into a database model (`DatabaseModelDictionary`).
-    /// 2. Saves the dictionary to the database using the `dictionaryManager`.
-    /// 3. Iterates through each word in the provided array, converts it into a database model (`DatabaseModelWord`),
-    ///    and saves it using the `wordManager` (via an upsert operation).
-    /// 4. Logs the successful completion of the save operation.
-    ///
-    /// Note: All operations here are assumed to be executed within an existing transaction or
-    /// database context provided by the caller (e.g. via performDatabaseOperation), so no additional
-    /// dbQueue.write block is used here.
-    ///
-    /// - Parameters:
-    ///   - dictionary: The dictionary model containing metadata parsed from the file.
-    ///   - words: An array of word models parsed from the file.
-    /// - Throws: An error if any database operation (save/update) fails.
-    func saveToDatabase(dictionary: ParserModelDictionary, words: [ParserModelWord]) throws {
+    /// Saves the dictionary and words directly in the provided database transaction.
+    func saveToDatabase(
+        dictionary: ParserModelDictionary,
+        words: [ParserModelWord],
+        db: Database // <-- Принимаем db напрямую
+    ) throws {
         let dbDictionary = DatabaseModelDictionary(
             guid: dictionary.guid,
             name: dictionary.name,
@@ -65,15 +37,7 @@ final class ParserManagerSave {
             isLocal: dictionary.isLocal
         )
         
-        try dictionaryManager.save(dbDictionary)
-        Logger.debug(
-            "[Save]: Dictionary saved via manager",
-            metadata: [
-                "id": dbDictionary.id ?? -1,
-                "guid": dbDictionary.guid,
-                "name": dbDictionary.name
-            ]
-        )
+        try dictionaryManager.saveInTransaction(dbDictionary, db: db)
         
         for word in words {
             let dbWord = DatabaseModelWord(
@@ -83,10 +47,11 @@ final class ParserManagerSave {
                 description: word.description,
                 hint: word.hint
             )
-            try wordManager.upsert(dbWord)
+            try wordManager.saveInTransaction(dbWord, db: db)
         }
+        
         Logger.debug(
-            "[Save]: Successfully saved items",
+            "[ParserManagerSave]: Successfully saved items",
             metadata: [
                 "dictionary_guid": dictionary.guid,
                 "saved_words_count": "\(words.count)"
