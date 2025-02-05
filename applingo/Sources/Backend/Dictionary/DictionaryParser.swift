@@ -58,7 +58,7 @@ final class DictionaryParser: ProcessDatabase {
         
         performDatabaseOperation(
             { [weak self] () throws -> (ParserModelDictionary, [ParserModelWord]) in
-                guard let self = self else {
+                guard self != nil else {
                     throw NSError(
                         domain: "DictionaryParser",
                         code: 0,
