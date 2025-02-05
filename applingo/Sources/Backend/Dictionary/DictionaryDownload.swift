@@ -36,6 +36,10 @@ actor DictionaryDownload {
             ]
         )
         
+        defer {
+            cleanupDownloadedFile(at: fileURL)
+        }
+        
         let dictionaryMetadata = createDictionaryMetadata(from: dictionary)
         Logger.debug(
             "[Download]: Created dictionary metadata",
@@ -58,9 +62,7 @@ actor DictionaryDownload {
             ]
         )
         
-        cleanupDownloadedFile(at: fileURL)
         await notifyDictionaryUpdate()
-        
         Logger.debug(
             "[Download]: Dictionary processing completed",
             metadata: [
@@ -74,10 +76,10 @@ actor DictionaryDownload {
     /// Creates dictionary metadata from the given API model.
     ///
     /// This method extracts necessary fields from the API model to create a
-    /// `TableParserModelDictionary` used for further processing.
+    /// `ParserModelDictionary` used for further processing.
     ///
     /// - Parameter dictionary: The API model representing the dictionary.
-    /// - Returns: A `TableParserModelDictionary` instance with populated metadata.
+    /// - Returns: A `ParserModelDictionary` instance with populated metadata.
     private func createDictionaryMetadata(from dictionary: ApiModelDictionaryItem) -> ParserModelDictionary {
         let level = DictionaryLevelType(rawValue: dictionary.level) ?? .undefined
         
