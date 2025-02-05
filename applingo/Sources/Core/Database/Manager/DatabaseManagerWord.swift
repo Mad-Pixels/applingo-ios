@@ -237,41 +237,6 @@ final class DatabaseManagerWord {
         )
     }
     
-    /// Saves a new word to the database within an existing transaction.
-        /// - Parameters:
-        ///   - word: The word to save.
-        ///   - db: The database instance from the current transaction.
-        func saveInTransaction(_ word: DatabaseModelWord, db: Database) throws {
-            guard isValidWord(word) else {
-                Logger.error(
-                    "[Word]: Invalid word",
-                    metadata: ["word": word.toString()]
-                )
-                throw DatabaseError.invalidWord(details: "Invalid word data")
-            }
-            
-            let formattedWord = formatWord(word)
-            
-            do {
-                try formattedWord.upsert(db)
-                Logger.info(
-                    "[Word]: Word saved",
-                    metadata: [
-                        "id": formattedWord.id ?? -1,
-                        "uuid": formattedWord.uuid,
-                        "frontText": formattedWord.frontText
-                    ]
-                )
-            } catch let error as GRDB.DatabaseError {
-                if error.resultCode == .SQLITE_CONSTRAINT {
-                    throw DatabaseError.duplicateWord(word: formattedWord.frontText)
-                }
-                throw DatabaseError.saveFailed(details: error.localizedDescription)
-            } catch {
-                throw DatabaseError.saveFailed(details: error.localizedDescription)
-            }
-        }
-    
     /// Upserts a word into the database.
     ///
     /// This method attempts to insert the word into the database. If a word with the same

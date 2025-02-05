@@ -343,37 +343,6 @@ final class DatabaseManagerDictionary {
         }
     }
     
-    func saveInTransaction(_ dictionary: DatabaseModelDictionary, db: Database) throws {
-            guard isValidDictionary(dictionary) else {
-                Logger.error(
-                    "[Dictionary]: Invalid dictionary",
-                    metadata: ["dictionary": dictionary.toString()]
-                )
-                throw DatabaseError.invalidWord(details: "Invalid dictionary data")
-            }
-            
-            let formattedDictionary = formatDictionary(dictionary)
-            
-            do {
-                try formattedDictionary.insert(db)
-                Logger.info(
-                    "[Dictionary]: Dictionary saved",
-                    metadata: [
-                        "id": formattedDictionary.id ?? -1,
-                        "guid": formattedDictionary.guid,
-                        "name": formattedDictionary.name
-                    ]
-                )
-            } catch let error as GRDB.DatabaseError {
-                if error.resultCode == .SQLITE_CONSTRAINT {
-                    throw DatabaseError.duplicateDictionary(dictionary: formattedDictionary.name)
-                }
-                throw DatabaseError.saveFailed(details: error.localizedDescription)
-            } catch {
-                throw DatabaseError.saveFailed(details: error.localizedDescription)
-            }
-        }
-    
     /// Fetches dictionary references (id, guid, name) from the database.
     /// - Returns: An array of DictionaryRef objects.
     func fetchRefs() throws -> [DatabaseModelDictionaryRef] {
