@@ -1,79 +1,97 @@
 import Foundation
 import GRDB
 
-/// A class responsible for saving parsed dictionary data to the database.
+/// A manager responsible for saving parsed dictionary data to the database.
+/// It utilizes the provided database managers to perform insert or update operations
+/// for both the dictionary and its associated words.
 final class TableParserManagerSave {
-   
-    /// The database operations processor
+    
+    // MARK: - Properties
+    
+    /// The database operations processor.
     private let processDatabase: ProcessDatabase
-   
-    /// Creates a new save manager with the given `ProcessDatabase`.
-    /// - Parameter processDatabase: An instance of `ProcessDatabase` used for handling DB operations.
-    init(processDatabase: ProcessDatabase) {
-        self.processDatabase = processDatabase
-    }
-   
-    /// Saves the dictionary and words into the database.
+    /// Manager for handling dictionary-related database operations.
+    private let dictionaryManager: DatabaseManagerDictionary
+    /// Manager for handling word-related database operations.
+    private let wordManager: DatabaseManagerWord
+
+    // MARK: - Initialization
+    
+    /// Initializes a new instance of `TableParserManagerSave` with the given parameters.
+    ///
     /// - Parameters:
-    ///   - dictionary: The dictionary model containing metadata (TableParserModelDictionary).
-    ///   - words: The array of word entries to be stored (TableParserModelWord).
-    /// - Throws: TableParserError if database connection fails, DatabaseError for other database operations.
+    ///   - processDatabase: An instance of `ProcessDatabase` used to wrap database operations.
+    ///   - dictionaryManager: The manager responsible for dictionary CRUD operations.
+    ///   - wordManager: The manager responsible for word CRUD operations.
+    init(
+        processDatabase: ProcessDatabase,
+        dictionaryManager: DatabaseManagerDictionary,
+        wordManager: DatabaseManagerWord
+    ) {
+        self.processDatabase = processDatabase
+        self.dictionaryManager = dictionaryManager
+        self.wordManager = wordManager
+    }
+    
+    // MARK: - Public Methods
+    
+    /// Saves the parsed dictionary and its associated words to the database.
+    ///
+    /// This method performs the following steps:
+    /// 1. Converts the table parser model (`TableParserModelDictionary`) into a database model (`DatabaseModelDictionary`).
+    /// 2. Saves the dictionary to the database using the `dictionaryManager`.
+    /// 3. Iterates through each word in the provided array, converts it into a database model (`DatabaseModelWord`),
+    ///    and saves it using the `wordManager`.
+    /// 4. Logs the successful completion of the save operation.
+    ///
+    /// - Parameters:
+    ///   - dictionary: The dictionary model containing metadata parsed from the file.
+    ///   - words: An array of word models parsed from the file.
+    /// - Throws: An error if any database operation (save/update) fails.
     func saveToDatabase(dictionary: TableParserModelDictionary, words: [TableParserModelWord]) throws {
-        guard let dbQueue = AppDatabase.shared.databaseQueue else {
-            throw TableParserError.fileReadFailed("Database connection is not established")
-        }
-       
-        try dbQueue.write { db in
-            let dbDictionary = DatabaseModelDictionary(
-                guid: dictionary.guid,
-                name: dictionary.name,
-                topic: dictionary.topic,
-                author: dictionary.author,
-                category: dictionary.category,
-                subcategory: dictionary.subcategory,
-                description: dictionary.description,
-                level: dictionary.level,
-                isLocal: dictionary.isLocal
+        // Step 1: Convert the parser model into a database model.
+        let dbDictionary = DatabaseModelDictionary(
+            guid: dictionary.guid,
+            name: dictionary.name,
+            topic: dictionary.topic,
+            author: dictionary.author,
+            category: dictionary.category,
+            subcategory: dictionary.subcategory,
+            description: dictionary.description,
+            level: dictionary.level,
+            isLocal: dictionary.isLocal
+        )
+        
+        // Step 2: Save the dictionary using the dictionary manager.
+        try dictionaryManager.save(dbDictionary)
+        Logger.debug(
+            "[Save]: Dictionary saved via manager",
+            metadata: [
+                "id": dbDictionary.id ?? -1,
+                "guid": dbDictionary.guid,
+                "name": dbDictionary.name
+            ]
+        )
+        
+        // Step 3: Iterate through each parsed word, convert it into a database model, and save it.
+        for word in words {
+            let dbWord = DatabaseModelWord(
+                dictionary: dbDictionary.guid,
+                frontText: word.frontText,
+                backText: word.backText,
+                description: word.description,
+                hint: word.hint
             )
-           
-            do {
-                try dbDictionary.insert(db)
-                Logger.debug(
-                    "[Dictionary]: Dictionary saved",
-                    metadata: [
-                        "id": dbDictionary.id ?? -1,
-                        "guid": dbDictionary.guid,
-                        "name": dbDictionary.name
-                    ]
-                )
-            } catch let error as GRDB.DatabaseError {
-                if error.resultCode == .SQLITE_CONSTRAINT {
-                    throw DatabaseError.duplicateDictionary(dictionary: dbDictionary.name)
-                }
-                throw DatabaseError.saveFailed(details: error.localizedDescription)
-            } catch {
-                throw DatabaseError.saveFailed(details: error.localizedDescription)
-            }
-           
-            for word in words {
-                let dbWord = DatabaseModelWord(
-                    dictionary: dbDictionary.guid,
-                    frontText: word.frontText,
-                    backText: word.backText,
-                    description: word.description,
-                    hint: word.hint
-                )
-               
-                try dbWord.upsert(db)
-            }
-           
-            Logger.debug(
-                "[ParserManagerSave]: Successfully saved items",
-                metadata: [
-                    "dictionary_guid": dictionary.guid,
-                    "saved_words_count": "\(words.count)"
-                ]
-            )
+            try wordManager.save(dbWord)
         }
+        
+        // Step 4: Log the successful completion of the save operation.
+        Logger.debug(
+            "[Save]: Successfully saved items",
+            metadata: [
+                "dictionary_guid": dictionary.guid,
+                "saved_words_count": "\(words.count)"
+            ]
+        )
     }
 }
