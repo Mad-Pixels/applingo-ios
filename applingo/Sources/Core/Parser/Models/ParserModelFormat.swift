@@ -1,7 +1,7 @@
 import Foundation
 
 /// Struct describing how table data is formatted (separator, header, quote/escape characters, etc.).
-public struct TableParserModelFormat {
+public struct ParserModelFormat {
     public let separator: String
     public let hasHeader: Bool
     public let quoteCharacter: Character
@@ -20,7 +20,7 @@ public struct TableParserModelFormat {
     }
     
     /// Standard CSV format.
-    public static let csv = TableParserModelFormat(
+    public static let csv = ParserModelFormat(
         separator: ",",
         hasHeader: true,
         quoteCharacter: "\"",
@@ -28,7 +28,7 @@ public struct TableParserModelFormat {
     )
     
     /// Standard TSV format.
-    public static let tsv = TableParserModelFormat(
+    public static let tsv = ParserModelFormat(
         separator: "\t",
         hasHeader: true,
         quoteCharacter: "\"",

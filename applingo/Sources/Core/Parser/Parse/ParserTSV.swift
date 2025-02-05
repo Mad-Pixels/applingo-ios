@@ -1,13 +1,13 @@
 import Foundation
 
 /// A parser that handles TSV files using a defined `TableFormat`.
-public final class TableParserParseTSV: AbstractTableParser {
+public final class ParseTSV: AbstractParser {
     
-    private let format: TableParserModelFormat
+    private let format: ParserModelFormat
     
     /// Initializes the TSV parser with the given `TableFormat`.
     /// - Parameter format: The table format (separator, quote, etc.).
-    public init(format: TableParserModelFormat = .tsv) {
+    public init(format: ParserModelFormat = .tsv) {
         self.format = format
     }
     
@@ -23,11 +23,11 @@ public final class TableParserParseTSV: AbstractTableParser {
     /// - Parameters:
     ///   - url: The URL to the TSV file.
     ///   - encoding: The encoding to use (default is `.utf8`).
-    /// - Returns: An array of `TableParserModelWord`.
-    /// - Throws: `TableParserError` if the file is empty or has invalid columns.
-    public func parse(url: URL, encoding: String.Encoding = .utf8) throws -> [TableParserModelWord] {
+    /// - Returns: An array of `ParserModelWord`.
+    /// - Throws: `ParserError` if the file is empty or has invalid columns.
+    public func parse(url: URL, encoding: String.Encoding = .utf8) throws -> [ParserModelWord] {
         Logger.debug(
-            "[TableParser]: Starting to parse TSV",
+            "[Parser]: Starting to parse TSV",
             metadata: [
                 "url": "\(url)",
                 "encoding": "\(encoding)"
@@ -39,12 +39,12 @@ public final class TableParserParseTSV: AbstractTableParser {
             content = try String(contentsOf: url, encoding: encoding)
         } catch {
             Logger.debug(
-                "[TableParser]: Failed to read file content",
+                "[Parser]: Failed to read file content",
                 metadata: [
                     "error": "\(error)"
                 ]
             )
-            throw TableParserError.fileReadFailed("Could not read file at \(url)")
+            throw ParserError.fileReadFailed("Could not read file at \(url)")
         }
         
         let lines = content
@@ -52,20 +52,20 @@ public final class TableParserParseTSV: AbstractTableParser {
             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
             .filter { !$0.isEmpty }
         Logger.debug(
-            "[TableParser]: Number of non-empty lines",
+            "[Parser]: Number of non-empty lines",
             metadata: [
                 "count": "\(lines.count)"
             ]
         )
         
         guard !lines.isEmpty else {
-            Logger.debug("[TableParser]: File is empty")
-            throw TableParserError.emptyFile
+            Logger.debug("[Parser]: File is empty")
+            throw ParserError.emptyFile
         }
         
         let dataLines = format.hasHeader ? Array(lines.dropFirst()) : lines
         Logger.debug(
-            "[TableParser]: Number of data lines (after header drop)",
+            "[Parser]: Number of data lines (after header drop)",
             metadata: [
                 "count": "\(dataLines.count)"
             ]
@@ -73,7 +73,7 @@ public final class TableParserParseTSV: AbstractTableParser {
         
         let words = try parseLines(dataLines)
         Logger.debug(
-            "[TableParser]: Successfully parsed TSV lines",
+            "[Parser]: Successfully parsed TSV lines",
             metadata: [
                 "words_count": "\(words.count)"
             ]
@@ -84,15 +84,15 @@ public final class TableParserParseTSV: AbstractTableParser {
     
     /// Parses individual lines from the TSV file.
     /// - Parameter lines: An array of strings representing file lines.
-    /// - Returns: An array of `TableParserModelWord`.
-    /// - Throws: `TableParserError.parsingFailed` if no valid words are found.
-    private func parseLines(_ lines: [String]) throws -> [TableParserModelWord] {
-        var words = [TableParserModelWord]()
+    /// - Returns: An array of `ParserModelWord`.
+    /// - Throws: `ParserError.parsingFailed` if no valid words are found.
+    private func parseLines(_ lines: [String]) throws -> [ParserModelWord] {
+        var words = [ParserModelWord]()
         
         for (index, line) in lines.enumerated() {
             let columns = line.components(separatedBy: format.separator)
             Logger.debug(
-                "[TableParser]: Found columns in line",
+                "[Parser]: Found columns in line",
                 metadata: [
                     "line_index": "\(index)",
                     "columns_count": "\(columns.count)"
@@ -119,7 +119,7 @@ public final class TableParserParseTSV: AbstractTableParser {
                 continue
             }
             
-            let word = TableParserModelWord(
+            let word = ParserModelWord(
                 dictionary: UUID().uuidString,
                 frontText: columns[0],
                 backText: columns[1],
@@ -131,22 +131,22 @@ public final class TableParserParseTSV: AbstractTableParser {
         
         guard !words.isEmpty else {
             Logger.debug("[Parser]: No valid words found after parsing")
-            throw TableParserError.parsingFailed("No valid word entries found in TSV file")
+            throw ParserError.parsingFailed("No valid word entries found in TSV file")
         }
         
         return words
     }
     
-    /// Creates a `TableParserModelWord` from an array of columns.
+    /// Creates a `ParserModelWord` from an array of columns.
     /// - Parameter columns: The array of columns from one line.
-    /// - Returns: A valid `TableParserModelWord`.
-    /// - Throws: `TableParserError.invalidFormat` if frontText or backText is empty.
-    private func createWord(from columns: [String]) throws -> TableParserModelWord {
+    /// - Returns: A valid `ParserModelWord`.
+    /// - Throws: `ParserError.invalidFormat` if frontText or backText is empty.
+    private func createWord(from columns: [String]) throws -> ParserModelWord {
         guard !columns[0].isEmpty, !columns[1].isEmpty else {
-            throw TableParserError.invalidFormat("Empty front or back text in TSV")
+            throw ParserError.invalidFormat("Empty front or back text in TSV")
         }
         
-        return TableParserModelWord(
+        return ParserModelWord(
             dictionary: UUID().uuidString,
             frontText: columns[0],
             backText: columns[1],

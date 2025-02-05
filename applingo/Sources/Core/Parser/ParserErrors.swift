@@ -1,7 +1,7 @@
 import Foundation
 
 /// Enum describing various errors that can occur during table parsing.
-public enum TableParserError: Error, LocalizedError {
+public enum ParserError: Error, LocalizedError {
     case fileReadFailed(String)
     case parsingFailed(String)
     case invalidFormat(String)

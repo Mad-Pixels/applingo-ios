@@ -1,7 +1,7 @@
 import Foundation
 
 /// Data model representing the dictionary-level metadata for table parsing.
-public struct TableParserModelDictionary: Codable {
+public struct ParserModelDictionary: Codable {
     let guid: String
     let name: String
     let topic: String

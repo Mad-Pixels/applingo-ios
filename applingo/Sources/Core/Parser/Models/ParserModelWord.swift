@@ -1,7 +1,7 @@
 import Foundation
 
 /// Data model representing a single word/entry for table parsing.
-public struct TableParserModelWord: Codable {
+public struct ParserModelWord: Codable {
     public var dictionary: String
     public var frontText: String
     public var backText: String

@@ -1,29 +1,29 @@
 import Foundation
 
 /// A manager responsible for importing table data and creating a dictionary-like model.
-public final class TableParserManagerImport {
+public final class ParserManagerImport {
     
-    private let factory: TableParserFactory
+    private let factory: ParserFactory
     
-    /// Initializes the manager with a specific `TableParserFactory`.
+    /// Initializes the manager with a specific `ParserFactory`.
     /// - Parameter factory: The factory used to find the appropriate parser.
-    public init(factory: TableParserFactory = TableParserFactory()) {
+    public init(factory: ParserFactory = ParserFactory()) {
         self.factory = factory
     }
     
-    /// Imports the content of a file at the specified URL, producing a tuple of `(TableParserModelDictionary, [TableParserModelWord])`.
+    /// Imports the content of a file at the specified URL, producing a tuple of `(ParserModelDictionary, [ParserModelWord])`.
     /// - Parameters:
     ///   - url: The URL of the file to import.
     ///   - dictionaryMetadata: An optional pre-configured dictionary metadata object.
-    /// - Throws: `TableParserError` if no suitable parser is found or parsing fails.
-    /// - Returns: A tuple containing a `TableParserModelDictionary` and an array of `TableParserModelWord`.
+    /// - Throws: `ParserError` if no suitable parser is found or parsing fails.
+    /// - Returns: A tuple containing a `ParserModelDictionary` and an array of `ParserModelWord`.
     public func `import`(
         from url: URL,
-        dictionaryMetadata: TableParserModelDictionary? = nil
-    ) throws -> (dictionary: TableParserModelDictionary, words: [TableParserModelWord]) {
+        dictionaryMetadata: ParserModelDictionary? = nil
+    ) throws -> (dictionary: ParserModelDictionary, words: [ParserModelWord]) {
         
         Logger.debug(
-            "[TableParser]: Starting import",
+            "[Parser]: Starting import",
             metadata: [
                 "url": "\(url)"
             ]
@@ -31,7 +31,7 @@ public final class TableParserManagerImport {
         
         let parser = try factory.parser(for: url)
         Logger.debug(
-            "[TableParser]: Using parser",
+            "[Parser]: Using parser",
             metadata: [
                 "parser_type": "\(type(of: parser))"
             ]
@@ -39,7 +39,7 @@ public final class TableParserManagerImport {
         
         let words = try parser.parse(url: url, encoding: .utf8)
         Logger.debug(
-            "[TableParser]: Parsed words",
+            "[Parser]: Parsed words",
             metadata: [
                 "words_count": "\(words.count)"
             ]
@@ -56,17 +56,17 @@ public final class TableParserManagerImport {
         return (dictionary, words)
     }
     
-    /// Creates a `TableParserModelDictionary` from metadata if provided, otherwise from the file name.
+    /// Creates a `ParserModelDictionary` from metadata if provided, otherwise from the file name.
     /// - Parameters:
-    ///   - metadata: Optional pre-configured `TableParserModelDictionary`.
+    ///   - metadata: Optional pre-configured `ParserModelDictionary`.
     ///   - url: The URL to extract name information from if metadata is nil.
-    /// - Returns: A new `TableParserModelDictionary`.
+    /// - Returns: A new `ParserModelDictionary`.
     private func createDictionary(
-        from metadata: TableParserModelDictionary?,
+        from metadata: ParserModelDictionary?,
         url: URL
-    ) -> TableParserModelDictionary {
+    ) -> ParserModelDictionary {
         if let meta = metadata {
-            return TableParserModelDictionary(
+            return ParserModelDictionary(
                 guid: meta.guid,
                 name: meta.name,
                 topic: meta.topic,
@@ -80,7 +80,7 @@ public final class TableParserManagerImport {
         }
         
         let baseName = url.deletingPathExtension().lastPathComponent
-        return TableParserModelDictionary(
+        return ParserModelDictionary(
             guid: url.lastPathComponent,
             name: baseName,
             topic: "local",

@@ -78,7 +78,7 @@ actor DictionaryDownload {
     ///
     /// - Parameter dictionary: The API model representing the dictionary.
     /// - Returns: A `TableParserModelDictionary` instance with populated metadata.
-    private func createDictionaryMetadata(from dictionary: ApiModelDictionaryItem) -> TableParserModelDictionary {
+    private func createDictionaryMetadata(from dictionary: ApiModelDictionaryItem) -> ParserModelDictionary {
         let level = DictionaryLevelType(rawValue: dictionary.level) ?? .undefined
         
         if level == .undefined {
@@ -91,7 +91,7 @@ actor DictionaryDownload {
             )
         }
         
-        return TableParserModelDictionary(
+        return ParserModelDictionary(
             guid: dictionary.id,
             name: dictionary.name,
             topic: dictionary.topic,

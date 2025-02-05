@@ -30,7 +30,7 @@ final class DictionaryParser: ProcessDatabase {
     ///   - url: The URL of the file to import.
     ///   - dictionaryMetadata: Optional metadata to construct the dictionary object properly.
     ///   - completion: A closure called with the result of the import operation.
-    func importDictionary(from url: URL, dictionaryMetadata: TableParserModelDictionary? = nil, completion: @escaping (Result<Void, Error>) -> Void) {
+    func importDictionary(from url: URL, dictionaryMetadata: ParserModelDictionary? = nil, completion: @escaping (Result<Void, Error>) -> Void) {
         Logger.debug(
             "[Parser]: Starting dictionary import",
             metadata: ["url": url.absoluteString]
@@ -59,7 +59,7 @@ final class DictionaryParser: ProcessDatabase {
                     )
                 }
                 
-                let importManager = TableParserManagerImport()
+                let importManager = ParserManagerImport()
                 let (dictionaryModel, words) = try importManager.import(from: url, dictionaryMetadata: dictionaryMetadata)
                 Logger.debug(
                     "[Parser]: File parsed successfully",
@@ -75,7 +75,7 @@ final class DictionaryParser: ProcessDatabase {
                 let dictionaryManager = DatabaseManagerDictionary(dbQueue: dbQueue)
                 let wordManager = DatabaseManagerWord(dbQueue: dbQueue)
                 
-                try TableParserManagerSave(
+                try ParserManagerSave(
                     processDatabase: self,
                     dictionaryManager: dictionaryManager,
                     wordManager: wordManager

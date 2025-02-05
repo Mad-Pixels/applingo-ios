@@ -4,7 +4,7 @@ import GRDB
 /// A manager responsible for saving parsed dictionary data to the database.
 /// It utilizes the provided database managers to perform insert or update operations
 /// for both the dictionary and its associated words.
-final class TableParserManagerSave {
+final class ParserManagerSave {
     
     // MARK: - Properties
     
@@ -17,7 +17,7 @@ final class TableParserManagerSave {
 
     // MARK: - Initialization
     
-    /// Initializes a new instance of `TableParserManagerSave` with the given parameters.
+    /// Initializes a new instance of `ParserManagerSave` with the given parameters.
     ///
     /// - Parameters:
     ///   - processDatabase: An instance of `ProcessDatabase` used to wrap database operations.
@@ -38,7 +38,7 @@ final class TableParserManagerSave {
     /// Saves the parsed dictionary and its associated words to the database.
     ///
     /// This method performs the following steps:
-    /// 1. Converts the table parser model (`TableParserModelDictionary`) into a database model (`DatabaseModelDictionary`).
+    /// 1. Converts the parser model (`ParserModelDictionary`) into a database model (`DatabaseModelDictionary`).
     /// 2. Saves the dictionary to the database using the `dictionaryManager`.
     /// 3. Iterates through each word in the provided array, converts it into a database model (`DatabaseModelWord`),
     ///    and saves it using the `wordManager`.
@@ -48,7 +48,7 @@ final class TableParserManagerSave {
     ///   - dictionary: The dictionary model containing metadata parsed from the file.
     ///   - words: An array of word models parsed from the file.
     /// - Throws: An error if any database operation (save/update) fails.
-    func saveToDatabase(dictionary: TableParserModelDictionary, words: [TableParserModelWord]) throws {
+    func saveToDatabase(dictionary: ParserModelDictionary, words: [ParserModelWord]) throws {
         let dbDictionary = DatabaseModelDictionary(
             guid: dictionary.guid,
             name: dictionary.name,
