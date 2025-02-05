@@ -25,38 +25,33 @@ struct DictionaryImport: View {
     // MARK: - Body
     
     var body: some View {
-        BaseScreen(screen: .DictionaryImport, title: locale.navigationTitle) {
-            ScrollView {
-                VStack(spacing: style.spacing) {
-                    DictionaryImportViewTitle(locale: locale, style: style)
-                    DictionaryImportViewTable(locale: locale, style: style)
-                    DictionaryImportViewDescription(locale: locale, style: style)
-                    DictionaryImportViewNote(locale: locale, style: style)
+        VStack {
+            BaseScreen(screen: .DictionaryImport, title: locale.navigationTitle) {
+                ScrollView {
+                    VStack(spacing: style.spacing) {
+                        DictionaryImportViewTitle(locale: locale, style: style)
+                        DictionaryImportViewTable(locale: locale, style: style)
+                        DictionaryImportViewDescription(locale: locale, style: style)
+                        DictionaryImportViewNote(locale: locale, style: style)
+                    }
+                    .padding(style.padding)
                 }
-                .padding(style.padding)
+                .navigationTitle(locale.navigationTitle)
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        ButtonNav(
+                            style: .close(ThemeManager.shared.currentThemeStyle),
+                            onTap: { presentationMode.wrappedValue.dismiss() },
+                            isPressed: $isPressedTrailing
+                        )
+                    }
+                }
             }
-            .navigationTitle(locale.navigationTitle)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    ButtonNav(
-                        style: .close(ThemeManager.shared.currentThemeStyle),
-                        onTap: { presentationMode.wrappedValue.dismiss() },
-                        isPressed: $isPressedTrailing
-                    )
-                }
-            }
-            .overlay(
-                VStack {
-                    Spacer()
-                    ButtonAction(
-                        title: locale.importCSVTitle,
-                        action: { isShowingFileImporter = true },
-                        style: .action(ThemeManager.shared.currentThemeStyle)
-                    )
-                    .padding()
-                }
-            )
+            
+            DictionaryImportViewActions(locale: locale, onImport: {
+                isShowingFileImporter = true
+            })
         }
         .fileImporter(
             isPresented: $isShowingFileImporter,
@@ -78,11 +73,11 @@ struct DictionaryImport: View {
     private func handleFileImport(result: Result<[URL], Error>) {
         switch result {
         case .success(let urls):
-            guard let fileURL = urls.first else {
-                return
-            }
+            guard let fileURL = urls.first else { return }
             let parser = DictionaryParser()
-            parser.importDictionary(from: fileURL) { importResult in }
+            parser.importDictionary(from: fileURL) { importResult in
+                // Handle the import result if needed.
+            }
         case .failure(let error):
             Logger.debug("[Import]: File picker error", metadata: [
                 "error": "\(error)"
