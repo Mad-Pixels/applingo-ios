@@ -67,7 +67,9 @@ final class WordCache: ProcessDatabase {
         var shouldLoad = false
         queue.sync(flags: .barrier) {
             if !self.isLoadingCache {
-                self.isLoadingCache = true
+                DispatchQueue.main.async {
+                    self.isLoadingCache = true
+                }
                 shouldLoad = true
                 Logger.debug("[Word]: Set isLoadingCache to true")
             }
@@ -93,18 +95,23 @@ final class WordCache: ProcessDatabase {
                 
                 if fetchedWords.isEmpty {
                     Logger.debug("[Word]: No words fetched")
-                    self.isLoadingCache = false
+                    DispatchQueue.main.async {
+                        self.isLoadingCache = false
+                    }
                     return
                 }
                 
                 let uniqueWords = self.validateAndFilterWords(fetchedWords)
                 Logger.debug("[Word]: Validated \(uniqueWords.count) unique words")
-                self.cache = uniqueWords
-                self.isLoadingCache = false
+                
+                DispatchQueue.main.async {
+                    self.cache = uniqueWords
+                    self.isLoadingCache = false
+                }
             }
         } catch {
             Logger.error("[Word]: Failed to fetch cache: \(error)")
-            queue.async(flags: .barrier) {
+            DispatchQueue.main.async {
                 self.isLoadingCache = false
             }
         }
@@ -122,7 +129,9 @@ final class WordCache: ProcessDatabase {
         )
         queue.async(flags: .barrier) {
             if let itemId = item.id {
-                self.cache.removeAll { $0.id == itemId }
+                DispatchQueue.main.async {
+                    self.cache.removeAll { $0.id == itemId }
+                }
             }
         }
     }
@@ -137,11 +146,12 @@ final class WordCache: ProcessDatabase {
         )
         queue.async(flags: .barrier) {
             self.cancellationToken = UUID()
-            self.isLoadingCache = false
-            self.cache.removeAll()
+            DispatchQueue.main.async {
+                self.isLoadingCache = false
+                self.cache.removeAll()
+            }
         }
     }
-    
     // MARK: - Private Methods
     
     /// Sets up the cache observer for automatic refilling

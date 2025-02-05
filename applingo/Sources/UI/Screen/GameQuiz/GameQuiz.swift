@@ -60,6 +60,8 @@ struct GameQuiz: View {
         let correctWord = wordsArray[0] // Можно рандомно выбирать корректный ответ.
         let showingFront = Bool.random()
         
+        cacheGetter.removeFromCache(correctWord)
+        
         currentCard = QuizModelCard(
             correctWord: correctWord,
             allWords: wordsArray,
