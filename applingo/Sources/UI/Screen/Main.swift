@@ -13,7 +13,11 @@ struct Main: View {
                     .environmentObject(LocaleManager.shared)
                     .tabItem {
                         Label {
-                            Text(locale.localizedString(for: "Learn").capitalizedFirstLetter)
+                            Text(
+                                locale.localizedString(
+                                    for: "tab.general.title"
+                                ).capitalizedFirstLetter
+                            )
                         } icon: {
                             Image(systemName: "rectangle.grid.2x2.fill")
                         }
@@ -25,7 +29,11 @@ struct Main: View {
                     .environmentObject(LocaleManager.shared)
                     .tabItem {
                         Label {
-                            Text(locale.localizedString(for: "Words").capitalizedFirstLetter)
+                            Text(
+                                locale.localizedString(
+                                    for: "tab.word.title"
+                                ).capitalizedFirstLetter
+                            )
                         } icon: {
                             Image(systemName: "text.magnifyingglass")
                         }
@@ -37,7 +45,11 @@ struct Main: View {
                     .environmentObject(LocaleManager.shared)
                     .tabItem {
                         Label {
-                            Text(locale.localizedString(for: "Dictionaries").capitalizedFirstLetter)
+                            Text(
+                                locale.localizedString(
+                                    for: "tab.dictionary.title"
+                                ).capitalizedFirstLetter
+                            )
                         } icon: {
                             Image(systemName: "doc.text.fill.viewfinder")
                         }
@@ -49,7 +61,11 @@ struct Main: View {
                     .environmentObject(LocaleManager.shared)
                     .tabItem {
                         Label {
-                            Text(locale.localizedString(for: "Settings").capitalizedFirstLetter)
+                            Text(
+                                locale.localizedString(
+                                    for: "tab.settings.title"
+                                ).capitalizedFirstLetter
+                            )
                         } icon: {
                             Image(systemName: "gearshape.2.fill")
                         }
