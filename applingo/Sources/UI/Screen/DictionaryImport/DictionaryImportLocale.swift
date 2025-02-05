@@ -16,6 +16,7 @@ final class DictionaryImportLocale: ObservableObject {
         static let descriptionBlockD = "screen.dictionaryImport.description.BlockD"
         static let subtitleCreateTable = "screen.dictionaryImport.subtitle.ctreateTable"
         static let subtitleDictionaryAdd = "screen.dictionaryImport.subtitle.dictionaryAdd"
+        static let textDictionaryAdd = "screen.dictionaryImport.text.dictionaryAdd"
         
         static let navigationTitle = "ImportNoteTitle"
         static let importCSV = "ImportCSV"
@@ -41,6 +42,7 @@ final class DictionaryImportLocale: ObservableObject {
     @Published private(set) var screenDescriptionBlockD: String
     @Published private(set) var screenSubtitleCreateTable: String
     @Published private(set) var screenSubtitleDictionaryAdd: String
+    @Published private(set) var screenTextDictionaryAdd: String
     
     @Published private(set) var navigationTitle: String
     @Published private(set) var importCSVTitle: String
@@ -52,7 +54,6 @@ final class DictionaryImportLocale: ObservableObject {
     @Published private(set) var tableColumnC: String
     @Published private(set) var tableColumnD: String
     @Published private(set) var tableBody: String
-    
     
     
     // MARK: - Initialization
@@ -68,6 +69,7 @@ final class DictionaryImportLocale: ObservableObject {
         self.screenDescriptionBlockD = Self.localizedString(for: .descriptionBlockD)
         self.screenSubtitleCreateTable = Self.localizedString(for: .subtitleCreateTable)
         self.screenSubtitleDictionaryAdd = Self.localizedString(for: .subtitleDictionaryAdd)
+        self.screenTextDictionaryAdd = Self.localizedString(for: .textDictionaryAdd)
         
         self.navigationTitle = Self.localizedString(for: .navigationTitle)
         self.importCSVTitle = Self.localizedString(for: .importCSV)
@@ -105,6 +107,7 @@ final class DictionaryImportLocale: ObservableObject {
         case descriptionBlockD
         case subtitleCreateTable
         case subtitleDictionaryAdd
+        case textDictionaryAdd
         
         case navigationTitle, importCSV
         case titleHeader, titleBody
@@ -122,6 +125,7 @@ final class DictionaryImportLocale: ObservableObject {
             case .descriptionBlockD: return Strings.descriptionBlockD
             case .subtitleCreateTable: return Strings.subtitleCreateTable
             case .subtitleDictionaryAdd: return Strings.subtitleDictionaryAdd
+            case .textDictionaryAdd: return Strings.textDictionaryAdd
                 
             case .navigationTitle: return Strings.navigationTitle
             case .importCSV: return Strings.importCSV
@@ -154,6 +158,7 @@ final class DictionaryImportLocale: ObservableObject {
         screenDescriptionBlockD = Self.localizedString(for: .descriptionBlockD)
         screenSubtitleCreateTable = Self.localizedString(for: .subtitleCreateTable)
         screenSubtitleDictionaryAdd = Self.localizedString(for: .subtitleDictionaryAdd)
+        screenTextDictionaryAdd = Self.localizedString(for: .textDictionaryAdd)
         
         navigationTitle = Self.localizedString(for: .navigationTitle)
         importCSVTitle = Self.localizedString(for: .importCSV)

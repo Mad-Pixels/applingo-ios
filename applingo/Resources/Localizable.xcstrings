@@ -861,6 +861,23 @@
         }
       }
     },
+    "screen.dictionaryImport.text.dictionaryAdd" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "To add a dictionary, you must upload a file containing words in a table format, such as Excel or CSV"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Чтобы добавить словарь, необходимо загрузить файл со словами в табличном формате, например, Excel или CSV"
+          }
+        }
+      }
+    },
     "screen.dictionaryImport.text.note" : {
       "extractionState" : "manual",
       "localizations" : {

@@ -31,9 +31,10 @@ struct DictionaryImportViewTitle: View {
                     style: .heading(ThemeManager.shared.currentThemeStyle)
                 )
                 
-                Text(locale.titleBody)
-                    .padding(.top, 4)
-                    .padding(.leading, 4)
+                Text(locale.screenTextDictionaryAdd)
+                    .font(style.textFont)
+                    .foregroundStyle(style.textColor)
+                    .padding(.top, -8)
             }
             .padding(.vertical, 12)
             .padding(.horizontal, 8)
