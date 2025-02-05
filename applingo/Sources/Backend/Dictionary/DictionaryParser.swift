@@ -27,7 +27,6 @@ final class DictionaryParser: ProcessDatabase {
             wordManager: wordManager
         )
         super.init()
-        Logger.info("[DictionaryParser]: Parser Initialized")
     }
     
     // MARK: - Public Methods
