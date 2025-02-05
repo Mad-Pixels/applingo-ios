@@ -6,19 +6,10 @@ struct GameQuiz: View {
     
     // MARK: - Properties
     
-    /// The quiz game model.
     @ObservedObject var game: Quiz
-    
-    /// Style object for configuring the appearance of the quiz.
     @StateObject private var style: GameQuizStyle
-    
-    /// Localization object for quiz texts.
     @StateObject private var locale = GameQuizLocale()
-    
-    /// Environment object providing cached words.
     @EnvironmentObject var cacheGetter: WordCache
-    
-    /// The current quiz card being displayed.
     @State private var currentCard: QuizModelCard?
     
     // MARK: - Initializer
