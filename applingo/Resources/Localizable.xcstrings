@@ -2,7 +2,14 @@
   "sourceLanguage" : "en",
   "strings" : {
     "%lld%%" : {
-
+      "localizations" : {
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld%%"
+          }
+        }
+      }
     },
     "base.button.close" : {
       "extractionState" : "manual",
@@ -595,6 +602,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Запрашиваемое слово не найдено."
+          }
+        }
+      }
+    },
+    "error.parser.emptyFile" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The file is empty. Please provide a valid file."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Файл пуст. Укажите корректный файл."
+          }
+        }
+      }
+    },
+    "error.parser.fileReadFailed" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed to open the file."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не удалось открыть файл."
+          }
+        }
+      }
+    },
+    "error.parser.invalidFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invalid file format. Please use a supported format."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Недопустимый формат файла. Используйте поддерживаемый формат."
+          }
+        }
+      }
+    },
+    "error.parser.notEnoughColumns" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The file must contain at least two columns (text, definition)."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Файл должен содержать минимум две колонки (текст, перевод)."
+          }
+        }
+      }
+    },
+    "error.parser.parsingFailed" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed to process the file. The format may be incorrect."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не удалось обработать файл. Возможно, неверный формат."
+          }
+        }
+      }
+    },
+    "error.parser.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Import Error"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ошибка импорта"
+          }
+        }
+      }
+    },
+    "error.parser.unsupportedFormat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This file format is not supported."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Этот формат файла не поддерживается."
           }
         }
       }
