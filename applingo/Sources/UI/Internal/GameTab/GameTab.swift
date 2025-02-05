@@ -36,6 +36,7 @@ struct GameTab: View {
             .padding(.horizontal, style.padding)
             .padding(.vertical, -4)
         }
+        .padding(.top, 16)
     }
    
     @ViewBuilder
