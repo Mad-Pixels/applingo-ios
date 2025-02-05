@@ -31,12 +31,8 @@ public final class ParseCSV: AbstractParser {
             "encoding": "\(encoding)"
         ])
         
-        ///TODO: FOR TEST ERROR
-        //let l = URL(fileURLWithPath: "/path/to/your/file.txt")
-        
         let content: String
         do {
-            //content = try String(contentsOf: l, encoding: encoding)
             content = try String(contentsOf: url, encoding: encoding)
         } catch {
             Logger.debug(
