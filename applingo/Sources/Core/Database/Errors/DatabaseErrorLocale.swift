@@ -13,6 +13,7 @@ final class DatabaseErrorLocale: ObservableObject {
     @Published var fileImportFailed: String
     @Published var migrationFailed: String
     @Published var duplicateWord: String
+    @Published var duplicateDictionary: String
     @Published var updateFailed: String
     @Published var saveFailed: String
     @Published var deleteFailed: String
@@ -34,6 +35,7 @@ final class DatabaseErrorLocale: ObservableObject {
         self.fileImportFailed = lm.localizedString(for: "error.database.fileImportFailed")
         self.migrationFailed = lm.localizedString(for: "error.database.migrationFailed")
         self.duplicateWord = lm.localizedString(for: "error.database.duplicateWord")
+        self.duplicateDictionary = lm.localizedString(for: "error.database.duplicateDictionary")
         self.updateFailed = lm.localizedString(for: "error.database.updateFailed")
         self.saveFailed = lm.localizedString(for: "error.database.saveFailed")
         self.deleteFailed = lm.localizedString(for: "error.database.deleteFailed")
@@ -66,6 +68,7 @@ final class DatabaseErrorLocale: ObservableObject {
         self.fileImportFailed = lm.localizedString(for: "error.database.fileImportFailed")
         self.migrationFailed = lm.localizedString(for: "error.database.migrationFailed")
         self.duplicateWord = lm.localizedString(for: "error.database.duplicateWord")
+        self.duplicateDictionary = lm.localizedString(for: "error.database.duplicateDictionary")
         self.updateFailed = lm.localizedString(for: "error.database.updateFailed")
         self.saveFailed = lm.localizedString(for: "error.database.saveFailed")
         self.deleteFailed = lm.localizedString(for: "error.database.deleteFailed")

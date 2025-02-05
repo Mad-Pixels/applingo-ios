@@ -361,6 +361,23 @@
         }
       }
     },
+    "error.database.duplicateDictionary" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This dictionary already exist!"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Этот словарь уже существует!"
+          }
+        }
+      }
+    },
     "error.database.duplicateWord" : {
       "extractionState" : "manual",
       "localizations" : {

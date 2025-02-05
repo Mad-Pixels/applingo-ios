@@ -11,6 +11,7 @@ enum DatabaseError: Error {
     case fileImportFailed(details: String)
     case migrationFailed(details: String)
     case duplicateWord(word: String)
+    case duplicateDictionary(dictionary: String)
     case updateFailed(details: String)
     case saveFailed(details: String)
     case deleteFailed(details: String)
@@ -43,6 +44,8 @@ extension DatabaseError {
             return "Migration failed. Details: \(details)"
         case .duplicateWord(let word):
             return "Word already exists: \(word)"
+        case .duplicateDictionary(let dictionary):
+            return "Dictionary already exists: \(dictionary)"
         case .updateFailed(let details):
             return "Failed to update word. Details: \(details)"
         case .saveFailed(let details):
@@ -82,6 +85,8 @@ extension DatabaseError {
             return locale.migrationFailed
         case .duplicateWord:
             return locale.duplicateWord
+        case .duplicateDictionary:
+            return locale.duplicateDictionary
         case .updateFailed:
             return locale.updateFailed
         case .saveFailed:
@@ -111,7 +116,7 @@ extension DatabaseError {
             return .critical
         case .fileImportFailed, .updateFailed, .deleteFailed, .selectDataFailed, .saveFailed:
             return .error
-        case .emptyActiveDictionaries, .invalidSearchParameters, .alreadyConnected, .duplicateWord, .invalidWord, .invalidOffset, .invalidLimit, .wordNotFound:
+        case .emptyActiveDictionaries, .invalidSearchParameters, .alreadyConnected, .duplicateWord, .invalidWord, .invalidOffset, .invalidLimit, .wordNotFound, .duplicateDictionary:
             return .warning
         }
     }
