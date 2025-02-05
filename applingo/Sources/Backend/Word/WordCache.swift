@@ -62,65 +62,51 @@ final class WordCache: ProcessDatabase {
     
     /// Initializes the cache with initial data
     func initializeCache() {
-        queue.async { [weak self] in
-            guard let self = self else {
-                Logger.warning("[Word]: Self was deallocated during initialization")
-                return
+        Logger.debug("[Word]: Starting initializeCache")
+        
+        var shouldLoad = false
+        queue.sync(flags: .barrier) {
+            if !self.isLoadingCache {
+                self.isLoadingCache = true
+                shouldLoad = true
+                Logger.debug("[Word]: Set isLoadingCache to true")
             }
+        }
+        
+        guard shouldLoad else {
+            Logger.debug("[Word]: Cache is already loading, skipping initialization")
+            return
+        }
+        
+        let currentToken = self.cancellationToken
+        Logger.debug("[Word]: About to fetch cache")
+        
+        do {
+            let fetchedWords = try self.wordRepository.fetchCache(count: self.cacheSize)
+            Logger.debug("[Word]: Fetched \(fetchedWords.count) words")
             
-            var shouldLoad = false
-            self.queue.sync(flags: .barrier) {
-                if !self.isLoadingCache {
-                    self.isLoadingCache = true
-                    shouldLoad = true
+            queue.async(flags: .barrier) {
+                if currentToken != self.cancellationToken {
+                    Logger.debug("[Word]: Operation cancelled")
+                    return
                 }
-            }
-            
-            guard shouldLoad else {
-                Logger.debug("[Word]: Cache is already loading, skipping initialization")
-                return
-            }
-            
-            let currentToken = self.cancellationToken
-            
-            self.performDatabaseOperation(
-                { try self.wordRepository.fetchCache(count: self.cacheSize) },
-                success: { [weak self] fetchedWords in
-                    guard let self = self, currentToken == self.cancellationToken else {
-                        Logger.debug("[Word]: Cache operation cancelled or self deallocated")
-                        return
-                    }
-                    
-                    self.queue.async(flags: .barrier) {
-                        if fetchedWords.isEmpty {
-                            Logger.debug("[Word]: Cache no words fetched during initialization")
-                            self.isLoadingCache = false
-                            return
-                        }
-                        
-                        let uniqueWords = self.validateAndFilterWords(fetchedWords)
-                        self.cache = uniqueWords
-                        Logger.debug(
-                            "[Word]: Cache initialized",
-                            metadata: [
-                                "wordCount": String(uniqueWords.count)
-                            ]
-                        )
-                        self.isLoadingCache = false
-                    }
-                },
-                screen: .WordList,
-                metadata: ["operation": "initializeCache", "screen": screen.rawValue],
-                completion: { [weak self] result in
-                    guard let self = self, currentToken == self.cancellationToken else { return }
-                    
-                    if case .failure(let error) = result {
-                        self.queue.async(flags: .barrier) {
-                            self.isLoadingCache = false
-                        }
-                    }
+                
+                if fetchedWords.isEmpty {
+                    Logger.debug("[Word]: No words fetched")
+                    self.isLoadingCache = false
+                    return
                 }
-            )
+                
+                let uniqueWords = self.validateAndFilterWords(fetchedWords)
+                Logger.debug("[Word]: Validated \(uniqueWords.count) unique words")
+                self.cache = uniqueWords
+                self.isLoadingCache = false
+            }
+        } catch {
+            Logger.error("[Word]: Failed to fetch cache: \(error)")
+            queue.async(flags: .barrier) {
+                self.isLoadingCache = false
+            }
         }
     }
     
