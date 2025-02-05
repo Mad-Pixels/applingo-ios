@@ -1,7 +1,7 @@
 import Foundation
 
 /// A base class for backend operations, providing common functionality for handling errors and frame tracking.
-class BaseBackend {
+class ErrorWrapper {
     /// The current frame type for tracking context
     private(set) var screen: ScreenType = .Home
     
@@ -9,7 +9,7 @@ class BaseBackend {
     /// - Parameter newScreen: The frame type to set
     func setScreen(_ newScreen: ScreenType) {
         Logger.debug(
-            "[BaseBackend]: Setting frame",
+            "[ErrorWrapper]: Setting frame",
             metadata: [
                 "oldFrame": screen.rawValue,
                 "newFrame": newScreen.rawValue

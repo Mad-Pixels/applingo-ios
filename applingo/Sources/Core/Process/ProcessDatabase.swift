@@ -2,11 +2,11 @@ import Foundation
 import Combine
 import GRDB
 
-/// A class that extends `BaseBackend` with `ObservableObject` functionality for managing database operations.
+/// A class that extends `ErrorWrapper` with `ObservableObject` functionality for managing database operations.
 ///
 /// `ProcessDatabase` is designed to handle synchronous database operations, providing centralized error handling
 /// and success callbacks, while ensuring thread safety by executing operations on a background thread.
-class ProcessDatabase: BaseBackend, ObservableObject {
+class ProcessDatabase: ErrorWrapper, ObservableObject {
     
     /// A generic method to perform synchronous database operations with error handling and success callbacks.
     ///

@@ -1,11 +1,11 @@
 import Foundation
 import Combine
 
-/// A class that extends `BaseBackend` with `ObservableObject` functionality for managing API operations.
+/// A class that extends `ErrorWrapper` with `ObservableObject` functionality for managing API operations.
 ///
 /// `ProcessApi` is designed to handle asynchronous API operations while integrating error handling
 /// and providing reactive updates via the Combine framework.
-class ProcessApi: BaseBackend, ObservableObject {
+class ProcessApi: ErrorWrapper, ObservableObject {
     
     /// A generic method to perform asynchronous API operations with error handling and success callbacks.
     ///
