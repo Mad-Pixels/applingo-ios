@@ -8,8 +8,9 @@ public enum ParserError: Error, LocalizedError {
     case notEnoughColumns
     case emptyFile
     case unsupportedFormat
-    
-    public var errorDescription: String? {
+
+    /// Developer message (non-localized) for the error.
+    public var developerMessage: String {
         switch self {
         case .fileReadFailed(let details):
             return "Failed to read file: \(details)"
@@ -24,5 +25,19 @@ public enum ParserError: Error, LocalizedError {
         case .unsupportedFormat:
             return "File format is not supported"
         }
+    }
+
+    /// Localized user-friendly message for the error.
+    public var localizedMessage: String {
+        return ParserErrorLocale.shared.localizedMessage(for: self)
+    }
+
+    /// Localized error title (usually common for all parser errors).
+    public var localizedTitle: String {
+        return ParserErrorLocale.shared.errorTitle
+    }
+    
+    public var errorDescription: String? {
+        return developerMessage
     }
 }

@@ -23,6 +23,7 @@ extension AppErrorContext {
     enum ErrorSource: String {
         case network
         case database
+        case parser
         case unknown
     }
     

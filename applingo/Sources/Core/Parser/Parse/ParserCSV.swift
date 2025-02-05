@@ -32,7 +32,7 @@ public final class ParseCSV: AbstractParser {
         ])
         
         ///TODO: FOR TEST ERROR
-        let l = URL(fileURLWithPath: "/path/to/your/file.txt")
+        //let l = URL(fileURLWithPath: "/path/to/your/file.txt")
         
         let content: String
         do {

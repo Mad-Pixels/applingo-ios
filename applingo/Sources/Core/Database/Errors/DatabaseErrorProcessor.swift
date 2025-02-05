@@ -13,7 +13,7 @@ struct DatabaseErrorProcessor: ErrorProcessor {
             context: AppErrorContext(
                 source: .database,
                 screen: AppStorage.shared.activeScreen,
-                metadata: ["developerMessage": dbError.developerMessage],
+                metadata: ["message": dbError.developerMessage],
                 severity: dbError.severity
             ),
             title: dbError.localizedTitle,

@@ -6,6 +6,7 @@ enum AppErrorType {
     case database(operation: String)
     case business(code: String)
     case ui(component: String)
+    case parser
     case unknown
     
     var isUserFacing: Bool {
@@ -14,6 +15,7 @@ enum AppErrorType {
         case .network(let statusCode):
             return (400...499).contains(statusCode)
         case .database: return true
+        case .parser: return true
         case .business: return true
         case .unknown: return true
         }
@@ -27,6 +29,8 @@ enum AppErrorType {
             return LocaleManager.shared.localizedString(for: "error.network.title")
         case .database:
             return LocaleManager.shared.localizedString(for: "error.database.title")
+        case .parser:
+            return LocaleManager.shared.localizedString(for: "error.parser.title")
         case .business:
             return LocaleManager.shared.localizedString(for: "error.business.title")
         case .ui:
