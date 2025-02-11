@@ -7,6 +7,12 @@ import GRDB
 /// to correctly form the dictionary object.
 final class DictionaryParser: ProcessDatabase {
     
+    // MARK: - Constants
+    
+    private enum Constants {
+        static let temporaryFilePrefix = "file:///private/var/mobile/Containers/Data/Application"
+    }
+    
     // MARK: - Properties
     
     private let transactionManager: DatabaseManagerTransaction
@@ -65,15 +71,23 @@ final class DictionaryParser: ProcessDatabase {
                     )
                 }
                 
-                guard url.startAccessingSecurityScopedResource() else {
-                    throw URLError(.noPermissionsToReadFile)
+                guard FileManager.default.fileExists(atPath: url.path) else {
+                    throw URLError(.fileDoesNotExist)
                 }
-                defer {
-                    url.stopAccessingSecurityScopedResource()
-                    Logger.debug(
-                        "[Parser]: Stopped accessing security scoped resource",
-                        metadata: ["url": url.absoluteString]
-                    )
+                
+                let isTemporaryFile = url.absoluteString.hasPrefix(Constants.temporaryFilePrefix)
+                
+                if !isTemporaryFile {
+                    guard url.startAccessingSecurityScopedResource() else {
+                        throw URLError(.noPermissionsToReadFile)
+                    }
+                    do {
+                        url.stopAccessingSecurityScopedResource()
+                        Logger.debug(
+                            "[Parser]: Stopped accessing security scoped resource",
+                            metadata: ["url": url.absoluteString]
+                        )
+                    }
                 }
                 
                 let importManager = ParserManagerImport()
