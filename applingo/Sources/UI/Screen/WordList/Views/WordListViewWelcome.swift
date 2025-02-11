@@ -13,9 +13,12 @@ struct WordListViewWelcome: View {
                 .frame(width: 215, height: 215)
 
             VStack(spacing: 16) {
-                Button("Скачать словарь") {
-                    showRemoteDictionary = true
-                }
+                ButtonAction(
+                    title: "Скачать словарь",
+                    action: {
+                        showRemoteDictionary = true
+                    }
+                )
                 .padding()
                 .frame(maxWidth: .infinity)
             }

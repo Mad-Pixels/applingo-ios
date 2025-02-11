@@ -9,6 +9,7 @@ final class WordListLocale: ObservableObject {
         static let title = "screen.wordList.title"
         static let search = "base.text.search"
         static let noWords = "base.text.noItems"
+        static let buttonDownloadDictionaty = "screen.wordList.button.downloadDictionaty"
     }
     
     // MARK: - Published Properties
@@ -16,6 +17,7 @@ final class WordListLocale: ObservableObject {
     @Published private(set) var screenTitle: String
     @Published private(set) var screenSearch: String
     @Published private(set) var screenNoWords: String
+    @Published private(set) var screenButtonDownloadDictionaty: String
     
     // MARK: - Initialization
     
@@ -23,6 +25,7 @@ final class WordListLocale: ObservableObject {
         self.screenTitle = Self.localizedString(for: .title)
         self.screenSearch = Self.localizedString(for: .search)
         self.screenNoWords = Self.localizedString(for: .noWords)
+        self.screenButtonDownloadDictionaty = Self.localizedString(for: .buttonDownloadDictionaty)
         
         NotificationCenter.default.addObserver(
             self,
@@ -42,12 +45,14 @@ final class WordListLocale: ObservableObject {
         case title
         case search
         case noWords
+        case buttonDownloadDictionaty
        
         var key: String {
             switch self {
             case .title: return Strings.title
             case .search: return Strings.search
             case .noWords: return Strings.noWords
+            case .buttonDownloadDictionaty: return Strings.buttonDownloadDictionaty
             }
         }
     }
@@ -63,5 +68,6 @@ final class WordListLocale: ObservableObject {
         screenTitle = Self.localizedString(for: .title)
         screenSearch = Self.localizedString(for: .search)
         screenNoWords = Self.localizedString(for: .noWords)
+        screenButtonDownloadDictionaty = Self.localizedString(for: .buttonDownloadDictionaty)
     }
 }

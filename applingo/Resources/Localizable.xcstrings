@@ -1881,6 +1881,23 @@
         }
       }
     },
+    "screen.wordList.button.downloadDictionaty" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Download dictionary"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скачать словарь"
+          }
+        }
+      }
+    },
     "screen.wordList.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1965,9 +1982,6 @@
           }
         }
       }
-    },
-    "Скачать словарь" : {
-
     }
   },
   "version" : "1.0"
