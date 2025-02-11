@@ -82,7 +82,10 @@ struct WordListViewList: View {
     
     /// A computed property that returns a view for the empty state.
     private var emptyStateView: AnyView {
-        if wordsGetter.searchText.isEmpty && wordsGetter.words.isEmpty {
+        if wordsGetter.searchText.isEmpty &&
+            wordsGetter.words.isEmpty &&
+            !wordsGetter.isLoadingPage
+        {
             return AnyView(WordListViewWelcome(style: style, locale: locale))
         } else {
             return AnyView(WordListViewNoItems(style: style, locale: locale))
