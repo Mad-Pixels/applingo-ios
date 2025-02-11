@@ -2,15 +2,21 @@ import SwiftUI
 
 struct GameTab: View {
     @StateObject private var locale = GameTabLocale()
-    
-    let game: any AbstractGame
+    @ObservedObject var game: Quiz
+    @ObservedObject var stats: BaseGameStats // добавляем это
     let style: GameTabStyle
+    
+    init(game: Quiz, style: GameTabStyle) {
+        self.game = game
+        self.style = style
+        self._stats = ObservedObject(wrappedValue: game.statsObject) // и это
+    }
    
     var body: some View {
         SectionBody {
             HStack(spacing: style.spacing) {
                 GameTabViewScore(
-                    score: game.stats.score,
+                    score: stats.score, // теперь берем из stats
                     style: style,
                     locale: locale
                 )
@@ -20,7 +26,7 @@ struct GameTab: View {
                     .foregroundColor(style.dividerColor)
                
                 GameTabViewStreak(
-                    streak: game.stats.perfectStreaks,
+                    streak: stats.perfectStreaks,
                     style: style,
                     locale: locale
                 )
@@ -44,7 +50,7 @@ struct GameTab: View {
         switch mode {
         case .practice:
             GameTabViewAccuracy(
-                accuracy: game.stats.accuracy,
+                accuracy: stats.accuracy,
                 style: style
             )
         case .survival where game.state.survivalState != nil:

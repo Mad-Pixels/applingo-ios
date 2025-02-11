@@ -11,6 +11,7 @@ struct GameQuiz: View {
     @StateObject private var locale = GameQuizLocale()
     @EnvironmentObject var cacheGetter: WordCache
     @State private var currentCard: QuizModelCard?
+    @State private var cardStartTime: Date?
     
     // MARK: - Initializer
     
@@ -72,15 +73,19 @@ struct GameQuiz: View {
         if let validation = game.validation as? QuizValidation, let card = currentCard {
             validation.setCurrentCard(card)
         }
+        
+        cardStartTime = Date()
     }
     
     /// Handles the user's answer.
     /// - Parameter answer: The answer text provided by the user.
     private func handleAnswer(_ answer: String) {
         let result = game.validateAnswer(answer)
+        let responseTime = cardStartTime.map { Date().timeIntervalSince($0) } ?? 0
+        
         game.updateStats(
             correct: result == .correct,
-            responseTime: 0, // TODO: Implement time measurement.
+            responseTime: responseTime,
             isSpecialCard: false
         )
         

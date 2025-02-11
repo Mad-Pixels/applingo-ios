@@ -33,7 +33,7 @@ struct GameModeViewGame: View {
                     
                     ToolbarItem(placement: .principal) {
                         GameTab(
-                            game: game,
+                            game: game as! Quiz,
                             style: .themed(ThemeManager.shared.currentThemeStyle)
                         )
                     }

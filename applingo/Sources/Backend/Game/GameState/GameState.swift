@@ -1,10 +1,10 @@
 import SwiftUI
 
-class GameState: ObservableObject {
+final class GameState: ObservableObject {
     @Published var currentMode: GameModeType?
     @Published var survivalState: SurvivalState?
     @Published var timeState: TimeState?
-    let stats: AbstractGameStats
+    let stats: any AbstractGameStats
     
     struct SurvivalState {
         var lives: Int
@@ -14,7 +14,7 @@ class GameState: ObservableObject {
         var timeLeft: TimeInterval
     }
     
-    init(stats: AbstractGameStats) {
+    init(stats: any AbstractGameStats) {
         self.stats = stats
     }
 }

@@ -1,6 +1,6 @@
 import SwiftUI
 
-class Quiz: ObservableObject, AbstractGame {
+final class Quiz: ObservableObject, AbstractGame {
     let validation: any AbstractGameValidation
     let theme: GameTheme
     let type: GameType = .quiz
@@ -9,22 +9,21 @@ class Quiz: ObservableObject, AbstractGame {
     let scoring: AbstractGameScoring
     
     private(set) var cacheGetter: WordCache? = WordCache()
-        
-    lazy private(set) var stats: AbstractGameStats = {
-        BaseGameStats()
+    
+    @Published private(set) var statsObject = BaseGameStats()
+    var stats: any AbstractGameStats { statsObject }
+    
+    private(set) lazy var state: GameState = {
+        GameState(stats: stats)
     }()
-        
-    lazy private(set) var state: GameState = {
-        GameState(stats: self.stats)
-    }()
-        
+    
     init() {
         self.theme = ThemeManager.shared.currentThemeStyle.quizTheme
         self.scoring = BaseGameScoring(
-            baseScore: 10,
+            baseScore: 8,
             quickResponseThreshold: 0.6,
             quickResponseBonus: 5,
-            specialCardBonus: 8
+            specialCardBonus: 15
         )
         self.validation = QuizValidation(
             feedbacks: [
@@ -32,14 +31,12 @@ class Quiz: ObservableObject, AbstractGame {
             ]
         )
     }
-        
+    
     lazy var gameView: AnyView = {
         if let cache = cacheGetter {
             return AnyView(GameQuiz(game: self).environmentObject(cache))
         } else {
-            return AnyView(
-                ErrorView(message: "Failed to initialize game cache")
-            )
+            return AnyView(ErrorView(message: "Failed to initialize game cache"))
         }
     }()
     
@@ -63,9 +60,14 @@ class Quiz: ObservableObject, AbstractGame {
                 responseTime: responseTime,
                 isSpecialCard: isSpecialCard
             )
-            stats.score += points
+            Logger.debug("[Quiz]: Adding points: \(points), current score: \(statsObject.score)")
+            statsObject.score += points
+            Logger.debug("[Quiz]: New score: \(statsObject.score)")
         } else {
-            stats.score -= scoring.calculatePenalty()
+            let penalty = scoring.calculatePenalty()
+            Logger.debug("[Quiz]: Subtracting penalty: \(penalty), current score: \(statsObject.score)")
+            statsObject.score -= penalty
+            Logger.debug("[Quiz]: New score: \(statsObject.score)")
         }
     }
     
@@ -99,7 +101,6 @@ class Quiz: ObservableObject, AbstractGame {
     }
 }
 
-// You'll need to create this view to handle the error case
 struct ErrorView: View {
     let message: String
     

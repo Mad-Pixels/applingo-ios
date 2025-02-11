@@ -14,6 +14,12 @@ struct GameTabViewScore: View {
             Text(verbatim: "\(score)")
                 .font(style.valueFont)
                 .foregroundColor(style.textPrimaryColor)
+                .onAppear {
+                    Logger.debug("[GameTabViewScore]: Score displayed: \(score)")
+                }
+                .onChange(of: score) { newScore in
+                    Logger.debug("[GameTabViewScore]: Score updated: \(newScore)")
+                }
         }
     }
 }

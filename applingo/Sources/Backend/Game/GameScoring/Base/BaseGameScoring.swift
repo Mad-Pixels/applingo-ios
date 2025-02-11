@@ -1,6 +1,6 @@
 import SwiftUI
 
-class BaseGameScoring: AbstractGameScoring {
+final class BaseGameScoring: AbstractGameScoring {
     let baseScore: Int
     let quickResponseThreshold: TimeInterval
     let quickResponseBonus: Int
@@ -19,10 +19,22 @@ class BaseGameScoring: AbstractGameScoring {
     }
     
     func calculateScore(responseTime: TimeInterval, isSpecialCard: Bool) -> Int {
-        0
+        var totalScore = baseScore
+        
+        if responseTime <= quickResponseThreshold {
+            totalScore += quickResponseBonus
+        }
+        
+        if isSpecialCard {
+            totalScore += specialCardBonus
+        }
+
+        Logger.debug("[Scoring]: Calculated score: \(totalScore)")
+        return totalScore
     }
     
     func calculatePenalty() -> Int {
-        0
+        Logger.debug("[Scoring]: Calculated penalty: \(baseScore / 2)")
+        return baseScore / 2
     }
 }
