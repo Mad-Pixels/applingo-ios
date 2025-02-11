@@ -6,10 +6,10 @@ struct WordListViewList: View {
     @EnvironmentObject private var themeManager: ThemeManager
     private let locale: WordListLocale
     private let style: WordListStyle
-    
-    private let onWordSelect: (DatabaseModelWord) -> Void
+
     @ObservedObject private var wordsAction: WordAction
     @ObservedObject private var wordsGetter: WordGetter
+    private let onWordSelect: (DatabaseModelWord) -> Void
     
     // MARK: - Initializer
     /// Initializes the word list view with localization and a data source.
@@ -45,11 +45,12 @@ struct WordListViewList: View {
         ItemList<DatabaseModelWord, WordRow>(
             items: wordsBinding,
             style: .themed(themeManager.currentThemeStyle),
-            isLoadingPage: wordsGetter.isLoadingPage,
+            isLoadingPage: wordsGetter.isLoadingPage || !wordsGetter.hasLoadedInitialPage,
             error: nil,
             emptyListView: emptyStateView,
             onItemAppear: { word in wordsGetter.loadMoreWordsIfNeeded(currentItem: word) },
-            onDelete: delete
+            onDelete: delete,
+            onItemTap: onWordSelect
         ) { word in
             WordRow(
                 model: WordRowModel(
@@ -71,10 +72,12 @@ struct WordListViewList: View {
     private func delete(at offsets: IndexSet) {
         offsets.forEach { index in
             let word = wordsGetter.words[index]
-            
             wordsAction.delete(word) { result in
                 if case .success = result {
-                    wordsGetter.removeWord(word)
+                    DispatchQueue.main.async {
+                        let getter = self.wordsGetter
+                        getter.removeWord(word)
+                    }
                 }
             }
         }
@@ -82,13 +85,18 @@ struct WordListViewList: View {
     
     /// A computed property that returns a view for the empty state.
     private var emptyStateView: AnyView {
-        if wordsGetter.searchText.isEmpty &&
-            wordsGetter.words.isEmpty &&
-            !wordsGetter.isLoadingPage
-        {
-            return AnyView(WordListViewWelcome(style: style, locale: locale))
+        if wordsGetter.words.isEmpty {
+            if wordsGetter.isLoadingPage || !wordsGetter.hasLoadedInitialPage {
+                return AnyView(ItemListLoadingOverlay(style: .themed(themeManager.currentThemeStyle)))
+            } else {
+                if wordsGetter.searchText.isEmpty {
+                    return AnyView(WordListViewWelcome(style: style, locale: locale))
+                } else {
+                    return AnyView(WordListViewNoItems(style: style, locale: locale))
+                }
+            }
         } else {
-            return AnyView(WordListViewNoItems(style: style, locale: locale))
+            return AnyView(EmptyView())
         }
     }
 }

@@ -4,7 +4,6 @@ import Combine
 /// A class responsible for fetching words from the database with pagination and search support.
 final class WordGetter: ProcessDatabase {
     // MARK: - Public Properties
-    
     @Published private(set) var words: [DatabaseModelWord] = []
     @Published private(set) var isLoadingPage = false
     
@@ -16,8 +15,10 @@ final class WordGetter: ProcessDatabase {
         }
     }
     
-    // MARK: - Private Properties
+    /// Indicates whether the first page has been loaded.
+    @Published private(set) var hasLoadedInitialPage = false
     
+    // MARK: - Private Properties
     private let wordRepository: DatabaseManagerWord
     private var cancellables = Set<AnyCancellable>()
     
@@ -27,7 +28,6 @@ final class WordGetter: ProcessDatabase {
     private var currentPage = 0
     
     // MARK: - Initialization
-    
     override init() {
         guard let dbQueue = AppDatabase.shared.databaseQueue else {
             fatalError("Database is not connected")
@@ -39,54 +39,14 @@ final class WordGetter: ProcessDatabase {
     
     // MARK: - Public Methods
     
-    /// Removes a word at the specified index
-    /// - Parameter index: The index of the word to remove
-    func removeWord(at index: Int) {
-        guard words.indices.contains(index) else {
-            Logger.warning(
-                "[Word]: Attempted to remove word at invalid index",
-                metadata: [
-                    "index": String(index),
-                    "arrayCount": String(words.count)
-                ]
-            )
-            return
-        }
-        
-        Logger.debug(
-            "[Word]: Removing word at index",
-            metadata: [
-                "index": String(index),
-                "word": words[index].frontText
-            ]
-        )
-        words.remove(at: index)
-    }
-    
-    /// Removes the specified word from the array
-    /// - Parameter word: The word to remove
-    func removeWord(_ word: DatabaseModelWord) {
-        guard let index = words.firstIndex(where: { $0.id == word.id }) else {
-            Logger.warning(
-                "[Word]: Attempted to remove non-existent word",
-                metadata: [
-                    "wordId": word.id.map(String.init) ?? "nil",
-                    "word": word.frontText
-                ]
-            )
-            return
-        }
-        removeWord(at: index)
-    }
-    
     /// Resets pagination and fetches the first page of words.
     func resetPagination() {
         Logger.debug("[Word]: Resetting pagination")
         words.removeAll()
+        hasLoadedInitialPage = false  // Сбрасываем флаг первой загрузки
         
         currentPage = 0
         hasMorePages = true
-        isLoadingPage = false
         cancellationToken = UUID()
         
         DispatchQueue.main.async {
@@ -128,8 +88,9 @@ final class WordGetter: ProcessDatabase {
             metadata: ["searchText": searchText],
             completion: { [weak self] result in
                 guard let self = self, currentToken == self.cancellationToken else { return }
-                
-                if case .failure(_) = result {}
+                if case .failure(_) = result {
+                    // При необходимости добавьте обработку ошибки.
+                }
                 self.isLoadingPage = false
             }
         )
@@ -157,6 +118,46 @@ final class WordGetter: ProcessDatabase {
         words.removeAll()
     }
     
+    // MARK: - Removal Methods
+    
+    /// Removes a word at the specified index.
+    func removeWord(at index: Int) {
+        guard words.indices.contains(index) else {
+            Logger.warning(
+                "[Word]: Attempted to remove word at invalid index",
+                metadata: [
+                    "index": String(index),
+                    "arrayCount": String(words.count)
+                ]
+            )
+            return
+        }
+        
+        Logger.debug(
+            "[Word]: Removing word at index",
+            metadata: [
+                "index": String(index),
+                "word": words[index].frontText
+            ]
+        )
+        words.remove(at: index)
+    }
+    
+    /// Removes the specified word from the array.
+    func removeWord(_ word: DatabaseModelWord) {
+        guard let index = words.firstIndex(where: { $0.id == word.id }) else {
+            Logger.warning(
+                "[Word]: Attempted to remove non-existent word",
+                metadata: [
+                    "wordId": word.id.map(String.init) ?? "nil",
+                    "word": word.frontText
+                ]
+            )
+            return
+        }
+        removeWord(at: index)
+    }
+    
     // MARK: - Private Methods
     
     /// Handles fetched words and updates pagination state.
@@ -177,6 +178,7 @@ final class WordGetter: ProcessDatabase {
                 )
             }
             
+            self.hasLoadedInitialPage = true  // Устанавливаем флаг после первой успешной загрузки
             self.isLoadingPage = false
         }
     }
