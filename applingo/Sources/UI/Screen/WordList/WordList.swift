@@ -40,6 +40,7 @@ struct WordList: View {
                 
                 WordListViewList(
                     locale: locale,
+                    style: style,
                     wordsGetter: wordsGetter,
                     onWordSelect: { word in
                         selectedWord = word
