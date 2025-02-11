@@ -4,11 +4,16 @@ import SwiftUI
 struct WordListViewWelcome: View {
     // MARK: - Properties
     @EnvironmentObject private var themeManager: ThemeManager
-    @State private var showRemoteDictionary = false
     private let locale: WordListLocale
     private let style: WordListStyle
+    
+    @State private var showRemoteDictionary = false
 
     // MARK: - Initializer
+    /// Initializes a new instance of `WordListViewWelcome`.
+    /// - Parameters:
+    ///   - style: A `WordListStyle` object that defines the visual style.
+    ///   - locale: A `WordListLocale` object that provides localized strings.
     init(style: WordListStyle, locale: WordListLocale) {
         self.locale = locale
         self.style = style

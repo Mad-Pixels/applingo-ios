@@ -5,21 +5,22 @@ struct WordListViewSearch: View {
     // MARK: - Properties
     @EnvironmentObject private var themeManager: ThemeManager
     private let locale: WordListLocale
-    
-    /// Binding to the search text.
+    private let style: WordListStyle
+
     @Binding var searchText: String
-    
+
     // MARK: - Initializer
-    
-    /// Initializes the search view with a binding to the search query and localization.
+    /// Initializes a new instance of `WordListViewWelcome`.
     /// - Parameters:
+    ///   - style: A `WordListStyle` object that defines the visual style.
+    ///   - locale: A `WordListLocale` object that provides localized strings.
     ///   - searchText: Binding to the search query.
-    ///   - locale: Localization object.
-    init(searchText: Binding<String>, locale: WordListLocale) {
+    init(style: WordListStyle, locale: WordListLocale, searchText: Binding<String>) {
         self._searchText = searchText
         self.locale = locale
+        self.style = style
     }
-    
+
     // MARK: - Body
     var body: some View {
         InputSearch(
