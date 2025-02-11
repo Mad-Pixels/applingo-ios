@@ -1,33 +1,33 @@
 import SwiftUI
 
 /// A view displaying the additional section of the word details,
-/// including table name, hint, and description.
+/// including dictionary name, hint, and description.
 struct WordDetailsViewAdditional: View {
     // MARK: - Properties
     @EnvironmentObject private var themeManager: ThemeManager
     private let locale: WordDetailsLocale
     private let style: WordDetailsStyle
     
-    @Binding var word: DatabaseModelWord
-    let tableName: String
+    @ObservedObject private var wordsAction: WordAction
+    @Binding private var word: DatabaseModelWord
     let isEditing: Bool
     
     // MARK: - Initializer
     /// Initializes the additional details view.
     /// - Parameters:
-    ///   - word: Binding to the word model.
-    ///   - tableName: The name of the table associated with the word.
-    ///   - locale: The localization object.
     ///   - style: The style configuration.
+    ///   - locale: The localization object.
+    ///   - word: Binding to the word model.
     ///   - isEditing: Flag indicating if the view is in editing mode.
+    ///   - wordsAction: `WordAction` object injected from the parent.
     init(
         style: WordDetailsStyle,
         locale: WordDetailsLocale,
         word: Binding<DatabaseModelWord>,
-        tableName: String,
-        isEditing: Bool
+        isEditing: Bool,
+        wordsAction: WordAction
     ) {
-        self.tableName = tableName
+        self.wordsAction = wordsAction
         self.isEditing = isEditing
         self.locale = locale
         self.style = style
@@ -39,17 +39,18 @@ struct WordDetailsViewAdditional: View {
         VStack(spacing: style.spacing) {
             SectionHeader(
                 title: locale.screenSubtitleAdditional,
-                style: .titled(ThemeManager.shared.currentThemeStyle)
+                style: .titled(themeManager.currentThemeStyle)
             )
             .padding(.top, style.paddingBlock)
             
             VStack(spacing: style.spacing) {
                 InputText(
-                    text: .constant(tableName),
+                    text: .constant(wordsAction.dictionary(word)),
                     title: locale.screenDescriptionDictionary,
                     placeholder: "",
                     isEditing: false
                 )
+                
                 InputText(
                     text: Binding(
                         get: { word.hint },
@@ -59,6 +60,7 @@ struct WordDetailsViewAdditional: View {
                     placeholder: "",
                     isEditing: isEditing
                 )
+                
                 InputTextArea(
                     text: Binding(
                         get: { word.description },

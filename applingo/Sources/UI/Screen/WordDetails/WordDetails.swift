@@ -69,8 +69,8 @@ struct WordDetails: View {
                         style: style,
                         locale: locale,
                         word: $wrapper.word,
-                        tableName: wordsAction.dictionary(wrapper.word),
-                        isEditing: isEditing
+                        isEditing: isEditing,
+                        wordsAction: wordsAction
                     )
                     WordDetailsViewStatistic(
                         style: style,
