@@ -14,7 +14,7 @@ struct WordDetails: View {
     @StateObject private var wrapper: WordWrapper
     
     /// Binding to control the presentation state of this view.
-    @Binding var isPresented: Bool
+    //@Binding var isPresented: Bool
     /// Closure to refresh the parent view after updating the word.
     let refresh: () -> Void
     /// The original word model to restore if editing is cancelled.
@@ -38,14 +38,14 @@ struct WordDetails: View {
     ///   - style: Optional style; if nil, a themed style is applied.
     init(
         word: DatabaseModelWord,
-        isPresented: Binding<Bool>,
+        //isPresented: Binding<Bool>,
         refresh: @escaping () -> Void,
         style: WordDetailsStyle? = nil
     ) {
         let initialStyle = style ?? .themed(ThemeManager.shared.currentThemeStyle)
         _style = StateObject(wrappedValue: initialStyle)
         _wrapper = StateObject(wrappedValue: WordWrapper(word: word))
-        _isPresented = isPresented
+        //_isPresented = isPresented
         self.originalWord = word
         self.refresh = refresh
     }

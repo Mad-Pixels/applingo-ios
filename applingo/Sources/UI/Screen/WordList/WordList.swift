@@ -2,6 +2,10 @@ import SwiftUI
 
 /// A view that displays a list of words with search and add functionalities.
 struct WordList: View {
+    // MARK: - Constants
+    private let bottomInsetHeight: CGFloat = 130
+    private let overlayBottomPadding: CGFloat = 80
+
     // MARK: - State Objects
     @StateObject private var style: WordListStyle
     @StateObject private var locale = WordListLocale()
@@ -10,7 +14,6 @@ struct WordList: View {
     
     // MARK: - Local State
     @State private var selectedWord: DatabaseModelWord?
-    @State private var isShowingDetailView = false
     @State private var isShowingAddView = false
     
     // MARK: - Initializer
@@ -39,13 +42,10 @@ struct WordList: View {
                     locale: locale,
                     wordsGetter: wordsGetter,
                     wordsAction: wordsAction,
-                    onWordSelect: { word in
-                        selectedWord = word
-                        isShowingDetailView = true
-                    }
+                    onWordSelect: { word in selectedWord = word }
                 )
                 .safeAreaInset(edge: .bottom) {
-                    Color.clear.frame(height: 130)
+                    Color.clear.frame(height: bottomInsetHeight)
                 }
             }
             .overlay(alignment: .bottomTrailing) {
@@ -54,20 +54,18 @@ struct WordList: View {
                     locale: locale,
                     onAdd: { isShowingAddView = true }
                 )
-                .padding(.bottom, 80)
+                .padding(.bottom, overlayBottomPadding)
             }
             .navigationBarTitleDisplayMode(.inline)
             .onAppear {
-                wordsGetter.resetPagination()
-            }
-            .onDisappear{
-                wordsGetter.clear()
+                if wordsGetter.words.isEmpty {
+                    wordsGetter.resetPagination()
+                }
             }
         }
         .sheet(item: $selectedWord) { word in
             WordDetails(
                 word: word,
-                isPresented: $isShowingDetailView,
                 refresh: { wordsGetter.resetPagination() }
             )
         }
