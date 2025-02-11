@@ -8,6 +8,7 @@ final class WordDetailsStyle: ObservableObject {
     let accentColor: Color
     let disabledColor: Color
     let padding: EdgeInsets
+    let paddingBlock: CGFloat
     let spacing: CGFloat
     let sectionSpacing: CGFloat
 
@@ -27,6 +28,7 @@ final class WordDetailsStyle: ObservableObject {
         accentColor: Color,
         disabledColor: Color,
         padding: EdgeInsets,
+        paddingBlock: CGFloat,
         spacing: CGFloat,
         sectionSpacing: CGFloat
     ) {
@@ -35,6 +37,7 @@ final class WordDetailsStyle: ObservableObject {
         self.accentColor = accentColor
         self.disabledColor = disabledColor
         self.padding = padding
+        self.paddingBlock = paddingBlock
         self.spacing = spacing
         self.sectionSpacing = sectionSpacing
     }
@@ -52,6 +55,7 @@ extension WordDetailsStyle {
             accentColor: theme.accentPrimary,
             disabledColor: theme.textSecondary.opacity(0.5),
             padding: EdgeInsets(top: 16, leading: 16, bottom: 32, trailing: 16),
+            paddingBlock: 8,
             spacing: 24,
             sectionSpacing: 16
         )

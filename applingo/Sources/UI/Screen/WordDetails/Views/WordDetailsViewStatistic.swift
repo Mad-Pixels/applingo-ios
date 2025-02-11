@@ -13,16 +13,16 @@ struct WordDetailsViewStatistic: View {
     // MARK: - Initializer
     /// Initializes the statistic view.
     /// - Parameters:
-    ///   - word: The word model.
-    ///   - locale: The localization object.
     ///   - style: The style configuration.
+    ///   - locale: The localization object.
+    ///   - word: The word model.
     init(
         style: WordDetailsStyle,
         locale: WordDetailsLocale,
         word: DatabaseModelWord
     ) {
-        self.locale = locale
         self.style = style
+        self.locale = locale
         self.word = word
     }
     
@@ -42,23 +42,23 @@ struct WordDetailsViewStatistic: View {
                     DonutChart(
                         data: [
                             DonutChartModel(
-                                value: Double(word.fail),
-                                label: locale.screenDesctiptionWrongAnswers,
-                                color: themeManager.currentThemeStyle.error
-                            ),
-                            DonutChartModel(
                                 value: Double(word.success),
                                 label: locale.screenDescriptionCorrectAnswers,
                                 color: themeManager.currentThemeStyle.success
+                            ),
+                            DonutChartModel(
+                                value: Double(word.fail),
+                                label: locale.screenDesctiptionWrongAnswers,
+                                color: themeManager.currentThemeStyle.error
                             )
                         ],
                         centerValue: "\(Int(ceil(Double(word.weight) / 100.0))) / 10",
-                        style: .themed(ThemeManager.shared.currentThemeStyle),
+                        style: .themed(themeManager.currentThemeStyle),
                         legendTitle: locale.screenSubtitleStatisticCount
                     )
                 }
             }
-            .padding(.horizontal, 8)
+            .padding(.horizontal, style.paddingBlock)
         }
     }
 }

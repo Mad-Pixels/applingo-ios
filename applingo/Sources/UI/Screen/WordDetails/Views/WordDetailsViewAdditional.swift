@@ -3,48 +3,45 @@ import SwiftUI
 /// A view displaying the additional section of the word details,
 /// including table name, hint, and description.
 struct WordDetailsViewAdditional: View {
-    
-    // MARK: - Bindings and Properties
+    // MARK: - Properties
+    @EnvironmentObject private var themeManager: ThemeManager
+    private let locale: WordDetailsLocale
+    private let style: WordDetailsStyle
     
     @Binding var word: DatabaseModelWord
     let tableName: String
-    private let locale: WordDetailsLocale
-    private let style: WordDetailsStyle
-    /// Flag indicating whether editing is enabled.
     let isEditing: Bool
     
     // MARK: - Initializer
-    
     /// Initializes the additional details view.
     /// - Parameters:
     ///   - word: Binding to the word model.
     ///   - tableName: The name of the table associated with the word.
-    ///   - locale: Localization object.
-    ///   - style: Style configuration.
+    ///   - locale: The localization object.
+    ///   - style: The style configuration.
     ///   - isEditing: Flag indicating if the view is in editing mode.
     init(
+        style: WordDetailsStyle,
+        locale: WordDetailsLocale,
         word: Binding<DatabaseModelWord>,
         tableName: String,
-        locale: WordDetailsLocale,
-        style: WordDetailsStyle,
         isEditing: Bool
     ) {
-        self._word = word
         self.tableName = tableName
+        self.isEditing = isEditing
         self.locale = locale
         self.style = style
-        self.isEditing = isEditing
+        self._word = word
     }
     
     // MARK: - Body
-    
     var body: some View {
         VStack(spacing: style.spacing) {
             SectionHeader(
                 title: locale.screenSubtitleAdditional,
                 style: .titled(ThemeManager.shared.currentThemeStyle)
             )
-            .padding(.top, 8)
+            .padding(.top, style.paddingBlock)
             
             VStack(spacing: style.spacing) {
                 InputText(
@@ -72,7 +69,7 @@ struct WordDetailsViewAdditional: View {
                     isEditing: isEditing
                 )
             }
-            .padding(.horizontal, 8)
+            .padding(.horizontal, style.paddingBlock)
             .background(Color.clear)
         }
     }
