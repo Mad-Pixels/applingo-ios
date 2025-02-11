@@ -37,6 +37,7 @@ struct DictionaryLocalList: View {
                 
                 DictionaryLocalListViewList(
                     locale: locale,
+                    style: style,
                     dictionaryGetter: dictionaryGetter,
                     onDictionarySelect: { dictionary in
                         selectedDictionary = dictionary
@@ -68,7 +69,7 @@ struct DictionaryLocalList: View {
         }
         // Present import view.
         .sheet(isPresented: $isShowingImportSheet) {
-            DictionaryImport()
+            DictionaryImport(isPresented: $isShowingImportSheet)
         }
         // Present remote list view as full screen.
         .fullScreenCover(isPresented: $isShowingRemoteList) {

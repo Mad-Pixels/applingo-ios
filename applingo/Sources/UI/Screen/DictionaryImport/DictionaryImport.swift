@@ -12,13 +12,15 @@ struct DictionaryImport: View {
     
     @State private var isShowingFileImporter = false
     @State private var isPressedTrailing = false
+    @Binding private var isPresented: Bool
     
     // MARK: - Initializer
     
     /// Initializes the DictionaryImport view.
     /// - Parameter style: Optional style configuration; if nil, a themed style is applied.
-    init(style: DictionaryImportStyle? = nil) {
+    init(isPresented: Binding<Bool>, style: DictionaryImportStyle? = nil) {
         let initialStyle = style ?? .themed(ThemeManager.shared.currentThemeStyle)
+        _isPresented = isPresented
         _style = StateObject(wrappedValue: initialStyle)
     }
     

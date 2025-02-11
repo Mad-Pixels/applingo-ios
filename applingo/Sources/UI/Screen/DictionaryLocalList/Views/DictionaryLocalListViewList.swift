@@ -12,6 +12,7 @@ struct DictionaryLocalListViewList: View {
     // MARK: - Properties
     
     private let locale: DictionaryLocalListLocale
+    private let style: DictionaryLocalListStyle
     let onDictionarySelect: (DatabaseModelDictionary) -> Void
     
     // MARK: - Initializer
@@ -23,10 +24,12 @@ struct DictionaryLocalListViewList: View {
     ///   - onDictionarySelect: Action when a dictionary is selected.
     init(
         locale: DictionaryLocalListLocale,
+        style: DictionaryLocalListStyle,
         dictionaryGetter: DictionaryGetter,
         onDictionarySelect: @escaping (DatabaseModelDictionary) -> Void
     ) {
         self.locale = locale
+        self.style = style
         self.dictionaryGetter = dictionaryGetter
         self.onDictionarySelect = onDictionarySelect
     }
@@ -34,7 +37,6 @@ struct DictionaryLocalListViewList: View {
     // MARK: - Body
     
     var body: some View {
-        // Binding to the array of dictionaries (read-only)
         let dictionariesBinding = Binding(
             get: { dictionaryGetter.dictionaries },
             set: { _ in }

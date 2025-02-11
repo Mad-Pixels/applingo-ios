@@ -25,11 +25,13 @@ struct DictionaryImportViewTable: View {
                     style: .heading(ThemeManager.shared.currentThemeStyle)
                 )
                 
-                Image(systemName: "info.circle.fill")
-                    .font(.system(size: 42))
-                    .foregroundColor(style.accentColor)
+                Image(ThemeManager.shared.currentTheme.asString == "Dark" ? "table_example_dark" : "table_example_light")
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: 320, height: 95)
+                    .clipped()
+                    .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
                     .frame(maxWidth: .infinity, alignment: .center)
-                    .padding(.bottom, 16)
             }
             .padding(.vertical, 12)
             .padding(.horizontal, 8)

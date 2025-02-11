@@ -4,7 +4,7 @@ import SwiftUI
 struct DictionaryImportViewTitle: View {
     
     // MARK: - Properties
-    
+
     private let locale: DictionaryImportLocale
     private let style: DictionaryImportStyle
     
@@ -20,11 +20,11 @@ struct DictionaryImportViewTitle: View {
     var body: some View {
         SectionBody {
             VStack(alignment: .leading, spacing: style.sectionSpacing) {
-                Image(systemName: "info.circle.fill")
-                    .font(.system(size: 42))
-                    .foregroundColor(style.accentColor)
+                Image("import_title")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 250, height: 125)
                     .frame(maxWidth: .infinity, alignment: .center)
-                    .padding(.bottom, 16)
                 
                 SectionHeader(
                     title: locale.screenSubtitleDictionaryAdd,
