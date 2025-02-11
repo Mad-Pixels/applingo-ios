@@ -58,7 +58,7 @@ extension ButtonNavStyle {
             icon: "checkmark",
             backgroundColor: theme.backgroundSecondary,
             activeBackgroundColor: theme.backgroundSecondary.opacity(0.8),
-            iconColor: disabled ? theme.success.opacity(0.35) : theme.success,
+            iconColor: disabled ? theme.success.opacity(0.15) : theme.success,
             size: 32,
             cornerRadius: 16,
             iconSize: 14
