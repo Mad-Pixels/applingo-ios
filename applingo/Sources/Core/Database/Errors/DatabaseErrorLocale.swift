@@ -5,6 +5,7 @@ import Combine
 final class DatabaseErrorLocale: ObservableObject {
     static let shared = DatabaseErrorLocale()
     
+    @Published var internalDictionaryDelete: String
     @Published var connectionNotEstablished: String
     @Published var emptyActiveDictionaries: String
     @Published var invalidSearchParameters: String
@@ -26,6 +27,7 @@ final class DatabaseErrorLocale: ObservableObject {
     
     private init() {
         let lm = LocaleManager.shared
+        self.internalDictionaryDelete = lm.localizedString(for: "error.database.internalDictionaryDelete")
         self.connectionNotEstablished = lm.localizedString(for: "error.database.connectionNotEstablished")
         self.emptyActiveDictionaries = lm.localizedString(for: "error.database.emptyActiveDictionaries")
         self.invalidSearchParameters = lm.localizedString(for: "error.database.invalidSearchParameters")
@@ -59,6 +61,7 @@ final class DatabaseErrorLocale: ObservableObject {
     
     @objc private func localeDidChange() {
         let lm = LocaleManager.shared
+        self.internalDictionaryDelete = lm.localizedString(for: "error.database.internalDictionaryDelete")
         self.connectionNotEstablished = lm.localizedString(for: "error.database.connectionNotEstablished")
         self.emptyActiveDictionaries = lm.localizedString(for: "error.database.emptyActiveDictionaries")
         self.invalidSearchParameters = lm.localizedString(for: "error.database.invalidSearchParameters")

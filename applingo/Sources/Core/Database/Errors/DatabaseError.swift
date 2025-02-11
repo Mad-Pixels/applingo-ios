@@ -6,6 +6,7 @@ enum DatabaseError: Error {
     case emptyActiveDictionaries
     case invalidSearchParameters
     case alreadyConnected
+    case internalDictionaryDelete
     case selectDataFailed(details: String)
     case connectionFailed(details: String)
     case fileImportFailed(details: String)
@@ -36,6 +37,8 @@ extension DatabaseError {
             return "Failed to select data from the database."
         case .alreadyConnected:
             return "Database is already connected."
+        case .internalDictionaryDelete:
+            return "Internal dictionary cannot be deleted."
         case .connectionFailed(let details):
             return "Failed to connect to the database. Details: \(details)"
         case .fileImportFailed(let details):
@@ -67,6 +70,8 @@ extension DatabaseError {
     var localizedMessage: String {
         let locale = DatabaseErrorLocale.shared
         switch self {
+        case .internalDictionaryDelete:
+            return locale.internalDictionaryDelete
         case .connectionNotEstablished:
             return locale.connectionNotEstablished
         case .emptyActiveDictionaries:
@@ -116,7 +121,7 @@ extension DatabaseError {
             return .critical
         case .fileImportFailed, .updateFailed, .deleteFailed, .selectDataFailed, .saveFailed:
             return .error
-        case .emptyActiveDictionaries, .invalidSearchParameters, .alreadyConnected, .duplicateWord, .invalidWord, .invalidOffset, .invalidLimit, .wordNotFound, .duplicateDictionary:
+        case .emptyActiveDictionaries, .invalidSearchParameters, .alreadyConnected, .duplicateWord, .invalidWord, .invalidOffset, .invalidLimit, .wordNotFound, .duplicateDictionary, .internalDictionaryDelete:
             return .warning
         }
     }

@@ -321,6 +321,10 @@ final class DatabaseManagerDictionary {
     /// Deletes a dictionary and its associated words.
     /// - Parameter dictionary: The dictionary to delete.
     func delete(_ dictionary: DatabaseModelDictionary) throws {
+        if dictionary.guid == DatabaseModelDictionary.internalDictionaryName {
+            throw DatabaseError.internalDictionaryDelete
+        }
+        
         guard let id = dictionary.id else {
             throw DatabaseError.invalidWord(details: "Dictionary has no ID")
         }

@@ -5,6 +5,7 @@ import GRDB
 struct DatabaseModelDictionary: Identifiable, Codable, Equatable, Hashable {
     // MARK: - Constants
     static let databaseTableName = "dictionary"
+    static let internalDictionaryName = "internal"
 
     // MARK: - Properties
     internal let id: Int?
@@ -113,7 +114,7 @@ struct DatabaseModelDictionary: Identifiable, Codable, Equatable, Hashable {
     /// Returns a new default internal dictionary object.
     static func newInternal() -> DatabaseModelDictionary {
         return DatabaseModelDictionary(
-            guid: "internal",
+            guid: internalDictionaryName,
             name: "Main",
             topic: "internal",
             author: "MadPixels",

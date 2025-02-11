@@ -436,6 +436,23 @@
         }
       }
     },
+    "error.database.internalDictionaryDelete" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Internal dictionary cannot be deleted."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нельзя удалить системный словарь"
+          }
+        }
+      }
+    },
     "error.database.invalidLimit" : {
       "extractionState" : "manual",
       "localizations" : {
