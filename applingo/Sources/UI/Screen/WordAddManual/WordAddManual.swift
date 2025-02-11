@@ -7,7 +7,7 @@ struct WordAddManual: View {
     // MARK: - Properties
     @Environment(\.presentationMode) private var presentationMode
     let refresh: () -> Void
-    
+
     // MARK: - State Objects
     @StateObject private var style: WordAddManualStyle
     @StateObject private var locale = WordAddManualLocale()
@@ -21,7 +21,6 @@ struct WordAddManual: View {
     
     @State private var wordItem = DatabaseModelWord.new()
     @State private var descriptionText: String = ""
-    @State private var errorMessage: String = ""
     @State private var hintText: String = ""
     
     // Flags for button animations
@@ -97,8 +96,12 @@ struct WordAddManual: View {
                 }
             } catch {}
         }
-        .onChange(of: hintText) { wordItem.hint = $0 }
-        .onChange(of: descriptionText) { wordItem.description = $0 }
+        .onChange(of: hintText) { newValue in
+            wordItem.hint = newValue
+        }
+        .onChange(of: descriptionText) { newValue in
+            wordItem.description = newValue
+        }
     }
     
     // MARK: - Helper Computed Properties
@@ -121,12 +124,12 @@ struct WordAddManual: View {
             weight: wordItem.weight,
             success: wordItem.success,
             fail: wordItem.fail,
-            description: descriptionText.isEmpty ? "" : descriptionText,
-            hint: hintText.isEmpty ? "" : hintText,
+            description: descriptionText,
+            hint: hintText,
             created: wordItem.created,
             id: wordItem.id
         )
-
+        
         wordsAction.save(newWord) { result in
             if case .success = result {
                 presentationMode.wrappedValue.dismiss()
