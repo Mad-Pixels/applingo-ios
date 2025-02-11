@@ -102,7 +102,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No items available"
+            "value" : "No items found"
           }
         },
         "ru" : {
@@ -872,7 +872,7 @@
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Чтобы добавить словарь, необходимо загрузить файл со словами в табличном формате, например, Excel или CSV"
           }
         }
@@ -1615,13 +1615,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Word"
+            "value" : "New word"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Слово"
+            "value" : "Добавить слово"
           }
         }
       }
