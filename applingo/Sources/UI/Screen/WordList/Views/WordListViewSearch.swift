@@ -12,8 +12,8 @@ struct WordListViewSearch: View {
     // MARK: - Initializer
     /// Initializes a new instance of `WordListViewWelcome`.
     /// - Parameters:
-    ///   - style: A `WordListStyle` object that defines the visual style.
-    ///   - locale: A `WordListLocale` object that provides localized strings.
+    ///   - style: `WordListStyle` object that defines the visual style.
+    ///   - locale: `WordListLocale` object that provides localized strings.
     ///   - searchText: Binding to the search query.
     init(style: WordListStyle, locale: WordListLocale, searchText: Binding<String>) {
         self._searchText = searchText

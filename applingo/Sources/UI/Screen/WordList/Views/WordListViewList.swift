@@ -14,10 +14,10 @@ struct WordListViewList: View {
     // MARK: - Initializer
     /// Initializes the word list view with localization and a data source.
     /// - Parameters:
-    ///   - style: A `WordListStyle` object that defines the visual style.
-    ///   - locale: A `WordListLocale` object that provides localized strings.
+    ///   - style: `WordListStyle` object that defines the visual style.
+    ///   - locale: `WordListLocale` object that provides localized strings.
     ///   - wordsGetter: Object responsible for fetching words.
-    ///   - wordsAction: A `WordAction` object that is injected from the parent view.
+    ///   - wordsAction: `WordAction` object that is injected from the parent view.
     ///   - onWordSelect: Closure executed when a word is tapped.
     init(
         style: WordListStyle,
@@ -35,9 +35,11 @@ struct WordListViewList: View {
     
     // MARK: - Body
     var body: some View {
-        let wordsBinding = Binding(
+        let wordsBinding = Binding<[DatabaseModelWord]>(
             get: { wordsGetter.words },
-            set: { _ in }
+            set: { newValue in
+                Logger.warning("[WordListViewList]: Attempt to modify read-only words binding")
+            }
         )
         
         ItemList<DatabaseModelWord, WordRow>(
@@ -47,8 +49,7 @@ struct WordListViewList: View {
             error: nil,
             emptyListView: emptyStateView,
             onItemAppear: { word in wordsGetter.loadMoreWordsIfNeeded(currentItem: word) },
-            onDelete: delete,
-            onItemTap: onWordSelect
+            onDelete: delete
         ) { word in
             WordRow(
                 model: WordRowModel(

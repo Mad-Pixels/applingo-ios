@@ -12,8 +12,8 @@ struct WordListViewWelcome: View {
     // MARK: - Initializer
     /// Initializes a new instance of `WordListViewWelcome`.
     /// - Parameters:
-    ///   - style: A `WordListStyle` object that defines the visual style.
-    ///   - locale: A `WordListLocale` object that provides localized strings.
+    ///   - style: `WordListStyle` object that defines the visual style.
+    ///   - locale: `WordListLocale` object that provides localized strings.
     init(style: WordListStyle, locale: WordListLocale) {
         self.locale = locale
         self.style = style

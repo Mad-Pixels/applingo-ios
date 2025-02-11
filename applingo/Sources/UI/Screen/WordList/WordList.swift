@@ -8,6 +8,7 @@ struct WordList: View {
     @StateObject private var style: WordListStyle
     @StateObject private var locale = WordListLocale()
     @StateObject private var wordsGetter = WordGetter()
+    @StateObject private var wordsAction = WordAction()
     
     // MARK: - Local State
     
@@ -33,15 +34,18 @@ struct WordList: View {
         ) {
             VStack(spacing: 0) {
                 WordListViewSearch(
-                    searchText: $wordsGetter.searchText,
-                    locale: locale
+                    style: style,
+                    locale: locale,
+                    searchText: $wordsGetter.searchText
+                    
                 )
                 .padding()
                 
                 WordListViewList(
-                    locale: locale,
                     style: style,
+                    locale: locale,
                     wordsGetter: wordsGetter,
+                    wordsAction: wordsAction,
                     onWordSelect: { word in
                         selectedWord = word
                         isShowingDetailView = true
