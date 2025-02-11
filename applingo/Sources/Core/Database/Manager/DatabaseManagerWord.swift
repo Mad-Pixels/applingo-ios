@@ -78,7 +78,7 @@ final class DatabaseManagerWord {
         guard offset >= 0 else { throw DatabaseError.invalidOffset(offset: offset) }
         
         let activeDictionaries = try fetchActive()
-        guard !activeDictionaries.isEmpty else { throw DatabaseError.emptyActiveDictionaries }
+        guard !activeDictionaries.isEmpty else { return [] }
         
         return try dbQueue.read { db in
             let (sql, arguments) = try buildFetchQuery(
