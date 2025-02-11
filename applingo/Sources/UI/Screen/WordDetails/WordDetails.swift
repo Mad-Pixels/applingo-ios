@@ -73,9 +73,9 @@ struct WordDetails: View {
                         isEditing: isEditing
                     )
                     WordDetailsViewStatistic(
-                        word: wrapper.word,
+                        style: style,
                         locale: locale,
-                        style: style
+                        word: wrapper.word
                     )
                 }
                 .padding(style.padding)

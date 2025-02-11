@@ -1,28 +1,29 @@
 import SwiftUI
 
-/// A view that displays statistics for the word,
+/// A view that displays statistics for a word,
 /// such as success and fail counts represented via a donut chart.
 struct WordDetailsViewStatistic: View {
-    
     // MARK: - Properties
-    private let word: DatabaseModelWord
+    @EnvironmentObject private var themeManager: ThemeManager
     private let locale: WordDetailsLocale
     private let style: WordDetailsStyle
+    
+    private let word: DatabaseModelWord
     
     // MARK: - Initializer
     /// Initializes the statistic view.
     /// - Parameters:
     ///   - word: The word model.
-    ///   - locale: Localization object.
-    ///   - style: Style configuration.
+    ///   - locale: The localization object.
+    ///   - style: The style configuration.
     init(
-        word: DatabaseModelWord,
+        style: WordDetailsStyle,
         locale: WordDetailsLocale,
-        style: WordDetailsStyle
+        word: DatabaseModelWord
     ) {
-        self.word = word
         self.locale = locale
         self.style = style
+        self.word = word
     }
     
     // MARK: - Body
@@ -30,28 +31,28 @@ struct WordDetailsViewStatistic: View {
         VStack(spacing: style.spacing) {
             SectionHeader(
                 title: locale.screenSubtitleStatistic,
-                style: .titled(ThemeManager.shared.currentThemeStyle)
+                style: .titled(themeManager.currentThemeStyle)
             )
             .padding(.top, 8)
             
             VStack(spacing: style.spacing) {
                 SectionBody(
-                    style: .area(ThemeManager.shared.currentThemeStyle)
-                ){
+                    style: .area(themeManager.currentThemeStyle)
+                ) {
                     DonutChart(
                         data: [
                             DonutChartModel(
                                 value: Double(word.fail),
-                                label: locale.screenDescriptionCorrectAnswers,
-                                color: ThemeManager.shared.currentThemeStyle.success
+                                label: locale.screenDesctiptionWrongAnswers,
+                                color: themeManager.currentThemeStyle.error
                             ),
                             DonutChartModel(
                                 value: Double(word.success),
-                                label: locale.screenDesctiptionWrongAnswers,
-                                color: ThemeManager.shared.currentThemeStyle.error
+                                label: locale.screenDescriptionCorrectAnswers,
+                                color: themeManager.currentThemeStyle.success
                             )
                         ],
-                        centerValue: "\(Int(ceil(Double(word.weight / 100)))) / 10",
+                        centerValue: "\(Int(ceil(Double(word.weight) / 100.0))) / 10",
                         style: .themed(ThemeManager.shared.currentThemeStyle),
                         legendTitle: locale.screenSubtitleStatisticCount
                     )
