@@ -7,7 +7,7 @@ struct WordListViewWelcome: View {
 
     var body: some View {
         VStack(spacing: 32) {
-            Image(themeManager.currentTheme.asString == "Dark" ? "warning_dark" : "warning_light")
+            Image("download_dictionary")
                 .resizable()
                 .scaledToFit()
                 .frame(width: 215, height: 215)
@@ -17,7 +17,8 @@ struct WordListViewWelcome: View {
                     title: "Скачать словарь",
                     action: {
                         showRemoteDictionary = true
-                    }
+                    },
+                    style: .menu(ThemeManager.shared.currentThemeStyle)
                 )
                 .padding()
                 .frame(maxWidth: .infinity)
