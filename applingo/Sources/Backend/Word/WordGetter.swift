@@ -48,6 +48,8 @@ final class WordGetter: ProcessDatabase {
         currentPage = 0
         hasMorePages = true
         cancellationToken = UUID()
+        // Сбрасываем isLoadingPage на случай, если предыдущая операция не завершилась корректно.
+        isLoadingPage = false
         
         DispatchQueue.main.async {
             self.get()
@@ -56,6 +58,7 @@ final class WordGetter: ProcessDatabase {
     
     /// Fetches words from the database with pagination and search support.
     func get() {
+        // Если уже идет загрузка или страниц больше нет, пропускаем запрос.
         guard !isLoadingPage, hasMorePages else {
             Logger.debug("[Word]: Skipping get() - already loading or no more pages")
             return
@@ -87,10 +90,8 @@ final class WordGetter: ProcessDatabase {
             screen: .WordList,
             metadata: ["searchText": searchText],
             completion: { [weak self] result in
-                guard let self = self, currentToken == self.cancellationToken else { return }
-                if case .failure(_) = result {
-                    // При необходимости добавьте обработку ошибки.
-                }
+                guard let self = self else { return }
+                // Даже если операция устарела, сбрасываем флаг загрузки.
                 self.isLoadingPage = false
             }
         )
@@ -178,7 +179,7 @@ final class WordGetter: ProcessDatabase {
                 )
             }
             
-            self.hasLoadedInitialPage = true  // Устанавливаем флаг после первой успешной загрузки
+            self.hasLoadedInitialPage = true  // Флаг устанавливается после первой успешной загрузки
             self.isLoadingPage = false
         }
     }
