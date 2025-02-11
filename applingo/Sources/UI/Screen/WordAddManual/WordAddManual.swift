@@ -70,6 +70,7 @@ struct WordAddManual: View {
             }
             .keyboardAdaptive()
             .background(style.backgroundColor)
+            .padding(.bottom, style.padding.bottom)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     ButtonNav(

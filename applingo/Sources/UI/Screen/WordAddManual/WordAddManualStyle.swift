@@ -41,7 +41,7 @@ extension WordAddManualStyle {
         WordAddManualStyle(
             backgroundColor: theme.backgroundPrimary,
             spacing: 16,
-            padding: EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16),
+            padding: EdgeInsets(top: 12, leading: 16, bottom: 32, trailing: 16),
             paddingBlock: 8,
             sectionSpacing: 12
         )
