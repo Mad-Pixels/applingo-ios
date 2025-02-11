@@ -3,18 +3,15 @@ import SwiftUI
 /// A view displaying the main section of the word details,
 /// including input fields for the front and back text.
 struct WordDetailsViewMain: View {
-    
-    // MARK: - Bindings and Properties
-    
+    // MARK: - Properties
     @EnvironmentObject private var themeManager: ThemeManager
-    @Binding var word: DatabaseModelWord
     private let locale: WordDetailsLocale
     private let style: WordDetailsStyle
-    /// Flag indicating if editing is enabled.
+        
+    @Binding var word: DatabaseModelWord
     let isEditing: Bool
-    
+
     // MARK: - Initializer
-    
     /// Initializes the main details view.
     /// - Parameters:
     ///   - word: Binding to the word model.
@@ -22,27 +19,26 @@ struct WordDetailsViewMain: View {
     ///   - style: Style configuration.
     ///   - isEditing: Flag for editing mode.
     init(
-        word: Binding<DatabaseModelWord>,
-        locale: WordDetailsLocale,
         style: WordDetailsStyle,
+        locale: WordDetailsLocale,
+        word: Binding<DatabaseModelWord>,
         isEditing: Bool
     ) {
-        self._word = word
+        self.isEditing = isEditing
         self.locale = locale
         self.style = style
-        self.isEditing = isEditing
+        self._word = word
     }
-    
+
     // MARK: - Body
-    
     var body: some View {
         VStack(spacing: style.spacing) {
             SectionHeader(
                 title: locale.screenSubtitleWord,
-                style: .titled(ThemeManager.shared.currentThemeStyle)
+                style: .titled(themeManager.currentThemeStyle)
             )
-            .padding(.top, 8)
-            
+            .padding(.top, style.paddingBlock)
+
             VStack(spacing: style.spacing) {
                 InputText(
                     text: $word.frontText,
@@ -50,6 +46,7 @@ struct WordDetailsViewMain: View {
                     placeholder: "",
                     isEditing: isEditing
                 )
+
                 InputText(
                     text: $word.backText,
                     title: locale.screenDescriptionBackText,
@@ -57,7 +54,7 @@ struct WordDetailsViewMain: View {
                     isEditing: isEditing
                 )
             }
-            .padding(.horizontal, 8)
+            .padding(.horizontal, style.paddingBlock)
             .background(Color.clear)
         }
     }
