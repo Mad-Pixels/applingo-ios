@@ -11,6 +11,7 @@ struct DictionaryRemoteListViewList: View {
     // MARK: - Properties
     
     private let locale: DictionaryRemoteListLocale
+    private let style: DictionaryRemoteListStyle
     let onDictionarySelect: (ApiModelDictionaryItem) -> Void
     
     // MARK: - Initializer
@@ -22,10 +23,12 @@ struct DictionaryRemoteListViewList: View {
     ///   - onDictionarySelect: Action closure when a dictionary is selected.
     init(
         locale: DictionaryRemoteListLocale,
+        style: DictionaryRemoteListStyle,
         dictionaryGetter: DictionaryFetcher,
         onDictionarySelect: @escaping (ApiModelDictionaryItem) -> Void
     ) {
         self.locale = locale
+        self.style = style
         self.dictionaryGetter = dictionaryGetter
         self.onDictionarySelect = onDictionarySelect
     }
@@ -43,7 +46,7 @@ struct DictionaryRemoteListViewList: View {
             style: .themed(themeManager.currentThemeStyle),
             isLoadingPage: dictionaryGetter.isLoadingPage,
             error: nil,
-            emptyListView: AnyView(Text(locale.screenNoWords)),
+            emptyListView: emptyStateView,
             onItemAppear: { dictionary in
                 dictionaryGetter.loadMoreDictionariesIfNeeded(currentItem: dictionary)
             },
@@ -72,5 +75,10 @@ struct DictionaryRemoteListViewList: View {
             dictionaryGetter.setScreen(.DictionaryRemoteList)
             dictionaryGetter.resetPagination(with: ApiModelDictionaryQueryRequest())
         }
+    }
+    
+    /// A computed property that returns a view for the empty state.
+    private var emptyStateView: AnyView {
+        return AnyView(DictionaryRemoteListViewNoItems(locale: locale, style: style))
     }
 }

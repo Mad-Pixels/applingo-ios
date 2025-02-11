@@ -47,6 +47,7 @@ struct DictionaryRemoteList: View {
                 
                 DictionaryRemoteListViewList(
                     locale: locale,
+                    style: style,
                     dictionaryGetter: dictionaryGetter,
                     onDictionarySelect: { dictionary in
                         selectedDictionary = dictionary

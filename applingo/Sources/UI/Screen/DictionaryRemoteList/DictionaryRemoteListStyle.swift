@@ -8,13 +8,20 @@ final class DictionaryRemoteListStyle: ObservableObject {
     let backgroundColor: Color
     let padding: EdgeInsets
     let spacing: CGFloat
+    let titleFont: Font
     
     // MARK: - Initializer
     
-    init(backgroundColor: Color, padding: EdgeInsets, spacing: CGFloat) {
+    init(
+        backgroundColor: Color,
+        padding: EdgeInsets,
+        spacing: CGFloat,
+        titleFont: Font
+    ) {
         self.backgroundColor = backgroundColor
         self.padding = padding
         self.spacing = spacing
+        self.titleFont = titleFont
     }
 }
 
@@ -26,7 +33,8 @@ extension DictionaryRemoteListStyle {
         DictionaryRemoteListStyle(
             backgroundColor: theme.backgroundPrimary,
             padding: EdgeInsets(top: 16, leading: 16, bottom: 0, trailing: 16),
-            spacing: 16
+            spacing: 16,
+            titleFont: .system(size: 24, weight: .bold)
         )
     }
 }
