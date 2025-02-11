@@ -25,10 +25,10 @@ final class WordAddManualStyle: ObservableObject {
         sectionSpacing: CGFloat
     ) {
         self.backgroundColor = backgroundColor
+        self.sectionSpacing = sectionSpacing
+        self.paddingBlock = paddingBlock
         self.spacing = spacing
         self.padding = padding
-        self.paddingBlock = paddingBlock
-        self.sectionSpacing = sectionSpacing
     }
 }
 
