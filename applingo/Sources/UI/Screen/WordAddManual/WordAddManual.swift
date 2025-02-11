@@ -70,10 +70,11 @@ struct WordAddManual: View {
                     )
                     
                     WordAddManualViewAdditional(
-                        hint: $hintText,
-                        description: $descriptionText,
+                        style: style,
                         locale: locale,
-                        style: style
+                        hint: $hintText,
+                        description: $descriptionText
+                        
                     )
                 }
                 .padding(style.padding)

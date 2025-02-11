@@ -8,6 +8,7 @@ final class WordAddManualStyle: ObservableObject {
     let backgroundColor: Color
     let spacing: CGFloat
     let padding: EdgeInsets
+    let paddingBlock: CGFloat
     let sectionSpacing: CGFloat
     
     // MARK: - Initializer
@@ -16,11 +17,13 @@ final class WordAddManualStyle: ObservableObject {
         backgroundColor: Color,
         spacing: CGFloat,
         padding: EdgeInsets,
+        paddingBlock: CGFloat,
         sectionSpacing: CGFloat
     ) {
         self.backgroundColor = backgroundColor
         self.spacing = spacing
         self.padding = padding
+        self.paddingBlock = paddingBlock
         self.sectionSpacing = sectionSpacing
     }
 }
@@ -34,6 +37,7 @@ extension WordAddManualStyle {
             backgroundColor: theme.backgroundPrimary,
             spacing: 16,
             padding: EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16),
+            paddingBlock: 8,
             sectionSpacing: 12
         )
     }

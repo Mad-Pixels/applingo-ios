@@ -10,7 +10,7 @@ struct WordDetailsViewAdditional: View {
     
     @ObservedObject private var wordsAction: WordAction
     @Binding private var word: DatabaseModelWord
-    let isEditing: Bool
+    private let isEditing: Bool
     
     // MARK: - Initializer
     /// Initializes the additional details view.

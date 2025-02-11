@@ -9,7 +9,7 @@ struct WordDetailsViewMain: View {
     private let style: WordDetailsStyle
         
     @Binding var word: DatabaseModelWord
-    let isEditing: Bool
+    private let isEditing: Bool
 
     // MARK: - Initializer
     /// Initializes the main details view.

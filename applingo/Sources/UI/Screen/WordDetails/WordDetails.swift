@@ -7,7 +7,7 @@ struct WordDetails: View {
     // MARK: - Properties
     @Environment(\.presentationMode) private var presentationMode
     private let originalWord: DatabaseModelWord
-    let refresh: () -> Void
+    private let refresh: () -> Void
 
     // MARK: - State Objects
     @StateObject private var style: WordDetailsStyle
