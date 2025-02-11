@@ -76,6 +76,10 @@ struct ItemList<Item: Identifiable & Equatable, RowContent: View>: View {
         if items.isEmpty && !isLoadingPage {
             if let emptyView = emptyListView {
                 emptyView
+                    .listRowInsets(EdgeInsets())
+                    .listRowBackground(Color.clear)
+                    .frame(maxWidth: .infinity)
+                    .listRowSeparator(.hidden)
             }
         } else if !items.isEmpty {
             ForEach(items) { item in

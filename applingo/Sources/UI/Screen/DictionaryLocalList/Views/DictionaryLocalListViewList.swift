@@ -47,7 +47,7 @@ struct DictionaryLocalListViewList: View {
             style: .themed(themeManager.currentThemeStyle),
             isLoadingPage: dictionaryGetter.isLoadingPage,
             error: nil,
-            emptyListView: AnyView(Text(locale.screenNoWords)),
+            emptyListView: emptyStateView,
             onItemAppear: { dictionary in
                 dictionaryGetter.loadMoreDictionariesIfNeeded(currentItem: dictionary)
             },
@@ -82,6 +82,7 @@ struct DictionaryLocalListViewList: View {
     // MARK: - Private Methods
     
     /// Deletes a dictionary at specified offsets.
+    /// - Parameter offsets: IndexSet representing the positions of words to delete.
     private func delete(at offsets: IndexSet) {
         offsets.forEach { index in
             guard index < dictionaryGetter.dictionaries.count else {
@@ -106,16 +107,7 @@ struct DictionaryLocalListViewList: View {
     private func deleteDictionary(_ dictionary: DatabaseModelDictionary, at index: Int) {
         dictionaryAction.delete(dictionary) { result in
             if case .success = result {
-                Logger.info("[DictionaryList]: Successfully deleted dictionary", metadata: [
-                    "dictionaryId": dictionary.id.map(String.init) ?? "nil",
-                    "name": dictionary.name
-                ])
                 dictionaryGetter.removeDictionary(at: index)
-            } else {
-                Logger.error("[DictionaryList]: Failed to delete dictionary", metadata: [
-                    "dictionaryId": dictionary.id.map(String.init) ?? "nil",
-                    "name": dictionary.name
-                ])
             }
         }
     }
@@ -139,9 +131,6 @@ struct DictionaryLocalListViewList: View {
     /// Updates the active status of a dictionary.
     private func updateStatus(_ dictionary: DatabaseModelDictionary, newStatus: Bool) {
         guard let dictionaryID = dictionary.id else {
-            Logger.error("[DictionaryList]: Cannot update status - dictionary ID is nil", metadata: [
-                "dictionary": dictionary.name
-            ])
             return
         }
         
@@ -153,10 +142,6 @@ struct DictionaryLocalListViewList: View {
         
         dictionaryAction.updateStatus(dictionaryID: dictionaryID, newStatus: newStatus) { result in
             if case .success = result {
-                Logger.info("[DictionaryList]: Successfully updated dictionary status", metadata: [
-                    "dictionaryId": String(dictionaryID),
-                    "newStatus": String(newStatus)
-                ])
                 dictionaryGetter.resetPagination()
             } else {
                 Logger.error("[DictionaryList]: Failed to update dictionary status", metadata: [
@@ -164,5 +149,10 @@ struct DictionaryLocalListViewList: View {
                 ])
             }
         }
+    }
+    
+    /// A computed property that returns a view for the empty state.
+    private var emptyStateView: AnyView {
+        return AnyView(DictionaryLocalListViewNoItems(locale: locale, style: style))
     }
 }

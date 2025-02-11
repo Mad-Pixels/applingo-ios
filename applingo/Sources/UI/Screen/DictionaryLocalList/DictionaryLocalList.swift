@@ -68,10 +68,10 @@ struct DictionaryLocalList: View {
             )
         }
         // Present import view.
-        .sheet(isPresented: $isShowingImportSheet) {
+        .fullScreenCover(isPresented: $isShowingImportSheet) {
             DictionaryImport(isPresented: $isShowingImportSheet)
         }
-        // Present remote list view as full screen.
+        // Present remote list view.
         .fullScreenCover(isPresented: $isShowingRemoteList) {
             DictionaryRemoteList(isPresented: $isShowingRemoteList)
         }
