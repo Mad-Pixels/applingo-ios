@@ -62,7 +62,6 @@ struct DictionaryImport: View {
             allowedContentTypes: [
                 .plainText,
                 .commaSeparatedText
-                // For TSV support on iOS 15+, you can add .tabSeparatedText.
             ],
             allowsMultipleSelection: false
         ) { result in
@@ -77,15 +76,43 @@ struct DictionaryImport: View {
     private func handleFileImport(result: Result<[URL], Error>) {
         switch result {
         case .success(let urls):
-            guard let fileURL = urls.first else { return }
-            let parser = DictionaryParser()
-            parser.importDictionary(from: fileURL) { importResult in
-                // Handle the import result if needed.
+            guard let sourceURL = urls.first else { return }
+            
+            guard sourceURL.startAccessingSecurityScopedResource() else {
+                return
             }
-        case .failure(let error):
-            Logger.debug("[Import]: File picker error", metadata: [
-                "error": "\(error)"
-            ])
+            
+            defer {
+                sourceURL.stopAccessingSecurityScopedResource()
+            }
+            
+            let temporaryDirectoryURL = FileManager.default.temporaryDirectory
+            let temporaryFileURL = temporaryDirectoryURL.appendingPathComponent(sourceURL.lastPathComponent)
+            
+            try? FileManager.default.removeItem(at: temporaryFileURL)
+            do {
+                try FileManager.default.copyItem(at: sourceURL, to: temporaryFileURL)
+                
+                let parser = DictionaryParser()
+                Task {
+                    defer {
+                        try? FileManager.default.removeItem(at: temporaryFileURL)
+                    }
+                    
+                    do {
+                        try await withCheckedThrowingContinuation { continuation in
+                            parser.importDictionary(from: temporaryFileURL) { result in
+                                continuation.resume(with: result)
+                            }
+                        }
+                        await MainActor.run {
+                            isPresented = false
+                        }
+                    } catch {}
+                }
+            } catch {}
+        case .failure:
+            break
         }
     }
 }
