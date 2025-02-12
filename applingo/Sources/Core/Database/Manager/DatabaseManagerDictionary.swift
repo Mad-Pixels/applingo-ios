@@ -62,6 +62,15 @@ final class DatabaseManagerDictionary {
         static let fetchRefs = """
             SELECT id, guid, name FROM \(DatabaseModelDictionary.databaseTableName)
         """
+        
+        /// Query to check if dictionary exists by GUID
+        static let exists = """
+            SELECT EXISTS (
+                SELECT 1 
+                FROM \(DatabaseModelDictionary.databaseTableName)
+                WHERE guid = ?
+            )
+        """
     }
     
     // MARK: - Properties
@@ -343,6 +352,41 @@ final class DatabaseManagerDictionary {
                 )
             } catch {
                 throw DatabaseError.deleteFailed(details: "Failed to delete dictionary: \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    /// Checks if a dictionary exists in the database by its GUID.
+    /// - Parameter guid: The GUID of the dictionary to check.
+    /// - Returns: True if the dictionary exists, false otherwise.
+    func exists(guid: String) throws -> Bool {
+        guard !guid.isEmpty else {
+            Logger.error("[Dictionary]: Empty GUID for existence check")
+            throw DatabaseError.invalidSearchParameters
+        }
+        
+        Logger.debug(
+            "[Dictionary]: Checking existence",
+            metadata: ["guid": guid]
+        )
+        
+        return try dbQueue.read { db in
+            do {
+                let exists = try Bool.fetchOne(db, sql: SQL.exists, arguments: [guid]) ?? false
+                Logger.debug(
+                    "[Dictionary]: Existence check completed",
+                    metadata: [
+                        "guid": guid,
+                        "exists": String(exists)
+                    ]
+                )
+                return exists
+            } catch {
+                Logger.error(
+                    "[Dictionary]: Failed to check existence",
+                    metadata: ["error": error.localizedDescription]
+                )
+                throw DatabaseError.selectDataFailed(details: "Failed to check dictionary existence: \(error.localizedDescription)")
             }
         }
     }
