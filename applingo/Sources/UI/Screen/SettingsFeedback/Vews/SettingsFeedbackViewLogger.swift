@@ -12,10 +12,8 @@ struct SettingsFeedbackViewLogger: View {
     // MARK: - Initializer
     /// Initializes the additional view.
     /// - Parameters:
-    ///   - style: The style configuration.
-    ///   - locale: The localization object.
-    ///   - hint: Binding for the hint text.
-    ///   - description: Binding for the description text.
+    ///   - style: `SettingsFeedbackStyle` object that defines the visual style.
+    ///   - locale: `SettingsFeedbackLocale` object that provides localized strings.
     init(
         style: SettingsFeedbackStyle,
         locale: SettingsFeedbackLocale

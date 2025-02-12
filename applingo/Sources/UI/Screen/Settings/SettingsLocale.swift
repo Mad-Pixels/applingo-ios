@@ -2,19 +2,16 @@ import Foundation
 
 /// Provides localized strings for the Settings view.
 final class SettingsLocale: ObservableObject {
-    
-    // MARK: - Private Strings
-    
-    private enum Strings {
-        static let title = "screen.settings.title"
-        static let subtitleTheme = "screen.settings.subtitle.theme"
-        static let subtitleLanguage = "screen.settings.subtitle.language"
-        static let subtitleFeedback = "screen.settings.subtitle.feedback"
-        static let descriptionFeedback = "screen.settings.description.feedback"
+    // MARK: - Localized Keys
+    private enum LocalizedKey: String {
+        case title = "screen.settings.title"
+        case subtitleTheme = "screen.settings.subtitle.theme"
+        case subtitleLanguage = "screen.settings.subtitle.language"
+        case subtitleFeedback = "screen.settings.subtitle.feedback"
+        case descriptionFeedback = "screen.settings.description.feedback"
     }
     
     // MARK: - Published Properties
-    
     @Published private(set) var screenTitle: String
     @Published private(set) var screenSubtitleTheme: String
     @Published private(set) var screenSubtitleLanguage: String
@@ -22,7 +19,6 @@ final class SettingsLocale: ObservableObject {
     @Published private(set) var screenDescriptionFeedback: String
     
     // MARK: - Initialization
-    
     init() {
         self.screenTitle = Self.localizedString(for: .title)
         self.screenSubtitleTheme = Self.localizedString(for: .subtitleTheme)
@@ -43,33 +39,12 @@ final class SettingsLocale: ObservableObject {
     }
     
     // MARK: - Localization Helper
-    
-    private enum LocalizedKey {
-        case title
-        case subtitleTheme
-        case subtitleLanguage
-        case subtitleFeedback
-        case descriptionFeedback
-        
-        var key: String {
-            switch self {
-            case .title: return Strings.title
-            case .subtitleTheme: return Strings.subtitleTheme
-            case .subtitleLanguage: return Strings.subtitleLanguage
-            case .subtitleFeedback: return Strings.subtitleFeedback
-            case .descriptionFeedback: return Strings.descriptionFeedback
-            }
-        } 
-        
-        var capitalized: Bool { true }
-    }
-    
+    /// Returns a localized string for the specified key.
     private static func localizedString(for key: LocalizedKey) -> String {
-        return LocaleManager.shared.localizedString(for: key.key)
+        return LocaleManager.shared.localizedString(for: key.rawValue)
     }
     
     // MARK: - Notification Handler
-    
     @objc private func localeDidChange() {
         screenTitle = Self.localizedString(for: .title)
         screenSubtitleTheme = Self.localizedString(for: .subtitleTheme)

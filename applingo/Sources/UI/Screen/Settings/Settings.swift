@@ -3,29 +3,29 @@ import SwiftUI
 /// A view that displays the settings screen.
 /// It contains sections for theme, language and feedback.
 struct Settings: View {
-    
     // MARK: - State Objects
-    
-    /// Style configuration for the settings screen.
     @StateObject private var style: SettingsStyle
-    /// Localization object for settings texts.
     @StateObject private var locale = SettingsLocale()
     
     // MARK: - Initializer
-    
-    /// Initializes the Settings view.
-    /// - Parameter style: Optional style; if nil, a themed style is applied.
+    /// Initializes the WordDetails view.
+    /// - Parameters:
+    ///   - style: Optional style; if nil, a themed style is applied.
     init(style: SettingsStyle? = nil) {
-        let initialStyle = style ?? .themed(ThemeManager.shared.currentThemeStyle)
-        _style = StateObject(wrappedValue: initialStyle)
+        _style = StateObject(wrappedValue: style ?? .themed(ThemeManager.shared.currentThemeStyle))
     }
     
     // MARK: - Body
-    
     var body: some View {
-        BaseScreen(screen: .Settings, title: locale.screenTitle) {
+        BaseScreen(
+            screen: .Settings,
+            title: locale.screenTitle
+        ) {
             List {
-                SettingsViewTheme()
+                SettingsViewTheme(
+                    style: style,
+                    locale: locale
+                )
                     .listRowBackground(Color.clear)
                     .listRowInsets(EdgeInsets(
                         top: style.padding.top + 8,
@@ -36,7 +36,10 @@ struct Settings: View {
                     .listRowSeparator(.hidden)
                     .frame(maxWidth: .infinity)
                 
-                SettingsViewLocale()
+                SettingsViewLocale(
+                    style: style,
+                    locale: locale
+                )
                     .listRowBackground(Color.clear)
                     .listRowInsets(EdgeInsets(
                         top: style.spacing,
@@ -47,7 +50,10 @@ struct Settings: View {
                     .listRowSeparator(.hidden)
                     .frame(maxWidth: .infinity)
                 
-                SettingsViewFeedback()
+                SettingsViewFeedback(
+                    style: style,
+                    locale: locale
+                )
                     .listRowBackground(Color.clear)
                     .listRowInsets(EdgeInsets(
                         top: style.spacing,

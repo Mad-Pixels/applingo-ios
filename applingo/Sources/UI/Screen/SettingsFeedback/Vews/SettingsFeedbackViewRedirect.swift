@@ -12,8 +12,8 @@ struct SettingsFeedbackViewRedirect: View {
     // MARK: - Initializer
     /// Initializes the additional view.
     /// - Parameters:
-    ///   - style: The style configuration.
-    ///   - locale: The localization object.
+    ///   - style: `SettingsFeedbackStyle` object that defines the visual style.
+    ///   - locale: `SettingsFeedbackLocale` object that provides localized strings.
     ///   - title: Button title.
     ///   - url: URL for redirect.
     init(
