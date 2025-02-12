@@ -62,6 +62,9 @@ struct WordList: View {
                     wordsGetter.resetPagination()
                 }
             }
+            .onDisappear() {
+                wordsGetter.clear()
+            }
         }
         .sheet(item: $selectedWord) { word in
             WordDetails(
