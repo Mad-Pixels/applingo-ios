@@ -46,7 +46,8 @@ final class WordCache: ProcessDatabase {
         self.cacheThreshold = threshold
         self.cacheSize = cacheSize
         
-        super.init()
+        // Inject the database queue to the superclass
+        super.init(dbQueue: dbQueue)
             
         Logger.debug(
             "[Word]: Initializing",
@@ -83,16 +84,22 @@ final class WordCache: ProcessDatabase {
         let currentToken = self.cancellationToken
         Logger.debug("[Word]: About to fetch cache")
         
-        do {
-            let fetchedWords = try self.wordRepository.fetchCache(count: self.cacheSize)
+        performDatabaseOperation({
+            try self.wordRepository.fetchCache(count: self.cacheSize)
+        }, screen: .WordList, metadata: ["operation": "initializeCache", "cacheSize": String(self.cacheSize)])
+        .sink { [weak self] completion in
+            guard let self = self, currentToken == self.cancellationToken else { return }
+            if case .failure(let error) = completion {
+                Logger.error("[Word]: Failed to fetch cache: \(error)")
+                DispatchQueue.main.async {
+                    self.isLoadingCache = false
+                }
+            }
+        } receiveValue: { [weak self] fetchedWords in
+            guard let self = self, currentToken == self.cancellationToken else { return }
             Logger.debug("[Word]: Fetched \(fetchedWords.count) words")
             
-            queue.async(flags: .barrier) {
-                if currentToken != self.cancellationToken {
-                    Logger.debug("[Word]: Operation cancelled")
-                    return
-                }
-                
+            self.queue.async(flags: .barrier) {
                 if fetchedWords.isEmpty {
                     Logger.debug("[Word]: No words fetched")
                     DispatchQueue.main.async {
@@ -109,12 +116,8 @@ final class WordCache: ProcessDatabase {
                     self.isLoadingCache = false
                 }
             }
-        } catch {
-            Logger.error("[Word]: Failed to fetch cache: \(error)")
-            DispatchQueue.main.async {
-                self.isLoadingCache = false
-            }
         }
+        .store(in: &cancellables)
     }
     
     /// Removes a specific word from the cache
@@ -152,6 +155,7 @@ final class WordCache: ProcessDatabase {
             }
         }
     }
+    
     // MARK: - Private Methods
     
     /// Sets up the cache observer for automatic refilling
@@ -202,8 +206,8 @@ final class WordCache: ProcessDatabase {
             }
             
             let lowercasedText = word.frontText.lowercased()
-            let isUnique = uniqueFrontText.insert(lowercasedText).inserted
-                && uniqueIds.insert(wordId).inserted
+            let isUnique = uniqueFrontText.insert(lowercasedText).inserted &&
+                           uniqueIds.insert(wordId).inserted
             
             if !isUnique {
                 Logger.warning(
@@ -258,52 +262,51 @@ final class WordCache: ProcessDatabase {
             
             self.performDatabaseOperation(
                 { try self.wordRepository.fetchCache(count: needCount) },
-                success: { [weak self] fetchedWords in
-                    guard let self = self, currentToken == self.cancellationToken else { return }
-                    
-                    self.queue.async(flags: .barrier) {
-                        let validatedWords = self.validateAndFilterWords(fetchedWords)
-                        let newWords = validatedWords.filter { word in
-                            guard let wordId = word.id else { return false }
-                            return !existingIds.contains(wordId) &&
-                                !existingFrontTexts.contains(word.frontText.lowercased())
-                        }
-                        
-                        if !newWords.isEmpty {
-                            let availableSpace = self.cacheSize - self.cache.count
-                            if availableSpace > 0 {
-                                let wordsToAdd = Array(newWords.prefix(availableSpace))
-                                self.cache.append(contentsOf: wordsToAdd)
-                                Logger.info(
-                                    "[Word]: Cache refilled",
-                                    metadata: [
-                                        "addedWords": String(wordsToAdd.count),
-                                        "totalWords": String(self.cache.count)
-                                    ]
-                                )
-                            }
-                        } else {
-                            Logger.warning("[Word]: No new unique words found for refill")
-                        }
-                        self.isLoadingCache = false
-                    }
-                },
                 screen: .WordList,
                 metadata: [
                     "operation": "refillCache",
                     "currentCount": String(self.cache.count),
                     "needCount": String(needCount),
                     "screen": screen.rawValue
-                ],
-                completion: { [weak self] result in
-                    guard let self = self, currentToken == self.cancellationToken else { return }
-                    if case .failure(let error) = result {
-                        self.queue.async(flags: .barrier) {
-                            self.isLoadingCache = false
-                        }
+                ]
+            )
+            .sink { [weak self] completion in
+                guard let self = self, currentToken == self.cancellationToken else { return }
+                if case .failure(let error) = completion {
+                    self.queue.async(flags: .barrier) {
+                        self.isLoadingCache = false
                     }
                 }
-            )
+            } receiveValue: { [weak self] fetchedWords in
+                guard let self = self, currentToken == self.cancellationToken else { return }
+                self.queue.async(flags: .barrier) {
+                    let validatedWords = self.validateAndFilterWords(fetchedWords)
+                    let newWords = validatedWords.filter { word in
+                        guard let wordId = word.id else { return false }
+                        return !existingIds.contains(wordId) &&
+                               !existingFrontTexts.contains(word.frontText.lowercased())
+                    }
+                    
+                    if !newWords.isEmpty {
+                        let availableSpace = self.cacheSize - self.cache.count
+                        if availableSpace > 0 {
+                            let wordsToAdd = Array(newWords.prefix(availableSpace))
+                            self.cache.append(contentsOf: wordsToAdd)
+                            Logger.info(
+                                "[Word]: Cache refilled",
+                                metadata: [
+                                    "addedWords": String(wordsToAdd.count),
+                                    "totalWords": String(self.cache.count)
+                                ]
+                            )
+                        }
+                    } else {
+                        Logger.warning("[Word]: No new unique words found for refill")
+                    }
+                    self.isLoadingCache = false
+                }
+            }
+            .store(in: &self.cancellables)
         }
     }
     

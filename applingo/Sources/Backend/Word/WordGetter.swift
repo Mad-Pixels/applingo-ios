@@ -28,13 +28,13 @@ final class WordGetter: ProcessDatabase {
     private var currentPage = 0
     
     // MARK: - Initialization
-    override init() {
+    init() {
         guard let dbQueue = AppDatabase.shared.databaseQueue else {
             fatalError("Database is not connected")
         }
         
         self.wordRepository = DatabaseManagerWord(dbQueue: dbQueue)
-        super.init()
+        super.init(dbQueue: dbQueue)
     }
     
     // MARK: - Public Methods
@@ -43,12 +43,12 @@ final class WordGetter: ProcessDatabase {
     func resetPagination() {
         Logger.debug("[Word]: Resetting pagination")
         words.removeAll()
-        hasLoadedInitialPage = false  // Сбрасываем флаг первой загрузки
+        hasLoadedInitialPage = false  // Reset the initial load flag
         
         currentPage = 0
         hasMorePages = true
         cancellationToken = UUID()
-        // Сбрасываем isLoadingPage на случай, если предыдущая операция не завершилась корректно.
+        // Reset isLoadingPage in case a previous operation didn't finish properly.
         isLoadingPage = false
         
         DispatchQueue.main.async {
@@ -58,7 +58,7 @@ final class WordGetter: ProcessDatabase {
     
     /// Fetches words from the database with pagination and search support.
     func get() {
-        // Если уже идет загрузка или страниц больше нет, пропускаем запрос.
+        // If a load is already in progress or no more pages, skip the request.
         guard !isLoadingPage, hasMorePages else {
             Logger.debug("[Word]: Skipping get() - already loading or no more pages")
             return
@@ -75,26 +75,24 @@ final class WordGetter: ProcessDatabase {
             ]
         )
         
-        performDatabaseOperation(
-            {
-                try self.wordRepository.fetch(
-                    search: self.searchText,
-                    offset: self.currentPage * self.itemsPerPage,
-                    limit: self.itemsPerPage
-                )
-            },
-            success: { [weak self] fetchedWords in
-                guard let self = self, currentToken == self.cancellationToken else { return }
-                self.handleFetchedWords(fetchedWords)
-            },
-            screen: .WordList,
-            metadata: ["searchText": searchText],
-            completion: { [weak self] result in
-                guard let self = self else { return }
-                // Даже если операция устарела, сбрасываем флаг загрузки.
-                self.isLoadingPage = false
+        performDatabaseOperation({
+            try self.wordRepository.fetch(
+                search: self.searchText,
+                offset: self.currentPage * self.itemsPerPage,
+                limit: self.itemsPerPage
+            )
+        }, screen: .WordList, metadata: ["searchText": searchText])
+        .sink { [weak self] completion in
+            guard let self = self, currentToken == self.cancellationToken else { return }
+            self.isLoadingPage = false
+            if case .failure(let error) = completion {
+                Logger.warning("[Word]: Failed to fetch words", metadata: ["error": "\(error)"])
             }
-        )
+        } receiveValue: { [weak self] fetchedWords in
+            guard let self = self, currentToken == self.cancellationToken else { return }
+            self.handleFetchedWords(fetchedWords)
+        }
+        .store(in: &cancellables)
     }
     
     /// Triggers loading of more words when scrolling close to the bottom of the list.
@@ -179,7 +177,7 @@ final class WordGetter: ProcessDatabase {
                 )
             }
             
-            self.hasLoadedInitialPage = true  // Флаг устанавливается после первой успешной загрузки
+            self.hasLoadedInitialPage = true  // Set the flag after the first successful load
             self.isLoadingPage = false
         }
     }

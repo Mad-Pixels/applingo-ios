@@ -5,8 +5,8 @@ class ErrorWrapper {
     /// The current frame type for tracking context
     private(set) var screen: ScreenType = .Home
     
-    /// Sets the current frame type for tracking context
-    /// - Parameter newScreen: The frame type to set
+    /// Sets the current frame type for tracking context.
+    /// - Parameter newScreen: The frame type to set.
     func setScreen(_ newScreen: ScreenType) {
         Logger.debug(
             "[ErrorWrapper]: Setting frame",

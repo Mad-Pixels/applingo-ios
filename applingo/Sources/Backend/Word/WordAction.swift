@@ -7,17 +7,18 @@ final class WordAction: ProcessDatabase {
     
     private let dictionaryRepository: DatabaseManagerDictionary
     private let wordRepository: DatabaseManagerWord
+    private var cancellables = Set<AnyCancellable>()
     
     // MARK: - Initialization
     
-    override init() {
+    init() {
         guard let dbQueue = AppDatabase.shared.databaseQueue else {
             fatalError("Database is not connected")
         }
-
+        
         self.dictionaryRepository = DatabaseManagerDictionary(dbQueue: dbQueue)
         self.wordRepository = DatabaseManagerWord(dbQueue: dbQueue)
-        super.init()
+        super.init(dbQueue: dbQueue)
     }
     
     // MARK: - Public Methods
@@ -101,11 +102,22 @@ final class WordAction: ProcessDatabase {
         )
         performDatabaseOperation(
             operation,
-            success: { _ in },
             screen: screen,
-            metadata: createMetadata(operation: name, word: word),
-            completion: completion
+            metadata: createMetadata(operation: name, word: word)
         )
+        .sink { [weak self] completionResult in
+            guard let _ = self else { return }
+            switch completionResult {
+            case .failure(let error):
+                completion(.failure(error))
+            case .finished:
+                break
+            }
+        } receiveValue: { [weak self] _ in
+            guard let _ = self else { return }
+            completion(.success(()))
+        }
+        .store(in: &cancellables)
     }
     
     /// Creates metadata for word operations.
