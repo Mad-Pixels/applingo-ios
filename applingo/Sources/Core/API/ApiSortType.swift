@@ -10,9 +10,13 @@ enum ApiSortType: String, CaseIterable {
     var name: String {
         switch self {
         case .date:
-            return LocaleManager.shared.localizedString(for: "DateCreated")
+            return LocaleManager.shared.localizedString(
+                for: "sort.api.DictionarySortByDate"
+            )
         case .rating:
-            return LocaleManager.shared.localizedString(for: "Rating")
+            return LocaleManager.shared.localizedString(
+                for: "sort.api.DictionarySortByRating"
+            )
         }
     }
 }
