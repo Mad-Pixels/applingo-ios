@@ -8,6 +8,7 @@ final class DictionaryRemoteDetailsLocale: ObservableObject {
         case subtitleDictionary = "screen.dictionaryRemoteDetails.subtitle.dictionary"
         case subtitleCategory = "screen.dictionaryRemoteDetails.subtitle.category"
         case subtitleAdditional = "screen.dictionaryRemoteDetails.subtitle.additional"
+        case subtitleDictionaryExist = "screen.dictionaryRemoteDetails.subtitle.dictionaryExist"
         case buttonDownload = "base.button.download"
     }
     
@@ -17,6 +18,7 @@ final class DictionaryRemoteDetailsLocale: ObservableObject {
     @Published private(set) var screenSubtitleCategory: String
     @Published private(set) var screenSubtitleAdditional: String
     @Published private(set) var screenButtonDownload: String
+    @Published private(set) var screenSubtitleDictionaryExist: String
     
     // MARK: - Initialization
     init() {
@@ -25,6 +27,7 @@ final class DictionaryRemoteDetailsLocale: ObservableObject {
         self.screenSubtitleCategory = Self.localizedString(for: .subtitleCategory)
         self.screenSubtitleAdditional = Self.localizedString(for: .subtitleAdditional)
         self.screenButtonDownload = Self.localizedString(for: .buttonDownload)
+        self.screenSubtitleDictionaryExist = Self.localizedString(for: .subtitleDictionaryExist)
         
         NotificationCenter.default.addObserver(
             self,
@@ -51,5 +54,6 @@ final class DictionaryRemoteDetailsLocale: ObservableObject {
         screenSubtitleCategory = Self.localizedString(for: .subtitleCategory)
         screenSubtitleAdditional = Self.localizedString(for: .subtitleAdditional)
         screenButtonDownload = Self.localizedString(for: .buttonDownload)
+        screenSubtitleDictionaryExist = Self.localizedString(for: .subtitleDictionaryExist)
     }
 }

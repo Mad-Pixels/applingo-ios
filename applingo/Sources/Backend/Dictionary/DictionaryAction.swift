@@ -81,6 +81,32 @@ final class DictionaryAction: ProcessDatabase {
         )
     }
     
+    /// Checks if a dictionary exists in the database
+    /// - Parameters:
+    ///   - guid: The GUID of the dictionary to check
+    ///   - completion: Called with the result of the operation (true if exists, false otherwise)
+    func exists(guid: String, completion: @escaping (Result<Bool, Error>) -> Void) {
+        if guid.isEmpty {
+            Logger.warning(
+                "[Dictionary]: Attempted to check existence with empty GUID",
+                metadata: ["guid": guid, "operation": "exists", "screen": screen.rawValue]
+            )
+            completion(.success(false))
+            return
+        }
+        
+        performDatabaseOperationWithResult(
+            { try self.dictionaryRepository.exists(guid: guid) },
+            screen: screen,
+            metadata: [
+                "guid": guid,
+                "operation": "exists",
+                "screen": screen.rawValue
+            ],
+            completion: completion
+        )
+    }
+    
     /// Updates the active status of a dictionary
     /// - Parameters:
     ///   - dictionaryID: The ID of the dictionary to update

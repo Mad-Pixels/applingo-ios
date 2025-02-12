@@ -9,10 +9,12 @@ struct DictionaryRemoteDetails: View {
     // MARK: - State Objects
     @StateObject private var style: DictionaryRemoteDetailsStyle
     @StateObject private var locale = DictionaryRemoteDetailsLocale()
+    @StateObject private var dictionaryAction = DictionaryAction()
     
     // MARK: - Local State
     @State private var editedDictionary: ApiModelDictionaryItem
     @State private var isPressedTrailing = false
+    @State private var dictionaryExists = false
     @State private var isDownloading = false
     
     // MARK: - Initializer
@@ -53,7 +55,14 @@ struct DictionaryRemoteDetails: View {
                 }
                 .padding(style.padding)
             }
-            .disabled(isDownloading)
+            .onAppear() {
+                dictionaryAction.setScreen(.DictionaryRemoteDetails)
+                dictionaryAction.exists(guid: editedDictionary.id) { result in
+                    if case .success(let exists) = result {
+                        dictionaryExists = exists
+                    }
+                }
+            }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     ButtonNav(
@@ -67,7 +76,10 @@ struct DictionaryRemoteDetails: View {
             }
         }
         
-        if isDownloading {
+        if dictionaryExists {
+            Text(locale.screenSubtitleDictionaryExist)
+                .padding(style.padding)
+        } else if isDownloading {
             ProgressView(locale.screenButtonDownload)
                 .progressViewStyle(CircularProgressViewStyle())
                 .padding(style.padding)

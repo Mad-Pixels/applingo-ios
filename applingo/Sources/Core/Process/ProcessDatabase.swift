@@ -80,4 +80,36 @@ class ProcessDatabase: ErrorWrapper, ObservableObject {
             }
         }
     }
+    
+    /// A method to perform synchronous database operations with value return and error handling.
+    ///
+    /// Similar to `performDatabaseOperation`, but designed specifically for operations that need to return
+    /// a value in the completion handler. This is useful for queries and checks that need to return data.
+    ///
+    /// - Parameters:
+    ///   - operation: The database operation to be executed. This closure is expected to throw errors if something goes wrong.
+    ///   - screen: The screen type where the operation is performed, used for error tracking and context.
+    ///   - metadata: Additional metadata associated with the operation, useful for debugging or logging purposes.
+    ///   - completion: A closure called when the operation completes, with a `Result` containing either the operation's result of type `T` or an error.
+    func performDatabaseOperationWithResult<T>(
+       _ operation: @escaping () throws -> T,
+       screen: ScreenType,
+       metadata: [String: Any] = [:],
+       completion: @escaping (Result<T, Error>) -> Void
+    ) {
+       DispatchQueue.global(qos: .userInitiated).async {
+           do {
+               let result = try operation()
+               
+               DispatchQueue.main.async {
+                   completion(.success(result))
+               }
+           } catch {
+               DispatchQueue.main.async {
+                   self.handleError(error, screen: screen, metadata: metadata)
+                   completion(.failure(error))
+               }
+           }
+       }
+    }
 }

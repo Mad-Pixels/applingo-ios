@@ -1099,6 +1099,23 @@
         }
       }
     },
+    "screen.dictionaryRemoteDetails.subtitle.dictionaryExist" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Already downloaded"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Уже добавлено"
+          }
+        }
+      }
+    },
     "screen.dictionaryRemoteDetails.title" : {
       "extractionState" : "manual",
       "localizations" : {
