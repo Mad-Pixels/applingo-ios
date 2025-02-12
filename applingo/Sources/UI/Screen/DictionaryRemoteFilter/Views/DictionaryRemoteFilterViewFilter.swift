@@ -39,35 +39,30 @@ struct DictionaryRemoteFilterViewFilter: View {
     // MARK: - Body
     var body: some View {
         Section() {
-            if categoryGetter.isLoadingPage {
-                ProgressView()
-                    .frame(maxWidth: .infinity)
-            } else {
-                SectionHeader(
-                    title: locale.screenSubtitleLanguage,
-                    style: .titled(themeManager.currentThemeStyle)
-                )
-                HStack {
-                    ItemPicker(
-                        selectedValue: $selectedFrontCategory,
-                        items: categoryGetter.frontCategories,
-                        style: .themed(themeManager.currentThemeStyle)
-                    ) {
-                        category in Text(category?.code ?? "")
-                    }
-                    .frame(maxWidth: .infinity)
-                    
-                    ItemPicker(
-                        selectedValue: $selectedBackCategory,
-                        items: categoryGetter.backCategories,
-                        style: .themed(themeManager.currentThemeStyle)
-                    ) {
-                        category in Text(category?.code ?? "")
-                    }
-                    .frame(maxWidth: .infinity)
+            SectionHeader(
+                title: locale.screenSubtitleLanguage,
+                style: .titled(themeManager.currentThemeStyle)
+            )
+            HStack {
+                ItemPicker(
+                    selectedValue: $selectedFrontCategory,
+                    items: categoryGetter.frontCategories,
+                    style: .themed(themeManager.currentThemeStyle)
+                ) {
+                    category in Text(category?.code ?? "")
                 }
-                .padding(.top, -24)
+                .frame(maxWidth: .infinity)
+                    
+                ItemPicker(
+                    selectedValue: $selectedBackCategory,
+                    items: categoryGetter.backCategories,
+                    style: .themed(themeManager.currentThemeStyle)
+                ) {
+                    category in Text(category?.code ?? "")
+                }
+                .frame(maxWidth: .infinity)
             }
+            .padding(.top, -24)
         }
     }
 }

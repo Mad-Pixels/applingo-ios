@@ -49,31 +49,36 @@ struct DictionaryRemoteFilter: View {
             title: locale.screenTitle
         ) {
             ScrollView {
-                VStack(spacing: style.spacing) {
-                    DictionaryRemoteFilterViewFilter(
-                        style: style,
-                        locale: locale,
-                        categoryGetter: categoryGetter,
-                        selectedFrontCategory: $selectedFrontCategory,
-                        selectedBackCategory: $selectedBackCategory
-                    )
-                    .padding(style.padding)
-
-                    DictionaryRemoteFilterViewSort(
-                        style: style,
-                        locale: locale,
-                        selectedSortBy: $selectedSortBy
-                    )
-                    .padding(style.padding)
-                    
-                    DictionaryRemoteFilterViewLevel(
-                        style: style,
-                        locale: locale,
-                        selectedLevel: $selectedLevel
-                    )
+                if categoryGetter.isLoadingPage {
+                    ProgressView()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else {
+                    VStack(spacing: style.spacing) {
+                        DictionaryRemoteFilterViewFilter(
+                            style: style,
+                            locale: locale,
+                            categoryGetter: categoryGetter,
+                            selectedFrontCategory: $selectedFrontCategory,
+                            selectedBackCategory: $selectedBackCategory
+                        )
+                        .padding(style.padding)
+                            
+                        DictionaryRemoteFilterViewSort(
+                            style: style,
+                            locale: locale,
+                            selectedSortBy: $selectedSortBy
+                        )
+                        .padding(style.padding)
+                            
+                        DictionaryRemoteFilterViewLevel(
+                            style: style,
+                            locale: locale,
+                            selectedLevel: $selectedLevel
+                        )
+                        .padding(style.padding)
+                    }
                     .padding(style.padding)
                 }
-                .padding(style.padding)
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
