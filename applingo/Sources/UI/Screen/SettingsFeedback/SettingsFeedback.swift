@@ -24,7 +24,10 @@ struct SettingsFeedback: View {
     
     // MARK: - Body
     var body: some View {
-        BaseScreen(screen: .SettingsFeedback, title: locale.screenTitle) {
+        BaseScreen(
+            screen: .SettingsFeedback,
+            title: locale.screenTitle
+        ) {
             List {
                 SettingsFeedbackViewLogger(
                     style: style,
