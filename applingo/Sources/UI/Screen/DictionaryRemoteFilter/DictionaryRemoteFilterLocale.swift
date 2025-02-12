@@ -1,24 +1,20 @@
 import Foundation
 
 /// Provides localized strings for the dictionary remote filter view.
-///
 /// This class manages localized UI text and updates dynamically when the locale changes.
 final class DictionaryRemoteFilterLocale: ObservableObject {
-   
-    // MARK: - Private Constants
-   
-    private enum Strings {
-        static let title = "screen.dictionaryRemoteFilter.title"
-        static let subtitleSortBy = "screen.dictionaryRemoteFilter.subtitle.sortBy"
-        static let subtitleLanguage = "screen.dictionaryRemoteFilter.subtitle.language"
-        static let subtitleLevel = "screen.dictionaryRemoteFilter.subtitle.level"
-        static let buttonSave = "base.button.save"
-        static let buttonReset = "base.button.reset"
-        static let buttonClose = "base.button.close"
+    // MARK: - Localized Keys
+    private enum LocalizedKey: String {
+        case title = "screen.dictionaryRemoteFilter.title"
+        case subtitleSortBy = "screen.dictionaryRemoteFilter.subtitle.sortBy"
+        case subtitleLanguage = "screen.dictionaryRemoteFilter.subtitle.language"
+        case subtitleLevel = "screen.dictionaryRemoteFilter.subtitle.level"
+        case buttonSave = "base.button.save"
+        case buttonReset = "base.button.reset"
+        case buttonClose = "base.button.close"
     }
-   
+    
     // MARK: - Published Properties
-   
     @Published private(set) var screenTitle: String
     @Published private(set) var screenSubtitleSortBy: String
     @Published private(set) var screenSubtitleLanguage: String
@@ -26,9 +22,8 @@ final class DictionaryRemoteFilterLocale: ObservableObject {
     @Published private(set) var screenButtonSave: String
     @Published private(set) var screenButtonReset: String
     @Published private(set) var screenButtonClose: String
-   
+    
     // MARK: - Initialization
-   
     init() {
         self.screenTitle = Self.localizedString(for: .title)
         self.screenSubtitleSortBy = Self.localizedString(for: .subtitleSortBy)
@@ -37,7 +32,7 @@ final class DictionaryRemoteFilterLocale: ObservableObject {
         self.screenButtonSave = Self.localizedString(for: .buttonSave)
         self.screenButtonReset = Self.localizedString(for: .buttonReset)
         self.screenButtonClose = Self.localizedString(for: .buttonClose)
-       
+        
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(localeDidChange),
@@ -45,44 +40,23 @@ final class DictionaryRemoteFilterLocale: ObservableObject {
             object: nil
         )
     }
-   
+    
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
-   
-    // MARK: - Private Methods
-   
-    private enum LocalizedKey {
-        case title
-        case subtitleSortBy
-        case subtitleLevel
-        case subtitleLanguage
-        case buttonSave
-        case buttonReset
-        case buttonClose
-        
-        var key: String {
-            switch self {
-            case .title: return Strings.title
-            case .subtitleSortBy: return Strings.subtitleSortBy
-            case .subtitleLevel: return Strings.subtitleLevel
-            case .subtitleLanguage: return Strings.subtitleLanguage
-            case .buttonSave: return Strings.buttonSave
-            case .buttonReset: return Strings.buttonReset
-            case .buttonClose: return Strings.buttonClose
-            }
-        }
-    }
-   
+    
+    // MARK: - Localization Helper
+    /// Returns a localized string for the specified key.
     private static func localizedString(for key: LocalizedKey) -> String {
-        return LocaleManager.shared.localizedString(for: key.key)
+        return LocaleManager.shared.localizedString(for: key.rawValue)
     }
-   
+    
+    // MARK: - Notification Handler
     @objc private func localeDidChange() {
         screenTitle = Self.localizedString(for: .title)
         screenSubtitleSortBy = Self.localizedString(for: .subtitleSortBy)
-        screenSubtitleLevel = Self.localizedString(for: .subtitleLevel)
         screenSubtitleLanguage = Self.localizedString(for: .subtitleLanguage)
+        screenSubtitleLevel = Self.localizedString(for: .subtitleLevel)
         screenButtonSave = Self.localizedString(for: .buttonSave)
         screenButtonReset = Self.localizedString(for: .buttonReset)
         screenButtonClose = Self.localizedString(for: .buttonClose)

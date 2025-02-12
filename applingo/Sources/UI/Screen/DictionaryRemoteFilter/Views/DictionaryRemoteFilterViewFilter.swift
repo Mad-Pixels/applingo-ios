@@ -5,46 +5,38 @@ import SwiftUI
 /// This view allows users to select categories for filtering dictionaries,
 /// displaying a loading indicator when categories are being fetched.
 struct DictionaryRemoteFilterViewFilter: View {
-    
     // MARK: - Properties
-    
-    /// Manages the application's theme.
     @EnvironmentObject private var themeManager: ThemeManager
-    
-    /// Fetches categories for filtering.
-    @ObservedObject var categoryGetter: CategoryFetcher
-    
-    /// The selected front category.
-    @Binding var selectedFrontCategory: CategoryItem?
-    
-    /// The selected back category.
-    @Binding var selectedBackCategory: CategoryItem?
-    
-    /// Localization support for UI text.
     private let locale: DictionaryRemoteFilterLocale
-    
+    private let style: DictionaryRemoteFilterStyle
+
+    @ObservedObject var categoryGetter: CategoryFetcher
+    @Binding var selectedFrontCategory: CategoryItem?
+    @Binding var selectedBackCategory: CategoryItem?
+
     // MARK: - Initialization
-    
     /// Initializes the view with required dependencies.
     /// - Parameters:
+    ///   - style: `DictionaryRemoteFilterStyle` style configuration.
+    ///   - locale: `DictionaryRemoteFilterLocale` localization object.
     ///   - categoryGetter: The object responsible for fetching categories.
     ///   - selectedFrontCategory: Binding for the front category selection.
     ///   - selectedBackCategory: Binding for the back category selection.
-    ///   - locale: Localization object providing UI text.
     init(
+        style: DictionaryRemoteFilterStyle,
+        locale: DictionaryRemoteFilterLocale,
         categoryGetter: CategoryFetcher,
         selectedFrontCategory: Binding<CategoryItem?>,
-        selectedBackCategory: Binding<CategoryItem?>,
-        locale: DictionaryRemoteFilterLocale
+        selectedBackCategory: Binding<CategoryItem?>
     ) {
-        self.categoryGetter = categoryGetter
         self._selectedFrontCategory = selectedFrontCategory
         self._selectedBackCategory = selectedBackCategory
+        self.categoryGetter = categoryGetter
         self.locale = locale
+        self.style = style
     }
     
     // MARK: - Body
-    
     var body: some View {
         Section() {
             if categoryGetter.isLoadingPage {
@@ -60,8 +52,8 @@ struct DictionaryRemoteFilterViewFilter: View {
                         selectedValue: $selectedFrontCategory,
                         items: categoryGetter.frontCategories,
                         style: .themed(themeManager.currentThemeStyle)
-                    ) { category in
-                        Text(category?.code ?? "")
+                    ) {
+                        category in Text(category?.code ?? "")
                     }
                     .frame(maxWidth: .infinity)
                     
@@ -69,8 +61,8 @@ struct DictionaryRemoteFilterViewFilter: View {
                         selectedValue: $selectedBackCategory,
                         items: categoryGetter.backCategories,
                         style: .themed(themeManager.currentThemeStyle)
-                    ) { category in
-                        Text(category?.code ?? "")
+                    ) {
+                        category in Text(category?.code ?? "")
                     }
                     .frame(maxWidth: .infinity)
                 }

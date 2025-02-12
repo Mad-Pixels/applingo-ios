@@ -5,23 +5,23 @@ import SwiftUI
 /// This view allows users to apply filters such as category selection, level,
 /// and sorting order while fetching dictionaries from a remote source.
 struct DictionaryRemoteFilter: View {
-    
     // MARK: - Properties
-    
     @Environment(\.presentationMode) var presentationMode
-    @StateObject private var locale = DictionaryRemoteFilterLocale()
-    @StateObject private var categoryGetter = CategoryFetcher()
-    @StateObject private var style: DictionaryRemoteFilterStyle
-    
-    @Binding var apiRequestParams: ApiModelDictionaryQueryRequest
     @State private var selectedLevel: DictionaryLevelType = .undefined
     @State private var selectedSortBy: ApiSortType = .date
+    
+    // MARK: - State Objects
+    @StateObject private var locale = DictionaryRemoteFilterLocale()
+    @StateObject private var style: DictionaryRemoteFilterStyle
+    @StateObject private var categoryGetter = CategoryFetcher()
+    
+    // MARK: - Local State
+    @Binding var apiRequestParams: ApiModelDictionaryQueryRequest
     @State private var selectedFrontCategory: CategoryItem?
     @State private var selectedBackCategory: CategoryItem?
     @State private var isPressedTrailing = false
     
     // MARK: - Initialization
-    
     /// Initializes the view with required dependencies.
     /// - Parameters:
     ///   - apiRequestParams: Binding for API request parameters.
@@ -30,10 +30,9 @@ struct DictionaryRemoteFilter: View {
         apiRequestParams: Binding<ApiModelDictionaryQueryRequest>,
         style: DictionaryRemoteFilterStyle? = nil
     ) {
+        _style = StateObject(wrappedValue: style ?? .themed(ThemeManager.shared.currentThemeStyle))
         self._apiRequestParams = apiRequestParams
-        let initialStyle = style ?? .themed(ThemeManager.shared.currentThemeStyle)
-        _style = StateObject(wrappedValue: initialStyle)
-        
+       
         if let level = apiRequestParams.wrappedValue.level {
             _selectedLevel = State(initialValue: DictionaryLevelType(rawValue: level) ?? .undefined)
         }
@@ -44,7 +43,6 @@ struct DictionaryRemoteFilter: View {
     }
     
     // MARK: - Body
-    
     var body: some View {
         BaseScreen(
             screen: .DictionaryRemoteFilter,
@@ -53,29 +51,30 @@ struct DictionaryRemoteFilter: View {
             ScrollView {
                 VStack(spacing: style.spacing) {
                     DictionaryRemoteFilterViewFilter(
+                        style: style,
+                        locale: locale,
                         categoryGetter: categoryGetter,
                         selectedFrontCategory: $selectedFrontCategory,
-                        selectedBackCategory: $selectedBackCategory,
-                        locale: locale
+                        selectedBackCategory: $selectedBackCategory
                     )
                     .padding(style.padding)
 
                     DictionaryRemoteFilterViewSort(
-                        selectedSortBy: $selectedSortBy,
-                        locale: locale
+                        style: style,
+                        locale: locale,
+                        selectedSortBy: $selectedSortBy
                     )
                     .padding(style.padding)
                     
                     DictionaryRemoteFilterViewLevel(
-                        selectedLevel: $selectedLevel,
-                        locale: locale
+                        style: style,
+                        locale: locale,
+                        selectedLevel: $selectedLevel
                     )
                     .padding(style.padding)
                 }
                 .padding(style.padding)
             }
-            .navigationTitle(locale.screenTitle)
-            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     ButtonNav(
@@ -104,6 +103,7 @@ struct DictionaryRemoteFilter: View {
         }
         
         DictionaryRemoteFilterViewActions(
+            style: style,
             locale: locale,
             onSave: saveFilters,
             onReset: resetFilters
@@ -111,7 +111,6 @@ struct DictionaryRemoteFilter: View {
     }
     
     // MARK: - Private Methods
-    
     /// Saves the selected filters and updates the API request parameters.
     private func saveFilters() {
        let frontCategoryName = selectedFrontCategory?.code ?? ""

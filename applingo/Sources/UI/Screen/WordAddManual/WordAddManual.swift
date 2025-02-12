@@ -71,6 +71,10 @@ struct WordAddManual: View {
             .keyboardAdaptive()
             .background(style.backgroundColor)
             .padding(.bottom, style.padding.bottom)
+            .onAppear{
+                wordsAction.setScreen(.WordAddManual)
+                dictionaryAction.setScreen(.WordAddManual)
+            }
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     ButtonNav(

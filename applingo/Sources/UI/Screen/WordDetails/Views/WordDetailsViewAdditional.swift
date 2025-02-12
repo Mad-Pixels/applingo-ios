@@ -15,8 +15,8 @@ struct WordDetailsViewAdditional: View {
     // MARK: - Initializer
     /// Initializes the additional details view.
     /// - Parameters:
-    ///   - style: The style configuration.
-    ///   - locale: The localization object.
+    ///   - style: `WordDetailsStyle` style configuration.
+    ///   - locale: `WordDetailsLocale` localization object.
     ///   - word: Binding to the word model.
     ///   - isEditing: Flag indicating if the view is in editing mode.
     ///   - wordsAction: `WordAction` object injected from the parent.

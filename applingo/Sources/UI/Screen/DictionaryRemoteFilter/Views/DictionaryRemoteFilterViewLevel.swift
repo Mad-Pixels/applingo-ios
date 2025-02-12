@@ -5,34 +5,30 @@ import SwiftUI
 /// This view provides a picker for selecting a dictionary level,
 /// with localized labels and theme support.
 struct DictionaryRemoteFilterViewLevel: View {
-    
     // MARK: - Properties
-    
-    /// Manages the application's theme.
     @EnvironmentObject private var themeManager: ThemeManager
+    private let locale: DictionaryRemoteFilterLocale
+    private let style: DictionaryRemoteFilterStyle
     
-    /// The selected dictionary level.
     @Binding var selectedLevel: DictionaryLevelType
     
-    /// Localization support for UI text.
-    private let locale: DictionaryRemoteFilterLocale
-    
     // MARK: - Initialization
-    
     /// Initializes the view with required dependencies.
     /// - Parameters:
+    ///   - style: `DictionaryRemoteFilterStyle` style configuration.
+    ///   - locale: `DictionaryRemoteFilterLocale` localization object.
     ///   - selectedLevel: Binding for the selected dictionary level.
-    ///   - locale: Localization object providing UI text.
     init(
-        selectedLevel: Binding<DictionaryLevelType>,
-        locale: DictionaryRemoteFilterLocale
+        style: DictionaryRemoteFilterStyle,
+        locale: DictionaryRemoteFilterLocale,
+        selectedLevel: Binding<DictionaryLevelType>
     ) {
         self._selectedLevel = selectedLevel
         self.locale = locale
+        self.style = style
     }
     
     // MARK: - Body
-    
     var body: some View {
         Section() {
             ItemPicker(

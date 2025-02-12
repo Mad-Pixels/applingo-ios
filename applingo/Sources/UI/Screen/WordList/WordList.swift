@@ -58,6 +58,8 @@ struct WordList: View {
             }
             .navigationBarTitleDisplayMode(.inline)
             .onAppear {
+                wordsAction.setScreen(.WordList)
+                wordsGetter.setScreen(.WordList)
                 if wordsGetter.words.isEmpty {
                     wordsGetter.resetPagination()
                 }

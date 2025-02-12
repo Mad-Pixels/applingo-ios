@@ -57,7 +57,9 @@ struct DictionaryRemoteList: View {
                 )
                 .padding(.bottom, 42)
             }
-            .navigationBarTitleDisplayMode(.inline)
+            .onAppear{
+                dictionaryGetter.setScreen(.DictionaryRemoteList)
+            }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     ButtonNav(

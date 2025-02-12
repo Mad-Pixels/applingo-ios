@@ -73,6 +73,9 @@ struct WordDetails: View {
             .keyboardAdaptive()
             .background(style.backgroundColor)
             .padding(.bottom, style.padding.bottom)
+            .onAppear {
+                wordsAction.setScreen(.WordDetails)
+            }
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     ButtonNav(

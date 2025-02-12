@@ -6,37 +6,34 @@ import SwiftUI
 /// - **Save**: Triggers the `onSave` action.
 /// - **Reset**: Triggers the `onReset` action.
 struct DictionaryRemoteFilterViewActions: View {
-    
     // MARK: - Properties
-    
-    /// Closure to execute when the save button is pressed.
+    @EnvironmentObject private var themeManager: ThemeManager
+    private let locale: DictionaryRemoteFilterLocale
+    private let style: DictionaryRemoteFilterStyle
+        
     let onSave: () -> Void
-    
-    /// Closure to execute when the reset button is pressed.
     let onReset: () -> Void
     
-    /// Localization support for button titles.
-    private let locale: DictionaryRemoteFilterLocale
-    
     // MARK: - Initialization
-    
     /// Initializes the view with localized titles and action handlers.
     /// - Parameters:
-    ///   - locale: The localization object providing button titles.
+    ///   - style: `DictionaryRemoteFilterStyle` style configuration.
+    ///   - locale: `DictionaryRemoteFilterLocale` localization object.
     ///   - onSave: A closure executed when the save button is tapped.
     ///   - onReset: A closure executed when the reset button is tapped.
     init(
+        style: DictionaryRemoteFilterStyle,
         locale: DictionaryRemoteFilterLocale,
         onSave: @escaping () -> Void,
         onReset: @escaping () -> Void
     ) {
         self.locale = locale
+        self.style = style
         self.onSave = onSave
         self.onReset = onReset
     }
     
     // MARK: - Body
-    
     var body: some View {
         HStack {
             ButtonAction(
