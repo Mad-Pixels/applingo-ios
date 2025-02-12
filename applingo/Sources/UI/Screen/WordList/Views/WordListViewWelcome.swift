@@ -42,7 +42,7 @@ struct WordListViewWelcome: View {
             .padding(.horizontal)
         }
         .fullScreenCover(isPresented: $showRemoteDictionary) {
-            DictionaryRemoteList(isPresented: $showRemoteDictionary)
+            DictionaryRemoteList()
         }
     }
 }

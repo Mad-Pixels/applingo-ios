@@ -73,7 +73,7 @@ struct DictionaryLocalList: View {
         }
         // Present remote list view.
         .fullScreenCover(isPresented: $isShowingRemoteList) {
-            DictionaryRemoteList(isPresented: $isShowingRemoteList)
+            DictionaryRemoteList()
         }
     }
 }
