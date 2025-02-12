@@ -15,7 +15,11 @@ struct WordListViewSearch: View {
     ///   - style: `WordListStyle` object that defines the visual style.
     ///   - locale: `WordListLocale` object that provides localized strings.
     ///   - searchText: Binding to the search query.
-    init(style: WordListStyle, locale: WordListLocale, searchText: Binding<String>) {
+    init(
+        style: WordListStyle,
+        locale: WordListLocale,
+        searchText: Binding<String>
+    ) {
         self._searchText = searchText
         self.locale = locale
         self.style = style

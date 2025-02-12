@@ -16,8 +16,8 @@ struct WordListViewList: View {
     /// - Parameters:
     ///   - style: `WordListStyle` object that defines the visual style.
     ///   - locale: `WordListLocale` object that provides localized strings.
-    ///   - wordsGetter: Object responsible for fetching words.
-    ///   - wordsAction: `WordAction` object that is injected from the parent view.
+    ///   - wordsGetter: `WordGetter` object responsible for fetching words.
+    ///   - wordsAction: `WordAction` object responsible for words actions.
     ///   - onWordSelect: Closure executed when a word is tapped.
     init(
         style: WordListStyle,

@@ -2,44 +2,44 @@ import SwiftUI
 
 /// A view that displays a list of local dictionaries with pagination, deletion, and status update functionalities.
 struct DictionaryLocalListViewList: View {
-    
-    // MARK: - Environment & Observed Objects
-    
-    @EnvironmentObject private var themeManager: ThemeManager
-    @ObservedObject var dictionaryGetter: DictionaryGetter
-    @StateObject private var dictionaryAction = DictionaryAction()
-    
     // MARK: - Properties
-    
+    @EnvironmentObject private var themeManager: ThemeManager
     private let locale: DictionaryLocalListLocale
     private let style: DictionaryLocalListStyle
+    
+    @ObservedObject private var dictionaryAction: DictionaryAction
+    @ObservedObject private var dictionaryGetter: DictionaryGetter
     let onDictionarySelect: (DatabaseModelDictionary) -> Void
     
     // MARK: - Initializer
-    
     /// Initializes the list view with localization and dictionary data.
     /// - Parameters:
-    ///   - locale: The localization object.
-    ///   - dictionaryGetter: The data source for dictionaries.
+    ///   - style: `DictionaryLocalListStyle` object that defines the visual style.
+    ///   - locale: `DictionaryLocalListLocale` object that provides localized strings.
+    ///   - dictionaryGetter: `DictionaryGetter` object responsible for fetching dictionaries..
+    ///   - dictionaryAction: `DictionaryAction` object responsible for dictionaries actions.
     ///   - onDictionarySelect: Action when a dictionary is selected.
     init(
-        locale: DictionaryLocalListLocale,
         style: DictionaryLocalListStyle,
+        locale: DictionaryLocalListLocale,
         dictionaryGetter: DictionaryGetter,
+        dictionaryAction: DictionaryAction,
         onDictionarySelect: @escaping (DatabaseModelDictionary) -> Void
     ) {
         self.locale = locale
         self.style = style
         self.dictionaryGetter = dictionaryGetter
+        self.dictionaryAction = dictionaryAction
         self.onDictionarySelect = onDictionarySelect
     }
     
     // MARK: - Body
-    
     var body: some View {
         let dictionariesBinding = Binding(
             get: { dictionaryGetter.dictionaries },
-            set: { _ in }
+            set: { newValue in
+                Logger.warning("[DictionaryLocalListViewList]: Attempt to modify read-only words binding")
+            }
         )
         
         ItemList<DatabaseModelDictionary, DictionaryLocalRow>(
@@ -72,60 +72,22 @@ struct DictionaryLocalListViewList: View {
                 }
             )
         }
-        .onAppear {
-            dictionaryAction.setScreen(.DictionaryLocalList)
-            dictionaryGetter.setScreen(.DictionaryLocalList)
-            dictionaryGetter.resetPagination()
-        }
     }
     
     // MARK: - Private Methods
-    
     /// Deletes a dictionary at specified offsets.
-    /// - Parameter offsets: IndexSet representing the positions of words to delete.
     private func delete(at offsets: IndexSet) {
         offsets.forEach { index in
-            guard index < dictionaryGetter.dictionaries.count else {
-                Logger.warning("[DictionaryList]: Attempted to delete item at invalid index", metadata: [
-                    "index": String(index),
-                    "totalCount": String(dictionaryGetter.dictionaries.count)
-                ])
-                return
-            }
-            
             let dictionary = dictionaryGetter.dictionaries[index]
-            if dictionary.guid == "Internal" {
-                handleInternalDictionaryDeletion()
-                return
-            }
-            
-            deleteDictionary(dictionary, at: index)
-        }
-    }
-    
-    /// Deletes a specified dictionary using the dictionary action service.
-    private func deleteDictionary(_ dictionary: DatabaseModelDictionary, at index: Int) {
-        dictionaryAction.delete(dictionary) { result in
-            if case .success = result {
-                dictionaryGetter.removeDictionary(at: index)
+            dictionaryAction.delete(dictionary) { result in
+                if case .success = result {
+                    DispatchQueue.main.async {
+                        let getter = self.dictionaryGetter
+                        getter.removeDictionary(at: index)
+                    }
+                }
             }
         }
-    }
-    
-    /// Handles the deletion attempt of an internal dictionary.
-    private func handleInternalDictionaryDeletion() {
-        struct InternalDictionaryError: LocalizedError {
-            var errorDescription: String? {
-                LocaleManager.shared.localizedString(for: "ErrDeleteInternalDictionary")
-            }
-        }
-        
-        Logger.warning("[DictionaryList]: Attempted to delete internal dictionary")
-        ErrorManager.shared.process(
-            InternalDictionaryError(),
-            screen: .DictionaryLocalList,
-            metadata: ["operation": "deleteDictionary", "type": "internal"]
-        )
     }
     
     /// Updates the active status of a dictionary.
@@ -134,15 +96,9 @@ struct DictionaryLocalListViewList: View {
             return
         }
         
-        Logger.debug("[DictionaryList]: Updating dictionary status", metadata: [
-            "dictionaryId": String(dictionaryID),
-            "oldStatus": String(dictionary.isActive),
-            "newStatus": String(newStatus)
-        ])
-        
         dictionaryAction.updateStatus(dictionaryID: dictionaryID, newStatus: newStatus) { result in
             if case .success = result {
-                dictionaryGetter.resetPagination()
+                //dictionaryGetter.resetPagination()
             } else {
                 Logger.error("[DictionaryList]: Failed to update dictionary status", metadata: [
                     "dictionaryId": String(dictionaryID)
@@ -150,9 +106,17 @@ struct DictionaryLocalListViewList: View {
             }
         }
     }
-    
+        
     /// A computed property that returns a view for the empty state.
     private var emptyStateView: AnyView {
-        return AnyView(DictionaryLocalListViewNoItems(locale: locale, style: style))
+        if dictionaryGetter.dictionaries.isEmpty {
+            if dictionaryGetter.isLoadingPage || !dictionaryGetter.hasLoadedInitialPage {
+                return AnyView(ItemListLoadingOverlay(style: .themed(themeManager.currentThemeStyle)))
+            } else {
+                return AnyView(DictionaryLocalListViewNoItems(style: style, locale: locale))
+            }
+        } else {
+            return AnyView(EmptyView())
+        }
     }
 }

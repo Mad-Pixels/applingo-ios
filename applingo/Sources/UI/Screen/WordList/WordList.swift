@@ -56,7 +56,6 @@ struct WordList: View {
                 )
                 .padding(.bottom, overlayBottomPadding)
             }
-            .navigationBarTitleDisplayMode(.inline)
             .onAppear {
                 wordsAction.setScreen(.WordList)
                 wordsGetter.setScreen(.WordList)
