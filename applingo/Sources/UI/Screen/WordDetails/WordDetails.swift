@@ -16,10 +16,8 @@ struct WordDetails: View {
     
     // MARK: - Local State
     @State private var isEditing = false
-    @State private var isShowingAlert = false
     @State private var isPressedLeading = false
     @State private var isPressedTrailing = false
-    @State private var errorMessage: String = ""
     @State private var editableWord: DatabaseModelWord
     
     // MARK: - Initializer

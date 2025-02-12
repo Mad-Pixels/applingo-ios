@@ -2,24 +2,21 @@ import Foundation
 
 /// Provides localized strings for the Dictionary Local Details view.
 final class DictionaryLocalDetailsLocale: ObservableObject {
-    
-    // MARK: - Private Strings
-    
-    private enum Strings {
-        static let title = "screen.dictionaryLocalDetails.title"
-        static let subtitleDictionary = "screen.dictionaryRemoteDetails.subtitle.dictionary"
-        static let subtitleCategory = "screen.dictionaryRemoteDetails.subtitle.category"
-        static let subtitleAdditional = "screen.dictionaryRemoteDetails.subtitle.additional"
-        static let descriptionName = "screen.dictionaryLocalDetails.description.name"
-        static let descriptionDescription = "screen.dictionaryLocalDetails.description.description"
-        static let descriptionCategory = "screen.dictionaryLocalDetails.description.category"
-        static let descriptionSubcategory = "screen.dictionaryLocalDetails.description.subcategory"
-        static let descriptionAuthor = "screen.dictionaryLocalDetails.description.author"
-        static let descriptionCreatedAt = "screen.dictionaryLocalDetails.description.createdAt"
+    // MARK: - Localized Keys
+    private enum LocalizedKey: String {
+        case title = "screen.dictionaryLocalDetails.title"
+        case subtitleDictionary = "screen.dictionaryRemoteDetails.subtitle.dictionary"
+        case subtitleCategory = "screen.dictionaryRemoteDetails.subtitle.category"
+        case subtitleAdditional = "screen.dictionaryRemoteDetails.subtitle.additional"
+        case descriptionName = "screen.dictionaryLocalDetails.description.name"
+        case descriptionDescription = "screen.dictionaryLocalDetails.description.description"
+        case descriptionCategory = "screen.dictionaryLocalDetails.description.category"
+        case descriptionSubcategory = "screen.dictionaryLocalDetails.description.subcategory"
+        case descriptionAuthor = "screen.dictionaryLocalDetails.description.author"
+        case descriptionCreatedAt = "screen.dictionaryLocalDetails.description.createdAt"
     }
     
     // MARK: - Published Properties
-    
     @Published private(set) var screenTitle: String
     @Published private(set) var screenSubtitleDictionary: String
     @Published private(set) var screenSubtitleCategory: String
@@ -30,9 +27,8 @@ final class DictionaryLocalDetailsLocale: ObservableObject {
     @Published private(set) var screenDescriptionSubcategory: String
     @Published private(set) var screenDescriptionAuthor: String
     @Published private(set) var screenDescriptionCreatedAt: String
-
-    // MARK: - Initialization
     
+    // MARK: - Initialization
     init() {
         self.screenTitle = Self.localizedString(for: .title)
         self.screenSubtitleDictionary = Self.localizedString(for: .subtitleDictionary)
@@ -58,42 +54,12 @@ final class DictionaryLocalDetailsLocale: ObservableObject {
     }
     
     // MARK: - Localization Helper
-    
-    private enum LocalizedKey {
-        case title
-        case subtitleDictionary
-        case subtitleCategory
-        case subtitleAdditional
-        case descriptionName
-        case descriptionDescription
-        case descriptionCategory
-        case descriptionSubcategory
-        case descriptionAuthor
-        case descriptionCreatedAt
-       
-        var key: String {
-            switch self {
-            case .title: return Strings.title
-            case .subtitleDictionary: return Strings.subtitleDictionary
-            case .subtitleCategory: return Strings.subtitleCategory
-            case .subtitleAdditional: return Strings.subtitleAdditional
-            case .descriptionName: return Strings.descriptionName
-            case .descriptionDescription: return Strings.descriptionDescription
-            case .descriptionCategory: return Strings.descriptionCategory
-            case .descriptionSubcategory: return Strings.descriptionSubcategory
-            case .descriptionAuthor: return Strings.descriptionAuthor
-            case .descriptionCreatedAt: return Strings.descriptionCreatedAt
-            }
-        }
-    }
-    
     /// Returns a localized string for the specified key.
     private static func localizedString(for key: LocalizedKey) -> String {
-        return LocaleManager.shared.localizedString(for: key.key)
+        return LocaleManager.shared.localizedString(for: key.rawValue)
     }
     
     // MARK: - Notification Handler
-    
     @objc private func localeDidChange() {
         screenTitle = Self.localizedString(for: .title)
         screenSubtitleDictionary = Self.localizedString(for: .subtitleDictionary)

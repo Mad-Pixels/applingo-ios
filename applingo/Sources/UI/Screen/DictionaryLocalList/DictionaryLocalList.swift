@@ -61,7 +61,6 @@ struct DictionaryLocalList: View {
         .sheet(item: $selectedDictionary) { dictionary in
             DictionaryLocalDetails(
                 dictionary: dictionary,
-                isPresented: .constant(true),
                 refresh: {
                     dictionaryGetter.resetPagination()
                 }

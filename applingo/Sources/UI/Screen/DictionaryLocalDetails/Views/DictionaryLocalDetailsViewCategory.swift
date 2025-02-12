@@ -2,43 +2,47 @@ import SwiftUI
 
 /// A view that displays and allows editing of the dictionary's category and subcategory.
 struct DictionaryLocalDetailsViewCategory: View {
-    
     // MARK: - Properties
-    
-    let dictionary: EditableDictionaryWrapper
+    @EnvironmentObject private var themeManager: ThemeManager
     private let locale: DictionaryLocalDetailsLocale
     private let style: DictionaryLocalDetailsStyle
+    
+    @Binding var dictionary: DatabaseModelDictionary
     let isEditing: Bool
     
     // MARK: - Initializer
-    
+    /// Initializes the additional details view.
+    /// - Parameters:
+    ///   - style: `DictionaryLocalDetailsStyle` style configuration.
+    ///   - locale: `DictionaryLocalDetailsLocale` localization object.
+    ///   - dictionary: Binding to the dictionary model.
+    ///   - isEditing: A flag indicating if the view is in editing mode.
     init(
-        dictionary: EditableDictionaryWrapper,
-        locale: DictionaryLocalDetailsLocale,
         style: DictionaryLocalDetailsStyle,
+        locale: DictionaryLocalDetailsLocale,
+        dictionary: Binding<DatabaseModelDictionary>,
         isEditing: Bool
     ) {
-        self.dictionary = dictionary
+        self._dictionary = dictionary
+        self.isEditing = isEditing
         self.locale = locale
         self.style = style
-        self.isEditing = isEditing
     }
     
     // MARK: - Body
-    
     var body: some View {
         VStack(spacing: style.spacing) {
             SectionHeader(
                 title: locale.screenSubtitleCategory,
                 style: .titled(ThemeManager.shared.currentThemeStyle)
             )
-            .padding(.top, 8)
+            .padding(.top, style.paddingBlock)
             
             VStack(spacing: style.spacing) {
                 InputText(
                     text: Binding(
-                        get: { dictionary.dictionary.category },
-                        set: { dictionary.dictionary.category = $0 }
+                        get: { dictionary.category },
+                        set: { dictionary.category = $0 }
                     ),
                     title: locale.screenDescriptionName,
                     placeholder: "",
@@ -47,15 +51,15 @@ struct DictionaryLocalDetailsViewCategory: View {
                 
                 InputText(
                     text: Binding(
-                        get: { dictionary.dictionary.subcategory },
-                        set: { dictionary.dictionary.subcategory = $0 }
+                        get: { dictionary.subcategory },
+                        set: { dictionary.subcategory = $0 }
                     ),
                     title: locale.screenDescriptionSubcategory,
                     placeholder: "",
                     isEditing: isEditing
                 )
             }
-            .padding(.horizontal, 8)
+            .padding(.horizontal, style.paddingBlock)
             .background(Color.clear)
         }
     }
