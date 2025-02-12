@@ -4,7 +4,7 @@ import SwiftUI
 struct SettingsViewFeedback: View {
     // MARK: - Properties
     @EnvironmentObject private var themeManager: ThemeManager
-    private let locale: SettingsLocale
+    @ObservedObject private var locale: SettingsLocale
     private let style: SettingsStyle
     
     // MARK: - Initializer
