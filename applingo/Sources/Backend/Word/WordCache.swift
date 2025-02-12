@@ -176,7 +176,9 @@ final class WordCache: ProcessDatabase {
                         "threshold": String(self.cacheThreshold)
                     ]
                 )
-                if !cache.isEmpty {
+                if cache.isEmpty {
+                    self.initializeCache()
+                } else {
                     self.refillCache()
                 }
             }
