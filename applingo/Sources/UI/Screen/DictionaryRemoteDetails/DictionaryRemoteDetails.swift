@@ -15,9 +15,6 @@ struct DictionaryRemoteDetails: View {
     @State private var isPressedTrailing = false
     @State private var isDownloading = false
     
-    /// Binding to control the presentation state.
-    @Binding var isPresented: Bool
-    
     // MARK: - Initializer
     
     /// Initializes a new instance of DictionaryRemoteDetails.
@@ -27,13 +24,11 @@ struct DictionaryRemoteDetails: View {
     ///   - style: Optional style configuration; if nil, a themed style is applied.
     init(
         dictionary: ApiModelDictionaryItem,
-        isPresented: Binding<Bool>,
         style: DictionaryRemoteDetailsStyle? = nil
     ) {
         let initialStyle = style ?? .themed(ThemeManager.shared.currentThemeStyle)
         _style = StateObject(wrappedValue: initialStyle)
         _editedDictionary = State(initialValue: dictionary)
-        _isPresented = isPresented
     }
     
     // MARK: - Body

@@ -15,6 +15,7 @@ final class DictionaryFetcher: ProcessApi {
     
     @Published private(set) var dictionaries: [ApiModelDictionaryItem] = []
     @Published private(set) var isLoadingPage = false
+    @Published private(set) var hasLoadedInitialPage = false
     @Published var searchText: String = "" {
         didSet {
             handleSearchTextChange(oldValue: oldValue)
@@ -53,7 +54,10 @@ final class DictionaryFetcher: ProcessApi {
         
         resetState()
         updateFilteredDictionaries()
-        fetchDictionaries()
+        
+        DispatchQueue.main.async {
+            self.fetchDictionaries()
+        }
     }
     
     /// Loads more dictionaries if needed based on the current item
@@ -100,19 +104,8 @@ final class DictionaryFetcher: ProcessApi {
                 "newValue": searchText
             ]
         )
-        updateFilteredDictionaries()
-        
-        if !searchText.isEmpty &&
-           dictionaries.count < Constants.minSearchResults &&
-           hasMorePages {
-            Logger.debug(
-                "[Dictionary]: Not enough search results, fetching more",
-                metadata: [
-                    "currentCount": String(dictionaries.count),
-                    "minRequired": String(Constants.minSearchResults)
-                ]
-            )
-            fetchDictionaries()
+        if searchText != oldValue {
+            resetPagination()
         }
     }
     
@@ -121,6 +114,7 @@ final class DictionaryFetcher: ProcessApi {
         allDictionaries.removeAll()
         isLoadingPage = false
         hasMorePages = true
+        hasLoadedInitialPage = false
         lastEvaluated = nil
         token = UUID()
     }
@@ -194,6 +188,8 @@ final class DictionaryFetcher: ProcessApi {
             )
             updateFilteredDictionaries()
         }
+        
+        hasLoadedInitialPage = true
         
         if !searchText.isEmpty &&
            dictionaries.count < Constants.minSearchResults &&

@@ -2,37 +2,27 @@ import SwiftUI
 
 /// A view that displays a list of remote dictionaries with search, filter, and selection functionalities.
 struct DictionaryRemoteList: View {
-    
-    // MARK: - Environment and State Properties
-    
     @Environment(\.presentationMode) var presentationMode
+    
+    // MARK: - State Objects
+    @StateObject private var style: DictionaryRemoteListStyle
     @StateObject private var locale = DictionaryRemoteListLocale()
     @StateObject private var dictionaryGetter = DictionaryFetcher()
+    
+    // MARK: - Local State
     @State private var apiRequestParams = ApiModelDictionaryQueryRequest()
     @State private var selectedDictionary: ApiModelDictionaryItem?
     @State private var isShowingFilterView = false
     @State private var isPressedTrailing = false
     
-    /// Style object for the remote list view.
-    @StateObject private var style: DictionaryRemoteListStyle
-    
-    /// Binding flag to control the presentation of this view.
-    @Binding var isPresented: Bool
-    
     // MARK: - Initializer
-    
     /// Initializes the DictionaryRemoteList view.
-    /// - Parameters:
-    ///   - isPresented: Binding to the presentation state.
-    ///   - style: Optional style configuration; if nil, a themed style is used.
-    init(isPresented: Binding<Bool>, style: DictionaryRemoteListStyle? = nil) {
-        _isPresented = isPresented
-        let initialStyle = style ?? DictionaryRemoteListStyle.themed(ThemeManager.shared.currentThemeStyle)
-        _style = StateObject(wrappedValue: initialStyle)
+    /// - Parameter style: Optional style; if nil, a themed style is used.
+    init(style: DictionaryRemoteListStyle? = nil) {
+        _style = StateObject(wrappedValue: style ?? .themed(ThemeManager.shared.currentThemeStyle))
     }
     
     // MARK: - Body
-    
     var body: some View {
         BaseScreen(
             screen: .DictionaryRemoteList,
@@ -40,8 +30,9 @@ struct DictionaryRemoteList: View {
         ) {
             VStack(spacing: style.spacing) {
                 DictionaryRemoteListViewSearch(
-                    searchText: $dictionaryGetter.searchText,
-                    locale: locale
+                    style: style,
+                    locale: locale,
+                    searchText: $dictionaryGetter.searchText
                 )
                 .padding(style.padding)
                 
@@ -60,6 +51,7 @@ struct DictionaryRemoteList: View {
             .background(style.backgroundColor)
             .overlay(alignment: .bottomTrailing) {
                 DictionaryRemoteListViewActions(
+                    style: style,
                     locale: locale,
                     onFilter: { isShowingFilterView = true }
                 )
@@ -80,20 +72,15 @@ struct DictionaryRemoteList: View {
                 }
             }
         }
-        // Present the filter view sheet.
         .sheet(isPresented: $isShowingFilterView) {
             DictionaryRemoteFilter(apiRequestParams: $apiRequestParams)
                 .environmentObject(ThemeManager.shared)
                 .environmentObject(LocaleManager.shared)
         }
-        // Present the remote details view sheet for the selected dictionary.
         .sheet(item: $selectedDictionary) { dictionary in
-            DictionaryRemoteDetails(
-                dictionary: dictionary,
-                isPresented: .constant(true)
-            )
-            .environmentObject(ThemeManager.shared)
-            .environmentObject(LocaleManager.shared)
+            DictionaryRemoteDetails(dictionary: dictionary)
+                .environmentObject(ThemeManager.shared)
+                .environmentObject(LocaleManager.shared)
         }
         .onAppear {
             dictionaryGetter.resetPagination(with: apiRequestParams)

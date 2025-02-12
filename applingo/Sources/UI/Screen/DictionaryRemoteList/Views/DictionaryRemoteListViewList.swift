@@ -2,23 +2,19 @@ import SwiftUI
 
 /// A view that displays a list of remote dictionaries with pagination and selection support.
 struct DictionaryRemoteListViewList: View {
-    
-    // MARK: - Environment and Observed Objects
-    
-    @EnvironmentObject private var themeManager: ThemeManager
-    @ObservedObject var dictionaryGetter: DictionaryFetcher
-    
     // MARK: - Properties
-    
+    @EnvironmentObject private var themeManager: ThemeManager
     private let locale: DictionaryRemoteListLocale
     private let style: DictionaryRemoteListStyle
+
+    @ObservedObject private var dictionaryGetter: DictionaryFetcher
     let onDictionarySelect: (ApiModelDictionaryItem) -> Void
     
     // MARK: - Initializer
-    
     /// Initializes the list view with localization and a dictionary data source.
     /// - Parameters:
-    ///   - locale: The localization object.
+    ///   - style: `DictionaryRemoteListStyle` object that defines the visual style.
+    ///   - locale: `DictionaryRemoteListLocale` object that provides localized strings.
     ///   - dictionaryGetter: The data source for remote dictionaries.
     ///   - onDictionarySelect: Action closure when a dictionary is selected.
     init(
@@ -34,11 +30,12 @@ struct DictionaryRemoteListViewList: View {
     }
     
     // MARK: - Body
-    
     var body: some View {
         let dictionariesBinding = Binding(
             get: { dictionaryGetter.dictionaries },
-            set: { _ in }
+            set: { newValue in
+                Logger.warning("[DictionaryRemoteList]: Attempt to modify read-only words binding")
+            }
         )
         
         ItemList<ApiModelDictionaryItem, DictionaryRemoteRow>(
@@ -79,6 +76,14 @@ struct DictionaryRemoteListViewList: View {
     
     /// A computed property that returns a view for the empty state.
     private var emptyStateView: AnyView {
-        return AnyView(DictionaryRemoteListViewNoItems(locale: locale, style: style))
+        if dictionaryGetter.dictionaries.isEmpty {
+            if dictionaryGetter.isLoadingPage || !dictionaryGetter.hasLoadedInitialPage {
+                return AnyView(ItemListLoadingOverlay(style: .themed(themeManager.currentThemeStyle)))
+            } else {
+                return AnyView(DictionaryRemoteListViewNoItems(style: style, locale: locale))
+            }
+        } else {
+            return AnyView(EmptyView())
+        }
     }
 }
