@@ -2,7 +2,6 @@ import Foundation
 
 /// Provides localized strings for the WordList view.
 final class WordListLocale: ObservableObject {
-    
     // MARK: - Localized Keys
     private enum LocalizedKey: String {
         case title = "screen.wordList.title"
