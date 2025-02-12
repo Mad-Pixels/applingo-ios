@@ -6,6 +6,7 @@ final class WordDetailsLocale: ObservableObject {
     private enum LocalizedKey: String {
         case title = "screen.wordDetails.title"
         case subtitleWord = "screen.wordDetails.subtitle.word"
+        case subtitleNoData = "screen.wordDetails.subtitle.noData"
         case subtitleAdditional = "screen.wordDetails.subtitle.additional"
         case subtitleStatistic = "screen.wordDetails.subtitle.statistic"
         case subtitleStatisticCount = "screen.wordDetails.subtitle.statistic.count"
@@ -23,6 +24,7 @@ final class WordDetailsLocale: ObservableObject {
     // MARK: - Published Properties
     @Published private(set) var screenTitle: String
     @Published private(set) var screenSubtitleWord: String
+    @Published private(set) var screenSubtitleNoData: String
     @Published private(set) var screenSubtitleAdditional: String
     @Published private(set) var screenSubtitleStatistic: String
     @Published private(set) var screenSubtitleStatisticCount: String
@@ -40,6 +42,7 @@ final class WordDetailsLocale: ObservableObject {
     init() {
         self.screenTitle = Self.localizedString(for: .title)
         self.screenSubtitleWord = Self.localizedString(for: .subtitleWord)
+        self.screenSubtitleNoData = Self.localizedString(for: .subtitleNoData)
         self.screenSubtitleAdditional = Self.localizedString(for: .subtitleAdditional)
         self.screenSubtitleStatistic = Self.localizedString(for: .subtitleStatistic)
         self.screenSubtitleStatisticCount = Self.localizedString(for: .subtitleStatisticCount)
@@ -74,6 +77,7 @@ final class WordDetailsLocale: ObservableObject {
     // MARK: - Notification Handler
     @objc private func localeDidChange() {
         screenTitle = Self.localizedString(for: .title)
+        screenSubtitleNoData = Self.localizedString(for: .subtitleNoData)
         screenSubtitleWord = Self.localizedString(for: .subtitleWord)
         screenSubtitleAdditional = Self.localizedString(for: .subtitleAdditional)
         screenSubtitleStatistic = Self.localizedString(for: .subtitleStatistic)

@@ -11,6 +11,8 @@ final class WordDetailsStyle: ObservableObject {
     let paddingBlock: CGFloat
     let spacing: CGFloat
     let sectionSpacing: CGFloat
+    let titleFont: Font
+    let iconSize: CGFloat
 
     // MARK: - Initializer
     /// Initializes a new instance of `WordDetailsStyle`.
@@ -22,6 +24,7 @@ final class WordDetailsStyle: ObservableObject {
     ///   - padding: The padding around the content.
     ///   - spacing: The spacing between individual elements.
     ///   - sectionSpacing: The spacing between sections.
+    ///   - iconSize: The size of icons.
     init(
         backgroundColor: Color,
         sectionBackgroundColor: Color,
@@ -30,7 +33,9 @@ final class WordDetailsStyle: ObservableObject {
         padding: EdgeInsets,
         paddingBlock: CGFloat,
         spacing: CGFloat,
-        sectionSpacing: CGFloat
+        sectionSpacing: CGFloat,
+        titleFont: Font,
+        iconSize: CGFloat
     ) {
         self.backgroundColor = backgroundColor
         self.sectionBackgroundColor = sectionBackgroundColor
@@ -40,6 +45,8 @@ final class WordDetailsStyle: ObservableObject {
         self.paddingBlock = paddingBlock
         self.spacing = spacing
         self.sectionSpacing = sectionSpacing
+        self.titleFont = titleFont
+        self.iconSize = iconSize
     }
 }
 
@@ -57,7 +64,9 @@ extension WordDetailsStyle {
             padding: EdgeInsets(top: 16, leading: 16, bottom: 32, trailing: 16),
             paddingBlock: 8,
             spacing: 24,
-            sectionSpacing: 16
+            sectionSpacing: 16,
+            titleFont: .system(size: 20, weight: .bold),
+            iconSize: 196
         )
     }
 }

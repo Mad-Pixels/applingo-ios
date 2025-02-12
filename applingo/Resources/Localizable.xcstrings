@@ -1813,6 +1813,23 @@
         }
       }
     },
+    "screen.wordDetails.subtitle.noData" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Data"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет данных"
+          }
+        }
+      }
+    },
     "screen.wordDetails.subtitle.statistic" : {
       "extractionState" : "manual",
       "localizations" : {

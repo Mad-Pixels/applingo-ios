@@ -36,29 +36,44 @@ struct WordDetailsViewStatistic: View {
             .padding(.top, 8)
             
             VStack(spacing: style.spacing) {
-                SectionBody(
-                    style: .area(themeManager.currentThemeStyle)
-                ) {
-                    DonutChart(
-                        data: [
-                            DonutChartModel(
-                                value: Double(word.success),
-                                label: locale.screenDescriptionCorrectAnswers,
-                                color: themeManager.currentThemeStyle.success
-                            ),
-                            DonutChartModel(
-                                value: Double(word.fail),
-                                label: locale.screenDesctiptionWrongAnswers,
-                                color: themeManager.currentThemeStyle.error
-                            )
-                        ],
-                        centerValue: "\(Int(ceil(Double(word.weight) / 100.0))) / 10",
-                        style: .themed(themeManager.currentThemeStyle),
-                        legendTitle: locale.screenSubtitleStatisticCount
-                    )
+                if word.fail == 0 && word.success == 0 {
+                    Image(warningImageName)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: style.iconSize, height: style.iconSize)
+                    Text(locale.screenSubtitleNoData)
+                        .font(style.titleFont)
+                } else {
+                    SectionBody(
+                        style: .area(themeManager.currentThemeStyle)
+                    ) {
+                        DonutChart(
+                            data: [
+                                DonutChartModel(
+                                    value: Double(word.success),
+                                    label: locale.screenDescriptionCorrectAnswers,
+                                    color: themeManager.currentThemeStyle.success
+                                ),
+                                DonutChartModel(
+                                    value: Double(word.fail),
+                                    label: locale.screenDesctiptionWrongAnswers,
+                                    color: themeManager.currentThemeStyle.error
+                                )
+                            ],
+                            centerValue: "\(Int(ceil(Double(word.weight) / 100.0))) / 10",
+                            style: .themed(themeManager.currentThemeStyle),
+                            legendTitle: locale.screenSubtitleStatisticCount
+                        )
+                    }
                 }
             }
             .padding(.horizontal, style.paddingBlock)
         }
+    }
+    
+    // MARK: - Computed Properties
+    /// Determines the warning image name based on the current theme.
+    private var warningImageName: String {
+        themeManager.currentTheme.asString == "Dark" ? "warning_dark" : "warning_light"
     }
 }
