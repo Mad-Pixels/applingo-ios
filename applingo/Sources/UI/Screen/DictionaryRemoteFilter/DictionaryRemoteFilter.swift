@@ -40,6 +40,16 @@ struct DictionaryRemoteFilter: View {
         if let sortBy = apiRequestParams.wrappedValue.sortBy {
             _selectedSortBy = State(initialValue: sortBy == "rating" ? .rating : .date)
         }
+        
+        if let subcategory = apiRequestParams.wrappedValue.subcategory {
+            let parts = subcategory.split(separator: "-")
+            if parts.count == 2 {
+                let frontCode = String(parts[0])
+                let backCode = String(parts[1])
+                _selectedFrontCategory = State(initialValue: CategoryItem(code: frontCode))
+                _selectedBackCategory = State(initialValue: CategoryItem(code: backCode))
+            }
+        }
     }
     
     // MARK: - Body
@@ -97,13 +107,13 @@ struct DictionaryRemoteFilter: View {
             categoryGetter.get { _ in }
         }
         .onChange(of: categoryGetter.frontCategories) { frontCategories in
-            if selectedFrontCategory == nil, let firstCategory = frontCategories.first {
-                selectedFrontCategory = firstCategory
+            if selectedFrontCategory == nil || !frontCategories.contains(where: { $0.code == selectedFrontCategory?.code }) {
+                selectedFrontCategory = frontCategories.first
             }
         }
         .onChange(of: categoryGetter.backCategories) { backCategories in
-            if selectedBackCategory == nil, let firstCategory = backCategories.first {
-                selectedBackCategory = firstCategory
+            if selectedBackCategory == nil || !backCategories.contains(where: { $0.code == selectedBackCategory?.code }) {
+                selectedBackCategory = backCategories.first
             }
         }
         
