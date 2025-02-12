@@ -60,8 +60,12 @@ struct DictionaryRemoteFilter: View {
         ) {
             ScrollView {
                 if categoryGetter.isLoadingPage {
-                    ProgressView()
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    VStack {
+                        Spacer()
+                        ItemListLoadingOverlay(style: .themed(ThemeManager.shared.currentThemeStyle))
+                        Spacer()
+                    }
+                    .frame(minHeight: UIScreen.main.bounds.height - 200)
                 } else {
                     VStack(spacing: style.spacing) {
                         DictionaryRemoteFilterViewFilter(
