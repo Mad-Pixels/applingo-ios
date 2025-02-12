@@ -31,7 +31,10 @@ struct GameQuiz: View {
     /// The method ensures that four unique words are selected based on their front/back texts.
     private func generateCard() {
         let cache = cacheGetter.cache
-        guard cache.count >= 4 else { return }
+        guard cache.count >= 4 else {
+            // If there are not enough words, exit. The onReceive modifier will trigger generateCard() later.
+            return
+        }
         
         // Get 4 unique words.
         var selectedWords: Set<DatabaseModelWord> = []
@@ -58,7 +61,7 @@ struct GameQuiz: View {
         guard selectedWords.count == 4 else { return }
         
         let wordsArray = Array(selectedWords)
-        let correctWord = wordsArray[0] // Можно рандомно выбирать корректный ответ.
+        let correctWord = wordsArray[0] // Can choose the correct answer randomly if needed.
         let showingFront = Bool.random()
         
         cacheGetter.removeFromCache(correctWord)
@@ -122,6 +125,12 @@ struct GameQuiz: View {
         }
         .onAppear {
             generateCard()
+        }
+        // Новая подписка: если кэш обновился и содержит не менее 4 слов, пытаемся сгенерировать карточку.
+        .onReceive(cacheGetter.$cache) { newCache in
+            if currentCard == nil && newCache.count >= 4 {
+                generateCard()
+            }
         }
     }
 }
