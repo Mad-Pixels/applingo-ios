@@ -1167,6 +1167,23 @@
         }
       }
     },
+    "screen.dictionaryRemoteFilter.text.UFOLevel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Any"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Любой"
+          }
+        }
+      }
+    },
     "screen.dictionaryRemoteFilter.title" : {
       "extractionState" : "manual",
       "localizations" : {

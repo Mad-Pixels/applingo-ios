@@ -37,9 +37,10 @@ struct DictionaryRemoteFilterViewLevel: View {
                 title: locale.screenSubtitleLevel,
                 style: .themed(themeManager.currentThemeStyle)
             ) { level in
-                Text(level.rawValue == "UFO"
-                    ? LocaleManager.shared.localizedString(for: "Undefined")
-                    : level.rawValue)
+                Text(
+                    level.rawValue == DictionaryLevelType.undefined.rawValue
+                    ? locale.screenTextUFOLevel : level.rawValue
+                )
             }
             .frame(maxWidth: .infinity)
         }
