@@ -98,15 +98,13 @@ struct DictionaryLocalListViewList: View {
         
         dictionaryAction.updateStatus(dictionaryID: dictionaryID, newStatus: newStatus) { result in
             if case .success = result {
-                //dictionaryGetter.resetPagination()
-            } else {
-                Logger.error("[DictionaryList]: Failed to update dictionary status", metadata: [
-                    "dictionaryId": String(dictionaryID)
-                ])
+                DispatchQueue.main.async {
+                    self.dictionaryGetter.updateDictionaryStatus(dictionaryID: dictionaryID, newStatus: newStatus)
+                }
             }
         }
     }
-        
+
     /// A computed property that returns a view for the empty state.
     private var emptyStateView: AnyView {
         if dictionaryGetter.dictionaries.isEmpty {

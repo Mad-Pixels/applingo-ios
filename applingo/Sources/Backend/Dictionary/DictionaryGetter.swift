@@ -56,6 +56,36 @@ final class DictionaryGetter: ProcessDatabase {
    }
    
    // MARK: - Public Methods
+    
+    /// Updates the active status of a dictionary in the local array
+    /// - Parameters:
+    ///   - dictionaryID: The ID of the dictionary to update
+    ///   - newStatus: The new active status
+    func updateDictionaryStatus(dictionaryID: Int, newStatus: Bool) {
+        guard let index = dictionaries.firstIndex(where: { $0.id == dictionaryID }) else {
+            Logger.warning(
+                "[Dictionary]: Attempted to update status for non-existent dictionary",
+                metadata: [
+                    "dictionaryId": String(dictionaryID),
+                    "newStatus": String(newStatus)
+                ]
+            )
+            return
+        }
+        
+        Logger.debug(
+            "[Dictionary]: Updating dictionary status in local array",
+            metadata: [
+                "dictionaryId": String(dictionaryID),
+                "newStatus": String(newStatus),
+                "index": String(index)
+            ]
+        )
+        
+        var updatedDictionary = dictionaries[index]
+        updatedDictionary.isActive = newStatus
+        dictionaries[index] = updatedDictionary
+    }
    
    /// Removes a dictionary at the specified index
    /// - Parameter index: The index of the dictionary to remove
