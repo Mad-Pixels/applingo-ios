@@ -5,7 +5,7 @@ import SwiftUI
 struct ButtonFloatingMultiple: View {
     let items: [ButtonFloatingModelIconAction]
     let style: ButtonFloatingStyle
-    
+   
     @State private var isOpen = false
     @State private var iconRotation: Double = 0
 
@@ -20,16 +20,26 @@ struct ButtonFloatingMultiple: View {
         self.items = items
         self.style = style
     }
-    
+   
     var body: some View {
         ZStack {
-            // Main floating buttons stack positioned at bottom trailing
+            if isOpen {
+                Color.black.opacity(0.001)
+                    .onTapGesture {
+                        withAnimation(.spring(response: 0.4, dampingFraction: 0.7, blendDuration: 0.2)) {
+                            isOpen = false
+                            iconRotation = 0
+                        }
+                    }
+                    .ignoresSafeArea()
+            }
+           
             ZStack(alignment: .bottomTrailing) {
                 if isOpen {
                     VStack(spacing: style.spacing) {
                         ForEach(0..<items.count, id: \.self) { index in
                             Button(action: {
-                                withAnimation(.spring(response: 0.4, dampingFraction: 0.7, blendDuration: 0.2)) {
+                                withAnimation(.spring(response: 0.4, dampingFraction: 0.7,  blendDuration: 0.2)) {
                                     isOpen = false
                                     iconRotation = 0
                                 }
@@ -48,8 +58,7 @@ struct ButtonFloatingMultiple: View {
                     .transition(.scale.combined(with: .opacity))
                     .padding(.bottom, style.mainButtonSize.height + style.spacing)
                 }
-                
-                // Main button to toggle the floating menu
+               
                 Button(action: {
                     withAnimation(.spring(response: 0.5, dampingFraction: 0.7)) {
                         isOpen.toggle()
