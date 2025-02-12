@@ -38,12 +38,14 @@ struct DictionaryRemoteFilterViewActions: View {
         HStack {
             ButtonAction(
                 title: locale.screenButtonSave,
-                action: onSave
+                action: onSave,
+                style: .action(themeManager.currentThemeStyle)
             )
             
             ButtonAction(
                 title: locale.screenButtonReset,
-                action: onReset
+                action: onReset,
+                style: .action(themeManager.currentThemeStyle)
             )
         }
         .padding(.horizontal)
