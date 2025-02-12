@@ -1462,13 +1462,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "About the Application"
+            "value" : "About the application"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "О Приложении"
+            "value" : "О приложении"
           }
         }
       }
