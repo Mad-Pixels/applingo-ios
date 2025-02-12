@@ -1456,6 +1456,40 @@
         }
       }
     },
+    "screen.settingsFeedback.button.about" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "About the Application"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "О Приложении"
+          }
+        }
+      }
+    },
+    "screen.settingsFeedback.button.report" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Report a Bug"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сообщить о проблеме"
+          }
+        }
+      }
+    },
     "screen.settingsFeedback.description.sendLogs" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1486,6 +1520,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Отчеты"
+          }
+        }
+      }
+    },
+    "screen.settingsFeedback.subtitle.urls" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URLs"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ссылки"
           }
         }
       }

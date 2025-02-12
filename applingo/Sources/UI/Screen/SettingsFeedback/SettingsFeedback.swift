@@ -2,6 +2,10 @@ import SwiftUI
 
 /// A view that displays the feedback screen in the Settings section.
 struct SettingsFeedback: View {
+    // MARK: - Constants
+    private let urlAbout: String = "https://docs.madpixels.io/"
+    private let urlReport: String = "https://docs.madpixels.io/"
+    
     @Environment(\.dismiss) private var dismiss
     
     // MARK: - State Objects
@@ -25,6 +29,36 @@ struct SettingsFeedback: View {
                 SettingsFeedbackViewLogger(
                     style: style,
                     locale: locale
+                )
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
+                .frame(maxWidth: .infinity)
+                
+                SectionHeader(
+                    title: locale.screenSubtitleUrls,
+                    style: .titled(ThemeManager.shared.currentThemeStyle)
+                )
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
+                .frame(maxWidth: .infinity)
+                .padding(.top, 24)
+                .padding(.bottom, -12)
+                
+                SettingsFeedbackViewRedirect(
+                    style: style,
+                    locale: locale,
+                    title: locale.screenButtonReport,
+                    url: urlReport
+                )
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
+                .frame(maxWidth: .infinity)
+                
+                SettingsFeedbackViewRedirect(
+                    style: style,
+                    locale: locale,
+                    title: locale.screenButtonAbout,
+                    url: urlAbout
                 )
                 .listRowBackground(Color.clear)
                 .listRowSeparator(.hidden)

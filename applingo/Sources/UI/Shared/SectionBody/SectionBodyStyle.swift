@@ -44,7 +44,7 @@ extension SectionBodyStyle {
         SectionBodyStyle(
             backgroundColor: theme.accentLight.opacity(0.1),
             shadowColor: theme.backgroundSecondary,
-            cornerRadius: 8,
+            cornerRadius: 12,
             shadowRadius: 0,
             padding: EdgeInsets(top: 9, leading: 12, bottom: 9, trailing: 12),
             borderWidth: 1,

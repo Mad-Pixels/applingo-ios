@@ -6,12 +6,18 @@ final class SettingsFeedbackLocale: ObservableObject {
     private enum LocalizedKey: String {
         case title = "screen.settingsFeedback.title"
         case subtitleSendLogs = "screen.settingsFeedback.subtitle.sendLogs"
+        case subtitleUrls = "screen.settingsFeedback.subtitle.urls"
+        case buttonAbout = "screen.settingsFeedback.button.about"
+        case buttonReport = "screen.settingsFeedback.button.report"
         case descriptionSendLogs = "screen.settingsFeedback.description.sendLogs"
         case textSendLogs = "screen.settingsFeedback.text.sendLogs"
     }
     
     // MARK: - Published Properties
     @Published private(set) var screenTitle: String
+    @Published private(set) var screenSubtitleUrls: String
+    @Published private(set) var screenButtonAbout: String
+    @Published private(set) var screenButtonReport: String
     @Published private(set) var screenSubtitleSendLogs: String
     @Published private(set) var screenDescriptionSendLogs: String
     @Published private(set) var screenTextSendLogs: String
@@ -19,6 +25,9 @@ final class SettingsFeedbackLocale: ObservableObject {
     // MARK: - Initialization
     init() {
         self.screenTitle = Self.localizedString(for: .title)
+        self.screenSubtitleUrls = Self.localizedString(for: .subtitleUrls)
+        self.screenButtonAbout = Self.localizedString(for: .buttonAbout)
+        self.screenButtonReport = Self.localizedString(for: .buttonReport)
         self.screenSubtitleSendLogs = Self.localizedString(for: .subtitleSendLogs)
         self.screenDescriptionSendLogs = Self.localizedString(for: .descriptionSendLogs)
         self.screenTextSendLogs = Self.localizedString(for: .textSendLogs)
@@ -44,6 +53,9 @@ final class SettingsFeedbackLocale: ObservableObject {
     // MARK: - Notification Handler
     @objc private func localeDidChange() {
         screenTitle = Self.localizedString(for: .title)
+        screenSubtitleUrls = Self.localizedString(for: .subtitleUrls)
+        screenButtonAbout = Self.localizedString(for: .buttonAbout)
+        screenButtonReport = Self.localizedString(for: .buttonReport)
         screenSubtitleSendLogs = Self.localizedString(for: .subtitleSendLogs)
         screenDescriptionSendLogs = Self.localizedString(for: .descriptionSendLogs)
         screenTextSendLogs = Self.localizedString(for: .textSendLogs)

@@ -29,7 +29,7 @@ extension ButtonMenuStyle {
             iconSize: 36,
             padding: EdgeInsets(top: 16, leading: 24, bottom: 16, trailing: 24),
             height: 70,
-            cornerRadius: 16,
+            cornerRadius: 12,
             borderColor: theme is DarkTheme ? Color.white.opacity(0.1) : .clear,
             borderWidth: theme is DarkTheme ? 1 : 0,
             shadowColor: theme.cardBorder,
