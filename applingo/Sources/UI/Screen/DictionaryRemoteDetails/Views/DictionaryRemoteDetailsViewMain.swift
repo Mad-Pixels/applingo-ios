@@ -3,24 +3,23 @@ import SwiftUI
 /// A view that displays the main details of the remote dictionary,
 /// including the name, description, and topic.
 struct DictionaryRemoteDetailsViewMain: View {
-    
     // MARK: - Properties
-    
-    let dictionary: ApiModelDictionaryItem
+    @EnvironmentObject private var themeManager: ThemeManager
     private let locale: DictionaryRemoteDetailsLocale
     private let style: DictionaryRemoteDetailsStyle
     
-    // MARK: - Initializer
+    let dictionary: ApiModelDictionaryItem
     
-    /// Initializes the main details view.
+    // MARK: - Initializer
+    /// Initializes the additional details view.
     /// - Parameters:
+    ///   - style: `DictionaryRemoteDetailsStyle` style configuration.
+    ///   - locale: `DictionaryRemoteDetailsLocale` localization object.
     ///   - dictionary: The remote dictionary item.
-    ///   - locale: The localization object.
-    ///   - style: The style configuration.
     init(
-        dictionary: ApiModelDictionaryItem,
+        style: DictionaryRemoteDetailsStyle,
         locale: DictionaryRemoteDetailsLocale,
-        style: DictionaryRemoteDetailsStyle
+        dictionary: ApiModelDictionaryItem
     ) {
         self.dictionary = dictionary
         self.locale = locale
@@ -28,7 +27,6 @@ struct DictionaryRemoteDetailsViewMain: View {
     }
     
     // MARK: - Body
-    
     var body: some View {
         VStack(spacing: style.spacing) {
             SectionHeader(
@@ -43,11 +41,13 @@ struct DictionaryRemoteDetailsViewMain: View {
                     placeholder: "",
                     isEditing: false
                 )
+                
                 InputTextArea(
                     text: .constant(dictionary.description),
                     placeholder: "",
                     isEditing: false
                 )
+                
                 InputText(
                     text: .constant(dictionary.topic),
                     placeholder: "",

@@ -3,63 +3,57 @@ import SwiftUI
 /// A view that displays the details of a remote dictionary item.
 /// It provides a UI for viewing dictionary details and downloading the dictionary.
 struct DictionaryRemoteDetails: View {
-    
-    // MARK: - Environment and State Properties
-    
+    // MARK: - Properties
     @Environment(\.presentationMode) private var presentationMode
+    
+    // MARK: - State Objects
     @StateObject private var style: DictionaryRemoteDetailsStyle
     @StateObject private var locale = DictionaryRemoteDetailsLocale()
     
-    /// The edited dictionary model.
+    // MARK: - Local State
     @State private var editedDictionary: ApiModelDictionaryItem
     @State private var isPressedTrailing = false
     @State private var isDownloading = false
     
     // MARK: - Initializer
-    
     /// Initializes a new instance of DictionaryRemoteDetails.
     /// - Parameters:
     ///   - dictionary: The remote dictionary item to display.
-    ///   - isPresented: Binding to the presentation state.
     ///   - style: Optional style configuration; if nil, a themed style is applied.
     init(
         dictionary: ApiModelDictionaryItem,
         style: DictionaryRemoteDetailsStyle? = nil
     ) {
-        let initialStyle = style ?? .themed(ThemeManager.shared.currentThemeStyle)
-        _style = StateObject(wrappedValue: initialStyle)
+        _style = StateObject(wrappedValue: style ?? .themed(ThemeManager.shared.currentThemeStyle))
         _editedDictionary = State(initialValue: dictionary)
     }
     
     // MARK: - Body
-    
     var body: some View {
         BaseScreen(screen: .DictionaryRemoteDetails, title: locale.screenTitle) {
             ScrollView {
                 VStack(spacing: style.spacing) {
                     DictionaryRemoteDetailsViewMain(
-                        dictionary: editedDictionary,
+                        style: style,
                         locale: locale,
-                        style: style
+                        dictionary: editedDictionary
                     )
                     
                     DictionaryRemoteDetailsViewCategory(
-                        dictionary: editedDictionary,
+                        style: style,
                         locale: locale,
-                        style: style
+                        dictionary: editedDictionary
                     )
                     
                     DictionaryRemoteDetailsViewAdditional(
-                        dictionary: editedDictionary,
+                        style: style,
                         locale: locale,
-                        style: style
+                        dictionary: editedDictionary
                     )
                 }
                 .padding(style.padding)
             }
             .disabled(isDownloading)
-            .navigationTitle(locale.screenTitle)
-            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     ButtonNav(
@@ -72,7 +66,7 @@ struct DictionaryRemoteDetails: View {
                 }
             }
         }
-        // Show a progress view if downloading; otherwise, display the download button.
+        
         if isDownloading {
             ProgressView(locale.screenButtonDownload)
                 .progressViewStyle(CircularProgressViewStyle())
@@ -87,27 +81,20 @@ struct DictionaryRemoteDetails: View {
     }
     
     // MARK: - Private Methods
-    
     /// Initiates the download of the dictionary.
     private func downloadDictionary() {
         isDownloading = true
         Task {
             do {
-                try await DictionaryDownload.shared.download(dictionary: editedDictionary)
+                try await DictionaryDownload.shared.download(
+                    dictionary: editedDictionary,
+                    screen: .DictionaryRemoteDetails
+                )
                 await MainActor.run {
                     isDownloading = false
                     presentationMode.wrappedValue.dismiss()
                 }
-            } catch {
-                await MainActor.run {
-                    isDownloading = false
-                    ErrorManager.shared.process(
-                        error,
-                        screen: .DictionaryRemoteDetails,
-                        metadata: [:]
-                    )
-                }
-            }
+            } catch {}
         }
     }
 }

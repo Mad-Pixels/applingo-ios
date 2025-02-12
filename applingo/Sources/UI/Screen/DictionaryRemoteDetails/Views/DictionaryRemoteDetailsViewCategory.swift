@@ -3,24 +3,23 @@ import SwiftUI
 /// A view that displays the category details of the remote dictionary,
 /// including category and subcategory information.
 struct DictionaryRemoteDetailsViewCategory: View {
-    
     // MARK: - Properties
-    
-    let dictionary: ApiModelDictionaryItem
+    @EnvironmentObject private var themeManager: ThemeManager
     private let locale: DictionaryRemoteDetailsLocale
     private let style: DictionaryRemoteDetailsStyle
     
-    // MARK: - Initializer
+    let dictionary: ApiModelDictionaryItem
     
-    /// Initializes the category details view.
+    // MARK: - Initializer
+    /// Initializes the additional details view.
     /// - Parameters:
+    ///   - style: `DictionaryRemoteDetailsStyle` style configuration.
+    ///   - locale: `DictionaryRemoteDetailsLocale` localization object.
     ///   - dictionary: The remote dictionary item.
-    ///   - locale: The localization object.
-    ///   - style: The style configuration.
     init(
-        dictionary: ApiModelDictionaryItem,
+        style: DictionaryRemoteDetailsStyle,
         locale: DictionaryRemoteDetailsLocale,
-        style: DictionaryRemoteDetailsStyle
+        dictionary: ApiModelDictionaryItem
     ) {
         self.dictionary = dictionary
         self.locale = locale
@@ -28,7 +27,6 @@ struct DictionaryRemoteDetailsViewCategory: View {
     }
     
     // MARK: - Body
-    
     var body: some View {
         VStack(spacing: style.spacing) {
             SectionHeader(
@@ -43,6 +41,7 @@ struct DictionaryRemoteDetailsViewCategory: View {
                     placeholder: "",
                     isEditing: false
                 )
+                
                 InputText(
                     text: .constant(dictionary.subcategory),
                     placeholder: "",

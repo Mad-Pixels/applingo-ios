@@ -3,24 +3,23 @@ import SwiftUI
 /// A view that displays additional information of the remote dictionary,
 /// such as the author and creation date.
 struct DictionaryRemoteDetailsViewAdditional: View {
-    
     // MARK: - Properties
-    
-    let dictionary: ApiModelDictionaryItem
+    @EnvironmentObject private var themeManager: ThemeManager
     private let locale: DictionaryRemoteDetailsLocale
     private let style: DictionaryRemoteDetailsStyle
     
-    // MARK: - Initializer
+    let dictionary: ApiModelDictionaryItem
     
+    // MARK: - Initializer
     /// Initializes the additional details view.
     /// - Parameters:
+    ///   - style: `DictionaryRemoteDetailsStyle` style configuration.
+    ///   - locale: `DictionaryRemoteDetailsLocale` localization object.
     ///   - dictionary: The remote dictionary item.
-    ///   - locale: The localization object.
-    ///   - style: The style configuration.
     init(
-        dictionary: ApiModelDictionaryItem,
+        style: DictionaryRemoteDetailsStyle,
         locale: DictionaryRemoteDetailsLocale,
-        style: DictionaryRemoteDetailsStyle
+        dictionary: ApiModelDictionaryItem
     ) {
         self.dictionary = dictionary
         self.locale = locale
@@ -28,7 +27,6 @@ struct DictionaryRemoteDetailsViewAdditional: View {
     }
     
     // MARK: - Body
-    
     var body: some View {
         VStack(spacing: style.spacing) {
             SectionHeader(
@@ -43,6 +41,7 @@ struct DictionaryRemoteDetailsViewAdditional: View {
                     placeholder: "",
                     isEditing: false
                 )
+                
                 InputText(
                     text: .constant(dictionary.date),
                     placeholder: "",

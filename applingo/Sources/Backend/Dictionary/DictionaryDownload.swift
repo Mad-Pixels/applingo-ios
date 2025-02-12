@@ -19,7 +19,7 @@ actor DictionaryDownload {
     ///
     /// - Parameter dictionary: The API model representing the dictionary.
     /// - Throws: An error if any network, parsing, or database operation fails.
-    func download(dictionary: ApiModelDictionaryItem) async throws {
+    func download(dictionary: ApiModelDictionaryItem, screen: ScreenType) async throws {
         Logger.debug(
             "[Download]: Starting dictionary download",
             metadata: [
