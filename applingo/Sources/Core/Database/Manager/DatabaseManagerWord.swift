@@ -21,15 +21,12 @@ final class DatabaseManagerWord {
             SELECT * FROM UniqueWords
         """
         
+        /// Query to fetch data for cache.
         static let cacheSelectTemplate = """
-            WITH UniqueWords AS (
-                SELECT *, ROW_NUMBER() OVER (PARTITION BY frontText, backText ORDER BY weight) as rn
-                FROM \(DatabaseModelWord.databaseTableName)
-                WHERE dictionary IN (%@) %@
-            )
-            SELECT * FROM UniqueWords 
-            WHERE rn = 1
-            ORDER BY (CASE WHEN RANDOM() < 0.6 THEN RANDOM() ELSE weight END)
+            SELECT w.* FROM \(DatabaseModelWord.databaseTableName) w
+            JOIN \(DatabaseModelDictionary.databaseTableName) d ON w.dictionary = d.guid
+            WHERE d.isActive = 1 %@
+            ORDER BY (CASE WHEN RANDOM() < 0.6 THEN RANDOM() ELSE w.weight END)
             LIMIT ?
         """
         
@@ -146,38 +143,30 @@ final class DatabaseManagerWord {
     /// - Throws: An error if the query fails or if no group contains enough words.
     func fetchCache(count: Int, excludeIds: [Int] = [], excludeFrontTexts: [String] = []) throws -> [DatabaseModelWord] {
         guard count > 0 else { throw DatabaseError.invalidLimit(limit: count) }
-            
-        let activeDictionaries = try fetchActive()
-        guard !activeDictionaries.isEmpty else { throw DatabaseError.emptyActiveDictionaries }
-            
-        let guids = activeDictionaries.map { $0.guid }
-        let guidPlaceholders = guids.map { _ in "?" }.joined(separator: ",")
-            
-        // Формируем условия исключения
-        var extraCondition = ""
-        var extraArguments: [DatabaseValueConvertible] = []
-        if !excludeIds.isEmpty {
-            let idPlaceholders = excludeIds.map { _ in "?" }.joined(separator: ",")
-            extraCondition += " AND id NOT IN (\(idPlaceholders))"
-            extraArguments.append(contentsOf: excludeIds)
-        }
-        if !excludeFrontTexts.isEmpty {
-            let textPlaceholders = excludeFrontTexts.map { _ in "?" }.joined(separator: ",")
-            extraCondition += " AND LOWER(frontText) NOT IN (\(textPlaceholders))"
-            extraArguments.append(contentsOf: excludeFrontTexts)
-        }
-            
-        let sql = String(format: SQL.cacheSelectTemplate, guidPlaceholders, extraCondition)
-            
-        Logger.debug("[Word]: Fetching from active dictionaries", metadata: [
-            "dictionaryCount": String(guids.count),
-            "sql": sql
-        ])
-            
+        
         return try dbQueue.read { db in
-            var arguments: [DatabaseValueConvertible] = guids
-            arguments.append(contentsOf: extraArguments)
+            var conditions: [String] = []
+            var arguments: [DatabaseValueConvertible] = []
+            
+            if !excludeIds.isEmpty {
+                conditions.append("AND w.id NOT IN (\(excludeIds.map { _ in "?" }.joined(separator: ",")))")
+                arguments.append(contentsOf: excludeIds)
+            }
+            
+            if !excludeFrontTexts.isEmpty {
+                conditions.append("AND LOWER(w.frontText) NOT IN (\(excludeFrontTexts.map { _ in "?" }.joined(separator: ",")))")
+                arguments.append(contentsOf: excludeFrontTexts)
+            }
+            
+            let sql = String(format: SQL.cacheSelectTemplate, conditions.joined(separator: " "))
             arguments.append(count)
+            
+            Logger.debug(
+                "[Word]: Fetching words",
+                metadata: [
+                    "sql": sql
+                ]
+            )
             
             return try DatabaseModelWord.fetchAll(db, sql: sql, arguments: StatementArguments(arguments))
         }
