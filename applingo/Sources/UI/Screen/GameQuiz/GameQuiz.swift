@@ -32,23 +32,38 @@ struct GameQuiz: View {
     private func generateCard() {
         let cache = cacheGetter.cache
         Logger.debug("[Quiz]: Attempting to generate card", metadata: [
-                    "cacheCount": String(cache.count),
-                    "hasCurrentCard": String(currentCard != nil)
-                ])
+            "cacheCount": String(cache.count),
+            "hasCurrentCard": String(currentCard != nil)
+        ])
+        
         guard cache.count >= 4 else {
-            Logger.debug("[Quiz]: Not enough words in cache to generate card")
+            Logger.debug("[Quiz]: Not enough words in cache")
             cacheGetter.initializeCache()
             return
         }
         
-        // Get 4 unique words.
+        // Группируем слова по языковым группам
+        let groupedWords = Dictionary(grouping: cache) { $0.subcategory }
+        
+        // Находим группу с достаточным количеством слов
+        guard let (subcategory, words) = groupedWords.first(where: { $0.value.count >= 4 }) else {
+            Logger.debug("[Quiz]: No language group has enough words")
+            cacheGetter.initializeCache()
+            return
+        }
+        
+        Logger.debug("[Quiz]: Using language group", metadata: [
+            "subcategory": subcategory,
+            "availableWords": String(words.count)
+        ])
+        
+        // Выбираем 4 случайных слова из одной языковой группы
         var selectedWords: Set<DatabaseModelWord> = []
         var attempts = 0
         let maxAttempts = 20
         
         while selectedWords.count < 4 && attempts < maxAttempts {
-            if let word = cache.randomElement() {
-                // Check for duplicate front/back texts.
+            if let word = words.randomElement() {
                 let hasDuplicate = selectedWords.contains { existing in
                     existing.frontText == word.frontText ||
                     existing.frontText == word.backText ||
@@ -63,10 +78,13 @@ struct GameQuiz: View {
             attempts += 1
         }
         
-        guard selectedWords.count == 4 else { return }
+        guard selectedWords.count == 4 else {
+            Logger.debug("[Quiz]: Failed to select unique words")
+            return
+        }
         
         let wordsArray = Array(selectedWords)
-        let correctWord = wordsArray[0] // Can choose the correct answer randomly if needed.
+        let correctWord = wordsArray[0]
         let showingFront = Bool.random()
         
         cacheGetter.removeFromCache(correctWord)
@@ -77,16 +95,17 @@ struct GameQuiz: View {
             showingFront: showingFront
         )
         
-        // Set the current card in the game validation if applicable.
-        if let validation = game.validation as? QuizValidation, let card = currentCard {
+        if let validation = game.validation as? QuizValidation,
+           let card = currentCard {
             validation.setCurrentCard(card)
         }
         
         cardStartTime = Date()
+        
         Logger.debug("[Quiz]: Card generated", metadata: [
-                    "question": currentCard?.question ?? "",
-                    "correctWord": correctWord.frontText
-                ])
+            "subcategory": subcategory,
+            "correctWord": correctWord.frontText
+        ])
     }
     
     /// Handles the user's answer.

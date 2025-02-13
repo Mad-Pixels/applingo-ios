@@ -150,85 +150,36 @@ final class DatabaseManagerWord {
         let activeDictionaries = try fetchActive()
         guard !activeDictionaries.isEmpty else { throw DatabaseError.emptyActiveDictionaries }
             
-        // Group active dictionaries by subcategory.
-        let groups = Dictionary(grouping: activeDictionaries, by: { $0.subcategory })
-        guard !groups.isEmpty else {
-            throw DatabaseError.selectDataFailed(details: "No valid dictionary groups found")
+        let guids = activeDictionaries.map { $0.guid }
+        let guidPlaceholders = guids.map { _ in "?" }.joined(separator: ",")
+            
+        // Формируем условия исключения
+        var extraCondition = ""
+        var extraArguments: [DatabaseValueConvertible] = []
+        if !excludeIds.isEmpty {
+            let idPlaceholders = excludeIds.map { _ in "?" }.joined(separator: ",")
+            extraCondition += " AND id NOT IN (\(idPlaceholders))"
+            extraArguments.append(contentsOf: excludeIds)
+        }
+        if !excludeFrontTexts.isEmpty {
+            let textPlaceholders = excludeFrontTexts.map { _ in "?" }.joined(separator: ",")
+            extraCondition += " AND LOWER(frontText) NOT IN (\(textPlaceholders))"
+            extraArguments.append(contentsOf: excludeFrontTexts)
         }
             
-        // Shuffle the groups to randomize the selection.
-        let shuffledGroups = groups.shuffled()
-        var lastError: Error? = nil
+        let sql = String(format: SQL.cacheSelectTemplate, guidPlaceholders, extraCondition)
             
-        for (subcategory, dictionaries) in shuffledGroups {
-            let guids = dictionaries.map { $0.guid }
-            let guidPlaceholders = guids.map { _ in "?" }.joined(separator: ",")
-                
-            // Формирование дополнительного условия для исключений.
-            var extraCondition = ""
-            var extraArguments: [DatabaseValueConvertible] = []
-            if !excludeIds.isEmpty {
-                let idPlaceholders = excludeIds.map { _ in "?" }.joined(separator: ",")
-                extraCondition += " AND id NOT IN (\(idPlaceholders))"
-                extraArguments.append(contentsOf: excludeIds)
-            }
-            if !excludeFrontTexts.isEmpty {
-                let textPlaceholders = excludeFrontTexts.map { _ in "?" }.joined(separator: ",")
-                extraCondition += " AND LOWER(frontText) NOT IN (\(textPlaceholders))"
-                extraArguments.append(contentsOf: excludeFrontTexts)
-            }
-                
-            // Формирование полного SQL-запроса.
-            let sql = String(format: SQL.cacheSelectTemplate, guidPlaceholders, extraCondition)
-                
-            Logger.debug(
-                "[Word]: Trying group \(subcategory)",
-                metadata: [
-                    "dictionaryGuids": guids.joined(separator: ", "),
-                    "sql": sql
-                ]
-            )
-                
-            let words: [DatabaseModelWord]
-            do {
-                words = try dbQueue.read { db in
-                    var arguments: [DatabaseValueConvertible] = guids
-                    arguments.append(contentsOf: extraArguments)
-                    arguments.append(count)
-                    return try DatabaseModelWord.fetchAll(db, sql: sql, arguments: StatementArguments(arguments))
-                }
-            } catch {
-                lastError = error
-                continue
-            }
-                
-            if words.count >= count {
-                let wordsToReturn = Array(words.prefix(count))
-                Logger.debug(
-                    "[Word]: Successfully fetched \(wordsToReturn.count) words from group \(subcategory)",
-                    metadata: [
-                        "dictionaryGuids": guids.joined(separator: ", "),
-                        "sql": sql
-                    ]
-                )
-                let frontTexts = wordsToReturn.map { $0.frontText }.joined(separator: ", ")
-                Logger.debug("[Word]: Words returned: \(frontTexts)")
-                return wordsToReturn
-            } else {
-                Logger.warning(
-                    "[Word]: Group \(subcategory) returned only \(words.count) words, needed \(count). Trying another group.",
-                    metadata: [
-                        "dictionaryGuids": guids.joined(separator: ", "),
-                        "sql": sql
-                    ]
-                )
-            }
-        }
+        Logger.debug("[Word]: Fetching from active dictionaries", metadata: [
+            "dictionaryCount": String(guids.count),
+            "sql": sql
+        ])
             
-        if let error = lastError {
-            throw DatabaseError.selectDataFailed(details: "Failed to fetch cache: \(error.localizedDescription)")
-        } else {
-            throw DatabaseError.selectDataFailed(details: "Not enough words found in any active dictionary group.")
+        return try dbQueue.read { db in
+            var arguments: [DatabaseValueConvertible] = guids
+            arguments.append(contentsOf: extraArguments)
+            arguments.append(count)
+            
+            return try DatabaseModelWord.fetchAll(db, sql: sql, arguments: StatementArguments(arguments))
         }
     }
     

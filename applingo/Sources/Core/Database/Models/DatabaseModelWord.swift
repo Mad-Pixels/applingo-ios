@@ -12,6 +12,7 @@ struct DatabaseModelWord: Identifiable, Codable, Equatable, Hashable {
     internal let created: Int
     
     var description: String
+    var subcategory: String
     var dictionary: String
     var frontText: String
     var backText: String
@@ -23,6 +24,7 @@ struct DatabaseModelWord: Identifiable, Codable, Equatable, Hashable {
 
     // MARK: - Initialization
     init(
+        subcategory: String,
         dictionary: String,
         frontText: String,
         backText: String,
@@ -37,6 +39,7 @@ struct DatabaseModelWord: Identifiable, Codable, Equatable, Hashable {
         created: Int = Int(Date().timeIntervalSince1970),
         id: Int? = nil
     ) {
+        self.subcategory = subcategory
         self.description = description
         self.dictionary = dictionary
         self.frontText = frontText
@@ -58,6 +61,7 @@ struct DatabaseModelWord: Identifiable, Codable, Equatable, Hashable {
     
     /// Formats the word details to ensure consistency (e.g., trimming whitespace, converting to lowercase).
     mutating func fmt() {
+        self.subcategory = subcategory.trimmedTrailingWhitespace.lowercased()
         self.frontText = frontText.trimmedTrailingWhitespace.lowercased()
         self.backText = backText.trimmedTrailingWhitespace.lowercased()
         self.hint = hint.trimmedTrailingWhitespace.lowercased()
@@ -70,6 +74,7 @@ struct DatabaseModelWord: Identifiable, Codable, Equatable, Hashable {
         WordItemModel:
         - ID: \(id ?? -1)
         - UUID: \(uuid)
+        - Subcategory: \(subcategory)
         - Dictionary: \(dictionary)
         - FrontText: \(frontText)
         - BackText: \(backText)
@@ -95,6 +100,7 @@ struct DatabaseModelWord: Identifiable, Codable, Equatable, Hashable {
     /// Returns a new empty word object.
     static func new() -> DatabaseModelWord {
         return DatabaseModelWord(
+            subcategory: "",
             dictionary: "",
             frontText: "",
             backText: ""
@@ -112,6 +118,7 @@ extension DatabaseModelWord: FetchableRecord, PersistableRecord {
             t.autoIncrementedPrimaryKey("id").unique()
             t.column("uuid", .text).unique()
             
+            t.column("subcategory", .text).notNull()
             t.column("description", .text).notNull()
             t.column("dictionary", .text).notNull()
             t.column("success", .integer).notNull()

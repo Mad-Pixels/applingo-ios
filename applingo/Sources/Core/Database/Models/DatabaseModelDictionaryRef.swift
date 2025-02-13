@@ -6,4 +6,5 @@ struct DatabaseModelDictionaryRef: Identifiable, Codable, Equatable, Hashable, F
     let id: Int
     let guid: String
     let name: String
+    let subcategory: String
 }

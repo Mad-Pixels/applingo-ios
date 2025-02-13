@@ -123,6 +123,7 @@ struct WordAddManual: View {
         guard let selectedDictionary = selectedDictionary else { return }
         
         let newWord = DatabaseModelWord(
+            subcategory: selectedDictionary.subcategory,
             dictionary: selectedDictionary.guid,
             frontText: wordItem.frontText,
             backText: wordItem.backText,
