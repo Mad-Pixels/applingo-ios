@@ -113,34 +113,22 @@ final class DatabaseManagerWord {
         }
     }
     
-    /// Fetches a randomized cache of words from the database using a single language group,
-    /// excluding words with given IDs and frontTexts.
+    /// Fetches a randomized cache of words from the database within a single language group,
+    /// excluding any words whose IDs or front texts (case-insensitive) match the specified exclusions.
     ///
-    /// Active dictionaries are grouped by subcategory (e.g., "ru-en", "de-ru", etc.), and the function
-    /// attempts to select a group that can supply at least the specified number of words. If the selected
-    /// group does not yield enough words, the function will try other groups until a sufficient group is found.
-    /// If no group can provide the required number of words, an error is thrown.
-    ///
-    /// - Parameters:
-    ///   - count: The number of words to fetch.
-    ///   - excludeIds: An array of word IDs to exclude.
-    ///   - excludeFrontTexts: An array of word frontTexts (in lowercase) to exclude.
-    /// - Returns: An array of cached `DatabaseModelWord` objects.
-    /// - Throws: An error if the query fails or if no group contains enough words.
-    /// Fetches a randomized cache of words from the database using a single language group,
-    /// excluding words with given IDs and frontTexts.
-    ///
-    /// Active dictionaries are grouped by subcategory (e.g., "ru-en", "de-ru", etc.), and the function
-    /// attempts to select a group that can supply at least the specified number of words. If the selected
-    /// group does not yield enough words, the function will try other groups until a sufficient group is found.
-    /// If no group can provide the required number of words, an error is thrown.
+    /// Active dictionaries are organized by language pairs (e.g., "ru-en", "de-ru", etc.). This function
+    /// constructs a SQL query that filters out the excluded words and attempts to select a language group
+    /// that can supply at least the requested number of words. If the chosen group does not yield enough
+    /// words, the function may try alternative groups. If no group can provide the required number of words,
+    /// an error is thrown.
     ///
     /// - Parameters:
-    ///   - count: The number of words to fetch.
+    ///   - count: The number of words to fetch. Must be greater than zero.
     ///   - excludeIds: An array of word IDs to exclude.
-    ///   - excludeFrontTexts: An array of word frontTexts (in lowercase) to exclude.
+    ///   - excludeFrontTexts: An array of word front texts (in lowercase) to exclude.
     /// - Returns: An array of cached `DatabaseModelWord` objects.
-    /// - Throws: An error if the query fails or if no group contains enough words.
+    /// - Throws: A `DatabaseError` if the count is non-positive, if the database query fails,
+    ///           or if no group contains enough words.
     func fetchCache(count: Int, excludeIds: [Int] = [], excludeFrontTexts: [String] = []) throws -> [DatabaseModelWord] {
         guard count > 0 else { throw DatabaseError.invalidLimit(limit: count) }
         
