@@ -60,7 +60,7 @@ final class DatabaseManagerDictionary {
         
         /// Query to fetch dictionary references (id, guid, name).
         static let fetchRefs = """
-            SELECT id, guid, name FROM \(DatabaseModelDictionary.databaseTableName)
+            SELECT id, guid, name, subcategory FROM \(DatabaseModelDictionary.databaseTableName)
         """
         
         /// Query to check if dictionary exists by GUID
