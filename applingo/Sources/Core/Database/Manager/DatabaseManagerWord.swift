@@ -113,22 +113,18 @@ final class DatabaseManagerWord {
         }
     }
     
-    /// Fetches a randomized cache of words from the database within a single language group,
-    /// excluding any words whose IDs or front texts (case-insensitive) match the specified exclusions.
+    /// Retrieves a set of words from the database, excluding any words that match specified IDs or front texts.
     ///
-    /// Active dictionaries are organized by language pairs (e.g., "ru-en", "de-ru", etc.). This function
-    /// constructs a SQL query that filters out the excluded words and attempts to select a language group
-    /// that can supply at least the requested number of words. If the chosen group does not yield enough
-    /// words, the function may try alternative groups. If no group can provide the required number of words,
-    /// an error is thrown.
+    /// The function builds a SQL query using the `SQL.cacheSelectTemplate`. It dynamically adds conditions
+    /// to filter out words whose IDs are contained in `excludeIds` and those whose lowercase front texts are contained in
+    /// `excludeFrontTexts`. The `count` parameter is appended as a query argument to limit the number of results.
     ///
     /// - Parameters:
-    ///   - count: The number of words to fetch. Must be greater than zero.
-    ///   - excludeIds: An array of word IDs to exclude.
-    ///   - excludeFrontTexts: An array of word front texts (in lowercase) to exclude.
-    /// - Returns: An array of cached `DatabaseModelWord` objects.
-    /// - Throws: A `DatabaseError` if the count is non-positive, if the database query fails,
-    ///           or if no group contains enough words.
+    ///   - count: The number of words to retrieve. Must be greater than zero.
+    ///   - excludeIds: An array of word IDs to exclude from the results.
+    ///   - excludeFrontTexts: An array of word front texts (in lowercase) to exclude from the results.
+    /// - Returns: An array of `DatabaseModelWord` objects fetched from the database.
+    /// - Throws: A `DatabaseError.invalidLimit` if `count` is less than or equal to zero, or any database error that occurs during query execution.
     func fetchCache(count: Int, excludeIds: [Int] = [], excludeFrontTexts: [String] = []) throws -> [DatabaseModelWord] {
         guard count > 0 else { throw DatabaseError.invalidLimit(limit: count) }
         
