@@ -9,7 +9,8 @@ struct GameQuiz: View {
     @ObservedObject var game: Quiz
     @StateObject private var style: GameQuizStyle
     @StateObject private var locale = GameQuizLocale()
-    @EnvironmentObject var cacheGetter: WordCache
+    // Изменён тип с BaseGameCache<...> на конкретный QuizCache
+    @EnvironmentObject var cacheGetter: QuizCache
     @State private var currentCard: QuizModelCard?
     @State private var cardStartTime: Date?
     
@@ -30,68 +31,29 @@ struct GameQuiz: View {
     /// Generates a new quiz card using random words from the cache.
     /// The method ensures that four unique words are selected based on their front/back texts.
     private func generateCard() {
-        let cache = cacheGetter.cache
         Logger.debug("[Quiz]: Attempting to generate card", metadata: [
-            "cacheCount": String(cache.count),
+            "cacheCount": String(cacheGetter.cache.count),
             "hasCurrentCard": String(currentCard != nil)
         ])
         
-        guard cache.count >= 4 else {
-            Logger.debug("[Quiz]: Not enough words in cache")
-            cacheGetter.initializeCache()
-            return
-        }
-        
-        // Группируем слова по языковым группам
-        let groupedWords = Dictionary(grouping: cache) { $0.subcategory }
-        
-        // Находим группу с достаточным количеством слов
-        guard let (subcategory, words) = groupedWords.first(where: { $0.value.count >= 4 }) else {
-            Logger.debug("[Quiz]: No language group has enough words")
-            cacheGetter.initializeCache()
-            return
-        }
-        
-        Logger.debug("[Quiz]: Using language group", metadata: [
-            "subcategory": subcategory,
-            "availableWords": String(words.count)
-        ])
-        
-        // Выбираем 4 случайных слова из одной языковой группы
-        var selectedWords: Set<DatabaseModelWord> = []
-        var attempts = 0
-        let maxAttempts = 20
-        
-        while selectedWords.count < 4 && attempts < maxAttempts {
-            if let word = words.randomElement() {
-                let hasDuplicate = selectedWords.contains { existing in
-                    existing.frontText == word.frontText ||
-                    existing.frontText == word.backText ||
-                    existing.backText == word.frontText ||
-                    existing.backText == word.backText
-                }
-                
-                if !hasDuplicate {
-                    selectedWords.insert(word)
-                }
+        // Получаем слова из кэша
+        guard let items = cacheGetter.getItemsFromCache(4) else {
+            Logger.debug("[Quiz]: Failed to get items from cache")
+            // Инициализируем кеш и ждем обновления через onReceive
+            if !cacheGetter.isLoadingCache {  // Проверяем что не в процессе загрузки
+                cacheGetter.initializeCache()
             }
-            attempts += 1
-        }
-        
-        guard selectedWords.count == 4 else {
-            Logger.debug("[Quiz]: Failed to select unique words")
             return
         }
         
-        let wordsArray = Array(selectedWords)
-        let correctWord = wordsArray[0]
+        let correctWord = items[0]
         let showingFront = Bool.random()
         
-        cacheGetter.removeFromCache(correctWord)
+        cacheGetter.removeItem(correctWord)
         
         currentCard = QuizModelCard(
             correctWord: correctWord,
-            allWords: wordsArray,
+            allWords: items,
             showingFront: showingFront
         )
         
@@ -103,7 +65,7 @@ struct GameQuiz: View {
         cardStartTime = Date()
         
         Logger.debug("[Quiz]: Card generated", metadata: [
-            "subcategory": subcategory,
+            "subcategory": correctWord.subcategory,
             "correctWord": correctWord.frontText
         ])
     }
@@ -148,10 +110,10 @@ struct GameQuiz: View {
                 } else {
                     Text(verbatim: "Loading...")
                     Text("Cache size: \(cacheGetter.cache.count)")
-                                                .font(.caption)
-                                            if cacheGetter.isLoadingCache {
-                                                ProgressView()
-                                            }
+                        .font(.caption)
+                    if cacheGetter.isLoadingCache {
+                        ProgressView()
+                    }
                 }
             }
             .padding()
@@ -159,15 +121,15 @@ struct GameQuiz: View {
         .onAppear {
             generateCard()
         }
-        // Новая подписка: если кэш обновился и содержит не менее 4 слов, пытаемся сгенерировать карточку.
+        // Если кэш обновился и содержит не менее 4 слов, пытаемся сгенерировать карточку.
         .onReceive(cacheGetter.$cache) { newCache in
             Logger.debug("[Quiz]: Cache updated", metadata: [
-                            "newCacheCount": String(newCache.count),
-                            "hasCurrentCard": String(currentCard != nil)
-                        ])
-                        if currentCard == nil && newCache.count >= 4 {
-                            generateCard()
-                        }
+                "newCacheCount": String(newCache.count),
+                "hasCurrentCard": String(currentCard != nil)
+            ])
+            if currentCard == nil && newCache.count >= 4 {
+                generateCard()
+            }
         }
     }
 }

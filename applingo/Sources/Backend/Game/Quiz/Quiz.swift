@@ -1,17 +1,22 @@
 import SwiftUI
 
+// MARK: - Quiz
+
+/// A quiz game class that implements game logic, answer validation, score calculation, and cache management.
 final class Quiz: ObservableObject, AbstractGame {
+    /// The type used for validation answers.
+    typealias ValidationAnswer = String
+    
     let validation: any AbstractGameValidation
     let theme: GameTheme
     let type: GameType = .quiz
     let availableModes: [GameModeType] = [.practice, .survival, .time]
     let scoring: AbstractGameScoring
     
-    private(set) var cacheGetter: WordCache? = WordCache(
-        cacheSize: 10,
-        threshold: 6
-    )
+    /// The quiz cache manager, initialized with a cache size of 10 and a threshold of 6.
+    private(set) var cacheGetter: QuizCache = QuizCache(cacheSize: 10, threshold: 6)
     
+    /// The game statistics object.
     @Published private(set) var statsObject = BaseGameStats()
     var stats: any AbstractGameStats { statsObject }
     
@@ -29,33 +34,39 @@ final class Quiz: ObservableObject, AbstractGame {
         )
         self.validation = QuizValidation(
             feedbacks: [
-                .correct: CorrectAnswerHapticFeedback(),
+                .correct: CorrectAnswerHapticFeedback()
             ]
         )
     }
     
-    lazy var gameView: AnyView = {
-        if let cache = cacheGetter {
-            return AnyView(GameQuiz(game: self).environmentObject(cache))
-        } else {
-            return AnyView(ErrorView(message: "Failed to initialize game cache"))
-        }
-    }()
-    
-    var isReadyToPlay: Bool {
-        cacheGetter != nil
-    }
-    
+    /// Creates and returns the game view with the cache manager injected as an EnvironmentObject.
+    @ViewBuilder
     func makeView() -> AnyView {
-        AnyView(gameView)
+        AnyView(
+            GameQuiz(game: self)
+                .environmentObject(cacheGetter)
+        )
     }
     
+    /// Indicates whether the game is ready to play.
+    var isReadyToPlay: Bool {
+        true
+    }
+    
+    /// Validates the user's answer and returns the result.
+    /// - Parameter answer: The user's answer as a String.
+    /// - Returns: A GameValidationResult indicating whether the answer is correct.
     func validateAnswer(_ answer: String) -> GameValidationResult {
         let result = validation.validate(answer: answer)
         validation.playFeedback(result)
         return result
     }
     
+    /// Updates the game statistics based on the answer correctness, response time, and if a special card was used.
+    /// - Parameters:
+    ///   - correct: A Boolean indicating if the answer was correct.
+    ///   - responseTime: The time taken to answer.
+    ///   - isSpecialCard: A Boolean indicating if a special card was used.
     func updateStats(correct: Bool, responseTime: TimeInterval, isSpecialCard: Bool) {
         if correct {
             let points = scoring.calculateScore(
@@ -73,6 +84,9 @@ final class Quiz: ObservableObject, AbstractGame {
         }
     }
     
+    /// Returns a game mode model for the specified mode.
+    /// - Parameter type: The game mode type.
+    /// - Returns: A GameModeModel corresponding to the given mode.
     func getModeModel(_ type: GameModeType) -> GameModeModel {
         switch type {
         case .practice:
@@ -84,9 +98,11 @@ final class Quiz: ObservableObject, AbstractGame {
         }
     }
     
+    /// Starts the game with the given mode.
+    /// - Parameter mode: The selected game mode.
     func start(mode: GameModeType) {
         state.currentMode = mode
-        cacheGetter?.initializeCache()
+        cacheGetter.initializeCache()
         
         switch mode {
         case .survival:
@@ -98,22 +114,8 @@ final class Quiz: ObservableObject, AbstractGame {
         }
     }
     
+    /// Ends the game and clears the cache.
     func end() {
-        cacheGetter?.clearCache()
-    }
-}
-
-struct ErrorView: View {
-    let message: String
-    
-    var body: some View {
-        VStack {
-            Image(systemName: "exclamationmark.triangle")
-                .font(.largeTitle)
-                .foregroundColor(.red)
-            Text(message)
-                .multilineTextAlignment(.center)
-                .padding()
-        }
+        cacheGetter.clearCache()
     }
 }

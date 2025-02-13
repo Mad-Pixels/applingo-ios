@@ -43,6 +43,7 @@ final class WordCache: ProcessDatabase {
             "threshold": String(threshold)
         ])
         
+        // Validate parameters
         if cacheSize <= 0 {
             fatalError("Invalid cache size")
         }
@@ -59,6 +60,7 @@ final class WordCache: ProcessDatabase {
             ])
         }
         
+        // Ensure the database is connected
         guard let dbQueue = AppDatabase.shared.databaseQueue else {
             fatalError("Database is not connected")
         }
@@ -154,6 +156,53 @@ final class WordCache: ProcessDatabase {
         }
     }
     
+    /// Refills the cache by fetching missing words from the database.
+    func refillCache() {
+        let needCount = cacheSize - cache.count
+        guard needCount > 0 else {
+            DispatchQueue.main.async { [weak self] in
+                self?.isLoadingCache = false
+                self?.inProgressRefill = false
+            }
+            return
+        }
+        
+        Logger.debug("[Word]: Starting cache refill", metadata: [
+            "currentCount": String(cache.count),
+            "needCount": String(needCount)
+        ])
+        
+        let currentToken = cancellationToken
+        let existingIds = Set(cache.compactMap { $0.id })
+        let existingFrontTexts = Set(cache.map { $0.frontText.lowercased() })
+        
+        performDatabaseOperation({
+            try self.wordRepository.fetchCache(
+                count: needCount,
+                excludeIds: Array(existingIds),
+                excludeFrontTexts: Array(existingFrontTexts)
+            )
+        }, screen: .WordList, metadata: ["operation": "refill"])
+        .sink(receiveCompletion: { [weak self] completion in
+            guard let self = self,
+                  currentToken == self.cancellationToken else { return }
+            
+            if case .failure(let error) = completion {
+                Logger.error("[Word]: Refill failed", metadata: ["error": error.localizedDescription])
+                DispatchQueue.main.async {
+                    self.isLoadingCache = false
+                    self.inProgressRefill = false
+                }
+            }
+        }, receiveValue: { [weak self] fetchedWords in
+            guard let self = self,
+                  currentToken == self.cancellationToken else { return }
+            
+            self.processNewWords(fetchedWords, operation: "refill")
+        })
+        .store(in: &cancellables)
+    }
+
     /// Clears the current cache and resets internal state.
     func clearCache() {
         Logger.debug("[Word]: clearCache() called", metadata: ["currentCacheCount": String(cache.count)])
