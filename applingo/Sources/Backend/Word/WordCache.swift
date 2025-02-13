@@ -352,22 +352,13 @@ final class WordCache: ProcessDatabase {
             
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
-                
-                if operation == "initialize" {
-                    self.cache = newWords
-                } else {
-                    self.cache.append(contentsOf: newWords)
-                }
-                
+                self.cache.append(contentsOf: newWords)
+                self.inProgressRefill = false
                 self.isLoadingCache = false
-                
-                Logger.info("[Word]: Cache updated", metadata: [
-                    "operation": operation,
-                    "totalWords": String(self.cache.count)
-                ])
             }
         } else {
             DispatchQueue.main.async { [weak self] in
+                self?.inProgressRefill = false
                 self?.isLoadingCache = false
             }
         }
