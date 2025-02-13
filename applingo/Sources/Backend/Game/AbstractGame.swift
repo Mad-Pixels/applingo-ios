@@ -12,7 +12,6 @@ protocol AbstractGame {
     var state: GameState { get }
     var type: GameType { get }
     
-    var minimumWordsRequired: Int { get }
     var isReadyToPlay: Bool { get }
     
     func updateStats(correct: Bool, responseTime: TimeInterval, isSpecialCard: Bool)

@@ -5,10 +5,12 @@ final class Quiz: ObservableObject, AbstractGame {
     let theme: GameTheme
     let type: GameType = .quiz
     let availableModes: [GameModeType] = [.practice, .survival, .time]
-    let minimumWordsRequired: Int = 12
     let scoring: AbstractGameScoring
     
-    private(set) var cacheGetter: WordCache? = WordCache()
+    private(set) var cacheGetter: WordCache? = WordCache(
+        cacheSize: 10,
+        threshold: 6
+    )
     
     @Published private(set) var statsObject = BaseGameStats()
     var stats: any AbstractGameStats { statsObject }

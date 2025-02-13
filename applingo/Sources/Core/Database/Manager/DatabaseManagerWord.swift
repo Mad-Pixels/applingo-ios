@@ -21,6 +21,18 @@ final class DatabaseManagerWord {
             SELECT * FROM UniqueWords
         """
         
+        static let cacheSelectTemplate = """
+            WITH UniqueWords AS (
+                SELECT *, ROW_NUMBER() OVER (PARTITION BY frontText, backText ORDER BY weight) as rn
+                FROM \(DatabaseModelWord.databaseTableName)
+                WHERE dictionary IN (%@) %@
+            )
+            SELECT * FROM UniqueWords 
+            WHERE rn = 1
+            ORDER BY (CASE WHEN RANDOM() < 0.6 THEN RANDOM() ELSE weight END)
+            LIMIT ?
+        """
+        
         /// Query to search words with relevance ordering.
         static let searchSelect = """
             SELECT *, CASE
@@ -104,43 +116,119 @@ final class DatabaseManagerWord {
         }
     }
     
-    /// Fetches a randomized cache of words from the database.
+    /// Fetches a randomized cache of words from the database using a single language group,
+    /// excluding words with given IDs and frontTexts.
     ///
-    /// - Parameter count: The number of words to fetch.
+    /// Active dictionaries are grouped by subcategory (e.g., "ru-en", "de-ru", etc.), and the function
+    /// attempts to select a group that can supply at least the specified number of words. If the selected
+    /// group does not yield enough words, the function will try other groups until a sufficient group is found.
+    /// If no group can provide the required number of words, an error is thrown.
+    ///
+    /// - Parameters:
+    ///   - count: The number of words to fetch.
+    ///   - excludeIds: An array of word IDs to exclude.
+    ///   - excludeFrontTexts: An array of word frontTexts (in lowercase) to exclude.
     /// - Returns: An array of cached `DatabaseModelWord` objects.
-    /// - Throws: An error if the query fails.
-    func fetchCache(count: Int) throws -> [DatabaseModelWord] {
+    /// - Throws: An error if the query fails or if no group contains enough words.
+    /// Fetches a randomized cache of words from the database using a single language group,
+    /// excluding words with given IDs and frontTexts.
+    ///
+    /// Active dictionaries are grouped by subcategory (e.g., "ru-en", "de-ru", etc.), and the function
+    /// attempts to select a group that can supply at least the specified number of words. If the selected
+    /// group does not yield enough words, the function will try other groups until a sufficient group is found.
+    /// If no group can provide the required number of words, an error is thrown.
+    ///
+    /// - Parameters:
+    ///   - count: The number of words to fetch.
+    ///   - excludeIds: An array of word IDs to exclude.
+    ///   - excludeFrontTexts: An array of word frontTexts (in lowercase) to exclude.
+    /// - Returns: An array of cached `DatabaseModelWord` objects.
+    /// - Throws: An error if the query fails or if no group contains enough words.
+    func fetchCache(count: Int, excludeIds: [Int] = [], excludeFrontTexts: [String] = []) throws -> [DatabaseModelWord] {
         guard count > 0 else { throw DatabaseError.invalidLimit(limit: count) }
-        
+            
         let activeDictionaries = try fetchActive()
         guard !activeDictionaries.isEmpty else { throw DatabaseError.emptyActiveDictionaries }
-        
-        // Group active dictionaries by subcategory and randomly select one group.
-        guard let selectedGroup = Dictionary(grouping: activeDictionaries, by: { $0.subcategory }).randomElement() else {
+            
+        // Group active dictionaries by subcategory.
+        let groups = Dictionary(grouping: activeDictionaries, by: { $0.subcategory })
+        guard !groups.isEmpty else {
             throw DatabaseError.selectDataFailed(details: "No valid dictionary groups found")
         }
-        
-        let guids = selectedGroup.value.map { $0.guid }
-        let placeholders = guids.map { _ in "?" }.joined(separator: ",")
-        let sql = String(format: SQL.cacheSelect, placeholders)
-        
-        Logger.debug(
-            "[Word]: Fetch cache executed",
-            metadata: [
-                "dictionaryGuids": guids.joined(separator: ", "),
-                "sql": sql
-            ]
-        )
-        
-        return try dbQueue.read { db in
-            var arguments = guids as [DatabaseValueConvertible]
-            arguments.append(count)
             
-            do {
-                return try DatabaseModelWord.fetchAll(db, sql: sql, arguments: StatementArguments(arguments))
-            } catch {
-                throw DatabaseError.selectDataFailed(details: "Failed to fetch cache: \(error.localizedDescription)")
+        // Shuffle the groups to randomize the selection.
+        let shuffledGroups = groups.shuffled()
+        var lastError: Error? = nil
+            
+        for (subcategory, dictionaries) in shuffledGroups {
+            let guids = dictionaries.map { $0.guid }
+            let guidPlaceholders = guids.map { _ in "?" }.joined(separator: ",")
+                
+            // Формирование дополнительного условия для исключений.
+            var extraCondition = ""
+            var extraArguments: [DatabaseValueConvertible] = []
+            if !excludeIds.isEmpty {
+                let idPlaceholders = excludeIds.map { _ in "?" }.joined(separator: ",")
+                extraCondition += " AND id NOT IN (\(idPlaceholders))"
+                extraArguments.append(contentsOf: excludeIds)
             }
+            if !excludeFrontTexts.isEmpty {
+                let textPlaceholders = excludeFrontTexts.map { _ in "?" }.joined(separator: ",")
+                extraCondition += " AND LOWER(frontText) NOT IN (\(textPlaceholders))"
+                extraArguments.append(contentsOf: excludeFrontTexts)
+            }
+                
+            // Формирование полного SQL-запроса.
+            let sql = String(format: SQL.cacheSelectTemplate, guidPlaceholders, extraCondition)
+                
+            Logger.debug(
+                "[Word]: Trying group \(subcategory)",
+                metadata: [
+                    "dictionaryGuids": guids.joined(separator: ", "),
+                    "sql": sql
+                ]
+            )
+                
+            let words: [DatabaseModelWord]
+            do {
+                words = try dbQueue.read { db in
+                    var arguments: [DatabaseValueConvertible] = guids
+                    arguments.append(contentsOf: extraArguments)
+                    arguments.append(count)
+                    return try DatabaseModelWord.fetchAll(db, sql: sql, arguments: StatementArguments(arguments))
+                }
+            } catch {
+                lastError = error
+                continue
+            }
+                
+            if words.count >= count {
+                let wordsToReturn = Array(words.prefix(count))
+                Logger.debug(
+                    "[Word]: Successfully fetched \(wordsToReturn.count) words from group \(subcategory)",
+                    metadata: [
+                        "dictionaryGuids": guids.joined(separator: ", "),
+                        "sql": sql
+                    ]
+                )
+                let frontTexts = wordsToReturn.map { $0.frontText }.joined(separator: ", ")
+                Logger.debug("[Word]: Words returned: \(frontTexts)")
+                return wordsToReturn
+            } else {
+                Logger.warning(
+                    "[Word]: Group \(subcategory) returned only \(words.count) words, needed \(count). Trying another group.",
+                    metadata: [
+                        "dictionaryGuids": guids.joined(separator: ", "),
+                        "sql": sql
+                    ]
+                )
+            }
+        }
+            
+        if let error = lastError {
+            throw DatabaseError.selectDataFailed(details: "Failed to fetch cache: \(error.localizedDescription)")
+        } else {
+            throw DatabaseError.selectDataFailed(details: "Not enough words found in any active dictionary group.")
         }
     }
     

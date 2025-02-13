@@ -31,8 +31,13 @@ struct GameQuiz: View {
     /// The method ensures that four unique words are selected based on their front/back texts.
     private func generateCard() {
         let cache = cacheGetter.cache
+        Logger.debug("[Quiz]: Attempting to generate card", metadata: [
+                    "cacheCount": String(cache.count),
+                    "hasCurrentCard": String(currentCard != nil)
+                ])
         guard cache.count >= 4 else {
-            // If there are not enough words, exit. The onReceive modifier will trigger generateCard() later.
+            Logger.debug("[Quiz]: Not enough words in cache to generate card")
+            cacheGetter.initializeCache()
             return
         }
         
@@ -78,6 +83,10 @@ struct GameQuiz: View {
         }
         
         cardStartTime = Date()
+        Logger.debug("[Quiz]: Card generated", metadata: [
+                    "question": currentCard?.question ?? "",
+                    "correctWord": correctWord.frontText
+                ])
     }
     
     /// Handles the user's answer.
@@ -119,6 +128,11 @@ struct GameQuiz: View {
                     }
                 } else {
                     Text(verbatim: "Loading...")
+                    Text("Cache size: \(cacheGetter.cache.count)")
+                                                .font(.caption)
+                                            if cacheGetter.isLoadingCache {
+                                                ProgressView()
+                                            }
                 }
             }
             .padding()
@@ -128,9 +142,13 @@ struct GameQuiz: View {
         }
         // Новая подписка: если кэш обновился и содержит не менее 4 слов, пытаемся сгенерировать карточку.
         .onReceive(cacheGetter.$cache) { newCache in
-            if currentCard == nil && newCache.count >= 4 {
-                generateCard()
-            }
+            Logger.debug("[Quiz]: Cache updated", metadata: [
+                            "newCacheCount": String(newCache.count),
+                            "hasCurrentCard": String(currentCard != nil)
+                        ])
+                        if currentCard == nil && newCache.count >= 4 {
+                            generateCard()
+                        }
         }
     }
 }
