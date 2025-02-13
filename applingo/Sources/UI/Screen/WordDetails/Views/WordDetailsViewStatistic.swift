@@ -74,6 +74,6 @@ struct WordDetailsViewStatistic: View {
     // MARK: - Computed Properties
     /// Determines the warning image name based on the current theme.
     private var warningImageName: String {
-        themeManager.currentTheme.asString == "Dark" ? "warning_dark" : "warning_light"
+        themeManager.currentTheme.asString == "Dark" ? "no_word_stat" : "no_word_stat"
     }
 }
