@@ -1,12 +1,25 @@
 import Foundation
 import Combine
 
+/// A cache manager that handles fetching, storing, and updating a list of words
+/// from the database. It maintains an internal cache of `DatabaseModelWord` objects,
+/// provides methods to initialize the cache, remove words, and automatically refills
+/// the cache when it drops below a specified threshold.
+///
+/// The class uses a dedicated concurrent queue with barrier flags to ensure thread safety,
+/// and it leverages Combine for asynchronous operations.
 final class WordCache: ProcessDatabase {
+    
     // MARK: - Public Properties
+    
+    /// The current cache of words.
     @Published private(set) var cache: [DatabaseModelWord] = []
+    
+    /// A flag indicating whether the cache is currently loading.
     @Published private(set) var isLoadingCache = false
     
     // MARK: - Private Properties
+    
     private let wordRepository: DatabaseManagerWord
     private let queue: DispatchQueue
     private let cacheThreshold: Int
@@ -17,7 +30,14 @@ final class WordCache: ProcessDatabase {
     private var inProgressRefill = false
     
     // MARK: - Initialization
-    init(cacheSize: Int = 7, threshold: Int = 6) {
+    
+    /// Initializes a new instance of `WordCache` with the specified cache size and threshold.
+    ///
+    /// - Parameters:
+    ///   - cacheSize: The total number of words to be cached. Must be greater than zero.
+    ///   - threshold: The minimum number of words required before triggering a cache refill.
+    ///                Must be greater than zero and less than `cacheSize`.
+    init(cacheSize: Int = 10, threshold: Int = 5) {
         Logger.debug("[Word]: WordCache init start", metadata: [
             "cacheSize": String(cacheSize),
             "threshold": String(threshold)
@@ -54,67 +74,54 @@ final class WordCache: ProcessDatabase {
             "adjustedCacheSize": String(self.cacheSize),
             "cacheThreshold": String(self.cacheThreshold)
         ])
+        
         setupCacheObserver()
     }
     
     // MARK: - Public Methods
+    
+    /// Initializes the word cache by fetching a new set of words from the database.
+    ///
+    /// This method resets the cache state and sets the loading flag. Once the words are fetched,
+    /// the cache is updated accordingly.
     func initializeCache() {
         Logger.debug("[Word]: initializeCache() called")
         
         queue.async(flags: .barrier) { [weak self] in
             guard let self = self else { return }
             
-            // Сбрасываем состояние
-            self.cancellationToken = UUID()
-            self.inProgressRefill = false
-            DispatchQueue.main.async {
-                self.isLoadingCache = true
-                self.cache.removeAll()
-            }
-            
+            self.resetCacheState()
             let currentToken = self.cancellationToken
             
-            Logger.debug("[Word]: Starting initial load", metadata: ["cacheSize": String(self.cacheSize)])
+            DispatchQueue.main.async {
+                self.isLoadingCache = true
+            }
             
-            // Загружаем начальные данные
             self.performDatabaseOperation({
                 try self.wordRepository.fetchCache(count: self.cacheSize)
-            }, screen: .WordList, metadata: ["operation": "initializeCache"])
+            }, screen: .WordList, metadata: ["operation": "initialize"])
             .sink { [weak self] completion in
                 guard let self = self,
                       currentToken == self.cancellationToken else { return }
                 
                 if case .failure(let error) = completion {
-                    Logger.error("[Word]: Initial load failed", metadata: ["error": error.localizedDescription])
-                    DispatchQueue.main.async {
-                        self.isLoadingCache = false
-                    }
+                    Logger.error("[Word]: Initialize failed", metadata: ["error": error.localizedDescription])
+                    DispatchQueue.main.async { self.isLoadingCache = false }
                 }
-            } receiveValue: { [weak self] fetchedWords in
+            } receiveValue: { [weak self] words in
                 guard let self = self,
                       currentToken == self.cancellationToken else { return }
                 
-                Logger.debug("[Word]: Initial load completed", metadata: ["fetchedCount": String(fetchedWords.count)])
-                
-                self.queue.async(flags: .barrier) {
-                    let uniqueWords = self.validateAndFilterWords(fetchedWords)
-                    
-                    DispatchQueue.main.async {
-                        self.cache = uniqueWords
-                        self.isLoadingCache = false
-                        
-                        Logger.debug("[Word]: Cache initialized", metadata: [
-                            "uniqueCount": String(uniqueWords.count),
-                            "words": uniqueWords.map { $0.frontText }.joined(separator: ", ")
-                        ])
-                    }
-                }
+                self.processNewWords(words, operation: "initialize")
             }
             .store(in: &self.cancellables)
         }
     }
     
-     func removeFromCache(_ item: DatabaseModelWord) {
+    /// Removes the specified word from the cache.
+    ///
+    /// - Parameter item: The `DatabaseModelWord` item to be removed.
+    func removeFromCache(_ item: DatabaseModelWord) {
         Logger.debug("[Word]: removeFromCache() called", metadata: [
             "wordId": item.id.map(String.init) ?? "nil",
             "word": item.frontText
@@ -125,11 +132,11 @@ final class WordCache: ProcessDatabase {
                   let itemId = item.id else { return }
             
             let beforeCount = self.cache.count
-            // Подготавливаем новый массив в бэкграунде
+            // Prepare a new cache array in the background.
             let newCache = self.cache.filter { $0.id != itemId }
             let afterCount = newCache.count
             
-            // Обновляем на главном потоке
+            // Update the cache on the main thread.
             DispatchQueue.main.async {
                 self.cache = newCache
                 
@@ -139,33 +146,33 @@ final class WordCache: ProcessDatabase {
                     "removedWord": item.frontText
                 ])
                 
-                // Проверяем необходимость обновления кеша
+                // Trigger a cache refill if needed.
                 if afterCount < self.cacheThreshold {
                     self.triggerCacheRefill()
                 }
             }
         }
     }
-
     
+    /// Clears the current cache and resets internal state.
     func clearCache() {
         Logger.debug("[Word]: clearCache() called", metadata: ["currentCacheCount": String(cache.count)])
         resetCacheState()
     }
     
     // MARK: - Private Methods
+    
+    /// Resets the internal cache state, including the cancellation token and refill flag.
     private func resetCacheState() {
-        queue.async(flags: .barrier) {
-            self.cancellationToken = UUID()
-            self.inProgressRefill = false
-            DispatchQueue.main.async {
-                self.isLoadingCache = false
-                self.cache.removeAll()
-            }
-            Logger.debug("[Word]: Cache state reset")
+        cancellationToken = UUID()
+        inProgressRefill = false
+        DispatchQueue.main.async {
+            self.cache.removeAll()
+            self.isLoadingCache = false
         }
     }
     
+    /// Sets up a Combine observer to monitor the cache size and trigger a refill when it falls below the threshold.
     private func setupCacheObserver() {
         Logger.debug("[Word]: Setting up cache observer")
         $cache
@@ -183,6 +190,7 @@ final class WordCache: ProcessDatabase {
             .store(in: &cancellables)
     }
     
+    /// Performs the initial load of words into the cache from the database.
     private func performInitialLoad() {
         queue.async { [weak self] in
             guard let self = self else { return }
@@ -202,7 +210,9 @@ final class WordCache: ProcessDatabase {
                 
                 if case .failure(let error) = completion {
                     Logger.error("[Word]: Initial load failed", metadata: ["error": error.localizedDescription])
-                    self.isLoadingCache = false
+                    DispatchQueue.main.async {
+                        self.isLoadingCache = false
+                    }
                 }
             } receiveValue: { [weak self] fetchedWords in
                 guard let self = self,
@@ -214,6 +224,7 @@ final class WordCache: ProcessDatabase {
         }
     }
     
+    /// Triggers a refill of the cache if no refill operation is already in progress.
     private func triggerCacheRefill() {
         queue.async(flags: .barrier) { [weak self] in
             guard let self = self else { return }
@@ -232,109 +243,91 @@ final class WordCache: ProcessDatabase {
         }
     }
     
+    /// Performs the refill operation to fetch missing words and update the cache.
     private func performRefill() {
-        queue.async(flags: .barrier) { [weak self] in
-            guard let self = self else { return }
-            
-            defer {
-                // Гарантируем сброс флага в любом случае
-                self.inProgressRefill = false
+        let needCount = cacheSize - cache.count
+        guard needCount > 0 else {
+            DispatchQueue.main.async { [weak self] in
+                self?.isLoadingCache = false
+                self?.inProgressRefill = false
             }
-            
-            let needCount = self.cacheSize - self.cache.count
-            guard needCount > 0 else {
-                Logger.debug("[Word]: No refill needed - cache is full")
-                DispatchQueue.main.async {
-                    self.isLoadingCache = false
-                }
-                return
+            return
+        }
+        
+        let currentToken = cancellationToken
+        let existingIds = Set(cache.compactMap { $0.id })
+        let existingFrontTexts = Set(cache.map { $0.frontText.lowercased() })
+        
+        performDatabaseOperation({
+            try self.wordRepository.fetchCache(
+                count: needCount,
+                excludeIds: Array(existingIds),
+                excludeFrontTexts: Array(existingFrontTexts)
+            )
+        }, screen: .WordList, metadata: ["operation": "refill"])
+        .sink { [weak self] completion in
+            if case .failure(let error) = completion {
+                Logger.error("[Word]: Refill failed", metadata: ["error": error.localizedDescription])
             }
-            
-            Logger.debug("[Word]: Starting cache refill", metadata: [
-                "currentCount": String(self.cache.count),
-                "needCount": String(needCount)
-            ])
-            
-            self.inProgressRefill = true
             DispatchQueue.main.async {
-                self.isLoadingCache = true
+                self?.isLoadingCache = false
+                self?.inProgressRefill = false
             }
-            
-            let currentToken = self.cancellationToken
-            let existingIds = Set(self.cache.compactMap { $0.id })
-            let existingFrontTexts = Set(self.cache.map { $0.frontText.lowercased() })
-            
-            self.performDatabaseOperation({
-                try self.wordRepository.fetchCache(
-                    count: needCount,
-                    excludeIds: Array(existingIds),
-                    excludeFrontTexts: Array(existingFrontTexts)
-                )
-            }, screen: .WordList, metadata: ["operation": "refill"])
-            .sink { [weak self] completion in
-                guard let self = self,
-                      currentToken == self.cancellationToken else { return }
-                
-                if case .failure(let error) = completion {
-                    Logger.error("[Word]: Refill failed", metadata: ["error": error.localizedDescription])
-                    DispatchQueue.main.async {
-                        self.isLoadingCache = false
-                    }
-                }
-            } receiveValue: { [weak self] fetchedWords in
-                guard let self = self,
-                      currentToken == self.cancellationToken else { return }
-                
-                // Обработка новых слов
-                self.processNewWords(fetchedWords, operation: "refill")
-            }
-            .store(in: &self.cancellables)
+        } receiveValue: { [weak self] words in
+            guard let self = self,
+                  currentToken == self.cancellationToken else { return }
+            self.processNewWords(words, operation: "refill")
         }
+        .store(in: &cancellables)
     }
     
+    /// Processes the newly fetched words by filtering out duplicates and updating the cache.
+    ///
+    /// - Parameters:
+    ///   - words: An array of `DatabaseModelWord` objects fetched from the database.
+    ///   - operation: A string identifier for the operation (e.g., "initialize", "refill", "initialLoad").
     private func processNewWords(_ words: [DatabaseModelWord], operation: String) {
-        queue.async(flags: .barrier) { [weak self] in
-            guard let self = self else { return }
+        let uniqueWords = validateAndFilterWords(words)
+        
+        Logger.debug("[Word]: Processing words", metadata: [
+            "operation": operation,
+            "count": String(uniqueWords.count)
+        ])
+        
+        if !uniqueWords.isEmpty {
+            let currentIds = Set(cache.compactMap { $0.id })
+            let newWords = uniqueWords.filter { word in
+                guard let id = word.id else { return false }
+                return !currentIds.contains(id)
+            }
             
-            // Подготавливаем данные в бэкграунде
-            let uniqueWords = self.validateAndFilterWords(words)
-            Logger.debug("[Word]: Processing new words", metadata: [
-                "operation": operation,
-                "fetchedCount": String(words.count),
-                "uniqueCount": String(uniqueWords.count)
-            ])
-            
-            if !uniqueWords.isEmpty {
-                let currentIds = Set(self.cache.compactMap { $0.id })
-                let newWords = uniqueWords.filter { word in
-                    guard let id = word.id else { return false }
-                    return !currentIds.contains(id)
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+                
+                if operation == "initialize" {
+                    self.cache = newWords
+                } else {
+                    self.cache.append(contentsOf: newWords)
                 }
                 
-                // Используем receive(on:) для переключения на главный поток
-                DispatchQueue.main.async { [weak self] in
-                    guard let self = self else { return }
-                    
-                    // Теперь это выполняется на главном потоке
-                    self.cache.append(contentsOf: newWords)
-                    self.isLoadingCache = false
-                    
-                    Logger.info("[Word]: Cache updated", metadata: [
-                        "operation": operation,
-                        "addedWords": String(newWords.count),
-                        "totalWords": String(self.cache.count),
-                        "newWords": newWords.map { $0.frontText }.joined(separator: ", ")
-                    ])
-                }
-            } else {
-                DispatchQueue.main.async { [weak self] in
-                    self?.isLoadingCache = false
-                }
-                Logger.warning("[Word]: No new unique words found", metadata: ["operation": operation])
+                self.isLoadingCache = false
+                
+                Logger.info("[Word]: Cache updated", metadata: [
+                    "operation": operation,
+                    "totalWords": String(self.cache.count)
+                ])
+            }
+        } else {
+            DispatchQueue.main.async { [weak self] in
+                self?.isLoadingCache = false
             }
         }
     }
     
+    /// Validates and filters the fetched words by removing duplicates based on `frontText` and `id`.
+    ///
+    /// - Parameter words: The array of fetched `DatabaseModelWord` objects.
+    /// - Returns: A filtered array containing only unique words.
     private func validateAndFilterWords(_ words: [DatabaseModelWord]) -> [DatabaseModelWord] {
         var uniqueFrontText = Set<String>()
         var uniqueIds = Set<Int>()
@@ -345,7 +338,7 @@ final class WordCache: ProcessDatabase {
             
             let lowercasedText = word.frontText.lowercased()
             let isUnique = uniqueFrontText.insert(lowercasedText).inserted &&
-                          uniqueIds.insert(wordId).inserted
+                           uniqueIds.insert(wordId).inserted
             
             if !isUnique {
                 Logger.warning("[Word]: Duplicate word filtered", metadata: [
@@ -357,6 +350,8 @@ final class WordCache: ProcessDatabase {
             return isUnique
         }
     }
+    
+    // MARK: - Deinitialization
     
     deinit {
         Logger.debug("[Word]: Deinitializing cache")
