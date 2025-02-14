@@ -74,14 +74,12 @@ final class Quiz: ObservableObject, AbstractGame {
     ///   - responseTime: The time taken to answer.
     ///   - isSpecialCard: A Boolean indicating if a special card was used.
     internal func updateStats(correct: Bool, responseTime: TimeInterval, isSpecialCard: Bool) {
-        if correct {
-            statsObject.score += scoring.calculateScore(
-                responseTime: responseTime,
-                isSpecialCard: isSpecialCard
-            )
-        } else {
-            statsObject.score -= scoring.calculatePenalty()
-        }
+        statsObject.updateGameStats(
+            correct: correct,
+            responseTime: responseTime,
+            scoring: scoring,
+            isSpecialCard: isSpecialCard
+        )
     }
     
     /// Returns a game mode model for the specified mode.

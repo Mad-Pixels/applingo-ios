@@ -26,7 +26,7 @@ struct GameTab: View {
                     .foregroundColor(style.dividerColor)
                
                 GameTabViewStreak(
-                    streak: stats.perfectStreaks,
+                    streak: stats.streaks,
                     style: style,
                     locale: locale
                 )

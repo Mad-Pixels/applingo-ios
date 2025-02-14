@@ -18,16 +18,16 @@ final class BaseGameScoring: AbstractGameScoring {
         self.specialCardBonus = specialCardBonus
     }
     
-    func calculateScore(responseTime: TimeInterval, isSpecialCard: Bool) -> Int {
+    func calculateScore(responseTime: TimeInterval, isSpecialCard: Bool, streaks: Int) -> Int {
         var totalScore = baseScore
         
         if responseTime <= quickResponseThreshold {
             totalScore += quickResponseBonus
         }
-        
         if isSpecialCard {
             totalScore += specialCardBonus
         }
+        totalScore += streaks
 
         Logger.debug("[Scoring]: Calculated score: \(totalScore)")
         return totalScore
