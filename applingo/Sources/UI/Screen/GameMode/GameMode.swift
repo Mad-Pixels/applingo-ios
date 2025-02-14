@@ -4,6 +4,9 @@ import SwiftUI
 /// Users can choose a mode (e.g. practice, survival, time attack) before starting the game.
 struct GameMode: View {
     
+    
+    
+    
     // MARK: - Properties
     
     /// The game instance conforming to AbstractGame protocol.

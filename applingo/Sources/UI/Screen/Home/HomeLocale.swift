@@ -3,12 +3,11 @@ import Foundation
 /// Provides localized strings for the Home view.
 final class HomeLocale: ObservableObject {
     
-    // MARK: - Private Strings
-    
-    private enum Strings {
-        static let gameQuiz = "screen.home.game.quiz"
-        static let gameMatchup = "screen.home.game.matchup"
-        static let gameSwipe = "screen.home.game.swipe"
+    // MARK: - Localized Keys
+    private enum LocalizedKey: String {
+        case gameQuiz = "screen.home.game.quiz"
+        case gameMatchup = "screen.home.game.matchup"
+        case gameSwipe = "screen.home.game.swipe"
     }
     
     // MARK: - Published Properties
@@ -39,23 +38,9 @@ final class HomeLocale: ObservableObject {
     
     // MARK: - Localization Helper
     
-    private enum LocalizedKey {
-        case gameQuiz
-        case gameMatchup
-        case gameSwipe
-        
-        var key: String {
-            switch self {
-            case .gameQuiz: return Strings.gameQuiz
-            case .gameMatchup: return Strings.gameMatchup
-            case .gameSwipe: return Strings.gameSwipe
-            }
-        }
-    }
-    
     /// Retrieves a localized string for the given key.
     private static func localizedString(for key: LocalizedKey) -> String {
-        return LocaleManager.shared.localizedString(for: key.key).uppercased()
+        return LocaleManager.shared.localizedString(for: key.rawValue).uppercased()
     }
     
     // MARK: - Notification Handler

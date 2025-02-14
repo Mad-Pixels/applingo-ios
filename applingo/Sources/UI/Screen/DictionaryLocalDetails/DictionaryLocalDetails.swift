@@ -19,7 +19,6 @@ struct DictionaryLocalDetails: View {
     @State private var editableDictionary: DatabaseModelDictionary
 
     // MARK: - Initializer
-    
     /// Initializes a new instance of DictionaryLocalDetails.
     /// - Parameters:
     ///   - dictionary: The dictionary to display.
@@ -118,7 +117,7 @@ struct DictionaryLocalDetails: View {
                trimmed(editableDictionary.description).isEmpty
     }
     
-    // MARK: - Actions
+    // MARK: - Private Methods
     /// Updates the dictionary using the dictionaryAction service.
     private func updateDictionary() {
         dictionaryAction.update(editableDictionary) { _ in
