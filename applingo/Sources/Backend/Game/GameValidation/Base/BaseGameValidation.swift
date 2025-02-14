@@ -7,9 +7,7 @@ import SwiftUI
 class BaseGameValidation: AbstractGameValidation {
     // MARK: - Properties
     private var feedbacks: [GameValidationResult: AbstractGameFeedback]
-    
-    // MARK: - State Objects
-    @StateObject private var wordAction = WordAction()
+    private var wordAction: WordAction
     
     // MARK: - Initializer
     /// Initializes a new instance of `BaseGameValidation` with the specified feedbacks.
@@ -17,6 +15,7 @@ class BaseGameValidation: AbstractGameValidation {
     /// - Parameter feedbacks: A dictionary mapping validation results (e.g., `.correct`, `.incorrect`)
     ///   to the corresponding feedback implementations.
     init(feedbacks: [GameValidationResult: AbstractGameFeedback]) {
+        self.wordAction = WordAction()
         self.feedbacks = feedbacks
     }
 

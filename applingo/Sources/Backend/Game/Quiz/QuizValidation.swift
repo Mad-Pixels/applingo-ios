@@ -37,7 +37,7 @@ final class QuizValidation: BaseGameValidation {
               let card = currentCard else {
             return .incorrect
         }
-        return answer == card.question ? .correct : .incorrect
+        return answer == card.answer ? .correct : .incorrect
     }
     
     /// Returns the current word associated with the quiz card for validation purposes.
