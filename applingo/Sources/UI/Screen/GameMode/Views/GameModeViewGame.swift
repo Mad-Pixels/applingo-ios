@@ -13,12 +13,10 @@ struct GameModeViewGame: View {
     var body: some View {
         BaseGameScreen(
             screen: .GameMode,
-            game: game
+            game: game,
+            mode: mode
         ) {
             game.makeView()
-                .onAppear {
-                    game.start(mode: mode)
-                }
                 .toolbarBackground(.clear, for: .navigationBar)
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {

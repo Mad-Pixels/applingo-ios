@@ -28,10 +28,9 @@ struct GameMode: View {
         isPresented: Binding<Bool>,
         style: GameModeStyle? = nil
     ) {
+        _style = StateObject(wrappedValue: style ?? .themed(ThemeManager.shared.currentThemeStyle, gameTheme: game.theme))
+        _isPresented = isPresented
         self.game = game
-        self._isPresented = isPresented
-        let initialStyle = style ?? .themed(ThemeManager.shared.currentThemeStyle, gameTheme: game.theme)
-        _style = StateObject(wrappedValue: initialStyle)
     }
     
     // MARK: - Body
@@ -101,16 +100,8 @@ struct GameMode: View {
             title: model.title,
             description: model.description,
             isSelected: selectedMode == mode,
-            onSelect: { selectMode(mode) }
+            onSelect: { showGameContent = true }
         )
         .padding(.horizontal, 16)
-    }
-    
-    /// Handles the selection of a game mode.
-    /// - Parameter mode: The selected game mode.
-    private func selectMode(_ mode: GameModeType) {
-        selectedMode = mode
-        game.start(mode: mode)
-        showGameContent = true
     }
 }
