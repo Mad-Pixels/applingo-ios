@@ -29,21 +29,20 @@ final class Quiz: ObservableObject, AbstractGame {
             baseScore: 8,
             quickResponseThreshold: 0.6,
             quickResponseBonus: 5,
-            specialCardBonus: 15
+            specialCardBonus: 20
         ),
         validation: any AbstractGameValidation = QuizValidation(
             feedbacks: [.correct: CorrectAnswerHapticFeedback()]
         ),
-        cacheGetter: QuizCache = QuizCache(cacheSize: 10, threshold: 6)
+        cacheGetter: QuizCache = QuizCache(cacheSize: 50, threshold: 10)
     ) {
         self.theme = theme
         self.scoring = scoring
         self.validation = validation
         self.cache = cacheGetter
         
-        let initialStats = BaseGameStats()
-        self.statsObject = initialStats
-        self.state = GameState(stats: initialStats)
+        self.state = GameState()
+        self.statsObject = BaseGameStats()
     }
     
     /// Creates and returns the game view with the cache manager injected as an EnvironmentObject.
