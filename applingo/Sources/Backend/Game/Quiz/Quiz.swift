@@ -1,19 +1,5 @@
 import SwiftUI
 
-/// The threshold for a quick response in the quiz (as a fraction).
-private let QUIZ_SCORE_THRESHOLD = 0.6
-/// The bonus score awarded for using a special card.
-private let QUIZ_SCORE_SPECIAL_BONUS = 20
-/// The bonus score awarded for a quick response.
-private let QUIZ_SCORE_QUICK_BONUS = 5
-/// The base score for a successful answer.
-private let QUIZ_SCORE_SUCCESS = 8
-
-/// The threshold for the quiz cache; if the cache drops below this number, it will be refilled.
-private let QUIZ_CACHE_THRESHOLD = 10
-/// The maximum size of the quiz cache.
-private let QUIZ_CACHE_SIZE = 50
-
 /// A quiz game class that implements game logic, answer validation, score calculation, and cache management.
 ///
 /// The `Quiz` class conforms to `AbstractGame` and is responsible for:
@@ -55,7 +41,6 @@ final class Quiz: ObservableObject, AbstractGame {
     private(set) var state: GameState
     
     // MARK: - Initializer
-    
     /// Initializes a new instance of the `Quiz` game with dependency injection.
     ///
     /// - Parameters:

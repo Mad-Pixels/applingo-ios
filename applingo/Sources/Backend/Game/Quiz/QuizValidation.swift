@@ -4,16 +4,13 @@ import SwiftUI
 /// This class extends `BaseGameValidation` and implements answer validation by comparing the user's answer
 /// with the correct answer from the current quiz card.
 final class QuizValidation: BaseGameValidation {
-    
     // MARK: - Properties
-    
     /// The current quiz card used for validation.
     /// This card holds the correct answer against which the user's answer will be compared.
     private var currentCard: QuizModelCard?
     private var currentWord: DatabaseModelWord?
     
     // MARK: - Methods
-    
     /// Sets the current quiz card and its associated word for answer validation.
     /// - Parameters:
     ///   - currentCard: The `QuizModelCard` instance representing the current quiz card.
