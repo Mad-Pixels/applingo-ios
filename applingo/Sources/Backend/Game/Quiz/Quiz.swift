@@ -101,57 +101,13 @@ final class Quiz: ObservableObject, AbstractGame {
     /// Starts the game with the given mode.
     /// - Parameter mode: The selected game mode.
     func start(mode: GameModeType) {
-        state.survivalState = nil
-        state.timeState = nil
-        
-        state.currentMode = mode
-        state.isGameOver = false
+        state.initialize(for: mode)
         cache.initialize()
-        
-        switch mode {
-            case .survival:
-                state.survivalState = GameState.SurvivalState(lives: 3)
-            case .time:
-                let timer = GameStateUtilsTimer(duration: 120)
-                timer.onTimeUp = { [weak self] in
-                    self?.endGame(reason: .timeUp)
-                }
-                timer.start()
-                state.timeState = timer
-            case .practice:
-                break
-        }
     }
-    
-///
-    enum GameEndReason {
-            case timeUp
-            case noLives
-            case userQuit
-        }
-    
-    private func endGame(reason: GameEndReason) {
-            DispatchQueue.main.async { [weak self] in
-                guard let self = self else { return }
-                
-                // Останавливаем таймер
-                if case .time = self.state.currentMode {
-                    self.state.timeState?.stop()
-                }
-                
-                self.state.isGameOver = true
-                
-                Logger.debug("[Quiz]: Game ended", metadata: [
-                    "reason": String(describing: reason),
-                    "finalScore": String(self.statsObject.score)
-                ])
-            }
-        }
-///
     
     /// Ends the game and clears the cache.
     func end() {
-        endGame(reason: .userQuit)
+        state.end(reason: .userQuit)
         cache.clear()
     }
 }
