@@ -34,6 +34,5 @@ struct BaseGameScreen<Content: View>: View {
             .withErrorTracker(screen)
             .withLocaleTracker()
             .withThemeTracker()
-            
     }
 }
