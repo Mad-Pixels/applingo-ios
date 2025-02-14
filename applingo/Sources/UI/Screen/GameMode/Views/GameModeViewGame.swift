@@ -2,19 +2,19 @@ import SwiftUI
 
 /// A view that displays the game content after a mode is selected.
 struct GameModeViewGame: View {
-    
     // MARK: - Properties
-    
     let game: any AbstractGame
     let mode: GameModeType
     
-    @Binding var showGameContent: Bool
     @State private var isPressedLeading = false
+    @Binding var showGameContent: Bool
     
     // MARK: - Body
-    
     var body: some View {
-        BaseGameScreen(screen: .GameMode, game: game) {
+        BaseGameScreen(
+            screen: .GameMode,
+            game: game
+        ) {
             game.makeView()
                 .onAppear {
                     game.start(mode: mode)
@@ -30,7 +30,6 @@ struct GameModeViewGame: View {
                             isPressed: $isPressedLeading
                         )
                     }
-                    
                     ToolbarItem(placement: .principal) {
                         GameTab(
                             game: game as! Quiz,

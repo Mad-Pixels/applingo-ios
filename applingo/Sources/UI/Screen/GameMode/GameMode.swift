@@ -115,11 +115,12 @@ struct GameMode: View {
     private func modeCard(for mode: GameModeType) -> some View {
         let model = game.getModeModel(mode)
         return GameModeViewCard(
+            locale: locale,
+            style: game.theme,
             mode: mode,
             icon: model.icon,
             title: model.title,
             description: model.description,
-            style: game.theme,
             isSelected: selectedMode == mode,
             onSelect: { selectMode(mode) }
         )
