@@ -59,7 +59,7 @@ struct GameQuiz: View {
         
         if let validation = game.validation as? QuizValidation,
            let card = currentCard {
-            validation.setCurrentCard(card, word: correctWord)
+            validation.setCurrentCard(currentCard: card, currentWord: correctWord)
         }
         
         cardStartTime = Date()
