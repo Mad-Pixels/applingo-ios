@@ -1,7 +1,5 @@
 import Combine
 
-// MARK: - BaseGameCache
-
 /// A base cache class for game data that supports customizable grouping and validation via closures.
 /// This class observes an underlying WordCache and publishes its own cache state.
 class BaseGameCache<T: Hashable, C>: AbstractGameCache, ObservableObject {
@@ -83,12 +81,10 @@ class BaseGameCache<T: Hashable, C>: AbstractGameCache, ObservableObject {
             }
             attempts += 1
         }
-        
         guard selected.count == count else {
             Logger.debug("[GameCache]: Failed to select required items")
             return nil
         }
-        
         return Array(selected)
     }
     
@@ -97,9 +93,7 @@ class BaseGameCache<T: Hashable, C>: AbstractGameCache, ObservableObject {
     func removeItem(_ item: CacheItem) {
         if let word = item as? DatabaseModelWord {
             wordCache.removeFromCache(word)
-        } else {
-            Logger.error("[GameCache]: Invalid item type")
-        }
+        } else {}
     }
     
     /// Initializes the cache by fetching data from the database.

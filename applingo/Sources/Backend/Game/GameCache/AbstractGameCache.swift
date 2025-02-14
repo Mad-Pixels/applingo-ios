@@ -1,7 +1,5 @@
 import Foundation
 
-// MARK: - AbstractGameCache
-
 /// A protocol representing a generic game cache.
 /// Conforming types must provide mechanisms to retrieve, remove, initialize, and clear cached items.
 protocol AbstractGameCache {
