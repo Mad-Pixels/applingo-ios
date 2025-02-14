@@ -16,15 +16,15 @@ protocol AbstractGameCache {
     /// Retrieves a specified number of items from the cache.
     /// - Parameter count: The number of items requested.
     /// - Returns: An array of CacheItem if sufficient items exist, otherwise nil.
-    func getItemsFromCache(_ count: Int) -> [CacheItem]?
+    func getItems(_ count: Int) -> [CacheItem]?
 
     /// Removes a specified item from the cache.
     /// - Parameter item: The cache item to be removed.
     func removeItem(_ item: CacheItem)
 
     /// Initiates the cache (e.g., fetches data).
-    func initializeCache()
+    func initialize()
 
     /// Clears all items from the cache.
-    func clearCache()
+    func clear()
 }

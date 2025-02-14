@@ -4,39 +4,46 @@ import SwiftUI
 
 /// A quiz game class that implements game logic, answer validation, score calculation, and cache management.
 final class Quiz: ObservableObject, AbstractGame {
-    /// The type used for validation answers.
-    typealias ValidationAnswer = String
+    // MARK: - Properties
+    internal let availableModes: [GameModeType] = [.practice, .survival, .time]
+    internal let type: GameType = .quiz
     
-    let validation: any AbstractGameValidation
-    let theme: GameTheme
-    let type: GameType = .quiz
-    let availableModes: [GameModeType] = [.practice, .survival, .time]
-    let scoring: AbstractGameScoring
+    internal let validation: AbstractGameValidation
+    internal let scoring: AbstractGameScoring
+    internal let cache: QuizCache
+    internal let theme: GameTheme
     
-    /// The quiz cache manager, initialized with a cache size of 10 and a threshold of 6.
-    private(set) var cacheGetter: QuizCache = QuizCache(cacheSize: 10, threshold: 6)
-    
-    /// The game statistics object.
     @Published private(set) var statsObject = BaseGameStats()
-    var stats: any AbstractGameStats { statsObject }
+    var stats: AbstractGameStats { statsObject }
+    private(set) var state: GameState
     
-    private(set) lazy var state: GameState = {
-        GameState(stats: stats)
-    }()
-    
-    init() {
-        self.theme = ThemeManager.shared.currentThemeStyle.quizTheme
-        self.scoring = BaseGameScoring(
+    /// Dependency Injection initializer.
+    /// - Parameters:
+    ///   - theme: The game theme. Defaults to the current quiz theme.
+    ///   - scoring: The scoring strategy. Defaults to a BaseGameScoring instance.
+    ///   - validation: The validation strategy. Defaults to a QuizValidation instance.
+    ///   - cacheGetter: The cache manager. Defaults to a QuizCache instance.
+    init(
+        theme: GameTheme = ThemeManager.shared.currentThemeStyle.quizTheme,
+        scoring: AbstractGameScoring = BaseGameScoring(
             baseScore: 8,
             quickResponseThreshold: 0.6,
             quickResponseBonus: 5,
             specialCardBonus: 15
-        )
-        self.validation = QuizValidation(
-            feedbacks: [
-                .correct: CorrectAnswerHapticFeedback()
-            ]
-        )
+        ),
+        validation: any AbstractGameValidation = QuizValidation(
+            feedbacks: [.correct: CorrectAnswerHapticFeedback()]
+        ),
+        cacheGetter: QuizCache = QuizCache(cacheSize: 10, threshold: 6)
+    ) {
+        self.theme = theme
+        self.scoring = scoring
+        self.validation = validation
+        self.cache = cacheGetter
+        
+        let initialStats = BaseGameStats()
+        self.statsObject = initialStats
+        self.state = GameState(stats: initialStats)
     }
     
     /// Creates and returns the game view with the cache manager injected as an EnvironmentObject.
@@ -44,7 +51,7 @@ final class Quiz: ObservableObject, AbstractGame {
     func makeView() -> AnyView {
         AnyView(
             GameQuiz(game: self)
-                .environmentObject(cacheGetter)
+                .environmentObject(cache)
         )
     }
     
@@ -102,7 +109,7 @@ final class Quiz: ObservableObject, AbstractGame {
     /// - Parameter mode: The selected game mode.
     func start(mode: GameModeType) {
         state.currentMode = mode
-        cacheGetter.initializeCache()
+        cache.initialize()
         
         switch mode {
         case .survival:
@@ -116,6 +123,6 @@ final class Quiz: ObservableObject, AbstractGame {
     
     /// Ends the game and clears the cache.
     func end() {
-        cacheGetter.clearCache()
+        cache.clear()
     }
 }

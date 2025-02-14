@@ -37,11 +37,11 @@ struct GameQuiz: View {
         ])
         
         // Получаем слова из кэша
-        guard let items = cacheGetter.getItemsFromCache(4) else {
+        guard let items = cacheGetter.getItems(4) else {
             Logger.debug("[Quiz]: Failed to get items from cache")
             // Инициализируем кеш и ждем обновления через onReceive
             if !cacheGetter.isLoadingCache {  // Проверяем что не в процессе загрузки
-                cacheGetter.initializeCache()
+                cacheGetter.initialize()
             }
             return
         }

@@ -45,7 +45,7 @@ class BaseGameCache<T: Hashable, C>: AbstractGameCache, ObservableObject {
     /// Retrieves a specified number of items from the cache.
     /// - Parameter count: The number of items requested.
     /// - Returns: An array of CacheItem if sufficient items exist, otherwise nil.
-    func getItemsFromCache(_ count: Int) -> [CacheItem]? {
+    func getItems(_ count: Int) -> [CacheItem]? {
         guard cache.count >= count else {
             Logger.debug("[GameCache]: Not enough items", metadata: [
                 "available": String(cache.count),
@@ -103,12 +103,12 @@ class BaseGameCache<T: Hashable, C>: AbstractGameCache, ObservableObject {
     }
     
     /// Initializes the cache by fetching data from the database.
-    func initializeCache() {
+    func initialize() {
         wordCache.initializeCache()
     }
     
     /// Clears all items from the cache.
-    func clearCache() {
+    func clear() {
         wordCache.clearCache()
     }
     
@@ -134,6 +134,6 @@ class BaseGameCache<T: Hashable, C>: AbstractGameCache, ObservableObject {
     // MARK: - Deinitialization
     deinit {
         Logger.debug("[GameCache]: Deinitializing")
-        clearCache()
+        clear()
     }
 }
