@@ -52,14 +52,14 @@ struct GameQuiz: View {
         cacheGetter.removeItem(correctWord)
         
         currentCard = QuizModelCard(
-            correctWord: correctWord,
+            word: correctWord,
             allWords: items,
             showingFront: showingFront
         )
         
         if let validation = game.validation as? QuizValidation,
            let card = currentCard {
-            validation.setCurrentCard(card)
+            validation.setCurrentCard(card, word: correctWord)
         }
         
         cardStartTime = Date()

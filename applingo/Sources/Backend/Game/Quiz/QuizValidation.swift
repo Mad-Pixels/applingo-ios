@@ -10,13 +10,17 @@ final class QuizValidation: BaseGameValidation {
     /// The current quiz card used for validation.
     /// This card holds the correct answer against which the user's answer will be compared.
     private var currentCard: QuizModelCard?
+    private var currentWord: DatabaseModelWord?
     
     // MARK: - Methods
     
-    /// Sets the current quiz card to be used for answer validation.
-    /// - Parameter card: The `QuizModelCard` instance representing the current quiz card.
-    func setCurrentCard(_ card: QuizModelCard) {
-        self.currentCard = card
+    /// Sets the current quiz card and its associated word for answer validation.
+    /// - Parameters:
+    ///   - currentCard: The `QuizModelCard` instance representing the current quiz card.
+    ///   - currentWord: The `DatabaseModelWord` instance associated with the current quiz card.
+    func setCurrentCard(currentCard: QuizModelCard, currentWord: DatabaseModelWord) {
+        self.currentCard = currentCard
+        self.currentWord = currentWord
     }
     
     /// Validates the provided answer against the correct answer of the current quiz card.
@@ -28,11 +32,18 @@ final class QuizValidation: BaseGameValidation {
     /// - Parameter answer: The answer provided by the user.
     /// - Returns: A `GameValidationResult` indicating whether the answer is correct (`.correct`)
     ///   or not (`.incorrect`).
-    override func validate(answer: Any) -> GameValidationResult {
+    override func validateAnswer(answer: Any) -> GameValidationResult {
         guard let answer = answer as? String,
               let card = currentCard else {
             return .incorrect
         }
-        return answer == card.correctAnswer ? .correct : .incorrect
+        return answer == card.question ? .correct : .incorrect
+    }
+    
+    /// Returns the current word associated with the quiz card for validation purposes.
+    /// - Returns: An optional `DatabaseModelWord` instance representing the current word,
+    ///   or `nil` if no current word is set.
+    override func getCurrentWord() -> DatabaseModelWord? {
+        return currentWord
     }
 }

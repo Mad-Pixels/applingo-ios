@@ -43,7 +43,7 @@ class BaseGameCache<T: Hashable, C>: AbstractGameCache, ObservableObject {
     /// Retrieves a specified number of items from the cache.
     /// - Parameter count: The number of items requested.
     /// - Returns: An array of CacheItem if sufficient items exist, otherwise nil.
-    func getItems(_ count: Int) -> [CacheItem]? {
+    final func getItems(_ count: Int) -> [CacheItem]? {
         guard cache.count >= count else {
             Logger.debug("[GameCache]: Not enough items", metadata: [
                 "available": String(cache.count),
@@ -90,20 +90,26 @@ class BaseGameCache<T: Hashable, C>: AbstractGameCache, ObservableObject {
     
     /// Removes the specified item from the cache.
     /// - Parameter item: The cache item to be removed.
-    func removeItem(_ item: CacheItem) {
+    final func removeItem(_ item: CacheItem) {
         if let word = item as? DatabaseModelWord {
             wordCache.removeFromCache(word)
         } else {}
     }
     
     /// Initializes the cache by fetching data from the database.
-    func initialize() {
+    final func initialize() {
         wordCache.initializeCache()
     }
     
     /// Clears all items from the cache.
-    func clear() {
+    final func clear() {
         wordCache.clearCache()
+    }
+    
+    /// Deinit object.
+    deinit {
+        Logger.debug("[GameCache]: Deinitializing")
+        clear()
     }
     
     // MARK: - Methods to Override
@@ -123,11 +129,5 @@ class BaseGameCache<T: Hashable, C>: AbstractGameCache, ObservableObject {
     /// - Returns: A Boolean indicating whether the item is valid.
     func validateItemImpl(_ item: CacheItem, _ selected: [CacheItem]) -> Bool {
         fatalError("Must be overridden by concrete game")
-    }
-    
-    // MARK: - Deinitialization
-    deinit {
-        Logger.debug("[GameCache]: Deinitializing")
-        clear()
     }
 }
