@@ -44,21 +44,27 @@ struct GameTab: View {
         }
         .padding(.top, 16)
     }
-   
+
     @ViewBuilder
-    private func makeModeSection(_ mode: GameModeType) -> some View {
-        switch mode {
-        case .practice:
-            GameTabViewAccuracy(
-                accuracy: stats.accuracy,
-                style: style
-            )
-        case .survival where game.state.survivalState != nil:
-            GameTabViewLives(lives: game.state.survivalState!.lives, style: style)
-        case .time where game.state.timeState != nil:
-            GameTabViewTimer(timeLeft: game.state.timeState!.timeLeft, style: style)
-        default:
-            EmptyView()
+        private func makeModeSection(_ mode: GameModeType) -> some View {
+            switch mode {
+            case .practice:
+                GameTabViewAccuracy(
+                    accuracy: stats.accuracy,
+                    style: style
+                )
+            case .survival where game.state.survivalState != nil:
+                GameTabViewLives(
+                    lives: game.state.survivalState!.lives,
+                    style: style
+                )
+            case .time where game.state.timeState != nil:
+                GameTabViewTimer(
+                    timer: game.state.timeState!, // передаем GameTimer
+                    style: style
+                )
+            default:
+                EmptyView()
+            }
         }
-    }
 }

@@ -6,15 +6,16 @@ import SwiftUI
 protocol AbstractGameStats {
     /// The current game score.
     var score: Int { get set }
-    
     /// The player's accuracy, typically represented as a percentage.
     var accuracy: Double { get set }
-    
     /// The number of consecutive correct answers (streaks/combo).
     var streaks: Int { get set }
-    
     /// The average time taken by the player to respond, measured in seconds.
     var averageResponseTime: TimeInterval { get set }
+    /// The total answers count.
+    var totalAnswers: Int { get set }
+    /// The correct answers count.
+    var correctAnswers: Int { get set }
     
     /// Updates the game statistics based on whether an answer was correct, the response time, the scoring strategy, and if a special card was used.
     ///

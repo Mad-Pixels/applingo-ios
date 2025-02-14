@@ -3,7 +3,7 @@ import SwiftUI
 /// A view that presents a quiz game interface.
 /// It generates quiz cards based on a word cache and handles user answers.
 struct GameQuiz: View {
-    
+    @Environment(\.dismiss) private var dismiss
     // MARK: - Properties
     
     @ObservedObject var game: Quiz
@@ -131,5 +131,15 @@ struct GameQuiz: View {
                 generateCard()
             }
         }
+///
+        .onReceive(game.state.$isGameOver) { isGameOver in
+                    if isGameOver {
+                        // Добавляем небольшую задержку для плавности
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                            dismiss()
+                        }
+                    }
+                }
+///
     }
 }

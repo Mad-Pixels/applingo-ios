@@ -1,11 +1,12 @@
 import SwiftUI
 
 /// A base class for managing game statistics, conforming to `AbstractGameStats`.
-/// This class tracks key metrics such as score, accuracy, perfect streaks, and average response time.
-/// It also provides a method to update these statistics based on the outcome of a game action.
+/// This class tracks key metrics such as score, accuracy, streaks, and average response time,
+/// and provides a method to update these statistics based on the outcome of a game action.
 /// The implementation ensures that the score never falls below zero.
 final class BaseGameStats: ObservableObject, AbstractGameStats {
     // MARK: - Published Properties
+    
     /// The current game score.
     @Published var score: Int = 0
     /// The player's accuracy as a percentage.
@@ -14,14 +15,35 @@ final class BaseGameStats: ObservableObject, AbstractGameStats {
     @Published var streaks: Int = 0
     /// The average time taken by the player to respond.
     @Published var averageResponseTime: TimeInterval = 0
+    /// The total number of answers given.
+    @Published var totalAnswers: Int = 0
+    /// The number of correct answers given.
+    @Published var correctAnswers: Int = 0
+    
+    // MARK: - Private Properties
+    
+    /// A weak reference to the game, used to update survival state when applicable.
+    private weak var game: Quiz?
+    
+    // MARK: - Initializer
+    
+    /// Initializes a new instance of `BaseGameStats`.
+    ///
+    /// - Parameter game: An optional instance of `Quiz` for survival mode updates.
+    init(game: Quiz? = nil) {
+        self.game = game
+    }
     
     // MARK: - Internal Methods
+    
     /// Updates the game statistics based on the correctness of the answer,
     /// the response time, the scoring mechanism, and whether a special card was used.
     ///
-    /// For a correct answer, the score is increased based on the scoring strategy, and the perfect streak is incremented.
-    /// For an incorrect answer, a penalty is subtracted from the score (ensuring that it does not drop below zero)
-    /// and the perfect streak is reset.
+    /// For a correct answer, the score is increased based on the scoring strategy, and the streak is incremented.
+    /// For an incorrect answer, a penalty is subtracted from the score (ensuring that it does not drop below zero),
+    /// the streak is reset, and if the game is in survival mode, the survival state is updated.
+    ///
+    /// After processing the answer, the total answer count and accuracy are updated.
     ///
     /// - Parameters:
     ///   - correct: A Boolean indicating whether the answer was correct.
@@ -40,18 +62,48 @@ final class BaseGameStats: ObservableObject, AbstractGameStats {
                 isSpecialCard: isSpecialCard,
                 streaks: streaks
             )
+            correctAnswers += 1
         } else {
             streaks = 0
             score -= scoring.calculatePenalty()
             if score < 0 {
                 score = 0
             }
+            
+            updateSurvivalState()
         }
         
-        Logger.debug("[GameStats]: Updated stats for correct answer", metadata: [
+        totalAnswers += 1
+        accuracy = Double(correctAnswers) / Double(totalAnswers)
+        
+        Logger.debug("[GameStats]: Updated stats", metadata: [
             "score": String(score),
             "streak": String(streaks),
-            "responseTime": String(responseTime)
+            "accuracy": String(format: "%.2f", accuracy),
+            "correct": String(correct),
+            "totalAnswers": String(totalAnswers)
         ])
+    }
+    
+    // MARK: - Private Methods
+    
+    /// Updates the survival state if the game is in survival mode.
+    ///
+    /// This method decrements the number of lives in the survival state.
+    /// If lives reach zero or below, it logs a game-over message and sets the game's `isGameOver` flag.
+    private func updateSurvivalState() {
+        if let game = game,
+           game.state.currentMode == .survival,
+           var survivalState = game.state.survivalState {
+            survivalState.lives -= 1
+            game.state.survivalState = survivalState
+            
+            if survivalState.lives <= 0 {
+                Logger.debug("[GameStats]: Game over - no lives left")
+                DispatchQueue.main.async {
+                    game.state.isGameOver = true
+                }
+            }
+        }
     }
 }
