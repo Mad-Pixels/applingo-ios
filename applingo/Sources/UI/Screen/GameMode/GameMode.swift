@@ -100,7 +100,10 @@ struct GameMode: View {
             title: model.title,
             description: model.description,
             isSelected: selectedMode == mode,
-            onSelect: { showGameContent = true }
+            onSelect: {
+                showGameContent = true
+                selectedMode = mode
+            }
         )
         .padding(.horizontal, 16)
     }
