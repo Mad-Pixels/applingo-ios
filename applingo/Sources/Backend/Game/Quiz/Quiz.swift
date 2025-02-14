@@ -13,6 +13,10 @@ final class Quiz: ObservableObject, AbstractGame {
     internal let cache: QuizCache
     internal let theme: GameTheme
     
+    internal var isReadyToPlay: Bool {
+        true
+    }
+    
     @Published private(set) var statsObject = BaseGameStats()
     var stats: AbstractGameStats { statsObject }
     private(set) var state: GameState
@@ -54,15 +58,11 @@ final class Quiz: ObservableObject, AbstractGame {
         )
     }
     
-    /// Indicates whether the game is ready to play.
-    var isReadyToPlay: Bool {
-        true
-    }
-    
+    // MARK: - Internal Methods
     /// Validates the user's answer and returns the result.
     /// - Parameter answer: The user's answer as a String.
     /// - Returns: A GameValidationResult indicating whether the answer is correct.
-    func validateAnswer(_ answer: String) -> GameValidationResult {
+    internal func validateAnswer(_ answer: String) -> GameValidationResult {
         let result = validation.validate(answer: answer)
         validation.playFeedback(result)
         return result
@@ -73,27 +73,21 @@ final class Quiz: ObservableObject, AbstractGame {
     ///   - correct: A Boolean indicating if the answer was correct.
     ///   - responseTime: The time taken to answer.
     ///   - isSpecialCard: A Boolean indicating if a special card was used.
-    func updateStats(correct: Bool, responseTime: TimeInterval, isSpecialCard: Bool) {
+    internal func updateStats(correct: Bool, responseTime: TimeInterval, isSpecialCard: Bool) {
         if correct {
-            let points = scoring.calculateScore(
+            statsObject.score += scoring.calculateScore(
                 responseTime: responseTime,
                 isSpecialCard: isSpecialCard
             )
-            Logger.debug("[Quiz]: Adding points: \(points), current score: \(statsObject.score)")
-            statsObject.score += points
-            Logger.debug("[Quiz]: New score: \(statsObject.score)")
         } else {
-            let penalty = scoring.calculatePenalty()
-            Logger.debug("[Quiz]: Subtracting penalty: \(penalty), current score: \(statsObject.score)")
-            statsObject.score -= penalty
-            Logger.debug("[Quiz]: New score: \(statsObject.score)")
+            statsObject.score -= scoring.calculatePenalty()
         }
     }
     
     /// Returns a game mode model for the specified mode.
     /// - Parameter type: The game mode type.
     /// - Returns: A GameModeModel corresponding to the given mode.
-    func getModeModel(_ type: GameModeType) -> GameModeModel {
+    internal func getModeModel(_ type: GameModeType) -> GameModeModel {
         switch type {
         case .practice:
             return .practice(locale: GameModeLocale())
@@ -104,6 +98,7 @@ final class Quiz: ObservableObject, AbstractGame {
         }
     }
     
+    // MARK: - Invoke Methods
     /// Starts the game with the given mode.
     /// - Parameter mode: The selected game mode.
     func start(mode: GameModeType) {
