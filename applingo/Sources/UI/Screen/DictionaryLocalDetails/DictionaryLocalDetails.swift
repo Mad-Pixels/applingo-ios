@@ -13,6 +13,7 @@ struct DictionaryLocalDetails: View {
     @StateObject private var locale = DictionaryLocalDetailsLocale()
     @StateObject private var dictionaryAction = DictionaryAction()
     
+    // MARK: - Local State
     @State private var isEditing = false
     @State private var isPressedLeading = false
     @State private var isPressedTrailing = false

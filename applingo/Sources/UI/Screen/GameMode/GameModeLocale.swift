@@ -3,20 +3,18 @@ import Foundation
 /// Provides localized strings for the GameMode view.
 final class GameModeLocale: ObservableObject {
     
-    // MARK: - Private Strings
-    
-    private enum Strings {
-        static let title = "screen.gameMode.title"
-        static let subtitlePractice = "screen.gameMode.subtitle.practice"
-        static let subtitleSurvival = "screen.gameMode.subtitle.survival"
-        static let subtitleTime = "screen.gameMode.subtitle.time"
-        static let descriptionPractice = "screen.gameMode.description.practice"
-        static let descriptionSurvival = "screen.gameMode.description.survival"
-        static let descriptionTime = "screen.gameMode.description.time"
+    // MARK: - Localized Keys
+    private enum LocalizedKey: String {
+        case title = "screen.gameMode.title"
+        case subtitlePractice = "screen.gameMode.subtitle.practice"
+        case subtitleSurvival = "screen.gameMode.subtitle.survival"
+        case subtitleTime = "screen.gameMode.subtitle.time"
+        case descriptionPractice = "screen.gameMode.description.practice"
+        case descriptionSurvival = "screen.gameMode.description.survival"
+        case descriptionTime = "screen.gameMode.description.time"
     }
     
     // MARK: - Published Properties
-    
     @Published private(set) var screenTitle: String
     @Published private(set) var screenSubtitlePractice: String
     @Published private(set) var screenSubtitleSurvival: String
@@ -26,7 +24,6 @@ final class GameModeLocale: ObservableObject {
     @Published private(set) var screenDescriptionTime: String
     
     // MARK: - Initialization
-    
     init() {
         self.screenTitle = Self.localizedString(for: .title)
         self.screenSubtitlePractice = Self.localizedString(for: .subtitlePractice)
@@ -49,36 +46,12 @@ final class GameModeLocale: ObservableObject {
     }
     
     // MARK: - Localization Helper
-    
-    private enum LocalizedKey {
-        case title
-        case subtitlePractice
-        case subtitleSurvival
-        case subtitleTime
-        case descriptionPractice
-        case descriptionSurvival
-        case descriptionTime
-       
-        var key: String {
-            switch self {
-            case .title: return Strings.title
-            case .subtitlePractice: return Strings.subtitlePractice
-            case .subtitleSurvival: return Strings.subtitleSurvival
-            case .subtitleTime: return Strings.subtitleTime
-            case .descriptionPractice: return Strings.descriptionPractice
-            case .descriptionSurvival: return Strings.descriptionSurvival
-            case .descriptionTime: return Strings.descriptionTime
-            }
-        }
-    }
-    
     /// Returns a localized string for the specified key.
     private static func localizedString(for key: LocalizedKey) -> String {
-        return LocaleManager.shared.localizedString(for: key.key)
+        return LocaleManager.shared.localizedString(for: key.rawValue)
     }
     
     // MARK: - Notification Handler
-    
     @objc private func localeDidChange() {
         screenTitle = Self.localizedString(for: .title)
         screenSubtitlePractice = Self.localizedString(for: .subtitlePractice)

@@ -3,29 +3,21 @@ import SwiftUI
 /// A view that displays the game mode selection screen.
 /// Users can choose a mode (e.g. practice, survival, time attack) before starting the game.
 struct GameMode: View {
-    
-    
-    
-    
     // MARK: - Properties
-    
-    /// The game instance conforming to AbstractGame protocol.
     let game: any AbstractGame
     
-    /// Binding flag to control the presentation of the GameMode view.
+    // MARK: - State Objects
+    @StateObject private var style: GameModeStyle
+    @StateObject private var locale: GameModeLocale = GameModeLocale()
     @Binding var isPresented: Bool
     
-    /// Localization object for game mode texts.
-    private let locale: GameModeLocale = GameModeLocale()
-    
-    @StateObject private var style: GameModeStyle
+    // MARK: - Local State
     @State private var selectedMode: GameModeType = .practice
     @State private var isPressedTrailing = false
     @State private var showGameContent = false
     @State private var isAnimating = false
     
     // MARK: - Initializer
-    
     /// Initializes the GameMode view.
     /// - Parameters:
     ///   - game: The game instance.
@@ -43,17 +35,29 @@ struct GameMode: View {
     }
     
     // MARK: - Body
-    
     var body: some View {
-        BaseScreen(screen: .GameMode, alignment: .center) {
+        BaseScreen(
+            screen: .GameMode,
+            alignment: .center
+        ) {
             ZStack {
-                // Background view using a gradient or pattern defined in style.colors.
                 GameModeBackground(style.colors)
                     .edgesIgnoringSafeArea(.all)
                 
                 VStack(spacing: style.spacing) {
-                    titleView
-                    modesListView
+                    Text(locale.screenTitle.uppercased())
+                        .font(style.titleStyle.font)
+                        .foregroundColor(style.titleStyle.color)
+                        .opacity(isAnimating ? 1 : 0)
+                        .offset(y: isAnimating ? 0 : 20)
+                    
+                    VStack(spacing: style.cardSpacing) {
+                        ForEach(game.availableModes, id: \.self) { mode in
+                            modeCard(for: mode)
+                        }
+                    }
+                    .padding(.vertical, 24)
+                    .glassBackground()
                 }
                 .padding(style.padding)
             }
@@ -68,13 +72,11 @@ struct GameMode: View {
                 }
             }
             .onAppear {
-                // Animate the appearance of title and cards.
                 withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
                     isAnimating = true
                 }
             }
             
-            // Present game content when a mode is selected.
             if showGameContent {
                 GameModeViewGame(
                     game: game,
@@ -85,30 +87,7 @@ struct GameMode: View {
         }
     }
     
-    // MARK: - Subviews
-    
-    /// The title view displaying the mode selection prompt.
-    private var titleView: some View {
-        Text(locale.screenTitle.uppercased())
-            .font(style.titleStyle.font)
-            .foregroundColor(style.titleStyle.color)
-            .opacity(isAnimating ? 1 : 0)
-            .offset(y: isAnimating ? 0 : 20)
-    }
-    
-    /// A list of available game mode cards.
-    private var modesListView: some View {
-        VStack(spacing: style.cardSpacing) {
-            ForEach(game.availableModes, id: \.self) { mode in
-                modeCard(for: mode)
-            }
-        }
-        .padding(.vertical, 24)
-        .glassBackground()
-    }
-    
-    // MARK: - Helper Methods
-    
+    // MARK: - Private Methods
     /// Returns a card view for a given game mode.
     /// - Parameter mode: The game mode type.
     /// - Returns: A view representing the game mode card.
@@ -132,8 +111,6 @@ struct GameMode: View {
     private func selectMode(_ mode: GameModeType) {
         selectedMode = mode
         game.start(mode: mode)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-            showGameContent = true
-        }
+        showGameContent = true
     }
 }

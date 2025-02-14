@@ -2,9 +2,7 @@ import SwiftUI
 
 /// Defines styling properties for the GameMode view.
 final class GameModeStyle: ObservableObject {
-    
     // MARK: - Properties
-    
     let backgroundColor: Color
     let padding: EdgeInsets
     let spacing: CGFloat
@@ -12,6 +10,7 @@ final class GameModeStyle: ObservableObject {
     let titleStyle: TextStyle
     let colors: [Color]
     
+    // MARK: - Nested Types
     /// Structure to define text styling.
     struct TextStyle {
         let font: Font
@@ -19,14 +18,20 @@ final class GameModeStyle: ObservableObject {
     }
     
     // MARK: - Initializer
-    
+    /// Initializes a new instance of `GameModeStyle`.
+    /// - Parameters:
+    ///   - backgroundColor: The background color of the view.
+    ///   - padding: The overall padding around the content.
+    ///   - spacing: The spacing between individual UI elements.
+    ///   - cardSpacing: The spacing between cards.
+    ///   - titleStyle: The style applied to the title text.
+    ///   - colors: A set of colors used for view accents.
     init(
         backgroundColor: Color,
         padding: EdgeInsets,
         spacing: CGFloat,
         cardSpacing: CGFloat,
         titleStyle: TextStyle,
-        pattern: DynamicPatternModel,
         colors: [Color]
     ) {
         self.backgroundColor = backgroundColor
@@ -39,9 +44,12 @@ final class GameModeStyle: ObservableObject {
 }
 
 // MARK: - Themed Style Extension
-
 extension GameModeStyle {
     /// Returns a themed style based on the current app theme and game theme.
+    /// - Parameters:
+    ///   - theme: The current application theme.
+    ///   - gameTheme: The specific game theme.
+    /// - Returns: A new instance of `GameModeStyle` configured for the given themes.
     static func themed(_ theme: AppTheme, gameTheme: GameTheme) -> GameModeStyle {
         GameModeStyle(
             backgroundColor: theme.backgroundPrimary,
@@ -52,7 +60,6 @@ extension GameModeStyle {
                 font: .system(.title, design: .rounded).weight(.bold),
                 color: theme.textPrimary
             ),
-            pattern: theme.mainPattern,
             colors: [gameTheme.main, gameTheme.dark, gameTheme.light]
         )
     }
