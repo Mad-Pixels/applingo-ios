@@ -6,16 +6,20 @@ import SwiftUI
 /// The implementation ensures that the score never falls below zero.
 final class BaseGameStats: ObservableObject, AbstractGameStats {
     // MARK: - Published Properties
-    /// The current game score.
-    @Published var totalScore: Int = 0
     /// The player's accuracy as a percentage.
     @Published var accuracy: Double = 0
     /// The number of consecutive correct answers.
     @Published var streaks: Int = 0
+    /// Score from the last answer.
+    @Published var score: Int = 0
     /// The average time taken by the player to respond.
     @Published var averageResponseTime: TimeInterval = 0
     /// The total number of answers given.
     @Published var totalAnswers: Int = 0
+    /// The current game score.
+    @Published var totalScore: Int = 0
+    /// Total average time taken by the player to respond during the game.
+    @Published var totalAverageResponseTime: TimeInterval = 0
     /// The number of correct answers given.
     @Published var correctAnswers: Int = 0
     
