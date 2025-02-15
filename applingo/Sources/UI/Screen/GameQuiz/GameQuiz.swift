@@ -40,7 +40,7 @@ struct GameQuiz: View {
                 
                 
                 VStack(spacing: 20) {
-                    GameScore(score: game.stats.score)
+                    //GameScore(score: game.stats.score)
                     if let card = viewModel.currentCard {
                         VStack(spacing: style.optionsSpacing) {
                             // Question Card

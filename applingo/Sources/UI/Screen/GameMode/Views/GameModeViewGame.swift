@@ -19,15 +19,9 @@ struct GameModeViewGame: View {
             game.makeView()
                 .toolbarBackground(.clear, for: .navigationBar)
                 .toolbar {
-//                    ToolbarItem(placement: .navigationBarLeading) {
-//                        ButtonNav(
-//                            style: .back(ThemeManager.shared.currentThemeStyle),
-//                            onTap: {
-//                                showGameContent = false
-//                            },
-//                            isPressed: $isPressedLeading
-//                        )
-//                    }
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        GameScore(stats: game.stats)
+                    }
                     ToolbarItem(placement: .principal) {
                         GameTab(
                             game: game,
