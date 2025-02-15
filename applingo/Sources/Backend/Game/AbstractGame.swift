@@ -15,7 +15,7 @@ protocol AbstractGame {
     /// The game validation object.
     var validation: any AbstractGameValidation { get }
     /// The game statistics object.
-    var stats: any AbstractGameStats { get }
+    var stats: GameStats { get }
     /// The available game modes.
     var availableModes: [GameModeType] { get }
     /// The scoring mechanism.

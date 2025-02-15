@@ -10,7 +10,7 @@ import Combine
 /// - Managing a cache of quiz data
 /// - Maintaining game state and statistics
 final class Quiz: ObservableObject, AbstractGame {
-    @Published private(set) var stats: AbstractGameStats = BaseGameStats()
+    @Published private(set) var stats = GameStats()
     @Published private(set) var isLoadingCache: Bool = false
     
     // MARK: - Properties
@@ -69,7 +69,7 @@ final class Quiz: ObservableObject, AbstractGame {
         self.cache = cacheGetter
         
         self.state = GameState()
-        self.stats = BaseGameStats(game: self)
+        self.stats = GameStats(game: self)
         
         cache.$isLoadingCache
             .sink { [weak self] isLoading in

@@ -3,13 +3,13 @@ import SwiftUI
 struct GameTab: View {
     @StateObject private var locale = GameTabLocale()
     @ObservedObject var game: Quiz
-    @ObservedObject var stats: BaseGameStats // добавляем это
+    @ObservedObject var stats: GameStats // добавляем это
     let style: GameTabStyle
     
     init(game: Quiz, style: GameTabStyle) {
         self.game = game
         self.style = style
-        self._stats = ObservedObject(wrappedValue: game.stats as! BaseGameStats) // и это
+        self._stats = ObservedObject(wrappedValue: game.stats) // и это
     }
    
     var body: some View {

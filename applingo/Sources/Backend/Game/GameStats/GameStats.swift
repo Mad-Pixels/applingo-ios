@@ -4,7 +4,7 @@ import SwiftUI
 /// This class tracks key metrics such as score, accuracy, streaks, and average response time,
 /// and provides a method to update these statistics based on the outcome of a game action.
 /// The implementation ensures that the score never falls below zero.
-final class BaseGameStats: ObservableObject, AbstractGameStats {
+final class GameStats: ObservableObject {
     // MARK: - Published Properties
     /// The player's accuracy as a percentage.
     @Published var accuracy: Double = 0
