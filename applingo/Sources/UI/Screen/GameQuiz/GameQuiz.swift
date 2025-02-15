@@ -1,79 +1,49 @@
 import SwiftUI
 
-/// A view that presents a quiz game interface.
-/// It generates quiz cards based on a word cache and handles user answers.
+/// A view that presents a quiz game interface by generating quiz cards from a word cache and handling user answers.
+///
+/// The `GameQuiz` view uses a dedicated view model (`QuizViewModel`) to encapsulate the logic for generating quiz cards
+/// and processing user responses. It observes the state of the underlying quiz game model (`Quiz`) to react to changes such as
+/// cache loading and game over conditions. When a new card is generated, it displays the question and options,
+/// and upon the user selecting an answer, the view model processes the answer, updates game statistics, and eventually
+/// generates a new quiz card. If the game state indicates that the game is over, the view dismisses itself.
+///
+/// - Environment:
+///   - `dismiss`: A function that dismisses the current view, typically used when the game is over.
+/// - State Objects:
+///   - `style`: The visual style for the quiz interface.
+///   - `locale`: Provides localized strings for the quiz view.
+///   - `viewModel`: The view model that handles quiz card generation and answer processing.
+/// - Observed Objects:
+///   - `game`: The quiz game model that holds the core game logic and state.
 struct GameQuiz: View {
     @Environment(\.dismiss) private var dismiss
-    @ObservedObject var game: Quiz
-    
-    // MARK: - State Objects
     @StateObject private var style: GameQuizStyle
     @StateObject private var locale = GameQuizLocale()
+    @StateObject private var viewModel: QuizViewModel
+    @ObservedObject var game: Quiz
     
-    // MARK: - Local State
-    @State private var currentCard: QuizModelCard?
-    @State private var cardStartTime: Date?
-    
-    // MARK: - Initializer
-    /// Initializes the GameQuiz view.
+    /// Initializes the `GameQuiz` view with the given quiz game model and an optional style configuration.
+    ///
     /// - Parameters:
-    ///   - game: The quiz game model.
-    ///   - style: Optional style configuration; if nil, a themed style is applied.
+    ///   - game: The quiz game model containing the game logic, state, and cache.
+    ///   - style: An optional style configuration; if nil, a default themed style is applied.
     init(game: Quiz, style: GameQuizStyle? = nil) {
         _style = StateObject(wrappedValue: style ?? .themed(ThemeManager.shared.currentThemeStyle))
+        _viewModel = StateObject(wrappedValue: QuizViewModel(game: game))
         self.game = game
     }
     
-    // MARK: - Methods
-    /// Generates a new quiz card using random words from the cache.
-    /// The method ensures that four unique words are selected based on their front/back texts.
-    private func generateCard() {
-        guard let items = game.getItems(4) as? [DatabaseModelWord] else {
-            Logger.debug("[GameQuiz]: Failed to get items, waiting for cache")
-            return
-        }
-        let correctWord = items[0]
-        game.removeItem(correctWord)
-            
-        currentCard = QuizModelCard(
-            word: correctWord,
-            allWords: items,
-            showingFront: Bool.random()
-        )
-        if let validation = game.validation as? QuizValidation,
-            let card = currentCard {
-            validation.setCurrentCard(currentCard: card, currentWord: correctWord)
-        }
-        cardStartTime = Date()
-    }
-    
-    /// Handles the user's answer.
-    /// - Parameter answer: The answer text provided by the user.
-    private func handleAnswer(_ answer: String) {
-        let responseTime = cardStartTime.map { Date().timeIntervalSince($0) } ?? 0
-        let result = game.validateAnswer(answer)
-        
-        game.updateStats(
-            correct: result == .correct,
-            responseTime: responseTime,
-            isSpecialCard: false
-        )
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            generateCard()
-        }
-    }
-    
-    // MARK: - Body
     var body: some View {
         ZStack {
             VStack(spacing: 20) {
-                if let card = currentCard {
+                if let card = viewModel.currentCard {
                     Text(card.question)
                         .font(.title)
                         .padding()
                     
                     ForEach(card.options, id: \.self) { option in
-                        Button(action: { handleAnswer(option) }) {
+                        Button(action: { viewModel.handleAnswer(option) }) {
                             Text(option)
                                 .padding()
                                 .frame(maxWidth: .infinity)
@@ -84,31 +54,26 @@ struct GameQuiz: View {
                 } else {
                     Text(verbatim: "Loading...")
                     if game.isLoadingCache {
-                                            ProgressView()
-                                        }
+                        ProgressView()
+                    }
                 }
             }
             .padding()
         }
         .onAppear {
-            generateCard()
+            viewModel.generateCard()
         }
-        // Если кэш обновился и содержит не менее 4 слов, пытаемся сгенерировать карточку.
         .onReceive(game.$isLoadingCache) { isLoading in
-                    Logger.debug("[GameQuiz]: Cache loading state changed", metadata: [
-                        "isLoading": String(isLoading)
-                    ])
-                    
-                    if !isLoading && currentCard == nil {
-                        generateCard()
-                    }
+            if !isLoading && viewModel.currentCard == nil {
+                viewModel.generateCard()
+            }
+        }
+        .onReceive(game.state.$isGameOver) { isGameOver in
+            if isGameOver {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    dismiss()
                 }
-                .onReceive(game.state.$isGameOver) { isGameOver in
-                    if isGameOver {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                            dismiss()
-                        }
-                    }
-                }
+            }
+        }
     }
 }
