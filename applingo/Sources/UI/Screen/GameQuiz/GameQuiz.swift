@@ -10,7 +10,6 @@ struct GameQuiz: View {
     @StateObject private var style: GameQuizStyle
     @StateObject private var locale = GameQuizLocale()
     // Изменён тип с BaseGameCache<...> на конкретный QuizCache
-    @EnvironmentObject var cacheGetter: QuizCache
     @State private var currentCard: QuizModelCard?
     @State private var cardStartTime: Date?
     
@@ -31,44 +30,34 @@ struct GameQuiz: View {
     /// Generates a new quiz card using random words from the cache.
     /// The method ensures that four unique words are selected based on their front/back texts.
     private func generateCard() {
-        Logger.debug("[Quiz]: Attempting to generate card", metadata: [
-            "cacheCount": String(cacheGetter.cache.count),
-            "hasCurrentCard": String(currentCard != nil)
-        ])
-        
-        // Получаем слова из кэша
-        guard let items = cacheGetter.getItems(4) else {
-            Logger.debug("[Quiz]: Failed to get items from cache")
-            // Инициализируем кеш и ждем обновления через onReceive
-            if !cacheGetter.isLoadingCache {  // Проверяем что не в процессе загрузки
-                cacheGetter.initialize()
+            Logger.debug("[GameQuiz]: Attempting to generate card", metadata: [
+                "isLoading": String(game.isLoadingCache)
+            ])
+            
+            // Получаем слова из игры
+            guard let items = game.getItems(4) as? [DatabaseModelWord] else {
+                Logger.debug("[GameQuiz]: Failed to get items, waiting for cache")
+                return
             }
-            return
+            
+            let correctWord = items[0]
+            game.removeItem(correctWord)
+            
+            currentCard = QuizModelCard(
+                word: correctWord,
+                allWords: items,
+                showingFront: Bool.random()
+            )
+            
+            if let validation = game.validation as? QuizValidation,
+               let card = currentCard {
+                validation.setCurrentCard(currentCard: card, currentWord: correctWord)
+            }
+            
+            cardStartTime = Date()
+            
+            Logger.debug("[GameQuiz]: Card generated successfully")
         }
-        
-        let correctWord = items[0]
-        let showingFront = Bool.random()
-        
-        cacheGetter.removeItem(correctWord)
-        
-        currentCard = QuizModelCard(
-            word: correctWord,
-            allWords: items,
-            showingFront: showingFront
-        )
-        
-        if let validation = game.validation as? QuizValidation,
-           let card = currentCard {
-            validation.setCurrentCard(currentCard: card, currentWord: correctWord)
-        }
-        
-        cardStartTime = Date()
-        
-        Logger.debug("[Quiz]: Card generated", metadata: [
-            "subcategory": correctWord.subcategory,
-            "correctWord": correctWord.frontText
-        ])
-    }
     
     /// Handles the user's answer.
     /// - Parameter answer: The answer text provided by the user.
@@ -109,11 +98,9 @@ struct GameQuiz: View {
                     }
                 } else {
                     Text(verbatim: "Loading...")
-                    Text("Cache size: \(cacheGetter.cache.count)")
-                        .font(.caption)
-                    if cacheGetter.isLoadingCache {
-                        ProgressView()
-                    }
+                    if game.isLoadingCache {
+                                            ProgressView()
+                                        }
                 }
             }
             .padding()
@@ -122,19 +109,17 @@ struct GameQuiz: View {
             generateCard()
         }
         // Если кэш обновился и содержит не менее 4 слов, пытаемся сгенерировать карточку.
-        .onReceive(cacheGetter.$cache) { newCache in
-            Logger.debug("[Quiz]: Cache updated", metadata: [
-                "newCacheCount": String(newCache.count),
-                "hasCurrentCard": String(currentCard != nil)
-            ])
-            if currentCard == nil && newCache.count >= 4 {
-                generateCard()
-            }
-        }
-///
-        .onReceive(game.state.$isGameOver) { isGameOver in
+        .onReceive(game.$isLoadingCache) { isLoading in
+                    Logger.debug("[GameQuiz]: Cache loading state changed", metadata: [
+                        "isLoading": String(isLoading)
+                    ])
+                    
+                    if !isLoading && currentCard == nil {
+                        generateCard()
+                    }
+                }
+                .onReceive(game.state.$isGameOver) { isGameOver in
                     if isGameOver {
-                        // Добавляем небольшую задержку для плавности
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                             dismiss()
                         }

@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 
 /// A quiz game class that implements game logic, answer validation, score calculation, and cache management.
 ///
@@ -9,6 +10,9 @@ import SwiftUI
 /// - Managing a cache of quiz data
 /// - Maintaining game state and statistics
 final class Quiz: ObservableObject, AbstractGame {
+    @Published private(set) var statsObject = BaseGameStats()
+    @Published private(set) var isLoadingCache: Bool = false
+    
     // MARK: - Properties
     /// The available game modes for the quiz.
     internal let availableModes: [GameModeType] = [.practice, .survival, .time]
@@ -23,7 +27,6 @@ final class Quiz: ObservableObject, AbstractGame {
     internal let cache: QuizCache
     /// The visual theme for the quiz.
     internal let theme: GameTheme
-    
     /// Indicates whether the game is ready to be played.
     internal var isReadyToPlay: Bool {
         true
@@ -31,14 +34,13 @@ final class Quiz: ObservableObject, AbstractGame {
     
     /// A timer used in certain game modes (not directly used here; managed by game state).
     private var gameTimer: GameStateUtilsTimer?
+    /// The current state of the game, including mode-specific state such as survival lives or remaining time.
+    private(set) var state: GameState
     
-    /// The game statistics object, tracking score, accuracy, streaks, etc.
-    @Published private(set) var statsObject = BaseGameStats()
     /// An abstract reference to game statistics.
     var stats: AbstractGameStats { statsObject }
     
-    /// The current state of the game, including mode-specific state such as survival lives or remaining time.
-    private(set) var state: GameState
+    private var cancellables = Set<AnyCancellable>()
     
     // MARK: - Initializer
     /// Initializes a new instance of the `Quiz` game with dependency injection.
@@ -69,10 +71,22 @@ final class Quiz: ObservableObject, AbstractGame {
         self.validation = validation
         self.cache = cacheGetter
         
-        // Initialize the game state.
         self.state = GameState()
-        // Pass self to BaseGameStats for survival mode updates.
         self.statsObject = BaseGameStats(game: self)
+        
+        cache.$isLoadingCache
+            .sink { [weak self] isLoading in
+                self?.isLoadingCache = isLoading
+            }
+            .store(in: &cancellables)
+                    
+        cache.$cache
+            .sink { words in
+                Logger.debug("[Quiz]: Cache updated", metadata: [
+                    "count": String(words.count)
+                ])
+            }
+            .store(in: &cancellables)
     }
     
     // MARK: - View Generation
@@ -131,6 +145,45 @@ final class Quiz: ObservableObject, AbstractGame {
             return .survival(locale: GameModeLocale())
         case .time:
             return .time(locale: GameModeLocale())
+        }
+    }
+    
+    /// Retrieves a specified number of items from the cache.
+    ///
+    /// This function delegates the request to the underlying cache object,
+    /// returning an optional array of items that conform to the `Hashable` protocol.
+    /// If the cache does not contain enough items, it may return nil.
+    ///
+    /// - Parameter count: The number of items to retrieve from the cache.
+    /// - Returns: An optional array of items conforming to `Hashable`.
+    internal func getItems(_ count: Int) -> [any Hashable]? {
+        Logger.debug("[Quiz]: Requesting items", metadata: [
+            "count": String(count),
+            "isLoading": String(isLoadingCache),
+            "cacheSize": String(cache.cache.count)
+        ])
+        let items = cache.getItems(count)
+        
+        if items == nil && !isLoadingCache {
+            cache.initialize()
+        }
+        return items
+    }
+
+    /// Removes the specified item from the cache, if it is a `DatabaseModelWord`.
+    ///
+    /// This function checks if the provided item can be cast to a `DatabaseModelWord`.
+    /// If so, it delegates the removal to the underlying cache object.
+    ///
+    /// - Parameter item: The item to remove, which must conform to `Hashable`.
+    internal func removeItem(_ item: any Hashable) {
+        if let word = item as? DatabaseModelWord {
+            cache.removeItem(word)
+            
+            Logger.debug("[Quiz]: Removed item from cache", metadata: [
+                "word": word.frontText,
+                "remaining": String(cache.cache.count)
+            ])
         }
     }
     

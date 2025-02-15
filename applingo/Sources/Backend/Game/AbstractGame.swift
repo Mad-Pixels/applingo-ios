@@ -7,7 +7,6 @@ import SwiftUI
 /// updating game stats, validating answers, managing game modes, controlling game flow,
 /// and generating the game view.
 protocol AbstractGame {
-    
     // MARK: - Associated Types
     /// The type of the validation answer.
     associatedtype ValidationAnswer
@@ -48,6 +47,18 @@ protocol AbstractGame {
     /// - Parameter type: The game mode type.
     /// - Returns: A GameModeModel for the given mode.
     func getModeModel(_ type: GameModeType) -> GameModeModel
+    
+    /// Retrieves items for the game.
+    /// - Parameter count: Number of items to retrieve.
+    /// - Returns: Array of items if available, nil otherwise.
+    func getItems(_ count: Int) -> [any Hashable]?
+    
+    /// Removes an item from the game's cache.
+    /// - Parameter item: The item to remove.
+    func removeItem(_ item: any Hashable)
+    
+    /// Indicates whether the game is currently loading cache.
+    var isLoadingCache: Bool { get }
     
     /// Starts the game with the specified mode.
     /// - Parameter mode: The selected game mode.

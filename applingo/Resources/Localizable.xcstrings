@@ -130,9 +130,6 @@
         }
       }
     },
-    "Cache size: %lld" : {
-
-    },
     "component.GameTab.description.score" : {
       "extractionState" : "manual",
       "localizations" : {
