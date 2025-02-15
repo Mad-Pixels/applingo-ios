@@ -2,7 +2,7 @@ import Foundation
 
 /// A cache for the Quiz game that inherits from BaseGameCache.
 /// It overrides the grouping and validation logic to suit quiz-specific requirements.
-final class QuizCache: BaseGameCache<DatabaseModelWord, QuizModelCard> {
+final class QuizCache: GameCache<DatabaseModelWord, QuizModelCard> {
     // MARK: - Methods
     /// Returns the grouping key for a given word.
     /// - Parameter item: A DatabaseModelWord instance.

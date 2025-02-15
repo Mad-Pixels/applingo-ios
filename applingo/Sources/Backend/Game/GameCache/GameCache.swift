@@ -2,7 +2,7 @@ import Combine
 
 /// A base cache class for game data that supports customizable grouping and validation via closures.
 /// This class observes an underlying WordCache and publishes its own cache state.
-class BaseGameCache<T: Hashable, C>: AbstractGameCache, ObservableObject {
+class GameCache<T: Hashable, C>: ObservableObject {
     typealias CacheItem = T
     typealias CardItem = C
 
