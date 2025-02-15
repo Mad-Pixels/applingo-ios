@@ -9,7 +9,7 @@ protocol AbstractGameStats {
     /// The number of consecutive correct answers (streaks/combo).
     var streaks: Int { get set }
     /// Score from the last answer.
-    var score: Int { get set }
+    var score: GameScoringScoreAnswerModel { get set }
     /// The average time taken by the player to respond, measured in seconds.
     var averageResponseTime: TimeInterval { get set }
     /// Total average time taken by the player to respond during the game.

@@ -11,7 +11,7 @@ final class BaseGameStats: ObservableObject, AbstractGameStats {
     /// The number of consecutive correct answers.
     @Published var streaks: Int = 0
     /// Score from the last answer.
-    @Published var score: Int = 0
+    @Published var score: GameScoringScoreAnswerModel = GameScoringScoreAnswerModel(value: 0, type: .regular)
     /// The average time taken by the player to respond.
     @Published var averageResponseTime: TimeInterval = 0
     /// The total number of answers given.
@@ -57,19 +57,32 @@ final class BaseGameStats: ObservableObject, AbstractGameStats {
     ) {
         if correct {
             streaks += 1
-            totalScore += scoring.calculateScore(
+            
+            let basePoints = scoring.calculateScore(
                 responseTime: responseTime,
                 isSpecialCard: isSpecialCard,
                 streaks: streaks
             )
+            var answerScoreValue = basePoints
+            var scoreType: ScoreType = .regular
+            
+            if isSpecialCard {
+                scoreType = .specialCard
+            } else if streaks > 5 {
+                scoreType = .streakBonus
+            }
+            score = GameScoringScoreAnswerModel(value: answerScoreValue, type: scoreType)
+            totalScore += answerScoreValue
             correctAnswers += 1
         } else {
             streaks = 0
-            totalScore -= scoring.calculatePenalty()
+            
+            let penaltyPoints = scoring.calculatePenalty()
+            totalScore -= penaltyPoints
             if totalScore < 0 {
                 totalScore = 0
             }
-            
+            score = GameScoringScoreAnswerModel(value: -penaltyPoints, type: .regular)
             updateSurvivalState()
         }
         
