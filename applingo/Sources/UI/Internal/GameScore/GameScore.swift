@@ -12,9 +12,9 @@ struct GameScore: View {
     var body: some View {
         HStack() {
             // Иконка, соответствующая типу начисления очков
-            Image(score.type.iconName)
+            Image(systemName: score.type.iconName)
                 .resizable()
-                .frame(width: 20, height: 20)
+                .frame(width: 64, height: 64)
             
             // Текст, показывающий знак и абсолютное значение очков
             Text("\(score.sign)\(abs(score.value))")

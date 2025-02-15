@@ -53,26 +53,14 @@ final class BaseGameStats: ObservableObject, AbstractGameStats {
     final internal func updateGameStats(correct: Bool,
                                         responseTime: TimeInterval,
                                         scoring: AbstractGameScoring,
-                                        isSpecialCard: Bool
-    ) {
+                                        isSpecialCard: Bool) {
         if correct {
             streaks += 1
             
-            let basePoints = scoring.calculateScore(
-                responseTime: responseTime,
-                isSpecialCard: isSpecialCard,
-                streaks: streaks
-            )
-            var answerScoreValue = basePoints
-            var scoreType: ScoreType = .regular
-            
-            if isSpecialCard {
-                scoreType = .specialCard
-            } else if streaks > 5 {
-                scoreType = .streakBonus
-            }
-            score = GameScoringScoreAnswerModel(value: answerScoreValue, type: scoreType)
-            totalScore += answerScoreValue
+            // Получаем модель начисления очков с уже определённым типом
+            let scoreModel = scoring.calculateScore(responseTime: responseTime, isSpecialCard: isSpecialCard, streaks: streaks)
+            score = scoreModel
+            totalScore += scoreModel.value
             correctAnswers += 1
         } else {
             streaks = 0
@@ -82,7 +70,8 @@ final class BaseGameStats: ObservableObject, AbstractGameStats {
             if totalScore < 0 {
                 totalScore = 0
             }
-            score = GameScoringScoreAnswerModel(value: -penaltyPoints, type: .regular)
+            // Используем тип penalty для отрицательного результата
+            score = GameScoringScoreAnswerModel(value: -penaltyPoints, type: .penalty)
             updateSurvivalState()
         }
         

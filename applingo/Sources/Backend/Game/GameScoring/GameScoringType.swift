@@ -1,33 +1,26 @@
-/// An enumeration that defines the various types of score components in the game.
-///
-/// Each case represents a distinct scoring category that may influence the visual representation
-/// (such as an icon) and the calculation logic associated with the score.
 enum ScoreType {
-    /// Represents the base or regular score for a correct answer.
-    case regular
-    
-    /// Represents an additional bonus awarded for achieving a series of consecutive correct answers.
-    case streakBonus
-    
-    /// Represents a bonus awarded for providing a fast response.
-    case fastResponse
-    
-    /// Represents a bonus awarded when a special card is used during the game.
-    case specialCard
+    case regular        // Обычные очки
+    case streakBonus    // Бонус за серию правильных ответов
+    case fastResponse   // Бонус за быстрый ответ
+    case specialCard    // Бонус за использование специальной карточки
+    case penalty        // Штраф за неправильный ответ
+    case multiple       // Ситуация, когда начислено несколько бонусов одновременно
 
-    /// A computed property that returns the name of the icon associated with each score type.
-    ///
-    /// Use this property to retrieve the appropriate icon identifier for UI display.
+    /// Возвращает имя иконки для данного типа.
     var iconName: String {
         switch self {
         case .regular:
-            return "regular_score_icon"
+            return "star.fill"
         case .streakBonus:
-            return "streak_bonus_icon"
+            return "flame.fill"
         case .fastResponse:
-            return "fast_response_icon"
+            return "bolt.fill"
         case .specialCard:
-            return "special_card_icon"
+            return "sparkles"
+        case .penalty:
+            return "minus.circle.fill"
+        case .multiple:
+            return "plus.circle.fill"
         }
     }
 }

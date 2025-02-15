@@ -6,6 +6,6 @@ protocol AbstractGameScoring {
     var quickResponseBonus: Int { get }
     var specialCardBonus: Int { get }
     
-    func calculateScore(responseTime: TimeInterval, isSpecialCard: Bool, streaks: Int) -> Int
+    func calculateScore(responseTime: TimeInterval, isSpecialCard: Bool, streaks: Int) -> GameScoringScoreAnswerModel
     func calculatePenalty() -> Int
 }
