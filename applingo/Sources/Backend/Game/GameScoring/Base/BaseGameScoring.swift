@@ -37,36 +37,4 @@ final class BaseGameScoring: AbstractGameScoring {
         Logger.debug("[Scoring]: Calculated penalty: \(baseScore / 2)")
         return baseScore / 2
     }
-    
-    func getScoreChanges(responseTime: TimeInterval, isSpecialCard: Bool, isCorrect: Bool, streaks: Int) -> ScoreChange {
-        if isCorrect {
-            var bonusTypes: [ScoreChange.BonusType] = []
-            var total = baseScore
-            
-            if responseTime <= quickResponseThreshold {
-                total += quickResponseBonus
-                bonusTypes.append(.quickResponse)
-            }
-            
-            if isSpecialCard {
-                total += specialCardBonus
-                bonusTypes.append(.specialCard)
-            }
-            
-            if streaks > 0 {
-                total += streaks
-                bonusTypes.append(.streak)
-            }
-            
-            return ScoreChange(
-                totalValue: total,
-                bonusTypes: bonusTypes
-            )
-        } else {
-            return ScoreChange(
-                totalValue: -calculatePenalty(),
-                bonusTypes: []
-            )
-        }
-    }
 }

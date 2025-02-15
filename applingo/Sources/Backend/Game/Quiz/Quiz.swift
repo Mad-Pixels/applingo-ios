@@ -10,7 +10,6 @@ import Combine
 /// - Managing a cache of quiz data
 /// - Maintaining game state and statistics
 final class Quiz: ObservableObject, AbstractGame {
-    @Published private(set) var scoreChangeManager = ScoreChangeManager()
     @Published private(set) var statsObject = BaseGameStats()
     @Published private(set) var isLoadingCache: Bool = false
     
@@ -124,18 +123,6 @@ final class Quiz: ObservableObject, AbstractGame {
     ///   - responseTime: The time taken to provide the answer.
     ///   - isSpecialCard: A Boolean indicating if a special card was involved in the answer.
     internal func updateStats(correct: Bool, responseTime: TimeInterval, isSpecialCard: Bool) {
-        // Получаем изменение очков с бонусами
-        let change = scoring.getScoreChanges(
-            responseTime: responseTime,
-            isSpecialCard: isSpecialCard,
-            isCorrect: correct,
-            streaks: statsObject.streaks  // Передаем текущее значение streaks
-        )
-        
-        // Добавляем в менеджер
-        scoreChangeManager.addChange(change)
-        
-        // Обновляем статистику
         statsObject.updateGameStats(
             correct: correct,
             responseTime: responseTime,

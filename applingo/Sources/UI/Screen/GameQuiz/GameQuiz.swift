@@ -40,12 +40,6 @@ struct GameQuiz: View {
                 
                 
                 VStack(spacing: 20) {
-                    Spacer()
-                                    ScoreChangesContainer(
-                                        manager: game.scoreChangeManager,
-                                        style: .themed(ThemeManager.shared.currentThemeStyle)
-                                    )
-                                    .padding(.bottom, 100)
                     if let card = viewModel.currentCard {
                         VStack(spacing: style.optionsSpacing) {
                             // Question Card
