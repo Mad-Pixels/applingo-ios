@@ -4,8 +4,6 @@ import SwiftUI
 /// Types conforming to `AbstractGameStats` should maintain metrics such as score, accuracy,
 /// perfect streaks, and average response time, and provide a mechanism to update these values based on game events.
 protocol AbstractGameStats {
-    /// The current game score.
-    var score: Int { get set }
     /// The player's accuracy, typically represented as a percentage.
     var accuracy: Double { get set }
     /// The number of consecutive correct answers (streaks/combo).
@@ -14,6 +12,8 @@ protocol AbstractGameStats {
     var averageResponseTime: TimeInterval { get set }
     /// The total answers count.
     var totalAnswers: Int { get set }
+    /// The current game total score.
+    var totalScore: Int { get set }
     /// The correct answers count.
     var correctAnswers: Int { get set }
     

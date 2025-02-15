@@ -16,7 +16,7 @@ struct GameTab: View {
         SectionBody {
             HStack(spacing: style.spacing) {
                 GameTabViewScore(
-                    score: stats.score, // теперь берем из stats
+                    score: stats.totalScore, // теперь берем из stats
                     style: style,
                     locale: locale
                 )

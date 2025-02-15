@@ -6,9 +6,8 @@ import SwiftUI
 /// The implementation ensures that the score never falls below zero.
 final class BaseGameStats: ObservableObject, AbstractGameStats {
     // MARK: - Published Properties
-    
     /// The current game score.
-    @Published var score: Int = 0
+    @Published var totalScore: Int = 0
     /// The player's accuracy as a percentage.
     @Published var accuracy: Double = 0
     /// The number of consecutive correct answers.
@@ -21,12 +20,10 @@ final class BaseGameStats: ObservableObject, AbstractGameStats {
     @Published var correctAnswers: Int = 0
     
     // MARK: - Private Properties
-    
     /// A weak reference to the game, used to update survival state when applicable.
     private weak var game: Quiz?
     
     // MARK: - Initializer
-    
     /// Initializes a new instance of `BaseGameStats`.
     ///
     /// - Parameter game: An optional instance of `Quiz` for survival mode updates.
@@ -35,7 +32,6 @@ final class BaseGameStats: ObservableObject, AbstractGameStats {
     }
     
     // MARK: - Internal Methods
-    
     /// Updates the game statistics based on the correctness of the answer,
     /// the response time, the scoring mechanism, and whether a special card was used.
     ///
@@ -57,7 +53,7 @@ final class BaseGameStats: ObservableObject, AbstractGameStats {
     ) {
         if correct {
             streaks += 1
-            score += scoring.calculateScore(
+            totalScore += scoring.calculateScore(
                 responseTime: responseTime,
                 isSpecialCard: isSpecialCard,
                 streaks: streaks
@@ -65,9 +61,9 @@ final class BaseGameStats: ObservableObject, AbstractGameStats {
             correctAnswers += 1
         } else {
             streaks = 0
-            score -= scoring.calculatePenalty()
-            if score < 0 {
-                score = 0
+            totalScore -= scoring.calculatePenalty()
+            if totalScore < 0 {
+                totalScore = 0
             }
             
             updateSurvivalState()
@@ -77,7 +73,7 @@ final class BaseGameStats: ObservableObject, AbstractGameStats {
         accuracy = Double(correctAnswers) / Double(totalAnswers)
         
         Logger.debug("[GameStats]: Updated stats", metadata: [
-            "score": String(score),
+            "totalScore": String(totalScore),
             "streak": String(streaks),
             "accuracy": String(format: "%.2f", accuracy),
             "correct": String(correct),
@@ -86,7 +82,6 @@ final class BaseGameStats: ObservableObject, AbstractGameStats {
     }
     
     // MARK: - Private Methods
-    
     /// Updates the survival state if the game is in survival mode.
     ///
     /// This method decrements the number of lives in the survival state.
