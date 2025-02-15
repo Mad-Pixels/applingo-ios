@@ -19,7 +19,7 @@ protocol AbstractGame {
     /// The available game modes.
     var availableModes: [GameModeType] { get }
     /// The scoring mechanism.
-    var scoring: AbstractGameScoring { get }
+    var scoring: GameScoring { get }
     /// The game theme.
     var theme: GameTheme { get }
     /// The current game state.

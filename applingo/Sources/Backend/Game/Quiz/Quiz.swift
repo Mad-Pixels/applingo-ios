@@ -22,7 +22,7 @@ final class Quiz: ObservableObject, AbstractGame {
     /// The game validation strategy.
     internal let validation: AbstractGameValidation
     /// The scoring strategy used to calculate score changes.
-    internal let scoring: AbstractGameScoring
+    internal let scoring: GameScoring
     /// The cache manager for quiz data.
     internal let cache: QuizCache
     /// The visual theme for the quiz.
@@ -49,7 +49,7 @@ final class Quiz: ObservableObject, AbstractGame {
     ///   - cacheGetter: The cache manager. Defaults to a `QuizCache` instance configured with predefined constants.
     init(
         theme: GameTheme = ThemeManager.shared.currentThemeStyle.quizTheme,
-        scoring: AbstractGameScoring = BaseGameScoring(
+        scoring: GameScoring = GameScoring(
             baseScore: QUIZ_SCORE_SUCCESS,
             quickResponseThreshold: QUIZ_SCORE_THRESHOLD,
             quickResponseBonus: QUIZ_SCORE_QUICK_BONUS,

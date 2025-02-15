@@ -28,5 +28,5 @@ protocol AbstractGameStats {
     ///   - responseTime: The time taken to answer.
     ///   - scoring: An instance conforming to `AbstractGameScoring` that determines how score changes are calculated.
     ///   - isSpecialCard: A Boolean indicating if a special card was involved in the answer.
-    func updateGameStats(correct: Bool, responseTime: TimeInterval, scoring: AbstractGameScoring, isSpecialCard: Bool)
+    func updateGameStats(correct: Bool, responseTime: TimeInterval, scoring: GameScoring, isSpecialCard: Bool)
 }

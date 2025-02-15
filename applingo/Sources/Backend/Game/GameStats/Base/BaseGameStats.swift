@@ -52,7 +52,7 @@ final class BaseGameStats: ObservableObject, AbstractGameStats {
     ///   - isSpecialCard: A Boolean indicating if a special card was involved in the answer.
     final internal func updateGameStats(correct: Bool,
                                         responseTime: TimeInterval,
-                                        scoring: AbstractGameScoring,
+                                        scoring: GameScoring,
                                         isSpecialCard: Bool) {
         if correct {
             streaks += 1

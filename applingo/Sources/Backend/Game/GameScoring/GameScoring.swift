@@ -1,6 +1,6 @@
 import SwiftUI
 
-final class BaseGameScoring: AbstractGameScoring {
+final class GameScoring {
     let baseScore: Int
     let quickResponseThreshold: TimeInterval
     let quickResponseBonus: Int
