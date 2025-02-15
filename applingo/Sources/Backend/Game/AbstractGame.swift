@@ -6,7 +6,7 @@ import SwiftUI
 /// Conforming types must provide properties for game configuration and methods for
 /// updating game stats, validating answers, managing game modes, controlling game flow,
 /// and generating the game view.
-protocol AbstractGame {
+protocol AbstractGame: ObservableObject {
     // MARK: - Associated Types
     /// The type of the validation answer.
     associatedtype ValidationAnswer

@@ -2,21 +2,21 @@ import SwiftUI
 
 struct GameTab: View {
     @StateObject private var locale = GameTabLocale()
-    @ObservedObject var game: Quiz
-    @ObservedObject var stats: GameStats // добавляем это
+    let game: any AbstractGame
+    @ObservedObject var stats: GameStats
     let style: GameTabStyle
     
-    init(game: Quiz, style: GameTabStyle) {
+    init(game: any AbstractGame, style: GameTabStyle) {
         self.game = game
         self.style = style
-        self._stats = ObservedObject(wrappedValue: game.stats) // и это
+        self._stats = ObservedObject(wrappedValue: game.stats)
     }
    
     var body: some View {
         SectionBody {
             HStack(spacing: style.spacing) {
                 GameTabViewScore(
-                    score: stats.totalScore, // теперь берем из stats
+                    score: stats.totalScore,
                     style: style,
                     locale: locale
                 )
@@ -46,25 +46,25 @@ struct GameTab: View {
     }
 
     @ViewBuilder
-        private func makeModeSection(_ mode: GameModeType) -> some View {
-            switch mode {
-            case .practice:
-                GameTabViewAccuracy(
-                    accuracy: stats.accuracy,
-                    style: style
-                )
-            case .survival where game.state.survivalState != nil:
-                GameTabViewLives(
-                    lives: game.state.survivalState!.lives,
-                    style: style
-                )
-            case .time where game.state.timeState != nil:
-                GameTabViewTimer(
-                    timer: game.state.timeState!, // передаем GameTimer
-                    style: style
-                )
-            default:
-                EmptyView()
-            }
+    private func makeModeSection(_ mode: GameModeType) -> some View {
+        switch mode {
+        case .practice:
+            GameTabViewAccuracy(
+                accuracy: stats.accuracy,
+                style: style
+            )
+        case .survival where game.state.survivalState != nil:
+            GameTabViewLives(
+                lives: game.state.survivalState!.lives,
+                style: style
+            )
+        case .time where game.state.timeState != nil:
+            GameTabViewTimer(
+                timer: game.state.timeState!,
+                style: style
+            )
+        default:
+            EmptyView()
         }
+    }
 }
