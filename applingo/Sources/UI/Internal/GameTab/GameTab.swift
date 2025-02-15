@@ -9,7 +9,7 @@ struct GameTab: View {
     init(game: Quiz, style: GameTabStyle) {
         self.game = game
         self.style = style
-        self._stats = ObservedObject(wrappedValue: game.statsObject) // и это
+        self._stats = ObservedObject(wrappedValue: game.stats as! BaseGameStats) // и это
     }
    
     var body: some View {

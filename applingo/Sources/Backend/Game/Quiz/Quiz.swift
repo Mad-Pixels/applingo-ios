@@ -10,7 +10,7 @@ import Combine
 /// - Managing a cache of quiz data
 /// - Maintaining game state and statistics
 final class Quiz: ObservableObject, AbstractGame {
-    @Published private(set) var statsObject = BaseGameStats()
+    @Published private(set) var stats: AbstractGameStats = BaseGameStats()
     @Published private(set) var isLoadingCache: Bool = false
     
     // MARK: - Properties
@@ -36,9 +36,6 @@ final class Quiz: ObservableObject, AbstractGame {
     private var gameTimer: GameStateUtilsTimer?
     /// The current state of the game, including mode-specific state such as survival lives or remaining time.
     private(set) var state: GameState
-    
-    /// An abstract reference to game statistics.
-    var stats: AbstractGameStats { statsObject }
     
     private var cancellables = Set<AnyCancellable>()
     
@@ -72,7 +69,7 @@ final class Quiz: ObservableObject, AbstractGame {
         self.cache = cacheGetter
         
         self.state = GameState()
-        self.statsObject = BaseGameStats(game: self)
+        self.stats = BaseGameStats(game: self)
         
         cache.$isLoadingCache
             .sink { [weak self] isLoading in
@@ -123,7 +120,7 @@ final class Quiz: ObservableObject, AbstractGame {
     ///   - responseTime: The time taken to provide the answer.
     ///   - isSpecialCard: A Boolean indicating if a special card was involved in the answer.
     internal func updateStats(correct: Bool, responseTime: TimeInterval, isSpecialCard: Bool) {
-        statsObject.updateGameStats(
+        stats.updateGameStats(
             correct: correct,
             responseTime: responseTime,
             scoring: scoring,
