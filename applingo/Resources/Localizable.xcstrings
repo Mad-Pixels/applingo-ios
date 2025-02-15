@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "%lld" : {
+
+    },
     "%lld%%" : {
       "localizations" : {
         "ru" : {
@@ -10,6 +13,9 @@
           }
         }
       }
+    },
+    "+%lld" : {
+
     },
     "base.button.close" : {
       "extractionState" : "manual",

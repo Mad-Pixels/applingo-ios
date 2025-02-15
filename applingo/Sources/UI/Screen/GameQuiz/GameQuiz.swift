@@ -35,31 +35,62 @@ struct GameQuiz: View {
     }
     
     var body: some View {
-        ZStack {
-            VStack(spacing: 20) {
-                if let card = viewModel.currentCard {
-                    Text(card.question)
-                        .font(.title)
-                        .padding()
-                    
-                    ForEach(card.options, id: \.self) { option in
-                        Button(action: { viewModel.handleAnswer(option) }) {
-                            Text(option)
-                                .padding()
+            ZStack {
+                style.backgroundColor.ignoresSafeArea()
+                
+                
+                VStack(spacing: 20) {
+                    Spacer()
+                                    ScoreChangesContainer(
+                                        manager: game.scoreChangeManager,
+                                        style: .themed(ThemeManager.shared.currentThemeStyle)
+                                    )
+                                    .padding(.bottom, 100)
+                    if let card = viewModel.currentCard {
+                        VStack(spacing: style.optionsSpacing) {
+                            // Question Card
+                            Text(card.question)
+                                .font(style.questionFont)
+                                .foregroundColor(style.questionTextColor)
+                                .multilineTextAlignment(.center)
+                                .padding(style.cardPadding)
                                 .frame(maxWidth: .infinity)
-                                .background(Color.blue.opacity(0.1))
-                                .cornerRadius(10)
+                                .background(style.cardBackground)
+                                .cornerRadius(style.cardCornerRadius)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: style.cardCornerRadius)
+                                        .stroke(style.cardBorder, lineWidth: 1)
+                                )
+                                .shadow(radius: style.cardShadowRadius)
+                            
+                            // Options
+                            VStack(spacing: style.optionsSpacing) {
+                                ForEach(card.options, id: \.self) { option in
+                                    Button(action: { viewModel.handleAnswer(option) }) {
+                                        Text(option)
+                                            .font(style.optionFont)
+                                            .foregroundColor(style.optionTextColor)
+                                            .padding(style.optionsPadding)
+                                            .frame(maxWidth: .infinity)
+                                            .background(style.optionBackground)
+                                            .cornerRadius(style.optionCornerRadius)
+                                            .shadow(radius: style.optionShadowRadius)
+                                    }
+                                    .buttonStyle(QuizOptionButtonStyle(pressedBackground: style.optionBackgroundPressed))
+                                }
+                            }
+                        }
+                        .padding()
+                    } else {
+                        Text(verbatim: "Loading...")
+                            .foregroundColor(style.questionTextColor)
+                        if game.isLoadingCache {
+                            ProgressView()
                         }
                     }
-                } else {
-                    Text(verbatim: "Loading...")
-                    if game.isLoadingCache {
-                        ProgressView()
-                    }
                 }
+                .padding()
             }
-            .padding()
-        }
         .onAppear {
             viewModel.generateCard()
         }
@@ -75,5 +106,15 @@ struct GameQuiz: View {
                 }
             }
         }
+    }
+}
+
+struct QuizOptionButtonStyle: ButtonStyle {
+    let pressedBackground: Color
+    
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .background(configuration.isPressed ? pressedBackground : Color.clear)
+            .animation(.easeInOut(duration: 0.2), value: configuration.isPressed)
     }
 }

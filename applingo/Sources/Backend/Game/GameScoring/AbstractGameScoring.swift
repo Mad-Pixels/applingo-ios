@@ -8,4 +8,7 @@ protocol AbstractGameScoring {
     
     func calculateScore(responseTime: TimeInterval, isSpecialCard: Bool, streaks: Int) -> Int
     func calculatePenalty() -> Int
+    
+    func getScoreChanges(responseTime: TimeInterval, isSpecialCard: Bool, isCorrect: Bool, streaks: Int) -> ScoreChange
+
 }

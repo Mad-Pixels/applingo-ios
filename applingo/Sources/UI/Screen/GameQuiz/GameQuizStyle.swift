@@ -1,41 +1,75 @@
 import SwiftUI
 
-/// Defines styling properties for the GameQuiz view.
-///
-/// This class encapsulates style-related information for the quiz interface,
-/// such as the background color. It conforms to `ObservableObject` to allow
-/// SwiftUI views to react to any changes in style properties if needed.
 final class GameQuizStyle: ObservableObject {
-    
-    // MARK: - Properties
-    
-    /// The background color for the quiz view.
+    // MARK: - Colors
     let backgroundColor: Color
+    let cardBackground: Color
+    let cardBorder: Color
+    let questionTextColor: Color
+    let optionBackground: Color
+    let optionBackgroundPressed: Color
+    let optionTextColor: Color
     
-    // MARK: - Initializer
+    // MARK: - Fonts & Sizes
+    let questionFont: Font
+    let optionFont: Font
+    let cardCornerRadius: CGFloat
+    let optionCornerRadius: CGFloat
+    let cardPadding: CGFloat
+    let optionsPadding: CGFloat
+    let optionsSpacing: CGFloat
     
-    /// Initializes a new instance of `GameQuizStyle` with the specified background color.
-    ///
-    /// - Parameter backgroundColor: The color to be used as the background for the quiz view.
-    init(backgroundColor: Color) {
+    // MARK: - Shadows
+    let cardShadowRadius: CGFloat
+    let optionShadowRadius: CGFloat
+    
+    init(
+        backgroundColor: Color,
+        cardBackground: Color,
+        cardBorder: Color,
+        questionTextColor: Color,
+        optionBackground: Color,
+        optionBackgroundPressed: Color,
+        optionTextColor: Color,
+        questionFont: Font = .title,
+        optionFont: Font = .body,
+        cardCornerRadius: CGFloat = 20,
+        optionCornerRadius: CGFloat = 10,
+        cardPadding: CGFloat = 20,
+        optionsPadding: CGFloat = 16,
+        optionsSpacing: CGFloat = 12,
+        cardShadowRadius: CGFloat = 5,
+        optionShadowRadius: CGFloat = 2
+    ) {
         self.backgroundColor = backgroundColor
+        self.cardBackground = cardBackground
+        self.cardBorder = cardBorder
+        self.questionTextColor = questionTextColor
+        self.optionBackground = optionBackground
+        self.optionBackgroundPressed = optionBackgroundPressed
+        self.optionTextColor = optionTextColor
+        self.questionFont = questionFont
+        self.optionFont = optionFont
+        self.cardCornerRadius = cardCornerRadius
+        self.optionCornerRadius = optionCornerRadius
+        self.cardPadding = cardPadding
+        self.optionsPadding = optionsPadding
+        self.optionsSpacing = optionsSpacing
+        self.cardShadowRadius = cardShadowRadius
+        self.optionShadowRadius = optionShadowRadius
     }
 }
 
-// MARK: - Themed Style Extension
-
 extension GameQuizStyle {
-    /// Returns a themed style based on the current application theme.
-    ///
-    /// This convenience method creates a `GameQuizStyle` instance using the accent
-    /// color from the provided `AppTheme`. This allows the quiz view's appearance
-    /// to adapt to the overall application theme.
-    ///
-    /// - Parameter theme: The current application theme.
-    /// - Returns: A new instance of `GameQuizStyle` configured with the theme's accent primary color.
     static func themed(_ theme: AppTheme) -> GameQuizStyle {
         GameQuizStyle(
-            backgroundColor: theme.accentPrimary
+            backgroundColor: theme.backgroundPrimary,
+            cardBackground: theme.cardBackground,
+            cardBorder: theme.cardBorder,
+            questionTextColor: theme.textPrimary,
+            optionBackground: theme.backgroundSecondary,
+            optionBackgroundPressed: theme.backgroundActive,
+            optionTextColor: theme.textPrimary
         )
     }
 }

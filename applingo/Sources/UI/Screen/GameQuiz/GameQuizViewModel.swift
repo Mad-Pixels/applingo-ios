@@ -39,9 +39,12 @@ final class QuizViewModel: ObservableObject {
         let correctWord = items[0]
         game.removeItem(correctWord)
         
+        var shuffledWords = items
+        shuffledWords.shuffle()
+        
         currentCard = QuizModelCard(
             word: correctWord,
-            allWords: items,
+            allWords: shuffledWords,
             showingFront: Bool.random()
         )
         
