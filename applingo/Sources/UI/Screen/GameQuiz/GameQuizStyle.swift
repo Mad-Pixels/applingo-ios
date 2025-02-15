@@ -25,7 +25,6 @@ final class GameQuizStyle: ObservableObject {
 // MARK: - Themed Style Extension
 
 extension GameQuizStyle {
-    
     /// Returns a themed style based on the current application theme.
     ///
     /// This convenience method creates a `GameQuizStyle` instance using the accent
