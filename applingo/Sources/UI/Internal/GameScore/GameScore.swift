@@ -14,15 +14,21 @@ struct GameScore: View {
     var body: some View {
         Group {
             if showScore {
-                HStack {
-                    Image(systemName: stats.score.type.iconName)
-                        .resizable()
-                        .frame(width: style.iconSize, height: style.iconSize)
+                VStack {
+                    ButtonNav(
+                        style: .custom(
+                            ThemeManager.shared.currentThemeStyle,
+                            assetName: stats.score.type.iconName
+                        ),
+                        onTap: {},
+                        isPressed: $showScore
+                    )
                     Text("\(stats.score.sign)\(abs(stats.score.value))")
                         .font(style.font)
                         .foregroundColor(style.textColor)
                 }
                 .transition(.opacity)
+                .padding(.top, 28)
             }
         }
         .animation(.easeInOut(duration: 0.3), value: showScore)
@@ -42,7 +48,7 @@ struct GameScore: View {
                 }
             }
             hideScoreWorkItem = workItem
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: workItem)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 100.0, execute: workItem)
         }
     }
 }
