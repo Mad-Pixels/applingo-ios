@@ -3,7 +3,7 @@ import SwiftUI
 // MARK: - ButtonNavStyle
 /// Defines styling parameters for ButtonNav components.
 struct ButtonNavStyle {
-    let icon: String
+    let icon: ButtonNavIcon
     let backgroundColor: Color
     let activeBackgroundColor: Color
     let iconColor: Color
@@ -16,7 +16,7 @@ extension ButtonNavStyle {
     /// Returns a style for a "back" button.
     static func back(_ theme: AppTheme) -> ButtonNavStyle {
         ButtonNavStyle(
-            icon: "arrow.backward",
+            icon: .system("arrow.backward"),
             backgroundColor: theme.backgroundSecondary,
             activeBackgroundColor: theme.backgroundSecondary.opacity(0.8),
             iconColor: theme.textPrimary,
@@ -29,7 +29,7 @@ extension ButtonNavStyle {
     /// Returns a style for a "close" button.
     static func close(_ theme: AppTheme) -> ButtonNavStyle {
         ButtonNavStyle(
-            icon: "xmark",
+            icon: .system("xmark"),
             backgroundColor: theme.backgroundSecondary,
             activeBackgroundColor: theme.backgroundSecondary.opacity(0.8),
             iconColor: theme.errorSecondaryColor,
@@ -42,7 +42,7 @@ extension ButtonNavStyle {
     /// Returns a style for an "edit" button.
     static func edit(_ theme: AppTheme, disabled: Bool = false) -> ButtonNavStyle {
         ButtonNavStyle(
-            icon: "scribble",
+            icon: .system("scribble"),
             backgroundColor: theme.backgroundSecondary,
             activeBackgroundColor: theme.backgroundSecondary.opacity(0.8),
             iconColor: theme.textPrimary,
@@ -55,7 +55,7 @@ extension ButtonNavStyle {
     /// Returns a style for a "save" button.
     static func save(_ theme: AppTheme, disabled: Bool = false) -> ButtonNavStyle {
         ButtonNavStyle(
-            icon: "checkmark",
+            icon: .system("checkmark"),
             backgroundColor: theme.backgroundSecondary,
             activeBackgroundColor: theme.backgroundSecondary.opacity(0.8),
             iconColor: disabled ? theme.success.opacity(0.15) : theme.success,
@@ -68,7 +68,7 @@ extension ButtonNavStyle {
     /// Returns a style for a "download" button.
     static func download(_ theme: AppTheme, disabled: Bool = false) -> ButtonNavStyle {
         ButtonNavStyle(
-            icon: "square.and.arrow.down",
+            icon: .system("square.and.arrow.down"),
             backgroundColor: theme.backgroundSecondary,
             activeBackgroundColor: theme.backgroundSecondary.opacity(0.8),
             iconColor: disabled ? theme.textSecondary.opacity(0.35) : theme.textSecondary,
@@ -78,16 +78,15 @@ extension ButtonNavStyle {
         )
     }
     
-    /// Returns a larger style for a "download" button.
-    static func downloadLg(_ theme: AppTheme, disabled: Bool = false) -> ButtonNavStyle {
+    static func custom(_ theme: AppTheme, assetName: String) -> ButtonNavStyle {
         ButtonNavStyle(
-            icon: "square.and.arrow.down",
+            icon: .custom(assetName),
             backgroundColor: theme.backgroundSecondary,
             activeBackgroundColor: theme.backgroundSecondary.opacity(0.8),
-            iconColor: disabled ? theme.textSecondary.opacity(0.35) : theme.textSecondary,
-            size: 36,
-            cornerRadius: 0,
-            iconSize: 20
+            iconColor: theme.textSecondary,
+            size: 32,
+            cornerRadius: 16,
+            iconSize: 14
         )
     }
 }
