@@ -2,7 +2,8 @@ import SwiftUI
 
 final class GameScoreStyle: ObservableObject {
     // MARK: - Properties
-    let textColor: Color
+    let positiveTextColor: Color
+    let negativeTextColor: Color
     let iconSize: CGFloat
     let font: Font
 
@@ -13,11 +14,13 @@ final class GameScoreStyle: ObservableObject {
     ///   - iconSize: The size of the icon.
     ///   - font: The font used for displaying the score.
     init(
-        textColor: Color,
+        positiveTextColor: Color,
+        negativeTextColor: Color,
         iconSize: CGFloat,
         font: Font
     ) {
-        self.textColor = textColor
+        self.positiveTextColor = positiveTextColor
+        self.negativeTextColor = negativeTextColor
         self.iconSize = iconSize
         self.font = font
     }
@@ -30,7 +33,8 @@ extension GameScoreStyle {
     /// - Returns: A new instance of `GameScoreStyle` configured for the given theme.
     static func themed(_ theme: AppTheme) -> GameScoreStyle {
         GameScoreStyle(
-            textColor: theme.accentPrimary,
+            positiveTextColor: theme.success,
+            negativeTextColor: theme.errorPrimaryColor,
             iconSize: 16,
             font: .system(size: 16, weight: .bold)
         )

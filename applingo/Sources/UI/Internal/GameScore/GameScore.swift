@@ -24,9 +24,10 @@ struct GameScore: View {
                         onTap: {},
                         isPressed: .constant(false)
                     )
-                    Text("\(stats.score.sign)\(abs(stats.score.value))1")
+                    Text("\(stats.score.sign)\(abs(stats.score.value))")
                         .font(style.font)
-                        .foregroundColor(style.textColor)
+                        // Используем стиль в зависимости от того, положительный или отрицательный результат.
+                        .foregroundColor(stats.score.isPositive ? style.positiveTextColor : style.negativeTextColor)
                 }
                 .transition(.opacity)
                 .padding(.top, 26)

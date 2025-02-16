@@ -20,4 +20,9 @@ struct GameScoringScoreAnswerModel: Identifiable, Equatable {
     var sign: String {
         value >= 0 ? "+" : "-"
     }
+    
+    /// Indicates whether the score is positive.
+    var isPositive: Bool {
+        value >= 0
+    }
 }
