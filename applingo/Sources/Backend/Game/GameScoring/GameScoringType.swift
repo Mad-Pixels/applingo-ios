@@ -10,17 +10,17 @@ enum ScoreType {
     var iconName: String {
         switch self {
         case .regular:
-            return "star.fill"
+            return "52"
         case .streakBonus:
-            return "flame.fill"
+            return "53"
         case .fastResponse:
-            return "bolt.fill"
+            return "54"
         case .specialCard:
-            return "sparkles"
+            return "55"
         case .penalty:
-            return "minus.circle.fill"
+            return "56"
         case .multiple:
-            return "plus.circle.fill"
+            return "57"
         }
     }
 }
