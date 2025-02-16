@@ -24,15 +24,15 @@ struct GameScore: View {
                         onTap: {},
                         isPressed: .constant(false)
                     )
-                    Text("\(stats.score.sign)\(abs(stats.score.value))")
+                    Text("\(stats.score.sign)\(abs(stats.score.value))1")
                         .font(style.font)
                         .foregroundColor(style.textColor)
                 }
                 .transition(.opacity)
-                .padding(.top, 28)
+                .padding(.top, 26)
             }
         }
-        .frame(width: 25, height: 80) // Фиксированный размер контейнера
+        .frame(width: 42, height: 80) // Фиксированный размер контейнера
         .animation(.easeInOut(duration: 0.3), value: showScore)
         .onChange(of: stats.score) { newScore in
             hideScoreWorkItem?.cancel()
