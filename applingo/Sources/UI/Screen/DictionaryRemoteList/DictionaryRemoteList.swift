@@ -60,6 +60,9 @@ struct DictionaryRemoteList: View {
             .onAppear{
                 dictionaryGetter.setScreen(.DictionaryRemoteList)
             }
+            .onDisappear{
+                dictionaryGetter.searchText = ""
+            }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     ButtonNav(

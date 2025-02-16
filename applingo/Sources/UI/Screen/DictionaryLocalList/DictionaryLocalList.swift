@@ -66,6 +66,7 @@ struct DictionaryLocalList: View {
                 }
             }
             .onDisappear() {
+                dictionaryGetter.searchText = ""
                 dictionaryGetter.clear()
             }
         }

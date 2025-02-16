@@ -65,6 +65,7 @@ struct WordList: View {
             }
             .onDisappear() {
                 wordsGetter.clear()
+                wordsGetter.searchText = ""
             }
         }
         .sheet(item: $selectedWord) { word in
