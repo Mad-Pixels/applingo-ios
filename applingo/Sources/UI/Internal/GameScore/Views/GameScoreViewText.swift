@@ -32,6 +32,7 @@ struct GameScoreViewText: View {
             .opacity(item.opacity)
             .offset(y: item.offset)
             .scaleEffect(item.scale)
+            .blur(radius: (1 - saturation) * 0.5)
             .transition(
                 .asymmetric(
                     insertion: .scale(scale: 1.1)
