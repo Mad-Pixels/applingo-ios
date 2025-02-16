@@ -56,7 +56,7 @@ struct GameQuizViewQuestion: View {
                             size: CGSize(width: geometry.size.width * 2,
                                          height: geometry.size.height * 2)
                         )
-                        .opacity(0.1)
+                        .opacity(0.2)
                         .mask(
                             RoundedRectangle(cornerRadius: style.cardCornerRadius)
                         )

@@ -79,7 +79,7 @@ extension GameQuizStyle {
             // Use default fonts and sizes or customize as needed:
             questionFont: .title,
             optionFont: .body,
-            cardCornerRadius: 20,
+            cardCornerRadius: 32,
             optionCornerRadius: 10,
             cardPadding: 20,
             optionsPadding: 16,
