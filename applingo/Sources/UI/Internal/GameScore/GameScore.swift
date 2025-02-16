@@ -5,7 +5,7 @@ struct ScoreHistoryItem: Identifiable, Equatable {
     let score: GameScoringScoreAnswerModel
     var opacity: Double
     var offset: CGFloat
-    var scale: CGFloat // Добавляем масштаб для более интересной анимации
+    var scale: CGFloat
     
     static func == (lhs: ScoreHistoryItem, rhs: ScoreHistoryItem) -> Bool {
         lhs.score == rhs.score &&
@@ -21,14 +21,15 @@ struct GameScore: View {
     @State private var scoreHistory: [ScoreHistoryItem] = []
     @State private var hideScoreWorkItem: DispatchWorkItem? = nil
     
-    // Константы для анимации
     private enum AnimationConstants {
         static let maxItems = 3
         static let fadeRatio = 0.7
         static let offsetStep: CGFloat = 12
         static let scaleRatio: CGFloat = 0.9
         static let baseAnimationDuration = 0.2
-        static let displayDuration = 0.7
+        static let displayDuration = 2.0 // Уменьшили до 2 секунд
+        static let removalDuration = 0.25 // Длительность исчезновения каждого элемента
+        static let removalDelay = 0.25 // Увеличили задержку между исчезновениями
     }
 
     init(stats: GameStats, style: GameScoreStyle? = nil) {
@@ -94,24 +95,51 @@ struct GameScore: View {
             }
         }
         
-        scheduleHistoryCleanup()
+        scheduleStaggeredRemoval()
     }
     
-    private func scheduleHistoryCleanup() {
+    private func scheduleStaggeredRemoval() {
         let workItem = DispatchWorkItem {
-            withAnimation(.easeInOut(duration: AnimationConstants.baseAnimationDuration)) {
-                scoreHistory.removeAll()
-            }
+            removeItemsSequentially()
         }
         hideScoreWorkItem = workItem
+        
         DispatchQueue.main.asyncAfter(
             deadline: .now() + AnimationConstants.displayDuration,
             execute: workItem
         )
     }
+    
+    private func removeItemsSequentially() {
+        // Создаем массив задержек для каждого элемента
+        let delays = (0..<scoreHistory.count).map { index in
+            Double(index) * AnimationConstants.removalDelay
+        }.reversed()
+        
+        // Применяем задержки к каждому элементу
+        for (index, delay) in delays.enumerated() {
+            DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+                withAnimation(.easeInOut(duration: AnimationConstants.removalDuration)) {
+                    if !scoreHistory.isEmpty {
+                        if let lastIndex = scoreHistory.indices.last {
+                            scoreHistory[lastIndex].opacity = 0
+                            scoreHistory[lastIndex].scale = 0.7
+                            
+                            DispatchQueue.main.asyncAfter(
+                                deadline: .now() + AnimationConstants.removalDuration
+                            ) {
+                                if !scoreHistory.isEmpty {
+                                    scoreHistory.removeLast()
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
-// Выделяем текст очков в отдельный компонент
 struct ScoreText: View {
     let item: ScoreHistoryItem
     let style: GameScoreStyle
@@ -131,9 +159,9 @@ struct ScoreText: View {
                     insertion: .scale(scale: 1.1)
                         .combined(with: .opacity)
                         .animation(.spring(response: 0.2, dampingFraction: 0.7)),
-                    removal: .scale(scale: 0.9)
+                    removal: .scale(scale: 0.7)
                         .combined(with: .opacity)
-                        .animation(.easeOut(duration: 0.2))
+                        .animation(.easeInOut(duration: 0.25))
                 )
             )
     }
