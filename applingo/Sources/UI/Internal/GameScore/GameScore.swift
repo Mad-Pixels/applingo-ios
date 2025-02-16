@@ -3,9 +3,9 @@ import SwiftUI
 /// A view that displays animated game score updates.
 ///
 /// This view observes changes in game statistics and maintains a history of score updates,
-/// which are rendered with fading, offset, and scaling animations. New score updates are inserted
-/// at the top while older entries animate out over time. Animation and visual style parameters are
-/// configured via a `GameScoreStyle` object.
+/// which are rendered with fading, offset, scaling, and varying saturation animations.
+/// New score updates are inserted at the top (with full saturation) while older entries animate out over time.
+/// Animation and visual style parameters are configured via a `GameScoreStyle` object.
 struct GameScore: View {
     // MARK: - Properties
     @State private var hideScoreWorkItem: DispatchWorkItem? = nil
@@ -43,15 +43,16 @@ struct GameScore: View {
                     )
                     
                     ZStack {
-                        ForEach(scoreHistory) { item in
-                            GameScoreViewText(style: style, item: item)
+                        ForEach(Array(scoreHistory.enumerated()), id: \.element.id) { index, item in
+                            let computedSaturation = max(1.0 - Double(index) * style.saturationStep, style.minSaturation)
+                            GameScoreViewText(style: style, item: item, saturation: computedSaturation)
                         }
                     }
                 }
                 .padding(.top, 26)
             }
         }
-        .frame(width: 42, height: 10, alignment: .leading)
+        .frame(width: 42, height: 60, alignment: .leading)
         .onChange(of: stats.score) { newScore in
             handleNewScore(newScore)
         }
@@ -72,6 +73,7 @@ struct GameScore: View {
                     scale: item.scale * style.scaleRatio
                 )
             }
+            
             let newItem = ScoreHistoryModel(
                 score: newScore,
                 opacity: 1.0,

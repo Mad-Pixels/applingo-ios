@@ -25,6 +25,10 @@ final class GameScoreStyle: ObservableObject {
     let removalDuration: Double
     /// Delay before the removal animation begins.
     let removalDelay: Double
+    
+    // MARK: - Text Saturation
+    let minSaturation: Double
+    let saturationStep: Double
 
     // MARK: - Initializer
     /// Initializes a new instance of `GameScoreStyle`.
@@ -53,7 +57,9 @@ final class GameScoreStyle: ObservableObject {
         baseAnimationDuration: Double,
         displayDuration: Double,
         removalDuration: Double,
-        removalDelay: Double
+        removalDelay: Double,
+        saturationStep: Double,
+        minSaturation: Double
     ) {
         self.positiveTextColor = positiveTextColor
         self.negativeTextColor = negativeTextColor
@@ -67,6 +73,8 @@ final class GameScoreStyle: ObservableObject {
         self.displayDuration = displayDuration
         self.removalDuration = removalDuration
         self.removalDelay = removalDelay
+        self.saturationStep = saturationStep
+        self.minSaturation = minSaturation
     }
 }
 
@@ -89,7 +97,9 @@ extension GameScoreStyle {
             baseAnimationDuration: 0.2,
             displayDuration: 2.0,
             removalDuration: 0.25,
-            removalDelay: 0.25
+            removalDelay: 0.25,
+            saturationStep: 0.15,
+            minSaturation: 0.7
         )
     }
 }

@@ -4,26 +4,23 @@ import SwiftUI
 ///
 /// This view renders the score value from a history item using visual properties
 /// (such as font, color, opacity, offset, and scale) provided by a `GameScoreStyle` object.
-/// It uses asymmetric transitions for insertion and removal, providing a smooth animated effect.
-/// The text color is determined by whether the score is positive or negative.
 struct GameScoreViewText: View {
     // MARK: - Properties
     @EnvironmentObject private var themeManager: ThemeManager
     private let style: GameScoreStyle
     private let item: ScoreHistoryModel
+    private let saturation: Double
     
     // MARK: - Initializer
     /// Initializes a new instance of `GameScoreViewText`.
-    ///
     /// - Parameters:
-    ///   - style: A `GameScoreStyle` object that defines the visual style and animation parameters.
+    ///   - style: A `GameScoreStyle` object that defines visual style and animation parameters.
     ///   - item: A `ScoreHistoryModel` containing the score value and its current animation properties.
-    init(
-        style: GameScoreStyle,
-        item: ScoreHistoryModel
-    ) {
+    ///   - saturation: A value between 0 and 1 representing the color saturation.
+    init(style: GameScoreStyle, item: ScoreHistoryModel, saturation: Double) {
         self.style = style
         self.item = item
+        self.saturation = saturation
     }
     
     // MARK: - Body
@@ -31,6 +28,7 @@ struct GameScoreViewText: View {
         Text("\(item.score.sign)\(abs(item.score.value))")
             .font(style.font)
             .foregroundColor(item.score.isPositive ? style.positiveTextColor : style.negativeTextColor)
+            .saturation(saturation)
             .opacity(item.opacity)
             .offset(y: item.offset)
             .scaleEffect(item.scale)
