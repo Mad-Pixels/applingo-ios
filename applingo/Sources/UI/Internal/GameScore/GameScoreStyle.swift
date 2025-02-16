@@ -98,8 +98,8 @@ extension GameScoreStyle {
             displayDuration: 2.0,
             removalDuration: 0.25,
             removalDelay: 0.25,
-            saturationStep: 0.15,
-            minSaturation: 0.7
+            saturationStep: 0.25,
+            minSaturation: 0.5
         )
     }
 }
