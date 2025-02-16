@@ -5,7 +5,7 @@ import Foundation
 /// This structure is used to store the score value along with its associated type,
 /// which determines the visual representation (such as an icon) in the UI.
 /// It also provides a computed property to display the score with the appropriate sign.
-struct GameScoringScoreAnswerModel: Identifiable {
+struct GameScoringScoreAnswerModel: Identifiable, Equatable {
     
     /// A unique identifier for the scoring model instance.
     internal let id = UUID()
