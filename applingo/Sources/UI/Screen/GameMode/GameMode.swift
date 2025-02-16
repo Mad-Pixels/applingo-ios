@@ -39,49 +39,56 @@ struct GameMode: View {
             screen: .GameMode,
             alignment: .center
         ) {
-            ZStack {
-                GameModeBackground(style.colors)
-                    .edgesIgnoringSafeArea(.all)
-                
-                VStack(spacing: style.spacing) {
-                    Text(locale.screenTitle.uppercased())
-                        .font(style.titleStyle.font)
-                        .foregroundColor(style.titleStyle.color)
-                        .opacity(isAnimating ? 1 : 0)
-                        .offset(y: isAnimating ? 0 : 20)
-                    
-                    VStack(spacing: style.cardSpacing) {
-                        ForEach(game.availableModes, id: \.self) { mode in
-                            modeCard(for: mode)
-                        }
-                    }
-                    .padding(.vertical, 24)
-                    .glassBackground()
-                }
-                .padding(style.padding)
-            }
-            .toolbarBackground(.clear, for: .navigationBar)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    ButtonNav(
-                        style: .close(ThemeManager.shared.currentThemeStyle),
-                        onTap: { isPresented = false },
-                        isPressed: $isPressedTrailing
-                    )
-                }
-            }
-            .onAppear {
-                withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
-                    isAnimating = true
-                }
-            }
-            
             if showGameContent {
                 GameModeViewGame(
                     game: game,
                     mode: selectedMode,
-                    showGameContent: $showGameContent
+                    showGameContent: $showGameContent,
+                    isPressedTrailing: $isPressedTrailing,
+                    isPresented: $isPresented
                 )
+            } else {
+                modeSelectionContent
+            }
+        }
+    }
+    
+    // MARK: - Private Views
+    private var modeSelectionContent: some View {
+        ZStack {
+            GameModeBackground(style.colors)
+                .edgesIgnoringSafeArea(.all)
+            
+            VStack(spacing: style.spacing) {
+                Text(locale.screenTitle.uppercased())
+                    .font(style.titleStyle.font)
+                    .foregroundColor(style.titleStyle.color)
+                    .opacity(isAnimating ? 1 : 0)
+                    .offset(y: isAnimating ? 0 : 20)
+                
+                VStack(spacing: style.cardSpacing) {
+                    ForEach(game.availableModes, id: \.self) { mode in
+                        modeCard(for: mode)
+                    }
+                }
+                .padding(.vertical, 24)
+                .glassBackground()
+            }
+            .padding(style.padding)
+        }
+        .toolbarBackground(.clear, for: .navigationBar)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                ButtonNav(
+                    style: .close(ThemeManager.shared.currentThemeStyle),
+                    onTap: { isPresented = false },
+                    isPressed: $isPressedTrailing
+                )
+            }
+        }
+        .onAppear {
+            withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                isAnimating = true
             }
         }
     }
@@ -108,3 +115,4 @@ struct GameMode: View {
         .padding(.horizontal, 16)
     }
 }
+

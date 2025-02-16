@@ -6,8 +6,10 @@ struct GameModeViewGame: View {
     let game: any AbstractGame
     let mode: GameModeType
     
-    @State private var isPressedLeading = false
+    // MARK: - Bindings
     @Binding var showGameContent: Bool
+    @Binding var isPressedTrailing: Bool
+    @Binding var isPresented: Bool
     
     // MARK: - Body
     var body: some View {
@@ -24,8 +26,15 @@ struct GameModeViewGame: View {
                     }
                     ToolbarItem(placement: .principal) {
                         GameTab(
-                            game: game,
-                            style: .themed(ThemeManager.shared.currentThemeStyle)
+                                game: game,
+                                style: .themed(ThemeManager.shared.currentThemeStyle)
+                            )
+                    }
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        ButtonNav(
+                            style: .close(ThemeManager.shared.currentThemeStyle),
+                            onTap: { isPresented = false },
+                            isPressed: $isPressedTrailing
                         )
                     }
                 }

@@ -12,7 +12,8 @@ struct GameScore: View {
     }
 
     var body: some View {
-        Group {
+        // Создаем контейнер фиксированного размера
+        VStack {
             if showScore {
                 VStack {
                     ButtonNav(
@@ -31,17 +32,15 @@ struct GameScore: View {
                 .padding(.top, 28)
             }
         }
+        .frame(width: 25, height: 80) // Фиксированный размер контейнера
         .animation(.easeInOut(duration: 0.3), value: showScore)
         .onChange(of: stats.score) { newScore in
-            // Отменяем предыдущий таймер, если он есть
             hideScoreWorkItem?.cancel()
             
-            // Плавно показываем представление
             withAnimation(.easeIn(duration: 0.3)) {
                 showScore = true
             }
             
-            // Создаём новый DispatchWorkItem для скрытия представления через 1 секунду
             let workItem = DispatchWorkItem {
                 withAnimation(.easeOut(duration: 0.3)) {
                     showScore = false
