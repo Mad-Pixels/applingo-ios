@@ -63,6 +63,23 @@ actor DictionaryDownload {
         )
         
         await notifyDictionaryUpdate()
+        
+        do {
+            try await ApiManagerRequest().patchDictionaryStatistic(
+                name: dictionary.name,
+                author: dictionary.author,
+                subcategory: dictionary.subcategory
+            )
+            Logger.debug("[Download]: Dictionary statistic patched successfully")
+        } catch {
+            Logger.warning(
+                "[Download]: Failed to patch dictionary statistic",
+                metadata: [
+                    "error": error.localizedDescription
+                ]
+            )
+        }
+        
         Logger.debug(
             "[Download]: Dictionary processing completed",
             metadata: [

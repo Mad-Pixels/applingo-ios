@@ -8,6 +8,7 @@ final class ApiManagerRequest {
     private enum Endpoints {
         static let dictionaries = "/v1/dictionaries"
         static let categories = "/v1/subcategories"
+        static let statistic = "/v1/dictionary/statistic"
         static let urls = "/v1/urls"
     }
         
@@ -152,5 +153,42 @@ final class ApiManagerRequest {
         )
         
         return items
+    }
+    
+    /// Sends a PATCH request to update the dictionary statistics,
+    /// increasing both "downloads" and "rating", and includes additional query parameters.
+    /// - Parameters:
+    ///   - name: The dictionary name (min 2, max 36 characters).
+    ///   - author: The dictionary author (alphanum, min 2, max 24 characters).
+    ///   - subcategory: The dictionary subcategory (exactly 5 letters, e.g. "ru-il").
+    /// - Throws: An `APIError` if the request fails.
+    func patchDictionaryStatistic(name: String, author: String, subcategory: String) async throws {
+        Logger.debug("[API]: Patching dictionary statistic...")
+        
+        let requestBody: [String: String] = [
+            "downloads": "increase",
+            "rating": "increase"
+        ]
+        let bodyData = try JSONSerialization.data(withJSONObject: requestBody, options: [])
+        
+        let queryItems = [
+            URLQueryItem(name: "name", value: name),
+            URLQueryItem(name: "author", value: author),
+            URLQueryItem(name: "subcategory", value: subcategory)
+        ]
+        let data = try await AppAPI.shared.request(
+            endpoint: Endpoints.statistic,
+            method: .patch,
+            queryItems: queryItems,
+            body: bodyData
+        )
+        if let responseString = String(data: data, encoding: .utf8) {
+            Logger.debug(
+                "[API]: Dictionary statistic patched successfully",
+                metadata: [
+                    "response": responseString
+                ]
+            )
+        }
     }
 }

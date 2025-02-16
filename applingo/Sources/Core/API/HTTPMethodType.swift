@@ -5,4 +5,7 @@ enum HTTPMethodType: String {
     
     /// HTTP POST method, used to send data to a server.
     case post = "POST"
+    
+    /// HTTP PATCH method, used for update data.
+    case patch = "PATCH"
 }

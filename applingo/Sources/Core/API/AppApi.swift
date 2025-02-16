@@ -207,7 +207,7 @@ final class AppAPI: ObservableObject {
         let signature = generateSignature(timestamp: timestamp)
         request.setValue("\(timestamp):::\(signature)", forHTTPHeaderField: Constants.authHeader)
 
-        if method == .post, let body = body {
+        if (method == .post || method == .patch), let body = body {
             request.httpBody = body
         }
         return request
