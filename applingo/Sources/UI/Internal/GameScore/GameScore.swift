@@ -1,42 +1,34 @@
 import SwiftUI
 
-struct ScoreHistoryItem: Identifiable, Equatable {
-    let id = UUID()
-    let score: GameScoringScoreAnswerModel
-    var opacity: Double
-    var offset: CGFloat
-    var scale: CGFloat
-    
-    static func == (lhs: ScoreHistoryItem, rhs: ScoreHistoryItem) -> Bool {
-        lhs.score == rhs.score &&
-        lhs.opacity == rhs.opacity &&
-        lhs.offset == rhs.offset &&
-        lhs.scale == rhs.scale
-    }
-}
-
+/// A view that displays animated game score updates.
+///
+/// This view observes changes in game statistics and maintains a history of score updates,
+/// which are rendered with fading, offset, and scaling animations. New score updates are inserted
+/// at the top while older entries animate out over time. Animation and visual style parameters are
+/// configured via a `GameScoreStyle` object.
 struct GameScore: View {
-    @ObservedObject var stats: GameStats
-    @StateObject private var style: GameScoreStyle
-    @State private var scoreHistory: [ScoreHistoryItem] = []
+    // MARK: - Properties
     @State private var hideScoreWorkItem: DispatchWorkItem? = nil
+    @State private var scoreHistory: [ScoreHistoryModel] = []
     
-    private enum AnimationConstants {
-        static let maxItems = 3
-        static let fadeRatio = 0.7
-        static let offsetStep: CGFloat = 12
-        static let scaleRatio: CGFloat = 0.9
-        static let baseAnimationDuration = 0.2
-        static let displayDuration = 2.0 // Уменьшили до 2 секунд
-        static let removalDuration = 0.25 // Длительность исчезновения каждого элемента
-        static let removalDelay = 0.25 // Увеличили задержку между исчезновениями
-    }
-
+    // MARK: - State Objects
+    @StateObject private var style: GameScoreStyle
+    
+    // MARK: - Observed Objects
+    @ObservedObject var stats: GameStats
+    
+    // MARK: - Initializer
+    /// Initializes the GameScore view with the provided game statistics and an optional style.
+    /// If no style is provided, a themed style based on the current theme is used.
+    /// - Parameters:
+    ///   - stats: The game statistics.
+    ///   - style: An optional GameScoreStyle instance.
     init(stats: GameStats, style: GameScoreStyle? = nil) {
         _style = StateObject(wrappedValue: style ?? .themed(ThemeManager.shared.currentThemeStyle))
         self.stats = stats
     }
-
+    
+    // MARK: - Body
     var body: some View {
         VStack {
             if !scoreHistory.isEmpty {
@@ -52,36 +44,35 @@ struct GameScore: View {
                     
                     ZStack {
                         ForEach(scoreHistory) { item in
-                            ScoreText(item: item, style: style)
+                            GameScoreViewText(style: style, item: item)
                         }
                     }
                 }
                 .padding(.top, 26)
             }
         }
-        .frame(width: 42, height: 60)
+        .frame(width: 42, height: 10, alignment: .leading)
         .onChange(of: stats.score) { newScore in
             handleNewScore(newScore)
         }
     }
     
+    // MARK: - Private Methods
+    /// Handles a new score update by updating the history with animation.
+    /// - Parameter newScore: The newly computed score.
     private func handleNewScore(_ newScore: GameScoringScoreAnswerModel) {
         hideScoreWorkItem?.cancel()
         
-        withAnimation(.spring(response: AnimationConstants.baseAnimationDuration,
-                            dampingFraction: 0.7)) {
-            // Обновляем существующие элементы
+        withAnimation(.spring(response: style.baseAnimationDuration, dampingFraction: 0.7)) {
             scoreHistory = scoreHistory.map { item in
-                ScoreHistoryItem(
+                ScoreHistoryModel(
                     score: item.score,
-                    opacity: item.opacity * AnimationConstants.fadeRatio,
-                    offset: item.offset + AnimationConstants.offsetStep,
-                    scale: item.scale * AnimationConstants.scaleRatio
+                    opacity: item.opacity * style.fadeRatio,
+                    offset: item.offset + style.offsetStep,
+                    scale: item.scale * style.scaleRatio
                 )
             }
-            
-            // Добавляем новый элемент
-            let newItem = ScoreHistoryItem(
+            let newItem = ScoreHistoryModel(
                 score: newScore,
                 opacity: 1.0,
                 offset: 0,
@@ -89,15 +80,14 @@ struct GameScore: View {
             )
             scoreHistory.insert(newItem, at: 0)
             
-            // Ограничиваем количество элементов
-            if scoreHistory.count > AnimationConstants.maxItems {
+            if scoreHistory.count > style.maxAnimationItems {
                 scoreHistory.removeLast()
             }
         }
-        
         scheduleStaggeredRemoval()
     }
     
+    /// Schedules a staggered removal of score history items after a display duration.
     private func scheduleStaggeredRemoval() {
         let workItem = DispatchWorkItem {
             removeItemsSequentially()
@@ -105,64 +95,34 @@ struct GameScore: View {
         hideScoreWorkItem = workItem
         
         DispatchQueue.main.asyncAfter(
-            deadline: .now() + AnimationConstants.displayDuration,
+            deadline: .now() + style.displayDuration,
             execute: workItem
         )
     }
     
+    /// Removes score history items sequentially with a staggered animation.
     private func removeItemsSequentially() {
-        // Создаем массив задержек для каждого элемента
         let delays = (0..<scoreHistory.count).map { index in
-            Double(index) * AnimationConstants.removalDelay
+            Double(index) * style.removalDelay
         }.reversed()
         
-        // Применяем задержки к каждому элементу
-        for (index, delay) in delays.enumerated() {
+        for (_, delay) in delays.enumerated() {
             DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
-                withAnimation(.easeInOut(duration: AnimationConstants.removalDuration)) {
-                    if !scoreHistory.isEmpty {
-                        if let lastIndex = scoreHistory.indices.last {
-                            scoreHistory[lastIndex].opacity = 0
-                            scoreHistory[lastIndex].scale = 0.7
-                            
-                            DispatchQueue.main.asyncAfter(
-                                deadline: .now() + AnimationConstants.removalDuration
-                            ) {
-                                if !scoreHistory.isEmpty {
-                                    scoreHistory.removeLast()
-                                }
+                withAnimation(.easeInOut(duration: style.removalDuration)) {
+                    if !scoreHistory.isEmpty, let lastIndex = scoreHistory.indices.last {
+                        scoreHistory[lastIndex].opacity = 0
+                        scoreHistory[lastIndex].scale = 0.7
+                        
+                        DispatchQueue.main.asyncAfter(
+                            deadline: .now() + style.removalDuration
+                        ) {
+                            if !scoreHistory.isEmpty {
+                                scoreHistory.removeLast()
                             }
                         }
                     }
                 }
             }
         }
-    }
-}
-
-struct ScoreText: View {
-    let item: ScoreHistoryItem
-    let style: GameScoreStyle
-    
-    var body: some View {
-        Text("\(item.score.sign)\(abs(item.score.value))")
-            .font(style.font)
-            .foregroundColor(
-                item.score.isPositive ?
-                style.positiveTextColor : style.negativeTextColor
-            )
-            .opacity(item.opacity)
-            .offset(y: item.offset)
-            .scaleEffect(item.scale)
-            .transition(
-                .asymmetric(
-                    insertion: .scale(scale: 1.1)
-                        .combined(with: .opacity)
-                        .animation(.spring(response: 0.2, dampingFraction: 0.7)),
-                    removal: .scale(scale: 0.7)
-                        .combined(with: .opacity)
-                        .animation(.easeInOut(duration: 0.25))
-                )
-            )
     }
 }
