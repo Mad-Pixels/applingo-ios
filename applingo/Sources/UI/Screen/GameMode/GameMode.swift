@@ -2,9 +2,9 @@ import SwiftUI
 
 /// A view that displays the game mode selection screen.
 /// Users can choose a mode (e.g. practice, survival, time attack) before starting the game.
-struct GameMode: View {
+struct GameMode<GameType: AbstractGame>: View {
     // MARK: - Properties
-    let game: any AbstractGame
+    let game: GameType
     
     // MARK: - State Objects
     @StateObject private var style: GameModeStyle
@@ -12,7 +12,6 @@ struct GameMode: View {
     @Binding var isPresented: Bool
     
     // MARK: - Local State
-    @State private var selectedMode: GameModeType = .practice
     @State private var isPressedTrailing = false
     @State private var showGameContent = false
     @State private var isAnimating = false
@@ -24,7 +23,7 @@ struct GameMode: View {
     ///   - isPresented: Binding to control the view's presentation.
     ///   - style: Optional style configuration; if nil, a themed style is applied.
     init(
-        game: any AbstractGame,
+        game: GameType,
         isPresented: Binding<Bool>,
         style: GameModeStyle? = nil
     ) {
@@ -42,7 +41,6 @@ struct GameMode: View {
             if showGameContent {
                 GameModeViewGame(
                     game: game,
-                    mode: selectedMode,
                     showGameContent: $showGameContent,
                     isPressedTrailing: $isPressedTrailing,
                     isPresented: $isPresented
@@ -106,13 +104,11 @@ struct GameMode: View {
             icon: model.icon,
             title: model.title,
             description: model.description,
-            isSelected: selectedMode == mode,
             onSelect: {
                 showGameContent = true
-                selectedMode = mode
+                game.state.currentMode = mode
             }
         )
         .padding(.horizontal, 16)
     }
 }
-

@@ -4,25 +4,21 @@ import SwiftUI
 /// The component maintains a fixed width of 80% of the screen and remains centered.
 /// The mode section is wrapped in a fixed container to ensure consistent sizing,
 /// even when data is initially missing.
-struct GameTab: View {
+struct GameTab<GameType: AbstractGame>: View {
     @ObservedObject var stats: GameStats
-    private let game: any AbstractGame
+    @ObservedObject private var game: GameType
     
     // MARK: - State Objects
     @StateObject private var style: GameTabStyle
     @StateObject private var locale = GameTabLocale()
-
+    
     // MARK: - Initializer
-    /// Initializes a new instance of GameTab.
-    /// - Parameters:
-    ///   - game: The game model conforming to `AbstractGame`.
-    ///   - style: The style configuration for the game tab. If nil, a themed style is applied.
-    init(game: any AbstractGame, style: GameTabStyle? = nil) {
+    init(game: GameType, style: GameTabStyle? = nil) {
         _style = StateObject(wrappedValue: style ?? .themed(ThemeManager.shared.currentThemeStyle))
         _stats = ObservedObject(wrappedValue: game.stats)
-        self.game = game
+        _game = ObservedObject(wrappedValue: game)
     }
-   
+    
     // MARK: - Body
     var body: some View {
         SectionBody {
@@ -65,10 +61,8 @@ struct GameTab: View {
         .fixedSize(horizontal: true, vertical: false)
         .frame(maxWidth: .infinity)
     }
-
+    
     // MARK: - Private Methods
-    /// Returns the appropriate mode section view based on the current game mode.
-    /// - Parameter mode: The current game mode.
     @ViewBuilder
     private func makeModeSection(_ mode: GameModeType) -> some View {
         switch mode {

@@ -1,22 +1,20 @@
 import SwiftUI
 
 /// A view that displays the game content after a mode is selected.
-struct GameModeViewGame: View {
+struct GameModeViewGame<GameType: AbstractGame>: View {
     // MARK: - Properties
-    let game: any AbstractGame
-    let mode: GameModeType
-    
+    let game: GameType
+
     // MARK: - Bindings
     @Binding var showGameContent: Bool
     @Binding var isPressedTrailing: Bool
     @Binding var isPresented: Bool
-    
+
     // MARK: - Body
     var body: some View {
         BaseGameScreen(
             screen: .GameMode,
-            game: game,
-            mode: mode
+            game: game
         ) {
             game.makeView()
                 .toolbarBackground(.clear, for: .navigationBar)
@@ -26,9 +24,9 @@ struct GameModeViewGame: View {
                     }
                     ToolbarItem(placement: .principal) {
                         GameTab(
-                                game: game,
-                                style: .themed(ThemeManager.shared.currentThemeStyle)
-                            )
+                            game: game,
+                            style: .themed(ThemeManager.shared.currentThemeStyle)
+                        )
                     }
                     ToolbarItem(placement: .navigationBarTrailing) {
                         ButtonNav(
@@ -42,3 +40,4 @@ struct GameModeViewGame: View {
         .ignoresSafeArea()
     }
 }
+

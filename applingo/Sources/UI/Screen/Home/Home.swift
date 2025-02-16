@@ -57,7 +57,7 @@ struct Home: View {
     /// Returns an instance of a game conforming to AbstractGame based on the selected type.
     /// - Parameter type: The selected game type.
     /// - Returns: An instance of a game.
-    private func makeGame(type: GameType) -> any AbstractGame {
+    private func makeGame(type: GameType) -> some AbstractGame {
         switch type {
         case .quiz:
             return Quiz()

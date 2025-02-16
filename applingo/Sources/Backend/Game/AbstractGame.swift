@@ -62,7 +62,7 @@ protocol AbstractGame: ObservableObject {
     
     /// Starts the game with the specified mode.
     /// - Parameter mode: The selected game mode.
-    func start(mode: GameModeType)
+    func start()
     
     /// Ends the game.
     func end()

@@ -190,8 +190,8 @@ final class Quiz: ObservableObject, AbstractGame {
     /// This method initializes the game state for the selected mode and initializes the cache.
     ///
     /// - Parameter mode: The selected game mode.
-    func start(mode: GameModeType) {
-        state.initialize(for: mode)
+    func start() {
+        state.initialize(for: state.currentMode ?? .practice)
         cache.initialize()
     }
     

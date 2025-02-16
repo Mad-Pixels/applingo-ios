@@ -11,7 +11,7 @@ struct GameModeViewCard: View {
     let icon: String
     let title: String
     let description: String
-    let isSelected: Bool
+    //let isSelected: Bool
     
     let onSelect: () -> Void
     
@@ -21,7 +21,7 @@ struct GameModeViewCard: View {
             title: title,
             subtitle: description,
             icon: icon,
-            isSelected: isSelected,
+            isSelected: false,
             style: .game(themeManager.currentThemeStyle, style),
             action: onSelect
         )
