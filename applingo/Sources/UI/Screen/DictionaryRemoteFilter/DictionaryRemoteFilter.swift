@@ -132,12 +132,12 @@ struct DictionaryRemoteFilter: View {
     // MARK: - Private Methods
     /// Saves the selected filters and updates the API request parameters.
     private func saveFilters() {
-       let frontCategoryName = selectedFrontCategory?.code ?? ""
-       let backCategoryName = selectedBackCategory?.code ?? ""
-       apiRequestParams.subcategory = "\(frontCategoryName)-\(backCategoryName)".lowercased()
-       apiRequestParams.sortBy = selectedSortBy.rawValue
-       apiRequestParams.level = selectedLevel.rawValue
-       presentationMode.wrappedValue.dismiss()
+        let frontCategoryName = selectedFrontCategory?.code ?? ""
+        let backCategoryName = selectedBackCategory?.code ?? ""
+        apiRequestParams.subcategory = "\(frontCategoryName)-\(backCategoryName)".lowercased()
+        apiRequestParams.sortBy = selectedSortBy.rawValue
+        apiRequestParams.level = selectedLevel == .undefined ? nil : selectedLevel.rawValue
+        presentationMode.wrappedValue.dismiss()
     }
     
     /// Resets all selected filters to their default values.
