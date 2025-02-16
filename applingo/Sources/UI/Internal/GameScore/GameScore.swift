@@ -21,7 +21,7 @@ struct GameScore: View {
                             assetName: stats.score.type.iconName
                         ),
                         onTap: {},
-                        isPressed: $showScore
+                        isPressed: .constant(false)
                     )
                     Text("\(stats.score.sign)\(abs(stats.score.value))")
                         .font(style.font)
