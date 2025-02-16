@@ -22,6 +22,9 @@ final class GameQuizStyle: ObservableObject {
     // MARK: - Shadows
     let cardShadowRadius: CGFloat
     let optionShadowRadius: CGFloat
+
+    // MARK: - New Pattern Property
+    let pattern: DynamicPatternModel
     
     init(
         backgroundColor: Color,
@@ -39,7 +42,8 @@ final class GameQuizStyle: ObservableObject {
         optionsPadding: CGFloat = 16,
         optionsSpacing: CGFloat = 12,
         cardShadowRadius: CGFloat = 5,
-        optionShadowRadius: CGFloat = 2
+        optionShadowRadius: CGFloat = 2,
+        pattern: DynamicPatternModel
     ) {
         self.backgroundColor = backgroundColor
         self.cardBackground = cardBackground
@@ -57,9 +61,11 @@ final class GameQuizStyle: ObservableObject {
         self.optionsSpacing = optionsSpacing
         self.cardShadowRadius = cardShadowRadius
         self.optionShadowRadius = optionShadowRadius
+        self.pattern = pattern
     }
 }
 
+// MARK: - Themed Style Extension
 extension GameQuizStyle {
     static func themed(_ theme: AppTheme) -> GameQuizStyle {
         GameQuizStyle(
@@ -69,7 +75,19 @@ extension GameQuizStyle {
             questionTextColor: theme.textPrimary,
             optionBackground: theme.backgroundSecondary,
             optionBackgroundPressed: theme.backgroundActive,
-            optionTextColor: theme.textPrimary
+            optionTextColor: theme.textPrimary,
+            // Use default fonts and sizes or customize as needed:
+            questionFont: .title,
+            optionFont: .body,
+            cardCornerRadius: 20,
+            optionCornerRadius: 10,
+            cardPadding: 20,
+            optionsPadding: 16,
+            optionsSpacing: 12,
+            cardShadowRadius: 5,
+            optionShadowRadius: 2,
+            // Provide the theme's main pattern as the dynamic pattern
+            pattern: theme.mainPattern
         )
     }
 }

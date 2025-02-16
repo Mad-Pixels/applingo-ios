@@ -4,9 +4,10 @@ import SwiftUI
 ///
 /// The `GameQuiz` view uses a dedicated view model (`QuizViewModel`) to encapsulate the logic for generating quiz cards
 /// and processing user responses. It observes the state of the underlying quiz game model (`Quiz`) to react to changes such as
-/// cache loading and game over conditions. When a new card is generated, it displays the question and options,
-/// and upon the user selecting an answer, the view model processes the answer, updates game statistics, and eventually
-/// generates a new quiz card. If the game state indicates that the game is over, the view dismisses itself.
+/// cache loading and game over conditions. When a new card is generated, it displays the question using `GameQuizViewQuestion`
+/// and answer options using `GameQuizViewAnswer`. Upon the user selecting an answer, the view model processes the answer,
+/// updates game statistics, and eventually generates a new quiz card. If the game state indicates that the game is over,
+/// the view dismisses itself.
 ///
 /// - Environment:
 ///   - `dismiss`: A function that dismisses the current view, typically used when the game is over.
@@ -24,7 +25,6 @@ struct GameQuiz: View {
     @ObservedObject var game: Quiz
     
     /// Initializes the `GameQuiz` view with the given quiz game model and an optional style configuration.
-    ///
     /// - Parameters:
     ///   - game: The quiz game model containing the game logic, state, and cache.
     ///   - style: An optional style configuration; if nil, a default themed style is applied.
@@ -35,57 +35,44 @@ struct GameQuiz: View {
     }
     
     var body: some View {
-            ZStack {
-                style.backgroundColor.ignoresSafeArea()
-                
-                
-                VStack(spacing: 20) {
-                    //GameScore(score: game.stats.score)
-                    if let card = viewModel.currentCard {
+        ZStack {
+            style.backgroundColor.ignoresSafeArea()
+            
+            VStack(spacing: 20) {
+                // Uncomment GameScore if needed:
+                // GameScore(stats: game.stats)
+                if let card = viewModel.currentCard {
+                    VStack(spacing: style.optionsSpacing) {
+                        // Question Card using the new GameQuizViewQuestion component
+                        GameQuizViewQuestion(
+                            locale: locale,
+                            style: style,
+                            question: card.question
+                        )
+                        
+                        // Answer Options using the new GameQuizViewAnswer component
                         VStack(spacing: style.optionsSpacing) {
-                            // Question Card
-                            Text(card.question)
-                                .font(style.questionFont)
-                                .foregroundColor(style.questionTextColor)
-                                .multilineTextAlignment(.center)
-                                .padding(style.cardPadding)
-                                .frame(maxWidth: .infinity)
-                                .background(style.cardBackground)
-                                .cornerRadius(style.cardCornerRadius)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: style.cardCornerRadius)
-                                        .stroke(style.cardBorder, lineWidth: 1)
+                            ForEach(card.options, id: \.self) { option in
+                                GameQuizViewAnswer(
+                                    locale: locale,
+                                    style: style,
+                                    option: option,
+                                    onSelect: { viewModel.handleAnswer(option) }
                                 )
-                                .shadow(radius: style.cardShadowRadius)
-                            
-                            // Options
-                            VStack(spacing: style.optionsSpacing) {
-                                ForEach(card.options, id: \.self) { option in
-                                    Button(action: { viewModel.handleAnswer(option) }) {
-                                        Text(option)
-                                            .font(style.optionFont)
-                                            .foregroundColor(style.optionTextColor)
-                                            .padding(style.optionsPadding)
-                                            .frame(maxWidth: .infinity)
-                                            .background(style.optionBackground)
-                                            .cornerRadius(style.optionCornerRadius)
-                                            .shadow(radius: style.optionShadowRadius)
-                                    }
-                                    .buttonStyle(QuizOptionButtonStyle(pressedBackground: style.optionBackgroundPressed))
-                                }
                             }
                         }
-                        .padding()
-                    } else {
-                        Text(verbatim: "Loading...")
-                            .foregroundColor(style.questionTextColor)
-                        if game.isLoadingCache {
-                            ProgressView()
-                        }
+                    }
+                    .padding()
+                } else {
+                    Text("Loading...")
+                        .foregroundColor(style.questionTextColor)
+                    if game.isLoadingCache {
+                        ProgressView()
                     }
                 }
-                .padding()
             }
+            .padding()
+        }
         .onAppear {
             viewModel.generateCard()
         }
@@ -104,6 +91,7 @@ struct GameQuiz: View {
     }
 }
 
+/// A custom button style for quiz option buttons.
 struct QuizOptionButtonStyle: ButtonStyle {
     let pressedBackground: Color
     
