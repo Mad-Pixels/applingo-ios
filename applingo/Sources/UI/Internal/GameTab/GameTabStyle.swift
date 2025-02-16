@@ -85,7 +85,7 @@ extension GameTabStyle {
             dividerHeight: 24,
             iconSize: 16,
             modeSectionSize: 60,
-            tabWidth: 1
+            tabWidth: 0.9
         )
     }
 }
