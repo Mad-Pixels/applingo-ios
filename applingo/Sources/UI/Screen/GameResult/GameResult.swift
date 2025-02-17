@@ -43,3 +43,49 @@ struct GameResult: View {
         .padding()
     }
 }
+
+
+import SwiftUI
+
+/// A custom view modifier that presents a centered modal with a dimmed background.
+struct CenteredModal<ModalContent: View>: ViewModifier {
+    /// Controls the visibility of the modal.
+    let isPresented: Bool
+    /// The content of the modal.
+    let modalContent: ModalContent
+
+    func body(content: Content) -> some View {
+        ZStack {
+            // Underlying content
+            content
+
+            if isPresented {
+                // Dimmed background
+                Color.black.opacity(0.4)
+                    .edgesIgnoringSafeArea(.all)
+                    .transition(.opacity)
+                    .animation(.easeInOut, value: isPresented)
+
+                // Centered modal view
+                modalContent
+                    .padding()
+                    .background(Color.white)
+                    .cornerRadius(12)
+                    .shadow(radius: 10)
+                    .transition(.scale)
+                    .animation(.spring(), value: isPresented)
+            }
+        }
+    }
+}
+
+extension View {
+    /// A helper function to apply the CenteredModal view modifier.
+    func centeredModal<ModalContent: View>(
+        isPresented: Bool,
+        @ViewBuilder modalContent: () -> ModalContent
+    ) -> some View {
+        self.modifier(CenteredModal(isPresented: isPresented, modalContent: modalContent()))
+    }
+}
+

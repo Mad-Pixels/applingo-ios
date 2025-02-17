@@ -14,6 +14,10 @@ final class GameState: ObservableObject {
     @Published var timeState: GameStateUtilsTimer?
     /// Game over flag (if `true` the game should be closed).
     @Published var isGameOver: Bool = false
+    /// Show game result flag, if `ture` open `/Screen/GameResult`.
+    @Published var showResults: Bool = false
+    /// Set a reason why game was ended.
+    @Published var endReason: GameStateEndReasonType?
     
     /// Initializes or resets the game state for the given mode.
     ///
@@ -25,6 +29,8 @@ final class GameState: ObservableObject {
         
         currentMode = mode
         isGameOver = false
+        showResults = false
+        endReason = nil
         
         switch mode {
         case .survival:
@@ -54,7 +60,14 @@ final class GameState: ObservableObject {
             if case .time = self.currentMode {
                 self.timeState?.stop()
             }
-            self.isGameOver = true
+            self.endReason = reason
+            
+            switch reason {
+            case .timeUp, .noLives:
+                self.showResults = true
+            case .userQuit:
+                self.isGameOver = true
+            }
             
             Logger.debug("[GameState]: Game ended", metadata: [
                 "reason": String(describing: reason),
