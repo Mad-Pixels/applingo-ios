@@ -52,10 +52,11 @@ struct BaseGameScreen<Content: View>: View {
         content
             .background(themeManager.currentThemeStyle.backgroundPrimary)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .centeredModal(isPresented: gameState.showResults) {
+            .navigationBarHidden(gameState.showResults)
+            .showModal(isPresented: $gameState.showResults) {
                 GameResult()
                     .environmentObject(gameState)
-                }
+            }
             .onReceive(gameState.$isGameOver) { isGameOver in
                 if isGameOver {
                     dismiss()
