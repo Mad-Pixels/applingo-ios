@@ -16,26 +16,31 @@ struct DynamicTextStyle {
     // Настройки для эмодзи
     let emojiScale: CGFloat
     
-    // Вычисляем оптимальный размер шрифта на основе текста
+    /// Вычисляет оптимальный размер шрифта на основе переданного текста.
     func calculateOptimalFontSize(for text: String) -> CGFloat {
         let complexity = text.complexityScore
         
         // Базовый размер на основе сложности
         let baseSize: CGFloat
         switch complexity {
-        case 0...30:   baseSize = maxFontSize
-        case 31...60:  baseSize = maxFontSize * 0.85
-        case 61...100: baseSize = maxFontSize * 0.7
-        default:       baseSize = maxFontSize * 0.6
+        case 0...30:
+            baseSize = maxFontSize
+        case 31...60:
+            baseSize = maxFontSize * 0.85
+        case 61...100:
+            baseSize = maxFontSize * 0.7
+        default:
+            baseSize = maxFontSize * 0.6
         }
         
         // Корректируем размер, если есть эмодзи
-        let emojiAdjustment = text.containsEmoji ? -2.0 : 0.0
+        let emojiAdjustment: CGFloat = text.containsEmoji ? -2.0 : 0.0
         
         // Обеспечиваем, что результат находится в допустимом диапазоне
         return max(minFontSize, min(maxFontSize, baseSize + emojiAdjustment))
     }
 }
+
 
 extension DynamicTextStyle {
     static func gameMain(_ theme: AppTheme) -> DynamicTextStyle {

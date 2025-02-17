@@ -9,8 +9,6 @@ extension String {
         return self.trimmingCharacters(in: .whitespaces)
     }
 }
-
-// Расширение для анализа текста
 extension String {
     var containsEmoji: Bool {
         return unicodeScalars.contains { $0.properties.isEmoji }
@@ -25,13 +23,13 @@ extension String {
             .filter { !$0.isEmpty }.count
     }
     
-    // Определяем сложность текста
+    /// Определяет сложность текста на основе длины, количества слов и эмодзи.
     var complexityScore: Double {
         let words = Double(wordCount)
         let emojis = Double(emojiCount)
         let length = Double(count)
         
-        // Учитываем длину, количество слов и эмодзи
+        // Например, сложность вычисляется как взвешенная сумма длины, числа слов и эмодзи.
         return (length * 0.4) + (words * 0.4) + (emojis * 0.2)
     }
 }
