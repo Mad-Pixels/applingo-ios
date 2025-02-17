@@ -22,11 +22,11 @@ struct GameQuizViewQuestion: View {
     
     // MARK: - Computed Properties
     private var cardWidth: CGFloat {
-        UIScreen.main.bounds.width * Constants.widthRatio
+        UIScreen.main.bounds.width * style.widthRatio
     }
     
     private var cardHeight: CGFloat {
-        min(UIScreen.main.bounds.height * Constants.heightRatio, Constants.maxHeight)
+        min(UIScreen.main.bounds.height * style.heightRatio, style.maxHeight)
     }
     
     // MARK: - Initializer
@@ -42,45 +42,46 @@ struct GameQuizViewQuestion: View {
     }
     
     private var questionText: some View {
-            GeometryReader { geometry in
-                Text(question)
-                    .font(style.questionFont)
-                    .foregroundColor(style.questionTextColor)
-                    .multilineTextAlignment(.center)
-                    .minimumScaleFactor(0.5) // Позволяет уменьшить текст до 50% от исходного размера
-                    .lineLimit(4) // Максимум 4 строки
-                    .lineSpacing(8) // Добавляем отступ между строками для лучшей читаемости
-                    .allowsTightening(true) // Разрешаем сжатие символов
-                    .frame(
-                        maxWidth: geometry.size.width * 0.9, // Небольшой отступ от краев
-                        maxHeight: geometry.size.height * 0.9,
-                        alignment: .center
-                    )
-                    .position(
-                        x: geometry.size.width / 2,
-                        y: geometry.size.height / 2
-                    )
-            }
+        GeometryReader { geometry in
+            Text(question)
+                .font(style.questionFont)
+                .foregroundColor(style.questionTextColor)
+                .multilineTextAlignment(.center)
+                .minimumScaleFactor(style.minScaleFactor)
+                .lineLimit(style.maxLines)
+                .lineSpacing(style.lineSpacing)
+                .allowsTightening(true)
+                .frame(
+                    maxWidth: geometry.size.width * style.textWidthRatio,
+                    maxHeight: geometry.size.height * style.textHeightRatio,
+                    alignment: .center
+                )
+                .position(
+                    x: geometry.size.width / 2,
+                    y: geometry.size.height / 2
+                )
         }
+    }
     
     // MARK: - Body
     var body: some View {
         questionText
-                    .padding(style.cardPadding)
-                    .frame(width: cardWidth, height: cardHeight)
-                    .background(backgroundView)
-                    .cornerRadius(style.cardCornerRadius)
-                    .overlay(borderView)
-                    .shadow(
-                        //color: style.cardShadowColor.opacity(Constants.shadowOpacity),
-                        radius: style.cardShadowRadius,
-                        x: Constants.shadowOffset.x,
-                        y: Constants.shadowOffset.y
-                    )
-                    .transition(.asymmetric(
-                        insertion: .scale(scale: 0.9).combined(with: .opacity),
-                        removal: .scale(scale: 1.1).combined(with: .opacity)
-                    ))
+            .padding(style.cardPadding)
+            .frame(width: cardWidth, height: cardHeight)
+            .background(backgroundView)
+            .cornerRadius(style.cardCornerRadius)
+            .overlay(borderView)
+            .shadow(
+                // Если понадобится, можно использовать цвет тени из стиля:
+                // color: style.cardShadowColor.opacity(style.shadowOpacity),
+                radius: style.cardShadowRadius,
+                x: style.shadowOffset.x,
+                y: style.shadowOffset.y
+            )
+            .transition(.asymmetric(
+                insertion: .scale(scale: 0.9).combined(with: .opacity),
+                removal: .scale(scale: 1.1).combined(with: .opacity)
+            ))
     }
     
     // MARK: - Background View
@@ -103,14 +104,10 @@ private struct PatternedBackground: View {
     
     var body: some View {
         GeometryReader { geometry in
-            let size = CGSize(
-                width: geometry.size.width * Constants.patternScale,
-                height: geometry.size.height * Constants.patternScale
-            )
-            
             DynamicPatternViewBackgroundAnimated(
                 model: style.pattern,
-                size: CGSize(width: geometry.size.width * 1.1, height: geometry.size.height * 1.1),
+                size: CGSize(width: geometry.size.width * 1.1,
+                             height: geometry.size.height * 1.1),
                 cornerRadius: style.cardCornerRadius,
                 minScale: Constants.patternMinScale,
                 opacity: Constants.patternOpacity,
@@ -124,17 +121,13 @@ private struct PatternedBackground: View {
     }
 }
 
+
 // MARK: - Border Pattern Component
 private struct PatternedBorder: View {
     let style: GameQuizStyle
     
     var body: some View {
         GeometryReader { geometry in
-            let size = CGSize(
-                width: geometry.size.width * Constants.patternScale,
-                height: geometry.size.height * Constants.patternScale
-            )
-            
             DynamicPatternViewBorderAnimated(
                 model: style.pattern,
                 size: CGSize(width: geometry.size.width * 1.1, height: geometry.size.height * 1.1),
