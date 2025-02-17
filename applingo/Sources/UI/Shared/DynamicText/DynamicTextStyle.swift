@@ -70,7 +70,7 @@ extension DynamicTextStyle {
             maxFontSize: 32,
             minFontSize: 16,
             optimalFontSizeRange: 16...32,
-            emojiScale: 0.9  // Emojis are scaled slightly smaller than text.
+            emojiScale: 0.9
         )
     }
 }
