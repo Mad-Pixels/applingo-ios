@@ -1,13 +1,17 @@
 import SwiftUI
 
 extension View {
-    /// Adds an overlay with a centered modal window over the current view.
+    /// Adds an overlay with a centered modal window on top of the current view.
+    ///
+    /// This modifier displays a modal window overlay when the provided binding is `true`.
+    /// You can customize the modal's appearance by passing an optional `ModalWindowStyle`.
     ///
     /// - Parameters:
-    ///   - isPresented: A binding that determines whether the modal is visible.
-    ///   - style: An optional style for the modal window; if nil, the default themed style is applied.
-    ///   - modalContent: A ViewBuilder closure that constructs the content of the modal window.
-    /// - Returns: A view with an overlay containing the modal window, which appears at the center of the screen.
+    ///   - isPresented: A binding that controls whether the modal window is visible.
+    ///   - style: An optional modal window style. If `nil`, the default themed style is applied.
+    ///   - modalContent: A ViewBuilder closure that constructs the content to be displayed inside the modal window.
+    ///
+    /// - Returns: A view with an overlay that presents the modal window centered on the screen.
     func showModal<Content: View>(
         isPresented: Binding<Bool>,
         style: ModalWindowStyle? = nil,

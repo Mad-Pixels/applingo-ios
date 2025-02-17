@@ -755,9 +755,6 @@
     "Loading..." : {
 
     },
-    "resultText" : {
-
-    },
     "screen.dictionaryImport.description.BlockA" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2136,6 +2133,9 @@
       }
     },
     "Закрыть" : {
+
+    },
+    "Играть снова" : {
 
     }
   },

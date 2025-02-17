@@ -58,7 +58,7 @@ struct BaseGameScreen<Content: View>: View {
                     .environmentObject(gameState)
             }
             .onReceive(gameState.$isGameOver) { isGameOver in
-                if isGameOver {
+                if isGameOver, gameState.endReason == .userQuit {
                     dismiss()
                 }
             }
