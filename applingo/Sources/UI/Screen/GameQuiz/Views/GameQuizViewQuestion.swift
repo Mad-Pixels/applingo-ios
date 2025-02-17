@@ -43,23 +43,19 @@ struct GameQuizViewQuestion: View {
     
     private var questionText: some View {
         GeometryReader { geometry in
-            Text(question)
-                .font(style.questionFont)
-                .foregroundColor(style.questionTextColor)
-                .multilineTextAlignment(.center)
-                .minimumScaleFactor(style.minScaleFactor)
-                .lineLimit(style.maxLines)
-                .lineSpacing(style.lineSpacing)
-                .allowsTightening(true)
-                .frame(
-                    maxWidth: geometry.size.width * style.textWidthRatio,
-                    maxHeight: geometry.size.height * style.textHeightRatio,
-                    alignment: .center
-                )
-                .position(
-                    x: geometry.size.width / 2,
-                    y: geometry.size.height / 2
-                )
+            DynamicText(
+                model: DynamicTextModel(text: question),
+                style: .gameMain(ThemeManager.shared.currentThemeStyle)
+            )
+            .frame(
+                maxWidth: geometry.size.width * style.textWidthRatio,
+                maxHeight: geometry.size.height * style.textHeightRatio,
+                alignment: .center
+            )
+            .position(
+                x: geometry.size.width / 2,
+                y: geometry.size.height / 2
+            )
         }
     }
     
@@ -106,12 +102,14 @@ private struct PatternedBackground: View {
         GeometryReader { geometry in
             DynamicPatternViewBackgroundAnimated(
                 model: style.pattern,
-                size: CGSize(width: geometry.size.width * 1.1,
-                             height: geometry.size.height * 1.1),
+                size: CGSize(
+                    width: geometry.size.width * 1.1,
+                    height: geometry.size.height * 1.1
+                ),
                 cornerRadius: style.cardCornerRadius,
-                minScale: Constants.patternMinScale,
-                opacity: Constants.patternOpacity,
-                animationDuration: Constants.patternAnimationDuration
+                minScale: style.patternMinScale,
+                opacity: style.patternOpacity,
+                animationDuration: style.patternAnimationDuration
             )
             .position(
                 x: geometry.size.width / 2,
@@ -120,7 +118,6 @@ private struct PatternedBackground: View {
         }
     }
 }
-
 
 // MARK: - Border Pattern Component
 private struct PatternedBorder: View {
@@ -130,11 +127,14 @@ private struct PatternedBorder: View {
         GeometryReader { geometry in
             DynamicPatternViewBorderAnimated(
                 model: style.pattern,
-                size: CGSize(width: geometry.size.width * 1.1, height: geometry.size.height * 1.1),
+                size: CGSize(
+                    width: geometry.size.width * 1.1,
+                    height: geometry.size.height * 1.1
+                ),
                 cornerRadius: style.cardCornerRadius,
-                minScale: Constants.patternMinScale,
-                animationDuration: Constants.patternAnimationDuration,
-                borderWidth: Constants.borderWidth
+                minScale: style.patternMinScale,
+                animationDuration: style.patternAnimationDuration,
+                borderWidth: style.borderWidth
             )
             .position(
                 x: geometry.size.width / 2,
@@ -143,33 +143,3 @@ private struct PatternedBorder: View {
         }
     }
 }
-
-
-// MARK: - Constants
-private enum Constants {
-    // Card Dimensions
-    static let widthRatio: CGFloat = 0.9
-    static let heightRatio: CGFloat = 0.25
-    static let maxHeight: CGFloat = 250
-    
-    // Pattern Properties
-    static let patternScale: CGFloat = 2.0
-    static let patternOpacity: CGFloat = 0.2
-    static let patternMinScale: CGFloat = 0.95
-    static let patternAnimationDuration: Double = 4.0
-    
-    // Border Properties
-    static let borderWidth: CGFloat = 8
-    
-    // Shadow Properties
-    static let shadowOpacity: CGFloat = 0.15
-    static let shadowOffset = CGPoint(x: 0, y: 2)
-    
-    // Text Properties
-        static let minScaleFactor: CGFloat = 0.5
-        static let maxLines: Int = 4
-        static let lineSpacing: CGFloat = 8
-        static let textWidthRatio: CGFloat = 0.9
-        static let textHeightRatio: CGFloat = 0.9
-}
-
