@@ -56,6 +56,7 @@ struct DictionaryImport: View {
             DictionaryImportViewActions(locale: locale, onImport: {
                 isShowingFileImporter = true
             })
+            .background(style.backgroundColor)
         }
         .fileImporter(
             isPresented: $isShowingFileImporter,

@@ -21,7 +21,8 @@ final class DictionaryImportStyle: ObservableObject {
     
     // MARK: - Initialization
     
-    init(backgroundColor: Color,
+    init(
+        backgroundColor: Color,
          accentColor: Color,
          descriptionColor: Color,
          textColor: Color,
@@ -55,7 +56,7 @@ extension DictionaryImportStyle {
     /// - Returns: A DictionaryImportStyle instance configured for the theme.
     static func themed(_ theme: AppTheme) -> DictionaryImportStyle {
         DictionaryImportStyle(
-            backgroundColor: theme.backgroundSecondary,
+            backgroundColor: theme.backgroundPrimary,
             accentColor: theme.accentPrimary,
             descriptionColor: theme.textPrimary,
             textColor: theme.textSecondary,
