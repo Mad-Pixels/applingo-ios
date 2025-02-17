@@ -10,9 +10,7 @@ struct DynamicText: View {
     
     /// Computes the optimal font size for the text, utilizing a cache to avoid redundant calculations.
     private var optimalFontSize: CGFloat {
-        let size = style.calculateOptimalFontSize(for: model.text)
-        TextSizeCache.cacheSize(size, for: model.text)
-        return size
+        return style.calculateOptimalFontSize(for: model.text)
     }
     
     /// Creates an attributed version of the text with the computed font size, weight, and color.
