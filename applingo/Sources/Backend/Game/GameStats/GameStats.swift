@@ -102,7 +102,7 @@ final class GameStats: ObservableObject {
             if survivalState.lives <= 0 {
                 Logger.debug("[GameStats]: Game over - no lives left")
                 DispatchQueue.main.async {
-                    game.state.isGameOver = true
+                    game.state.end(reason: .noLives)
                 }
             }
         }
