@@ -11,8 +11,8 @@ import SwiftUI
 /// - Environment:
 ///   - `themeManager`: Provides the current theme settings.
 /// - Properties:
-///   - `locale`: A `GameQuizLocale` object supplying localized strings.
-///   - `style`: A `GameQuizStyle` object defining visual appearance and dynamic pattern details.
+///   - `locale`: `GameQuizLocale` object supplying localized strings.
+///   - `style`: `GameQuizStyle` object defining visual appearance and dynamic pattern details.
 ///   - `question`: The quiz question text to display.
 struct GameQuizViewQuestion: View {
     // MARK: - Properties
