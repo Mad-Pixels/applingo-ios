@@ -85,12 +85,22 @@ private struct PatternedBackground: View {
     
     var body: some View {
         GeometryReader { geometry in
+            let size = CGSize(
+                width: geometry.size.width * Constants.patternScale,
+                height: geometry.size.height * Constants.patternScale
+            )
+            
             DynamicPattern(
                 model: style.pattern,
-                size: CGSize(
-                    width: geometry.size.width * Constants.patternScale,
-                    height: geometry.size.height * Constants.patternScale
-                )
+                size: size
+            )
+            .frame(
+                width: geometry.size.width * 1.1,  // Добавляем 10% к размеру
+                height: geometry.size.height * 1.1
+            )
+            .position(
+                x: geometry.size.width / 2,
+                y: geometry.size.height / 2
             )
             .opacity(Constants.patternOpacity)
             .scaleEffect(isAnimating ? 1 : Constants.patternMinScale)
@@ -101,6 +111,11 @@ private struct PatternedBackground: View {
             )
             .mask(
                 RoundedRectangle(cornerRadius: style.cardCornerRadius)
+                    .frame(width: geometry.size.width, height: geometry.size.height)
+                    .position(
+                        x: geometry.size.width / 2,
+                        y: geometry.size.height / 2
+                    )
             )
             .onAppear {
                 isAnimating = true
@@ -116,15 +131,25 @@ private struct PatternedBorder: View {
     
     var body: some View {
         GeometryReader { geometry in
+            let size = CGSize(
+                width: geometry.size.width * Constants.patternScale,
+                height: geometry.size.height * Constants.patternScale
+            )
+            
             RoundedRectangle(cornerRadius: style.cardCornerRadius)
                 .strokeBorder(Color.clear, lineWidth: Constants.borderWidth)
                 .background(
                     DynamicPattern(
                         model: style.pattern,
-                        size: CGSize(
-                            width: geometry.size.width * Constants.patternScale,
-                            height: geometry.size.height * Constants.patternScale
-                        )
+                        size: size
+                    )
+                    .frame(
+                        width: geometry.size.width * 1.1,
+                        height: geometry.size.height * 1.1
+                    )
+                    .position(
+                        x: geometry.size.width / 2,
+                        y: geometry.size.height / 2
                     )
                     .scaleEffect(isAnimating ? 1 : Constants.patternMinScale)
                     .animation(
