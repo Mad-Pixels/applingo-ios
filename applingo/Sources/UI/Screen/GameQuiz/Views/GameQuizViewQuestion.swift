@@ -41,27 +41,46 @@ struct GameQuizViewQuestion: View {
         self.question = question
     }
     
+    private var questionText: some View {
+            GeometryReader { geometry in
+                Text(question)
+                    .font(style.questionFont)
+                    .foregroundColor(style.questionTextColor)
+                    .multilineTextAlignment(.center)
+                    .minimumScaleFactor(0.5) // Позволяет уменьшить текст до 50% от исходного размера
+                    .lineLimit(4) // Максимум 4 строки
+                    .lineSpacing(8) // Добавляем отступ между строками для лучшей читаемости
+                    .allowsTightening(true) // Разрешаем сжатие символов
+                    .frame(
+                        maxWidth: geometry.size.width * 0.9, // Небольшой отступ от краев
+                        maxHeight: geometry.size.height * 0.9,
+                        alignment: .center
+                    )
+                    .position(
+                        x: geometry.size.width / 2,
+                        y: geometry.size.height / 2
+                    )
+            }
+        }
+    
     // MARK: - Body
     var body: some View {
-        Text(question)
-            .font(style.questionFont)
-            .foregroundColor(style.questionTextColor)
-            .multilineTextAlignment(.center)
-            .padding(style.cardPadding)
-            .frame(width: cardWidth, height: cardHeight)
-            .background(backgroundView)
-            .cornerRadius(style.cardCornerRadius)
-            .overlay(borderView)
-            .shadow(
-                color: style.questionTextColor.opacity(Constants.shadowOpacity),
-                radius: style.cardShadowRadius,
-                x: Constants.shadowOffset.x,
-                y: Constants.shadowOffset.y
-            )
-            .transition(.asymmetric(
-                insertion: .scale(scale: 0.9).combined(with: .opacity),
-                removal: .scale(scale: 1.1).combined(with: .opacity)
-            ))
+        questionText
+                    .padding(style.cardPadding)
+                    .frame(width: cardWidth, height: cardHeight)
+                    .background(backgroundView)
+                    .cornerRadius(style.cardCornerRadius)
+                    .overlay(borderView)
+                    .shadow(
+                        //color: style.cardShadowColor.opacity(Constants.shadowOpacity),
+                        radius: style.cardShadowRadius,
+                        x: Constants.shadowOffset.x,
+                        y: Constants.shadowOffset.y
+                    )
+                    .transition(.asymmetric(
+                        insertion: .scale(scale: 0.9).combined(with: .opacity),
+                        removal: .scale(scale: 1.1).combined(with: .opacity)
+                    ))
     }
     
     // MARK: - Background View
@@ -81,7 +100,6 @@ struct GameQuizViewQuestion: View {
 // MARK: - Background Pattern Component
 private struct PatternedBackground: View {
     let style: GameQuizStyle
-    @State private var isAnimating = false
     
     var body: some View {
         GeometryReader { geometry in
@@ -90,36 +108,18 @@ private struct PatternedBackground: View {
                 height: geometry.size.height * Constants.patternScale
             )
             
-            DynamicPattern(
+            DynamicPatternViewBackgroundAnimated(
                 model: style.pattern,
-                size: size
-            )
-            .frame(
-                width: geometry.size.width * 1.1,  // Добавляем 10% к размеру
-                height: geometry.size.height * 1.1
+                size: CGSize(width: geometry.size.width * 1.1, height: geometry.size.height * 1.1),
+                cornerRadius: style.cardCornerRadius,
+                minScale: Constants.patternMinScale,
+                opacity: Constants.patternOpacity,
+                animationDuration: Constants.patternAnimationDuration
             )
             .position(
                 x: geometry.size.width / 2,
                 y: geometry.size.height / 2
             )
-            .opacity(Constants.patternOpacity)
-            .scaleEffect(isAnimating ? 1 : Constants.patternMinScale)
-            .animation(
-                .easeInOut(duration: Constants.patternAnimationDuration)
-                .repeatForever(autoreverses: true),
-                value: isAnimating
-            )
-            .mask(
-                RoundedRectangle(cornerRadius: style.cardCornerRadius)
-                    .frame(width: geometry.size.width, height: geometry.size.height)
-                    .position(
-                        x: geometry.size.width / 2,
-                        y: geometry.size.height / 2
-                    )
-            )
-            .onAppear {
-                isAnimating = true
-            }
         }
     }
 }
@@ -127,7 +127,6 @@ private struct PatternedBackground: View {
 // MARK: - Border Pattern Component
 private struct PatternedBorder: View {
     let style: GameQuizStyle
-    @State private var isAnimating = false
     
     var body: some View {
         GeometryReader { geometry in
@@ -136,45 +135,29 @@ private struct PatternedBorder: View {
                 height: geometry.size.height * Constants.patternScale
             )
             
-            RoundedRectangle(cornerRadius: style.cardCornerRadius)
-                .strokeBorder(Color.clear, lineWidth: Constants.borderWidth)
-                .background(
-                    DynamicPattern(
-                        model: style.pattern,
-                        size: size
-                    )
-                    .frame(
-                        width: geometry.size.width * 1.1,
-                        height: geometry.size.height * 1.1
-                    )
-                    .position(
-                        x: geometry.size.width / 2,
-                        y: geometry.size.height / 2
-                    )
-                    .scaleEffect(isAnimating ? 1 : Constants.patternMinScale)
-                    .animation(
-                        .easeInOut(duration: Constants.patternAnimationDuration)
-                        .repeatForever(autoreverses: true),
-                        value: isAnimating
-                    )
-                )
-                .mask(
-                    RoundedRectangle(cornerRadius: style.cardCornerRadius)
-                        .strokeBorder(style: StrokeStyle(lineWidth: Constants.borderWidth))
-                )
-                .onAppear {
-                    isAnimating = true
-                }
+            DynamicPatternViewBorderAnimated(
+                model: style.pattern,
+                size: CGSize(width: geometry.size.width * 1.1, height: geometry.size.height * 1.1),
+                cornerRadius: style.cardCornerRadius,
+                minScale: Constants.patternMinScale,
+                animationDuration: Constants.patternAnimationDuration,
+                borderWidth: Constants.borderWidth
+            )
+            .position(
+                x: geometry.size.width / 2,
+                y: geometry.size.height / 2
+            )
         }
     }
 }
+
 
 // MARK: - Constants
 private enum Constants {
     // Card Dimensions
     static let widthRatio: CGFloat = 0.9
     static let heightRatio: CGFloat = 0.25
-    static let maxHeight: CGFloat = 200
+    static let maxHeight: CGFloat = 250
     
     // Pattern Properties
     static let patternScale: CGFloat = 2.0
@@ -188,5 +171,12 @@ private enum Constants {
     // Shadow Properties
     static let shadowOpacity: CGFloat = 0.15
     static let shadowOffset = CGPoint(x: 0, y: 2)
+    
+    // Text Properties
+        static let minScaleFactor: CGFloat = 0.5
+        static let maxLines: Int = 4
+        static let lineSpacing: CGFloat = 8
+        static let textWidthRatio: CGFloat = 0.9
+        static let textHeightRatio: CGFloat = 0.9
 }
 
