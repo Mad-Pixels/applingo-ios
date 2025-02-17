@@ -39,18 +39,16 @@ struct GameQuiz: View {
             style.backgroundColor.ignoresSafeArea()
             
             VStack(spacing: 20) {
-                // Uncomment GameScore if needed:
-                // GameScore(stats: game.stats)
                 if let card = viewModel.currentCard {
                     VStack(spacing: style.optionsSpacing) {
-                        // Question Card using the new GameQuizViewQuestion component
                         GameQuizViewQuestion(
                             locale: locale,
                             style: style,
                             question: card.question
                         )
+                        .padding(.bottom, 24)
+                        .padding(.top, 64)
                         
-                        // Answer Options using the new GameQuizViewAnswer component
                         VStack(spacing: style.optionsSpacing) {
                             ForEach(card.options, id: \.self) { option in
                                 GameQuizViewAnswer(

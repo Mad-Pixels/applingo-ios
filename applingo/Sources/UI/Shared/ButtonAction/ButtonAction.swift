@@ -52,9 +52,9 @@ private struct ButtonActionLabel: View {
                 lineSpacing: 4,
                 letterSpacing: 0.5,
                 allowsTightening: true,
-                maxFontSize: 12,
-                minFontSize: 12 * 0.7,
-                optimalFontSizeRange: (12 * 0.7)...(12),
+                maxFontSize: style.fontPointSize,
+                minFontSize: style.fontPointSize * 0.7,
+                optimalFontSizeRange: (style.fontPointSize * 0.7)...(style.fontPointSize),
                 emojiScale: 0.9
             )
         )

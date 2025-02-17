@@ -39,7 +39,7 @@ struct GameQuizViewAnswer: View {
         ButtonAction(
             title: option,
             action: onSelect,
-            style: .action(themeManager.currentThemeStyle)
+            style: .gameAnswer(themeManager.currentThemeStyle)
         )
     }
 }
