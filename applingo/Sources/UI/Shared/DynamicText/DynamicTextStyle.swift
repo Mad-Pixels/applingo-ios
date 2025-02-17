@@ -1,6 +1,10 @@
 import SwiftUI
 
+/// A style configuration for the DynamicText component, defining its appearance and dynamic font sizing behavior.
+/// It includes properties for colors, fonts, text alignment, spacing, and emoji handling.
 struct DynamicTextStyle {
+    
+    // MARK: - Appearance Properties
     let textColor: Color
     let baseFont: Font
     let alignment: TextAlignment
@@ -8,19 +12,27 @@ struct DynamicTextStyle {
     let letterSpacing: CGFloat
     let allowsTightening: Bool
     
-    // Размеры шрифта
+    // MARK: - Font Size Properties
     let maxFontSize: CGFloat
     let minFontSize: CGFloat
     let optimalFontSizeRange: ClosedRange<CGFloat>
     
-    // Настройки для эмодзи
+    // MARK: - Emoji Handling
     let emojiScale: CGFloat
     
-    /// Вычисляет оптимальный размер шрифта на основе переданного текста.
+    // MARK: - Dynamic Font Sizing
+    /// Calculates the optimal font size based on the provided text.
+    ///
+    /// The calculation uses the text's complexity score (derived from length, word count, and emoji count)
+    /// and adjusts the base size accordingly. Additionally, if the text contains emojis, the font size
+    /// is slightly reduced.
+    ///
+    /// - Parameter text: The input text used to determine the font size.
+    /// - Returns: The optimal font size as a `CGFloat`.
     func calculateOptimalFontSize(for text: String) -> CGFloat {
         let complexity = text.complexityScore
         
-        // Базовый размер на основе сложности
+        // Determine the base font size based on text complexity.
         let baseSize: CGFloat
         switch complexity {
         case 0...30:
@@ -33,18 +45,22 @@ struct DynamicTextStyle {
             baseSize = maxFontSize * 0.6
         }
         
-        // Корректируем размер, если есть эмодзи
+        // Adjust font size if the text contains emojis.
         let emojiAdjustment: CGFloat = text.containsEmoji ? -2.0 : 0.0
         
-        // Обеспечиваем, что результат находится в допустимом диапазоне
+        // Ensure the calculated size is within the allowed range.
         return max(minFontSize, min(maxFontSize, baseSize + emojiAdjustment))
     }
 }
 
-
+// MARK: - Convenience Initializer
 extension DynamicTextStyle {
+    /// Creates a `DynamicTextStyle` instance configured for the main game theme.
+    ///
+    /// - Parameter theme: An `AppTheme` instance providing the theme colors.
+    /// - Returns: A configured `DynamicTextStyle` instance.
     static func gameMain(_ theme: AppTheme) -> DynamicTextStyle {
-        DynamicTextStyle(
+        return DynamicTextStyle(
             textColor: theme.textPrimary,
             baseFont: .system(size: 32, weight: .bold),
             alignment: .center,
@@ -54,7 +70,7 @@ extension DynamicTextStyle {
             maxFontSize: 32,
             minFontSize: 16,
             optimalFontSizeRange: 16...32,
-            emojiScale: 0.9  // Эмодзи чуть меньше текста
+            emojiScale: 0.9  // Emojis are scaled slightly smaller than text.
         )
     }
 }
