@@ -90,14 +90,3 @@ struct GameQuiz: View {
         }
     }
 }
-
-/// A custom button style for quiz option buttons.
-struct QuizOptionButtonStyle: ButtonStyle {
-    let pressedBackground: Color
-    
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .background(configuration.isPressed ? pressedBackground : Color.clear)
-            .animation(.easeInOut(duration: 0.2), value: configuration.isPressed)
-    }
-}

@@ -36,16 +36,10 @@ struct GameQuizViewAnswer: View {
     }
     
     var body: some View {
-        Button(action: onSelect) {
-            Text(option)
-                .font(style.optionFont)
-                .foregroundColor(style.optionTextColor)
-                .padding(style.optionsPadding)
-                .frame(maxWidth: .infinity)
-                .background(style.optionBackground)
-                .cornerRadius(style.optionCornerRadius)
-                .shadow(radius: style.optionShadowRadius)
-        }
-        .buttonStyle(QuizOptionButtonStyle(pressedBackground: style.optionBackgroundPressed))
+        ButtonAction(
+            title: option,
+            action: onSelect,
+            style: .action(themeManager.currentThemeStyle)
+        )
     }
 }
