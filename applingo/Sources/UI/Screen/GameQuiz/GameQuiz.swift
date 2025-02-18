@@ -24,10 +24,6 @@ struct GameQuiz: View {
     @StateObject private var viewModel: QuizViewModel
     @ObservedObject var game: Quiz
     
-    /// Initializes the `GameQuiz` view with the given quiz game model and an optional style configuration.
-    /// - Parameters:
-    ///   - game: The quiz game model containing the game logic, state, and cache.
-    ///   - style: An optional style configuration; if nil, a default themed style is applied.
     init(game: Quiz, style: GameQuizStyle? = nil) {
         _style = StateObject(wrappedValue: style ?? .themed(ThemeManager.shared.currentThemeStyle))
         _viewModel = StateObject(wrappedValue: QuizViewModel(game: game))
@@ -38,46 +34,43 @@ struct GameQuiz: View {
         ZStack {
             style.backgroundColor.ignoresSafeArea()
             
-            VStack(spacing: 20) {
-                if let card = viewModel.currentCard {
-                    VStack(spacing: style.optionsSpacing) {
-                        GameQuizViewQuestion(
-                            locale: locale,
-                            style: style,
-                            question: card.question
-                        )
-                        .padding(.bottom, 24)
-                        .padding(.top, 64)
-                        
+            if viewModel.shouldShowEmptyView {
+                EmptyView()
+            } else {
+                VStack(spacing: 20) {
+                    if let card = viewModel.currentCard {
                         VStack(spacing: style.optionsSpacing) {
-                            ForEach(card.options, id: \.self) { option in
-                                GameQuizViewAnswer(
-                                    locale: locale,
-                                    style: style,
-                                    option: option,
-                                    onSelect: { viewModel.handleAnswer(option) }
-                                )
+                            GameQuizViewQuestion(
+                                locale: locale,
+                                style: style,
+                                question: card.question
+                            )
+                            .padding(.bottom, 24)
+                            .padding(.top, 64)
+                            
+                            VStack(spacing: style.optionsSpacing) {
+                                ForEach(card.options, id: \.self) { option in
+                                    GameQuizViewAnswer(
+                                        locale: locale,
+                                        style: style,
+                                        option: option,
+                                        onSelect: { viewModel.handleAnswer(option) }
+                                    )
+                                }
                             }
                         }
-                    }
-                    .padding()
-                } else {
-                    Text("Loading...")
-                        .foregroundColor(style.questionTextColor)
-                    if game.isLoadingCache {
+                        .padding()
+                    } else {
+                        Text("Loading...")
+                            .foregroundColor(style.questionTextColor)
                         ProgressView()
                     }
                 }
+                .padding()
             }
-            .padding()
         }
         .onAppear {
             viewModel.generateCard()
-        }
-        .onReceive(game.$isLoadingCache) { isLoading in
-            if !isLoading && viewModel.currentCard == nil {
-                viewModel.generateCard()
-            }
         }
         .onReceive(game.state.$isGameOver) { isGameOver in
             if isGameOver {

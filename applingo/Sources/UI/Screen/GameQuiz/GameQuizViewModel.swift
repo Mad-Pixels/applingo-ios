@@ -10,59 +10,59 @@ import Foundation
 ///
 /// This class is an `ObservableObject` so that SwiftUI views can reactively update when the current card changes.
 final class QuizViewModel: ObservableObject {
-    /// The currently active quiz card.
     @Published private(set) var currentCard: QuizModelCard?
-    /// The timestamp when the current card was generated, used to calculate response time.
-    private var cardStartTime: Date?
-    /// A reference to the underlying quiz game model.
-    private let game: Quiz
+    @Published private(set) var shouldShowEmptyView = false
     
-    /// Initializes a new instance of `QuizViewModel` with the given quiz game.
-    ///
-    /// - Parameter game: The quiz game model that provides game logic, state, and cache access.
+    private var cardStartTime: Date?
+    private let game: Quiz
+    private var loadingTask: Task<Void, Never>?
+    
     init(game: Quiz) {
         self.game = game
     }
     
-    /// Generates a new quiz card using a set of words retrieved from the game's cache.
-    ///
-    /// This method attempts to retrieve four words from the cache. If successful, it selects the first word
-    /// as the correct answer, removes it from the cache, and creates a new `QuizModelCard` with a random
-    /// configuration (e.g., showing front or back). It also configures the validation object with the current
-    /// card and its corresponding word, and records the start time of the card.
     func generateCard() {
-        guard let items = game.getItems(4) as? [DatabaseModelWord] else {
-            Logger.debug("[QuizViewModel]: Failed to get items, waiting for cache")
-            return
+        // Отменяем предыдущую загрузку если она есть
+        loadingTask?.cancel()
+        currentCard = nil
+        shouldShowEmptyView = false
+        
+        loadingTask = Task { @MainActor in
+            // Три попытки с паузой в 1 секунду
+            for attempt in 1...3 {
+                if Task.isCancelled { return }
+                
+                if let items = game.getItems(4) as? [DatabaseModelWord] {
+                    let correctWord = items[0]
+                    game.removeItem(correctWord)
+                    
+                    var shuffledWords = items
+                    shuffledWords.shuffle()
+                    
+                    currentCard = QuizModelCard(
+                        word: correctWord,
+                        allWords: shuffledWords,
+                        showingFront: Bool.random()
+                    )
+                    
+                    if let validation = game.validation as? QuizValidation,
+                       let card = currentCard {
+                        validation.setCurrentCard(currentCard: card, currentWord: correctWord)
+                    }
+                    
+                    cardStartTime = Date()
+                    return
+                }
+                
+                if attempt < 3 {
+                    try? await Task.sleep(nanoseconds: 1_000_000_000) // 1 секунда
+                }
+            }
+            
+            shouldShowEmptyView = true
         }
-        
-        let correctWord = items[0]
-        game.removeItem(correctWord)
-        
-        var shuffledWords = items
-        shuffledWords.shuffle()
-        
-        currentCard = QuizModelCard(
-            word: correctWord,
-            allWords: shuffledWords,
-            showingFront: Bool.random()
-        )
-        
-        if let validation = game.validation as? QuizValidation,
-           let card = currentCard {
-            validation.setCurrentCard(currentCard: card, currentWord: correctWord)
-        }
-        
-        cardStartTime = Date()
     }
     
-    /// Handles the user's answer by validating it, updating game statistics, and generating a new card.
-    ///
-    /// This method calculates the response time from when the current card was generated, validates the provided
-    /// answer via the game model, and then updates the game statistics based on whether the answer was correct.
-    /// After processing the answer, it immediately triggers the generation of a new quiz card.
-    ///
-    /// - Parameter answer: The answer provided by the user.
     func handleAnswer(_ answer: String) {
         let responseTime = cardStartTime.map { Date().timeIntervalSince($0) } ?? 0
         let result = game.validateAnswer(answer)
@@ -73,8 +73,10 @@ final class QuizViewModel: ObservableObject {
             isSpecialCard: false
         )
         
-        DispatchQueue.main.asyncAfter(deadline: .now()) {
-            self.generateCard()
-        }
+        generateCard()
+    }
+    
+    deinit {
+        loadingTask?.cancel()
     }
 }
