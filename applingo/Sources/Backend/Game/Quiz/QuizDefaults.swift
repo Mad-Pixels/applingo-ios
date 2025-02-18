@@ -1,5 +1,5 @@
 /// The threshold for a quick response in the quiz (as a fraction).
-internal let QUIZ_SCORE_THRESHOLD = 0.6
+internal let QUIZ_SCORE_THRESHOLD = 1.4
 /// The bonus score awarded for using a special card.
 internal let QUIZ_SCORE_SPECIAL_BONUS = 20
 /// The bonus score awarded for a quick response.
