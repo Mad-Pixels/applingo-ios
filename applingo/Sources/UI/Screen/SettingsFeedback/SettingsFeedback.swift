@@ -3,8 +3,8 @@ import SwiftUI
 /// A view that displays the feedback screen in the Settings section.
 struct SettingsFeedback: View {
     // MARK: - Constants
-    private let urlAbout: String = "https://docs.madpixels.io/"
-    private let urlReport: String = "https://docs.madpixels.io/"
+    private let urlAbout: String = "https://docs.madpixels.io/applingo/about"
+    private let urlReport: String = "https://docs.madpixels.io/applingo/feedback"
     
     @Environment(\.dismiss) private var dismiss
     
