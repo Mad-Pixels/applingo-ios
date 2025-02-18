@@ -45,20 +45,7 @@ private struct ButtonActionLabel: View {
     var body: some View {
         DynamicText(
             model: DynamicTextModel(text: title),
-            style: DynamicTextStyle(
-                textColor: style.textColor,
-                baseFont: style.font,
-                alignment: .center,
-                lineSpacing: 4,
-                letterSpacing: 0.5,
-                allowsTightening: true,
-                maxFontSize: style.fontPointSize,
-                minFontSize: style.fontPointSize * 0.7,
-                optimalFontSizeRange: (style.fontPointSize * 0.7)...(style.fontPointSize),
-                emojiScale: 0.9,
-                lineBreakMode: .byTruncatingTail,
-                wordWrapping: false
-            )
+            style: .buttonAction(ThemeManager.shared.currentThemeStyle)
         )
         .frame(maxWidth: .infinity, alignment: .center)
     }

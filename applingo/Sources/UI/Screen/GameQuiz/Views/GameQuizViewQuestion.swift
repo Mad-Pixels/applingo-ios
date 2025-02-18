@@ -89,7 +89,7 @@ private struct GameQuizQuestionText: View {
         GeometryReader { geometry in
             DynamicText(
                 model: DynamicTextModel(text: question),
-                style: .gameMain(ThemeManager.shared.currentThemeStyle)
+                style: .gameQuestion(ThemeManager.shared.currentThemeStyle)
             )
             .frame(
                 maxWidth: geometry.size.width * style.textWidthRatio,
