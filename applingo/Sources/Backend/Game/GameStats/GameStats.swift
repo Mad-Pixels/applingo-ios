@@ -10,6 +10,8 @@ final class GameStats: ObservableObject {
     @Published var accuracy: Double = 0
     /// The number of consecutive correct answers.
     @Published var streaks: Int = 0
+    /// The best streak of correct answers.
+    @Published var correctAnswersStreak: Int = 0
     /// Score from the last answer.
     @Published var score: GameScoringScoreAnswerModel = GameScoringScoreAnswerModel(value: 0, type: .regular)
     /// The average time taken by the player to respond.
@@ -54,10 +56,13 @@ final class GameStats: ObservableObject {
                                         responseTime: TimeInterval,
                                         scoring: GameScoring,
                                         isSpecialCard: Bool) {
+        totalAverageResponseTime = ((totalAverageResponseTime * Double(totalAnswers)) + responseTime) / Double(totalAnswers + 1)
+        averageResponseTime = responseTime
+        
         if correct {
             streaks += 1
+            correctAnswersStreak = max(correctAnswersStreak, streaks)
             
-            // Получаем модель начисления очков с уже определённым типом
             let scoreModel = scoring.calculateScore(responseTime: responseTime, isSpecialCard: isSpecialCard, streaks: streaks)
             score = scoreModel
             totalScore += scoreModel.value
