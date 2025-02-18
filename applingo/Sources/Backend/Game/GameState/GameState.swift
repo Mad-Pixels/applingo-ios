@@ -14,8 +14,10 @@ final class GameState: ObservableObject {
     @Published var timeState: GameStateUtilsTimer?
     /// Game over flag (if `true` the game should be closed).
     @Published var isGameOver: Bool = false
-    /// Show game result flag, if `ture` open `/Screen/GameResult`.
+    /// Show game result flag, if `true` open `/Screen/GameResult`.
     @Published var showResults: Bool = false
+    /// Show no-words flag, if `true` open modal when game cannot be initialized.
+    @Published var showNoWords: Bool = false
     /// Set a reason why game was ended.
     @Published var endReason: GameStateEndReasonType?
     
@@ -30,6 +32,7 @@ final class GameState: ObservableObject {
         currentMode = mode
         isGameOver = false
         showResults = false
+        showNoWords = false
         endReason = nil
         
         switch mode {
