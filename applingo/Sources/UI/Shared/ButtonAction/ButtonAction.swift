@@ -55,7 +55,9 @@ private struct ButtonActionLabel: View {
                 maxFontSize: style.fontPointSize,
                 minFontSize: style.fontPointSize * 0.7,
                 optimalFontSizeRange: (style.fontPointSize * 0.7)...(style.fontPointSize),
-                emojiScale: 0.9
+                emojiScale: 0.9,
+                lineBreakMode: .byTruncatingTail,
+                wordWrapping: false
             )
         )
         .frame(maxWidth: .infinity, alignment: .center)

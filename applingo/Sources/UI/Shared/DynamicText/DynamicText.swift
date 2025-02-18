@@ -15,14 +15,28 @@ struct DynamicText: View {
     
     /// Creates an attributed version of the text with the computed font size, weight, and color.
     private var attributedText: AttributedString {
-        var attributed = AttributedString(model.text)
-        attributed.font = .system(
-            size: optimalFontSize,
-            weight: calculateFontWeight(for: model.text)
-        )
-        attributed.foregroundColor = style.textColor
-        return attributed
-    }
+            var attributed = AttributedString(model.text)
+            attributed.font = .system(
+                size: optimalFontSize,
+                weight: calculateFontWeight(for: model.text)
+            )
+            attributed.foregroundColor = style.textColor
+            
+            let paragraphStyle = NSMutableParagraphStyle()
+            paragraphStyle.lineBreakMode = style.lineBreakMode
+            
+            let attributedString = NSAttributedString(
+                string: model.text,
+                attributes: [
+                    .paragraphStyle: paragraphStyle,
+                    .font: UIFont.systemFont(ofSize: optimalFontSize),
+                    .foregroundColor: UIColor(style.textColor)
+                ]
+            )
+            
+            attributed = AttributedString(attributedString)
+            return attributed
+        }
     
     var body: some View {
         Text(attributedText)
@@ -32,6 +46,7 @@ struct DynamicText: View {
             .minimumScaleFactor(style.minFontSize / optimalFontSize)
             .fixedSize(horizontal: false, vertical: true)
             .animation(.spring(response: 0.3, dampingFraction: 0.7), value: model.text)
+            .lineLimit(2)
             .frame(maxWidth: .infinity, alignment: .center)
             .padding(.horizontal, 8)
     }

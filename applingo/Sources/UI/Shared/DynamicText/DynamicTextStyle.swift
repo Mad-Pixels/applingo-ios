@@ -20,6 +20,10 @@ struct DynamicTextStyle {
     // MARK: - Emoji Handling
     let emojiScale: CGFloat
     
+    //
+    let lineBreakMode: NSLineBreakMode
+    let wordWrapping: Bool
+    
     // MARK: - Dynamic Font Sizing
     /// Calculates the optimal font size based on the provided text.
     ///
@@ -31,25 +35,39 @@ struct DynamicTextStyle {
     /// - Returns: The optimal font size as a `CGFloat`.
     func calculateOptimalFontSize(for text: String) -> CGFloat {
         let complexity = text.complexityScore
+        let wordLength = text.components(separatedBy: " ").map { $0.count }.max() ?? 0
+
         
         // Determine the base font size based on text complexity.
         let baseSize: CGFloat
-        switch complexity {
-        case 0...30:
-            baseSize = maxFontSize
-        case 31...60:
-            baseSize = maxFontSize * 0.85
-        case 61...100:
-            baseSize = maxFontSize * 0.7
-        default:
-            baseSize = maxFontSize * 0.6
-        }
+            switch complexity {
+            case 0...30:
+                baseSize = maxFontSize
+            case 31...60:
+                baseSize = maxFontSize * 0.9
+            case 61...100:
+                baseSize = maxFontSize * 0.8
+            default:
+                baseSize = maxFontSize * 0.7
+            }
+        
+        let wordLengthAdjustment: CGFloat
+            switch wordLength {
+            case 0...10:
+                wordLengthAdjustment = 0
+            case 11...15:
+                wordLengthAdjustment = -4
+            case 16...20:
+                wordLengthAdjustment = -8
+            default:
+                wordLengthAdjustment = -12
+            }
         
         // Adjust font size if the text contains emojis.
         let emojiAdjustment: CGFloat = text.containsEmoji ? -2.0 : 0.0
-        
-        // Ensure the calculated size is within the allowed range.
-        return max(minFontSize, min(maxFontSize, baseSize + emojiAdjustment))
+            let adjustedSize = baseSize + wordLengthAdjustment + emojiAdjustment
+            
+            return max(minFontSize, min(maxFontSize, adjustedSize))
     }
 }
 
@@ -64,13 +82,15 @@ extension DynamicTextStyle {
             textColor: theme.textPrimary,
             baseFont: .system(size: 32, weight: .bold),
             alignment: .center,
-            lineSpacing: 6,
+            lineSpacing: 4,
             letterSpacing: 0.8,
             allowsTightening: true,
             maxFontSize: 32,
-            minFontSize: 16,
-            optimalFontSizeRange: 16...32,
-            emojiScale: 0.9
+            minFontSize: 14,
+            optimalFontSizeRange: 14...32,
+            emojiScale: 0.9,
+            lineBreakMode: .byTruncatingTail,
+            wordWrapping: false
         )
     }
 }
