@@ -3,20 +3,20 @@ import SwiftUI
 struct GameResult: View {
     @EnvironmentObject var gameState: GameState
     @Environment(\.dismiss) var dismiss
+    @StateObject private var locale = GameResultLocale()
     
-    // Вычисляемое свойство для текста результата
     private var resultText: String {
         if let reason = gameState.endReason {
             switch reason {
             case .timeUp:
-                return "Время вышло!"
+                return locale.timeUpText
             case .noLives:
-                return "Игра окончена!"
+                return locale.noLivesText
             default:
-                return "Конец игры"
+                return locale.gameOverText
             }
         }
-        return "Конец игры"
+        return locale.gameOverText
     }
     
     var body: some View {
@@ -25,14 +25,13 @@ struct GameResult: View {
                 .font(.largeTitle)
                 .padding()
             
-            // Кнопка "Закрыть" – завершает игру и возвращает в главное меню.
             Button(action: {
                 dismiss()
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                     gameState.isGameOver = true
                 }
             }) {
-                Text("Закрыть")
+                Text(locale.closeButtonText)
                     .font(.headline)
                     .padding()
                     .frame(maxWidth: .infinity)
@@ -42,20 +41,15 @@ struct GameResult: View {
             }
             .padding(.horizontal)
             
-            // Кнопка "Играть снова" – перезапускает игру.
             Button(action: {
-                // Сначала закрываем модальное окно
-                // Через небольшую задержку перезапускаем игру, не устанавливая флаг isGameOver
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                     if let mode = gameState.currentMode {
-                        // Сбрасываем причину завершения, чтобы не сработало dismiss() в BaseGameScreen
                         gameState.endReason = nil
-                        // Перезапускаем игру
                         gameState.initialize(for: mode)
                     }
                 }
             }) {
-                Text("Играть снова")
+                Text(locale.playAgainButtonText)
                     .font(.headline)
                     .padding()
                     .frame(maxWidth: .infinity)
