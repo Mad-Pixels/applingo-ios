@@ -31,53 +31,62 @@ struct GameQuiz: View {
     }
     
     var body: some View {
-        ZStack {
-            style.backgroundColor.ignoresSafeArea()
-            
-            if viewModel.shouldShowEmptyView {
-                EmptyView()
-            } else {
-                VStack(spacing: 20) {
-                    if let card = viewModel.currentCard {
-                        VStack(spacing: style.optionsSpacing) {
-                            GameQuizViewQuestion(
-                                locale: locale,
-                                style: style,
-                                question: card.question
-                            )
-                            .padding(.bottom, 24)
-                            .padding(.top, 64)
-                            
+            ZStack {
+                style.backgroundColor.ignoresSafeArea()
+                
+                if viewModel.shouldShowEmptyView {
+                    EmptyView()
+                } else {
+                    ZStack {  // Заменили VStack на ZStack для наложения контента
+                        // Лоадер
+                        VStack {
+                            Text("Loading...")
+                                .foregroundColor(style.questionTextColor)
+                            ProgressView()
+                        }
+                        .opacity(viewModel.currentCard == nil ? 1 : 0)
+                        .animation(.easeInOut(duration: 0.3), value: viewModel.currentCard == nil)
+                        
+                        // Карточка
+                        if let card = viewModel.currentCard {
                             VStack(spacing: style.optionsSpacing) {
-                                ForEach(card.options, id: \.self) { option in
-                                    GameQuizViewAnswer(
-                                        locale: locale,
-                                        style: style,
-                                        option: option,
-                                        onSelect: { viewModel.handleAnswer(option) }
-                                    )
+                                GameQuizViewQuestion(
+                                    locale: locale,
+                                    style: style,
+                                    question: card.question
+                                )
+                                .padding(.bottom, 24)
+                                .padding(.top, 64)
+                                
+                                VStack(spacing: style.optionsSpacing) {
+                                    ForEach(card.options, id: \.self) { option in
+                                        GameQuizViewAnswer(
+                                            locale: locale,
+                                            style: style,
+                                            option: option,
+                                            onSelect: { viewModel.handleAnswer(option) }
+                                        )
+                                    }
                                 }
                             }
+                            .padding()
+                            .opacity(viewModel.currentCard != nil ? 1 : 0)
+                            .animation(.easeInOut(duration: 0.3), value: viewModel.currentCard != nil)
                         }
-                        .padding()
-                    } else {
-                        Text("Loading...")
-                            .foregroundColor(style.questionTextColor)
-                        ProgressView()
+                    }
+                    .padding()
+                }
+            }
+            .onAppear {
+                viewModel.generateCard()
+            }
+            .onReceive(game.state.$isGameOver) { isGameOver in
+                if isGameOver {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        dismiss()
                     }
                 }
-                .padding()
             }
-        }
-        .onAppear {
-            viewModel.generateCard()
-        }
-        .onReceive(game.state.$isGameOver) { isGameOver in
-            if isGameOver {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    dismiss()
-                }
-            }
-        }
+        
     }
 }

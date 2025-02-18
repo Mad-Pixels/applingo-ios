@@ -29,7 +29,7 @@ final class QuizViewModel: ObservableObject {
         
         loadingTask = Task { @MainActor in
             // Три попытки с паузой в 1 секунду
-            for attempt in 1...3 {
+            for attempt in 1...2 {
                 if Task.isCancelled { return }
                 
                 if let items = game.getItems(4) as? [DatabaseModelWord] {
@@ -55,7 +55,7 @@ final class QuizViewModel: ObservableObject {
                 }
                 
                 if attempt < 3 {
-                    try? await Task.sleep(nanoseconds: 1_000_000_000) // 1 секунда
+                    try? await Task.sleep(nanoseconds: 500_000_000) // 1/2 секунды
                 }
             }
             
