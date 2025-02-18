@@ -7,8 +7,8 @@ final class GameResultLocale: ObservableObject {
        case timeUp = "game.result.timeUp"
        case noLives = "game.result.noLives"
        case gameOver = "game.result.gameOver"
-       case close = "game.result.close"
-       case playAgain = "game.result.playAgain"
+       case close = "base.button.close"
+       case playAgain = "base.button.again"
    }
    
    // MARK: - Published Properties
