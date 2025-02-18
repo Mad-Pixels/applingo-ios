@@ -27,7 +27,7 @@ struct InputTextArea: View {
         title: String? = nil,
         placeholder: String,
         isEditing: Bool = true,
-        minHeight: CGFloat = 156,
+        minHeight: CGFloat = 35,
         icon: String? = nil,
         style: InputTextStyle = .themed(ThemeManager.shared.currentThemeStyle)
     ) {
@@ -40,6 +40,33 @@ struct InputTextArea: View {
         self.minHeight = minHeight
         self.icon = icon
         self.style = style
+    }
+    
+    ///
+    private var dynamicHeight: CGFloat {
+       if text.isEmpty {
+           return minHeight
+       }
+       
+       let attributedString = NSAttributedString(
+           string: text,
+           attributes: [
+               NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14)
+           ]
+       )
+       
+       let constraintRect = CGSize(
+           width: UIScreen.main.bounds.width - (style.padding.leading + style.padding.trailing) * 2,
+           height: .greatestFiniteMagnitude
+       )
+       
+       let boundingBox = attributedString.boundingRect(
+           with: constraintRect,
+           options: NSStringDrawingOptions.usesLineFragmentOrigin,
+           context: NSStringDrawingContext()
+       )
+       
+       return max(boundingBox.height+20, minHeight)
     }
     
     /// Determines the background color based on editing state.
@@ -76,7 +103,7 @@ struct InputTextArea: View {
                         .foregroundColor(style.textColor)
                         .font(style.textFont)
                         .scrollContentBackground(.hidden)
-                        .frame(minHeight: minHeight)
+                        .frame(height: dynamicHeight)
                         .padding(style.padding)
                     
                     if text.isEmpty {
