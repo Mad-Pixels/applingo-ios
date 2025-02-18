@@ -45,7 +45,7 @@ private struct ButtonActionLabel: View {
     var body: some View {
         DynamicText(
             model: DynamicTextModel(text: title),
-            style: .buttonAction(ThemeManager.shared.currentThemeStyle)
+            style: style.textStyle
         )
         .frame(maxWidth: .infinity, alignment: .center)
     }

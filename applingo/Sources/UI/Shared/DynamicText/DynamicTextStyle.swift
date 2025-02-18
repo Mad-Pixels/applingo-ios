@@ -47,10 +47,34 @@ struct DynamicTextStyle {
 
 // MARK: - Convenience Initializer
 extension DynamicTextStyle {
-    /// Creates a `DynamicTextStyle` instance configured for the main game theme.
-    ///
-    /// - Parameter theme: An `AppTheme` instance providing the theme colors.
-    /// - Returns: A configured `DynamicTextStyle` instance.
+    static func themed(_ theme: AppTheme) -> DynamicTextStyle {
+        return DynamicTextStyle(
+            textColor: theme.textPrimary,
+            alignment: .center,
+            letterSpacing: 0.5,
+            allowsTightening: true,
+            maxFontSize: 14,
+            minFontSize: 14,
+            lineBreakMode: .byWordWrapping,
+            wordWrapping: true,
+            lineLimit: 1,
+            fontWeight: .regular
+        )
+    }
+    static func titled(_ theme: AppTheme) -> DynamicTextStyle {
+        return DynamicTextStyle(
+            textColor: theme.textPrimary,
+            alignment: .center,
+            letterSpacing: 0.5,
+            allowsTightening: true,
+            maxFontSize: 18,
+            minFontSize: 16,
+            lineBreakMode: .byWordWrapping,
+            wordWrapping: false,
+            lineLimit: 1,
+            fontWeight: .bold
+        )
+    }
     static func gameQuestion(_ theme: AppTheme) -> DynamicTextStyle {
         return DynamicTextStyle(
             textColor: theme.textPrimary,
@@ -65,12 +89,7 @@ extension DynamicTextStyle {
             fontWeight: .bold
         )
     }
-    
-    /// Creates a `DynamicTextStyle` instance configured for the main game theme.
-    ///
-    /// - Parameter theme: An `AppTheme` instance providing the theme colors.
-    /// - Returns: A configured `DynamicTextStyle` instance.
-    static func buttonAction(_ theme: AppTheme) -> DynamicTextStyle {
+    static func gameAnswer(_ theme: AppTheme) -> DynamicTextStyle {
         return DynamicTextStyle(
             textColor: theme.textPrimary,
             alignment: .center,

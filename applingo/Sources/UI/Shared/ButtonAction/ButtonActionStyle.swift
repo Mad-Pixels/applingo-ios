@@ -9,13 +9,13 @@ struct ButtonActionStyle {
     let backgroundColor: Color
     let textColor: Color
     let font: Font
-    /// The explicit font point size to use for dynamic text sizing.
     let fontPointSize: CGFloat
     let height: CGFloat
     let cornerRadius: CGFloat
     let borderWidth: CGFloat
     let borderColor: Color
     let padding: EdgeInsets
+    let textStyle: DynamicTextStyle
 }
 
 extension ButtonActionStyle {
@@ -33,7 +33,8 @@ extension ButtonActionStyle {
             cornerRadius: 8,
             borderWidth: 0,
             borderColor: theme.cardBorder,
-            padding: EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16)
+            padding: EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16),
+            textStyle: .themed(ThemeManager.shared.currentThemeStyle)
         )
     }
     
@@ -51,7 +52,8 @@ extension ButtonActionStyle {
             cornerRadius: 8,
             borderWidth: 0,
             borderColor: theme.cardBorder,
-            padding: EdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8)
+            padding: EdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8),
+            textStyle: .themed(ThemeManager.shared.currentThemeStyle)
         )
     }
     
@@ -69,7 +71,8 @@ extension ButtonActionStyle {
             cornerRadius: 8,
             borderWidth: 0,
             borderColor: theme.cardBorder,
-            padding: EdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8)
+            padding: EdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8),
+            textStyle: .themed(ThemeManager.shared.currentThemeStyle)
         )
     }
     
@@ -87,7 +90,8 @@ extension ButtonActionStyle {
             cornerRadius: 20,
             borderWidth: 8,
             borderColor: theme.cardBorder,
-            padding: EdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8)
+            padding: EdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8),
+            textStyle: .titled(ThemeManager.shared.currentThemeStyle)
         )
     }
     
@@ -105,7 +109,8 @@ extension ButtonActionStyle {
             cornerRadius: 14,
             borderWidth: 4,
             borderColor: theme.cardBorder,
-            padding: EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4)
+            padding: EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4),
+            textStyle: .gameAnswer(ThemeManager.shared.currentThemeStyle)
         )
     }
 }
