@@ -70,15 +70,8 @@ final class Quiz: ObservableObject, AbstractGame {
     @ViewBuilder
     func makeView() -> AnyView {
         AnyView(
-            // Здесь мы используем BaseGameScreen для универсального управления модальными окнами
-            BaseGameScreen(
-                screen: .GameMode,
-                game: self,
-                content: {
-                    GameQuiz(game: self)
-                        .environmentObject(cache)
-                }
-            )
+            GameQuiz(game: self)
+                .environmentObject(cache)
         )
     }
     
