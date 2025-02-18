@@ -54,7 +54,7 @@ struct BaseGameScreen<Content: View>: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .navigationBarHidden(gameState.showResults)
             .showModal(isPresented: $gameState.showResults) {
-                GameResult()
+                GameResult(stats: game.stats)
                     .environmentObject(gameState)
             }
             .onReceive(gameState.$isGameOver) { isGameOver in

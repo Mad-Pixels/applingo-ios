@@ -4,6 +4,11 @@ struct GameResult: View {
     @EnvironmentObject var gameState: GameState
     @Environment(\.dismiss) var dismiss
     @StateObject private var locale = GameResultLocale()
+    @ObservedObject var stats: GameStats
+    
+    init(stats: GameStats) {
+        self.stats = stats
+    }
     
     private var resultText: String {
         if let reason = gameState.endReason {
@@ -25,6 +30,20 @@ struct GameResult: View {
                 .font(.largeTitle)
                 .padding()
             
+            // Статистика
+            VStack(alignment: .leading, spacing: 12) {
+                StatRow(title: locale.totalScoreText, value: "\(stats.totalScore)")
+                StatRow(title: locale.accuracyText, value: String(format: "%.1f%%", stats.accuracy * 100))
+                StatRow(title: locale.bestStreakText, value: "\(stats.correctAnswersStreak)")
+                StatRow(title: locale.totalAnswersText, value: "\(stats.totalAnswers)")
+                StatRow(title: locale.averageTimeText, value: String(format: "%.1f сек", stats.totalAverageResponseTime))
+            }
+            .padding()
+            .background(Color(.systemGray6))
+            .cornerRadius(12)
+            .padding(.horizontal)
+            
+            // Кнопки
             Button(action: {
                 dismiss()
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
@@ -60,5 +79,20 @@ struct GameResult: View {
             .padding(.horizontal)
         }
         .padding()
+    }
+}
+
+struct StatRow: View {
+    let title: String
+    let value: String
+    
+    var body: some View {
+        HStack {
+            Text(title)
+                .foregroundColor(.secondary)
+            Spacer()
+            Text(value)
+                .bold()
+        }
     }
 }
