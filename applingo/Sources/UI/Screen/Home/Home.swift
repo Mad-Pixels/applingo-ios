@@ -41,7 +41,7 @@ struct Home: View {
                     )
                 }
                 .padding(style.padding)
-                .glassBackground()
+                //.glassBackground()
                 .padding(.horizontal, 24)
             }
         }

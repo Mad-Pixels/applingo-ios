@@ -11,19 +11,12 @@ import SwiftUI
 /// in response to changes in the device's roll and pitch values.
 ///
 struct MainBackground: View {
-    // MARK: - State Objects
-    /// A shared manager that provides the background words.
     @StateObject private var manager = MainBackgroundManager.shared
-    /// A shared hardware motion manager that provides the raw motion data (roll and pitch).
     @StateObject private var motionManager = HardwareMotion.shared
-    /// An instance of `MotionState` that smooths and tracks the motion data.
     @StateObject private var motionState = MotionState()
     
-    // MARK: - Private Properties
-    /// The strength of the parallax effect applied to the background words.
     private let parallaxStrength: CGFloat = 70
     
-    // MARK: - View Body
     var body: some View {
         ZStack {
             let theme = ThemeManager.shared.currentThemeStyle
@@ -44,11 +37,17 @@ struct MainBackground: View {
         .onAppear {
             manager.generateIfNeeded(for: UIScreen.main.bounds.size)
         }
-        .onChange(of: motionManager.roll) { _ in
-            motionState.updateMotion(roll: motionManager.roll, pitch: motionManager.pitch)
+        .onReceive(motionManager.$roll) { roll in
+            motionState.updateMotion(
+                roll: roll,
+                pitch: motionManager.pitch
+            )
         }
-        .onChange(of: motionManager.pitch) { _ in
-            motionState.updateMotion(roll: motionManager.roll, pitch: motionManager.pitch)
+        .onReceive(motionManager.$pitch) { pitch in
+            motionState.updateMotion(
+                roll: motionManager.roll,
+                pitch: pitch
+            )
         }
     }
 }
