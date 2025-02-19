@@ -7,7 +7,9 @@ import SwiftUI
 struct GameTab<GameType: AbstractGame>: View {
     @ObservedObject var stats: GameStats
     @ObservedObject private var game: GameType
-    
+    // Новое наблюдаемое свойство для отслеживания состояния игры
+    @ObservedObject private var gameState: GameState
+
     // MARK: - State Objects
     @StateObject private var style: GameTabStyle
     @StateObject private var locale = GameTabLocale()
@@ -17,6 +19,8 @@ struct GameTab<GameType: AbstractGame>: View {
         _style = StateObject(wrappedValue: style ?? .themed(ThemeManager.shared.currentThemeStyle))
         _stats = ObservedObject(wrappedValue: game.stats)
         _game = ObservedObject(wrappedValue: game)
+        // Инициализируем наблюдение за состоянием игры
+        _gameState = ObservedObject(wrappedValue: game.state)
     }
     
     // MARK: - Body
@@ -42,7 +46,7 @@ struct GameTab<GameType: AbstractGame>: View {
                     .foregroundColor(style.dividerColor)
                
                 Group {
-                    if let mode = game.state.currentMode {
+                    if let mode = gameState.currentMode {
                         makeModeSection(mode)
                     } else {
                         Color.clear
@@ -71,14 +75,14 @@ struct GameTab<GameType: AbstractGame>: View {
                 accuracy: stats.accuracy,
                 style: style
             )
-        case .survival where game.state.survivalState != nil:
+        case .survival where gameState.survivalState != nil:
             GameTabViewLives(
-                lives: game.state.survivalState!.lives,
+                lives: gameState.survivalState!.lives,
                 style: style
             )
-        case .time where game.state.timeState != nil:
+        case .time where gameState.timeState != nil:
             GameTabViewTimer(
-                timer: game.state.timeState!,
+                timer: gameState.timeState!,
                 style: style
             )
         default:

@@ -112,4 +112,17 @@ final class GameStats: ObservableObject {
             }
         }
     }
+    
+    func reset() {
+        accuracy = 0
+        streaks = 0
+        correctAnswersStreak = 0
+        score = GameScoringScoreAnswerModel(value: 0, type: .regular)
+        averageResponseTime = 0
+        totalAnswers = 0
+        totalScore = 0
+        totalAverageResponseTime = 0
+        correctAnswers = 0
+        Logger.debug("[GameStats]: Reset stats")
+    }
 }

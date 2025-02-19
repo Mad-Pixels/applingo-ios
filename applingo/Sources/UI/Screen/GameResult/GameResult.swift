@@ -43,7 +43,6 @@ struct GameResult: View {
             .cornerRadius(12)
             .padding(.horizontal)
             
-            // Кнопки
             Button(action: {
                 dismiss()
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
@@ -64,6 +63,8 @@ struct GameResult: View {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                     if let mode = gameState.currentMode {
                         gameState.endReason = nil
+                        // Сбрасываем статистику, чтобы GameTab обновился сразу
+                        stats.reset()
                         gameState.initialize(for: mode)
                     }
                 }
