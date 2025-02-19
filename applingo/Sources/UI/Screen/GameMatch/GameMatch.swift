@@ -1,19 +1,16 @@
 import SwiftUI
 
-/// Представление для игры «Match» с 16 кнопками (2 ряда по 8).
+/// Представление для игры «Match» с 16 кнопками (2 ряда по 8),
+/// где в первом ряду отображаются frontText, а во втором — backText.
 struct GameMatch: View {
-    @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel = MatchGameViewModel()
-    /// Ожидается, что игра соответствует протоколу AbstractGame и реализует метод getItems(_:)
+    /// Ожидается, что игра типа Match реализует метод getItems(_:) и возвращает [DatabaseModelWord]
     @ObservedObject var game: Match
 
     var body: some View {
         VStack(spacing: 16) {
-            Text("Счёт: \(viewModel.score)")
-                .font(.title)
-                .padding(.top)
-            
-            // Первый ряд: frontText
+        
+            // Первый ряд – frontText
             HStack(spacing: 4) {
                 ForEach(viewModel.frontItems, id: \.id) { word in
                     Button(action: {
@@ -29,7 +26,7 @@ struct GameMatch: View {
                 }
             }
             
-            // Второй ряд: backText
+            // Второй ряд – backText
             HStack(spacing: 4) {
                 ForEach(viewModel.backItems, id: \.id) { word in
                     Button(action: {
@@ -44,24 +41,22 @@ struct GameMatch: View {
                     }
                 }
             }
-            
-            if viewModel.frontItems.isEmpty && viewModel.backItems.isEmpty {
-                Text("Поздравляем! Вы нашли все пары!")
-                    .font(.headline)
-                    .padding()
-            }
-            
-            Button("Закрыть") {
-                dismiss()
-            }
-            .padding(.top)
         }
         .padding()
         .onAppear {
-            // Получаем 8 слов из кэша (метод getItems(_:) должен вернуть [DatabaseModelWord])
-            if let words = game.getItems(8) as? [DatabaseModelWord] {
-                viewModel.setupGame(with: words)
+            loadNewWords()
+        }
+        // Если набор слов закончился, автоматически подгружаем новые
+        .onChange(of: viewModel.frontItems) { newItems in
+            if newItems.isEmpty {
+                loadNewWords()
             }
+        }
+    }
+    
+    private func loadNewWords() {
+        if let words = game.getItems(8) as? [DatabaseModelWord], words.count == 8 {
+            viewModel.setupGame(with: words)
         }
     }
 }

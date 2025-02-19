@@ -8,7 +8,7 @@ final class MatchCache: GameCache<DatabaseModelWord, QuizModelCard> {
     /// - Parameter item: A DatabaseModelWord instance.
     /// - Returns: The subcategory of the word, used as the grouping key.
     override func getGroupKeyImpl(_ item: DatabaseModelWord) -> String {
-        return item.subcategory
+        return "all"
     }
     
     /// Validates the given word against a list of already selected words.
@@ -18,11 +18,6 @@ final class MatchCache: GameCache<DatabaseModelWord, QuizModelCard> {
     ///   - selected: An array of already selected DatabaseModelWord instances.
     /// - Returns: True if the item is valid (i.e., not a duplicate); otherwise, false.
     override func validateItemImpl(_ item: DatabaseModelWord, _ selected: [DatabaseModelWord]) -> Bool {
-        return !selected.contains { existing in
-            existing.frontText == item.frontText ||
-            existing.frontText == item.backText ||
-            existing.backText == item.frontText ||
-            existing.backText == item.backText
-        }
+        return true
     }
 }
