@@ -105,8 +105,8 @@ struct GameMode<GameType: AbstractGame>: View {
             title: model.title,
             description: model.description,
             onSelect: {
+                game.state.initialize(for: mode)
                 showGameContent = true
-                game.state.currentMode = mode
             }
         )
         .padding(.horizontal, 16)
