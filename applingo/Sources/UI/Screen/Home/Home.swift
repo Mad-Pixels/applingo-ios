@@ -12,9 +12,8 @@ struct Home: View {
     @State private var gameStart = false
     
     // MARK: - Initializer
-    /// Initializes a new instance of DictionaryLocalDetails.
-    /// - Parameters:
-    ///   - style: Optional style configuration; if nil, a themed style is applied.
+    /// Initializes a new instance of Home.
+    /// - Parameter style: Optional style configuration; if nil, a themed style is applied.
     init(
         style: HomeStyle? = nil
     ) {
@@ -35,7 +34,20 @@ struct Home: View {
                         title: locale.screenGameQuiz.uppercased(),
                         action: {
                             game = .quiz
-                            gameStart = true
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                gameStart = true
+                            }
+                        },
+                        style: .menu(ThemeManager.shared.currentThemeStyle)
+                    )
+                    
+                    ButtonAction(
+                        title: locale.screenGameMatchup.uppercased(),
+                        action: {
+                            game = .match
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                gameStart = true
+                            }
                         },
                         style: .menu(ThemeManager.shared.currentThemeStyle)
                     )
@@ -46,25 +58,15 @@ struct Home: View {
             }
         }
         .fullScreenCover(isPresented: $gameStart) {
-            GameMode(
-                game: makeGame(type: game),
-                isPresented: $gameStart
-            )
+            switch game {
+            case .quiz:
+                GameMode(game: Quiz(), isPresented: $gameStart)
+            case .match:
+                GameMode(game: Match(), isPresented: $gameStart)
+            case .swipe:
+                GameMode(game: Quiz(), isPresented: $gameStart)
+            }
         }
-    }
-    
-    // MARK: - Private Methods
-    /// Returns an instance of a game conforming to AbstractGame based on the selected type.
-    /// - Parameter type: The selected game type.
-    /// - Returns: An instance of a game.
-    private func makeGame(type: GameType) -> some AbstractGame {
-        switch type {
-        case .quiz:
-            return Quiz()
-        case .match:
-            return Quiz()
-        case .swipe:
-            return Quiz()
-        }
+        .id(game)
     }
 }

@@ -27,13 +27,13 @@ final class GameStats: ObservableObject {
     
     // MARK: - Private Properties
     /// A weak reference to the game, used to update survival state when applicable.
-    private weak var game: Quiz?
+    private weak var game: (any AbstractGame)?
     
     // MARK: - Initializer
-    /// Initializes a new instance of `BaseGameStats`.
+    /// Initializes a new instance of `GameStats`.
     ///
-    /// - Parameter game: An optional instance of `Quiz` for survival mode updates.
-    init(game: Quiz? = nil) {
+    /// - Parameter game: An optional instance conforming to `AbstractGame` for survival mode updates.
+    init(game: (any AbstractGame)? = nil) {
         self.game = game
     }
     
