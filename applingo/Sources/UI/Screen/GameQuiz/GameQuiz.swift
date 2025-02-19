@@ -35,7 +35,7 @@ struct GameQuiz: View {
                 style.backgroundColor.ignoresSafeArea()
                 
                 if viewModel.shouldShowEmptyView {
-                    GameNoWords()
+                    EmptyView()
                 } else {
                     ZStack {
                         // Лоадер

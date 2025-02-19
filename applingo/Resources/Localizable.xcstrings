@@ -1554,6 +1554,40 @@
         }
       }
     },
+    "screen.noWords.subtitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No active words"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет активных слов"
+          }
+        }
+      }
+    },
+    "screen.noWords.text" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "There are no active words.Please create a dictionary or activate the existing ones."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет активных слов, пожалуйста создайте словарь или активируйте уже существующие "
+          }
+        }
+      }
+    },
     "screen.settings.description.feedback" : {
       "extractionState" : "manual",
       "localizations" : {

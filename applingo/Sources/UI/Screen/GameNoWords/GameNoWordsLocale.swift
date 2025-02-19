@@ -7,16 +7,19 @@ final class GameNoWordsLocale: ObservableObject {
     private enum LocalizedKey: String {
         case subtitle = "screen.noWords.subtitle"
         case text = "screen.noWords.text"
+        case closeButton = "base.button.close"
     }
     
     // MARK: - Published Properties
     @Published private(set) var screenSubtitleNoWords: String
     @Published private(set) var screenTextNoWords: String
+    @Published private(set) var screenButtonClose: String
     
     // MARK: - Initialization
     init() {
         self.screenSubtitleNoWords = Self.localizedString(for: .subtitle)
         self.screenTextNoWords = Self.localizedString(for: .text)
+        self.screenButtonClose = Self.localizedString(for: .closeButton)
         
         NotificationCenter.default.addObserver(
             self,
@@ -40,5 +43,6 @@ final class GameNoWordsLocale: ObservableObject {
     @objc private func localeDidChange() {
         screenSubtitleNoWords = Self.localizedString(for: .subtitle)
         screenTextNoWords = Self.localizedString(for: .text)
+        screenButtonClose = Self.localizedString(for: .closeButton)
     }
 }
