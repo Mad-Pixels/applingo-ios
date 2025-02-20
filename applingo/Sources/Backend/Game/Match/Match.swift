@@ -128,20 +128,23 @@ final class Match: ObservableObject, AbstractGame {
     
     // MARK: - Методы запуска и остановки игры
     func start() {
-        // Запускаем инициализацию кэша сразу
-        cache.initialize()
-        
-        // Даем немного времени на загрузку кэша (например, 0.5 секунды)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
-            guard let self = self else { return }
-            // Если кэш всё еще пуст и загрузка кэша не идёт, показываем окно "Нет слов"
-            if !self.isReadyToPlay && !self.isLoadingCache {
-                self.state.showNoWords = true
-            } else {
-                // Иначе инициализируем состояние для выбранного режима
-                self.state.initialize(for: self.state.currentMode ?? .practice)
+        Logger.debug("[Match]: Starting game")
+            cache.initialize()
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+                guard let self = self else { return }
+                Logger.debug("[Match]: Checking cache status", metadata: [
+                    "isReady": String(self.isReadyToPlay),
+                    "isLoading": String(self.isLoadingCache),
+                    "cacheSize": String(self.cache.cache.count)
+                ])
+                
+                if !self.isReadyToPlay && !self.isLoadingCache {
+                    self.state.showNoWords = true
+                } else {
+                    self.state.initialize(for: self.state.currentMode ?? .practice)
+                }
             }
-        }
     }
     
     func end() {

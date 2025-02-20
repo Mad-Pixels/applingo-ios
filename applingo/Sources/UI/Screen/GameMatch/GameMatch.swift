@@ -6,10 +6,16 @@ struct GameMatch: View {
     @StateObject private var viewModel = MatchGameViewModel()
     /// Ожидается, что игра типа Match реализует метод getItems(_:) и возвращает [DatabaseModelWord]
     @ObservedObject var game: Match
-
+    @ObservedObject private var cache: MatchCache
+    
+    init(game: Match) {
+        self.game = game
+        self.cache = game.cache
+    }
+    
     var body: some View {
         VStack(spacing: 16) {
-        
+            
             // Первый ряд – frontText
             HStack(spacing: 4) {
                 ForEach(viewModel.frontItems, id: \.id) { word in
@@ -47,16 +53,32 @@ struct GameMatch: View {
             loadNewWords()
         }
         // Если набор слов закончился, автоматически подгружаем новые
-        .onChange(of: viewModel.frontItems) { newItems in
-            if newItems.isEmpty {
+        .onChange(of: cache.cache.count) { newCount in
+            Logger.debug("[GameMatch]: Cache size changed", metadata: [
+                "newCount": String(newCount)
+            ])
+            if newCount > 0 {
                 loadNewWords()
             }
         }
     }
     
     private func loadNewWords() {
-        if let words = game.getItems(8) as? [DatabaseModelWord], words.count == 8 {
+        Logger.debug("[GameMatch]: Loading new words")
+        
+        guard let words = game.getItems(8) as? [DatabaseModelWord] else {
+            Logger.debug("[GameMatch]: Failed to get words")
+            return
+        }
+        
+        Logger.debug("[GameMatch]: Got words", metadata: [
+            "count": String(words.count)
+        ])
+        
+        // Убираем проверку на count == 8
+        if !words.isEmpty {
             viewModel.setupGame(with: words)
+            Logger.debug("[GameMatch]: Setup game with words")
         }
     }
 }

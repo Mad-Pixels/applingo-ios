@@ -10,9 +10,17 @@ final class MatchGameViewModel: ObservableObject {
     
     /// Настраивает игру, перемешивая полученные слова для двух колонок.
     func setupGame(with words: [DatabaseModelWord]) {
-        // Предполагаем, что words содержит ровно 8 элементов
+        Logger.debug("[MatchViewModel]: Setting up game", metadata: [
+            "wordsCount": String(words.count)
+        ])
+        
         frontItems = words.shuffled()
         backItems = words.shuffled()
+        
+        Logger.debug("[MatchViewModel]: Game setup complete", metadata: [
+            "frontCount": String(frontItems.count),
+            "backCount": String(backItems.count)
+        ])
     }
     
     func selectFront(_ word: DatabaseModelWord) {
