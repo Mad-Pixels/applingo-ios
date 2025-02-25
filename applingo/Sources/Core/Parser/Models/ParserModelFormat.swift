@@ -34,4 +34,12 @@ public struct ParserModelFormat {
         quoteCharacter: "\"",
         escapeCharacter: "\\"
     )
+    
+    /// JSON format definition.
+    public static let json = ParserModelFormat(
+        separator: "",
+        hasHeader: false,
+        quoteCharacter: Character("\""),
+        escapeCharacter: Character("\\")
+    )
 }

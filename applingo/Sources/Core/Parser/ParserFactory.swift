@@ -8,8 +8,9 @@ public final class ParserFactory {
     /// Initializes the factory with a list of available parsers.
     /// - Parameter parsers: An array of parser instances.
     public init(parsers: [AbstractParser] = [
+        ParserJSON(),
         ParseCSV(),
-        ParseTSV()
+        ParseTSV(),
     ]) {
         self.parsers = parsers
     }
