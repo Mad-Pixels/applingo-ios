@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D84387D62D36741500ADFAC6 /* FlagKit in Frameworks */ = {isa = PBXBuildFile; productRef = D84387D52D36741500ADFAC6 /* FlagKit */; };
 		D8A5D35C2CB2F02D00ACCD85 /* CocoaLumberjack in Frameworks */ = {isa = PBXBuildFile; productRef = D8A5D35B2CB2F02D00ACCD85 /* CocoaLumberjack */; };
 		D8A5D35E2CB2F02D00ACCD85 /* CocoaLumberjackSwift in Frameworks */ = {isa = PBXBuildFile; productRef = D8A5D35D2CB2F02D00ACCD85 /* CocoaLumberjackSwift */; };
 		D8A5D3602CB2F02D00ACCD85 /* CocoaLumberjackSwiftLogBackend in Frameworks */ = {isa = PBXBuildFile; productRef = D8A5D35F2CB2F02D00ACCD85 /* CocoaLumberjackSwiftLogBackend */; };
@@ -35,6 +36,7 @@
 				D8A5D35C2CB2F02D00ACCD85 /* CocoaLumberjack in Frameworks */,
 				D8B011FD2CB0359000EB9A3D /* GRDB in Frameworks */,
 				D8A5D35E2CB2F02D00ACCD85 /* CocoaLumberjackSwift in Frameworks */,
+				D84387D62D36741500ADFAC6 /* FlagKit in Frameworks */,
 				D8A5D3602CB2F02D00ACCD85 /* CocoaLumberjackSwiftLogBackend in Frameworks */,
 				D8A5D3E62CB4561200ACCD85 /* IQKeyboardManagerSwift in Frameworks */,
 			);
@@ -93,6 +95,7 @@
 				D8A5D35D2CB2F02D00ACCD85 /* CocoaLumberjackSwift */,
 				D8A5D35F2CB2F02D00ACCD85 /* CocoaLumberjackSwiftLogBackend */,
 				D8A5D3E52CB4561200ACCD85 /* IQKeyboardManagerSwift */,
+				D84387D52D36741500ADFAC6 /* FlagKit */,
 			);
 			productName = lingocards;
 			productReference = D8BD4FEE2CADA16500E978AB /* applingo.app */;
@@ -129,6 +132,7 @@
 				D8B011FB2CB0359000EB9A3D /* XCRemoteSwiftPackageReference "GRDB.swift" */,
 				D8A5D35A2CB2F02D00ACCD85 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */,
 				D8A5D3E42CB4561200ACCD85 /* XCRemoteSwiftPackageReference "IQKeyboardManager" */,
+				D84387D42D36741500ADFAC6 /* XCRemoteSwiftPackageReference "FlagKit" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = D8BD4FEF2CADA16500E978AB /* Products */;
@@ -305,11 +309,13 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.0.1;
+				MARKETING_VERSION = 0.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = io.madpixels.applingo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -339,11 +345,13 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.0.1;
+				MARKETING_VERSION = 0.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = io.madpixels.applingo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -374,6 +382,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		D84387D42D36741500ADFAC6 /* XCRemoteSwiftPackageReference "FlagKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/madebybowtie/FlagKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.4.0;
+			};
+		};
 		D8A5D35A2CB2F02D00ACCD85 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/CocoaLumberjack/CocoaLumberjack";
@@ -401,6 +417,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		D84387D52D36741500ADFAC6 /* FlagKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D84387D42D36741500ADFAC6 /* XCRemoteSwiftPackageReference "FlagKit" */;
+			productName = FlagKit;
+		};
 		D8A5D35B2CB2F02D00ACCD85 /* CocoaLumberjack */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = D8A5D35A2CB2F02D00ACCD85 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */;

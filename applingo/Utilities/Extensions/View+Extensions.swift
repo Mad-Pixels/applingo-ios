@@ -18,42 +18,43 @@ extension View {
         cornerRadius: CGFloat = 16,
         opacity: CGFloat = 0.85
     ) -> some View {
-        modifier(GlassBackgroundModifier(
+        let adjustedOpacity = ThemeManager.shared.currentTheme == .dark ? opacity : 0.98 // фиксированное значение для светлой темы
+        return modifier(GlassBackgroundModifier(
             cornerRadius: cornerRadius,
-            opacity: opacity
+            opacity: adjustedOpacity
         ))
     }
     
-    func gameCardStyle(_ style: GameCardStyle) -> some View {
-        modifier(style.makeBaseModifier())
-    }
+//    func gameCardStyle(_ style: GameCardStyle) -> some View {
+//        modifier(style.makeBaseModifier())
+//    }
+//    
+//    func gameCardSpecialEffects(
+//        style: GameCardStyle,
+//        isSpecial: Bool,
+//        specialService: GameSpecialService
+//    ) -> some View {
+//        modifier(
+//            style.makeSpecialEffectsModifier(
+//                isSpecial: isSpecial,
+//                specialService: specialService
+//            )
+//        )
+//    }
     
-    func gameCardSpecialEffects(
-        style: GameCardStyle,
-        isSpecial: Bool,
-        specialService: GameSpecialService
-    ) -> some View {
-        modifier(
-            style.makeSpecialEffectsModifier(
-                isSpecial: isSpecial,
-                specialService: specialService
-            )
-        )
-    }
-    
-    func withVisualFeedback<F: GameFeedbackVisualProtocol>(_ feedback: F) -> some View {
-        modifier(feedback.modifier())
-    }
-    
-    func withHapticFeedback(_ feedback: GameFeedbackHapticProtocol) -> some View {
-        onAppear {
-            feedback.playHaptic()
-        }
-    }
-    
-    func withSpecial(_ special: GameSpecialProtocol) -> some View {
-        environment(\.specialService, GameSpecialService().withSpecial(special))
-    }
+//    func withVisualFeedback<F: GameFeedbackVisualProtocol>(_ feedback: F) -> some View {
+//        modifier(feedback.modifier())
+//    }
+//    
+//    func withHapticFeedback(_ feedback: GameFeedbackHapticProtocol) -> some View {
+//        onAppear {
+//            feedback.playHaptic()
+//        }
+//    }
+//    
+//    func withSpecial(_ special: GameSpecialProtocol) -> some View {
+//        environment(\.specialService, GameSpecialService().withSpecial(special))
+//    }
     
     func applySpecialEffects(_ modifiers: [AnyViewModifier]) -> some View {
         return modifiers.reduce(AnyView(self)) { currentView, modifier in
