@@ -53,18 +53,18 @@ struct LightTheme: AppTheme {
     // Quiz game
     var quizTheme: GameTheme {
         GameTheme(
-            main: Color(hex: "E83371"),
-            secondary: Color(hex: "A22358"),
-            accent: Color(hex: "F280B3")
+            main: Color(hex: "e04300"),
+            secondary: Color(hex: "5e5b57"),
+            accent: Color(hex: "1d8f00")
         )
     }
     
     // Match game
     var matchTheme: GameTheme {
         GameTheme(
-            main: Color(hex: "4b5563"),
-            secondary: Color(hex: "f8a009"),
-            accent: Color(hex: "e38c10")
+            main: Color(hex: "827c71"),
+            secondary: Color(hex: "748aa8"),
+            accent: Color(hex: "84bf4d")
         )
     }
     
