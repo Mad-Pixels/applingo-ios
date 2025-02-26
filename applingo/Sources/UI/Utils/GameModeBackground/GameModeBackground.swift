@@ -43,6 +43,7 @@ struct GameModeBackground: View {
             }
         }
         .onAppear {
+            manager.reset()
             manager.generateIfNeeded(for: UIScreen.main.bounds.size, using: colors)
         }
         .onReceive(motionManager.$roll) { roll in
