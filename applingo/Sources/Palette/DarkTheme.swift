@@ -42,12 +42,11 @@ struct DarkTheme: AppTheme {
     
     // Patterns
     var mainPattern = DynamicPatternModel(colors: [
-        Color(red: 0.2, green: 0.25, blue: 0.35),
-        Color(red: 0.3, green: 0.2, blue: 0.25),
-        Color(red: 0.25, green: 0.3, blue: 0.2),
-        Color(red: 0.35, green: 0.35, blue: 0.25),
-        Color(red: 0.3, green: 0.3, blue: 0.3),
-        Color(red: 0.4, green: 0.4, blue: 0.45)
+        Color(hex: "90A4AE"),
+        Color(hex: "B0BEC5"),
+        Color(hex: "CFD8DC"),
+        Color(hex: "78909C"),
+        Color(hex: "546E7A"),
     ])
     
     // Quiz game
