@@ -53,9 +53,9 @@ struct DarkTheme: AppTheme {
     // Quiz game
     var quizTheme: GameTheme {
         GameTheme(
-            main: Color(hex: "B5285D"),
-            dark: Color(hex: "7A1B41"),
-            light: Color(hex: "D45A87")
+            main: Color(hex: "f8a009"),
+            secondary: Color(hex: "748aa8"),
+            accent: Color(hex: "84bf4d")
         )
     }
         
@@ -63,8 +63,8 @@ struct DarkTheme: AppTheme {
     var matchTheme: GameTheme {
         GameTheme(
             main: Color(hex: "4b5563"),
-            dark: Color(hex: "f8a009"),
-            light: Color(hex: "e38c10")
+            secondary: Color(hex: "f8a009"),
+            accent: Color(hex: "e38c10")
         )
     }
     
@@ -72,8 +72,8 @@ struct DarkTheme: AppTheme {
     var swipeTheme: GameTheme {
         GameTheme(
             main: Color(hex: "4b5563"),
-            dark: Color(hex: "f8a009"),
-            light: Color(hex: "e38c10")
+            secondary: Color(hex: "f8a009"),
+            accent: Color(hex: "e38c10")
         )
     }
 }

@@ -5,8 +5,8 @@ struct GameTheme {
     // MARK: - Properties
     /// The main color for the game theme.
     let main: Color
-    /// A darker variant of the main color.
-    let dark: Color
-    /// A lighter variant of the main color.
-    let light: Color
+    /// A secondary variant of the main color.
+    let secondary: Color
+    /// A accent variant of the main color.
+    let accent: Color
 }

@@ -60,7 +60,7 @@ extension GameModeStyle {
                 font: .system(.title, design: .rounded).weight(.bold),
                 color: theme.textPrimary
             ),
-            colors: [gameTheme.main, gameTheme.dark, gameTheme.light]
+            colors: [gameTheme.main, gameTheme.secondary, gameTheme.accent]
         )
     }
 }
