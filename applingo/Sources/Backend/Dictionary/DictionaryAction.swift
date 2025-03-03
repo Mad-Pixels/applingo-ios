@@ -84,21 +84,25 @@ final class DictionaryAction: ProcessDatabase {
                 case .failure(let error):
                     completion(.failure(error))
                 case .success:
-                    Task {
-                        do {
-                            try await ApiManagerRequest().patchDictionaryStatistic(
-                                request: ApiModelDictionaryStatisticRequest.onDelete(),
-                                name: dictionary.name,
-                                author: dictionary.author,
-                                subcategory: dictionary.subcategory
-                            )
-                            Logger.debug("[Dictionary]: Dictionary statistic patched successfully for deletion")
-                        } catch {
-                            Logger.warning(
-                                "[Dictionary]: Failed to patch dictionary statistic on deletion",
-                                metadata: ["error": error.localizedDescription]
-                            )
+                    if !dictionary.isLocal {
+                        Task {
+                            do {
+                                try await ApiManagerRequest().patchDictionaryStatistic(
+                                    request: ApiModelDictionaryStatisticRequest.onDelete(),
+                                    name: dictionary.name,
+                                    author: dictionary.author,
+                                    subcategory: dictionary.subcategory
+                                )
+                                Logger.debug("[Dictionary]: Dictionary statistic patched successfully for deletion")
+                            } catch {
+                                Logger.warning(
+                                    "[Dictionary]: Failed to patch dictionary statistic on deletion",
+                                    metadata: ["error": error.localizedDescription]
+                                )
+                            }
+                            completion(.success(()))
                         }
+                    } else {
                         completion(.success(()))
                     }
                 }
