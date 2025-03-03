@@ -79,7 +79,30 @@ final class DictionaryAction: ProcessDatabase {
             { try self.dictionaryRepository.delete(dictionary) },
             operation: "delete",
             dictionary: dictionary,
-            completion: completion
+            completion: { result in
+                switch result {
+                case .failure(let error):
+                    completion(.failure(error))
+                case .success:
+                    Task {
+                        do {
+                            try await ApiManagerRequest().patchDictionaryStatistic(
+                                request: ApiModelDictionaryStatisticRequest.onDelete(),
+                                name: dictionary.name,
+                                author: dictionary.author,
+                                subcategory: dictionary.subcategory
+                            )
+                            Logger.debug("[Dictionary]: Dictionary statistic patched successfully for deletion")
+                        } catch {
+                            Logger.warning(
+                                "[Dictionary]: Failed to patch dictionary statistic on deletion",
+                                metadata: ["error": error.localizedDescription]
+                            )
+                        }
+                        completion(.success(()))
+                    }
+                }
+            }
         )
     }
     

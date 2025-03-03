@@ -67,6 +67,7 @@ actor DictionaryDownload {
         
         do {
             try await ApiManagerRequest().patchDictionaryStatistic(
+                request: ApiModelDictionaryStatisticRequest.onDownload(),
                 name: dictionary.name,
                 author: dictionary.author,
                 subcategory: dictionary.subcategory
