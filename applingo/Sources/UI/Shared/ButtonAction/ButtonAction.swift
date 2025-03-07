@@ -28,7 +28,6 @@ struct ButtonAction: View {
         .disabled(disabled)
         .frame(maxWidth: .infinity, minHeight: style.height)
         .background(ButtonActionBackground(style: style))
-        .foregroundColor(style.textColor)
         .cornerRadius(style.cornerRadius)
         .overlay(ButtonActionBorder(style: style))
         .padding(style.padding)
@@ -45,7 +44,7 @@ private struct ButtonActionLabel: View {
     var body: some View {
         DynamicText(
             model: DynamicTextModel(text: title),
-            style: style.textStyle
+            style: style.textStyle 
         )
         .frame(maxWidth: .infinity, alignment: .center)
     }

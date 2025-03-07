@@ -7,9 +7,6 @@ struct ButtonActionStyle {
     let patternBorder: Bool
     let patternBackground: Bool
     let backgroundColor: Color
-    let textColor: Color
-    let font: Font
-    let fontPointSize: CGFloat
     let height: CGFloat
     let cornerRadius: CGFloat
     let borderWidth: CGFloat
@@ -26,9 +23,6 @@ extension ButtonActionStyle {
             patternBorder: false,
             patternBackground: false,
             backgroundColor: theme.accentPrimary,
-            textColor: theme.accentContrast,
-            font: .body.bold(),
-            fontPointSize: 17, // Adjust this value as needed
             height: 45,
             cornerRadius: 8,
             borderWidth: 0,
@@ -45,15 +39,12 @@ extension ButtonActionStyle {
             patternBorder: false,
             patternBackground: false,
             backgroundColor: theme.accentPrimary,
-            textColor: theme.textContrast,
-            font: .body.bold(),
-            fontPointSize: 17,
             height: 45,
             cornerRadius: 8,
             borderWidth: 0,
             borderColor: theme.cardBorder,
             padding: EdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8),
-            textStyle: .themed(ThemeManager.shared.currentThemeStyle)
+            textStyle: .action(ThemeManager.shared.currentThemeStyle)
         )
     }
     
@@ -64,9 +55,6 @@ extension ButtonActionStyle {
             patternBorder: false,
             patternBackground: false,
             backgroundColor: theme.errorBackgroundColor,
-            textColor: theme.errorPrimaryColor,
-            font: .body.bold(),
-            fontPointSize: 17,
             height: 45,
             cornerRadius: 8,
             borderWidth: 0,
@@ -83,9 +71,6 @@ extension ButtonActionStyle {
             patternBorder: true,
             patternBackground: false,
             backgroundColor: theme.backgroundPrimary,
-            textColor: theme.textPrimary,
-            font: .body.bold(),
-            fontPointSize: 17,
             height: 80,
             cornerRadius: 20,
             borderWidth: 8,
@@ -102,9 +87,6 @@ extension ButtonActionStyle {
             patternBorder: false,
             patternBackground: false,
             backgroundColor: theme.backgroundSecondary,
-            textColor: theme.textPrimary,
-            font: .body,
-            fontPointSize: 14,
             height: 65,
             cornerRadius: 14,
             borderWidth: 4,
