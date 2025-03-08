@@ -8,6 +8,14 @@ public struct ParserModelWord: Codable {
     public var description: String
     public var hint: String
     
+    enum CodingKeys: String, CodingKey {
+        case frontText = "word"
+        case backText = "translation"
+        case description = "description"
+        case hint = "hint"
+        case dictionary
+    }
+    
     public init(
         dictionary: String,
         frontText: String,
