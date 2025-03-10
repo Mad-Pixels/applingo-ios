@@ -43,7 +43,7 @@ extension ButtonMenuStyle {
         ButtonMenuStyle(
             backgroundColor: theme.backgroundPrimary,
             foregroundColor: theme.textPrimary,
-            iconColor: gameTheme.dark,
+            iconColor: gameTheme.main,
             font: .body.bold(),
             iconSize: 36,
             padding: EdgeInsets(top: 16, leading: 24, bottom: 16, trailing: 24),

@@ -59,7 +59,7 @@ struct DictionaryRemoteFilter: View {
             title: locale.screenTitle
         ) {
             ScrollView {
-                if categoryGetter.isLoadingPage {
+                if categoryGetter.isLoadingPage { 
                     VStack {
                         Spacer()
                         ItemListLoadingOverlay(style: .themed(ThemeManager.shared.currentThemeStyle))

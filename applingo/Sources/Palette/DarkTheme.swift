@@ -42,20 +42,19 @@ struct DarkTheme: AppTheme {
     
     // Patterns
     var mainPattern = DynamicPatternModel(colors: [
-        Color(red: 0.2, green: 0.25, blue: 0.35),
-        Color(red: 0.3, green: 0.2, blue: 0.25),
-        Color(red: 0.25, green: 0.3, blue: 0.2),
-        Color(red: 0.35, green: 0.35, blue: 0.25),
-        Color(red: 0.3, green: 0.3, blue: 0.3),
-        Color(red: 0.4, green: 0.4, blue: 0.45)
+        Color(hex: "90A4AE"),
+        Color(hex: "B0BEC5"),
+        Color(hex: "CFD8DC"),
+        Color(hex: "78909C"),
+        Color(hex: "546E7A"),
     ])
     
     // Quiz game
     var quizTheme: GameTheme {
         GameTheme(
-            main: Color(hex: "B5285D"),
-            dark: Color(hex: "7A1B41"),
-            light: Color(hex: "D45A87")
+            main: Color(hex: "f8a009"),
+            secondary: Color(hex: "748aa8"),
+            accent: Color(hex: "84bf4d")
         )
     }
         
@@ -63,8 +62,8 @@ struct DarkTheme: AppTheme {
     var matchTheme: GameTheme {
         GameTheme(
             main: Color(hex: "4b5563"),
-            dark: Color(hex: "f8a009"),
-            light: Color(hex: "e38c10")
+            secondary: Color(hex: "f8a009"),
+            accent: Color(hex: "e38c10")
         )
     }
     
@@ -72,8 +71,8 @@ struct DarkTheme: AppTheme {
     var swipeTheme: GameTheme {
         GameTheme(
             main: Color(hex: "4b5563"),
-            dark: Color(hex: "f8a009"),
-            light: Color(hex: "e38c10")
+            secondary: Color(hex: "f8a009"),
+            accent: Color(hex: "e38c10")
         )
     }
 }

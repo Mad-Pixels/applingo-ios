@@ -52,11 +52,6 @@ struct DictionaryImport: View {
                     }
                 }
             }
-            
-            DictionaryImportViewActions(locale: locale, onImport: {
-                isShowingFileImporter = true
-            })
-            .background(style.backgroundColor)
         }
         .fileImporter(
             isPresented: $isShowingFileImporter,
@@ -68,6 +63,15 @@ struct DictionaryImport: View {
         ) { result in
             handleFileImport(result: result)
         }
+        
+        DictionaryImportViewActions(
+            style: style,
+            locale: locale,
+            onImport: {
+                isShowingFileImporter = true
+            }
+        )
+        .background(ThemeManager.shared.currentThemeStyle.backgroundPrimary)
     }
     
     // MARK: - Private Methods

@@ -158,19 +158,20 @@ final class ApiManagerRequest {
     /// Sends a PATCH request to update the dictionary statistics,
     /// increasing both "downloads" and "rating", and includes additional query parameters.
     /// - Parameters:
+    ///   - request: The ApiModelDictionaryStatisticRequest containing statistic update info.
     ///   - name: The dictionary name (min 2, max 36 characters).
     ///   - author: The dictionary author (alphanum, min 2, max 24 characters).
     ///   - subcategory: The dictionary subcategory (exactly 5 letters, e.g. "ru-il").
     /// - Throws: An `APIError` if the request fails.
-    func patchDictionaryStatistic(name: String, author: String, subcategory: String) async throws {
+    func patchDictionaryStatistic(
+        request: ApiModelDictionaryStatisticRequest,
+        name: String,
+        author: String,
+        subcategory: String
+    ) async throws {
         Logger.debug("[API]: Patching dictionary statistic...")
         
-        let requestBody: [String: String] = [
-            "downloads": "increase",
-            "rating": "increase"
-        ]
-        let bodyData = try JSONSerialization.data(withJSONObject: requestBody, options: [])
-        
+        let bodyData = try JSONEncoder().encode(request)
         let queryItems = [
             URLQueryItem(name: "name", value: name),
             URLQueryItem(name: "author", value: author),

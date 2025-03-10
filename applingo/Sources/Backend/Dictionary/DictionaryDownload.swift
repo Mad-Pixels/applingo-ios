@@ -63,9 +63,11 @@ actor DictionaryDownload {
         )
         
         await notifyDictionaryUpdate()
+        await notifyWordsUpdate()
         
         do {
             try await ApiManagerRequest().patchDictionaryStatistic(
+                request: ApiModelDictionaryStatisticRequest.onDownload(),
                 name: dictionary.name,
                 author: dictionary.author,
                 subcategory: dictionary.subcategory
@@ -157,6 +159,17 @@ actor DictionaryDownload {
         await MainActor.run {
             Logger.debug("[Download]: Notifying about dictionary update")
             NotificationCenter.default.post(name: .dictionaryListShouldUpdate, object: nil)
+        }
+    }
+    
+    /// Notifies observers about an update to the words list.
+    ///
+    /// This method posts a notification on the main actor, allowing UI components and other parts
+    /// of the application to refresh their data based on the update.
+    private func notifyWordsUpdate() async {
+        await MainActor.run {
+            Logger.debug("[Download]: Notifying about words update")
+            NotificationCenter.default.post(name: .wordListShouldUpdate, object: nil)
         }
     }
 }

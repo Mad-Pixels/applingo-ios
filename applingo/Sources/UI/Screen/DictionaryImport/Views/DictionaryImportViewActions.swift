@@ -4,37 +4,41 @@ import SwiftUI
 ///
 /// This view displays a button to trigger the file importer for dictionary data.
 struct DictionaryImportViewActions: View {
-    
     // MARK: - Properties
-    
-    /// Closure to execute when the import button is pressed.
-    let onImport: () -> Void
-    
-    /// The localization object providing the title for the import button.
+    @EnvironmentObject private var themeManager: ThemeManager
     private let locale: DictionaryImportLocale
+    private let style: DictionaryImportStyle
+    
+    let onImport: () -> Void
     
     // MARK: - Initialization
     
-    /// Initializes the view with a localization object and an action handler.
+    // MARK: - Initialization
+    /// Initializes the view with localized titles and action handlers.
     /// - Parameters:
-    ///   - locale: The localization object providing button titles.
+    ///   - style: `DictionaryImportStyle` style configuration.
+    ///   - locale: `DictionaryImportLocale` localization object.
     ///   - onImport: A closure executed when the import button is tapped.
-    init(locale: DictionaryImportLocale, onImport: @escaping () -> Void) {
+    init(
+        style: DictionaryImportStyle,
+        locale: DictionaryImportLocale,
+        onImport: @escaping () -> Void
+    ) {
         self.locale = locale
+        self.style = style
         self.onImport = onImport
     }
     
     // MARK: - Body
-    
     var body: some View {
         HStack {
             ButtonAction(
-                title: locale.importCSVTitle,
+                title: locale.screenTitle.lowercased(),
                 action: onImport,
                 style: .action(ThemeManager.shared.currentThemeStyle)
             )
         }
         .padding(.horizontal)
-        .padding(.vertical, 10)
+        .padding(.top, 10)
     }
 }

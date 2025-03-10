@@ -35,6 +35,8 @@ final class WordGetter: ProcessDatabase {
         
         self.wordRepository = DatabaseManagerWord(dbQueue: dbQueue)
         super.init(dbQueue: dbQueue)
+        
+        setupNotifications()
     }
     
     // MARK: - Public Methods
@@ -158,6 +160,21 @@ final class WordGetter: ProcessDatabase {
     }
     
     // MARK: - Private Methods
+    
+    private func setupNotifications() {
+        Logger.debug("[Word]: Setting up notifications")
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleWordUpdate),
+            name: .wordListShouldUpdate,
+            object: nil
+        )
+    }
+    
+    @objc private func handleWordUpdate() {
+        Logger.debug("[Word]: Received word update notification")
+        resetPagination()
+    }
     
     /// Handles fetched words and updates pagination state.
     private func handleFetchedWords(_ fetchedWords: [DatabaseModelWord]) {

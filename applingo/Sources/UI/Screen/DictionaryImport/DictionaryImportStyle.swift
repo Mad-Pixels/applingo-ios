@@ -60,7 +60,8 @@ extension DictionaryImportStyle {
             accentColor: theme.accentPrimary,
             descriptionColor: theme.textPrimary,
             textColor: theme.textSecondary,
-            padding: EdgeInsets(top: 16, leading: 16, bottom: 32, trailing: 16),
+            padding: EdgeInsets(top: 0, leading: 16, bottom: 16, trailing: 16)
+,
             spacing: 24,
             sectionSpacing: 16,
             titleFont: .system(size: 48, weight: .bold),
