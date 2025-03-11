@@ -17,7 +17,7 @@ struct GameModeViewCard: View {
     
     // MARK: - Body
     var body: some View {
-        ButtonMenu(
+        ButtonIcon(
             title: title,
             subtitle: description,
             icon: icon,

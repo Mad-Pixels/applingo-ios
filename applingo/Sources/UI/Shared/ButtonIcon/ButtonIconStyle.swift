@@ -1,8 +1,7 @@
 import SwiftUI
 
-// MARK: - ButtonMenuStyle
-/// Defines styling parameters for the ButtonMenu component.
-struct ButtonMenuStyle {
+/// Defines styling parameters for the ButtonIcon component.
+struct ButtonIconStyle {
     let backgroundColor: Color
     let foregroundColor: Color
     let iconColor: Color
@@ -14,14 +13,15 @@ struct ButtonMenuStyle {
     let borderColor: Color
     let borderWidth: CGFloat
     let shadowColor: Color
+    let shadowRadius: CGFloat
     let hStackSpacing: CGFloat
     let iconFrameSize: CGSize
 }
 
-extension ButtonMenuStyle {
+extension ButtonIconStyle {
     /// Returns a themed style based on the provided AppTheme.
-    static func themed(_ theme: AppTheme) -> ButtonMenuStyle {
-        ButtonMenuStyle(
+    static func themed(_ theme: AppTheme) -> ButtonIconStyle {
+        ButtonIconStyle(
             backgroundColor: theme.backgroundSecondary,
             foregroundColor: theme.textPrimary,
             iconColor: theme.accentDark,
@@ -33,14 +33,15 @@ extension ButtonMenuStyle {
             borderColor: theme is DarkTheme ? Color.white.opacity(0.1) : .clear,
             borderWidth: theme is DarkTheme ? 1 : 0,
             shadowColor: theme.cardBorder,
+            shadowRadius: 4,
             hStackSpacing: 16,
             iconFrameSize: CGSize(width: 42, height: 42)
         )
     }
     
     /// Returns a style for game menus based on the provided AppTheme and GameTheme.
-    static func game(_ theme: AppTheme, _ gameTheme: GameTheme) -> ButtonMenuStyle {
-        ButtonMenuStyle(
+    static func game(_ theme: AppTheme, _ gameTheme: GameTheme) -> ButtonIconStyle {
+        ButtonIconStyle(
             backgroundColor: theme.backgroundPrimary,
             foregroundColor: theme.textPrimary,
             iconColor: gameTheme.main,
@@ -52,6 +53,7 @@ extension ButtonMenuStyle {
             borderColor: theme is DarkTheme ? Color.white.opacity(0.1) : .clear,
             borderWidth: theme is DarkTheme ? 1 : 0,
             shadowColor: theme.cardBorder,
+            shadowRadius: 4,
             hStackSpacing: 16,
             iconFrameSize: CGSize(width: 42, height: 42)
         )

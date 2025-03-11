@@ -1,15 +1,15 @@
 import SwiftUI
 
-struct ButtonMenu_Previews: PreviewProvider {
+struct ButtonIcon_Previews: PreviewProvider {
     static var previews: some View {
-        ButtonMenuPreview()
+        ButtonIconPreview()
             .previewDisplayName("Button Navigation Component Preview")
             .previewLayout(.sizeThatFits)
             .padding()
     }
 }
 
-private struct ButtonMenuPreview: View {
+private struct ButtonIconPreview: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 32) {
@@ -26,7 +26,7 @@ private struct ButtonMenuPreview: View {
                 .font(.headline)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
-            ButtonMenu(
+            ButtonIcon(
                 title: "Game Mode",
                 subtitle: "Select your preferred game mode",
                 icon: "gamecontroller",

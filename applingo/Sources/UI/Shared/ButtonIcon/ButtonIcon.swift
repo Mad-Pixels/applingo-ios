@@ -1,17 +1,16 @@
 import SwiftUI
 
-// MARK: - ButtonMenu View
 /// A menu button that displays a title, an optional subtitle, and an optional icon.
 /// The button shows a chevron indicator and applies custom styling.
-struct ButtonMenu: View {
+struct ButtonIcon: View {
     private let title: String
     private let subtitle: String?
     private let icon: String?
-    private let style: ButtonMenuStyle
+    private let style: ButtonIconStyle
     private let isSelected: Bool
     private let action: () -> Void
 
-    /// Initializes the ButtonMenu.
+    /// Initializes the ButtonIcon.
     /// - Parameters:
     ///   - title: The primary title text.
     ///   - subtitle: Optional secondary text.
@@ -24,7 +23,7 @@ struct ButtonMenu: View {
         subtitle: String? = nil,
         icon: String? = nil,
         isSelected: Bool = false,
-        style: ButtonMenuStyle = .themed(LightTheme()),
+        style: ButtonIconStyle = .themed(LightTheme()),
         action: @escaping () -> Void
     ) {
         self.title = title
@@ -48,12 +47,12 @@ struct ButtonMenu: View {
                                 .fill(style.backgroundColor)
                         )
                 }
-                
+
                 VStack(alignment: .leading) {
                     Text(title)
                         .font(style.font)
                         .foregroundColor(style.foregroundColor)
-                    
+
                     if let subtitle = subtitle {
                         Text(subtitle)
                             .font(.subheadline)
@@ -70,7 +69,7 @@ struct ButtonMenu: View {
             .background(
                 RoundedRectangle(cornerRadius: style.cornerRadius)
                     .fill(style.backgroundColor)
-                    .shadow(color: style.shadowColor.opacity(0.3), radius: 4, x: 0, y: 2)
+                    .shadow(color: style.shadowColor.opacity(0.3), radius: style.shadowRadius, x: 0, y: 2)
             )
         }
         .buttonStyle(PlainButtonStyle())

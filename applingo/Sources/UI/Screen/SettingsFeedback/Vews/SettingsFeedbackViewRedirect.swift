@@ -30,7 +30,7 @@ struct SettingsFeedbackViewRedirect: View {
     
     // MARK: - Body
     var body: some View {
-        ButtonMenu(
+        ButtonIcon(
             title: title,
             style: .themed(themeManager.currentThemeStyle),
             action: {

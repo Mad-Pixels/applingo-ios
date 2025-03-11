@@ -1,8 +1,10 @@
 import SwiftUI
 
 // MARK: - ButtonActionStyle
-/// Defines the styling parameters for the ButtonAction component.
+
+/// Defines customizable style attributes for `ButtonAction`.
 struct ButtonActionStyle {
+    // MARK: - Properties
     let pattern: DynamicPatternModel
     let patternBorder: Bool
     let patternBackground: Bool
@@ -13,10 +15,9 @@ struct ButtonActionStyle {
     let borderColor: Color
     let padding: EdgeInsets
     let textStyle: DynamicTextStyle
-}
 
-extension ButtonActionStyle {
-    /// Returns a themed style based on the provided AppTheme.
+    // MARK: - Predefined Style Variants
+    /// Default themed button style.
     static func themed(_ theme: AppTheme) -> ButtonActionStyle {
         ButtonActionStyle(
             pattern: theme.mainPattern,
@@ -31,8 +32,8 @@ extension ButtonActionStyle {
             textStyle: .themed(ThemeManager.shared.currentThemeStyle)
         )
     }
-    
-    /// Returns an action style variant.
+
+    /// Action button style variant.
     static func action(_ theme: AppTheme) -> ButtonActionStyle {
         ButtonActionStyle(
             pattern: theme.mainPattern,
@@ -47,8 +48,8 @@ extension ButtonActionStyle {
             textStyle: .action(ThemeManager.shared.currentThemeStyle)
         )
     }
-    
-    /// Returns a cancel style variant.
+
+    /// Cancel button style variant.
     static func cancel(_ theme: AppTheme) -> ButtonActionStyle {
         ButtonActionStyle(
             pattern: theme.mainPattern,
@@ -63,8 +64,8 @@ extension ButtonActionStyle {
             textStyle: .themed(ThemeManager.shared.currentThemeStyle)
         )
     }
-    
-    /// Returns a menu style variant.
+
+    /// Menu button style variant.
     static func menu(_ theme: AppTheme) -> ButtonActionStyle {
         ButtonActionStyle(
             pattern: theme.mainPattern,
@@ -79,8 +80,8 @@ extension ButtonActionStyle {
             textStyle: .titled(ThemeManager.shared.currentThemeStyle)
         )
     }
-    
-    /// Returns a menu style variant.
+
+    /// Game answer button style variant.
     static func gameAnswer(_ theme: AppTheme) -> ButtonActionStyle {
         ButtonActionStyle(
             pattern: theme.mainPattern,

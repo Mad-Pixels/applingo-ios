@@ -1,11 +1,10 @@
 import SwiftUI
 
-// MARK: - ButtonFloatingMultiple View
 /// A floating button that expands to show multiple action buttons when tapped.
 struct ButtonFloatingMultiple: View {
+    // MARK: - Properties
     let items: [ButtonFloatingModelIconAction]
     let style: ButtonFloatingStyle
-   
     @State private var isOpen = false
     @State private var iconRotation: Double = 0
 
@@ -39,7 +38,7 @@ struct ButtonFloatingMultiple: View {
                     VStack(spacing: style.spacing) {
                         ForEach(0..<items.count, id: \.self) { index in
                             Button(action: {
-                                withAnimation(.spring(response: 0.4, dampingFraction: 0.7,  blendDuration: 0.2)) {
+                                withAnimation(.spring(response: 0.4, dampingFraction: 0.7, blendDuration: 0.2)) {
                                     isOpen = false
                                     iconRotation = 0
                                 }
@@ -47,7 +46,7 @@ struct ButtonFloatingMultiple: View {
                             }) {
                                 Image(systemName: items[index].icon)
                                     .foregroundColor(.white)
-                                    .font(.system(size: 20))
+                                    .font(.system(size: style.itemIconFontSize))
                                     .frame(width: style.itemButtonSize.width, height: style.itemButtonSize.height)
                                     .background(style.itemButtonColor)
                                     .cornerRadius(style.cornerRadius)
@@ -67,7 +66,7 @@ struct ButtonFloatingMultiple: View {
                 }) {
                     Image(systemName: isOpen ? "xmark" : "plus")
                         .foregroundColor(.white)
-                        .font(.system(size: 24))
+                        .font(.system(size: style.mainIconFontSize))
                         .frame(width: style.mainButtonSize.width, height: style.mainButtonSize.height)
                         .background(style.mainButtonColor)
                         .cornerRadius(style.cornerRadius)
@@ -78,8 +77,7 @@ struct ButtonFloatingMultiple: View {
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
-            .padding(.trailing, 16)
-            .padding(.bottom, 16)
+            .padding(style.containerPadding)
         }
     }
 }
