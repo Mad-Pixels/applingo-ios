@@ -31,7 +31,10 @@ struct InputSearch: View {
     var body: some View {
         HStack(spacing: style.spacing) {
             Image(systemName: isDisabled ? "exclamationmark.magnifyingglass" : "sparkle.magnifyingglass")
-                .foregroundColor(isDisabled ? style.disabledIconColor : style.iconColor)
+                .foregroundColor(
+                    isDisabled ? style.disabledIconColor :
+                    (isFocused ? style.accentColor : style.iconColor)
+                )
                 .font(.system(size: style.iconSize))
             
             TextField(placeholder, text: $text)
