@@ -14,6 +14,7 @@ struct WordList: View {
     
     // MARK: - Local State
     @State private var selectedWord: DatabaseModelWord?
+    @State private var isSearchDisabled = false
     @State private var isShowingAddView = false
     
     // MARK: - Initializer
@@ -33,7 +34,8 @@ struct WordList: View {
                 WordListViewSearch(
                     style: style,
                     locale: locale,
-                    searchText: $wordsGetter.searchText
+                    searchText: $wordsGetter.searchText,
+                    isDisabled: isSearchDisabled
                 )
                 .padding()
                 
@@ -42,7 +44,10 @@ struct WordList: View {
                     locale: locale,
                     wordsGetter: wordsGetter,
                     wordsAction: wordsAction,
-                    onWordSelect: { word in selectedWord = word }
+                    onWordSelect: { word in selectedWord = word },
+                    onListStateChanged: { isEmpty in
+                        isSearchDisabled = isEmpty
+                    }
                 )
                 .safeAreaInset(edge: .bottom) {
                     Color.clear.frame(height: bottomInsetHeight)
