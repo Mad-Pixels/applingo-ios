@@ -49,7 +49,7 @@ struct DictionaryRemoteFilterViewActions: View {
             )
         }
         .padding(.horizontal)
-        .padding(.bottom, 40)
-        .padding(.top, 10)
+        .padding(.bottom, 5)
+        .padding(.top, 5)
     }
 }
