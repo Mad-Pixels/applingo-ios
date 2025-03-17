@@ -888,9 +888,6 @@
         }
       }
     },
-    "Loading..." : {
-
-    },
     "screen.dictionaryImport.description.BlockA" : {
       "extractionState" : "manual",
       "localizations" : {
