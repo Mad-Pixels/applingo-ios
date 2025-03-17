@@ -22,8 +22,8 @@ struct GameModeViewCard: View {
             subtitle: description,
             icon: icon,
             isSelected: false,
-            style: .game(themeManager.currentThemeStyle, style),
-            action: onSelect
+            action: onSelect,
+            style: .game(themeManager.currentThemeStyle, style)
         )
     }
 }

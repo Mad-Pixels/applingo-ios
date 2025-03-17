@@ -32,11 +32,11 @@ struct SettingsFeedbackViewRedirect: View {
     var body: some View {
         ButtonMenu(
             title: title,
-            style: .themed(themeManager.currentThemeStyle),
             action: {
                 guard let url = URL(string: url) else { return }
                 UIApplication.shared.open(url)
-            }
+            },
+            style: .themed(themeManager.currentThemeStyle)
         )
     }
 }

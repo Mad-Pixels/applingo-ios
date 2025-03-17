@@ -24,8 +24,8 @@ struct ButtonMenu: View {
         subtitle: String? = nil,
         icon: String? = nil,
         isSelected: Bool = false,
-        style: ButtonMenuStyle = .themed(LightTheme()),
-        action: @escaping () -> Void
+        action: @escaping () -> Void,
+        style: ButtonMenuStyle = .themed(LightTheme())
     ) {
         self.title = title
         self.subtitle = subtitle
