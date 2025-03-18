@@ -30,14 +30,16 @@ struct DictionaryLocalRow: View {
                             .foregroundColor(style.subtitleColor)
                     }
                     
-                    HStack(spacing: 4) {
-                        Image(systemName: "graduationcap")
-                            .font(.system(size: 11))
-                            .foregroundColor(style.accentColor)
-                        
-                        Text(model.level.rawValue)
-                            .font(style.wordCountFont)
-                            .foregroundColor(style.subtitleColor)
+                    if model.level.rawValue != "UFO" {
+                        HStack(spacing: 4) {
+                            Image(systemName: "graduationcap")
+                                .font(.system(size: 11))
+                                .foregroundColor(style.accentColor)
+                            
+                            Text(model.level.rawValue)
+                                .font(style.wordCountFont)
+                                .foregroundColor(style.subtitleColor)
+                        }
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
