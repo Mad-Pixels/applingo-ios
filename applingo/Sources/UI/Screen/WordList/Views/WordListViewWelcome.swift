@@ -8,6 +8,7 @@ struct WordListViewWelcome: View {
     private let style: WordListStyle
     
     @State private var showRemoteDictionary = false
+    @State private var showImportDictionary = false
 
     // MARK: - Initializer
     /// Initializes a new instance of `WordListViewWelcome`.
@@ -22,27 +23,26 @@ struct WordListViewWelcome: View {
     // MARK: - Body
     var body: some View {
         VStack {
-            Image("download_dictionary")
-                .resizable()
-                .scaledToFit()
-                .frame(
-                    width: style.iconSize,
-                    height: style.iconSize
-                )
-
-            VStack {
-                ButtonAction(
-                    title: locale.screenButtonDownloadDictionaty,
-                    action: { showRemoteDictionary = true },
-                    style: .menu(themeManager.currentThemeStyle)
-                )
-                .padding()
-                .frame(maxWidth: .infinity)
-            }
-            .padding(.horizontal)
+            ButtonMenu(
+                title: locale.screenButtonDownloadDictionaty,
+                action: { showRemoteDictionary = true },
+                style: .themed(themeManager.currentThemeStyle)
+            )
+            .padding()
+            
+            ButtonMenu(
+                title: locale.screenButtonImportDictionaty,
+                action: { showImportDictionary = true },
+                style: .themed(themeManager.currentThemeStyle)
+            )
+            .padding()
         }
+        .frame(maxWidth: .infinity)
         .fullScreenCover(isPresented: $showRemoteDictionary) {
             DictionaryRemoteList()
+        }
+        .fullScreenCover(isPresented: $showImportDictionary) {
+            DictionaryImport(isPresented: $showImportDictionary)
         }
     }
 }

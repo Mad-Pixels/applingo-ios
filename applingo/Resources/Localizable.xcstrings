@@ -2180,6 +2180,23 @@
         }
       }
     },
+    "screen.wordList.button.importDictionaty" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Import dictionary"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Импортировать словарь"
+          }
+        }
+      }
+    },
     "screen.wordList.title" : {
       "extractionState" : "manual",
       "localizations" : {
