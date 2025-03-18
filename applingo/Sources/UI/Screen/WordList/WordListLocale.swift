@@ -9,6 +9,8 @@ final class WordListLocale: ObservableObject {
         case noWords = "base.text.noItems"
         case buttonDownloadDictionaty = "screen.wordList.button.downloadDictionaty"
         case buttonImportDictionaty = "screen.wordList.button.importDictionaty"
+        case buttonDownloadDictionatyDescription = "screen.wordList.button.downloadDictionatyDescription"
+        case buttonImportDictionatyDescription = "screen.wordList.button.importDictionatyDescription"
     }
     
     // MARK: - Published Properties
@@ -17,6 +19,8 @@ final class WordListLocale: ObservableObject {
     @Published private(set) var screenNoWords: String
     @Published private(set) var screenButtonDownloadDictionaty: String
     @Published private(set) var screenButtonImportDictionaty: String
+    @Published private(set) var screenButtonDownloadDictionatyDescription: String
+    @Published private(set) var screenButtonImportDictionatyDescription: String
     
     // MARK: - Initialization
     init() {
@@ -25,6 +29,8 @@ final class WordListLocale: ObservableObject {
         self.screenNoWords = Self.localizedString(for: .noWords)
         self.screenButtonDownloadDictionaty = Self.localizedString(for: .buttonDownloadDictionaty)
         self.screenButtonImportDictionaty = Self.localizedString(for: .buttonImportDictionaty)
+        self.screenButtonDownloadDictionatyDescription = Self.localizedString(for: .buttonDownloadDictionatyDescription)
+        self.screenButtonImportDictionatyDescription = Self.localizedString(for: .buttonImportDictionatyDescription)
         
         NotificationCenter.default.addObserver(
             self,
@@ -51,5 +57,7 @@ final class WordListLocale: ObservableObject {
         screenNoWords = Self.localizedString(for: .noWords)
         screenButtonDownloadDictionaty = Self.localizedString(for: .buttonDownloadDictionaty)
         screenButtonImportDictionaty = Self.localizedString(for: .buttonImportDictionaty)
+        screenButtonDownloadDictionatyDescription = Self.localizedString(for: .buttonDownloadDictionatyDescription)
+        screenButtonImportDictionatyDescription = Self.localizedString(for: .buttonImportDictionatyDescription)
     }
 }

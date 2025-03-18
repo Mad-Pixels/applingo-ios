@@ -25,17 +25,23 @@ struct WordListViewWelcome: View {
         VStack {
             ButtonMenu(
                 title: locale.screenButtonDownloadDictionaty,
+                subtitle: locale.screenButtonDownloadDictionatyDescription,
+                iconType: .system("network"),
                 action: { showRemoteDictionary = true },
                 style: .themed(themeManager.currentThemeStyle)
             )
-            .padding()
+            .padding(.horizontal, style.spacing)
+            .padding(.bottom, style.spacing)
             
             ButtonMenu(
                 title: locale.screenButtonImportDictionaty,
+                subtitle: locale.screenButtonImportDictionatyDescription,
+                iconType: .system("iphone.gen1.crop.circle"),
                 action: { showImportDictionary = true },
                 style: .themed(themeManager.currentThemeStyle)
             )
-            .padding()
+            .padding(.horizontal, style.spacing)
+            .padding(.bottom, style.spacing)
         }
         .frame(maxWidth: .infinity)
         .fullScreenCover(isPresented: $showRemoteDictionary) {

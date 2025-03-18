@@ -6,7 +6,7 @@ import SwiftUI
 struct ButtonMenu: View {
     private let title: String
     private let subtitle: String?
-    private let icon: String?
+    private let iconType: ButtonMenuIconType
     private let style: ButtonMenuStyle
     private let isSelected: Bool
     private let action: () -> Void
@@ -15,21 +15,21 @@ struct ButtonMenu: View {
     /// - Parameters:
     ///   - title: The primary title text.
     ///   - subtitle: Optional secondary text.
-    ///   - icon: Optional SF Symbol icon name.
+    ///   - iconType: The type of icon to display (system, resource, or none).
     ///   - isSelected: A flag indicating selection state.
     ///   - style: The style to apply. Defaults to themed style using LightTheme.
     ///   - action: The action to perform when tapped.
     init(
         title: String,
         subtitle: String? = nil,
-        icon: String? = nil,
+        iconType: ButtonMenuIconType = .none,
         isSelected: Bool = false,
         action: @escaping () -> Void,
         style: ButtonMenuStyle = .themed(LightTheme())
     ) {
         self.title = title
         self.subtitle = subtitle
-        self.icon = icon
+        self.iconType = iconType
         self.style = style
         self.isSelected = isSelected
         self.action = action
@@ -38,16 +38,8 @@ struct ButtonMenu: View {
     var body: some View {
         Button(action: action) {
             HStack(spacing: style.hStackSpacing) {
-                if let icon = icon {
-                    Image(systemName: icon)
-                        .font(.system(size: style.iconSize))
-                        .foregroundColor(style.iconColor)
-                        .frame(width: style.iconFrameSize.width, height: style.iconFrameSize.height)
-                        .background(
-                            Circle()
-                                .fill(style.backgroundColor)
-                        )
-                }
+                // Icon view based on the iconType
+                iconView
                 
                 VStack(alignment: .leading) {
                     Text(title)
@@ -74,5 +66,30 @@ struct ButtonMenu: View {
             )
         }
         .buttonStyle(PlainButtonStyle())
+    }
+    
+    // Computed property for icon view based on iconType
+    private var iconView: some View {
+        Group {
+            switch iconType {
+            case .system(let name):
+                Image(systemName: name)
+                    .font(.system(size: style.iconSize))
+                    .foregroundColor(style.iconColor)
+                    .frame(width: style.iconFrameSize.width, height: style.iconFrameSize.height)
+                    .background(Circle().fill(style.backgroundColor))
+                
+            case .resource(let name):
+                Image(name)
+                    .resizable()
+                    .scaledToFit()
+                    .foregroundColor(style.iconColor)
+                    .frame(width: style.iconFrameSize.width, height: style.iconFrameSize.height)
+                    .background(Circle().fill(style.backgroundColor))
+                
+            case .none:
+                EmptyView()
+            }
+        }
     }
 }

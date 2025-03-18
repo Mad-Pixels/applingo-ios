@@ -24,9 +24,9 @@ extension ButtonMenuStyle {
         ButtonMenuStyle(
             backgroundColor: theme.backgroundSecondary,
             foregroundColor: theme.textPrimary,
-            iconColor: theme.accentDark,
+            iconColor: theme.accentPrimary,
             font: .body.bold(),
-            iconSize: 36,
+            iconSize: 54,
             padding: EdgeInsets(top: 16, leading: 24, bottom: 16, trailing: 24),
             height: 70,
             cornerRadius: 12,

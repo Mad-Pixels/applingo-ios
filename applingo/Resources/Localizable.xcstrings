@@ -2169,13 +2169,30 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Download dictionary"
+            "value" : "Download"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Скачать словарь"
+            "value" : "Скачать"
+          }
+        }
+      }
+    },
+    "screen.wordList.button.downloadDictionatyDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A collection of pre-made dictionaries"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Подборка готовых словарей"
           }
         }
       }
@@ -2186,13 +2203,30 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Import dictionary"
+            "value" : "Import"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Импортировать словарь"
+            "state" : "translated",
+            "value" : "Импортировать"
+          }
+        }
+      }
+    },
+    "screen.wordList.button.importDictionatyDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add a local dictionary"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавить локальный словарь"
           }
         }
       }
