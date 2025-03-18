@@ -71,7 +71,6 @@ struct DictionaryImport: View {
                 isShowingFileImporter = true
             }
         )
-        .background(ThemeManager.shared.currentThemeStyle.backgroundPrimary)
     }
     
     // MARK: - Private Methods

@@ -24,7 +24,7 @@ extension ButtonMenuStyle {
         ButtonMenuStyle(
             backgroundColor: theme.backgroundSecondary,
             foregroundColor: theme.textPrimary,
-            iconColor: theme.accentDark,
+            iconColor: theme.accentPrimary,
             font: .body.bold(),
             iconSize: 36,
             padding: EdgeInsets(top: 16, leading: 24, bottom: 16, trailing: 24),
@@ -34,7 +34,7 @@ extension ButtonMenuStyle {
             borderWidth: theme is DarkTheme ? 1 : 0,
             shadowColor: theme.cardBorder,
             hStackSpacing: 16,
-            iconFrameSize: CGSize(width: 42, height: 42)
+            iconFrameSize: CGSize(width: 64, height: 64)
         )
     }
     

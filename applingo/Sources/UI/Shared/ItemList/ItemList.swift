@@ -12,6 +12,7 @@ struct ItemList<Item: Identifiable & Equatable, RowContent: View>: View {
     let onItemAppear: ((Item) -> Void)?
     let onDelete: ((IndexSet) -> Void)?
     let onItemTap: ((Item) -> Void)?
+    let canDelete: ((Item) -> Bool)?
     
     @State private var pressedItemId: Item.ID?
     
@@ -26,6 +27,7 @@ struct ItemList<Item: Identifiable & Equatable, RowContent: View>: View {
     ///   - onDelete: Closure called when an item is deleted.
     ///   - onItemTap: Closure called when an item is tapped.
     ///   - rowContent: A view builder for rendering each row.
+    ///   - canDelete: ...
     init(
         items: Binding<[Item]>,
         style: ItemListStyle = .themed(ThemeManager.shared.currentThemeStyle),
@@ -35,6 +37,7 @@ struct ItemList<Item: Identifiable & Equatable, RowContent: View>: View {
         onItemAppear: ((Item) -> Void)? = nil,
         onDelete: ((IndexSet) -> Void)? = nil,
         onItemTap: ((Item) -> Void)? = nil,
+        canDelete: ((Item) -> Bool)? = nil,
         @ViewBuilder rowContent: @escaping (Item) -> RowContent
     ) {
         self._items = items
@@ -44,6 +47,7 @@ struct ItemList<Item: Identifiable & Equatable, RowContent: View>: View {
         self.emptyListView = emptyListView
         self.onItemAppear = onItemAppear
         self.onDelete = onDelete
+        self.canDelete = canDelete
         self.onItemTap = onItemTap
         self.rowContent = rowContent
     }
@@ -82,17 +86,50 @@ struct ItemList<Item: Identifiable & Equatable, RowContent: View>: View {
                     .listRowSeparator(.hidden)
             }
         } else if !items.isEmpty {
-            ForEach(items) { item in
-                ItemListRow(
-                    item: item,
-                    style: style,
-                    pressedItemId: $pressedItemId,
-                    rowContent: rowContent,
-                    onItemTap: onItemTap,
-                    onItemAppear: onItemAppear
-                )
+            if let canDelete = canDelete {
+                let itemsWithIndex = items.enumerated().map { (index, item) in (index, item, canDelete(item)) }
+                let deletableItems = itemsWithIndex.filter { $0.2 }
+                let nonDeletableItems = itemsWithIndex.filter { !$0.2 }
+                
+                ForEach(nonDeletableItems, id: \.1.id) { _, item, _ in
+                    ItemListRow(
+                        item: item,
+                        style: style,
+                        pressedItemId: $pressedItemId,
+                        rowContent: rowContent,
+                        onItemTap: onItemTap,
+                        onItemAppear: onItemAppear
+                    )
+                }
+                
+                ForEach(deletableItems, id: \.1.id) { _, item, _ in
+                    ItemListRow(
+                        item: item,
+                        style: style,
+                        pressedItemId: $pressedItemId,
+                        rowContent: rowContent,
+                        onItemTap: onItemTap,
+                        onItemAppear: onItemAppear
+                    )
+                }
+                .onDelete { indexSet in
+                    let originalIndices = indexSet.map { deletableItems[$0].0 }
+                    let originalIndexSet = IndexSet(originalIndices)
+                    onDelete?(originalIndexSet)
+                }
+            } else {
+                ForEach(items) { item in
+                    ItemListRow(
+                        item: item,
+                        style: style,
+                        pressedItemId: $pressedItemId,
+                        rowContent: rowContent,
+                        onItemTap: onItemTap,
+                        onItemAppear: onItemAppear
+                    )
+                }
+                .onDelete(perform: onDelete)
             }
-            .onDelete(perform: onDelete)
             
             if isLoadingPage {
                 loadingIndicator

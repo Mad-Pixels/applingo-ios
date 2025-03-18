@@ -8,6 +8,7 @@ struct WordListViewSearch: View {
     private let style: WordListStyle
 
     @Binding var searchText: String
+    let isDisabled: Bool
 
     // MARK: - Initializer
     /// Initializes a new instance of `WordListViewWelcome`.
@@ -18,9 +19,11 @@ struct WordListViewSearch: View {
     init(
         style: WordListStyle,
         locale: WordListLocale,
-        searchText: Binding<String>
+        searchText: Binding<String>,
+        isDisabled: Bool = false
     ) {
         self._searchText = searchText
+        self.isDisabled = isDisabled
         self.locale = locale
         self.style = style
     }
@@ -30,7 +33,8 @@ struct WordListViewSearch: View {
         InputSearch(
             text: $searchText,
             placeholder: locale.screenSearch,
-            style: .themed(themeManager.currentThemeStyle)
+            style: .themed(themeManager.currentThemeStyle),
+            isDisabled: isDisabled
         )
     }
 }

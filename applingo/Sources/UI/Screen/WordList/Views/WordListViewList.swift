@@ -10,6 +10,7 @@ struct WordListViewList: View {
     @ObservedObject private var wordsAction: WordAction
     @ObservedObject private var wordsGetter: WordGetter
     private let onWordSelect: (DatabaseModelWord) -> Void
+    private let onListStateChanged: (Bool) -> Void
     
     // MARK: - Initializer
     /// Initializes the word list view with localization and a data source.
@@ -19,18 +20,21 @@ struct WordListViewList: View {
     ///   - wordsGetter: `WordGetter` object responsible for fetching words.
     ///   - wordsAction: `WordAction` object responsible for words actions.
     ///   - onWordSelect: Closure executed when a word is tapped.
+    ///   - onListStateChanged: State for search manage (if no items, disable search input).
     init(
         style: WordListStyle,
         locale: WordListLocale,
         wordsGetter: WordGetter,
         wordsAction: WordAction,
-        onWordSelect: @escaping (DatabaseModelWord) -> Void
+        onWordSelect: @escaping (DatabaseModelWord) -> Void,
+        onListStateChanged: @escaping (Bool) -> Void
     ) {
         self.locale = locale
         self.style = style
         self.wordsGetter = wordsGetter
         self.wordsAction = wordsAction
         self.onWordSelect = onWordSelect
+        self.onListStateChanged = onListStateChanged
     }
     
     // MARK: - Body
@@ -87,15 +91,19 @@ struct WordListViewList: View {
     private var emptyStateView: AnyView {
         if wordsGetter.words.isEmpty {
             if wordsGetter.isLoadingPage || !wordsGetter.hasLoadedInitialPage {
+                onListStateChanged(false)
                 return AnyView(ItemListLoadingOverlay(style: .themed(themeManager.currentThemeStyle)))
             } else {
                 if wordsGetter.searchText.isEmpty {
+                    onListStateChanged(true)
                     return AnyView(WordListViewWelcome(style: style, locale: locale))
                 } else {
+                    onListStateChanged(false)
                     return AnyView(WordListViewNoItems(style: style, locale: locale))
                 }
             }
         } else {
+            onListStateChanged(false)
             return AnyView(EmptyView())
         }
     }

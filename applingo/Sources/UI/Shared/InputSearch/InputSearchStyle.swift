@@ -4,6 +4,7 @@ import SwiftUI
 /// Defines the styling parameters for the InputSearch component.
 struct InputSearchStyle {
     let borderColor: Color
+    let accentColor: Color
     let textColor: Color
     let placeholderColor: Color
     let iconColor: Color
@@ -15,6 +16,12 @@ struct InputSearchStyle {
     let shadowRadius: CGFloat
     let shadowX: CGFloat
     let shadowY: CGFloat
+    
+    
+    let disabledBorderColor: Color
+    let disabledTextColor: Color
+    let disabledIconColor: Color
+    let disabledBackgroundColor: Color
 }
 
 extension InputSearchStyle {
@@ -22,6 +29,7 @@ extension InputSearchStyle {
     static func themed(_ theme: AppTheme) -> InputSearchStyle {
         InputSearchStyle(
             borderColor: theme.accentContrast,
+            accentColor: theme.accentPrimary,
             textColor: theme.textPrimary,
             placeholderColor: theme.textPrimary,
             iconColor: theme.accentContrast,
@@ -32,7 +40,11 @@ extension InputSearchStyle {
             shadowColor: theme.textSecondary.opacity(0.2),
             shadowRadius: 4,
             shadowX: 0,
-            shadowY: 2
+            shadowY: 2,
+            disabledBorderColor: theme.textSecondary,
+            disabledTextColor: theme.textSecondary,
+            disabledIconColor: theme.textSecondary,
+            disabledBackgroundColor: theme.backgroundSecondary
         )
     }
 }
