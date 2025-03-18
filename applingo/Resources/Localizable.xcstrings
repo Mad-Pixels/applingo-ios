@@ -2163,7 +2163,7 @@
         }
       }
     },
-    "screen.wordList.button.downloadDictionaty" : {
+    "screen.wordList.button.downloadDictionary" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -2180,24 +2180,24 @@
         }
       }
     },
-    "screen.wordList.button.downloadDictionatyDescription" : {
+    "screen.wordList.button.downloadDictionaryDescription" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "A collection of pre-made dictionaries"
+            "value" : "Pre-made dictionaries"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Подборка готовых словарей"
+            "value" : "Готовые словари"
           }
         }
       }
     },
-    "screen.wordList.button.importDictionaty" : {
+    "screen.wordList.button.importDictionary" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
@@ -2214,19 +2214,19 @@
         }
       }
     },
-    "screen.wordList.button.importDictionatyDescription" : {
+    "screen.wordList.button.importDictionaryDescription" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Add a local dictionary"
+            "value" : "Local dictionary"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Добавить локальный словарь"
+            "value" : "Локальный словарь"
           }
         }
       }
