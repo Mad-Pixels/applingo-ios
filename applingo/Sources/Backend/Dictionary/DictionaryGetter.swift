@@ -5,10 +5,11 @@ import Combine
 /// Handles pagination, search, and data updates with validation and logging.
 final class DictionaryGetter: ProcessDatabase {
     // MARK: - Public Properties
-    
     @Published private(set) var dictionaries: [DatabaseModelDictionary] = []
     @Published private(set) var isLoadingPage = false
     @Published private(set) var hasLoadedInitialPage = false
+    @Published private(set) var hasLoadingError = false
+    
     @Published var searchText: String = "" {
         didSet {
             if searchText != oldValue {
@@ -18,29 +19,17 @@ final class DictionaryGetter: ProcessDatabase {
     }
     
     // MARK: - Private Properties
-    
     private let dictionaryRepository: DatabaseManagerDictionary
-    
-    private struct PaginationState {
-        var hasMorePages = true
-        var currentPage = 0
-        var token = UUID()
-        
-        mutating func reset() {
-            hasMorePages = true
-            currentPage = 0
-            token = UUID()
-        }
-    }
-    
-    private var paginationState = PaginationState()
-    private let itemsPerPage = 50
-    private let preloadThreshold = 5
     private var cancellables = Set<AnyCancellable>()
+    private var loadingTask: AnyCancellable?
+    
+    private var cancellationToken = UUID()
+    private var hasMorePages = true
+    private let itemsPerPage = 50
+    private let preloadThreshold = 10
+    private var currentPage = 0
     
     // MARK: - Initialization
-    
-    /// Initializes a new instance of DictionaryGetter by injecting the database queue.
     init() {
         guard let dbQueue = AppDatabase.shared.databaseQueue else {
             fatalError("Database is not connected")
@@ -53,123 +42,102 @@ final class DictionaryGetter: ProcessDatabase {
     }
     
     deinit {
-        Logger.debug("[Dictionary]: Deinitializing")
         NotificationCenter.default.removeObserver(self)
     }
     
     // MARK: - Public Methods
     
-    /// Updates the active status of a dictionary in the local array
-    /// - Parameters:
-    ///   - dictionaryID: The ID of the dictionary to update
-    ///   - newStatus: The new active status
-    func updateDictionaryStatus(dictionaryID: Int, newStatus: Bool) {
-        guard let index = dictionaries.firstIndex(where: { $0.id == dictionaryID }) else {
-            Logger.warning(
-                "[Dictionary]: Attempted to update status for non-existent dictionary",
-                metadata: [
-                    "dictionaryId": String(dictionaryID),
-                    "newStatus": String(newStatus)
-                ]
-            )
+    /// Resets pagination and fetches the first page of dictionaries.
+    func resetPagination() {
+        Logger.debug("[Dictionary]: Resetting pagination")
+        
+        // Отменяем текущую загрузку
+        loadingTask?.cancel()
+        loadingTask = nil
+        
+        // Сбрасываем состояние
+        dictionaries.removeAll()
+        hasLoadedInitialPage = false
+        currentPage = 0
+        hasMorePages = true
+        isLoadingPage = false
+        hasLoadingError = false
+        cancellationToken = UUID()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+            self?.fetchDictionaries()
+        }
+    }
+    
+    /// Loads more dictionaries if needed based on the current item
+    func loadMoreDictionariesIfNeeded(currentItem: DatabaseModelDictionary?) {
+        guard
+            let dictionary = currentItem,
+            let index = dictionaries.firstIndex(where: { $0.id == dictionary.id }),
+            index >= dictionaries.count - preloadThreshold,
+            hasMorePages,
+            !isLoadingPage
+        else {
             return
         }
         
-        Logger.debug(
-            "[Dictionary]: Updating dictionary status in local array",
-            metadata: [
-                "dictionaryId": String(dictionaryID),
-                "newStatus": String(newStatus),
-                "index": String(index)
-            ]
-        )
+        Logger.debug("[Dictionary]: Loading more dictionaries as user scrolled down")
+        fetchDictionaries()
+    }
+    
+    /// Updates the active status of a dictionary in the local array
+    func updateDictionaryStatus(dictionaryID: Int, newStatus: Bool) {
+        guard let index = dictionaries.firstIndex(where: { $0.id == dictionaryID }) else {
+            Logger.warning("[Dictionary]: Dictionary not found for status update", metadata: ["id": "\(dictionaryID)"])
+            return
+        }
         
         var updatedDictionary = dictionaries[index]
         updatedDictionary.isActive = newStatus
         dictionaries[index] = updatedDictionary
+        
+        Logger.debug("[Dictionary]: Dictionary status updated", metadata: [
+            "id": "\(dictionaryID)",
+            "status": "\(newStatus)"
+        ])
     }
     
     /// Removes a dictionary at the specified index
-    /// - Parameter index: The index of the dictionary to remove
     func removeDictionary(at index: Int) {
         guard dictionaries.indices.contains(index) else {
-            Logger.warning(
-                "[Dictionary]: Attempted to remove dictionary at invalid index",
-                metadata: [
-                    "index": String(index),
-                    "arrayCount": String(dictionaries.count)
-                ]
-            )
+            Logger.warning("[Dictionary]: Invalid index for removal", metadata: ["index": "\(index)"])
             return
         }
         
-        Logger.debug(
-            "[Dictionary]: Removing dictionary at index",
-            metadata: [
-                "index": String(index),
-                "dictionary": dictionaries[index].name
-            ]
-        )
         dictionaries.remove(at: index)
     }
     
     /// Removes the specified dictionary from the array
-    /// - Parameter dictionary: The dictionary to remove
     func removeDictionary(_ dictionary: DatabaseModelDictionary) {
         guard let index = dictionaries.firstIndex(where: { $0.id == dictionary.id }) else {
-            Logger.warning(
-                "[Dictionary]: Attempted to remove non-existent dictionary",
-                metadata: [
-                    "dictionaryId": dictionary.id.map(String.init) ?? "nil",
-                    "dictionary": dictionary.name
-                ]
-            )
-            return
-        }
-        removeDictionary(at: index)
-    }
-    
-    /// Loads more dictionaries if needed based on the current item
-    /// - Parameter currentItem: The currently visible dictionary item
-    func loadMoreDictionariesIfNeeded(currentItem: DatabaseModelDictionary?) {
-        guard let dictionary = currentItem,
-              let index = dictionaries.firstIndex(where: { $0.id == dictionary.id }),
-              index >= dictionaries.count - preloadThreshold,
-              paginationState.hasMorePages,
-              !isLoadingPage else {
+            Logger.warning("[Dictionary]: Dictionary not found for removal", metadata: ["name": dictionary.name])
             return
         }
         
-        Logger.debug(
-            "[Dictionary]: Loading more dictionaries",
-            metadata: [
-                "currentIndex": String(index),
-                "totalCount": String(dictionaries.count)
-            ]
-        )
-        fetchDictionaries()
+        removeDictionary(at: index)
     }
     
-    /// Resets pagination and fetches first page
-    func resetPagination() {
-        Logger.debug("[Dictionary]: Resetting pagination")
+    /// Clears all loaded dictionaries
+    func clear() {
+        loadingTask?.cancel()
+        loadingTask = nil
+        
         dictionaries.removeAll()
         hasLoadedInitialPage = false
-        paginationState.reset()
         isLoadingPage = false
-        fetchDictionaries()
-    }
-    
-    /// Clears all loaded dictionaries.
-    func clear() {
-        Logger.debug("[Dictionary]: Clearing dictionaries")
-        dictionaries.removeAll()
+        hasLoadingError = false
+        currentPage = 0
+        hasMorePages = true
+        cancellationToken = UUID()
     }
     
     // MARK: - Private Methods
-    
     private func setupNotifications() {
-        Logger.debug("[Dictionary]: Setting up notifications")
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(handleDictionaryUpdate),
@@ -179,91 +147,92 @@ final class DictionaryGetter: ProcessDatabase {
     }
     
     @objc private func handleDictionaryUpdate() {
-        Logger.debug("[Dictionary]: Received dictionary update notification")
         resetPagination()
     }
     
+    /// Fetches dictionaries from the database with pagination
     private func fetchDictionaries() {
-        guard !isLoadingPage, paginationState.hasMorePages else {
-            Logger.debug("[Dictionary]: Skipping fetch - already loading or no more pages")
+        // Проверяем состояние
+        guard !isLoadingPage, hasMorePages else {
             return
         }
         
-        let currentToken = paginationState.token
+        let fetchPage = currentPage
+        let fetchToken = cancellationToken
+        let fetchOffset = fetchPage * itemsPerPage
+        
         isLoadingPage = true
+        hasLoadingError = false
+        
         Logger.debug(
             "[Dictionary]: Fetching dictionaries",
             metadata: [
-                "page": String(paginationState.currentPage),
-                "searchText": searchText
+                "searchText": searchText,
+                "page": "\(fetchPage)",
+                "offset": "\(fetchOffset)",
+                "limit": "\(itemsPerPage)"
             ]
         )
         
-        performDatabaseOperation(
-            { try self.dictionaryRepository.fetch(
+        // Выполняем запрос
+        loadingTask = performDatabaseOperation({
+            try self.dictionaryRepository.fetch(
                 search: self.searchText,
-                offset: self.paginationState.currentPage * self.itemsPerPage,
-                limit: self.itemsPerPage)
-            },
-            screen: screen,
-            metadata: [
-                "operation": "fetchDictionaries",
-                "page": String(paginationState.currentPage),
-                "searchText": searchText,
-                "frame": screen.rawValue
-            ]
-        )
+                offset: fetchOffset,
+                limit: self.itemsPerPage
+            )
+        }, screen: screen, metadata: ["searchText": searchText])
+        .receive(on: DispatchQueue.main)
         .sink { [weak self] completion in
-            guard let self = self, currentToken == self.paginationState.token else { return }
+            guard let self = self, fetchToken == self.cancellationToken else { return }
+            
             self.isLoadingPage = false
+            self.loadingTask = nil
+            
             if case .failure(let error) = completion {
+                self.hasLoadingError = true
                 Logger.warning("[Dictionary]: Failed to fetch dictionaries", metadata: ["error": "\(error)"])
             }
         } receiveValue: { [weak self] fetchedDictionaries in
-            guard let self = self, currentToken == self.paginationState.token else {
-                Logger.debug("[Dictionary]: Fetch cancelled or self deallocated")
-                return
-            }
-            self.handleFetchSuccess(fetchedDictionaries)
-        }
-        .store(in: &cancellables)
-    }
-    
-    private func handleFetchSuccess(_ fetchedDictionaries: [DatabaseModelDictionary]) {
-        if fetchedDictionaries.isEmpty {
-            Logger.debug("[Dictionary]: No more dictionaries to fetch")
-            paginationState.hasMorePages = false
-        } else {
-            let validDictionaries = fetchedDictionaries.filter { dictionary in
-                guard !dictionary.name.isEmpty else {
-                    Logger.warning("[Dictionary]: Found dictionary with empty display name")
-                    return false
+            guard let self = self, fetchToken == self.cancellationToken else { return }
+            
+            if fetchedDictionaries.isEmpty {
+                self.hasMorePages = false
+                Logger.debug("[Dictionary]: No more dictionaries to fetch")
+            } else {
+                self.currentPage += 1
+                
+                let validDictionaries = fetchedDictionaries.filter { !$0.name.isEmpty }
+                
+                if validDictionaries.count != fetchedDictionaries.count {
+                    Logger.warning(
+                        "[Dictionary]: Some dictionaries were filtered out",
+                        metadata: [
+                            "original": "\(fetchedDictionaries.count)",
+                            "valid": "\(validDictionaries.count)"
+                        ]
+                    )
                 }
-                return true
+                
+                if !validDictionaries.isEmpty {
+                    self.dictionaries.append(contentsOf: validDictionaries)
+                    Logger.debug(
+                        "[Dictionary]: Dictionaries appended",
+                        metadata: [
+                            "added": "\(validDictionaries.count)",
+                            "total": "\(self.dictionaries.count)"
+                        ]
+                    )
+                }
+                
+                if fetchedDictionaries.count < self.itemsPerPage {
+                    self.hasMorePages = false
+                    Logger.debug("[Dictionary]: End of the list (incomplete page)")
+                }
             }
             
-            if validDictionaries.count != fetchedDictionaries.count {
-                Logger.warning(
-                    "[Dictionary]: Some dictionaries were filtered out",
-                    metadata: [
-                        "original": String(fetchedDictionaries.count),
-                        "valid": String(validDictionaries.count)
-                    ]
-                )
-            }
-            
-            paginationState.currentPage += 1
-            dictionaries.append(contentsOf: validDictionaries)
-            Logger.debug(
-                "[Dictionary]: Dictionaries appended",
-                metadata: [
-                    "fetchedCount": String(validDictionaries.count),
-                    "totalDictionaries": String(dictionaries.count)
-                ]
-            )
+            self.hasLoadedInitialPage = true
+            self.isLoadingPage = false
         }
-        
-        hasLoadedInitialPage = true
-        isLoadingPage = false
     }
 }
