@@ -79,7 +79,7 @@ struct ButtonFloatingMultiple: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
             .padding(.trailing, 16)
-            .padding(.bottom, 16)
+            .padding(.bottom, 18)
         }
     }
 }
