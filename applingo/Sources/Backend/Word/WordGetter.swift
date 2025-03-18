@@ -20,11 +20,9 @@ final class WordGetter: ProcessDatabase {
     // MARK: - Private Properties
     private let wordRepository: DatabaseManagerWord
     private var cancellables = Set<AnyCancellable>()
-    private var loadingPages = Set<Int>()
+    private var loadingTask: AnyCancellable?
     private var cancellationToken = UUID()
     private var hasMorePages = true
-    private var isResetting = false
-    private var lastFetchedCount = 0
     private let itemsPerPage = 50
     private var currentPage = 0
     
@@ -41,19 +39,12 @@ final class WordGetter: ProcessDatabase {
     }
     
     // MARK: - Public Methods
-    
     /// Resets pagination and fetches the first page of words.
     func resetPagination() {
-        guard !isResetting else {
-            Logger.debug("[Word]: Request already running")
-            return
-        }
-        
-        isResetting = true
         Logger.debug("[Word]: resetPagination")
         
-        cancellationToken = UUID()
-        loadingPages.removeAll()
+        loadingTask?.cancel()
+        loadingTask = nil
         
         words.removeAll()
         hasLoadedInitialPage = false
@@ -61,24 +52,16 @@ final class WordGetter: ProcessDatabase {
         hasMorePages = true
         isLoadingPage = false
         hasLoadingError = false
-        lastFetchedCount = 0
+        cancellationToken = UUID()
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
-            guard let self = self else { return }
-            self.isResetting = false
-            self.get()
+            self?.get()
         }
     }
     
     /// Fetches words from the database with pagination and search support.
     func get() {
-        guard
-            !isResetting,
-            !isLoadingPage,
-            hasMorePages,
-            !loadingPages.contains(currentPage)
-        else {
-            Logger.debug("[Word]: Skip request - state do not allow to execute request")
+        guard !isLoadingPage, hasMorePages else {
             return
         }
         
@@ -87,7 +70,6 @@ final class WordGetter: ProcessDatabase {
         let fetchOffset = fetchPage * itemsPerPage
         
         isLoadingPage = true
-        loadingPages.insert(fetchPage)
         hasLoadingError = false
         
         Logger.debug(
@@ -100,7 +82,7 @@ final class WordGetter: ProcessDatabase {
             ]
         )
         
-        performDatabaseOperation({
+        loadingTask = performDatabaseOperation({
             try self.wordRepository.fetch(
                 search: self.searchText,
                 offset: fetchOffset,
@@ -109,29 +91,58 @@ final class WordGetter: ProcessDatabase {
         }, screen: .WordList, metadata: ["searchText": searchText])
         .receive(on: DispatchQueue.main)
         .sink { [weak self] completion in
-            guard
-                let self = self,
-                fetchToken == self.cancellationToken,
-                self.loadingPages.contains(fetchPage)
-            else { return }
+            guard let self = self, fetchToken == self.cancellationToken else { return }
             
             self.isLoadingPage = false
-            self.loadingPages.remove(fetchPage)
+            self.loadingTask = nil
             
             if case .failure(let error) = completion {
                 self.hasLoadingError = true
                 Logger.warning("[Word]: Error getting words from database", metadata: ["error": "\(error)"])
             }
         } receiveValue: { [weak self] fetchedWords in
-            guard
-                let self = self,
-                fetchToken == self.cancellationToken,
-                self.loadingPages.contains(fetchPage)
-            else { return }
+            guard let self = self, fetchToken == self.cancellationToken else { return }
             
-            self.processFetchedWords(fetchedWords, forPage: fetchPage)
+            if fetchedWords.isEmpty {
+                self.hasMorePages = false
+                Logger.debug("[Word]: All words was downloaded")
+            } else {
+                self.currentPage += 1
+                
+                let existingIds = Set(self.words.compactMap { $0.id })
+                let newWords = fetchedWords.filter { word in
+                    guard let id = word.id else { return true }
+                    return !existingIds.contains(id)
+                }
+                
+                Logger.debug(
+                    "[Word]: duplicates was filtered",
+                    metadata: [
+                        "originalCount": "\(fetchedWords.count)",
+                        "filteredCount": "\(newWords.count)"
+                    ]
+                )
+                
+                if !newWords.isEmpty {
+                    self.words.append(contentsOf: newWords)
+                    Logger.debug(
+                        "[Word]: Words list updated",
+                        metadata: [
+                            "added": "\(newWords.count)",
+                            "all": "\(self.words.count)"
+                        ]
+                    )
+                }
+                
+                if fetchedWords.count < self.itemsPerPage || newWords.isEmpty {
+                    self.hasMorePages = false
+                    Logger.debug("[Word]: End of the list")
+                }
+            }
+            
+            self.hasLoadedInitialPage = true
+            self.isLoadingPage = false
         }
-        .store(in: &cancellables)
     }
     
     /// Triggers loading of more words when scrolling close to the bottom of the list.
@@ -139,7 +150,6 @@ final class WordGetter: ProcessDatabase {
         guard
             let word = currentItem,
             let index = words.firstIndex(where: { $0.id == word.id }),
-            !isResetting,
             !isLoadingPage,
             hasMorePages,
             index >= words.count - 10
@@ -147,15 +157,21 @@ final class WordGetter: ProcessDatabase {
             return
         }
         
-        Logger.debug("[Word]: Prepare to get new words (index: \(index), all: \(words.count))")
         get()
     }
     
     /// Clears all loaded words.
     func clear() {
-        Logger.debug("[Word]: cleanup words")
+        loadingTask?.cancel()
+        loadingTask = nil
+        
         words.removeAll()
         hasLoadedInitialPage = false
+        isLoadingPage = false
+        hasLoadingError = false
+        currentPage = 0
+        hasMorePages = true
+        cancellationToken = UUID()
     }
     
     // MARK: - Removal Methods
@@ -173,13 +189,6 @@ final class WordGetter: ProcessDatabase {
             return
         }
         
-        Logger.debug(
-            "[Word]: Removing word",
-            metadata: [
-                "index": String(index),
-                "word": words[index].frontText
-            ]
-        )
         words.remove(at: index)
     }
     
@@ -209,59 +218,6 @@ final class WordGetter: ProcessDatabase {
     }
     
     @objc private func handleWordUpdate() {
-        Logger.debug("[Word]: Received word update notification")
         resetPagination()
-    }
-    
-    private func processFetchedWords(_ fetchedWords: [DatabaseModelWord], forPage page: Int) {
-        guard page == currentPage, !isResetting else {
-            return
-        }
-        
-        if fetchedWords.isEmpty {
-            hasMorePages = false
-            Logger.debug("[Word]: All words was downloaded")
-            return
-        }
-        
-        currentPage += 1
-        lastFetchedCount = fetchedWords.count
-        
-        let existingIds = Set(words.compactMap { $0.id })
-        let newWords = fetchedWords.filter { word in
-            guard let id = word.id else { return true }
-            return !existingIds.contains(id)
-        }
-        
-        if newWords.isEmpty && fetchedWords.count < itemsPerPage {
-            hasMorePages = false
-            Logger.debug("[Word]: End of the list (repeated data)")
-            return
-        }
-        
-        Logger.debug(
-            "[Word]: duplicates was filtered",
-            metadata: [
-                "originalCount": "\(fetchedWords.count)",
-                "filteredCount": "\(newWords.count)"
-            ]
-        )
-        
-        if !newWords.isEmpty {
-            words.append(contentsOf: newWords)
-            Logger.debug(
-                "[Word]: Words list updated",
-                metadata: [
-                    "added": "\(newWords.count)",
-                    "all": "\(words.count)"
-                ]
-            )
-        }
-        hasLoadedInitialPage = true
-        
-        if fetchedWords.count < itemsPerPage {
-            hasMorePages = false
-            Logger.debug("[Word]: End of the list (not full page)")
-        }
     }
 }
