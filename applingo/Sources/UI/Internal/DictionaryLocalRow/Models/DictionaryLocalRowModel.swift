@@ -32,6 +32,6 @@ struct DictionaryLocalRowModel {
     var formattedWordCount: String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
-        return "\(formatter.string(from: NSNumber(value: words)) ?? String(words)) words"
+        return "\(formatter.string(from: NSNumber(value: words)) ?? String(words))"
     }
 }
