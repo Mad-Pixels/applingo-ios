@@ -7,10 +7,10 @@ final class WordAction: ProcessDatabase {
     
     private let dictionaryRepository: DatabaseManagerDictionary
     private let wordRepository: DatabaseManagerWord
+    private let dictionaryAction: DictionaryAction
     private var cancellables = Set<AnyCancellable>()
     
     // MARK: - Initialization
-    
     init() {
         guard let dbQueue = AppDatabase.shared.databaseQueue else {
             fatalError("Database is not connected")
@@ -18,6 +18,7 @@ final class WordAction: ProcessDatabase {
         
         self.dictionaryRepository = DatabaseManagerDictionary(dbQueue: dbQueue)
         self.wordRepository = DatabaseManagerWord(dbQueue: dbQueue)
+        self.dictionaryAction = DictionaryAction()
         super.init(dbQueue: dbQueue)
     }
     
@@ -32,7 +33,14 @@ final class WordAction: ProcessDatabase {
             { try self.wordRepository.save(word) },
             operation: "save",
             word: word,
-            completion: completion
+            completion: { [weak self] result in
+                guard let self = self else { return }
+                
+                if case .success = result {
+                    self.updateDictionaryCount(dictionaryGuid: word.dictionary)
+                }
+                completion(result)
+            }
         )
     }
 
@@ -54,11 +62,20 @@ final class WordAction: ProcessDatabase {
     ///   - word: The word to delete.
     ///   - completion: Closure called with the result of the operation.
     func delete(_ word: DatabaseModelWord, completion: @escaping (Result<Void, Error>) -> Void) {
+        let dictionaryGuid = word.dictionary
+        
         performOperation(
             { try self.wordRepository.delete(word) },
             operation: "delete",
             word: word,
-            completion: completion
+            completion: { [weak self] result in
+                guard let self = self else { return }
+                    
+                if case .success = result {
+                    self.updateDictionaryCount(dictionaryGuid: dictionaryGuid)
+                }
+                completion(result)
+            }
         )
     }
 
@@ -83,8 +100,6 @@ final class WordAction: ProcessDatabase {
             return ""
         }
     }
-    
-    // MARK: - Private Methods
     
     /// Performs a database operation with common metadata creation and error handling.
     private func performOperation(
@@ -118,6 +133,34 @@ final class WordAction: ProcessDatabase {
             completion(.success(()))
         }
         .store(in: &cancellables)
+    }
+    
+    /// Update dictionary words count.
+    private func updateDictionaryCount(dictionaryGuid: String) {
+        do {
+            let count = try dictionaryRepository.count(forDictionary:
+                            DatabaseModelDictionary(guid: dictionaryGuid))
+            
+            dictionaryAction.updateCount(guid: dictionaryGuid, newCount: count) { result in
+                if case .failure(let error) = result {
+                    Logger.error(
+                        "[Word]: Failed to update dictionary count",
+                        metadata: [
+                            "dictionaryGuid": dictionaryGuid,
+                            "error": error.localizedDescription
+                        ]
+                    )
+                }
+            }
+        } catch {
+            Logger.error(
+                "[Word]: Failed to count words",
+                metadata: [
+                    "dictionaryGuid": dictionaryGuid,
+                    "error": error.localizedDescription
+                ]
+            )
+        }
     }
     
     /// Creates metadata for word operations.
