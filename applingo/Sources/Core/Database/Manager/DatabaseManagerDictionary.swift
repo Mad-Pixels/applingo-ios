@@ -71,6 +71,13 @@ final class DatabaseManagerDictionary {
                 WHERE guid = ?
             )
         """
+        
+        /// Query to update dictionary count.
+        static let updateCount = """
+            UPDATE \(DatabaseModelDictionary.databaseTableName) 
+            SET count = ? 
+            WHERE guid = ?
+        """
     }
     
     // MARK: - Properties
@@ -387,6 +394,40 @@ final class DatabaseManagerDictionary {
                     metadata: ["error": error.localizedDescription]
                 )
                 throw DatabaseError.selectDataFailed(details: "Failed to check dictionary existence: \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    /// Updates the count value of a dictionary.
+    /// - Parameters:
+    ///   - guid: The GUID of the dictionary to update.
+    ///   - newCount: The new count value.
+    func updateCount(guid: String, newCount: Int) throws {
+        guard !guid.isEmpty else {
+            Logger.error("[Dictionary]: Empty GUID for count update")
+            throw DatabaseError.invalidSearchParameters
+        }
+        
+        Logger.debug(
+            "[Dictionary]: Updating count",
+            metadata: [
+                "guid": guid,
+                "newCount": String(newCount)
+            ]
+        )
+        
+        try dbQueue.write { db in
+            do {
+                try db.execute(sql: SQL.updateCount, arguments: [newCount, guid])
+                Logger.info(
+                    "[Dictionary]: Count updated",
+                    metadata: [
+                        "guid": guid,
+                        "newCount": String(newCount)
+                    ]
+                )
+            } catch {
+                throw DatabaseError.updateFailed(details: "Failed to update dictionary count: \(error.localizedDescription)")
             }
         }
     }

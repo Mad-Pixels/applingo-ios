@@ -26,8 +26,8 @@ struct ApiModelDictionaryItem: Identifiable, Codable, Equatable, Hashable {
     /// The creation timestamp of the dictionary.
     let created: Int
     
-    /// The rating of the dictionary.
-    let rating: Int
+    /// The downloads count of the dictionary.
+    let downloads: Int
     
     /// The dictionary language level.
     let level: String
@@ -39,7 +39,7 @@ struct ApiModelDictionaryItem: Identifiable, Codable, Equatable, Hashable {
     let words: Int
     
     enum CodingKeys: String, CodingKey {
-        case id, name, category, subcategory, author, dictionary, description, rating, level, topic, words, created
+        case id, name, category, subcategory, author, dictionary, description, downloads, level, topic, words, created
     }
 }
 

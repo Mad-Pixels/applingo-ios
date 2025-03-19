@@ -7,6 +7,7 @@ struct DictionaryLocalRowModel {
     let description: String
     let level: DictionaryLevelType
     let isActive: Bool
+    let words: Int
     
     var languagePair: (from: String, to: String)? {
         let components = subcategory.split(separator: "-")
@@ -26,5 +27,11 @@ struct DictionaryLocalRowModel {
         } else {
             return "[\(category)] \(subcategory)"
         }
+    }
+    
+    var formattedWordCount: String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        return "\(formatter.string(from: NSNumber(value: words)) ?? String(words))"
     }
 }

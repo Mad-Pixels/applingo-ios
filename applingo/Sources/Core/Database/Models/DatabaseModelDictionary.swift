@@ -3,13 +3,12 @@ import GRDB
 
 /// Represents a dictionary entity in the database, with fields for metadata, author, and categorization.
 struct DatabaseModelDictionary: Identifiable, Codable, Equatable, Hashable {
-    // MARK: - Constants
     static let databaseTableName = "dictionary"
     static let internalDictionaryName = "internal"
 
-    // MARK: - Properties
     internal let id: Int?
     internal let guid: String
+    internal let count: Int
     internal let created: Int
     internal let search: String
 
@@ -22,8 +21,6 @@ struct DatabaseModelDictionary: Identifiable, Codable, Equatable, Hashable {
     var isLocal: Bool
     var topic: String
     var name: String
-
-    // MARK: - Initialization
 
     /// Initializes a new instance of `DatabaseModelDictionary`.
     init(
@@ -38,6 +35,7 @@ struct DatabaseModelDictionary: Identifiable, Codable, Equatable, Hashable {
         level: DictionaryLevelType = .undefined,
         
         created: Int = Int(Date().timeIntervalSince1970),
+        count: Int = 0,
         isActive: Bool = true,
         isLocal: Bool = true,
         id: Int? = nil
@@ -54,6 +52,7 @@ struct DatabaseModelDictionary: Identifiable, Codable, Equatable, Hashable {
         self.name = name
         
         self.created = created
+        self.count = count
         self.id = id
         
         self.search = [
@@ -65,18 +64,16 @@ struct DatabaseModelDictionary: Identifiable, Codable, Equatable, Hashable {
         self.fmt()
     }
 
-    // MARK: - Methods
-
-    /// Formats the dictionary details to ensure consistency (e.g., trimming whitespace).
-    mutating func fmt() {
-        self.subcategory = subcategory.trimmedTrailingWhitespace.lowercased()
-        self.category = category.trimmedTrailingWhitespace.lowercased()
-        self.topic = topic.trimmedTrailingWhitespace.lowercased()
-        self.description = description.trimmedTrailingWhitespace
-        self.author = author.trimmedTrailingWhitespace
-        self.name = name.trimmedTrailingWhitespace
+    /// Provides a formatted date string for the dictionary's creation timestamp.
+    var date: String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .short
+        return formatter.string(
+            from: Date(timeIntervalSince1970: TimeInterval(created))
+        )
     }
-
+    
     /// Converts the dictionary object into a readable string.
     func toString() -> String {
         """
@@ -93,17 +90,18 @@ struct DatabaseModelDictionary: Identifiable, Codable, Equatable, Hashable {
         - Local: \(isLocal ? "Yes" : "No")
         - Active: \(isActive ? "Yes" : "No")
         - Created: \(date)
+        - Count: \(count)
         """
     }
-
-    /// Provides a formatted date string for the dictionary's creation timestamp.
-    var date: String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .short
-        return formatter.string(
-            from: Date(timeIntervalSince1970: TimeInterval(created))
-        )
+    
+    /// Formats the dictionary details to ensure consistency (e.g., trimming whitespace).
+    mutating func fmt() {
+        self.subcategory = subcategory.trimmedTrailingWhitespace.lowercased()
+        self.category = category.trimmedTrailingWhitespace.lowercased()
+        self.topic = topic.trimmedTrailingWhitespace.lowercased()
+        self.description = description.trimmedTrailingWhitespace
+        self.author = author.trimmedTrailingWhitespace
+        self.name = name.trimmedTrailingWhitespace
     }
 
     /// Returns a new empty dictionary object.
@@ -127,7 +125,6 @@ struct DatabaseModelDictionary: Identifiable, Codable, Equatable, Hashable {
 }
 
 // MARK: - Database Record Conformance
-
 extension DatabaseModelDictionary: FetchableRecord, PersistableRecord {
     /// Creates the `dictionary` table in the database if it doesn't already exist.
     /// - Parameter db: The GRDB database instance.
@@ -141,6 +138,7 @@ extension DatabaseModelDictionary: FetchableRecord, PersistableRecord {
             t.column("isActive", .boolean).notNull()
             t.column("islocal", .boolean).notNull()
             t.column("created", .integer).notNull()
+            t.column("count", .integer).notNull()
             t.column("category", .text).notNull()
             t.column("author", .text).notNull()
             t.column("search", .text).notNull()

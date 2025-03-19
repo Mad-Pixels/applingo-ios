@@ -41,6 +41,16 @@ struct DictionaryLocalRow: View {
                                 .foregroundColor(style.subtitleColor)
                         }
                     }
+                    
+                    HStack(spacing: 4) {
+                        Image(systemName: "book")
+                            .font(.system(size: 11))
+                            .foregroundColor(style.accentColor)
+
+                        Text(model.formattedWordCount)
+                            .font(style.wordCountFont)
+                            .foregroundColor(style.subtitleColor)
+                    }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 

@@ -4,8 +4,6 @@ import GRDB
 
 /// A singleton for managing the app's database connection, migrations, and operations.
 final class AppDatabase: ObservableObject {
-    // MARK: - Properties
-
     /// Indicates whether the database is currently connected.
     @Published private(set) var isConnected: Bool = false
 
@@ -14,7 +12,6 @@ final class AppDatabase: ObservableObject {
 
     /// The active database queue for executing SQL queries.
     private var dbQueue: DatabaseQueue?
-
     /// The URL of the database file.
     private var databaseURL: URL?
 
@@ -23,12 +20,8 @@ final class AppDatabase: ObservableObject {
         return dbQueue
     }
 
-    // MARK: - Initialization
-
     /// Private initializer to enforce singleton pattern.
     private init() {}
-
-    // MARK: - Public Methods
 
     /// Connects to the database, creating and performing migrations if necessary.
     /// - Parameter dbName: The name of the database file.
@@ -73,8 +66,6 @@ final class AppDatabase: ObservableObject {
         isConnected = false
         Logger.debug("[Database]: Disconnected")
     }
-
-    // MARK: - Private Properties
 
     /// Configures and returns the migrator for performing migrations.
     private var migrator: DatabaseMigrator {

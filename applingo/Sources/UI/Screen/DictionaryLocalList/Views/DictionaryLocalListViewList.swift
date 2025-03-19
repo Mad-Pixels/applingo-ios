@@ -64,7 +64,8 @@ struct DictionaryLocalListViewList: View {
                     subcategory: dictionary.subcategory,
                     description: dictionary.description,
                     level: dictionary.level,
-                    isActive: dictionary.isActive
+                    isActive: dictionary.isActive,
+                    words: dictionary.count
                 ),
                 style: .themed(themeManager.currentThemeStyle),
                 onTap: {
