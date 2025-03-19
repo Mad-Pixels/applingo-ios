@@ -47,6 +47,7 @@ final class ParserManagerSave {
            subcategory: dictionary.subcategory,
            description: dictionary.description,
            level: dictionary.level,
+           count: words.count,
            isLocal: dictionary.isLocal
        )
        
