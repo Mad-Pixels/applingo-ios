@@ -42,19 +42,19 @@ struct LightTheme: AppTheme {
         
     // Patterns
     var mainPattern = DynamicPatternModel(colors: [
-        Color(hex: "2563eb"),
         Color(hex: "2563EB"),
-        Color(hex: "3B82F6"),
-        Color(hex: "60A5FA"),
-        Color(hex: "93C5FD")
+        Color(hex: "1F54C8"),
+        Color(hex: "1A47AA"),
+        Color(hex: "163C91"),
+        Color(hex: "13337B")
     ])
     
     // Quiz game
     var quizTheme: GameTheme {
         GameTheme(
-            main: Color(hex: "e04300"),
-            secondary: Color(hex: "5e5b57"),
-            accent: Color(hex: "1d8f00")
+            main: Color(hex: "2563EB"),
+            secondary: Color(hex: "1A47AA"),
+            accent: Color(hex: "13337B")
         )
     }
     

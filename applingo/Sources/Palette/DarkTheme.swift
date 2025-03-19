@@ -52,9 +52,9 @@ struct DarkTheme: AppTheme {
     // Quiz game
     var quizTheme: GameTheme {
         GameTheme(
-            main: Color(hex: "f8a009"),
-            secondary: Color(hex: "748aa8"),
-            accent: Color(hex: "84bf4d")
+            main: Color(hex: "AAE282"),
+            secondary: Color(hex: "779E5B"),
+            accent: Color(hex: "445A34")
         )
     }
         
