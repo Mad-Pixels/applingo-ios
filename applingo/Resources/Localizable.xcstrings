@@ -2084,13 +2084,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No Data"
+            "value" : "no data"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Нет данных"
+            "value" : "нет данных"
           }
         }
       }
