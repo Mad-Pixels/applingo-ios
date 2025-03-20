@@ -36,7 +36,7 @@ struct SettingsFeedbackViewRedirect: View {
                 guard let url = URL(string: url) else { return }
                 UIApplication.shared.open(url)
             },
-            style: .themed(themeManager.currentThemeStyle)
+            style: .external(themeManager.currentThemeStyle)
         )
     }
 }

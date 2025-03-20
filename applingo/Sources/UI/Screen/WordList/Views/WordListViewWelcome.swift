@@ -28,7 +28,7 @@ struct WordListViewWelcome: View {
                 subtitle: locale.screenButtonDownloadDictionaryDescription,
                 iconType: .resource("dictionary_download"),
                 action: { showRemoteDictionary = true },
-                style: .themed(themeManager.currentThemeStyle)
+                style: .add(themeManager.currentThemeStyle)
             )
             .padding(.horizontal, style.spacing + 8)
             .padding(.vertical, 8)
@@ -38,7 +38,7 @@ struct WordListViewWelcome: View {
                 subtitle: locale.screenButtonImportDictionaryDescription,
                 iconType: .resource("dictionary_import"),
                 action: { showImportDictionary = true },
-                style: .themed(themeManager.currentThemeStyle)
+                style: .add(themeManager.currentThemeStyle)
             )
             .padding(.horizontal, style.spacing + 8)
             .padding(.bottom, 8)
