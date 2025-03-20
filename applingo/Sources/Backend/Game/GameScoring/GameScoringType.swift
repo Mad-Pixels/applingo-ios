@@ -1,12 +1,11 @@
 enum ScoreType {
-    case regular        // Обычные очки
-    case streakBonus    // Бонус за серию правильных ответов
-    case fastResponse   // Бонус за быстрый ответ
-    case specialCard    // Бонус за использование специальной карточки
-    case penalty        // Штраф за неправильный ответ
-    case multiple       // Ситуация, когда начислено несколько бонусов одновременно
+    case regular
+    case streakBonus
+    case fastResponse
+    case specialCard
+    case penalty
+    case multiple
 
-    /// Возвращает имя иконки для данного типа.
     var iconName: String {
         switch self {
         case .regular:
