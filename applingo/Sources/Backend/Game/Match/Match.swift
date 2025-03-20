@@ -78,7 +78,7 @@ final class Match: ObservableObject, AbstractGame {
     // MARK: - Внутренняя логика
     internal func validateAnswer(_ answer: String) -> GameValidationResult {
         let result = validation.validate(answer: answer)
-        validation.playFeedback(result)
+        validation.playFeedback(result, answer: answer)
         return result
     }
     

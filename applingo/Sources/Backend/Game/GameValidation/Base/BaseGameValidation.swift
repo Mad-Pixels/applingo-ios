@@ -41,8 +41,12 @@ class BaseGameValidation: AbstractGameValidation {
     /// Plays all feedback mechanisms associated with the given validation result.
     ///
     /// - Parameter result: The result of the validation.
-    final internal func playFeedback(_ result: GameValidationResult) {
+    final internal func playFeedback(_ result: GameValidationResult, answer: String? = nil) {
         feedbacks[result]?.forEach { feedback in
+            if let visualFeedback = feedback as? VisualFeedback,
+            let answer = answer {
+                visualFeedback.setOption(answer)
+            }
             feedback.play()
         }
     }
