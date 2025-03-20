@@ -38,7 +38,6 @@ struct ButtonMenu: View {
     var body: some View {
         Button(action: action) {
             HStack(spacing: style.hStackSpacing) {
-                // Icon view based on the iconType
                 iconView
                 
                 VStack(alignment: .leading) {
@@ -54,9 +53,12 @@ struct ButtonMenu: View {
                     }
                 }
                 Spacer()
-                Image(systemName: "chevron.right")
-                    .foregroundColor(style.foregroundColor)
-                    .opacity(isSelected ? 1 : 0.5)
+                if style.transitionType != "" {
+                    Image(systemName: style.transitionType)
+                        .font(.system(size: 24))
+                        .foregroundColor(style.foregroundColor)
+                        .opacity(0.6)
+                }
             }
             .padding(style.padding)
             .background(

@@ -20,7 +20,7 @@ struct WordListViewNoItems: View {
     // MARK: - Computed Properties
     /// The image name to display based on the current theme.
     private var warningImageName: String {
-        themeManager.currentTheme.asString == "Dark" ? "warning_dark" : "warning_light"
+        themeManager.currentTheme.asString == "Dark" ? "not_found" : "not_found"
     }
     
     // MARK: - Body
