@@ -35,7 +35,7 @@ final class Quiz: ObservableObject, AbstractGame {
             specialCardBonus: QUIZ_SCORE_SPECIAL_BONUS
         ),
         validation: any AbstractGameValidation = QuizValidation(
-            feedbacks: [.incorrect: IncorrectAnswerHapticFeedback()]
+            feedbacks: [.incorrect: [IncorrectAnswerHapticFeedback()]]
         ),
         cacheGetter: QuizCache = QuizCache(
             cacheSize: QUIZ_CACHE_SIZE,

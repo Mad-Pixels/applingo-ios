@@ -35,7 +35,7 @@ final class Match: ObservableObject, AbstractGame {
             specialCardBonus: MATCH_SCORE_SPECIAL_BONUS
         ),
         validation: any AbstractGameValidation = MatchValidation(
-            feedbacks: [.incorrect: IncorrectAnswerHapticFeedback()]
+            feedbacks: [.incorrect: [IncorrectAnswerHapticFeedback()]]
         ),
         cacheGetter: MatchCache = MatchCache(
             cacheSize: MATCH_CACHE_SIZE,
