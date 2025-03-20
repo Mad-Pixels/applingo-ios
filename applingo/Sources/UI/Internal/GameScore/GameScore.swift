@@ -49,7 +49,7 @@ struct GameScore: View {
                         }
                     }
                 }
-                .padding(.top, 26)
+                .padding(.top, 23)
             }
         }
         .frame(width: 42, height: 60, alignment: .leading)
