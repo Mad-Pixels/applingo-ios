@@ -10,7 +10,7 @@ enum ScoreType {
     var iconName: String {
         switch self {
         case .regular:
-            return "answer_correct"
+            return "answer_ok"
         case .streakBonus:
             return "answer_streak"
         case .fastResponse:
