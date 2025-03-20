@@ -88,7 +88,7 @@ extension GameScoreStyle {
         GameScoreStyle(
             positiveTextColor: theme.success,
             negativeTextColor: theme.errorPrimaryColor,
-            iconSize: 16,
+            iconSize: 42,
             font: .system(size: 13, weight: .bold),
             maxAnimationItems: 3,
             fadeRatio: 0.7,
