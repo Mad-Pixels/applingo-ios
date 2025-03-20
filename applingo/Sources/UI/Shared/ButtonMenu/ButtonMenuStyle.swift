@@ -40,6 +40,7 @@ extension ButtonMenuStyle {
         )
     }
     
+    /// Returns a style for external links based on the provided AppTheme.
     static func external(_ theme: AppTheme) -> ButtonMenuStyle {
         ButtonMenuStyle(
             backgroundColor: theme.backgroundSecondary,
@@ -59,6 +60,7 @@ extension ButtonMenuStyle {
         )
     }
     
+    /// Returns a style for add menus based on the provided AppTheme.
     static func add(_ theme: AppTheme) -> ButtonMenuStyle {
         ButtonMenuStyle(
             backgroundColor: theme.backgroundSecondary,
@@ -94,7 +96,7 @@ extension ButtonMenuStyle {
             shadowColor: theme.cardBorder,
             hStackSpacing: 16,
             iconFrameSize: CGSize(width: 42, height: 42),
-            transitionType: "chevron.right"
+            transitionType: "xw"
         )
     }
 }
