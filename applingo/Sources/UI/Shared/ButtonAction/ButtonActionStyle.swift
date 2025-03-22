@@ -6,7 +6,7 @@ struct ButtonActionStyle {
     let pattern: DynamicPatternModel
     let patternBorder: Bool
     let patternBackground: Bool
-    let backgroundColor: Color
+    var backgroundColor: Color
     let height: CGFloat
     let cornerRadius: CGFloat
     let borderWidth: CGFloat
@@ -94,5 +94,14 @@ extension ButtonActionStyle {
             padding: EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4),
             textStyle: .gameAnswer(ThemeManager.shared.currentThemeStyle)
         )
+    }
+}
+
+extension ButtonActionStyle {
+    /// Returns a game answer style with custom background color for highlighting incorrect answers
+    static func incorrectGameAnswer(_ theme: AppTheme, highlightColor: Color) -> ButtonActionStyle {
+        var style = gameAnswer(theme)
+        style.backgroundColor = highlightColor
+        return style
     }
 }

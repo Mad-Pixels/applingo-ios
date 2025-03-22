@@ -1,34 +1,51 @@
 import Foundation
+import Combine
+import SwiftUI
 
-/// A view model for the Quiz game that encapsulates the logic for generating quiz cards and handling user answers.
-///
-/// The `QuizViewModel` is responsible for:
-/// - Generating new quiz cards by retrieving a set of words from the game's cache.
-/// - Setting up the current quiz card and delegating answer validation to the game model.
-/// - Handling user answers by measuring response time, validating the answer, and updating game statistics.
-/// - Regenerating quiz cards after an answer is processed.
-///
-/// This class is an `ObservableObject` so that SwiftUI views can reactively update when the current card changes.
 final class QuizViewModel: ObservableObject {
     @Published private(set) var currentCard: QuizModelCard?
     @Published private(set) var shouldShowEmptyView = false
+    @Published var highlightedOptions: [String: Color] = [:]
     
     private var cardStartTime: Date?
     private let game: Quiz
     private var loadingTask: Task<Void, Never>?
+    private var cancellables = Set<AnyCancellable>()
     
     init(game: Quiz) {
         self.game = game
+        
+        // Подписываемся на уведомления о визуальной обратной связи
+        NotificationCenter.default.publisher(for: .visualFeedbackShouldUpdate)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] notification in
+                guard let self = self,
+                      let userInfo = notification.userInfo,
+                      let option = userInfo["option"] as? String,
+                      let color = userInfo["color"] as? Color,
+                      let duration = userInfo["duration"] as? TimeInterval else {
+                    return
+                }
+                
+                // Устанавливаем цвет для опции
+                self.highlightedOptions[option] = color
+                
+                // Сбрасываем выделение через указанное время
+                DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
+                    self.highlightedOptions.removeValue(forKey: option)
+                }
+            }
+            .store(in: &cancellables)
     }
     
     func generateCard() {
-        // Отменяем предыдущую загрузку если она есть
+        // Существующий код...
         loadingTask?.cancel()
         currentCard = nil
         shouldShowEmptyView = false
         
         loadingTask = Task { @MainActor in
-            // Три попытки с паузой в 1 секунду
+            // Существующий код...
             for attempt in 1...2 {
                 if Task.isCancelled { return }
                 
@@ -67,16 +84,27 @@ final class QuizViewModel: ObservableObject {
         let responseTime = cardStartTime.map { Date().timeIntervalSince($0) } ?? 0
         let result = game.validateAnswer(answer)
         
+        // Передаем выбранный ответ в метод playFeedback
+        game.validation.playFeedback(result, answer: answer)
+        
         game.updateStats(
             correct: result == .correct,
             responseTime: responseTime,
             isSpecialCard: false
         )
         
-        generateCard()
+        // Если неправильный ответ, добавляем задержку перед следующей карточкой
+        if result == .incorrect {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                self.generateCard()
+            }
+        } else {
+            generateCard()
+        }
     }
     
     deinit {
         loadingTask?.cancel()
+        cancellables.removeAll()
     }
 }

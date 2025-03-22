@@ -33,14 +33,12 @@ struct GameScore: View {
         VStack {
             if !scoreHistory.isEmpty {
                 VStack(spacing: 4) {
-                    ButtonNav(
-                        style: .custom(
-                            ThemeManager.shared.currentThemeStyle,
-                            assetName: stats.score.type.iconName
-                        ),
-                        onTap: {},
-                        isPressed: .constant(false)
-                    )
+                    Group {
+                        Image(stats.score.type.iconName)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                    }
+                    .frame(height: style.iconSize)
                     
                     ZStack {
                         ForEach(Array(scoreHistory.enumerated()), id: \.element.id) { index, item in
@@ -52,7 +50,7 @@ struct GameScore: View {
                 .padding(.top, 23)
             }
         }
-        .frame(width: 42, height: 60, alignment: .leading)
+        .frame(width: 42, height: 72, alignment: .leading)
         .onChange(of: stats.score) { newScore in
             handleNewScore(newScore)
         }

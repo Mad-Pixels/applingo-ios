@@ -78,15 +78,15 @@ extension ButtonNavStyle {
         )
     }
     
-    static func custom(_ theme: AppTheme, assetName: String) -> ButtonNavStyle {
-        ButtonNavStyle(
-            icon: .custom(assetName),
-            backgroundColor: theme.backgroundSecondary,
-            activeBackgroundColor: theme.backgroundSecondary.opacity(0.8),
-            iconColor: theme.textSecondary,
-            size: 32,
-            cornerRadius: 16,
-            iconSize: 14
-        )
-    }
+//    static func custom(_ theme: AppTheme, assetName: String) -> ButtonNavStyle {
+//        ButtonNavStyle(
+//            icon: .custom(assetName),
+//            backgroundColor: theme.backgroundPrimary,
+//            activeBackgroundColor: theme.backgroundPrimary,
+//            iconColor: theme.textSecondary,
+//            size: 42,
+//            cornerRadius: 0,
+//            iconSize: 14
+//        )
+//    }
 }

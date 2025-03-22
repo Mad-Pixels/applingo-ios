@@ -70,7 +70,9 @@ struct DictionaryRemoteListViewList: View {
         }
         .onAppear {
             dictionaryGetter.setScreen(.DictionaryRemoteList)
-            dictionaryGetter.resetPagination(with: ApiModelDictionaryQueryRequest())
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                dictionaryGetter.resetPagination(with: ApiModelDictionaryQueryRequest())
+            }
         }
     }
     
