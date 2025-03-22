@@ -38,6 +38,7 @@ struct SettingsViewFeedback: View {
                 }
                 .padding(.vertical, 8)
             }
+            .padding(.top, 8)
         }
     }
 }

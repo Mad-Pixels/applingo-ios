@@ -181,6 +181,46 @@ final class DictionaryAction: ProcessDatabase {
         .store(in: &cancellables)
     }
     
+    /// Updates the count of words for a dictionary.
+    /// - Parameters:
+    ///   - guid: The GUID of the dictionary to update.
+    ///   - newCount: The new count value.
+    ///   - completion: Called with the result of the operation.
+    func updateCount(
+        guid: String,
+        newCount: Int,
+        completion: @escaping (Result<Void, Error>) -> Void
+    ) {
+        performDatabaseOperation(
+            { try self.dictionaryRepository.updateCount(guid: guid, newCount: newCount) },
+            screen: screen,
+            metadata: [
+                "guid": guid,
+                "newCount": String(newCount),
+                "operation": "updateCount",
+                "screen": screen.rawValue
+            ]
+        )
+        .sink { result in
+            switch result {
+            case .failure(let error):
+                completion(.failure(error))
+            case .finished:
+                break
+            }
+        } receiveValue: { _ in
+            Logger.debug(
+                "[Dictionary]: Count updated successfully",
+                metadata: [
+                    "guid": guid,
+                    "newCount": String(newCount)
+                ]
+            )
+            completion(.success(()))
+        }
+        .store(in: &cancellables)
+    }
+    
     // MARK: - Fetch References
     
     /// Fetches all dictionary references (with only name and guid).

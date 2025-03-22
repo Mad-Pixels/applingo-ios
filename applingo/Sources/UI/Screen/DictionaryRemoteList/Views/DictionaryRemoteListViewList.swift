@@ -57,7 +57,7 @@ struct DictionaryRemoteListViewList: View {
                     title: dictionary.name,
                     level: dictionary.level,
                     topic: dictionary.topic,
-                    rating: dictionary.rating,
+                    downloads: dictionary.downloads,
                     words: dictionary.words
                 ),
                 style: .themed(themeManager.currentThemeStyle),
@@ -70,7 +70,9 @@ struct DictionaryRemoteListViewList: View {
         }
         .onAppear {
             dictionaryGetter.setScreen(.DictionaryRemoteList)
-            dictionaryGetter.resetPagination(with: ApiModelDictionaryQueryRequest())
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                dictionaryGetter.resetPagination(with: ApiModelDictionaryQueryRequest())
+            }
         }
     }
     

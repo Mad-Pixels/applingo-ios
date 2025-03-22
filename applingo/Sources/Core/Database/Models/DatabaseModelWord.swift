@@ -3,10 +3,8 @@ import GRDB
 
 /// Represents a word entity in the database, with fields for dictionary, text, metadata, and stats.
 struct DatabaseModelWord: Identifiable, Codable, Equatable, Hashable {
-    // MARK: - Constants
     static let databaseTableName = "words"
 
-    // MARK: - Properties
     internal let id: Int?
     internal let uuid: String
     internal let created: Int
@@ -22,7 +20,7 @@ struct DatabaseModelWord: Identifiable, Codable, Equatable, Hashable {
     var weight: Int
     var fail: Int
 
-    // MARK: - Initialization
+    /// Initializes a new instance of `DatabaseModelWord`.
     init(
         subcategory: String,
         dictionary: String,
@@ -56,18 +54,17 @@ struct DatabaseModelWord: Identifiable, Codable, Equatable, Hashable {
         
         self.fmt()
     }
-
-    // MARK: - Methods
     
-    /// Formats the word details to ensure consistency (e.g., trimming whitespace, converting to lowercase).
-    mutating func fmt() {
-        self.subcategory = subcategory.trimmedTrailingWhitespace.lowercased()
-        self.frontText = frontText.trimmedTrailingWhitespace.lowercased()
-        self.backText = backText.trimmedTrailingWhitespace.lowercased()
-        self.hint = hint.trimmedTrailingWhitespace.lowercased()
-        self.description = description.trimmedTrailingWhitespace
+    /// Provides a formatted date string for the word's creation timestamp.
+    var date: String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .short
+        return formatter.string(
+            from: Date(timeIntervalSince1970: TimeInterval(created))
+        )
     }
-
+    
     /// Converts the word object into a readable string.
     func toString() -> String {
         """
@@ -86,15 +83,14 @@ struct DatabaseModelWord: Identifiable, Codable, Equatable, Hashable {
         - Created: \(date)
         """
     }
-    
-    /// Provides a formatted date string for the word's creation timestamp.
-    var date: String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .short
-        return formatter.string(
-            from: Date(timeIntervalSince1970: TimeInterval(created))
-        )
+
+    /// Formats the word details to ensure consistency (e.g., trimming whitespace, converting to lowercase).
+    mutating func fmt() {
+        self.subcategory = subcategory.trimmedTrailingWhitespace.lowercased()
+        self.frontText = frontText.trimmedTrailingWhitespace.lowercased()
+        self.backText = backText.trimmedTrailingWhitespace.lowercased()
+        self.hint = hint.trimmedTrailingWhitespace.lowercased()
+        self.description = description.trimmedTrailingWhitespace
     }
 
     /// Returns a new empty word object.
@@ -109,7 +105,6 @@ struct DatabaseModelWord: Identifiable, Codable, Equatable, Hashable {
 }
 
 // MARK: - Database Record Conformance
-
 extension DatabaseModelWord: FetchableRecord, PersistableRecord {
     /// Creates the `words` table in the database if it doesn't already exist.
     /// - Parameter db: The GRDB database instance.

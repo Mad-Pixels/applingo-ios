@@ -20,10 +20,10 @@ struct GameModeViewCard: View {
         ButtonMenu(
             title: title,
             subtitle: description,
-            icon: icon,
+            iconType: .system(icon),
             isSelected: false,
-            style: .game(themeManager.currentThemeStyle, style),
-            action: onSelect
+            action: onSelect,
+            style: .game(themeManager.currentThemeStyle, style)
         )
     }
 }

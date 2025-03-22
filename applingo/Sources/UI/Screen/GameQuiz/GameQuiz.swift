@@ -38,14 +38,14 @@ struct GameQuiz: View {
                     EmptyView()
                 } else {
                     ZStack {
-                        // Лоадер
-                        VStack {
-                            Text("Loading...")
-                                .foregroundColor(style.questionTextColor)
-                            ProgressView()
-                        }
-                        .opacity(viewModel.currentCard == nil ? 1 : 0)
-                        .animation(.easeInOut(duration: 0.3), value: viewModel.currentCard == nil)
+//                        // Лоадер
+//                        VStack {
+//                            Text("Loading...")
+//                                .foregroundColor(style.questionTextColor)
+//                            ProgressView()
+//                        }
+//                        .opacity(viewModel.currentCard == nil ? 1 : 0)
+//                        .animation(.easeInOut(duration: 0.3), value: viewModel.currentCard == nil)
                         
                         // Карточка
                         if let card = viewModel.currentCard {
@@ -64,7 +64,8 @@ struct GameQuiz: View {
                                             locale: locale,
                                             style: style,
                                             option: option,
-                                            onSelect: { viewModel.handleAnswer(option) }
+                                            onSelect: { viewModel.handleAnswer(option) },
+                                            viewModel: viewModel
                                         )
                                     }
                                 }

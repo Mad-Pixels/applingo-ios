@@ -6,15 +6,15 @@ import SwiftUI
 /// game-specific validation logic and access to the current word.
 class BaseGameValidation: AbstractGameValidation {
     // MARK: - Properties
-    private var feedbacks: [GameValidationResult: AbstractGameFeedback]
+    private var feedbacks: [GameValidationResult: [AbstractGameFeedback]]
     private var wordAction: WordAction
     
     // MARK: - Initializer
     /// Initializes a new instance of `BaseGameValidation` with the specified feedbacks.
     ///
     /// - Parameter feedbacks: A dictionary mapping validation results (e.g., `.correct`, `.incorrect`)
-    ///   to the corresponding feedback implementations.
-    init(feedbacks: [GameValidationResult: AbstractGameFeedback]) {
+    ///   to arrays of feedback implementations.
+    init(feedbacks: [GameValidationResult: [AbstractGameFeedback]]) {
         self.wordAction = WordAction()
         self.feedbacks = feedbacks
     }
@@ -38,11 +38,17 @@ class BaseGameValidation: AbstractGameValidation {
         return result
     }
     
-    /// Plays the feedback associated with the given validation result.
+    /// Plays all feedback mechanisms associated with the given validation result.
     ///
     /// - Parameter result: The result of the validation.
-    final internal func playFeedback(_ result: GameValidationResult) {
-        feedbacks[result]?.play()
+    final internal func playFeedback(_ result: GameValidationResult, answer: String? = nil) {
+        feedbacks[result]?.forEach { feedback in
+            if let visualFeedback = feedback as? VisualFeedback,
+            let answer = answer {
+                visualFeedback.setOption(answer)
+            }
+            feedback.play()
+        }
     }
     
     /// Calculates the new weight for a word based on its success and fail counts.

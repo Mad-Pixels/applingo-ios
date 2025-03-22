@@ -29,7 +29,7 @@ private struct ButtonMenuPreview: View {
             ButtonMenu(
                 title: "Game Mode",
                 subtitle: "Select your preferred game mode",
-                icon: "gamecontroller",
+                iconType: .system("gamecontroller"),
                 isSelected: true,
                 style: .themed(theme)
             ) {}

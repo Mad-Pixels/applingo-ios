@@ -47,6 +47,7 @@ final class ParserManagerSave {
            subcategory: dictionary.subcategory,
            description: dictionary.description,
            level: dictionary.level,
+           count: words.count,
            isLocal: dictionary.isLocal
        )
        
@@ -74,5 +75,35 @@ final class ParserManagerSave {
                "words_count": String(words.count)
            ]
        )
+       
+       // Send notifications after successful save operation
+       Task {
+           await notifyDictionaryUpdate()
+           await notifyWordsUpdate()
+       }
+   }
+   
+   // MARK: - Private Methods
+   
+   /// Notifies observers about an update to the dictionary list.
+   ///
+   /// This method posts a notification on the main actor, allowing UI components and other parts
+   /// of the application to refresh their data based on the update.
+   private func notifyDictionaryUpdate() async {
+       await MainActor.run {
+           Logger.debug("[Parser]: Notifying about dictionary update")
+           NotificationCenter.default.post(name: .dictionaryListShouldUpdate, object: nil)
+       }
+   }
+   
+   /// Notifies observers about an update to the words list.
+   ///
+   /// This method posts a notification on the main actor, allowing UI components and other parts
+   /// of the application to refresh their data based on the update.
+   private func notifyWordsUpdate() async {
+       await MainActor.run {
+           Logger.debug("[Parser]: Notifying about words update")
+           NotificationCenter.default.post(name: .wordListShouldUpdate, object: nil)
+       }
    }
 }

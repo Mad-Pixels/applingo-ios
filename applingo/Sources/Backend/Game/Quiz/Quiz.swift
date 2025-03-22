@@ -35,7 +35,12 @@ final class Quiz: ObservableObject, AbstractGame {
             specialCardBonus: QUIZ_SCORE_SPECIAL_BONUS
         ),
         validation: any AbstractGameValidation = QuizValidation(
-            feedbacks: [.incorrect: IncorrectAnswerHapticFeedback()]
+            feedbacks: [
+                .incorrect: [
+                    IncorrectAnswerHapticFeedback(),
+                    IncorrectAnswerVisualFeedback()
+                ]
+            ]
         ),
         cacheGetter: QuizCache = QuizCache(
             cacheSize: QUIZ_CACHE_SIZE,
@@ -78,7 +83,7 @@ final class Quiz: ObservableObject, AbstractGame {
     // MARK: - Внутренняя логика
     internal func validateAnswer(_ answer: String) -> GameValidationResult {
         let result = validation.validate(answer: answer)
-        validation.playFeedback(result)
+        validation.playFeedback(result, answer: answer)
         return result
     }
     

@@ -37,12 +37,12 @@ struct WordDetailsViewStatistic: View {
             
             VStack(spacing: style.spacing) {
                 if word.fail == 0 && word.success == 0 {
+                    Text(locale.screenSubtitleNoData)
+                        .font(style.titleFont)
                     Image(warningImageName)
                         .resizable()
                         .scaledToFit()
                         .frame(width: style.iconSize, height: style.iconSize)
-                    Text(locale.screenSubtitleNoData)
-                        .font(style.titleFont)
                 } else {
                     SectionBody(
                         style: .area(themeManager.currentThemeStyle)

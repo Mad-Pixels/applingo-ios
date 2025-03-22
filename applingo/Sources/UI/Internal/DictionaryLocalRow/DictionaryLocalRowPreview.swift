@@ -16,7 +16,8 @@ private struct DictionaryLocalRowPreview: View {
         subcategory: "Basic",
         description: "Common English words and phrases",
         level: .advanced,
-        isActive: true
+        isActive: true,
+        words: 10
     )
     
     static let languageModel = DictionaryLocalRowModel(
@@ -25,7 +26,8 @@ private struct DictionaryLocalRowPreview: View {
         subcategory: "ru-en",
         description: "Common English words and phrases",
         level: .advanced,
-        isActive: true
+        isActive: true,
+        words: 15
     )
     
     static let inactiveModel = DictionaryLocalRowModel(
@@ -34,7 +36,8 @@ private struct DictionaryLocalRowPreview: View {
         subcategory: "Advanced",
         description: "Advanced Spanish vocabulary",
         level: .beginner,
-        isActive: false
+        isActive: false,
+        words: 50
     )
     
     static let longTextModel = DictionaryLocalRowModel(
@@ -43,7 +46,8 @@ private struct DictionaryLocalRowPreview: View {
         subcategory: "Professional Terms",
         description: "A very detailed description of the dictionary content",
         level: .beginner,
-        isActive: true
+        isActive: true,
+        words: 40
     )
     
     var body: some View {

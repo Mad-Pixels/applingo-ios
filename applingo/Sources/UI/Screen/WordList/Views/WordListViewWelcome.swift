@@ -4,10 +4,11 @@ import SwiftUI
 struct WordListViewWelcome: View {
     // MARK: - Properties
     @EnvironmentObject private var themeManager: ThemeManager
-    private let locale: WordListLocale
+    @ObservedObject private var locale: WordListLocale
     private let style: WordListStyle
     
     @State private var showRemoteDictionary = false
+    @State private var showImportDictionary = false
 
     // MARK: - Initializer
     /// Initializes a new instance of `WordListViewWelcome`.
@@ -22,27 +23,32 @@ struct WordListViewWelcome: View {
     // MARK: - Body
     var body: some View {
         VStack {
-            Image("download_dictionary")
-                .resizable()
-                .scaledToFit()
-                .frame(
-                    width: style.iconSize,
-                    height: style.iconSize
-                )
-
-            VStack {
-                ButtonAction(
-                    title: locale.screenButtonDownloadDictionaty,
-                    action: { showRemoteDictionary = true },
-                    style: .menu(themeManager.currentThemeStyle)
-                )
-                .padding()
-                .frame(maxWidth: .infinity)
-            }
-            .padding(.horizontal)
+            ButtonMenu(
+                title: locale.screenButtonDownloadDictionary,
+                subtitle: locale.screenButtonDownloadDictionaryDescription,
+                iconType: .resource("dictionary_download"),
+                action: { showRemoteDictionary = true },
+                style: .add(themeManager.currentThemeStyle)
+            )
+            .padding(.horizontal, style.spacing + 8)
+            .padding(.vertical, 8)
+            
+            ButtonMenu(
+                title: locale.screenButtonImportDictionary,
+                subtitle: locale.screenButtonImportDictionaryDescription,
+                iconType: .resource("dictionary_import"),
+                action: { showImportDictionary = true },
+                style: .add(themeManager.currentThemeStyle)
+            )
+            .padding(.horizontal, style.spacing + 8)
+            .padding(.bottom, 8)
         }
+        .frame(maxWidth: .infinity)
         .fullScreenCover(isPresented: $showRemoteDictionary) {
             DictionaryRemoteList()
+        }
+        .fullScreenCover(isPresented: $showImportDictionary) {
+            DictionaryImport(isPresented: $showImportDictionary)
         }
     }
 }

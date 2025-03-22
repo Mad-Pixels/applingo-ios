@@ -52,7 +52,10 @@ struct DictionaryLocalListViewList: View {
                 dictionaryGetter.loadMoreDictionariesIfNeeded(currentItem: dictionary)
             },
             onDelete: delete,
-            onItemTap: onDictionarySelect
+            onItemTap: onDictionarySelect,
+            canDelete: { dictionary in
+                dictionary.id != 1
+            }
         ) { dictionary in
             DictionaryLocalRow(
                 model: DictionaryLocalRowModel(
@@ -61,7 +64,8 @@ struct DictionaryLocalListViewList: View {
                     subcategory: dictionary.subcategory,
                     description: dictionary.description,
                     level: dictionary.level,
-                    isActive: dictionary.isActive
+                    isActive: dictionary.isActive,
+                    words: dictionary.count
                 ),
                 style: .themed(themeManager.currentThemeStyle),
                 onTap: {

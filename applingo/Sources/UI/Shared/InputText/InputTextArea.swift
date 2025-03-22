@@ -44,29 +44,40 @@ struct InputTextArea: View {
     
     ///
     private var dynamicHeight: CGFloat {
-       if text.isEmpty {
-           return minHeight
-       }
-       
-       let attributedString = NSAttributedString(
-           string: text,
-           attributes: [
-               NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14)
-           ]
-       )
-       
-       let constraintRect = CGSize(
-           width: UIScreen.main.bounds.width - (style.padding.leading + style.padding.trailing) * 2,
-           height: .greatestFiniteMagnitude
-       )
-       
-       let boundingBox = attributedString.boundingRect(
-           with: constraintRect,
-           options: NSStringDrawingOptions.usesLineFragmentOrigin,
-           context: NSStringDrawingContext()
-       )
-       
-       return max(boundingBox.height+20, minHeight)
+        if text.isEmpty {
+            return minHeight
+        }
+        
+        let containerWidth = UIScreen.main.bounds.width - (style.padding.leading + style.padding.trailing) * 2
+        
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineBreakMode = .byWordWrapping
+        
+        let attributedString = NSAttributedString(
+            string: text,
+            attributes: [
+                NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14),
+                NSAttributedString.Key.paragraphStyle: paragraphStyle
+            ]
+        )
+        
+        let constraintRect = CGSize(
+            width: containerWidth,
+            height: .greatestFiniteMagnitude
+        )
+        
+        let boundingBox = attributedString.boundingRect(
+            with: constraintRect,
+            options: [.usesLineFragmentOrigin, .usesFontLeading],
+            context: nil
+        )
+        
+        let additionalPadding: CGFloat = 32
+        
+        let numberOfLines = max(1, boundingBox.height / UIFont.systemFont(ofSize: 14).lineHeight)
+        let lineAdjustment = numberOfLines > 1 ? (numberOfLines * 2) : 0
+        
+        return max(boundingBox.height + additionalPadding + lineAdjustment, minHeight)
     }
     
     /// Determines the background color based on editing state.

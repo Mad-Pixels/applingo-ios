@@ -39,6 +39,6 @@ struct DictionaryImportViewActions: View {
             )
         }
         .padding(.horizontal)
-        .padding(.top, 10)
+        .padding(.top, 5)
     }
 }

@@ -24,7 +24,7 @@ struct DictionaryRemoteRowViewLeft: View {
                 .font(.system(size: 11))
                 .foregroundColor(style.accentColor)
 
-            Text(verbatim: "\(model.rating)")
+            Text(verbatim: "\(model.downloads)")
                 .font(style.wordCountFont)
                 .foregroundColor(style.subtitleColor)
         }

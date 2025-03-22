@@ -30,16 +30,12 @@ struct WordRow: View {
                     HStack(spacing: style.spacing / 2) {
                         Image(systemName: "figure.run")
                             .font(.system(size: 12))
-                            .foregroundColor(style.arrowColor)
+                            .foregroundColor(style.iconColor)
                         
                         ChartIndicator(weight: model.weight)
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-                
-                Image(systemName: "chevron.right")
-                    .font(.system(size: style.arrowSize))
-                    .foregroundColor(style.arrowColor)
             }
         }
         .contentShape(Rectangle())
