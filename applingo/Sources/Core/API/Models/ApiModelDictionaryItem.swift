@@ -58,7 +58,13 @@ extension ApiModelDictionaryItem {
     /// - Returns: `true` if the dictionary matches, otherwise `false`.
     func matches(searchText: String) -> Bool {
         if searchText.isEmpty { return true }
-        return searchableText.contains(searchText.lowercased())
+        
+        // Разбиваем поисковый запрос на отдельные слова
+        let searchTerms = searchText.lowercased().split(separator: " ")
+        let searchableContent = searchableText
+        
+        // Проверяем, что все слова есть в контенте (AND условие)
+        return searchTerms.allSatisfy { searchableContent.contains($0) }
     }
     
     /// Provides a formatted date string for the dictionary's creation date.

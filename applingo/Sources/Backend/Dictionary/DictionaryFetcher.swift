@@ -40,20 +40,24 @@ final class DictionaryFetcher: ProcessApi {
     
     /// Resets pagination state and starts new fetch with optional request
     /// - Parameter request: Optional new request to use for fetching
-    func resetPagination(with request: ApiModelDictionaryQueryRequest? = nil) {
+    func resetPagination(with request: ApiModelDictionaryQueryRequest? = nil, keepSearchResults: Bool = false) {
         Logger.debug(
             "[Dictionary]: Resetting pagination",
             metadata: [
                 "hasRequest": String(request != nil),
-                "currentCount": String(allDictionaries.count)
+                "currentCount": String(allDictionaries.count),
+                "keepSearchResults": String(keepSearchResults)
             ]
         )
+        
         if let request = request {
             currentRequest = request
         }
         
-        resetState()
-        updateFilteredDictionaries()
+        if !keepSearchResults {
+            resetState()
+            updateFilteredDictionaries()
+        }
         
         DispatchQueue.main.async {
             self.fetchDictionaries()
@@ -69,6 +73,19 @@ final class DictionaryFetcher: ProcessApi {
               hasMorePages,
               !isLoadingPage else {
             return
+        }
+        
+        // Если есть поисковый запрос, проверяем, достаточно ли результатов уже в кеше
+        if !searchText.isEmpty {
+            // Считаем, сколько элементов всего может удовлетворять поиску
+            let potentialMatches = allDictionaries.filter { $0.matches(searchText: searchText) }
+            
+            // Если найдено достаточно элементов, но они еще не все показаны
+            if potentialMatches.count > dictionaries.count {
+                // Обновляем фильтрованный список
+                updateFilteredDictionaries()
+                return
+            }
         }
         
         Logger.debug(
@@ -104,8 +121,23 @@ final class DictionaryFetcher: ProcessApi {
                 "newValue": searchText
             ]
         )
+        
         if searchText != oldValue {
-            resetPagination()
+            updateFilteredDictionaries()
+            
+            if !searchText.isEmpty &&
+               dictionaries.count < Constants.minSearchResults &&
+               hasMorePages &&
+               !isLoadingPage {
+                Logger.debug("[Dictionary]: Not enough search results, fetching more")
+                fetchDictionaries()
+            }
+            
+            // Если поиск сброшен (стал пустым), но мы загрузили не все данные,
+            // загрузим еще страницу для прокрутки
+            if searchText.isEmpty && hasMorePages && !isLoadingPage && allDictionaries.count < 50 {
+                fetchDictionaries()
+            }
         }
     }
     
