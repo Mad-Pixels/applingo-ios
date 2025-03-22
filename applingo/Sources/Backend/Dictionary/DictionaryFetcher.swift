@@ -137,7 +137,9 @@ final class DictionaryFetcher: ProcessApi {
         
         var request = currentRequest ?? ApiModelDictionaryQueryRequest()
         request.isPublic = true
-        request.lastEvaluated = lastEvaluated
+        if let lastEval = lastEvaluated, !lastEval.isEmpty {
+            request.lastEvaluated = lastEvaluated
+        }
         
         Logger.debug(
             "[Dictionary]: Fetching dictionaries",
