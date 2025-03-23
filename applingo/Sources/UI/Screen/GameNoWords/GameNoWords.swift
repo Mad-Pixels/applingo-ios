@@ -40,7 +40,8 @@ struct GameNoWords: View {
                 
                 ButtonAction(
                     title: locale.screenButtonClose,
-                    action: { dismiss() }
+                    action: { dismiss() },
+                    style: .action(ThemeManager.shared.currentThemeStyle)
                 )
                 .padding(.bottom)
             }
