@@ -18,27 +18,38 @@ struct GameNoWords: View {
 
     // MARK: - Body
     var body: some View {
-        VStack {
-            Image("words_not_found")
-                .resizable()
-                .scaledToFit()
-                .frame(width: 250, height: 125)
-                .frame(maxWidth: .infinity, alignment: .center)
+        VStack(spacing: 20) {
+            Spacer()
             
-            SectionHeader(
-                title: locale.screenSubtitleNoWords,
-                style: .heading(ThemeManager.shared.currentThemeStyle)
-            )
+            VStack(alignment: .center, spacing: 16) {
+                SectionHeader(
+                    title: locale.screenSubtitleNoWords,
+                    style: .centeredHeading(ThemeManager.shared.currentThemeStyle)
+                )
+                
+                Image("no_words_game")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 250, height: 125)
+                
+                Text(locale.screenTextNoWords)
+                    .font(style.textFont)
+                    .foregroundStyle(style.textColor)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal)
+                
+                ButtonAction(
+                    title: locale.screenButtonClose,
+                    action: { dismiss() }
+                )
+                .padding(.bottom)
+            }
+            .frame(maxWidth: .infinity)
             
-            Text(locale.screenTextNoWords)
-                .font(style.textFont)
-                .foregroundStyle(style.textColor)
-                .padding(.top, -8)
+            Spacer()
             
-            ButtonAction(
-                title: locale.screenButtonClose,
-                action: { dismiss() }
-            )
         }
+        .padding()
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
