@@ -39,6 +39,16 @@ struct GameNoWords: View {
                     .scaledToFit()
                     .frame( height: 125)
                 
+                Image(ThemeManager.shared.currentTheme.asString == "Dark" ? "words_get_dark" : "words_get_light")
+                    .resizable()
+                    .scaledToFit()
+                    .frame( height: 220)
+                
+                Image(ThemeManager.shared.currentTheme.asString == "Dark" ? "dictionaries_tab_dark" : "dictionaries_tab_light")
+                    .resizable()
+                    .scaledToFit()
+                    .frame( height: 125)
+                
                 Text(locale.screenTextNoWords)
                     .font(style.textFont)
                     .foregroundStyle(style.textColor)
