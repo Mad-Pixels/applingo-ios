@@ -41,8 +41,7 @@ struct DynamicText: View {
             .fixedSize(horizontal: false, vertical: true)
             .animation(.spring(response: 0.3, dampingFraction: 0.7), value: model.text)
             .lineLimit(style.lineLimit)
-            .frame(maxWidth: .infinity, alignment: .center)
-            .padding(.horizontal, 8)
+            .frame(maxWidth: .infinity, alignment: textAlignment(from: style.alignment))
     }
     
     /// Converts a SwiftUI Font.Weight into a UIFont.Weight.
@@ -73,5 +72,16 @@ private func calculateFontWeight(for text: String) -> Font.Weight {
     case 21...50:  return .semibold   // Medium text – semibold.
     case 51...100: return .medium     // Long text – medium.
     default:       return .regular    // Very long text – regular.
+    }
+}
+
+private func textAlignment(from alignment: TextAlignment) -> Alignment {
+    switch alignment {
+    case .leading:
+        return .leading
+    case .center:
+        return .center
+    case .trailing:
+        return .trailing
     }
 }

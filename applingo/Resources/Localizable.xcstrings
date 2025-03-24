@@ -1574,13 +1574,64 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Add new dictionaries"
+            "value" : "How to add a new dictionary?"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Добавить новый словарь"
+            "value" : "Как добавить новый словарь?"
+          }
+        }
+      }
+    },
+    "screen.noWords.importOptionLocal" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "import from local device"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "импортировать локальный словарь"
+          }
+        }
+      }
+    },
+    "screen.noWords.importOptionRemote" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "remote dictionaries"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "скачать словари"
+          }
+        }
+      }
+    },
+    "screen.noWords.noWordsDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dictionaries are not activated or missing, there are no active words."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Словари не активированы или отсутствуют, нет активных слов."
           }
         }
       }
@@ -1608,13 +1659,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "On the “dictionaries” tab, tap on the floating button and select either “Import from Local” or “Download Remote.”"
+            "value" : "On the “dictionaries” tab, tap on the floating button and select:"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "На вкладке “Словари” нажмите на плавающую кнопку и выберите: “Импорт с устройства” или “Скачать удалённо”."
+            "value" : "На вкладке “Словари” нажмите на плавающую кнопку и выберите:"
           }
         }
       }
@@ -1636,19 +1687,19 @@
         }
       }
     },
-    "screen.noWords.tabWordsDescriptionImport" : {
+    "screen.noWords.tabWordsDescriptionActions" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "On this tab, you have two options: download remote dictionaries or import a dictionary from your local device. Choose the appropriate option and create your dictionary."
+            "value" : "On this tab, you have two options: "
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "На этой вкладке у вас есть два варианта: скачать удалённые словари или импортировать словарь с локального устройства. Выберите подходящий вариант и создайте словарь."
+            "value" : "На этой вкладке можно:"
           }
         }
       }
@@ -2315,9 +2366,6 @@
           }
         }
       }
-    },
-    "some text" : {
-
     },
     "sort.api.DictionarySortByDate" : {
       "extractionState" : "manual",
