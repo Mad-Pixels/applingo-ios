@@ -18,56 +18,74 @@ struct GameNoWords: View {
 
     // MARK: - Body
     var body: some View {
-        VStack(spacing: 20) {
-            Spacer()
-            
-            VStack(alignment: .center, spacing: 16) {
-//                Spacer()
+        // Оборачиваем весь контент в ScrollView
+        ScrollView {
+            VStack(spacing: 20) {
+                // Добавляем небольшой отступ сверху для лучшего вида при скролле
+                Spacer().frame(height: 20)
                 
-                SectionHeader(
-                    title: locale.screenSubtitleNoWords,
-                    style: .centeredHeading(ThemeManager.shared.currentThemeStyle)
-                )
+                VStack(alignment: .center, spacing: 16) {
+                    SectionHeader(
+                        title: locale.screenSubtitleNoWords,
+                        style: .centeredHeading(ThemeManager.shared.currentThemeStyle)
+                    )
+                    
+                    Image("no_words_game")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 250, height: 125)
+                    
+                    Image(ThemeManager.shared.currentTheme.asString == "Dark" ? "word_tab_dark" : "word_tab_light")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 125)
+                    
+                    Image(ThemeManager.shared.currentTheme.asString == "Dark" ? "words_get_dark" : "words_get_light")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 220)
+                    
+                    Image(ThemeManager.shared.currentTheme.asString == "Dark" ? "dictionaries_tab_dark" : "dictionaries_tab_light")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 125)
+                    
+                    HStack {
+                        VStack{
+                            Text("some text")
+                            Text("some text")
+                        }
+                        
+                        Image(ThemeManager.shared.currentTheme.asString == "Dark" ? "dictionaries_get_dark" : "dictionaries_get_light")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(height: 200)
+                    }
+                    
+                    Text(locale.screenTextNoWords)
+                        .font(style.textFont)
+                        .foregroundStyle(style.textColor)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal)
+                    
+                    ButtonAction(
+                        title: locale.screenButtonClose,
+                        action: { dismiss() },
+                        style: .action(ThemeManager.shared.currentThemeStyle)
+                    )
+                    .padding(.bottom)
+                }
+                .frame(maxWidth: .infinity)
                 
-                Image("no_words_game")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 250, height: 125)
-                
-                Image(ThemeManager.shared.currentTheme.asString == "Dark" ? "word_tab_dark" : "word_tab_light")
-                    .resizable()
-                    .scaledToFit()
-                    .frame( height: 125)
-                
-                Image(ThemeManager.shared.currentTheme.asString == "Dark" ? "words_get_dark" : "words_get_light")
-                    .resizable()
-                    .scaledToFit()
-                    .frame( height: 220)
-                
-                Image(ThemeManager.shared.currentTheme.asString == "Dark" ? "dictionaries_tab_dark" : "dictionaries_tab_light")
-                    .resizable()
-                    .scaledToFit()
-                    .frame( height: 125)
-                
-                Text(locale.screenTextNoWords)
-                    .font(style.textFont)
-                    .foregroundStyle(style.textColor)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal)
-                
-                ButtonAction(
-                    title: locale.screenButtonClose,
-                    action: { dismiss() },
-                    style: .action(ThemeManager.shared.currentThemeStyle)
-                )
-                .padding(.bottom)
+                // Добавляем отступ снизу для лучшего вида при скролле
+                Spacer().frame(height: 20)
             }
-            .frame(maxWidth: .infinity)
-            
-//            Spacer()
-            
+            .padding()
         }
-        .padding()
+        // Устанавливаем цвет фона для ScrollView
+        .background(ThemeManager.shared.currentThemeStyle.backgroundPrimary)
+        // Отключаем индикатор скролла для более чистого вида
+        .scrollIndicators(.hidden)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
