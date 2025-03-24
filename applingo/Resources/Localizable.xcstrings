@@ -1551,6 +1551,40 @@
         }
       }
     },
+    "screen.noWords.addDictionariesChoice" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OR"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ИЛИ"
+          }
+        }
+      }
+    },
+    "screen.noWords.addDictionariesTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add new dictionaries"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Добавить новый словарь"
+          }
+        }
+      }
+    },
     "screen.noWords.subtitle" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1564,6 +1598,57 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Нет активных слов"
+          }
+        }
+      }
+    },
+    "screen.noWords.tabDictionariesDescriptionImport" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "On the “dictionaries” tab, tap on the floating button and select either “Import from Local” or “Download Remote.”"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "На вкладке “Словари” нажмите на плавающую кнопку и выберите: “Импорт с устройства” или “Скачать удалённо”."
+          }
+        }
+      }
+    },
+    "screen.noWords.tabWordsDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "If you don’t have any dictionaries, you can switch to the “words” tab."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Если у вас нет словарей, вы можете переключиться на вкладку “слова”."
+          }
+        }
+      }
+    },
+    "screen.noWords.tabWordsDescriptionImport" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "On this tab, you have two options: download remote dictionaries or import a dictionary from your local device. Choose the appropriate option and create your dictionary."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "На этой вкладке у вас есть два варианта: скачать удалённые словари или импортировать словарь с локального устройства. Выберите подходящий вариант и создайте словарь."
           }
         }
       }

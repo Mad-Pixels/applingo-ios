@@ -6,20 +6,32 @@ final class GameNoWordsLocale: ObservableObject {
     // MARK: - Localized Keys
     private enum LocalizedKey: String {
         case subtitle = "screen.noWords.subtitle"
-        case text = "screen.noWords.text"
         case closeButton = "base.button.close"
+        case addDictionariesTitle = "screen.noWords.addDictionariesTitle"
+        case tabWordsDescription = "screen.noWords.tabWordsDescription"
+        case tabWordsDescriptionImport = "screen.noWords.tabWordsDescriptionImport"
+        case addDictionariesChoice = "screen.noWords.addDictionariesChoice"
+        case tabDictionariesDescriptionImport = "screen.noWords.tabDictionariesDescriptionImport"
     }
     
     // MARK: - Published Properties
     @Published private(set) var screenSubtitleNoWords: String
-    @Published private(set) var screenTextNoWords: String
     @Published private(set) var screenButtonClose: String
+    @Published private(set) var screenAddDictionariesTitle: String
+    @Published private(set) var screenTabWordsDescription: String
+    @Published private(set) var screenTabWordsDescriptionImport: String
+    @Published private(set) var screenAddDictionariesChoice: String
+    @Published private(set) var screenTabDictionariesDescriptionImport: String
     
     // MARK: - Initialization
     init() {
         self.screenSubtitleNoWords = Self.localizedString(for: .subtitle)
-        self.screenTextNoWords = Self.localizedString(for: .text)
         self.screenButtonClose = Self.localizedString(for: .closeButton)
+        self.screenAddDictionariesTitle = Self.localizedString(for: .addDictionariesTitle)
+        self.screenTabWordsDescription = Self.localizedString(for: .tabWordsDescription)
+        self.screenTabWordsDescriptionImport = Self.localizedString(for: .tabWordsDescriptionImport)
+        self.screenAddDictionariesChoice = Self.localizedString(for: .addDictionariesChoice)
+        self.screenTabDictionariesDescriptionImport = Self.localizedString(for: .tabDictionariesDescriptionImport)
         
         NotificationCenter.default.addObserver(
             self,
@@ -42,7 +54,11 @@ final class GameNoWordsLocale: ObservableObject {
     // MARK: - Notification Handler
     @objc private func localeDidChange() {
         screenSubtitleNoWords = Self.localizedString(for: .subtitle)
-        screenTextNoWords = Self.localizedString(for: .text)
         screenButtonClose = Self.localizedString(for: .closeButton)
+        screenAddDictionariesTitle = Self.localizedString(for: .addDictionariesTitle)
+        screenTabWordsDescription = Self.localizedString(for: .tabWordsDescription)
+        screenTabWordsDescriptionImport = Self.localizedString(for: .tabWordsDescriptionImport)
+        screenAddDictionariesChoice = Self.localizedString(for: .addDictionariesChoice)
+        screenTabDictionariesDescriptionImport = Self.localizedString(for: .tabDictionariesDescriptionImport)
     }
 }

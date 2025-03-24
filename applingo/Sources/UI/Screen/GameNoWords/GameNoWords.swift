@@ -22,7 +22,7 @@ struct GameNoWords: View {
         ScrollView {
             VStack(spacing: 20) {
                 // Добавляем небольшой отступ сверху для лучшего вида при скролле
-                Spacer().frame(height: 20)
+                Spacer().frame(height: 64)
                 
                 VStack(alignment: .center, spacing: 16) {
                     SectionHeader(
@@ -35,20 +35,45 @@ struct GameNoWords: View {
                         .scaledToFit()
                         .frame(width: 250, height: 125)
                     
+                    SectionHeader(
+                        title: locale.screenAddDictionariesTitle,
+                        style: .centeredHeading(ThemeManager.shared.currentThemeStyle)
+                    )
+                    
+                    Text(locale.screenTabWordsDescription)
+                        .font(style.textFont)
+                        .foregroundStyle(style.textColor)
+                        .padding(.horizontal)
+                    
                     Image(ThemeManager.shared.currentTheme.asString == "Dark" ? "word_tab_dark" : "word_tab_light")
                         .resizable()
                         .scaledToFit()
                         .frame(height: 125)
+                    
+                    Text(locale.screenTabWordsDescriptionImport)
+                        .font(style.textFont)
+                        .foregroundStyle(style.textColor)
+                        .padding(.horizontal)
                     
                     Image(ThemeManager.shared.currentTheme.asString == "Dark" ? "words_get_dark" : "words_get_light")
                         .resizable()
                         .scaledToFit()
                         .frame(height: 220)
                     
+                    Text(locale.screenAddDictionariesChoice)
+                        .font(style.textFont)
+                        .foregroundStyle(style.textColor)
+                        .padding(.horizontal)
+                    
                     Image(ThemeManager.shared.currentTheme.asString == "Dark" ? "dictionaries_tab_dark" : "dictionaries_tab_light")
                         .resizable()
                         .scaledToFit()
                         .frame(height: 125)
+                    
+                    Text(locale.screenTabDictionariesDescriptionImport)
+                        .font(style.textFont)
+                        .foregroundStyle(style.textColor)
+                        .padding(.horizontal)
                     
                     HStack {
                         VStack{
@@ -61,12 +86,6 @@ struct GameNoWords: View {
                             .scaledToFit()
                             .frame(height: 200)
                     }
-                    
-                    Text(locale.screenTextNoWords)
-                        .font(style.textFont)
-                        .foregroundStyle(style.textColor)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal)
                     
                     ButtonAction(
                         title: locale.screenButtonClose,
