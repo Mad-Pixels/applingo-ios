@@ -18,6 +18,7 @@ final class GameTabStyle: ObservableObject {
     let iconSize: CGFloat
     let modeSectionSize: CGFloat
     let tabWidth: CGFloat
+    let heartColor: Color
 
     // MARK: - Initializer
     /// Initializes a new instance of `GameTabStyle`.
@@ -48,7 +49,8 @@ final class GameTabStyle: ObservableObject {
         dividerHeight: CGFloat,
         iconSize: CGFloat,
         modeSectionSize: CGFloat,
-        tabWidth: CGFloat
+        tabWidth: CGFloat,
+        heartColor: Color
     ) {
         self.textPrimaryColor = textPrimaryColor
         self.textSecondaryColor = textSecondaryColor
@@ -63,6 +65,7 @@ final class GameTabStyle: ObservableObject {
         self.iconSize = iconSize
         self.modeSectionSize = modeSectionSize
         self.tabWidth = tabWidth
+        self.heartColor = heartColor
     }
 }
 
@@ -85,7 +88,8 @@ extension GameTabStyle {
             dividerHeight: 24,
             iconSize: 16,
             modeSectionSize: 60,
-            tabWidth: 0.9
+            tabWidth: 0.9,
+            heartColor: theme.errorPrimaryColor
         )
     }
 }

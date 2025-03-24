@@ -1,7 +1,6 @@
 import SwiftUI
-import Combine
 
-/// Базовый экран игры, который отвечает за запуск/остановку игры, показ модальных окон и трекинг.
+/// Базовый экран игры, который отвечает за запуск/остановку игры, показ уведомлений и трекинг.
 struct BaseGameScreen<Content: View>: View {
     // MARK: - Environment Objects и сервисы
     @EnvironmentObject private var localeManager: LocaleManager
@@ -17,73 +16,67 @@ struct BaseGameScreen<Content: View>: View {
     // MARK: - Состояние игры
     @ObservedObject private var gameState: GameState
 
-    /// Замыкание для получения модального окна в зависимости от состояния игры.
-    /// Если возвращается nil, модальное окно не показывается.
-    private let modalContent: (GameState) -> AnyView?
-
     // MARK: - Инициализация
     init(
         screen: ScreenType,
         game: any AbstractGame,
         @ViewBuilder content: () -> Content,
-        style: BaseGameScreenStyle = .default,
-        modalContent: ((GameState) -> AnyView?)? = nil
+        style: BaseGameScreenStyle = .default
     ) {
         self.content = content()
         self.screen = screen
         self.style = style
         self.game = game
         self.gameState = game.state
-        // Если modalContent не передано, используем замыкание по умолчанию
-        self.modalContent = modalContent ?? { state in
-            if state.showNoWords {
-                return AnyView(GameNoWords())
-            } else if state.showResults {
-                return AnyView(GameResult(stats: game.stats))
-            } else {
-                return nil
-            }
-        }
     }
 
     // MARK: - Body
     var body: some View {
-        content
-            .background(themeManager.currentThemeStyle.backgroundPrimary)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            // Скрываем навигационную панель, если показывается модальное окно
-            .navigationBarHidden(gameState.showResults || gameState.showNoWords)
-            // Показываем модальное окно, если хотя бы одно из состояний истинно
-            .showModal(isPresented: Binding<Bool>(
-                get: {
-                    gameState.showResults || gameState.showNoWords
-                },
-                set: { newValue in
-                    if !newValue {
-                        // При закрытии окна сбрасываем оба флага
-                        gameState.showResults = false
-                        gameState.showNoWords = false
-                    }
-                }
-            )) {
-                if let modal = modalContent(gameState) {
-                    modal.environmentObject(gameState)
-                }
+        ZStack {
+            // Основной контент игры
+            content
+                .background(themeManager.currentThemeStyle.backgroundPrimary)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .navigationBarHidden(gameState.showResults || gameState.showNoWords)
+            
+            // Результаты игры показываем как модальное окно
+            if gameState.showResults {
+                Color.black.opacity(0.5)
+                    .ignoresSafeArea()
+                
+                GameResult(stats: game.stats)
+                    .environmentObject(gameState)
+                    .transition(.opacity)
+                    .zIndex(10)
             }
-            .onReceive(gameState.$isGameOver) { isGameOver in
-                if isGameOver, gameState.endReason == .userQuit {
-                    dismiss()
-                }
+            
+            // "Нет слов" показываем как обычное наложение
+            if gameState.showNoWords {
+                // Основной фон игры
+                themeManager.currentThemeStyle.backgroundPrimary
+                    .ignoresSafeArea()
+                
+                // Содержимое GameNoWords
+                GameNoWords()
+                    .environmentObject(gameState)
+                    .transition(.opacity)
+                    .zIndex(5)
             }
-            .onAppear {
-                game.start()
+        }
+        .onReceive(gameState.$isGameOver) { isGameOver in
+            if isGameOver, gameState.endReason == .userQuit {
+                dismiss()
             }
-            .onDisappear {
-                game.end()
-            }
-            .withScreenTracker(screen)
-            .withErrorTracker(screen)
-            .withLocaleTracker()
-            .withThemeTracker()
+        }
+        .onAppear {
+            game.start()
+        }
+        .onDisappear {
+            game.end()
+        }
+        .withScreenTracker(screen)
+        .withErrorTracker(screen)
+        .withLocaleTracker()
+        .withThemeTracker()
     }
 }

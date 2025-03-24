@@ -37,14 +37,14 @@ struct DictionaryRemoteFilterViewActions: View {
     var body: some View {
         HStack {
             ButtonAction(
-                title: locale.screenButtonSave,
-                action: onSave,
+                title: locale.screenButtonReset,
+                action: onReset,
                 style: .action(themeManager.currentThemeStyle)
             )
             
             ButtonAction(
-                title: locale.screenButtonReset,
-                action: onReset,
+                title: locale.screenButtonSave,
+                action: onSave,
                 style: .action(themeManager.currentThemeStyle)
             )
         }

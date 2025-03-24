@@ -6,6 +6,8 @@ final class QuizViewModel: ObservableObject {
     @Published private(set) var currentCard: QuizModelCard?
     @Published private(set) var shouldShowEmptyView = false
     @Published var highlightedOptions: [String: Color] = [:]
+    // Добавляем переменную для блокировки интерфейса
+    @Published var isProcessingAnswer = false
     
     private var cardStartTime: Date?
     private let game: Quiz
@@ -68,6 +70,8 @@ final class QuizViewModel: ObservableObject {
                     }
                     
                     cardStartTime = Date()
+                    // Разблокируем интерфейс после генерации новой карточки
+                    self.isProcessingAnswer = false
                     return
                 }
                 
@@ -77,10 +81,18 @@ final class QuizViewModel: ObservableObject {
             }
             
             shouldShowEmptyView = true
+            // Разблокируем интерфейс если нет карточек
+            self.isProcessingAnswer = false
         }
     }
     
     func handleAnswer(_ answer: String) {
+        // Проверяем, не обрабатывается ли уже ответ
+        guard !isProcessingAnswer else { return }
+        
+        // Блокируем интерфейс на время обработки ответа
+        isProcessingAnswer = true
+        
         let responseTime = cardStartTime.map { Date().timeIntervalSince($0) } ?? 0
         let result = game.validateAnswer(answer)
         

@@ -23,7 +23,8 @@ struct SectionHeader: View {
             Text(title)
                 .font(style.titleFont)
                 .foregroundColor(style.titleColor)
-                .frame(maxWidth: .infinity, alignment: .leading)
+                .multilineTextAlignment(style.alignment)
+                .frame(maxWidth: .infinity, alignment: style.alignment == .center ? .center : .leading)
                 .padding(.horizontal, style.padding.leading)
             
             Rectangle()
