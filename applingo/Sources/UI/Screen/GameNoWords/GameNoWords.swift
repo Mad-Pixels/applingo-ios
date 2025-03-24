@@ -22,6 +22,8 @@ struct GameNoWords: View {
             Spacer()
             
             VStack(alignment: .center, spacing: 16) {
+//                Spacer()
+                
                 SectionHeader(
                     title: locale.screenSubtitleNoWords,
                     style: .centeredHeading(ThemeManager.shared.currentThemeStyle)
@@ -31,6 +33,11 @@ struct GameNoWords: View {
                     .resizable()
                     .scaledToFit()
                     .frame(width: 250, height: 125)
+                
+                Image(ThemeManager.shared.currentTheme.asString == "Dark" ? "word_tab_dark" : "word_tab_light")
+                    .resizable()
+                    .scaledToFit()
+                    .frame( height: 125)
                 
                 Text(locale.screenTextNoWords)
                     .font(style.textFont)
@@ -47,7 +54,7 @@ struct GameNoWords: View {
             }
             .frame(maxWidth: .infinity)
             
-            Spacer()
+//            Spacer()
             
         }
         .padding()
