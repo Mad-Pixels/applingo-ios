@@ -61,9 +61,9 @@ struct LightTheme: AppTheme {
     // Match game
     var matchTheme: GameTheme {
         GameTheme(
-            main: Color(hex: "827c71"),
-            secondary: Color(hex: "748aa8"),
-            accent: Color(hex: "84bf4d")
+            main: Color(hex: "2563EB"),
+            secondary: Color(hex: "1A47AA"),
+            accent: Color(hex: "13337B")
         )
     }
     

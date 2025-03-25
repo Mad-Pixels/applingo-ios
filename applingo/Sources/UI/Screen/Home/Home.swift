@@ -41,16 +41,16 @@ struct Home: View {
                         style: .menu(ThemeManager.shared.currentThemeStyle)
                     )
                     
-//                    ButtonAction(
-//                        title: locale.screenGameMatchup.uppercased(),
-//                        action: {
-//                            game = .match
-//                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-//                                gameStart = true
-//                            }
-//                        },
-//                        style: .menu(ThemeManager.shared.currentThemeStyle)
-//                    )
+                    ButtonAction(
+                        title: locale.screenGameMatchup.uppercased(),
+                        action: {
+                            game = .match
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                gameStart = true
+                            }
+                        },
+                        style: .menu(ThemeManager.shared.currentThemeStyle)
+                    )
                 }
                 .padding(style.padding)
                 //.glassBackground()
