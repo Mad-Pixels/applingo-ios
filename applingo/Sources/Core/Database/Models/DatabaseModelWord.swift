@@ -8,6 +8,7 @@ struct DatabaseModelWord: Identifiable, Codable, Equatable, Hashable {
     internal let id: Int?
     internal let uuid: String
     internal let created: Int
+    internal let backLangCode: String
     
     var description: String
     var subcategory: String
@@ -33,6 +34,7 @@ struct DatabaseModelWord: Identifiable, Codable, Equatable, Hashable {
         
         description: String = "",
         hint: String = "",
+        backLangCode: String = "",
         
         created: Int = Int(Date().timeIntervalSince1970),
         id: Int? = nil
@@ -43,11 +45,13 @@ struct DatabaseModelWord: Identifiable, Codable, Equatable, Hashable {
         self.frontText = frontText
         self.backText = backText
         
+        
         self.success = success
         self.weight = weight
         self.fail = fail
         self.hint = hint
         
+        self.backLangCode = backLangCode
         self.uuid = UUID().uuidString
         self.created = created
         self.id = id
@@ -113,6 +117,7 @@ extension DatabaseModelWord: FetchableRecord, PersistableRecord {
             t.autoIncrementedPrimaryKey("id").unique()
             t.column("uuid", .text).unique()
             
+            t.column("backLangCode", .text).notNull()
             t.column("subcategory", .text).notNull()
             t.column("description", .text).notNull()
             t.column("dictionary", .text).notNull()

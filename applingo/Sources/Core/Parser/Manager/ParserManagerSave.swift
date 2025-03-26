@@ -52,13 +52,18 @@ final class ParserManagerSave {
        )
        
        let dbWords = words.map { word in
-           DatabaseModelWord(
-            subcategory: dbDictionary.subcategory,
-            dictionary: dbDictionary.guid,
+           // Извлекаем код для backText из dictionary.subcategory
+           let parts = dictionary.subcategory.split(separator: "-")
+           let backLangCode = parts.count >= 2 ? String(parts[1]) : "en" // По умолчанию "en" если формат неправильный
+           
+           return DatabaseModelWord(
+               subcategory: dbDictionary.subcategory,
+               dictionary: dbDictionary.guid,
                frontText: word.frontText,
                backText: word.backText,
                description: word.description,
-               hint: word.hint
+               hint: word.hint,
+               backLangCode: backLangCode // Используем только извлеченный код языка
            )
        }
        
