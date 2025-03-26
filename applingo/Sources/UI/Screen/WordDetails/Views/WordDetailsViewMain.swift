@@ -1,7 +1,5 @@
 import SwiftUI
 
-/// A view displaying the main section of the word details,
-/// including input fields for the front and back text.
 struct WordDetailsViewMain: View {
     // MARK: - Properties
     @EnvironmentObject private var themeManager: ThemeManager
@@ -10,14 +8,8 @@ struct WordDetailsViewMain: View {
         
     @Binding var word: DatabaseModelWord
     private let isEditing: Bool
-
+    
     // MARK: - Initializer
-    /// Initializes the main details view.
-    /// - Parameters:
-    ///   - word: Binding to the word model.
-    ///   - locale: Localization object.
-    ///   - style: Style configuration.
-    ///   - isEditing: Flag for editing mode.
     init(
         style: WordDetailsStyle,
         locale: WordDetailsLocale,
@@ -47,12 +39,27 @@ struct WordDetailsViewMain: View {
                     isEditing: isEditing
                 )
 
-                InputText(
-                    text: $word.backText,
-                    title: locale.screenDescriptionBackText,
-                    placeholder: "",
-                    isEditing: isEditing
-                )
+                HStack {
+                    InputText(
+                        text: $word.backText,
+                        title: locale.screenDescriptionBackText,
+                        placeholder: "",
+                        isEditing: isEditing
+                    )
+                    
+                    // Кнопка озвучивания с использованием TTS сервиса
+                    Button(action: {
+                        // Используем наш TTS сервис
+                        TTS.shared.speak(word.backText, language: "en-US")
+                    }) {
+                        Image(systemName: "speaker.wave.2")
+                            .font(.system(size: 20))
+                            .foregroundColor(themeManager.currentThemeStyle.accentPrimary)
+                            .frame(width: 44, height: 44)
+                            .contentShape(Rectangle())
+                    }
+                    .disabled(word.backText.isEmpty)
+                }
             }
             .padding(.horizontal, style.paddingBlock)
             .background(Color.clear)
