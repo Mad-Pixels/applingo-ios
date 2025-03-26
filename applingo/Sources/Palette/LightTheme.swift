@@ -70,9 +70,9 @@ struct LightTheme: AppTheme {
     // Sipe game
     var swipeTheme: GameTheme {
         GameTheme(
-            main: Color(hex: "4b5563"),
-            secondary: Color(hex: "f8a009"),
-            accent: Color(hex: "e38c10")
+            main: Color(hex: "2563EB"),
+            secondary: Color(hex: "1A47AA"),
+            accent: Color(hex: "13337B")
         )
     }
 }
