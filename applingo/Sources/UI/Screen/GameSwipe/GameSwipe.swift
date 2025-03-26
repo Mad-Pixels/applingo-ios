@@ -77,6 +77,7 @@ struct GameSwipe: View {
                 RoundedRectangle(cornerRadius: 20)
                     .fill(themeManager.currentThemeStyle.backgroundSecondary)
                     .shadow(radius: 5)
+                    .overlay(CardPatternBorder(cornerRadius: 20, style: themeManager.currentThemeStyle))
                 
                 VStack(spacing: 20) {
                     Text(card.frontText)
@@ -99,14 +100,30 @@ struct GameSwipe: View {
                 .padding()
             }
             .frame(width: 300, height: 400)
-            
-            // Инструкция
-//            Text("Свайпните вправо, если перевод верный, или влево, если перевод неверный")
-//                .font(.caption)
-//                .foregroundColor(themeManager.currentThemeStyle.textSecondary)
-//                .multilineTextAlignment(.center)
-//                .padding(.horizontal)
         }
     }
 }
 
+private struct CardPatternBorder: View {
+    let cornerRadius: CGFloat
+    let style: AppTheme
+    let borderWidth: CGFloat = 8.0
+    
+    var body: some View {
+        GeometryReader { geometry in
+            RoundedRectangle(cornerRadius: cornerRadius)
+                .strokeBorder(.clear, lineWidth: borderWidth)
+                .background(
+                    DynamicPattern(
+                        model: style.mainPattern,
+                        size: CGSize(width: geometry.size.width * 2, height: geometry.size.height * 2)
+                    )
+                )
+                .mask(
+                    RoundedRectangle(cornerRadius: cornerRadius)
+                        .strokeBorder(style: StrokeStyle(lineWidth: borderWidth))
+                )
+        }
+        .allowsHitTesting(false)
+    }
+}
