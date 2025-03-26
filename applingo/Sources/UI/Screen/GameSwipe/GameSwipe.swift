@@ -101,11 +101,11 @@ struct GameSwipe: View {
             .frame(width: 300, height: 400)
             
             // Инструкция
-            Text("Свайпните вправо, если перевод верный, или влево, если перевод неверный")
-                .font(.caption)
-                .foregroundColor(themeManager.currentThemeStyle.textSecondary)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal)
+//            Text("Свайпните вправо, если перевод верный, или влево, если перевод неверный")
+//                .font(.caption)
+//                .foregroundColor(themeManager.currentThemeStyle.textSecondary)
+//                .multilineTextAlignment(.center)
+//                .padding(.horizontal)
         }
     }
 }

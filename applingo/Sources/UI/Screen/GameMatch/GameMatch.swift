@@ -60,7 +60,7 @@ struct GameMatch: View {
                 .padding(.horizontal)
             }
         }
-        .padding()
+        .padding(.top, 36)
         .onAppear {
             loadNewWords()
         }
