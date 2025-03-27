@@ -54,7 +54,7 @@ struct GameMode<GameType: AbstractGame>: View {
     // MARK: - Private Views
     private var modeSelectionContent: some View {
         ZStack {
-            GameModeBackground(style.colors)
+            GameModeBackground(colors: style.colors)
                 .edgesIgnoringSafeArea(.all)
             
             VStack(spacing: style.spacing) {

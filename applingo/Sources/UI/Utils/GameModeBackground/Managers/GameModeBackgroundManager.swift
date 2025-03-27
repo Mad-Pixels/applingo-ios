@@ -1,6 +1,5 @@
 import SwiftUI
 
-// MARK: - GameModeBackgroundManager
 /// Manages the generation and storage of game mode background shapes.
 final class GameModeBackgroundManager: ObservableObject {
     static let shared = GameModeBackgroundManager()
@@ -9,20 +8,16 @@ final class GameModeBackgroundManager: ObservableObject {
     @Published private(set) var backgroundShapes: [GameModeBackgroundModelShape] = []
     
     private static var isFirstLaunchGenerated = false
-    private let lock = NSLock()
-    
-    // MARK: - Constants
-    private let maxShapes = 20
-    private let minSize: CGFloat = 100
-    private let maxSize: CGFloat = 200
     private let minOpacity: Double = 0.02
     private let maxOpacity: Double = 0.06
+    private let minSize: CGFloat = 100
+    private let maxSize: CGFloat = 200
     private let padding: CGFloat = 3
-    
-    // MARK: - Initializer
-    private init() {}
+    private let lock = NSLock()
+    private let maxShapes = 20
     
     // MARK: - Public Methods
+
     /// Generates background shapes for the given size if not already generated.
     /// - Parameters:
     ///   - size: The available screen size.
@@ -46,6 +41,7 @@ final class GameModeBackgroundManager: ObservableObject {
     }
     
     // MARK: - Private Methods
+
     /// Generates background shapes based on the available size.
     /// - Parameters:
     ///   - size: The available screen size.
@@ -68,11 +64,12 @@ final class GameModeBackgroundManager: ObservableObject {
             
             if !occupiedRects.contains(where: { $0.intersects(newRect) }) {
                 occupiedRects.append(newRect)
+                
                 shapes.append(GameModeBackgroundModelShape(
                     id: UUID(),
                     position: CGPoint(x: x, y: y),
-                    size: shapeSize,
                     opacity: Double.random(in: minOpacity...maxOpacity),
+                    size: shapeSize,
                     color: colors.randomElement() ?? .blue
                 ))
             }

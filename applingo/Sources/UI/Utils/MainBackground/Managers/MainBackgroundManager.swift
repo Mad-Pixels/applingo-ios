@@ -1,17 +1,22 @@
 import SwiftUI
 
-// MARK: - MainBackgroundManager
 /// Manages generation and storage of background words.
 final class MainBackgroundManager: ObservableObject {
     static let shared = MainBackgroundManager()
    
     /// Array of background words with associated properties.
-    @Published private(set) var backgroundWords: [(id: UUID, word: String, position: CGPoint, font: UIFont, opacity: Double)] = []
+    @Published private(set) var backgroundWords: [
+        (
+            id: UUID,
+            word: String,
+            position: CGPoint,
+            font: UIFont,
+            opacity: Double
+        )
+    ] = []
    
     private static var isFirstLaunchGenerated = false
     private let lock = NSLock()
-   
-    // MARK: - Constants
     private let languages = [
         "HELLO", "BONJOUR", "HOLA", "CIAO", "ПРИВЕТ", "HALLO", "你好", "こんにちは", "안녕하세요", "مرحبا", "שָׁלוֹם",
         "NAMASTE", "SAWADEE", "MERHABA", "OLÁ", "ЗДРАВЕЙТЕ", "ΓΕΙΑ ΣΑΣ", "JAMBO", "BONGU", "XIN CHÀO",
@@ -42,18 +47,16 @@ final class MainBackgroundManager: ObservableObject {
         "FUTURE", "AVENIR", "FUTURO", "FUTURO", "БУДУЩЕЕ", "ZUKUNFT", "未来", "未来", "미래", "مستقبل", "עָתִיד",
         "DREAM", "RÊVE", "SUEÑO", "SOGNO", "МЕЧТА", "TRAUM", "梦想", "夢", "꿈", "حلم", "חֲלוֹם"
     ]
-    private let padding: CGFloat = 2
-    private let maxWords = 200
     private let minFontSize: CGFloat = 14
     private let maxFontSize: CGFloat = 42
     private let minOpacity: Double = 0.1
     private let maxOpacity: Double = 0.2
+    private let padding: CGFloat = 2
     private let maxAttempts = 100
-   
-    // MARK: - Initializer
-    private init() {}
-   
+    private let maxWords = 200
+      
     // MARK: - Public Methods
+    
     /// Generates background words for the given size if not already generated.
     /// - Parameter size: The available screen size.
     func generateIfNeeded(for size: CGSize) {
@@ -75,6 +78,7 @@ final class MainBackgroundManager: ObservableObject {
     }
    
     // MARK: - Private Methods
+    
     /// Generates background words based on the available size.
     /// - Parameter size: The available screen size.
     private func generateBackground(for size: CGSize) {
@@ -111,7 +115,6 @@ final class MainBackgroundManager: ObservableObject {
                 ))
             }
         }
-       
         self.backgroundWords = newWords
     }
    
@@ -168,7 +171,6 @@ final class MainBackgroundManager: ObservableObject {
                 return CGPoint(x: x, y: y)
             }
         }
-       
         return nil
     }
 }

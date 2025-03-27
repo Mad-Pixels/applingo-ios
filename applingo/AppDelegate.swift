@@ -25,6 +25,7 @@ struct LingocardApp: App {
     var body: some Scene {
         WindowGroup {
             Main()
+                .environmentObject(HardwareMotion.shared)
                 .environmentObject(ThemeManager.shared)
                 .environmentObject(AppDatabase.shared)
         }

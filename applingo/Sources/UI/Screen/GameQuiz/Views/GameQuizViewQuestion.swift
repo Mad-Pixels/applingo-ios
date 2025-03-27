@@ -1,19 +1,10 @@
 import SwiftUI
 
-// MARK: - GameQuizViewQuestion
-
 /// A view that displays a quiz question card with a dynamic patterned background and border.
 ///
 /// This view renders the quiz question text using a dynamic text component styled via a theme.
 /// The question is centered and padded on a card with adaptive dimensions. Its background is enhanced
 /// with an animated dynamic pattern overlay, and the border is rendered with an animated dynamic pattern.
-///
-/// - Environment:
-///   - `themeManager`: Provides the current theme settings.
-/// - Properties:
-///   - `locale`: `GameQuizLocale` object supplying localized strings.
-///   - `style`: `GameQuizStyle` object defining visual appearance and dynamic pattern details.
-///   - `question`: The quiz question text to display.
 struct GameQuizViewQuestion: View {
     // MARK: - Properties
     @EnvironmentObject private var themeManager: ThemeManager
@@ -49,28 +40,32 @@ struct GameQuizViewQuestion: View {
         GameQuizQuestionText(question: question, style: style)
             .padding(style.cardPadding)
             .frame(width: cardWidth, height: cardHeight)
-            .background(backgroundView)
+            // Base background color.
+            .background(style.cardBackground)
+            // Apply the animated dynamic background using the modifier.
+            .animatedBackground(
+                model: style.pattern,
+                size: CGSize(width: cardWidth * 1.1, height: cardHeight * 1.1),
+                cornerRadius: style.cardCornerRadius,
+                minScale: style.patternMinScale,
+                opacity: style.patternOpacity,
+                animationDuration: style.patternAnimationDuration
+            )
             .cornerRadius(style.cardCornerRadius)
-            .overlay(borderView)
+            // Apply the animated border using the previously defined modifier.
+            .animatedBorder(
+                model: style.pattern,
+                size: CGSize(width: cardWidth * 1.1, height: cardHeight * 1.1),
+                cornerRadius: style.cardCornerRadius,
+                minScale: style.patternMinScale,
+                animationDuration: style.patternAnimationDuration,
+                borderWidth: style.borderWidth
+            )
             .shadow(
                 radius: style.cardShadowRadius,
                 x: style.shadowOffset.x,
                 y: style.shadowOffset.y
             )
-    }
-    
-    // MARK: - Private Methods
-    /// The background view consisting of a solid color and an animated dynamic pattern overlay.
-    private var backgroundView: some View {
-        ZStack {
-            style.cardBackground
-            PatternedBackground(style: style)
-        }
-    }
-    
-    /// The border view that renders an animated dynamic pattern border.
-    private var borderView: some View {
-        PatternedBorder(style: style)
     }
 }
 
@@ -153,56 +148,6 @@ private struct GameQuizQuestionText: View {
                     }
                 }
             }
-        }
-    }
-}
-
-/// A view that displays an animated dynamic pattern as the background of the quiz question card.
-private struct PatternedBackground: View {
-    let style: GameQuizStyle
-    
-    var body: some View {
-        GeometryReader { geometry in
-            DynamicPatternViewBackgroundAnimated(
-                model: style.pattern,
-                size: CGSize(
-                    width: geometry.size.width * 1.1,
-                    height: geometry.size.height * 1.1
-                ),
-                cornerRadius: style.cardCornerRadius,
-                minScale: style.patternMinScale,
-                opacity: style.patternOpacity,
-                animationDuration: style.patternAnimationDuration
-            )
-            .position(
-                x: geometry.size.width / 2,
-                y: geometry.size.height / 2
-            )
-        }
-    }
-}
-
-/// A view that displays an animated dynamic pattern as the border of the quiz question card.
-private struct PatternedBorder: View {
-    let style: GameQuizStyle
-    
-    var body: some View {
-        GeometryReader { geometry in
-            DynamicPatternViewBorderAnimated(
-                model: style.pattern,
-                size: CGSize(
-                    width: geometry.size.width * 1.1,
-                    height: geometry.size.height * 1.1
-                ),
-                cornerRadius: style.cardCornerRadius,
-                minScale: style.patternMinScale,
-                animationDuration: style.patternAnimationDuration,
-                borderWidth: style.borderWidth
-            )
-            .position(
-                x: geometry.size.width / 2,
-                y: geometry.size.height / 2
-            )
         }
     }
 }

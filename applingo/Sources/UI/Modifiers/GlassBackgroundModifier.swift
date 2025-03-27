@@ -1,5 +1,13 @@
 import SwiftUI
 
+/// A ViewModifier that applies a glass-like background effect using a blurred material (or a fallback color for older iOS versions).
+///
+/// The modifier uses a rounded rectangle with the specified corner radius and opacity as the background.
+/// It also overlays a subtle white stroke to simulate a glass border effect.
+///
+/// - Parameters:
+///   - cornerRadius: The corner radius for the rounded rectangle. Default is 16.
+///   - opacity: The opacity of the background effect. Default is 0.9.
 struct GlassBackgroundModifier: ViewModifier {
     let cornerRadius: CGFloat
     let opacity: CGFloat

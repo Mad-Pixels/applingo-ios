@@ -1,6 +1,5 @@
 import SwiftUI
 
-// MARK: - DynamicPattern View
 /// Renders a dynamic pattern using canvas drawing.
 struct DynamicPattern: View {
     let config: DynamicPatternConfig
@@ -24,10 +23,8 @@ struct DynamicPattern: View {
 
     var body: some View {
         Canvas { context, _ in
-            // Fill background with the first color
             context.fill(Path(CGRect(origin: .zero, size: size)), with: .color(model.colors[0]))
             
-            // Draw paths with subsequent colors
             for i in 1..<model.colors.count {
                 let mainPath = Path { path in
                     for _ in 0..<config.numberOfPaths {
@@ -57,13 +54,12 @@ struct DynamicPattern: View {
                     }
                 }
                 
-                context.blendMode = .normal
                 context.opacity = 0.95
+                context.blendMode = .normal
                 context.addFilter(.blur(radius: config.blurRadius))
                 context.fill(mainPath, with: .color(model.colors[i]))
             }
             
-            // Draw splashes
             let splashes = Path { path in
                 for _ in 0..<config.numberOfSplashes {
                     let x = CGFloat.random(in: -10...size.width + 10)
@@ -84,7 +80,6 @@ struct DynamicPattern: View {
             context.opacity = 0.98
             context.fill(splashes, with: .color(model.colors[1]))
             
-            // Draw strokes
             for _ in 0..<config.numberOfStrokes {
                 let strokePath = Path { path in
                     let startX = CGFloat.random(in: -10...size.width + 10)

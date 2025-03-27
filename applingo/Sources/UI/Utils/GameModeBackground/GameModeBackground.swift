@@ -1,7 +1,5 @@
 import SwiftUI
 
-import SwiftUI
-
 /// A view that renders the background for a game mode using a parallax effect based on device motion.
 ///
 /// `GameModeBackground` displays a collection of shapes (retrieved from a shared manager) over a given
@@ -12,27 +10,25 @@ import SwiftUI
 /// - Parameters:
 ///   - colors: An array of `Color` values used to generate the background shapes.
 struct GameModeBackground: View {
+    @EnvironmentObject private var motionManager: HardwareMotion
+    @EnvironmentObject private var themeManager: ThemeManager
+    
     @StateObject private var manager = GameModeBackgroundManager.shared
-    @StateObject private var motionManager = HardwareMotion.shared
     @StateObject private var motionState = MotionState()
     
-    private let parallaxStrength: CGFloat = 180
+    // List of Colors for generate background.
     let colors: [Color]
     
-    init(_ colors: [Color]) {
-        self.colors = colors
-    }
+    // Determines the intensity of the parallax effect, scaling the motion offsets applied to background words.
+    private let parallaxStrength: CGFloat = 180
     
     var body: some View {
         ZStack {
-            let theme = ThemeManager.shared.currentThemeStyle
             let shapes = manager.backgroundShapes
-            
             if !shapes.isEmpty {
                 ForEach(shapes, id: \.id) { shape in
                     GameModeBackgroundViewShape(
                         shape: shape,
-                        theme: theme,
                         offset: CGPoint(
                             x: motionState.offsetX * parallaxStrength * shape.opacity,
                             y: motionState.offsetY * parallaxStrength * shape.opacity

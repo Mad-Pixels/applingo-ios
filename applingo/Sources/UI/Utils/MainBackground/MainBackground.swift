@@ -11,17 +11,18 @@ import SwiftUI
 /// in response to changes in the device's roll and pitch values.
 ///
 struct MainBackground: View {
+    @EnvironmentObject private var motionManager: HardwareMotion
+    @EnvironmentObject private var themeManager: ThemeManager
+    
     @StateObject private var manager = MainBackgroundManager.shared
-    @StateObject private var motionManager = HardwareMotion.shared
     @StateObject private var motionState = MotionState()
     
+    // Determines the intensity of the parallax effect, scaling the motion offsets applied to background words.
     private let parallaxStrength: CGFloat = 70
     
     var body: some View {
         ZStack {
-            let theme = ThemeManager.shared.currentThemeStyle
             let words = manager.backgroundWords
-            
             if !words.isEmpty {
                 ForEach(words, id: \.id) { word in
                     Text(word.word)
@@ -30,7 +31,7 @@ struct MainBackground: View {
                             x: word.position.x + motionState.offsetX * parallaxStrength * word.opacity,
                             y: word.position.y + motionState.offsetY * parallaxStrength * word.opacity
                         )
-                        .foregroundColor(theme.textSecondary.opacity(word.opacity))
+                        .foregroundColor(themeManager.currentThemeStyle.textSecondary.opacity(word.opacity))
                 }
             }
         }

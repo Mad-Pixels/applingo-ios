@@ -1,6 +1,5 @@
 import SwiftUI
 
-// MARK: - DynamicPatternConfig
 /// Configuration for the dynamic pattern.
 struct DynamicPatternConfig {
     let opacities: [CGFloat]
