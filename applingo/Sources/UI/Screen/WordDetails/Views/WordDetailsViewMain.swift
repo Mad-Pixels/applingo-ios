@@ -1,7 +1,5 @@
 import SwiftUI
 
-/// A view displaying the main section of the word details,
-/// including input fields for the front and back text.
 struct WordDetailsViewMain: View {
     // MARK: - Properties
     @EnvironmentObject private var themeManager: ThemeManager
@@ -10,14 +8,10 @@ struct WordDetailsViewMain: View {
         
     @Binding var word: DatabaseModelWord
     private let isEditing: Bool
+    private let ttsDisabled: Bool
 
+    
     // MARK: - Initializer
-    /// Initializes the main details view.
-    /// - Parameters:
-    ///   - word: Binding to the word model.
-    ///   - locale: Localization object.
-    ///   - style: Style configuration.
-    ///   - isEditing: Flag for editing mode.
     init(
         style: WordDetailsStyle,
         locale: WordDetailsLocale,
@@ -28,6 +22,9 @@ struct WordDetailsViewMain: View {
         self.locale = locale
         self.style = style
         self._word = word
+        
+        self.ttsDisabled = word.wrappedValue.backText.isEmpty ||
+            TTSLanguageType.shared.get(for: word.wrappedValue.backTextCode) == ""
     }
 
     // MARK: - Body
@@ -47,12 +44,32 @@ struct WordDetailsViewMain: View {
                     isEditing: isEditing
                 )
 
-                InputText(
-                    text: $word.backText,
-                    title: locale.screenDescriptionBackText,
-                    placeholder: "",
-                    isEditing: isEditing
-                )
+                HStack {
+                    InputText(
+                        text: $word.backText,
+                        title: locale.screenDescriptionBackText,
+                        placeholder: "",
+                        isEditing: isEditing
+                    )
+                    
+                    Button(action: {
+                        TTS.shared.speak(
+                            word.backText,
+                            languageCode: word.backTextCode
+                        )
+                    }) {
+                        Image(systemName: ttsDisabled ? "speaker.slash" : "speaker.wave.2")
+                            .font(.system(size: 24))
+                            .foregroundColor(ttsDisabled ? style.disabledColor : style.accentColor)
+                            .frame(width: 44, height: 44)
+                            .contentShape(Rectangle())
+                            .padding(.top, 24)
+                    }
+                    .disabled(
+                        word.backText.isEmpty ||
+                        TTSLanguageType.shared.get(for: word.backTextCode) == ""
+                    )
+                }
             }
             .padding(.horizontal, style.paddingBlock)
             .background(Color.clear)

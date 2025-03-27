@@ -50,6 +50,9 @@ final class DictionaryFetcher: ProcessApi {
             ]
         )
         
+        // Создаем новый токен для отмены предыдущих операций
+        token = UUID()
+        
         if let request = request {
             currentRequest = request
         }
@@ -123,6 +126,9 @@ final class DictionaryFetcher: ProcessApi {
         )
         
         if searchText != oldValue {
+            // Создаем новый токен при изменении поискового запроса
+            token = UUID()
+            
             updateFilteredDictionaries()
             
             if !searchText.isEmpty &&
@@ -170,7 +176,7 @@ final class DictionaryFetcher: ProcessApi {
         var request = currentRequest ?? ApiModelDictionaryQueryRequest()
         request.isPublic = true
         if let lastEval = lastEvaluated, !lastEval.isEmpty {
-            request.lastEvaluated = lastEvaluated
+            request.lastEvaluated = lastEval
         }
         
         Logger.debug(
@@ -208,19 +214,29 @@ final class DictionaryFetcher: ProcessApi {
             Logger.debug("[Dictionary]: No more dictionaries to fetch")
             hasMorePages = false
         } else {
-            allDictionaries.append(contentsOf: fetchedDictionaries)
-            lastEvaluated = newLastEvaluated
-            hasMorePages = (newLastEvaluated != nil)
+            // Фильтруем словари, чтобы исключить дубликаты
+            let uniqueDictionaries = fetchedDictionaries.filter { fetchedDict in
+                !allDictionaries.contains { $0.id == fetchedDict.id }
+            }
             
-            Logger.debug(
-                "[Dictionary]: Dictionaries fetched",
-                metadata: [
-                    "fetchedCount": String(fetchedDictionaries.count),
-                    "totalCount": String(allDictionaries.count),
-                    "hasMorePages": String(hasMorePages)
-                ]
-            )
-            updateFilteredDictionaries()
+            if uniqueDictionaries.isEmpty {
+                Logger.debug("[Dictionary]: All fetched dictionaries are duplicates")
+            } else {
+                allDictionaries.append(contentsOf: uniqueDictionaries)
+                lastEvaluated = newLastEvaluated
+                hasMorePages = (newLastEvaluated != nil)
+                
+                Logger.debug(
+                    "[Dictionary]: Dictionaries fetched",
+                    metadata: [
+                        "fetchedCount": String(fetchedDictionaries.count),
+                        "uniqueCount": String(uniqueDictionaries.count),
+                        "totalCount": String(allDictionaries.count),
+                        "hasMorePages": String(hasMorePages)
+                    ]
+                )
+                updateFilteredDictionaries()
+            }
         }
         
         hasLoadedInitialPage = true
@@ -231,7 +247,6 @@ final class DictionaryFetcher: ProcessApi {
             Logger.debug("[Dictionary]: Fetching more results to meet minimum requirement")
             fetchDictionaries()
         }
-        isLoadingPage = false
     }
     
     /// Updates filtered dictionaries based on search text
@@ -243,6 +258,23 @@ final class DictionaryFetcher: ProcessApi {
                 "searchText": searchText
             ]
         )
+        
+        // Убедимся, что у нас нет дубликатов в allDictionaries
+        let uniqueIds = Set(allDictionaries.map { $0.id })
+        if uniqueIds.count != allDictionaries.count {
+            Logger.warning("[Dictionary]: Found duplicates in allDictionaries, removing them")
+            
+            // Сохраняем только уникальные элементы
+            var seen = Set<String>()
+            allDictionaries = allDictionaries.filter { dictionary in
+                let id = dictionary.id
+                let isNew = !seen.contains(id)
+                if isNew {
+                    seen.insert(id)
+                }
+                return isNew
+            }
+        }
         
         dictionaries = searchText.isEmpty
             ? allDictionaries

@@ -10,6 +10,9 @@ struct DictionaryRemoteListViewList: View {
     @ObservedObject private var dictionaryGetter: DictionaryFetcher
     let onDictionarySelect: (ApiModelDictionaryItem) -> Void
     
+    // Флаг, чтобы предотвратить повторный вызов resetPagination
+    @State private var initialLoadTriggered = false
+    
     // MARK: - Initializer
     /// Initializes the list view with localization and a dictionary data source.
     /// - Parameters:
@@ -70,8 +73,18 @@ struct DictionaryRemoteListViewList: View {
         }
         .onAppear {
             dictionaryGetter.setScreen(.DictionaryRemoteList)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                dictionaryGetter.resetPagination(with: ApiModelDictionaryQueryRequest())
+            
+            // Проверяем, был ли уже вызван resetPagination из родительского компонента
+            if !initialLoadTriggered {
+                // Используем небольшую задержку, чтобы родительский компонент успел вызвать resetPagination
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    // Проверяем, есть ли уже данные (если родительский компонент вызвал resetPagination)
+                    if dictionaryGetter.dictionaries.isEmpty && !dictionaryGetter.isLoadingPage {
+                        Logger.debug("[DictionaryRemoteList]: Initial load not triggered by parent, loading dictionaries")
+                        dictionaryGetter.resetPagination(with: ApiModelDictionaryQueryRequest())
+                    }
+                    initialLoadTriggered = true
+                }
             }
         }
     }

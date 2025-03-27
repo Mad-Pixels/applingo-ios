@@ -61,18 +61,18 @@ struct DarkTheme: AppTheme {
     // Match game
     var matchTheme: GameTheme {
         GameTheme(
-            main: Color(hex: "4b5563"),
-            secondary: Color(hex: "f8a009"),
-            accent: Color(hex: "e38c10")
+            main: Color(hex: "AAE282"),
+            secondary: Color(hex: "779E5B"),
+            accent: Color(hex: "445A34")
         )
     }
     
     // Swipe game
     var swipeTheme: GameTheme {
         GameTheme(
-            main: Color(hex: "4b5563"),
-            secondary: Color(hex: "f8a009"),
-            accent: Color(hex: "e38c10")
+            main: Color(hex: "AAE282"),
+            secondary: Color(hex: "779E5B"),
+            accent: Color(hex: "445A34")
         )
     }
 }

@@ -21,6 +21,9 @@
         }
       }
     },
+    "❌ Не верно" : {
+
+    },
     "base.button.again" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -765,6 +768,91 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Этот формат файла не поддерживается."
+          }
+        }
+      }
+    },
+    "error.tts.audioSessionError" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "audio session error"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ошибка запуска драйвера"
+          }
+        }
+      }
+    },
+    "error.tts.emptyText" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "empty text"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "пустой текст"
+          }
+        }
+      }
+    },
+    "error.tts.invalidLanguageCode" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "invalid language code"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "неверный языковой код"
+          }
+        }
+      }
+    },
+    "error.tts.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Text to speech error"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ошибка TTS"
+          }
+        }
+      }
+    },
+    "error.tts.voiceNotFound" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "voice not found"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "модель не найдена"
           }
         }
       }
@@ -2468,6 +2556,12 @@
           }
         }
       }
+    },
+    "Верно ✅" : {
+
+    },
+    "Нет доступных слов" : {
+
     }
   },
   "version" : "1.0"

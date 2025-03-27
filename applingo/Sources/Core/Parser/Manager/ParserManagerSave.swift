@@ -52,9 +52,9 @@ final class ParserManagerSave {
        )
        
        let dbWords = words.map { word in
-           DatabaseModelWord(
-            subcategory: dbDictionary.subcategory,
-            dictionary: dbDictionary.guid,
+           return DatabaseModelWord(
+               subcategory: dbDictionary.subcategory,
+               dictionary: dbDictionary.guid,
                frontText: word.frontText,
                backText: word.backText,
                description: word.description,
