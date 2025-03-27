@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// Global configuration loaded from Configuration.plist.
 enum GlobalConfig {
     /// Dictionary loaded from the Configuration.plist file.
     private static let config: [String: Any] = {
