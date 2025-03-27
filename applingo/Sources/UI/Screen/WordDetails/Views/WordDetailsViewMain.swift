@@ -46,12 +46,11 @@ struct WordDetailsViewMain: View {
                         placeholder: "",
                         isEditing: isEditing
                     )
-                    Text(word.backLangCode)
                     
                     // Кнопка озвучивания с использованием TTS сервиса
                     Button(action: {
                         // Используем TTS сервис с кодом языка из модели
-                        TTS.shared.speak(word.backText, languageCode: word.backLangCode)
+                        TTS.shared.speak(word.backText, languageCode: word.backTextCode)
                     }) {
                         Image(systemName: "speaker.wave.2")
                             .font(.system(size: 20))

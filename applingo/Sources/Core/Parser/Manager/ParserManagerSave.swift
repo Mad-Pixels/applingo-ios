@@ -62,8 +62,7 @@ final class ParserManagerSave {
                frontText: word.frontText,
                backText: word.backText,
                description: word.description,
-               hint: word.hint,
-               backLangCode: backLangCode // Используем только извлеченный код языка
+               hint: word.hint
            )
        }
        
