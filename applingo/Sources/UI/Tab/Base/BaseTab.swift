@@ -17,8 +17,7 @@ struct BaseTab<Content: View>: View {
     ) {
         self.style = style
         self.content = content()
-        
-        BaseTabConfigurator.configure(with: themeManager.currentThemeStyle, style: style)
+        BaseTabConfigurator.configure(with: ThemeManager.shared.currentThemeStyle, style: style)
     }
 
     var body: some View {
