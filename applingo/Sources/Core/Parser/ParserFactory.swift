@@ -8,6 +8,7 @@ public final class ParserFactory {
     /// Initializes the factory with a list of available parsers.
     /// - Parameter parsers: An array of parser instances.
     public init(parsers: [AbstractParser] = [
+        ParserExcel(),
         ParserJSON(),
         ParseCSV(),
         ParseTSV(),

@@ -1,3 +1,4 @@
+import UniformTypeIdentifiers
 import SwiftUI
 
 /// A view that handles the import of dictionaries.
@@ -57,7 +58,8 @@ struct DictionaryImport: View {
             isPresented: $isShowingFileImporter,
             allowedContentTypes: [
                 .plainText,
-                .commaSeparatedText
+                .commaSeparatedText,
+                UTType(filenameExtension: "xlsx")!
             ],
             allowsMultipleSelection: false
         ) { result in
