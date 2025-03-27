@@ -1,8 +1,8 @@
 import SwiftUI
 
 /// Manages generation and storage of background words.
-final class MainBackgroundManager: ObservableObject {
-    static let shared = MainBackgroundManager()
+final class BackgroundMainManager: ObservableObject {
+    static let shared = BackgroundMainManager()
    
     /// Array of background words with associated properties.
     @Published private(set) var backgroundWords: [
@@ -63,10 +63,10 @@ final class MainBackgroundManager: ObservableObject {
         lock.lock()
         defer { lock.unlock() }
        
-        guard !MainBackgroundManager.isFirstLaunchGenerated else { return }
+        guard !BackgroundMainManager.isFirstLaunchGenerated else { return }
         guard size.width > 0 && size.height > 0 else { return }
         generateBackground(for: size)
-        MainBackgroundManager.isFirstLaunchGenerated = true
+        BackgroundMainManager.isFirstLaunchGenerated = true
     }
    
     /// Resets the generated background words.
@@ -74,7 +74,7 @@ final class MainBackgroundManager: ObservableObject {
         lock.lock()
         defer { lock.unlock() }
         backgroundWords.removeAll()
-        MainBackgroundManager.isFirstLaunchGenerated = false
+        BackgroundMainManager.isFirstLaunchGenerated = false
     }
    
     // MARK: - Private Methods

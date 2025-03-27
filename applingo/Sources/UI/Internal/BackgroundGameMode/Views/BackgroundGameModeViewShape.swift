@@ -2,10 +2,10 @@ import SwiftUI
 
 // MARK: - GameModeBackgroundViewShape View
 /// Renders an individual background shape with theme effects.
-struct GameModeBackgroundViewShape: View {
+struct BackgroundGameModeViewShape: View {
     @EnvironmentObject private var themeManager: ThemeManager
     
-    let shape: GameModeBackgroundModelShape
+    let shape: BackgroundGameModeModelShape
     let offset: CGPoint
     
     var body: some View {

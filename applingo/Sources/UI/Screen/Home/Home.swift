@@ -26,7 +26,7 @@ struct Home: View {
             screen: .Home
         ) {
             ZStack {
-                MainBackground()
+                BackgroundMain()
                     .edgesIgnoringSafeArea(.all)
                 
                 VStack(spacing: style.spacing) {

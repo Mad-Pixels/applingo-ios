@@ -2,7 +2,7 @@ import SwiftUI
 
 /// A view that renders the main background using a collection of words with a parallax effect.
 ///
-/// `MainBackground` displays words from a shared background manager over the entire screen.
+/// `BackgroundMain` displays words from a shared background manager over the entire screen.
 /// Each word is rendered with a parallax offset based on device motion, which is processed
 /// through a `MotionState` instance. The strength of the parallax effect is determined by a
 /// configurable constant.
@@ -10,11 +10,11 @@ import SwiftUI
 /// The view automatically regenerates its content when it appears and updates the parallax offsets
 /// in response to changes in the device's roll and pitch values.
 ///
-struct MainBackground: View {
+struct BackgroundMain: View {
     @EnvironmentObject private var motionManager: HardwareMotion
     @EnvironmentObject private var themeManager: ThemeManager
     
-    @StateObject private var manager = MainBackgroundManager.shared
+    @StateObject private var manager = BackgroundMainManager.shared
     @StateObject private var motionState = MotionState()
     
     // Determines the intensity of the parallax effect, scaling the motion offsets applied to background words.

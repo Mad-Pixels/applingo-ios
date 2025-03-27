@@ -1,11 +1,11 @@
 import SwiftUI
 
 /// Manages the generation and storage of game mode background shapes.
-final class GameModeBackgroundManager: ObservableObject {
-    static let shared = GameModeBackgroundManager()
+final class BackgroundGameModeManager: ObservableObject {
+    static let shared = BackgroundGameModeManager()
     
     /// Array of generated background shapes.
-    @Published private(set) var backgroundShapes: [GameModeBackgroundModelShape] = []
+    @Published private(set) var backgroundShapes: [BackgroundGameModeModelShape] = []
     
     private static var isFirstLaunchGenerated = false
     private let minOpacity: Double = 0.02
@@ -26,10 +26,10 @@ final class GameModeBackgroundManager: ObservableObject {
         lock.lock()
         defer { lock.unlock() }
         
-        guard !GameModeBackgroundManager.isFirstLaunchGenerated else { return }
+        guard !BackgroundGameModeManager.isFirstLaunchGenerated else { return }
         guard size.width > 0 && size.height > 0 else { return }
         generateBackground(for: size, using: colors)
-        GameModeBackgroundManager.isFirstLaunchGenerated = true
+        BackgroundGameModeManager.isFirstLaunchGenerated = true
     }
     
     /// Resets the generated background shapes.
@@ -37,7 +37,7 @@ final class GameModeBackgroundManager: ObservableObject {
         lock.lock()
         defer { lock.unlock() }
         backgroundShapes.removeAll()
-        GameModeBackgroundManager.isFirstLaunchGenerated = false
+        BackgroundGameModeManager.isFirstLaunchGenerated = false
     }
     
     // MARK: - Private Methods
@@ -47,7 +47,7 @@ final class GameModeBackgroundManager: ObservableObject {
     ///   - size: The available screen size.
     ///   - colors: Array of colors to choose from.
     private func generateBackground(for size: CGSize, using colors: [Color]) {
-        var shapes: [GameModeBackgroundModelShape] = []
+        var shapes: [BackgroundGameModeModelShape] = []
         var occupiedRects: [CGRect] = []
         
         for _ in 0..<maxShapes {
@@ -65,7 +65,7 @@ final class GameModeBackgroundManager: ObservableObject {
             if !occupiedRects.contains(where: { $0.intersects(newRect) }) {
                 occupiedRects.append(newRect)
                 
-                shapes.append(GameModeBackgroundModelShape(
+                shapes.append(BackgroundGameModeModelShape(
                     id: UUID(),
                     position: CGPoint(x: x, y: y),
                     opacity: Double.random(in: minOpacity...maxOpacity),

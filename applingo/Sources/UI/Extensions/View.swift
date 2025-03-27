@@ -60,6 +60,35 @@ extension View {
         ))
     }
     
+    /// Applies the error tracker to the view.
+        /// When an error is set in the shared ErrorManager, an alert is presented.
+        /// - Parameter screen: The screen type that is being tracked.
+        /// - Returns: A view modified to display error alerts.
+        func withErrorTracker(_ screen: ScreenType) -> some View {
+            modifier(ErrorTrackerModifier(screen: screen))
+        }
+    
+    /// Applies the locale tracker to the view.
+        /// - Returns: A view that uses the current locale from LocaleManager.
+    func withLocaleTracker() -> some View {
+        modifier(LocaleTrackerModifier())
+    }
+    
+    /// Applies the screen tracker to the view.
+        /// When the view appears, it sets the active screen in the shared AppStorage.
+        /// - Parameter screen: The screen type to track.
+        /// - Returns: A view modified to update the active screen.
+    func withScreenTracker(_ screen: ScreenType) -> some View {
+        modifier(ScreenTrackerModifier(screen: screen))
+    }
+    
+    /// Applies the theme tracker to the view.
+        /// This modifier adjusts the color scheme and background based on the current theme.
+        /// - Returns: A view modified with the current theme settings.
+        func withThemeTracker() -> some View {
+            modifier(ThemeTrackerModifier())
+        }
+    
     
     
     /// Applies an animated dynamic background pattern to the view.

@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Data model representing a background shape.
-struct GameModeBackgroundModelShape: Identifiable {
+struct BackgroundGameModeModelShape: Identifiable {
     let id: UUID
     
     var position: CGPoint

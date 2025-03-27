@@ -1,8 +1,10 @@
 import SwiftUI
 
-// MARK: - ErrorTracker ViewModifier
-/// Displays an alert when an error occurs.
-struct ErrorTracker: ViewModifier {
+/// A ViewModifier that displays an alert when an error occurs.
+/// It observes the shared ErrorManager for any current errors and presents an alert
+/// with the error's title, message (styled with the theme's error color), and an action button.
+/// When the alert is dismissed, the current error is cleared and an optional error action is executed.
+struct ErrorTrackerModifier: ViewModifier {
     @ObservedObject private var errorManager = ErrorManager.shared
     @EnvironmentObject private var themeManager: ThemeManager
     let screen: ScreenType
@@ -20,12 +22,5 @@ struct ErrorTracker: ViewModifier {
                     }
                 )
             }
-    }
-}
-
-// Extension for easier usage of ErrorTracker
-extension View {
-    func withErrorTracker(_ screen: ScreenType) -> some View {
-        modifier(ErrorTracker(screen: screen))
     }
 }
