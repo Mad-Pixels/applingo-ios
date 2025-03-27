@@ -1,6 +1,8 @@
 import SwiftUI
 
+/// Global configuration loaded from Configuration.plist.
 enum GlobalConfig {
+    /// Dictionary loaded from the Configuration.plist file.
     private static let config: [String: Any] = {
         guard
             let url = Bundle.main.url(forResource: "Configuration", withExtension: "plist"),
@@ -12,6 +14,7 @@ enum GlobalConfig {
         return dict
     }()
     
+    /// The API base URL configured in Configuration.plist.
     static var apiURL: String {
         guard
             let api = config["API"] as? [String: Any],
@@ -22,6 +25,7 @@ enum GlobalConfig {
         return url
     }
     
+    /// The API token configured in Configuration.plist.
     static var apiToken: String {
         guard
             let api = config["API"] as? [String: Any],
@@ -30,5 +34,16 @@ enum GlobalConfig {
             fatalError("API token not configured")
         }
         return token
+    }
+    
+    /// The database file name configured in Configuration.plist.
+    static var dbFile: String {
+        guard
+            let db = config["DB"] as? [String: Any],
+            let file = db["File"] as? String
+        else {
+            fatalError("DB File not configured")
+        }
+        return file
     }
 }
