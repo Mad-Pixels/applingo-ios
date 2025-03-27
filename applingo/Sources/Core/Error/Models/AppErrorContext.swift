@@ -25,6 +25,7 @@ extension AppErrorContext {
         case database
         case parser
         case unknown
+        case system
     }
     
     enum ErrorSeverity: String {
