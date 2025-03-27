@@ -8,6 +8,8 @@ struct WordDetailsViewMain: View {
         
     @Binding var word: DatabaseModelWord
     private let isEditing: Bool
+    private let ttsDisabled: Bool
+
     
     // MARK: - Initializer
     init(
@@ -20,6 +22,9 @@ struct WordDetailsViewMain: View {
         self.locale = locale
         self.style = style
         self._word = word
+        
+        self.ttsDisabled = word.wrappedValue.backText.isEmpty ||
+            TTSLanguageType.shared.get(for: word.wrappedValue.backTextCode) == ""
     }
 
     // MARK: - Body
@@ -53,9 +58,9 @@ struct WordDetailsViewMain: View {
                             languageCode: word.backTextCode
                         )
                     }) {
-                        Image(systemName: "speaker.wave.2")
+                        Image(systemName: ttsDisabled ? "speaker.slash" : "speaker.wave.2")
                             .font(.system(size: 24))
-                            .foregroundColor(style.accentColor)
+                            .foregroundColor(ttsDisabled ? style.disabledColor : style.accentColor)
                             .frame(width: 44, height: 44)
                             .contentShape(Rectangle())
                             .padding(.top, 24)
