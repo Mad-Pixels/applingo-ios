@@ -47,18 +47,23 @@ struct WordDetailsViewMain: View {
                         isEditing: isEditing
                     )
                     
-                    // Кнопка озвучивания с использованием TTS сервиса
                     Button(action: {
-                        // Используем TTS сервис с кодом языка из модели
-                        TTS.shared.speak(word.backText, languageCode: word.backTextCode)
+                        TTS.shared.speak(
+                            word.backText,
+                            languageCode: word.backTextCode
+                        )
                     }) {
                         Image(systemName: "speaker.wave.2")
-                            .font(.system(size: 20))
-                            .foregroundColor(themeManager.currentThemeStyle.accentPrimary)
+                            .font(.system(size: 24))
+                            .foregroundColor(style.accentColor)
                             .frame(width: 44, height: 44)
                             .contentShape(Rectangle())
+                            .padding(.top, 24)
                     }
-                    .disabled(word.backText.isEmpty)
+                    .disabled(
+                        word.backText.isEmpty ||
+                        TTSLanguageType.shared.get(for: word.backTextCode) == ""
+                    )
                 }
             }
             .padding(.horizontal, style.paddingBlock)
