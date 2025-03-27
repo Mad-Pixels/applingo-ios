@@ -30,7 +30,7 @@ class TTS {
     func speak(
         _ text: String,
         languageCode: String,
-        rate: Float = 0.5,
+        rate: Float = 0.3,
         pitch: Float = 1.0,
         completion: (() -> Void)? = nil
     ) {
