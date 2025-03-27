@@ -1,6 +1,5 @@
 import SwiftUI
 
-// MARK: - AppTab View
 /// A container view that applies a base tab style and theme.
 struct AppTab<Content: View>: View {
     let content: () -> Content
@@ -21,7 +20,6 @@ struct AppTab<Content: View>: View {
         self.style = style
         self.content = content
 
-        // Configure the tab appearance using the current theme style and provided style.
         BaseTabConfigurator.configure(with: ThemeManager.shared.currentThemeStyle, style: style)
     }
 

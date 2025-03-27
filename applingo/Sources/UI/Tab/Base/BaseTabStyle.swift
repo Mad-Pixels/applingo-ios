@@ -1,6 +1,5 @@
 import SwiftUI
 
-// MARK: - BaseTabStyle
 /// Defines the styling parameters for base tabs.
 struct BaseTabStyle {
     struct UIKitStyle {
@@ -63,7 +62,6 @@ extension BaseTabStyle {
                     theme.accentPrimary
                 },
                 
-                // New parameters with default values.
                 cornerRadius: 16,
                 shadowColor: UIColor.black,
                 shadowOpacity: 0.1,

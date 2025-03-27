@@ -1,6 +1,5 @@
 import SwiftUI
 
-// MARK: - BaseTab View
 /// Wraps content with theme tracking and applies the base tab style.
 struct BaseTab<Content: View>: View {
     @EnvironmentObject private var themeManager: ThemeManager
@@ -18,7 +17,8 @@ struct BaseTab<Content: View>: View {
     ) {
         self.style = style
         self.content = content()
-        BaseTabConfigurator.configure(with: ThemeManager.shared.currentThemeStyle, style: style)
+        
+        BaseTabConfigurator.configure(with: themeManager.currentThemeStyle, style: style)
     }
 
     var body: some View {
