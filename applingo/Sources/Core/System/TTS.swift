@@ -1,5 +1,5 @@
-import Foundation
 import AVFoundation
+import Foundation
 
 class TTS {
     static let shared = TTS()
@@ -73,19 +73,5 @@ class TTS {
         if speechSynthesizer.isSpeaking {
             speechSynthesizer.stopSpeaking(at: .immediate)
         }
-    }
-}
-
-/// Helper class to track speech completion.
-private class TTSDelegate: NSObject, AVSpeechSynthesizerDelegate {
-    private let completion: () -> Void
-    
-    init(completion: @escaping () -> Void) {
-        self.completion = completion
-        super.init()
-    }
-    
-    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
-        completion()
     }
 }
