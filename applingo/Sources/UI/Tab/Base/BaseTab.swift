@@ -17,6 +17,7 @@ struct BaseTab<Content: View>: View {
     ) {
         self.style = style
         self.content = content()
+        
         BaseTabConfigurator.configure(with: ThemeManager.shared.currentThemeStyle, style: style)
     }
 
