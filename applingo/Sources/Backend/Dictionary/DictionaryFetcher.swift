@@ -40,20 +40,27 @@ final class DictionaryFetcher: ProcessApi {
     
     /// Resets pagination state and starts new fetch with optional request
     /// - Parameter request: Optional new request to use for fetching
-    func resetPagination(with request: ApiModelDictionaryQueryRequest? = nil) {
+    func resetPagination(with request: ApiModelDictionaryQueryRequest? = nil, keepSearchResults: Bool = false) {
         Logger.debug(
             "[Dictionary]: Resetting pagination",
             metadata: [
                 "hasRequest": String(request != nil),
-                "currentCount": String(allDictionaries.count)
+                "currentCount": String(allDictionaries.count),
+                "keepSearchResults": String(keepSearchResults)
             ]
         )
+        
+        // Создаем новый токен для отмены предыдущих операций
+        token = UUID()
+        
         if let request = request {
             currentRequest = request
         }
         
-        resetState()
-        updateFilteredDictionaries()
+        if !keepSearchResults {
+            resetState()
+            updateFilteredDictionaries()
+        }
         
         DispatchQueue.main.async {
             self.fetchDictionaries()
@@ -69,6 +76,19 @@ final class DictionaryFetcher: ProcessApi {
               hasMorePages,
               !isLoadingPage else {
             return
+        }
+        
+        // Если есть поисковый запрос, проверяем, достаточно ли результатов уже в кеше
+        if !searchText.isEmpty {
+            // Считаем, сколько элементов всего может удовлетворять поиску
+            let potentialMatches = allDictionaries.filter { $0.matches(searchText: searchText) }
+            
+            // Если найдено достаточно элементов, но они еще не все показаны
+            if potentialMatches.count > dictionaries.count {
+                // Обновляем фильтрованный список
+                updateFilteredDictionaries()
+                return
+            }
         }
         
         Logger.debug(
@@ -104,8 +124,26 @@ final class DictionaryFetcher: ProcessApi {
                 "newValue": searchText
             ]
         )
+        
         if searchText != oldValue {
-            resetPagination()
+            // Создаем новый токен при изменении поискового запроса
+            token = UUID()
+            
+            updateFilteredDictionaries()
+            
+            if !searchText.isEmpty &&
+               dictionaries.count < Constants.minSearchResults &&
+               hasMorePages &&
+               !isLoadingPage {
+                Logger.debug("[Dictionary]: Not enough search results, fetching more")
+                fetchDictionaries()
+            }
+            
+            // Если поиск сброшен (стал пустым), но мы загрузили не все данные,
+            // загрузим еще страницу для прокрутки
+            if searchText.isEmpty && hasMorePages && !isLoadingPage && allDictionaries.count < 50 {
+                fetchDictionaries()
+            }
         }
     }
     
@@ -138,7 +176,7 @@ final class DictionaryFetcher: ProcessApi {
         var request = currentRequest ?? ApiModelDictionaryQueryRequest()
         request.isPublic = true
         if let lastEval = lastEvaluated, !lastEval.isEmpty {
-            request.lastEvaluated = lastEvaluated
+            request.lastEvaluated = lastEval
         }
         
         Logger.debug(
@@ -176,19 +214,29 @@ final class DictionaryFetcher: ProcessApi {
             Logger.debug("[Dictionary]: No more dictionaries to fetch")
             hasMorePages = false
         } else {
-            allDictionaries.append(contentsOf: fetchedDictionaries)
-            lastEvaluated = newLastEvaluated
-            hasMorePages = (newLastEvaluated != nil)
+            // Фильтруем словари, чтобы исключить дубликаты
+            let uniqueDictionaries = fetchedDictionaries.filter { fetchedDict in
+                !allDictionaries.contains { $0.id == fetchedDict.id }
+            }
             
-            Logger.debug(
-                "[Dictionary]: Dictionaries fetched",
-                metadata: [
-                    "fetchedCount": String(fetchedDictionaries.count),
-                    "totalCount": String(allDictionaries.count),
-                    "hasMorePages": String(hasMorePages)
-                ]
-            )
-            updateFilteredDictionaries()
+            if uniqueDictionaries.isEmpty {
+                Logger.debug("[Dictionary]: All fetched dictionaries are duplicates")
+            } else {
+                allDictionaries.append(contentsOf: uniqueDictionaries)
+                lastEvaluated = newLastEvaluated
+                hasMorePages = (newLastEvaluated != nil)
+                
+                Logger.debug(
+                    "[Dictionary]: Dictionaries fetched",
+                    metadata: [
+                        "fetchedCount": String(fetchedDictionaries.count),
+                        "uniqueCount": String(uniqueDictionaries.count),
+                        "totalCount": String(allDictionaries.count),
+                        "hasMorePages": String(hasMorePages)
+                    ]
+                )
+                updateFilteredDictionaries()
+            }
         }
         
         hasLoadedInitialPage = true
@@ -199,7 +247,6 @@ final class DictionaryFetcher: ProcessApi {
             Logger.debug("[Dictionary]: Fetching more results to meet minimum requirement")
             fetchDictionaries()
         }
-        isLoadingPage = false
     }
     
     /// Updates filtered dictionaries based on search text
@@ -211,6 +258,23 @@ final class DictionaryFetcher: ProcessApi {
                 "searchText": searchText
             ]
         )
+        
+        // Убедимся, что у нас нет дубликатов в allDictionaries
+        let uniqueIds = Set(allDictionaries.map { $0.id })
+        if uniqueIds.count != allDictionaries.count {
+            Logger.warning("[Dictionary]: Found duplicates in allDictionaries, removing them")
+            
+            // Сохраняем только уникальные элементы
+            var seen = Set<String>()
+            allDictionaries = allDictionaries.filter { dictionary in
+                let id = dictionary.id
+                let isNew = !seen.contains(id)
+                if isNew {
+                    seen.insert(id)
+                }
+                return isNew
+            }
+        }
         
         dictionaries = searchText.isEmpty
             ? allDictionaries

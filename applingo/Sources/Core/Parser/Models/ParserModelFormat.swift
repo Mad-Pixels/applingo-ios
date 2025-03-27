@@ -1,45 +1,48 @@
 import Foundation
 
-/// Struct describing how table data is formatted (separator, header, quote/escape characters, etc.).
+/// Представляет формат таблицы для парсинга
 public struct ParserModelFormat {
-    public let separator: String
-    public let hasHeader: Bool
-    public let quoteCharacter: Character
-    public let escapeCharacter: Character
+    /// Разделитель полей для CSV
+    let separator: String
     
-    public init(
-        separator: String,
-        hasHeader: Bool,
-        quoteCharacter: Character,
-        escapeCharacter: Character
-    ) {
-        self.separator = separator
-        self.hasHeader = hasHeader
-        self.quoteCharacter = quoteCharacter
-        self.escapeCharacter = escapeCharacter
-    }
+    /// Символ кавычек для CSV
+    let quoteCharacter: Character
     
-    /// Standard CSV format.
+    /// Наличие заголовка в файле
+    let hasHeader: Bool
+    
+    /// Имена столбцов (если заголовок есть)
+    let columnNames: [String]?
+    
+    /// Стандартный формат CSV с запятой в качестве разделителя
     public static let csv = ParserModelFormat(
         separator: ",",
-        hasHeader: true,
         quoteCharacter: "\"",
-        escapeCharacter: "\\"
+        hasHeader: true,
+        columnNames: nil
     )
     
-    /// Standard TSV format.
+    /// CSV формат с табуляцией в качестве разделителя
     public static let tsv = ParserModelFormat(
         separator: "\t",
-        hasHeader: true,
         quoteCharacter: "\"",
-        escapeCharacter: "\\"
+        hasHeader: true,
+        columnNames: nil
     )
     
-    /// JSON format definition.
+    /// Формат JSON
     public static let json = ParserModelFormat(
         separator: "",
+        quoteCharacter: "\"",
         hasHeader: false,
-        quoteCharacter: Character("\""),
-        escapeCharacter: Character("\\")
+        columnNames: nil
+    )
+    
+    /// Формат Excel
+    public static let excel = ParserModelFormat(
+        separator: "",
+        quoteCharacter: "\"",
+        hasHeader: true,
+        columnNames: nil
     )
 }

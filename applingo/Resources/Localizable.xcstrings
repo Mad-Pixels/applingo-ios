@@ -21,6 +21,9 @@
         }
       }
     },
+    "❌ Не верно" : {
+
+    },
     "base.button.again" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -765,6 +768,91 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Этот формат файла не поддерживается."
+          }
+        }
+      }
+    },
+    "error.tts.audioSessionError" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "audio session error"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ошибка запуска драйвера"
+          }
+        }
+      }
+    },
+    "error.tts.emptyText" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "empty text"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "пустой текст"
+          }
+        }
+      }
+    },
+    "error.tts.invalidLanguageCode" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "invalid language code"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "неверный языковой код"
+          }
+        }
+      }
+    },
+    "error.tts.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Text to speech error"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ошибка TTS"
+          }
+        }
+      }
+    },
+    "error.tts.voiceNotFound" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "voice not found"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "модель не найдена"
           }
         }
       }
@@ -1551,6 +1639,91 @@
         }
       }
     },
+    "screen.noWords.addDictionariesChoice" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OR"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ИЛИ"
+          }
+        }
+      }
+    },
+    "screen.noWords.addDictionariesTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How to add a new dictionary?"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Как добавить новый словарь?"
+          }
+        }
+      }
+    },
+    "screen.noWords.importOptionLocal" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "import from local device"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "импортировать локальный словарь"
+          }
+        }
+      }
+    },
+    "screen.noWords.importOptionRemote" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "remote dictionaries"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "скачать словари"
+          }
+        }
+      }
+    },
+    "screen.noWords.noWordsDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dictionaries are not activated or missing, there are no active words."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Словари не активированы или отсутствуют, нет активных слов."
+          }
+        }
+      }
+    },
     "screen.noWords.subtitle" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1568,19 +1741,53 @@
         }
       }
     },
-    "screen.noWords.text" : {
+    "screen.noWords.tabDictionariesDescriptionImport" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "There are no active words.Please create a dictionary or activate the existing ones."
+            "value" : "On the “dictionaries” tab, tap on the floating button and select:"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Нет активных слов, пожалуйста создайте словарь или активируйте уже существующие "
+            "value" : "На вкладке “Словари” нажмите на плавающую кнопку и выберите:"
+          }
+        }
+      }
+    },
+    "screen.noWords.tabWordsDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "If you don’t have any dictionaries, you can switch to the “words” tab."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Если у вас нет словарей, вы можете переключиться на вкладку “слова”."
+          }
+        }
+      }
+    },
+    "screen.noWords.tabWordsDescriptionActions" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "On this tab, you have two options: "
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "На этой вкладке можно:"
           }
         }
       }
@@ -2349,6 +2556,12 @@
           }
         }
       }
+    },
+    "Верно ✅" : {
+
+    },
+    "Нет доступных слов" : {
+
     }
   },
   "version" : "1.0"

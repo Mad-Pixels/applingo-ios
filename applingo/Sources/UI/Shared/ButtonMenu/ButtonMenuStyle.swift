@@ -96,7 +96,7 @@ extension ButtonMenuStyle {
             shadowColor: theme.cardBorder,
             hStackSpacing: 16,
             iconFrameSize: CGSize(width: 42, height: 42),
-            transitionType: "xw"
+            transitionType: ""
         )
     }
 }

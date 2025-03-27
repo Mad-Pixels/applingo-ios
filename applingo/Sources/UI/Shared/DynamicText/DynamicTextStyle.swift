@@ -61,6 +61,34 @@ extension DynamicTextStyle {
             fontWeight: .regular
         )
     }
+    static func textLeft(_ theme: AppTheme) -> DynamicTextStyle {
+        return DynamicTextStyle(
+            textColor: theme.textPrimary,
+            alignment: .leading,
+            letterSpacing: 0.2,
+            allowsTightening: true,
+            maxFontSize: 16,
+            minFontSize: 16,
+            lineBreakMode: .byWordWrapping,
+            wordWrapping: true,
+            lineLimit: 10,
+            fontWeight: .regular
+        )
+    }
+    static func textCenter(_ theme: AppTheme) -> DynamicTextStyle {
+        return DynamicTextStyle(
+            textColor: theme.textPrimary,
+            alignment: .center,
+            letterSpacing: 0.2,
+            allowsTightening: true,
+            maxFontSize: 16,
+            minFontSize: 16,
+            lineBreakMode: .byWordWrapping,
+            wordWrapping: true,
+            lineLimit: 10,
+            fontWeight: .regular
+        )
+    }
     static func action(_ theme: AppTheme) -> DynamicTextStyle {
         return DynamicTextStyle(
             textColor: theme.textContrast,

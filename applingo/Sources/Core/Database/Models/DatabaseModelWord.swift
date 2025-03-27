@@ -9,6 +9,8 @@ struct DatabaseModelWord: Identifiable, Codable, Equatable, Hashable {
     internal let uuid: String
     internal let created: Int
     
+    var frontTextCode: String
+    var backTextCode: String
     var description: String
     var subcategory: String
     var dictionary: String
@@ -48,10 +50,23 @@ struct DatabaseModelWord: Identifiable, Codable, Equatable, Hashable {
         self.fail = fail
         self.hint = hint
         
+        self.frontTextCode = ""
+        self.backTextCode = ""
+        
         self.uuid = UUID().uuidString
         self.created = created
         self.id = id
         
+        let codes = subcategory.split(separator: "-")
+        if codes.count == 2 {
+            if codes[0].count == 2 {
+                self.frontTextCode = String(codes[0])
+            }
+            if codes[1].count == 2 {
+                self.backTextCode = String(codes[1])
+            }
+        }
+    
         self.fmt()
     }
     
@@ -81,6 +96,8 @@ struct DatabaseModelWord: Identifiable, Codable, Equatable, Hashable {
         - FailCount: \(fail)
         - Weight: \(weight)
         - Created: \(date)
+        - FrontTextCode: \(frontTextCode)
+        - BackTextCode: \(backTextCode)
         """
     }
 
@@ -91,6 +108,8 @@ struct DatabaseModelWord: Identifiable, Codable, Equatable, Hashable {
         self.backText = backText.trimmedTrailingWhitespace.lowercased()
         self.hint = hint.trimmedTrailingWhitespace.lowercased()
         self.description = description.trimmedTrailingWhitespace
+        self.frontTextCode = frontTextCode.lowercased()
+        self.backTextCode = backTextCode.lowercased()
     }
 
     /// Returns a new empty word object.
@@ -113,6 +132,8 @@ extension DatabaseModelWord: FetchableRecord, PersistableRecord {
             t.autoIncrementedPrimaryKey("id").unique()
             t.column("uuid", .text).unique()
             
+            t.column("frontTextCode", .text).notNull()
+            t.column("backTextCode", .text).notNull()
             t.column("subcategory", .text).notNull()
             t.column("description", .text).notNull()
             t.column("dictionary", .text).notNull()

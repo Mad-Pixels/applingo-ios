@@ -7,6 +7,7 @@ enum AppErrorType {
     case business(code: String)
     case ui(component: String)
     case parser
+    case tts
     case unknown
     
     var isUserFacing: Bool {
@@ -17,6 +18,7 @@ enum AppErrorType {
         case .database: return true
         case .parser: return true
         case .business: return true
+        case .tts: return true
         case .unknown: return true
         }
     }
@@ -35,6 +37,8 @@ enum AppErrorType {
             return LocaleManager.shared.localizedString(for: "error.business.title")
         case .ui:
             return LocaleManager.shared.localizedString(for: "error.ui.title")
+        case .tts:
+            return LocaleManager.shared.localizedString(for: "error.tts.title")
         case .unknown:
             return LocaleManager.shared.localizedString(for: "error.unknown.title")
         }

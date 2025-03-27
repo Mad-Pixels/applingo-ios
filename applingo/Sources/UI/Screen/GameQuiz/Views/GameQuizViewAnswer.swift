@@ -7,7 +7,7 @@ struct GameQuizViewAnswer: View {
     private let style: GameQuizStyle
     private let option: String
     private let onSelect: () -> Void
-    private let viewModel: QuizViewModel
+    @ObservedObject private var viewModel: QuizViewModel
     
     init(locale: GameQuizLocale, style: GameQuizStyle, option: String, onSelect: @escaping () -> Void, viewModel: QuizViewModel) {
         self.locale = locale
@@ -20,9 +20,17 @@ struct GameQuizViewAnswer: View {
     var body: some View {
         ButtonAction(
             title: option,
-            action: onSelect,
+            action: {
+                // Блокируем повторные нажатия во время обработки ответа
+                guard !viewModel.isProcessingAnswer else { return }
+                onSelect()
+            },
             style: getButtonStyle()
         )
+        // Добавляем визуальную индикацию блокировки
+        .opacity(viewModel.isProcessingAnswer && !viewModel.highlightedOptions.keys.contains(option) ? 0.7 : 1.0)
+        // Полностью отключаем кнопку, когда идет обработка ответа
+        .disabled(viewModel.isProcessingAnswer)
     }
     
     private func getButtonStyle() -> ButtonActionStyle {

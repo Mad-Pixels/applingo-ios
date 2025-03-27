@@ -41,16 +41,27 @@ struct Home: View {
                         style: .menu(ThemeManager.shared.currentThemeStyle)
                     )
                     
-//                    ButtonAction(
-//                        title: locale.screenGameMatchup.uppercased(),
-//                        action: {
-//                            game = .match
-//                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-//                                gameStart = true
-//                            }
-//                        },
-//                        style: .menu(ThemeManager.shared.currentThemeStyle)
-//                    )
+                    ButtonAction(
+                        title: locale.screenGameMatchup.uppercased(),
+                        action: {
+                            game = .match
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                gameStart = true
+                            }
+                        },
+                        style: .menu(ThemeManager.shared.currentThemeStyle)
+                    )
+                    
+                    ButtonAction(
+                        title: locale.screenGameSwipe.uppercased(),
+                        action: {
+                            game = .swipe
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                gameStart = true
+                            }
+                        },
+                        style: .menu(ThemeManager.shared.currentThemeStyle)
+                    )
                 }
                 .padding(style.padding)
                 //.glassBackground()
@@ -64,7 +75,7 @@ struct Home: View {
             case .match:
                 GameMode(game: Match(), isPresented: $gameStart)
             case .swipe:
-                GameMode(game: Quiz(), isPresented: $gameStart)
+                GameMode(game: Swipe(), isPresented: $gameStart)
             }
         }
         .id(game)

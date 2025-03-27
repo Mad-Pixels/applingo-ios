@@ -26,6 +26,8 @@ struct GameResult: View {
     
     var body: some View {
         VStack(spacing: 20) {
+            Spacer()
+            
             Text(resultText)
                 .font(.largeTitle)
                 .padding()
@@ -78,7 +80,10 @@ struct GameResult: View {
                     .cornerRadius(10)
             }
             .padding(.horizontal)
+            
+            Spacer()
         }
+        .background(ThemeManager.shared.currentThemeStyle.backgroundPrimary)
         .padding()
     }
 }

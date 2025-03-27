@@ -9,7 +9,7 @@ struct GameTabViewLives: View {
             ForEach(0..<3) { index in
                 Image(systemName: index < lives ? "heart.fill" : "heart")
                     .font(.system(size: style.iconSize))
-                    .foregroundColor(style.accentColor)
+                    .foregroundColor(style.heartColor)
             }
         }
     }
