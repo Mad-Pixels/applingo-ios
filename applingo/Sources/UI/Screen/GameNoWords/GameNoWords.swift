@@ -35,7 +35,7 @@ struct GameNoWords: View {
                         
                         DynamicText(
                             model: DynamicTextModel(text: locale.screenNoWordsDescription),
-                            style: .textCenter(ThemeManager.shared.currentThemeStyle)
+                            style: .textMain(ThemeManager.shared.currentThemeStyle)
                         )
                     }
                     .padding(8)
@@ -50,7 +50,7 @@ struct GameNoWords: View {
                     VStack(alignment: .leading) {
                         DynamicText(
                             model: DynamicTextModel(text: locale.screenTabWordsDescription),
-                            style: .textLeft(ThemeManager.shared.currentThemeStyle)
+                            style: .textMain(ThemeManager.shared.currentThemeStyle)
                         )
                         
                         Image(ThemeManager.shared.currentTheme.asString == "Dark" ? "word_tab_dark" : "word_tab_light")
@@ -60,15 +60,15 @@ struct GameNoWords: View {
                         
                         DynamicText(
                             model: DynamicTextModel(text: locale.tabWordsDescriptionActions),
-                            style: .textLeft(ThemeManager.shared.currentThemeStyle)
+                            style: .textMain(ThemeManager.shared.currentThemeStyle)
                         )
                         DynamicText(
                             model: DynamicTextModel(text: " - " + locale.screenImportOptionRemote),
-                            style: .textLeft(ThemeManager.shared.currentThemeStyle)
+                            style: .textMain(ThemeManager.shared.currentThemeStyle)
                         )
                         DynamicText(
                             model: DynamicTextModel(text: " - " + locale.screenImportOptionLocal),
-                            style: .textLeft(ThemeManager.shared.currentThemeStyle)
+                            style: .textMain(ThemeManager.shared.currentThemeStyle)
                         )
                         
                         Image(ThemeManager.shared.currentTheme.asString == "Dark" ? "words_get_dark" : "words_get_light")
@@ -94,13 +94,13 @@ struct GameNoWords: View {
                         
                         DynamicText(
                             model: DynamicTextModel(text: locale.screenTabDictionariesDescriptionImport),
-                            style: .textLeft(ThemeManager.shared.currentThemeStyle)
+                            style: .textMain(ThemeManager.shared.currentThemeStyle)
                         )
                         
                         HStack {
                             DynamicText(
                                 model: DynamicTextModel(text: locale.screenImportOptionRemote),
-                                style: .textLeft(ThemeManager.shared.currentThemeStyle)
+                                style: .textMain(ThemeManager.shared.currentThemeStyle)
                             )
                             
                             Image(ThemeManager.shared.currentTheme.asString == "Dark" ? "dictionaries_remote_dark" : "dictionaries_remote_light")
@@ -112,7 +112,7 @@ struct GameNoWords: View {
                         HStack {
                             DynamicText(
                                 model: DynamicTextModel(text: locale.screenImportOptionLocal),
-                                style: .textLeft(ThemeManager.shared.currentThemeStyle)
+                                style: .textMain(ThemeManager.shared.currentThemeStyle)
                             )
                             
                             Image(ThemeManager.shared.currentTheme.asString == "Dark" ? "dictionaries_local_dark" : "dictionaries_local_light")

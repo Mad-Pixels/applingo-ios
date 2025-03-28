@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// Wraps content with theme tracking and applies the base tab style.
 struct BaseTab<Content: View>: View {
     @EnvironmentObject private var themeManager: ThemeManager
 

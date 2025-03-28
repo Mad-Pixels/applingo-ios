@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// A container view that applies a base tab style and theme.
 struct AppTab<Content: View>: View {
     let content: () -> Content
     let style: BaseTabStyle

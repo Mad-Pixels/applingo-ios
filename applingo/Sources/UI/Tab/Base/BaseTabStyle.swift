@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// Defines the styling parameters for base tabs.
 struct BaseTabStyle {
     struct UIKitStyle {
         let fontWeight: UIFont.Weight
@@ -35,7 +34,6 @@ struct BaseTabStyle {
 }
 
 extension BaseTabStyle {
-    /// Default base tab style.
     static var `default`: BaseTabStyle {
         BaseTabStyle(
             uiKit: BaseTabStyle.UIKitStyle(

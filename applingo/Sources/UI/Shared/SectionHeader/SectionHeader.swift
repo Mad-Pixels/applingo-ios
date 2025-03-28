@@ -20,12 +20,16 @@ struct SectionHeader: View {
     
     var body: some View {
         VStack(spacing: style.spacing) {
-            Text(title)
-                .font(style.titleFont)
-                .foregroundColor(style.titleColor)
-                .multilineTextAlignment(style.alignment)
-                .frame(maxWidth: .infinity, alignment: style.alignment == .center ? .center : .leading)
-                .padding(.horizontal, style.padding.leading)
+            DynamicText(
+                model: DynamicTextModel(text: title),
+                style: .headerBlock(ThemeManager.shared.currentThemeStyle)
+            )
+//            Text(title)
+//                .font(style.titleFont)
+//                .foregroundColor(style.titleColor)
+//                .multilineTextAlignment(style.alignment)
+//                .frame(maxWidth: .infinity, alignment: style.alignment == .center ? .center : .leading)
+//                .padding(.horizontal, style.padding.leading)
             
             Rectangle()
                 .fill(style.separatorColor)

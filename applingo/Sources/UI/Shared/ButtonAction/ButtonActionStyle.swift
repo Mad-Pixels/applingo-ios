@@ -28,7 +28,7 @@ extension ButtonActionStyle {
             borderWidth: 0,
             borderColor: theme.cardBorder,
             padding: EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16),
-            textStyle: .themed(ThemeManager.shared.currentThemeStyle)
+            textStyle: .button(ThemeManager.shared.currentThemeStyle)
         )
     }
     
@@ -44,7 +44,7 @@ extension ButtonActionStyle {
             borderWidth: 0,
             borderColor: theme.cardBorder,
             padding: EdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8),
-            textStyle: .action(ThemeManager.shared.currentThemeStyle)
+            textStyle: .button(ThemeManager.shared.currentThemeStyle)
         )
     }
     
@@ -60,7 +60,7 @@ extension ButtonActionStyle {
             borderWidth: 0,
             borderColor: theme.cardBorder,
             padding: EdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8),
-            textStyle: .themed(ThemeManager.shared.currentThemeStyle)
+            textStyle: .button(ThemeManager.shared.currentThemeStyle)
         )
     }
     
@@ -76,7 +76,7 @@ extension ButtonActionStyle {
             borderWidth: 8,
             borderColor: theme.cardBorder,
             padding: EdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8),
-            textStyle: .titled(ThemeManager.shared.currentThemeStyle)
+            textStyle: .button(ThemeManager.shared.currentThemeStyle)
         )
     }
     
@@ -92,7 +92,7 @@ extension ButtonActionStyle {
             borderWidth: 4,
             borderColor: theme.cardBorder,
             padding: EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4),
-            textStyle: .gameAnswer(ThemeManager.shared.currentThemeStyle)
+            textStyle: .textGame(ThemeManager.shared.currentThemeStyle)
         )
     }
 }

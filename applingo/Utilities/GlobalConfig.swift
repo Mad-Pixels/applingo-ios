@@ -1,18 +1,6 @@
 import SwiftUI
 
 enum GlobalConfig {
-    /// Dictionary loaded from the Configuration.plist file.
-    private static let config: [String: Any] = {
-        guard
-            let url = Bundle.main.url(forResource: "Configuration", withExtension: "plist"),
-            let data = try? Data(contentsOf: url),
-            let dict = try? PropertyListSerialization.propertyList(from: data, format: nil) as? [String: Any]
-        else {
-            fatalError("Configuration.plist not found or invalid")
-        }
-        return dict
-    }()
-    
     /// The API base URL configured in Configuration.plist.
     static var apiURL: String {
         guard
@@ -45,4 +33,16 @@ enum GlobalConfig {
         }
         return file
     }
+    
+    /// Dictionary loaded from the Configuration.plist file.
+    private static let config: [String: Any] = {
+        guard
+            let url = Bundle.main.url(forResource: "Configuration", withExtension: "plist"),
+            let data = try? Data(contentsOf: url),
+            let dict = try? PropertyListSerialization.propertyList(from: data, format: nil) as? [String: Any]
+        else {
+            fatalError("Configuration.plist not found or invalid")
+        }
+        return dict
+    }()
 }

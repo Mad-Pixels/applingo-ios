@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// Configures the UITabBar appearance based on the provided AppTheme and BaseTabStyle.
 struct BaseTabConfigurator {
     static func configure(with theme: AppTheme, style: BaseTabStyle = .default) {
         let appearance = UITabBarAppearance()
