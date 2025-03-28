@@ -24,7 +24,7 @@ extension SectionBodyStyle {
             borderColor: nil,
             shadowColor: theme.backgroundSecondary,
             shadowRadius: 0,
-            padding: EdgeInsets(top: 9, leading: 12, bottom: 9, trailing: 12)
+            padding: EdgeInsets(top: 8, leading: 12, bottom: 8, trailing: 12)
         )
     }
     
@@ -36,7 +36,7 @@ extension SectionBodyStyle {
             borderColor: theme.accentPrimary,
             shadowColor: theme.backgroundSecondary,
             shadowRadius: 0,
-            padding: EdgeInsets(top: 9, leading: 12, bottom: 9, trailing: 12)
+            padding: EdgeInsets(top: 8, leading: 12, bottom: 8, trailing: 12)
         )
     }
 }
