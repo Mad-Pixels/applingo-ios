@@ -30,10 +30,13 @@ struct DictionaryRemoteFilterViewSort: View {
     
     // MARK: - Body
     var body: some View {
+        SectionHeader(
+            title: locale.screenSubtitleSortBy,
+            style: .block(ThemeManager.shared.currentThemeStyle)
+        )
         ItemPicker(
             selectedValue: $selectedSortBy,
             items: ApiSortType.allCases,
-            title: locale.screenSubtitleSortBy,
             style: .themed(ThemeManager.shared.currentThemeStyle, type: .segmented)
         ) { sortBy in Text(sortBy.name) }
     }

@@ -33,11 +33,13 @@ struct SettingsViewLocale: View {
     
     // MARK: - Body
     var body: some View {
+        SectionHeader(
+            title: locale.screenSubtitleLanguage,
+            style: .block(ThemeManager.shared.currentThemeStyle)
+        )
         ItemPicker(
             selectedValue: selectedLocale,
             items: localeManager.supportedLocales,
-            title: locale.screenSubtitleLanguage,
-            style: .themed(themeManager.currentThemeStyle),
             onChange: { newLocale in localeManager.setLocale(newLocale) }
         ) { locale in Text(locale.displayName) }
     }

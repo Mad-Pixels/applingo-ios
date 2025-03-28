@@ -22,12 +22,15 @@ struct SettingsViewTheme: View {
     
     // MARK: - Body
     var body: some View {
+        SectionHeader(
+            title: locale.screenSubtitleTheme,
+            style: .block(ThemeManager.shared.currentThemeStyle)
+        )
         ItemPicker(
             selectedValue: $themeManager.currentTheme,
             items: themeManager.supportedThemes,
-            title: locale.screenSubtitleTheme,
-            style: .themed(themeManager.currentThemeStyle, type: .segmented),
-            onChange: { newTheme in themeManager.setTheme(to: newTheme) }
+            onChange: { newTheme in themeManager.setTheme(to: newTheme) },
+            style: .themed(ThemeManager.shared.currentThemeStyle, type: .segmented)
         ) { theme in Text(theme.asString) }
     }
 }

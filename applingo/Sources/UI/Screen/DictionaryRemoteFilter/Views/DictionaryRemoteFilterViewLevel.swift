@@ -31,11 +31,13 @@ struct DictionaryRemoteFilterViewLevel: View {
     // MARK: - Body
     var body: some View {
         Section() {
+            SectionHeader(
+                title: locale.screenSubtitleLevel,
+                style: .block(ThemeManager.shared.currentThemeStyle)
+            )
             ItemPicker(
                 selectedValue: $selectedLevel,
-                items: DictionaryLevelType.allCases,
-                title: locale.screenSubtitleLevel,
-                style: .themed(themeManager.currentThemeStyle)
+                items: DictionaryLevelType.allCases
             ) { level in
                 Text(
                     level.rawValue == DictionaryLevelType.undefined.rawValue
