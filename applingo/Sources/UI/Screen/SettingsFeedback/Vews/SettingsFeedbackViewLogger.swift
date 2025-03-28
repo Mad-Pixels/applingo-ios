@@ -24,14 +24,18 @@ struct SettingsFeedbackViewLogger: View {
     
     // MARK: - Body
     var body: some View {
+        SectionHeader(
+            title: locale.screenSubtitleSendLogs,
+            style: .block(ThemeManager.shared.currentThemeStyle)
+        )
         ItemToggle(
             isOn: $logHandler.sendLogs,
             title: locale.screenDescriptionSendLogs,
-            header: locale.screenSubtitleSendLogs,
-            style: .themed(themeManager.currentThemeStyle),
+            
             onChange: { newValue in
                 logHandler.sendLogs = newValue
             }
+            
         )
         
         SectionBody(style: .accent(themeManager.currentThemeStyle)) {
