@@ -1,21 +1,19 @@
 import SwiftUI
 
-// MARK: - SectionBody View
-/// Wraps content in a styled container with padding, rounded background, and shadow.
 struct SectionBody<Content: View>: View {
     let style: SectionBodyStyle
     let content: Content
 
-    /// Initializes the SectionBody with a style and content.
+    /// Initializes the SectionBody.
     /// - Parameters:
-    ///   - style: The style for the section body. Defaults to themed style using the current theme.
+    ///   - style: The styling for the body. Defaults to themed style using the current theme.
     ///   - content: A view builder for the content.
     init(
-        style: SectionBodyStyle = .themed(ThemeManager.shared.currentThemeStyle),
-        @ViewBuilder content: () -> Content
+        @ViewBuilder content: () -> Content,
+        style: SectionBodyStyle = .block(ThemeManager.shared.currentThemeStyle)
     ) {
-        self.style = style
         self.content = content()
+        self.style = style
     }
 
     var body: some View {
@@ -34,7 +32,9 @@ struct SectionBody<Content: View>: View {
             )
             .overlay(
                 Group {
-                    if let borderWidth = style.borderWidth, let borderColor = style.borderColor {
+                    if let borderWidth = style.borderWidth,
+                       let borderColor = style.borderColor
+                    {
                         RoundedRectangle(cornerRadius: style.cornerRadius)
                             .stroke(borderColor, lineWidth: borderWidth)
                     }

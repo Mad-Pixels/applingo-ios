@@ -45,7 +45,7 @@ struct WordDetailsViewStatistic: View {
                         .frame(width: style.iconSize, height: style.iconSize)
                 } else {
                     SectionBody(
-                        style: .area(themeManager.currentThemeStyle)
+                        style: .block(themeManager.currentThemeStyle)
                     ) {
                         DonutChart(
                             data: [

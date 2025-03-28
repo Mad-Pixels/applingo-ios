@@ -34,7 +34,7 @@ struct SettingsFeedbackViewLogger: View {
             }
         )
         
-        SectionBody(style: .note(themeManager.currentThemeStyle)) {
+        SectionBody(style: .accent(themeManager.currentThemeStyle)) {
             Text(locale.screenTextSendLogs)
                 .font(style.font)
                 .foregroundColor(style.textColor)
