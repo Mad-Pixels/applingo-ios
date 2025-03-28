@@ -24,7 +24,7 @@ struct GameNoWords: View {
                 
                 SectionHeader(
                     title: locale.screenSubtitleNoWords,
-                    style: .centeredHeading(ThemeManager.shared.currentThemeStyle)
+                    style: .block(ThemeManager.shared.currentThemeStyle)
                 )
                 SectionBody{
                     VStack(alignment: .center) {
@@ -44,7 +44,7 @@ struct GameNoWords: View {
                 
                 SectionHeader(
                     title: locale.screenAddDictionariesTitle,
-                    style: .centeredHeading(ThemeManager.shared.currentThemeStyle)
+                    style: .block(ThemeManager.shared.currentThemeStyle)
                 )
                 SectionBody{
                     VStack(alignment: .leading) {
@@ -83,7 +83,7 @@ struct GameNoWords: View {
                 
                 SectionHeader(
                     title: locale.screenAddDictionariesChoice,
-                    style: .centeredHeading(ThemeManager.shared.currentThemeStyle)
+                    style: .block(ThemeManager.shared.currentThemeStyle)
                 )
                 SectionBody{
                     VStack(alignment: .leading) {

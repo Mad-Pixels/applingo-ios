@@ -40,7 +40,7 @@ struct ItemPicker<Item: Hashable, Content: View>: View {
                 // Use titled SectionHeader for the picker header
                 SectionHeader(
                     title: title,
-                    style: .titled(ThemeManager.shared.currentThemeStyle)
+                    style: .block(ThemeManager.shared.currentThemeStyle)
                 )
             }
             

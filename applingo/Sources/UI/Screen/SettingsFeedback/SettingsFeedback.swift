@@ -39,7 +39,7 @@ struct SettingsFeedback: View {
                 
                 SectionHeader(
                     title: locale.screenSubtitleUrls,
-                    style: .titled(ThemeManager.shared.currentThemeStyle)
+                    style: .block(ThemeManager.shared.currentThemeStyle)
                 )
                 .listRowBackground(Color.clear)
                 .listRowSeparator(.hidden)

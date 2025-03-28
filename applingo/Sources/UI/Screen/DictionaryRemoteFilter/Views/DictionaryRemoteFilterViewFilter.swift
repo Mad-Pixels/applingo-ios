@@ -41,7 +41,7 @@ struct DictionaryRemoteFilterViewFilter: View {
         Section() {
             SectionHeader(
                 title: locale.screenSubtitleLanguage,
-                style: .titled(themeManager.currentThemeStyle)
+                style: .block(themeManager.currentThemeStyle)
             )
             HStack {
                 ItemPicker(

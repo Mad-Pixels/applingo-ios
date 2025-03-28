@@ -37,7 +37,7 @@ struct WordAddManualViewMain: View {
         VStack(spacing: style.spacing) {
             SectionHeader(
                 title: locale.screenSubtitleWord,
-                style: .titled(themeManager.currentThemeStyle)
+                style: .block(themeManager.currentThemeStyle)
             )
             .padding(.top, style.paddingBlock)
             

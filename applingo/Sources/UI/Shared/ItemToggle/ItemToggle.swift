@@ -36,7 +36,7 @@ struct ItemToggle: View {
                 // Display header using a titled SectionHeader style
                 SectionHeader(
                     title: LocaleManager.shared.localizedString(for: header),
-                    style: .titled(ThemeManager.shared.currentThemeStyle)
+                    style: .block(ThemeManager.shared.currentThemeStyle)
                 )
             }
             

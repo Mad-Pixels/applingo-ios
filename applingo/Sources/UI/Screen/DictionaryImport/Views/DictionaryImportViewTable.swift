@@ -22,7 +22,7 @@ struct DictionaryImportViewTable: View {
             VStack(alignment: .leading, spacing: style.sectionSpacing) {
                 SectionHeader(
                     title: locale.screenSubtitleCreateTable,
-                    style: .heading(ThemeManager.shared.currentThemeStyle)
+                    style: .block(ThemeManager.shared.currentThemeStyle)
                 )
                 
                 Image(ThemeManager.shared.currentTheme.asString == "Dark" ? "table_example_dark" : "table_example_light")

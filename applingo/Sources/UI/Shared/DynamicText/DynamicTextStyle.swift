@@ -141,7 +141,7 @@ extension DynamicTextStyle {
             wordWrapping: shouldWrapWords,
             lineLimit: lineLimit,
             fontWeight: .bold,
-            fontDesign: .default
+            fontDesign: .rounded
         )
     }
     

@@ -1,18 +1,16 @@
 import SwiftUI
 
-// MARK: - SectionHeader View
-/// Displays a header with a title and an optional separator.
 struct SectionHeader: View {
-    let title: String
     let style: SectionHeaderStyle
-
-    /// Initializes the section header.
+    let title: String
+    
+    /// Initializes the SectionHeader.
     /// - Parameters:
     ///   - title: The header title.
     ///   - style: The styling for the header. Defaults to themed style using the current theme.
     init(
         title: String,
-        style: SectionHeaderStyle = .themed(ThemeManager.shared.currentThemeStyle)
+        style: SectionHeaderStyle = .block(ThemeManager.shared.currentThemeStyle)
     ) {
         self.title = title
         self.style = style
@@ -22,14 +20,10 @@ struct SectionHeader: View {
         VStack(spacing: style.spacing) {
             DynamicText(
                 model: DynamicTextModel(text: title),
-                style: .headerBlock(ThemeManager.shared.currentThemeStyle)
+                style: style.textStyle(
+                    ThemeManager.shared.currentThemeStyle
+                )
             )
-//            Text(title)
-//                .font(style.titleFont)
-//                .foregroundColor(style.titleColor)
-//                .multilineTextAlignment(style.alignment)
-//                .frame(maxWidth: .infinity, alignment: style.alignment == .center ? .center : .leading)
-//                .padding(.horizontal, style.padding.leading)
             
             Rectangle()
                 .fill(style.separatorColor)

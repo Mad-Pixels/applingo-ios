@@ -31,7 +31,7 @@ struct WordDetailsViewStatistic: View {
         VStack(spacing: style.spacing) {
             SectionHeader(
                 title: locale.screenSubtitleStatistic,
-                style: .titled(themeManager.currentThemeStyle)
+                style: .block(themeManager.currentThemeStyle)
             )
             .padding(.top, 8)
             

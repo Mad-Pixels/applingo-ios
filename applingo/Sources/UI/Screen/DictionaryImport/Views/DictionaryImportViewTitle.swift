@@ -28,7 +28,7 @@ struct DictionaryImportViewTitle: View {
                 
                 SectionHeader(
                     title: locale.screenSubtitleDictionaryAdd,
-                    style: .heading(ThemeManager.shared.currentThemeStyle)
+                    style: .block(ThemeManager.shared.currentThemeStyle)
                 )
                 
                 Text(locale.screenTextDictionaryAdd)

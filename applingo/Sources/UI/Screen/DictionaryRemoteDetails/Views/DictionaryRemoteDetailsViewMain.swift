@@ -31,7 +31,7 @@ struct DictionaryRemoteDetailsViewMain: View {
         VStack(spacing: style.spacing) {
             SectionHeader(
                 title: locale.screenSubtitleDictionary,
-                style: .titled(ThemeManager.shared.currentThemeStyle)
+                style: .block(ThemeManager.shared.currentThemeStyle)
             )
             .padding(.top, 8)
             

@@ -25,7 +25,7 @@ struct SettingsViewFeedback: View {
         VStack(alignment: .leading, spacing: 8) {
             SectionHeader(
                 title: locale.screenSubtitleFeedback,
-                style: .titled(themeManager.currentThemeStyle)
+                style: .block(themeManager.currentThemeStyle)
             )
             .padding(.top, 8)
             .padding(.bottom, -8)
