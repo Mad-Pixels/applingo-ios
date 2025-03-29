@@ -1,19 +1,17 @@
 import SwiftUI
 
-/// A view that displays a list of words with pagination and deletion support.
-struct WordListViewList: View {
-    // MARK: - Properties
+internal struct WordListViewList: View {
     @EnvironmentObject private var themeManager: ThemeManager
-    private let locale: WordListLocale
-    private let style: WordListStyle
-
+    
     @ObservedObject private var wordsAction: WordAction
     @ObservedObject private var wordsGetter: WordGetter
+    
     private let onWordSelect: (DatabaseModelWord) -> Void
     private let onListStateChanged: (Bool) -> Void
+    private let locale: WordListLocale
+    private let style: WordListStyle
     
-    // MARK: - Initializer
-    /// Initializes the word list view with localization and a data source.
+    /// Initializes the WordListViewList.
     /// - Parameters:
     ///   - style: `WordListStyle` object that defines the visual style.
     ///   - locale: `WordListLocale` object that provides localized strings.
@@ -29,15 +27,14 @@ struct WordListViewList: View {
         onWordSelect: @escaping (DatabaseModelWord) -> Void,
         onListStateChanged: @escaping (Bool) -> Void
     ) {
-        self.locale = locale
-        self.style = style
+        self.onListStateChanged = onListStateChanged
+        self.onWordSelect = onWordSelect
         self.wordsGetter = wordsGetter
         self.wordsAction = wordsAction
-        self.onWordSelect = onWordSelect
-        self.onListStateChanged = onListStateChanged
+        self.locale = locale
+        self.style = style
     }
     
-    // MARK: - Body
     var body: some View {
         let wordsBinding = Binding<[DatabaseModelWord]>(
             get: { wordsGetter.words },
@@ -52,7 +49,9 @@ struct WordListViewList: View {
             isLoadingPage: wordsGetter.isLoadingPage || !wordsGetter.hasLoadedInitialPage,
             error: nil,
             emptyListView: emptyStateView,
-            onItemAppear: { word in wordsGetter.loadMoreWordsIfNeeded(currentItem: word) },
+            onItemAppear: { word in
+                wordsGetter.loadMoreWordsIfNeeded(currentItem: word)
+            },
             onDelete: delete,
             onItemTap: onWordSelect
         ) { word in
@@ -70,7 +69,6 @@ struct WordListViewList: View {
         }
     }
     
-    // MARK: - Private Methods
     /// Deletes the word at specified offsets.
     /// - Parameter offsets: IndexSet representing the positions of words to delete.
     private func delete(at offsets: IndexSet) {

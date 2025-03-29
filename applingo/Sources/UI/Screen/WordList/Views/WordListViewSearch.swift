@@ -1,21 +1,21 @@
 import SwiftUI
 
-/// A view that provides a search bar for filtering words.
 struct WordListViewSearch: View {
-    // MARK: - Properties
     @EnvironmentObject private var themeManager: ThemeManager
+    
+    @Binding var searchText: String
+    
     private let locale: WordListLocale
     private let style: WordListStyle
 
-    @Binding var searchText: String
-    let isDisabled: Bool
+    internal let isDisabled: Bool
 
-    // MARK: - Initializer
-    /// Initializes a new instance of `WordListViewWelcome`.
+    /// Initializes the WordListViewSearch.
     /// - Parameters:
-    ///   - style: `WordListStyle` object that defines the visual style.
-    ///   - locale: `WordListLocale` object that provides localized strings.
-    ///   - searchText: Binding to the search query.
+    ///   - style: A `WordListStyle` object defining the visual style of the view.
+    ///   - locale: A `WordListLocale` object providing localized strings for UI elements.
+    ///   - searchText: A binding to the search query entered by the user.
+    ///   - isDisabled: A Boolean value indicating whether the search functionality is disabled. Default is `false`.
     init(
         style: WordListStyle,
         locale: WordListLocale,
@@ -28,7 +28,6 @@ struct WordListViewSearch: View {
         self.style = style
     }
 
-    // MARK: - Body
     var body: some View {
         InputSearch(
             text: $searchText,

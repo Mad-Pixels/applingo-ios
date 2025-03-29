@@ -1,8 +1,6 @@
 import Foundation
 
-/// Provides localized strings for the WordList view.
 final class WordListLocale: ObservableObject {
-    // MARK: - Localized Keys
     private enum LocalizedKey: String {
         case title = "screen.wordList.title"
         case search = "base.text.search"
@@ -13,7 +11,6 @@ final class WordListLocale: ObservableObject {
         case importDictionaryDescription = "screen.wordList.button.importDictionaryDescription"
     }
     
-    // MARK: - Published Properties
     @Published private(set) var screenTitle: String
     @Published private(set) var screenSearch: String
     @Published private(set) var screenNoWords: String
@@ -22,15 +19,16 @@ final class WordListLocale: ObservableObject {
     @Published private(set) var screenButtonDownloadDictionaryDescription: String
     @Published private(set) var screenButtonImportDictionaryDescription: String
     
-    // MARK: - Initialization
     init() {
-        self.screenTitle = Self.localizedString(for: .title)
-        self.screenSearch = Self.localizedString(for: .search)
-        self.screenNoWords = Self.localizedString(for: .noWords)
-        self.screenButtonDownloadDictionary = Self.localizedString(for: .downloadDictionary)
-        self.screenButtonImportDictionary = Self.localizedString(for: .importDictionary)
-        self.screenButtonDownloadDictionaryDescription = Self.localizedString(for: .downloadDictionaryDescription)
-        self.screenButtonImportDictionaryDescription = Self.localizedString(for: .importDictionaryDescription)
+        self.screenTitle = ""
+        self.screenSearch = ""
+        self.screenNoWords = ""
+        self.screenButtonDownloadDictionary = ""
+        self.screenButtonImportDictionary = ""
+        self.screenButtonDownloadDictionaryDescription = ""
+        self.screenButtonImportDictionaryDescription = ""
+        
+        updateLocalizedStrings()
         
         NotificationCenter.default.addObserver(
             self,
@@ -44,20 +42,21 @@ final class WordListLocale: ObservableObject {
         NotificationCenter.default.removeObserver(self)
     }
     
-    // MARK: - Localization Helper
-    /// Returns a localized string for the specified key.
+    @objc private func localeDidChange() {
+        updateLocalizedStrings()
+    }
+    
     private static func localizedString(for key: LocalizedKey) -> String {
         return LocaleManager.shared.localizedString(for: key.rawValue)
     }
     
-    // MARK: - Notification Handler
-    @objc private func localeDidChange() {
-        self.screenTitle = Self.localizedString(for: .title)
-        self.screenSearch = Self.localizedString(for: .search)
-        self.screenNoWords = Self.localizedString(for: .noWords)
-        self.screenButtonDownloadDictionary = Self.localizedString(for: .downloadDictionary)
-        self.screenButtonImportDictionary = Self.localizedString(for: .importDictionary)
-        self.screenButtonDownloadDictionaryDescription = Self.localizedString(for: .downloadDictionaryDescription)
-        self.screenButtonImportDictionaryDescription = Self.localizedString(for: .importDictionaryDescription)
+    private func updateLocalizedStrings() {
+        screenTitle = Self.localizedString(for: .title)
+        screenSearch = Self.localizedString(for: .search)
+        screenNoWords = Self.localizedString(for: .noWords)
+        screenButtonDownloadDictionary = Self.localizedString(for: .downloadDictionary)
+        screenButtonImportDictionary = Self.localizedString(for: .importDictionary)
+        screenButtonDownloadDictionaryDescription = Self.localizedString(for: .downloadDictionaryDescription)
+        screenButtonImportDictionaryDescription = Self.localizedString(for: .importDictionaryDescription)
     }
 }

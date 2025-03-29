@@ -1,14 +1,12 @@
 import SwiftUI
 
-/// A view that displays a placeholder when no words are available.
-struct WordListViewNoItems: View {
-    // MARK: - Properties
+internal struct WordListViewNoItems: View {
     @EnvironmentObject private var themeManager: ThemeManager
+    
     private let locale: WordListLocale
     private let style: WordListStyle
 
-    // MARK: - Initializer
-    /// Initializes a new instance of `WordListViewWelcome`.
+    /// Initializes the WordListViewNoItems.
     /// - Parameters:
     ///   - style: `WordListStyle` object that defines the visual style.
     ///   - locale: `WordListLocale` object that provides localized strings.
@@ -17,13 +15,6 @@ struct WordListViewNoItems: View {
         self.style = style
     }
     
-    // MARK: - Computed Properties
-    /// The image name to display based on the current theme.
-    private var warningImageName: String {
-        themeManager.currentTheme.asString == "Dark" ? "not_found" : "not_found"
-    }
-    
-    // MARK: - Body
     var body: some View {
         VStack {
             Image(warningImageName)
@@ -31,9 +22,20 @@ struct WordListViewNoItems: View {
                 .scaledToFit()
                 .frame(width: style.iconSize, height: style.iconSize)
             
-            Text(locale.screenNoWords)
-                .font(style.titleFont)
+            DynamicText(
+                model: DynamicTextModel(text: locale.screenNoWords),
+                style: .headerMain(
+                    ThemeManager.shared.currentThemeStyle,
+                    alignment: .center,
+                    lineLimit: 2
+                )
+            )
         }
         .frame(maxWidth: .infinity, alignment: .center)
+    }
+    
+    /// Select image based on active theme.
+    private var warningImageName: String {
+        themeManager.currentTheme.asString == "Dark" ? "not_found" : "not_found"
     }
 }

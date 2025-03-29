@@ -1,8 +1,10 @@
 import SwiftUI
 
 struct Main: View {
-    @ObservedObject private var locale = LocaleManager.shared
     @EnvironmentObject var themeManager: ThemeManager
+    
+    @ObservedObject private var locale = LocaleManager.shared
+    
     @State private var selectedTab: Int = 0
 
     var body: some View {

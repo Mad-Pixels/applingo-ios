@@ -1,30 +1,26 @@
 import SwiftUI
 
-/// A view that displays a list of words with search and add functionalities.
 struct WordList: View {
-    // MARK: - Constants
-    private let bottomInsetHeight: CGFloat = 130
     private let overlayBottomPadding: CGFloat = 80
-
-    // MARK: - State Objects
+    private let bottomInsetHeight: CGFloat = 130
+    
     @StateObject private var style: WordListStyle
     @StateObject private var locale = WordListLocale()
     @StateObject private var wordsGetter = WordGetter()
     @StateObject private var wordsAction = WordAction()
     
-    // MARK: - Local State
     @State private var selectedWord: DatabaseModelWord?
     @State private var isSearchDisabled = false
     @State private var isShowingAddView = false
     
-    // MARK: - Initializer
-    /// Initializes the WordList view.
-    /// - Parameter style: Optional style; if nil, a themed style is used.
-    init(style: WordListStyle? = nil) {
-        _style = StateObject(wrappedValue: style ?? .themed(ThemeManager.shared.currentThemeStyle))
+    /// Initializes the WordList.
+    /// - Parameter style: The style for the picker. Defaults to themed style using the current theme.
+    init(
+        style: WordListStyle = .themed(ThemeManager.shared.currentThemeStyle)
+    ) {
+        _style = StateObject(wrappedValue: style)
     }
     
-    // MARK: - Body
     var body: some View {
         BaseScreen(
             screen: .WordList,
@@ -56,21 +52,18 @@ struct WordList: View {
             .overlay(alignment: .bottomTrailing) {
                 WordListViewActions(
                     style: style,
-                    locale: locale,
                     onAdd: { isShowingAddView = true }
                 )
                 .padding(.bottom, overlayBottomPadding)
             }
             .onAppear {
+                if wordsGetter.words.isEmpty { wordsGetter.resetPagination() }
                 wordsAction.setScreen(.WordList)
                 wordsGetter.setScreen(.WordList)
-                if wordsGetter.words.isEmpty {
-                    wordsGetter.resetPagination()
-                }
             }
             .onDisappear() {
-                wordsGetter.clear()
                 wordsGetter.searchText = ""
+                wordsGetter.clear()
             }
         }
         .sheet(item: $selectedWord) { word in

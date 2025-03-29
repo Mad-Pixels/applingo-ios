@@ -2,21 +2,19 @@ import SwiftUI
 
 /// Defines styling properties for the WordList view.
 final class WordListStyle: ObservableObject {
-    // MARK: - Properties
+    // Color Properties
     let backgroundColor: Color
+
+    // Layout Properties
     let padding: EdgeInsets
     let spacing: CGFloat
+
+    // Font Properties
     let titleFont: Font
+
+    // Icon Properties
     let iconSize: CGFloat
 
-    // MARK: - Initializer
-    /// Initializes a new instance of `WordListStyle`.
-    /// - Parameters:
-    ///   - spacing: The spacing between elements.
-    ///   - padding: The padding around the content.
-    ///   - backgroundColor: The background color.
-    ///   - titleFont: The font used for titles.
-    ///   - iconSize: The size of icons.
     init(
         spacing: CGFloat,
         padding: EdgeInsets,
@@ -32,11 +30,7 @@ final class WordListStyle: ObservableObject {
     }
 }
 
-// MARK: - Themed Style Extension
 extension WordListStyle {
-    /// Returns a themed style based on the current application theme.
-    /// - Parameter theme: The current application theme.
-    /// - Returns: A new instance of `WordListStyle` configured for the given theme.
     static func themed(_ theme: AppTheme) -> WordListStyle {
         WordListStyle(
             spacing: 16,
