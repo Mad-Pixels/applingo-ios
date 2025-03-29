@@ -1,17 +1,14 @@
 import SwiftUI
 
-/// A view that displays the category details of the remote dictionary,
-/// including category and subcategory information.
-struct DictionaryRemoteDetailsViewCategory: View {
-    // MARK: - Properties
+internal struct DictionaryRemoteDetailsViewCategory: View {
     @EnvironmentObject private var themeManager: ThemeManager
+    
     private let locale: DictionaryRemoteDetailsLocale
     private let style: DictionaryRemoteDetailsStyle
     
-    let dictionary: ApiModelDictionaryItem
+    internal let dictionary: ApiModelDictionaryItem
     
-    // MARK: - Initializer
-    /// Initializes the additional details view.
+    /// Initializes the DictionaryRemoteDetailsViewCategory.
     /// - Parameters:
     ///   - style: `DictionaryRemoteDetailsStyle` style configuration.
     ///   - locale: `DictionaryRemoteDetailsLocale` localization object.
@@ -26,12 +23,11 @@ struct DictionaryRemoteDetailsViewCategory: View {
         self.style = style
     }
     
-    // MARK: - Body
     var body: some View {
         VStack(spacing: style.spacing) {
             SectionHeader(
                 title: locale.screenSubtitleCategory,
-                style: .block(ThemeManager.shared.currentThemeStyle)
+                style: .block(themeManager.currentThemeStyle)
             )
             .padding(.top, 8)
             

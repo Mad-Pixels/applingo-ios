@@ -1,17 +1,14 @@
 import SwiftUI
 
-/// A view that displays the main details of the remote dictionary,
-/// including the name, description, and topic.
-struct DictionaryRemoteDetailsViewMain: View {
-    // MARK: - Properties
+internal struct DictionaryRemoteDetailsViewMain: View {
     @EnvironmentObject private var themeManager: ThemeManager
+    
     private let locale: DictionaryRemoteDetailsLocale
     private let style: DictionaryRemoteDetailsStyle
     
-    let dictionary: ApiModelDictionaryItem
+    internal let dictionary: ApiModelDictionaryItem
     
-    // MARK: - Initializer
-    /// Initializes the additional details view.
+    /// Initializes theDictionaryRemoteDetailsViewMain.
     /// - Parameters:
     ///   - style: `DictionaryRemoteDetailsStyle` style configuration.
     ///   - locale: `DictionaryRemoteDetailsLocale` localization object.
@@ -26,17 +23,16 @@ struct DictionaryRemoteDetailsViewMain: View {
         self.style = style
     }
     
-    // MARK: - Body
     var body: some View {
         VStack(spacing: style.spacing) {
             SectionHeader(
                 title: locale.screenSubtitleDictionary,
-                style: .block(ThemeManager.shared.currentThemeStyle)
+                style: .block(themeManager.currentThemeStyle)
             )
             .padding(.top, 8)
             
             VStack(spacing: style.spacing) {
-                InputText(
+                InputTextArea(
                     text: .constant(dictionary.name),
                     placeholder: "",
                     isEditing: false

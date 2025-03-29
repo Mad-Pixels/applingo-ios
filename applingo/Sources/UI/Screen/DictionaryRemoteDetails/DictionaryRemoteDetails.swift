@@ -1,36 +1,30 @@
 import SwiftUI
 
-/// A view that displays the details of a remote dictionary item.
-/// It provides a UI for viewing dictionary details and downloading the dictionary.
 struct DictionaryRemoteDetails: View {
-    // MARK: - Properties
+    @EnvironmentObject private var themeManager: ThemeManager
     @Environment(\.presentationMode) private var presentationMode
     
-    // MARK: - State Objects
     @StateObject private var style: DictionaryRemoteDetailsStyle
     @StateObject private var locale = DictionaryRemoteDetailsLocale()
     @StateObject private var dictionaryAction = DictionaryAction()
     
-    // MARK: - Local State
     @State private var editedDictionary: ApiModelDictionaryItem
     @State private var isPressedTrailing = false
     @State private var dictionaryExists = false
     @State private var isDownloading = false
     
-    // MARK: - Initializer
-    /// Initializes a new instance of DictionaryRemoteDetails.
+    /// Initializes the DictionaryRemoteDetails.
     /// - Parameters:
     ///   - dictionary: The remote dictionary item to display.
     ///   - style: Optional style configuration; if nil, a themed style is applied.
     init(
         dictionary: ApiModelDictionaryItem,
-        style: DictionaryRemoteDetailsStyle? = nil
+        style: DictionaryRemoteDetailsStyle = .themed(ThemeManager.shared.currentThemeStyle)
     ) {
-        _style = StateObject(wrappedValue: style ?? .themed(ThemeManager.shared.currentThemeStyle))
+        _style = StateObject(wrappedValue: style)
         _editedDictionary = State(initialValue: dictionary)
     }
     
-    // MARK: - Body
     var body: some View {
         BaseScreen(screen: .DictionaryRemoteDetails, title: locale.screenTitle) {
             ScrollView {
@@ -70,16 +64,22 @@ struct DictionaryRemoteDetails: View {
                         onTap: {
                             presentationMode.wrappedValue.dismiss()
                         },
-                        style: .close(ThemeManager.shared.currentThemeStyle)
-                        
+                        style: .close(themeManager.currentThemeStyle)
                     )
                 }
             }
         }
         
         if dictionaryExists {
-            Text(locale.screenSubtitleDictionaryExist)
-                .padding(style.padding)
+            DynamicText(
+                model: DynamicTextModel(text: locale.screenSubtitleDictionaryExist),
+                style: .textGame(
+                    themeManager.currentThemeStyle,
+                    alignment: .center,
+                    lineLimit: 1
+                )
+            )
+            .padding(style.padding)
         } else if isDownloading {
             ProgressView(locale.screenButtonDownload)
                 .progressViewStyle(CircularProgressViewStyle())
@@ -88,12 +88,11 @@ struct DictionaryRemoteDetails: View {
             ButtonAction(
                 title: locale.screenButtonDownload,
                 action: downloadDictionary,
-                style: .action(ThemeManager.shared.currentThemeStyle)
+                style: .action(themeManager.currentThemeStyle)
             )
         }
     }
     
-    // MARK: - Private Methods
     /// Initiates the download of the dictionary.
     private func downloadDictionary() {
         isDownloading = true

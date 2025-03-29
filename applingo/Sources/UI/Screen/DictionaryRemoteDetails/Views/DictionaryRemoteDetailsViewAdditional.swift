@@ -1,17 +1,14 @@
 import SwiftUI
 
-/// A view that displays additional information of the remote dictionary,
-/// such as the author and creation date.
-struct DictionaryRemoteDetailsViewAdditional: View {
-    // MARK: - Properties
+internal struct DictionaryRemoteDetailsViewAdditional: View {
     @EnvironmentObject private var themeManager: ThemeManager
+    
     private let locale: DictionaryRemoteDetailsLocale
     private let style: DictionaryRemoteDetailsStyle
     
-    let dictionary: ApiModelDictionaryItem
+    internal let dictionary: ApiModelDictionaryItem
     
-    // MARK: - Initializer
-    /// Initializes the additional details view.
+    /// Initializes the DictionaryRemoteDetailsViewAdditional.
     /// - Parameters:
     ///   - style: `DictionaryRemoteDetailsStyle` style configuration.
     ///   - locale: `DictionaryRemoteDetailsLocale` localization object.
@@ -26,12 +23,11 @@ struct DictionaryRemoteDetailsViewAdditional: View {
         self.style = style
     }
     
-    // MARK: - Body
     var body: some View {
         VStack(spacing: style.spacing) {
             SectionHeader(
                 title: locale.screenSubtitleAdditional,
-                style: .block(ThemeManager.shared.currentThemeStyle)
+                style: .block(themeManager.currentThemeStyle)
             )
             .padding(.top, 8)
             
