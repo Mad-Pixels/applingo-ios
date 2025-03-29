@@ -1,38 +1,35 @@
 import SwiftUI
 
-/// A view that displays a list of remote dictionaries with pagination and selection support.
-struct DictionaryRemoteListViewList: View {
-    // MARK: - Properties
+internal struct DictionaryRemoteListViewList: View {
     @EnvironmentObject private var themeManager: ThemeManager
+    
+    @ObservedObject private var dictionaryGetter: DictionaryFetcher
+    
+    @State private var initialLoadTriggered = false
+    
     private let locale: DictionaryRemoteListLocale
     private let style: DictionaryRemoteListStyle
 
-    @ObservedObject private var dictionaryGetter: DictionaryFetcher
-    let onDictionarySelect: (ApiModelDictionaryItem) -> Void
-    
-    // Флаг, чтобы предотвратить повторный вызов resetPagination
-    @State private var initialLoadTriggered = false
-    
-    // MARK: - Initializer
-    /// Initializes the list view with localization and a dictionary data source.
+    internal let onDictionarySelect: (ApiModelDictionaryItem) -> Void
+
+    /// Initializes the DictionaryRemoteListViewList.
     /// - Parameters:
     ///   - style: `DictionaryRemoteListStyle` object that defines the visual style.
     ///   - locale: `DictionaryRemoteListLocale` object that provides localized strings.
     ///   - dictionaryGetter: The data source for remote dictionaries.
     ///   - onDictionarySelect: Action closure when a dictionary is selected.
     init(
-        locale: DictionaryRemoteListLocale,
         style: DictionaryRemoteListStyle,
+        locale: DictionaryRemoteListLocale,
         dictionaryGetter: DictionaryFetcher,
         onDictionarySelect: @escaping (ApiModelDictionaryItem) -> Void
     ) {
+        self.onDictionarySelect = onDictionarySelect
+        self.dictionaryGetter = dictionaryGetter
         self.locale = locale
         self.style = style
-        self.dictionaryGetter = dictionaryGetter
-        self.onDictionarySelect = onDictionarySelect
     }
     
-    // MARK: - Body
     var body: some View {
         let dictionariesBinding = Binding(
             get: { dictionaryGetter.dictionaries },
@@ -74,13 +71,10 @@ struct DictionaryRemoteListViewList: View {
         .onAppear {
             dictionaryGetter.setScreen(.DictionaryRemoteList)
             
-            // Проверяем, был ли уже вызван resetPagination из родительского компонента
             if !initialLoadTriggered {
-                // Используем небольшую задержку, чтобы родительский компонент успел вызвать resetPagination
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                    // Проверяем, есть ли уже данные (если родительский компонент вызвал resetPagination)
+
                     if dictionaryGetter.dictionaries.isEmpty && !dictionaryGetter.isLoadingPage {
-                        Logger.debug("[DictionaryRemoteList]: Initial load not triggered by parent, loading dictionaries")
                         dictionaryGetter.resetPagination(with: ApiModelDictionaryQueryRequest())
                     }
                     initialLoadTriggered = true

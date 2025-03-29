@@ -1,24 +1,22 @@
 import Foundation
 
-/// Provides localized strings for the Dictionary Remote List view.
 final class DictionaryRemoteListLocale: ObservableObject {
-    // MARK: - Localized Keys
     private enum LocalizedKey: String {
         case title = "screen.dictionaryRemoteList.title"
         case search = "base.text.search"
         case noWords = "base.text.noItems"
     }
     
-    // MARK: - Published Properties
     @Published private(set) var screenTitle: String
     @Published private(set) var screenSearch: String
     @Published private(set) var screenNoWords: String
     
-    // MARK: - Initialization
     init() {
-        self.screenTitle = Self.localizedString(for: .title)
-        self.screenSearch = Self.localizedString(for: .search)
-        self.screenNoWords = Self.localizedString(for: .noWords)
+        self.screenTitle = ""
+        self.screenSearch = ""
+        self.screenNoWords = ""
+        
+        updateLocalizedStrings()
         
         NotificationCenter.default.addObserver(
             self,
@@ -32,14 +30,15 @@ final class DictionaryRemoteListLocale: ObservableObject {
         NotificationCenter.default.removeObserver(self)
     }
     
-    // MARK: - Localization Helper
-    /// Returns a localized string for the specified key.
+    @objc private func localeDidChange() {
+        updateLocalizedStrings()
+    }
+    
     private static func localizedString(for key: LocalizedKey) -> String {
         return LocaleManager.shared.localizedString(for: key.rawValue)
     }
     
-    // MARK: - Notification Handler
-    @objc private func localeDidChange() {
+    private func updateLocalizedStrings() {
         screenTitle = Self.localizedString(for: .title)
         screenSearch = Self.localizedString(for: .search)
         screenNoWords = Self.localizedString(for: .noWords)

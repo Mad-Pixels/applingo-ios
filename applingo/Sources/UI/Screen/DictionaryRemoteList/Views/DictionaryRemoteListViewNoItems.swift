@@ -1,13 +1,12 @@
 import SwiftUI
 
-struct DictionaryRemoteListViewNoItems: View {
-    // MARK: - Properties
+internal struct DictionaryRemoteListViewNoItems: View {
     @EnvironmentObject private var themeManager: ThemeManager
+    
     private let locale: DictionaryRemoteListLocale
     private let style: DictionaryRemoteListStyle
     
-    // MARK: - Initializer
-    /// Initializes a new instance of `WordListViewWelcome`.
+    /// Initializes the WordListViewWelcome.
     /// - Parameters:
     ///   - style: `DictionaryRemoteListStyle` object that defines the visual style.
     ///   - locale: `DictionaryRemoteListLocale` object that provides localized strings.
@@ -16,23 +15,23 @@ struct DictionaryRemoteListViewNoItems: View {
         self.style = style
     }
     
-    // MARK: - Computed Properties
-    /// The image name to display based on the current theme.
-    private var warningImageName: String {
-        themeManager.currentTheme.asString == "Dark" ? "not_found" : "not_found"
-    }
-    
-    // MARK: - Body
     var body: some View {
         VStack() {
             Image(warningImageName)
                 .resizable()
                 .scaledToFit()
                 .frame(width: style.iconSize, height: style.iconSize)
-            
-            Text(locale.screenNoWords)
-                .font(style.titleFont)
+
+            DynamicText(
+                model: DynamicTextModel(text: locale.screenNoWords),
+                style: .textGame(themeManager.currentThemeStyle)
+            )
         }
         .frame(maxWidth: .infinity, alignment: .center)
+    }
+    
+    /// The image name to display based on the current theme.
+    private var warningImageName: String {
+        themeManager.currentTheme.asString == "Dark" ? "not_found" : "not_found"
     }
 }

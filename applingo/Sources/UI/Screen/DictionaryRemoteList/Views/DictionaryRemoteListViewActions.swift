@@ -1,16 +1,12 @@
 import SwiftUI
 
-/// A view that provides a floating action button for filtering remote dictionaries.
-struct DictionaryRemoteListViewActions: View {
-    // MARK: - Properties
-    @EnvironmentObject private var themeManager: ThemeManager
+internal struct DictionaryRemoteListViewActions: View {
     private let locale: DictionaryRemoteListLocale
     private let style: DictionaryRemoteListStyle
     
-    let onFilter: () -> Void
+    internal let onFilter: () -> Void
     
-    // MARK: - Initializer
-    /// Initializes the view with a localization object and add action.
+    /// Initializes the DictionaryRemoteListViewActions.
     /// - Parameters:
     ///   - style: `DictionaryRemoteListStyle` object that defines the visual style.
     ///   - locale: `DictionaryRemoteListLocale` object that provides localized strings.
@@ -25,7 +21,6 @@ struct DictionaryRemoteListViewActions: View {
         self.onFilter = onFilter
     }
     
-    // MARK: - Body
     var body: some View {
         ButtonFloatingSingle(
             icon: "line.horizontal.3.decrease.circle",

@@ -1,16 +1,14 @@
 import SwiftUI
 
-/// A view that provides a search input field for filtering remote dictionaries.
-struct DictionaryRemoteListViewSearch: View {
-    // MARK: - Properties
+internal struct DictionaryRemoteListViewSearch: View {
     @EnvironmentObject private var themeManager: ThemeManager
+    
+    @Binding var searchText: String
+    
     private let locale: DictionaryRemoteListLocale
     private let style: DictionaryRemoteListStyle
 
-    @Binding var searchText: String
-
-    // MARK: - Initializer
-    /// Initializes a new instance of `WordListViewWelcome`.
+    /// Initializes the DictionaryRemoteListViewSearch.
     /// - Parameters:
     ///   - style: `DictionaryRemoteListStyle` object that defines the visual style.
     ///   - locale: `DictionaryRemoteListLocale` object that provides localized strings.
@@ -21,12 +19,11 @@ struct DictionaryRemoteListViewSearch: View {
         self.style = style
     }
     
-    // MARK: - Body
     var body: some View {
         InputSearch(
             text: $searchText,
             placeholder: locale.screenSearch,
-            style: .themed(ThemeManager.shared.currentThemeStyle)
+            style: .themed(themeManager.currentThemeStyle)
         )
     }
 }
