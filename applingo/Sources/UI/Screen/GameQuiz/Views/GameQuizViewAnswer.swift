@@ -37,7 +37,7 @@ struct GameQuizViewAnswer: View {
         if let highlightColor = viewModel.highlightedOptions[option] {
             return .incorrectGameAnswer(themeManager.currentThemeStyle, highlightColor: highlightColor)
         } else {
-            return .gameAnswer(themeManager.currentThemeStyle)
+            return .game(themeManager.currentThemeStyle)
         }
     }
 }

@@ -142,13 +142,13 @@ struct GameMatchButton: View {
             return createSelectedStyle()
         } else {
             // Стандартный стиль для активных слов
-            return .gameAnswer(themeManager.currentThemeStyle)
+            return .game(themeManager.currentThemeStyle)
         }
     }
     
     // Создаем стиль для выбранных слов (выделенных)
     private func createSelectedStyle() -> ButtonActionStyle {
-        var style = ButtonActionStyle.gameAnswer(themeManager.currentThemeStyle)
+        var style = ButtonActionStyle.game(themeManager.currentThemeStyle)
         // Изменяем цвет фона для выделения
         style.backgroundColor = themeManager.currentThemeStyle.accentPrimary.opacity(0.7)
         return style
@@ -156,7 +156,7 @@ struct GameMatchButton: View {
     
     // Создаем стиль для совпавших слов (уже найденных пар)
     private func createMatchedStyle() -> ButtonActionStyle {
-        var style = ButtonActionStyle.gameAnswer(themeManager.currentThemeStyle)
+        var style = ButtonActionStyle.game(themeManager.currentThemeStyle)
         // Изменяем цвет фона для совпавших слов
         style.backgroundColor = Color.gray.opacity(0.5)
         return style

@@ -18,7 +18,7 @@ struct ButtonAction: View {
         self.title = title
         self.action = action
         self.disabled = disabled
-        self.style = style ?? .themed(ThemeManager.shared.currentThemeStyle)
+        self.style = style ?? .action(ThemeManager.shared.currentThemeStyle)
     }
     
     var body: some View {
