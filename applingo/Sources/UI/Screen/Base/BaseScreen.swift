@@ -10,6 +10,13 @@ struct BaseScreen<Content: View>: View {
     private let content: Content
     private let title: String?
     
+    /// Initializes the BaseScreen.
+    /// - Parameters:
+    ///   - screen: The type of screen for tracking and error handling purposes.
+    ///   - title: An optional title for the navigation bar.
+    ///   - style: The styling to apply to the screen. Defaults to `.default`.
+    ///   - alignment: Alignment of the content within the available frame. Defaults to `.top`.
+    ///   - content: A view builder closure that defines the content of the screen.
     init(
         screen: ScreenType,
         title: String? = nil,
@@ -24,7 +31,7 @@ struct BaseScreen<Content: View>: View {
         self.alignment = alignment
         
         BaseNavigationConfigurator.configure(
-            with: ThemeManager.shared.currentThemeStyle,
+            with: themeManager.currentThemeStyle,
             style: style
         )
     }
