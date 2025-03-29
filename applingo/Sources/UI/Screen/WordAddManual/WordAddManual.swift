@@ -1,49 +1,40 @@
 import SwiftUI
-import Foundation
 
-/// A view that allows the user to add a new word manually.
-/// It presents a form with main and additional sections and handles saving the new word.
 struct WordAddManual: View {
-    // MARK: - Properties
     @Environment(\.presentationMode) private var presentationMode
-    let refresh: () -> Void
-
-    // MARK: - State Objects
-    @StateObject private var style: WordAddManualStyle
+    
+    @Binding var isPresented: Bool
+    
+    @StateObject private var dictionaryAction = DictionaryAction()
     @StateObject private var locale = WordAddManualLocale()
     @StateObject private var wordsAction = WordAction()
-    @StateObject private var dictionaryAction = DictionaryAction()
+    @StateObject private var style: WordAddManualStyle
     
-    // MARK: - Local State
-    @Binding var isPresented: Bool
-    @State private var selectedDictionary: DatabaseModelDictionaryRef?
     @State private var dictionaryRefs: [DatabaseModelDictionaryRef] = []
-    
+    @State private var selectedDictionary: DatabaseModelDictionaryRef?
     @State private var wordItem = DatabaseModelWord.new()
     @State private var descriptionText: String = ""
     @State private var hintText: String = ""
-    
-    // Flags for button animations
     @State private var isPressedTrailing = false
     @State private var isPressedLeading = false
     
-    // MARK: - Initializer
-    /// Initializes the WordAddManual view.
+    private let refresh: () -> Void
+
+    /// Initializes the WordAddManual.
     /// - Parameters:
-    ///   - style: Optional style; if nil, a themed style is used.
     ///   - isPresented: Binding to control the presentation state.
     ///   - refresh: Closure executed after a successful save.
+    ///   - style: The style for the view. Defaults to themed style using the current theme.
     init(
-        style: WordAddManualStyle? = nil,
         isPresented: Binding<Bool>,
-        refresh: @escaping () -> Void
+        refresh: @escaping () -> Void,
+        style: WordAddManualStyle = .themed(ThemeManager.shared.currentThemeStyle)
     ) {
-        _style = StateObject(wrappedValue: style ?? .themed(ThemeManager.shared.currentThemeStyle))
+        _style = StateObject(wrappedValue: style)
         self._isPresented = isPresented
         self.refresh = refresh
     }
     
-    // MARK: - Body
     var body: some View {
         BaseScreen(
             screen: .WordAddManual,
@@ -109,7 +100,6 @@ struct WordAddManual: View {
         }
     }
     
-    // MARK: - Helper Computed Properties
     /// Determines whether the save button should be disabled.
     private var isSaveDisabled: Bool {
         wordItem.frontText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ||
@@ -117,7 +107,6 @@ struct WordAddManual: View {
         selectedDictionary == nil
     }
     
-    // MARK: - Actions
     /// Saves the new word by calling the word action.
     private func save() {
         guard let selectedDictionary = selectedDictionary else { return }

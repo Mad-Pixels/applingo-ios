@@ -56,7 +56,7 @@ internal struct WordDetailsViewStatistic: View {
                                     ),
                                     DonutChartModel(
                                         value: Double(word.fail),
-                                        label: locale.screenDesctiptionWrongAnswers,
+                                        label: locale.screenDescriptionWrongAnswers,
                                         color: themeManager.currentThemeStyle.error
                                     )
                                 ],

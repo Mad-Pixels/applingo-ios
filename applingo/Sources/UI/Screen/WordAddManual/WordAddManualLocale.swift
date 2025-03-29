@@ -1,8 +1,6 @@
 import Foundation
 
-/// Provides localized strings for the WordAddManual view.
 final class WordAddManualLocale: ObservableObject {
-    // MARK: - Localized Keys
     private enum LocalizedKey: String {
         case title = "screen.wordAddManual.title"
         case subtitleWord = "screen.wordAddManual.subtitle.word"
@@ -13,7 +11,6 @@ final class WordAddManualLocale: ObservableObject {
         case descriptionDescription = "screen.wordAddManual.description.description"
     }
 
-    // MARK: - Published Properties
     @Published private(set) var screenTitle: String
     @Published private(set) var screenSubtitleWord: String
     @Published private(set) var screenSubtitleAdditional: String
@@ -22,15 +19,16 @@ final class WordAddManualLocale: ObservableObject {
     @Published private(set) var screenDescriptionHint: String
     @Published private(set) var screenDescriptionDescription: String
 
-    // MARK: - Initialization
     init() {
-        self.screenTitle = Self.localizedString(for: .title)
-        self.screenSubtitleWord = Self.localizedString(for: .subtitleWord)
-        self.screenSubtitleAdditional = Self.localizedString(for: .subtitleAdditional)
-        self.screenDescriptionFrontText = Self.localizedString(for: .descriptionFrontText)
-        self.screenDescriptionBackText = Self.localizedString(for: .descriptionBackText)
-        self.screenDescriptionHint = Self.localizedString(for: .descriptionHint)
-        self.screenDescriptionDescription = Self.localizedString(for: .descriptionDescription)
+        self.screenTitle = ""
+        self.screenSubtitleWord = ""
+        self.screenSubtitleAdditional = ""
+        self.screenDescriptionFrontText = ""
+        self.screenDescriptionBackText = ""
+        self.screenDescriptionHint = ""
+        self.screenDescriptionDescription = ""
+
+        updateLocalizedStrings()
 
         NotificationCenter.default.addObserver(
             self,
@@ -43,15 +41,16 @@ final class WordAddManualLocale: ObservableObject {
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
-    
-    // MARK: - Localization Helper
-    /// Returns a localized string for the specified key.
+
+    @objc private func localeDidChange() {
+        updateLocalizedStrings()
+    }
+
     private static func localizedString(for key: LocalizedKey) -> String {
         return LocaleManager.shared.localizedString(for: key.rawValue)
     }
-    
-    // MARK: - Notification Handler
-    @objc private func localeDidChange() {
+
+    private func updateLocalizedStrings() {
         screenTitle = Self.localizedString(for: .title)
         screenSubtitleWord = Self.localizedString(for: .subtitleWord)
         screenSubtitleAdditional = Self.localizedString(for: .subtitleAdditional)

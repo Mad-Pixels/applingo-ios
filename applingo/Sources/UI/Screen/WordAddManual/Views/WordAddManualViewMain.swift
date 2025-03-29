@@ -1,18 +1,16 @@
 import SwiftUI
 
-/// A view that displays the main section for adding a word.
-/// It includes inputs for the front text, back text, and dictionary selection.
-struct WordAddManualViewMain: View {
-    // MARK: - Properties
+internal struct WordAddManualViewMain: View {
     @EnvironmentObject private var themeManager: ThemeManager
+    
+    @Binding var selectedDictionary: DatabaseModelDictionaryRef?
+    @Binding var wordItem: DatabaseModelWord
+    
+    private let dictionaries: [DatabaseModelDictionaryRef]
     private let locale: WordAddManualLocale
     private let style: WordAddManualStyle
     
-    @Binding var selectedDictionary: DatabaseModelDictionaryRef?
-    @Binding var wordItem: DatabaseModelWord    
-    private let dictionaries: [DatabaseModelDictionaryRef]
-    
-    /// Initializes the main view.
+    /// Initializes the WordAddManualViewMain.
     /// - Parameters:
     ///   - style: Style configuration.
     ///   - locale: Localization object.
@@ -26,11 +24,12 @@ struct WordAddManualViewMain: View {
         selectedDictionary: Binding<DatabaseModelDictionaryRef?>,
         dictionaries: [DatabaseModelDictionaryRef]
     ) {
-        self._selectedDictionary = selectedDictionary
-        self._wordItem = wordItem
         self.dictionaries = dictionaries
         self.locale = locale
         self.style = style
+        
+        self._selectedDictionary = selectedDictionary
+        self._wordItem = wordItem
     }
     
     var body: some View {
@@ -59,10 +58,10 @@ struct WordAddManualViewMain: View {
                 ItemPicker(
                     selectedValue: $selectedDictionary,
                     items: dictionaries,
-                    style: .themed(themeManager.currentThemeStyle)
-                ) { dictionary in
-                    Text(dictionary?.name ?? "")
-                }
+                    content:  { dictionary in
+                        Text(dictionary?.name ?? "")
+                    },
+                    style: .themed(themeManager.currentThemeStyle))
             }
             .padding(.horizontal, style.paddingBlock)
             .background(Color.clear)
