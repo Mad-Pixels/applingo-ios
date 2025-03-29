@@ -1,12 +1,29 @@
 import SwiftUI
 
-/// Draws a single segment of the donut chart with dynamic line width.
-/// Larger segments are drawn thicker, while smaller segments are thinner.
 struct DonutChartViewSlice: View {
     let index: Int
-    let data: [DonutChartModel]
     let total: Double
+    let data: [DonutChartModel]
     let style: DonutChartStyle
+    
+    var body: some View {
+        GeometryReader { _ in
+            Circle()
+                .trim(
+                    from: CGFloat((startAngle.degrees + 90) / 360),
+                    to: CGFloat((endAngle.degrees + 90) / 360)
+                )
+                .stroke(
+                    segment.color,
+                    style: StrokeStyle(lineWidth: dynamicLineWidth, lineCap: .round)
+                )
+                .rotationEffect(.degrees(-90))
+                .animation(
+                    .easeInOut(duration: style.animationDuration),
+                    value: total
+                )
+        }
+    }
 
     // Current segment.
     private var segment: DonutChartModel { data[index] }
@@ -34,17 +51,5 @@ struct DonutChartViewSlice: View {
     private var endAngle: Angle {
         let sum = data.prefix(index + 1).reduce(0) { $0 + $1.value }
         return Angle(degrees: (sum / total) * 360 - 90)
-    }
-    
-    var body: some View {
-        GeometryReader { _ in
-            Circle()
-                .trim(from: CGFloat((startAngle.degrees + 90) / 360),
-                      to: CGFloat((endAngle.degrees + 90) / 360))
-                .stroke(segment.color,
-                        style: StrokeStyle(lineWidth: dynamicLineWidth, lineCap: .round))
-                .rotationEffect(.degrees(-90))
-                .animation(.easeInOut(duration: style.animationDuration), value: total)
-        }
     }
 }

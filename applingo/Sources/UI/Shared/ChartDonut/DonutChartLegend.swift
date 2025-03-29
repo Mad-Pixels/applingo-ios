@@ -1,7 +1,5 @@
 import SwiftUI
 
-// MARK: - DonutChartViewLegend
-/// A view that displays the legend for the donut chart, with an optional title.
 struct DonutChartViewLegend: View {
     let data: [DonutChartModel]
     let style: DonutChartStyle
@@ -9,17 +7,20 @@ struct DonutChartViewLegend: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: style.legendSpacing) {
-            Text(legendTitle)
-                .font(style.legendTitleFont)
-                .foregroundColor(style.legendColor)
+            DynamicText(
+                model: DynamicTextModel(text: legendTitle),
+                style: .headerBlock(ThemeManager.shared.currentThemeStyle)
+            )
             ForEach(data) { segment in
                 HStack(spacing: 12) {
                     RoundedRectangle(cornerRadius: 2)
                         .fill(segment.color)
                         .frame(width: 16, height: 16)
-                    Text(verbatim: "\(segment.label): \(Int(segment.value))")
-                        .font(style.legendFont)
-                        .foregroundColor(style.legendColor)
+                    
+                    DynamicText(
+                        model: DynamicTextModel(text: "\(segment.label): \(Int(segment.value))"),
+                        style: .textLight(ThemeManager.shared.currentThemeStyle)
+                    )
                 }
             }
         }

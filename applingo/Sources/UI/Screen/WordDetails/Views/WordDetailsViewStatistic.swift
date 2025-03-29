@@ -61,7 +61,6 @@ struct WordDetailsViewStatistic: View {
                                 )
                             ],
                             centerValue: "\(Int(ceil(Double(word.weight) / 100.0))) / 10",
-                            style: .themed(themeManager.currentThemeStyle),
                             legendTitle: locale.screenSubtitleStatisticCount
                         )
                     }
