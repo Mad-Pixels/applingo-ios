@@ -1,20 +1,24 @@
 import SwiftUI
 
-// MARK: - ChartIndicatorStyle
-/// Defines styling parameters for the ChartIndicator component.
 struct ChartIndicatorStyle {
+    // Color Properties
     let backgroundColor: Color
     let gradientColors: [Color]
+
+    // Layout Properties
     let height: CGFloat
     let cornerRadius: CGFloat
+
+    // Animation Properties
     let animation: Animation
+    let withGlowAnimation: Bool
+
+    // Glow Effect Properties
     let glowRadius: CGFloat
     let glowOpacity: CGFloat
-    let withGlowAnimation: Bool
 }
 
 extension ChartIndicatorStyle {
-    /// Returns a themed style based on the provided AppTheme.
     static func themed(_ theme: AppTheme) -> ChartIndicatorStyle {
         ChartIndicatorStyle(
             backgroundColor: theme.backgroundSecondary.opacity(0.5),
@@ -25,9 +29,9 @@ extension ChartIndicatorStyle {
             height: 6,
             cornerRadius: 3,
             animation: .spring(response: 0.3),
+            withGlowAnimation: true,
             glowRadius: 4,
-            glowOpacity: 0.3,
-            withGlowAnimation: true
+            glowOpacity: 0.3
         )
     }
 }
