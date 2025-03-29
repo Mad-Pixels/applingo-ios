@@ -1,27 +1,21 @@
 import SwiftUI
-import Foundation
 
-/// A view that displays the details of a word and allows editing.
-/// On saving, the updated word is persisted using WordAction and the parent view is refreshed.
 struct WordDetails: View {
-    // MARK: - Properties
     @Environment(\.presentationMode) private var presentationMode
-    private let originalWord: DatabaseModelWord
-    private let refresh: () -> Void
-
-    // MARK: - State Objects
-    @StateObject private var style: WordDetailsStyle
+    
     @StateObject private var locale = WordDetailsLocale()
     @StateObject private var wordsAction = WordAction()
+    @StateObject private var style: WordDetailsStyle
     
-    // MARK: - Local State
     @State private var isEditing = false
     @State private var isPressedLeading = false
     @State private var isPressedTrailing = false
     @State private var editableWord: DatabaseModelWord
     
-    // MARK: - Initializer
-    /// Initializes the WordDetails view.
+    private let originalWord: DatabaseModelWord
+    private let refresh: () -> Void
+
+    /// Initializes the WordDetails.
     /// - Parameters:
     ///   - word: The word model to display.
     ///   - refresh: Closure executed after a successful update.
@@ -29,15 +23,15 @@ struct WordDetails: View {
     init(
         word: DatabaseModelWord,
         refresh: @escaping () -> Void,
-        style: WordDetailsStyle? = nil
+        style: WordDetailsStyle = .themed(ThemeManager.shared.currentThemeStyle)
     ) {
-        _style = StateObject(wrappedValue: style ?? .themed(ThemeManager.shared.currentThemeStyle))
+        _style = StateObject(wrappedValue: style)
         _editableWord = State(initialValue: word)
+        
         self.originalWord = word
         self.refresh = refresh
     }
     
-    // MARK: - Body
     var body: some View {
         BaseScreen(
             screen: .WordDetails,
@@ -63,7 +57,7 @@ struct WordDetails: View {
                     WordDetailsViewStatistic(
                         style: style,
                         locale: locale,
-                        word: editableWord
+                        word: $editableWord
                     )
                 }
                 .padding(style.padding)
@@ -111,14 +105,12 @@ struct WordDetails: View {
         }
     }
     
-    // MARK: - Helper Computed Properties
     /// Determines if the save button should be disabled.
     private var isSaveDisabled: Bool {
         editableWord.frontText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ||
         editableWord.backText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
     
-    // MARK: - Actions
     /// Updates the word using WordAction and refreshes the parent view.
     private func updateWord() {
         wordsAction.update(editableWord) { _ in

@@ -1,8 +1,6 @@
-import SwiftUI
+import Foundation
 
-/// Provides localized strings for the WordDetails view.
 final class WordDetailsLocale: ObservableObject {
-    // MARK: - Localized Keys
     private enum LocalizedKey: String {
         case title = "screen.wordDetails.title"
         case subtitleWord = "screen.wordDetails.subtitle.word"
@@ -17,11 +15,10 @@ final class WordDetailsLocale: ObservableObject {
         case descriptionDescription = "screen.wordDetails.description.description"
         case descriptionAuthor = "screen.wordDetails.description.author"
         case descriptionCreatedAt = "screen.wordDetails.description.createdAt"
-        case desctiptionWrongAnswers = "screen.wordDetails.description.wrongAnswers"
+        case descriptionWrongAnswers = "screen.wordDetails.description.wrongAnswers"
         case descriptionCorrectAnswers = "screen.wordDetails.description.correctAnswers"
     }
-    
-    // MARK: - Published Properties
+
     @Published private(set) var screenTitle: String
     @Published private(set) var screenSubtitleWord: String
     @Published private(set) var screenSubtitleNoData: String
@@ -35,27 +32,28 @@ final class WordDetailsLocale: ObservableObject {
     @Published private(set) var screenDescriptionDescription: String
     @Published private(set) var screenDescriptionAuthor: String
     @Published private(set) var screenDescriptionCreatedAt: String
-    @Published private(set) var screenDesctiptionWrongAnswers: String
+    @Published private(set) var screenDescriptionWrongAnswers: String
     @Published private(set) var screenDescriptionCorrectAnswers: String
-    
-    // MARK: - Initialization
+
     init() {
-        self.screenTitle = Self.localizedString(for: .title)
-        self.screenSubtitleWord = Self.localizedString(for: .subtitleWord)
-        self.screenSubtitleNoData = Self.localizedString(for: .subtitleNoData)
-        self.screenSubtitleAdditional = Self.localizedString(for: .subtitleAdditional)
-        self.screenSubtitleStatistic = Self.localizedString(for: .subtitleStatistic)
-        self.screenSubtitleStatisticCount = Self.localizedString(for: .subtitleStatisticCount)
-        self.screenDescriptionFrontText = Self.localizedString(for: .descriptionFrontText)
-        self.screenDescriptionBackText = Self.localizedString(for: .descriptionBackText)
-        self.screenDescriptionDictionary = Self.localizedString(for: .descriptionDictionary)
-        self.screenDescriptionHint = Self.localizedString(for: .descriptionHint)
-        self.screenDescriptionDescription = Self.localizedString(for: .descriptionDescription)
-        self.screenDescriptionAuthor = Self.localizedString(for: .descriptionAuthor)
-        self.screenDescriptionCreatedAt = Self.localizedString(for: .descriptionCreatedAt)
-        self.screenDesctiptionWrongAnswers = Self.localizedString(for: .desctiptionWrongAnswers)
-        self.screenDescriptionCorrectAnswers = Self.localizedString(for: .descriptionCorrectAnswers)
-        
+        self.screenTitle = ""
+        self.screenSubtitleWord = ""
+        self.screenSubtitleNoData = ""
+        self.screenSubtitleAdditional = ""
+        self.screenSubtitleStatistic = ""
+        self.screenSubtitleStatisticCount = ""
+        self.screenDescriptionFrontText = ""
+        self.screenDescriptionBackText = ""
+        self.screenDescriptionDictionary = ""
+        self.screenDescriptionHint = ""
+        self.screenDescriptionDescription = ""
+        self.screenDescriptionAuthor = ""
+        self.screenDescriptionCreatedAt = ""
+        self.screenDescriptionWrongAnswers = ""
+        self.screenDescriptionCorrectAnswers = ""
+
+        updateLocalizedStrings()
+
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(localeDidChange),
@@ -63,22 +61,23 @@ final class WordDetailsLocale: ObservableObject {
             object: nil
         )
     }
-    
+
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
-    
-    // MARK: - Localization Helper
-    /// Returns a localized string for the specified key.
+
+    @objc private func localeDidChange() {
+        updateLocalizedStrings()
+    }
+
     private static func localizedString(for key: LocalizedKey) -> String {
         return LocaleManager.shared.localizedString(for: key.rawValue)
     }
-    
-    // MARK: - Notification Handler
-    @objc private func localeDidChange() {
+
+    private func updateLocalizedStrings() {
         screenTitle = Self.localizedString(for: .title)
-        screenSubtitleNoData = Self.localizedString(for: .subtitleNoData)
         screenSubtitleWord = Self.localizedString(for: .subtitleWord)
+        screenSubtitleNoData = Self.localizedString(for: .subtitleNoData)
         screenSubtitleAdditional = Self.localizedString(for: .subtitleAdditional)
         screenSubtitleStatistic = Self.localizedString(for: .subtitleStatistic)
         screenSubtitleStatisticCount = Self.localizedString(for: .subtitleStatisticCount)
@@ -89,7 +88,7 @@ final class WordDetailsLocale: ObservableObject {
         screenDescriptionDescription = Self.localizedString(for: .descriptionDescription)
         screenDescriptionAuthor = Self.localizedString(for: .descriptionAuthor)
         screenDescriptionCreatedAt = Self.localizedString(for: .descriptionCreatedAt)
-        screenDesctiptionWrongAnswers = Self.localizedString(for: .desctiptionWrongAnswers)
+        screenDescriptionWrongAnswers = Self.localizedString(for: .descriptionWrongAnswers)
         screenDescriptionCorrectAnswers = Self.localizedString(for: .descriptionCorrectAnswers)
     }
 }

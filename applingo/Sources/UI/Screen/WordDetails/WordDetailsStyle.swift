@@ -1,29 +1,35 @@
 import SwiftUI
 
-/// Defines styling properties for the WordDetails view.
 final class WordDetailsStyle: ObservableObject {
-    // MARK: - Properties
+    // Color Properties
     let backgroundColor: Color
     let sectionBackgroundColor: Color
     let accentColor: Color
     let disabledColor: Color
+
+    // Layout Properties
     let padding: EdgeInsets
     let paddingBlock: CGFloat
     let spacing: CGFloat
     let sectionSpacing: CGFloat
+
+    // Font Properties
     let titleFont: Font
+
+    // Icon Properties
     let iconSize: CGFloat
 
-    // MARK: - Initializer
-    /// Initializes a new instance of `WordDetailsStyle`.
+    /// Initializes the WordDetailsStyle.
     /// - Parameters:
     ///   - backgroundColor: The primary background color.
     ///   - sectionBackgroundColor: The background color used for sections.
-    ///   - accentColor: The accent color.
+    ///   - accentColor: The accent color for interactive elements.
     ///   - disabledColor: The color for disabled elements.
     ///   - padding: The padding around the content.
+    ///   - paddingBlock: Vertical padding specifically for header blocks.
     ///   - spacing: The spacing between individual elements.
     ///   - sectionSpacing: The spacing between sections.
+    ///   - titleFont: The font used for titles.
     ///   - iconSize: The size of icons.
     init(
         backgroundColor: Color,
@@ -50,11 +56,7 @@ final class WordDetailsStyle: ObservableObject {
     }
 }
 
-// MARK: - Themed Style Extension
 extension WordDetailsStyle {
-    /// Returns a themed style based on the current application theme.
-    /// - Parameter theme: The current application theme.
-    /// - Returns: A new instance of `WordDetailsStyle` configured for the given theme.
     static func themed(_ theme: AppTheme) -> WordDetailsStyle {
         WordDetailsStyle(
             backgroundColor: theme.backgroundPrimary,

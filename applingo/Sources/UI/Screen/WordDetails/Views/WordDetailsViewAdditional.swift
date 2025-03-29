@@ -1,19 +1,17 @@
 import SwiftUI
 
-/// A view displaying the additional section of the word details,
-/// including dictionary name, hint, and description.
-struct WordDetailsViewAdditional: View {
-    // MARK: - Properties
+internal struct WordDetailsViewAdditional: View {
     @EnvironmentObject private var themeManager: ThemeManager
-    private let locale: WordDetailsLocale
-    private let style: WordDetailsStyle
     
     @ObservedObject private var wordsAction: WordAction
+    
     @Binding private var word: DatabaseModelWord
+    
+    private let locale: WordDetailsLocale
+    private let style: WordDetailsStyle
     private let isEditing: Bool
     
-    // MARK: - Initializer
-    /// Initializes the additional details view.
+    /// Initializes the WordDetailsViewAdditional.
     /// - Parameters:
     ///   - style: `WordDetailsStyle` style configuration.
     ///   - locale: `WordDetailsLocale` localization object.
@@ -31,10 +29,10 @@ struct WordDetailsViewAdditional: View {
         self.isEditing = isEditing
         self.locale = locale
         self.style = style
+        
         self._word = word
     }
     
-    // MARK: - Body
     var body: some View {
         VStack(spacing: style.spacing) {
             SectionHeader(

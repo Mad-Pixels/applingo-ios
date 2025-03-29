@@ -1,17 +1,21 @@
 import SwiftUI
 
-struct WordDetailsViewMain: View {
-    // MARK: - Properties
+internal struct WordDetailsViewMain: View {
     @EnvironmentObject private var themeManager: ThemeManager
+    
+    @Binding var word: DatabaseModelWord
+    
     private let locale: WordDetailsLocale
     private let style: WordDetailsStyle
-        
-    @Binding var word: DatabaseModelWord
-    private let isEditing: Bool
     private let ttsDisabled: Bool
+    private let isEditing: Bool
 
-    
-    // MARK: - Initializer
+    /// Initializes the WordDetailsViewMain.
+    /// - Parameters:
+    ///   - style: A `WordDetailsStyle` object defining the visual style of the view.
+    ///   - locale: A `WordDetailsLocale` object providing localized strings.
+    ///   - word: A binding to the `DatabaseModelWord` object being edited or displayed.
+    ///   - isEditing: A Boolean value indicating whether editing is enabled for the view.
     init(
         style: WordDetailsStyle,
         locale: WordDetailsLocale,
@@ -21,13 +25,13 @@ struct WordDetailsViewMain: View {
         self.isEditing = isEditing
         self.locale = locale
         self.style = style
+        
         self._word = word
         
         self.ttsDisabled = word.wrappedValue.backText.isEmpty ||
             TTSLanguageType.shared.get(for: word.wrappedValue.backTextCode) == ""
     }
 
-    // MARK: - Body
     var body: some View {
         VStack(spacing: style.spacing) {
             SectionHeader(
