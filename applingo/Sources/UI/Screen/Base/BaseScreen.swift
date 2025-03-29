@@ -31,7 +31,7 @@ struct BaseScreen<Content: View>: View {
         self.alignment = alignment
         
         BaseNavigationConfigurator.configure(
-            with: themeManager.currentThemeStyle,
+            with: ThemeManager.shared.currentThemeStyle,
             style: style
         )
     }
