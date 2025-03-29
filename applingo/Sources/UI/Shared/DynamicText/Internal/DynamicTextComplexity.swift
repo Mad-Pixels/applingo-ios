@@ -1,11 +1,11 @@
 import Foundation
 
-struct DynamicTextComplexity {
-    let length: Int
-    let wordCount: Int
-    let emojiCount: Int
-    let uppercaseRatio: Double
-    let punctuationCount: Int
+internal struct DynamicTextComplexity {
+    internal let length: Int
+    internal let wordCount: Int
+    internal let emojiCount: Int
+    internal let uppercaseRatio: Double
+    internal let punctuationCount: Int
     
     /// Computes the overall complexity score as a weighted sum of the components.
     /// The result ranges from 0 to 100, where higher values indicate a more complex text.

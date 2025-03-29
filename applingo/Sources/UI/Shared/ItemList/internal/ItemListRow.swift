@@ -1,13 +1,13 @@
 import SwiftUI
 
-struct ItemListRow<Item: Identifiable, RowContent: View>: View {
+internal struct ItemListRow<Item: Identifiable, RowContent: View>: View {
     @Binding var pressedItemId: Item.ID?
     
-    let item: Item
-    let style: ItemListStyle
-    let onItemTap: ((Item) -> Void)?
-    let onItemAppear: ((Item) -> Void)?
-    let rowContent: (Item) -> RowContent
+    internal let item: Item
+    internal let style: ItemListStyle
+    internal let onItemTap: ((Item) -> Void)?
+    internal let onItemAppear: ((Item) -> Void)?
+    internal let rowContent: (Item) -> RowContent
     
     var body: some View {
         rowContent(item)

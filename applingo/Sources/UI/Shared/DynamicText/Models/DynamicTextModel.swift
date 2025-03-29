@@ -1,5 +1,4 @@
 /// Model for the DynamicText component.
-/// Contains the text to be displayed.
 struct DynamicTextModel: Equatable {
     let text: String
     

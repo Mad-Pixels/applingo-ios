@@ -1,10 +1,10 @@
 import SwiftUI
 
-struct DonutChartViewSlice: View {
-    let index: Int
-    let total: Double
-    let data: [DonutChartModel]
-    let style: DonutChartStyle
+struct DonutChartViewSliceView: View {
+    internal let index: Int
+    internal let total: Double
+    internal let data: [DonutChartModel]
+    internal let style: DonutChartStyle
     
     var body: some View {
         GeometryReader { _ in

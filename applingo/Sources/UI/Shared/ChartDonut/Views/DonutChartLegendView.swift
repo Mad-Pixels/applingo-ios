@@ -1,9 +1,9 @@
 import SwiftUI
 
-struct DonutChartViewLegend: View {
-    let data: [DonutChartModel]
-    let style: DonutChartStyle
-    let legendTitle: String
+struct DonutChartViewLegendView: View {
+    internal let data: [DonutChartModel]
+    internal let style: DonutChartStyle
+    internal let legendTitle: String
 
     var body: some View {
         VStack(alignment: .leading, spacing: style.legendSpacing) {

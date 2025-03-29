@@ -28,7 +28,7 @@ struct DonutChart: View {
         HStack(spacing: 16) {
             ZStack {
                 ForEach(Array(actualData.enumerated()), id: \.element.id) { index, segment in
-                    DonutChartViewSlice(
+                    DonutChartViewSliceView(
                         index: index,
                         total: total,
                         data: actualData,
@@ -49,7 +49,7 @@ struct DonutChart: View {
             .padding(style.chartPadding)
             
             if let legendTitle = legendTitle, !legendTitle.isEmpty {
-                DonutChartViewLegend(data: data, style: style, legendTitle: legendTitle)
+                DonutChartViewLegendView(data: data, style: style, legendTitle: legendTitle)
             }
         }
     }
