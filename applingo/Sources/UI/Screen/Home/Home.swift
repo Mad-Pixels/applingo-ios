@@ -1,26 +1,22 @@
 import SwiftUI
 
-/// A view that serves as the home screen where users can select a game type.
-/// When a game is selected, it presents the GameMode view.
 struct Home: View {
-    // MARK: - State Objects
+    @EnvironmentObject private var themeManager: ThemeManager
+    
     @StateObject private var style: HomeStyle
     @StateObject private var locale = HomeLocale()
     
-    // MARK: - Local State
     @State private var game: GameType = .quiz
     @State private var gameStart = false
     
-    // MARK: - Initializer
-    /// Initializes a new instance of Home.
+    /// Initializes the Home.
     /// - Parameter style: Optional style configuration; if nil, a themed style is applied.
     init(
-        style: HomeStyle? = nil
+        style: HomeStyle = .themed(ThemeManager.shared.currentThemeStyle)
     ) {
-        _style = StateObject(wrappedValue: style ?? .themed(ThemeManager.shared.currentThemeStyle))
+        _style = StateObject(wrappedValue: style)
     }
     
-    // MARK: - Body
     var body: some View {
         BaseScreen(
             screen: .Home
@@ -38,7 +34,7 @@ struct Home: View {
                                 gameStart = true
                             }
                         },
-                        style: .menu(ThemeManager.shared.currentThemeStyle)
+                        style: .menu(themeManager.currentThemeStyle)
                     )
                     
                     ButtonAction(
@@ -49,7 +45,7 @@ struct Home: View {
                                 gameStart = true
                             }
                         },
-                        style: .menu(ThemeManager.shared.currentThemeStyle)
+                        style: .menu(themeManager.currentThemeStyle)
                     )
                     
                     ButtonAction(
@@ -60,11 +56,10 @@ struct Home: View {
                                 gameStart = true
                             }
                         },
-                        style: .menu(ThemeManager.shared.currentThemeStyle)
+                        style: .menu(themeManager.currentThemeStyle)
                     )
                 }
                 .padding(style.padding)
-                //.glassBackground()
                 .padding(.horizontal, 24)
             }
         }

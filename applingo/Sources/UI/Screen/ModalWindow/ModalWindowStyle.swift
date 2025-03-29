@@ -1,38 +1,21 @@
 import SwiftUI
 
-/// Defines styling properties for a centered modal window.
 final class ModalWindowStyle: ObservableObject {
-    // MARK: - Properties
-    
-    /// The color used for the dimmed background behind the modal.
+    // Colors
     let dimBackgroundColor: Color
-    /// The background color of the modal window.
     let modalBackgroundColor: Color
-    /// The padding inside the modal.
+
+    // Layout & Dimensions
     let padding: EdgeInsets
-    /// The corner radius of the modal window.
     let cornerRadius: CGFloat
-    /// The shadow radius applied to the modal.
-    let shadowRadius: CGFloat
-    /// The animation used for showing/hiding the modal.
-    let animation: Animation
-    /// The width of the modal window (relative to screen width).
     let windowWidth: CGFloat
-    /// The height of the modal window (relative to screen height).
     let windowHeight: CGFloat
 
-    // MARK: - Initializer
-    /// Initializes a new instance of `ModalWindowStyle`.
-    ///
-    /// - Parameters:
-    ///   - dimBackgroundColor: The color used for the dimmed background.
-    ///   - modalBackgroundColor: The background color of the modal.
-    ///   - padding: The padding inside the modal.
-    ///   - cornerRadius: The corner radius of the modal.
-    ///   - shadowRadius: The shadow radius applied to the modal.
-    ///   - animation: The animation for the modal appearance/disappearance.
-    ///   - windowWidth: The width of the modal window.
-    ///   - windowHeight: The height of the modal window.
+    // Effects
+    let shadowRadius: CGFloat
+    let animation: Animation
+
+    // Initializer
     init(
         dimBackgroundColor: Color,
         modalBackgroundColor: Color,
@@ -54,12 +37,7 @@ final class ModalWindowStyle: ObservableObject {
     }
 }
 
-// MARK: - Themed Style Extension
 extension ModalWindowStyle {
-    /// Returns a themed style based on the current application theme.
-    ///
-    /// - Parameter theme: The current application theme.
-    /// - Returns: A new instance of `ModalWindowStyle` configured for the given theme.
     static func themed(_ theme: AppTheme) -> ModalWindowStyle {
         let screen = UIScreen.main.bounds
         

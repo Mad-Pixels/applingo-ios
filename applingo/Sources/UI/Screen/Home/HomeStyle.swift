@@ -1,14 +1,14 @@
 import SwiftUI
 
-/// Defines styling properties for the Home view.
 final class HomeStyle: ObservableObject {
-    // MARK: - Properties
+    // Colors
     let backgroundColor: Color
+
+    // Layout
     let padding: EdgeInsets
     let spacing: CGFloat
 
-    // MARK: - Initializer
-    /// Initializes a new instance of `HomeStyle`.
+    /// Initializes the HomeStyle.
     /// - Parameters:
     ///   - backgroundColor: The background color of the view.
     ///   - padding: The overall padding around the content.
@@ -20,11 +20,7 @@ final class HomeStyle: ObservableObject {
     }
 }
 
-// MARK: - Themed Style Extension
 extension HomeStyle {
-    /// Returns a themed style based on the current application theme.
-    /// - Parameter theme: The current application theme.
-    /// - Returns: A new instance of `HomeStyle` configured for the given theme.
     static func themed(_ theme: AppTheme) -> HomeStyle {
         HomeStyle(
             backgroundColor: theme.backgroundPrimary,
