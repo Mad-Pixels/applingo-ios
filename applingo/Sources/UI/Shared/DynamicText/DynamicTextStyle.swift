@@ -197,7 +197,7 @@ extension DynamicTextStyle {
         let shouldWrapWords = lineLimit > 1
         
         return DynamicTextStyle(
-            textColor: theme.textContrast,
+            textColor: theme.textPrimary,
             alignment: alignment,
             letterSpacing: 0.3,
             allowsTightening: true,

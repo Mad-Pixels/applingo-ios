@@ -16,8 +16,8 @@ struct ButtonActionStyle {
     let borderWidth: CGFloat
     let padding: EdgeInsets
 
-    // Text Style
-    let textStyle: DynamicTextStyle
+    // Text Styling
+    let textStyle: (AppTheme) -> DynamicTextStyle
 }
 
 extension ButtonActionStyle {
@@ -32,7 +32,13 @@ extension ButtonActionStyle {
             cornerRadius: 8,
             borderWidth: 0,
             padding: EdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8),
-            textStyle: .button(ThemeManager.shared.currentThemeStyle)
+            textStyle: { theme in
+                .button(
+                    theme,
+                    alignment: .center,
+                    lineLimit: 1
+                )
+            }
         )
     }
     
@@ -47,7 +53,13 @@ extension ButtonActionStyle {
             cornerRadius: 8,
             borderWidth: 0,
             padding: EdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8),
-            textStyle: .button(ThemeManager.shared.currentThemeStyle)
+            textStyle: { theme in
+                .button(
+                    theme,
+                    alignment: .center,
+                    lineLimit: 1
+                )
+            }
         )
     }
     
@@ -62,7 +74,13 @@ extension ButtonActionStyle {
             cornerRadius: 20,
             borderWidth: 8,
             padding: EdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8),
-            textStyle: .button(ThemeManager.shared.currentThemeStyle)
+            textStyle: { theme in
+                .textBold(
+                    theme,
+                    alignment: .center,
+                    lineLimit: 1
+                )
+            }
         )
     }
     
@@ -77,7 +95,13 @@ extension ButtonActionStyle {
             cornerRadius: 14,
             borderWidth: 4,
             padding: EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4),
-            textStyle: .textGame(ThemeManager.shared.currentThemeStyle)
+            textStyle: { theme in
+                .button(
+                    theme,
+                    alignment: .center,
+                    lineLimit: 4
+                )
+            }
         )
     }
 }
