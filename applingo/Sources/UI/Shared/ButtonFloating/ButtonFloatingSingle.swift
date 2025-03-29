@@ -1,7 +1,5 @@
 import SwiftUI
 
-// MARK: - ButtonFloatingSingle View
-/// A single floating button with a custom icon and action.
 struct ButtonFloatingSingle: View {
     let icon: String
     let action: () -> Void

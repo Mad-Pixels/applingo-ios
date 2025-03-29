@@ -1,7 +1,5 @@
 import SwiftUI
 
-// MARK: - ButtonFloatingMultiple View
-/// A floating button that expands to show multiple action buttons when tapped.
 struct ButtonFloatingMultiple: View {
     let items: [ButtonFloatingModelIconAction]
     let style: ButtonFloatingStyle
@@ -9,7 +7,7 @@ struct ButtonFloatingMultiple: View {
     @State private var isOpen = false
     @State private var iconRotation: Double = 0
 
-    /// Initializes the ButtonFloatingMultiple view.
+    /// Initializes the ButtonFloatingMultiple.
     /// - Parameters:
     ///   - items: An array of model actions containing an icon and an action closure.
     ///   - style: The style for the floating button. Defaults to themed style.
