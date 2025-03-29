@@ -1,14 +1,13 @@
 import SwiftUI
 
-// MARK: - ItemCheckbox View
-/// A checkbox component implemented as a Toggle with custom styling.
 struct ItemCheckbox: View {
     @Binding var isChecked: Bool
+    
     let style: ItemCheckboxStyle
     let onChange: ((Bool) -> Void)?
     let disabled: Bool
 
-    /// Initializes the checkbox.
+    /// Initializes the ItemCheckbox.
     /// - Parameters:
     ///   - isChecked: Binding to the checkbox state.
     ///   - disabled: Flag to disable the checkbox. Defaults to false.
