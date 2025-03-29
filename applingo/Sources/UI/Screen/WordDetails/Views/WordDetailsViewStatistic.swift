@@ -37,7 +37,7 @@ internal struct WordDetailsViewStatistic: View {
                 if word.fail == 0 && word.success == 0 {
                     DynamicText(
                         model: DynamicTextModel(text: locale.screenSubtitleNoData),
-                        style: .textGame(ThemeManager.shared.currentThemeStyle)
+                        style: .textGame(themeManager.currentThemeStyle)
                     )
                     
                     Image(warningImageName)

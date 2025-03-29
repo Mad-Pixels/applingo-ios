@@ -4,6 +4,7 @@ struct SettingsFeedback: View {
     private let urlReport: String = "https://docs.madpixels.io/applingo/feedback"
     private let urlAbout: String = "https://docs.madpixels.io/applingo/about"
     
+    @EnvironmentObject private var themeManager: ThemeManager
     @Environment(\.dismiss) private var dismiss
     
     @StateObject private var style: SettingsFeedbackStyle
@@ -33,7 +34,7 @@ struct SettingsFeedback: View {
                 
                 SectionHeader(
                     title: locale.screenSubtitleUrls,
-                    style: .block(ThemeManager.shared.currentThemeStyle)
+                    style: .block(themeManager.currentThemeStyle)
                 )
                 .listRowBackground(Color.clear)
                 .listRowSeparator(.hidden)
@@ -78,7 +79,7 @@ struct SettingsFeedback: View {
                             AppStorage.shared.activeScreen = .Settings
                             dismiss()
                         },
-                        style: .back(ThemeManager.shared.currentThemeStyle)
+                        style: .back(themeManager.currentThemeStyle)
                     )
                 }
             }

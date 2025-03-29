@@ -3,7 +3,7 @@ import SwiftUI
 struct WordList: View {
     private let overlayBottomPadding: CGFloat = 80
     private let bottomInsetHeight: CGFloat = 130
-    
+        
     @StateObject private var style: WordListStyle
     @StateObject private var locale = WordListLocale()
     @StateObject private var wordsGetter = WordGetter()

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct WordListViewWelcome: View {
     @EnvironmentObject private var themeManager: ThemeManager
+    
     @ObservedObject private var locale: WordListLocale
    
     @State private var showRemoteDictionary = false

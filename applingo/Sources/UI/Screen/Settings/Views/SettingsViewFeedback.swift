@@ -1,14 +1,13 @@
 import SwiftUI
 
-/// A view that displays the feedback section in Settings.
-struct SettingsViewFeedback: View {
-    // MARK: - Properties
+internal struct SettingsViewFeedback: View {
     @EnvironmentObject private var themeManager: ThemeManager
+    
     @ObservedObject private var locale: SettingsLocale
+    
     private let style: SettingsStyle
     
-    // MARK: - Initializer
-    /// Initializes the additional details view.
+    /// Initializes the SettingsViewFeedback.
     /// - Parameters:
     ///   - style: `SettingsStyle` object that defines the visual style.
     ///   - locale: `SettingsLocale` object that provides localized strings.
@@ -20,7 +19,6 @@ struct SettingsViewFeedback: View {
         self.style = style
     }
     
-    // MARK: - Body
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             SectionHeader(
@@ -33,7 +31,10 @@ struct SettingsViewFeedback: View {
             SectionBody {
                 HStack {
                     NavigationLink(destination: SettingsFeedback()) {
-                        Text(locale.screenDescriptionFeedback)
+                        DynamicText(
+                            model: DynamicTextModel(text: locale.screenDescriptionFeedback),
+                            style: .textLight(themeManager.currentThemeStyle)
+                        )
                     }
                 }
                 .padding(.vertical, 8)

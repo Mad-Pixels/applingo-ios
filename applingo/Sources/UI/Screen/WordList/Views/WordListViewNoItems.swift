@@ -25,7 +25,7 @@ internal struct WordListViewNoItems: View {
             DynamicText(
                 model: DynamicTextModel(text: locale.screenNoWords),
                 style: .headerMain(
-                    ThemeManager.shared.currentThemeStyle,
+                    themeManager.currentThemeStyle,
                     alignment: .center,
                     lineLimit: 2
                 )

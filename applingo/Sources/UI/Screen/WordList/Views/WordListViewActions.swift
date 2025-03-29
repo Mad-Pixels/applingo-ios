@@ -1,8 +1,6 @@
 import SwiftUI
 
-internal struct WordListViewActions: View {
-    @EnvironmentObject private var themeManager: ThemeManager
-    
+internal struct WordListViewActions: View {    
     internal let onAdd: () -> Void
     
     private let style: WordListStyle

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct WordAddManual: View {
     @Environment(\.presentationMode) private var presentationMode
+    @EnvironmentObject private var themeManager: ThemeManager
     
     @Binding var isPresented: Bool
     
@@ -71,14 +72,14 @@ struct WordAddManual: View {
                     ButtonNav(
                         isPressed: $isPressedLeading,
                         onTap: { presentationMode.wrappedValue.dismiss() },
-                        style: .back(ThemeManager.shared.currentThemeStyle)
+                        style: .back(themeManager.currentThemeStyle)
                     )
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     ButtonNav(
                         isPressed: $isPressedTrailing,
                         onTap: { save() },
-                        style: .save(ThemeManager.shared.currentThemeStyle, disabled: isSaveDisabled)
+                        style: .save(themeManager.currentThemeStyle, disabled: isSaveDisabled)
                     )
                     .disabled(isSaveDisabled)
                 }

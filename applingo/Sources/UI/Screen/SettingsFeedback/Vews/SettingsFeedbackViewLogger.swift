@@ -23,7 +23,7 @@ internal struct SettingsFeedbackViewLogger: View {
     var body: some View {
         SectionHeader(
             title: locale.screenSubtitleSendLogs,
-            style: .block(ThemeManager.shared.currentThemeStyle)
+            style: .block(themeManager.currentThemeStyle)
         )
         
         ItemToggle(
@@ -39,7 +39,7 @@ internal struct SettingsFeedbackViewLogger: View {
             DynamicText(
                 model: DynamicTextModel(text: locale.screenTextSendLogs),
                 style: .textLight(
-                    ThemeManager.shared.currentThemeStyle,
+                    themeManager.currentThemeStyle,
                     alignment: .leading,
                     lineLimit: 8
                 )

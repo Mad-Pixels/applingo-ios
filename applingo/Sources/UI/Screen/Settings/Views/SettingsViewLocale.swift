@@ -1,16 +1,13 @@
 import SwiftUI
 
-/// A view that displays the language selection section in Settings.
-struct SettingsViewLocale: View {
-    // MARK: - Properties
+internal struct SettingsViewLocale: View {
+    @EnvironmentObject private var localeManager: LocaleManager
     @EnvironmentObject private var themeManager: ThemeManager
+    
     private let locale: SettingsLocale
     private let style: SettingsStyle
     
-    @EnvironmentObject private var localeManager: LocaleManager
-    
-    // MARK: - Initializer
-    /// Initializes the word list view with localization and a data source.
+    /// Initializes the SettingsViewLocale.
     /// - Parameters:
     ///   - style: `SettingsStyle` object that defines the visual style.
     ///   - locale: `SettingsLocale` object that provides localized strings.
@@ -22,7 +19,6 @@ struct SettingsViewLocale: View {
         self.style = style
     }
     
-    // MARK: - Private Methods
     /// Binding to the currently selected locale.
     private var selectedLocale: Binding<LocaleType> {
         Binding(
@@ -31,16 +27,17 @@ struct SettingsViewLocale: View {
         )
     }
     
-    // MARK: - Body
     var body: some View {
         SectionHeader(
             title: locale.screenSubtitleLanguage,
-            style: .block(ThemeManager.shared.currentThemeStyle)
+            style: .block(themeManager.currentThemeStyle)
         )
         ItemPicker(
             selectedValue: selectedLocale,
             items: localeManager.supportedLocales,
             onChange: { newLocale in localeManager.setLocale(newLocale) }
-        ) { locale in Text(locale.displayName) }
+        ) {
+            locale in Text(locale.displayName)
+        }
     }
 }

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct WordDetails: View {
     @Environment(\.presentationMode) private var presentationMode
+    @EnvironmentObject private var themeManager: ThemeManager
     
     @StateObject private var locale = WordDetailsLocale()
     @StateObject private var wordsAction = WordAction()
@@ -81,8 +82,8 @@ struct WordDetails: View {
                             }
                         },
                         style: isEditing ?
-                            .close(ThemeManager.shared.currentThemeStyle) :
-                            .back(ThemeManager.shared.currentThemeStyle)
+                            .close(themeManager.currentThemeStyle) :
+                            .back(themeManager.currentThemeStyle)
                     )
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -96,8 +97,8 @@ struct WordDetails: View {
                             }
                         },
                         style: isEditing ?
-                            .save(ThemeManager.shared.currentThemeStyle, disabled: self.isSaveDisabled) :
-                            .edit(ThemeManager.shared.currentThemeStyle)
+                            .save(themeManager.currentThemeStyle, disabled: self.isSaveDisabled) :
+                            .edit(themeManager.currentThemeStyle)
                     )
                     .disabled(isEditing && isSaveDisabled)
                 }

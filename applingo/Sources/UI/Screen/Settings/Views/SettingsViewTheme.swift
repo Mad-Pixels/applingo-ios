@@ -1,14 +1,13 @@
 import SwiftUI
 
-/// A view that displays the theme selection section in Settings.
-struct SettingsViewTheme: View {
-    // MARK: - Properties
+internal struct SettingsViewTheme: View {
     @EnvironmentObject private var themeManager: ThemeManager
+    
     @ObservedObject private var locale: SettingsLocale
+    
     private let style: SettingsStyle
     
-    // MARK: - Initializer
-    /// Initializes the word list view with localization and a data source.
+    /// Initializes the SettingsViewTheme.
     /// - Parameters:
     ///   - style: `SettingsStyle` object that defines the visual style.
     ///   - locale: `SettingsLocale` object that provides localized strings.
@@ -30,7 +29,10 @@ struct SettingsViewTheme: View {
             selectedValue: $themeManager.currentTheme,
             items: themeManager.supportedThemes,
             onChange: { newTheme in themeManager.setTheme(to: newTheme) },
-            style: .themed(ThemeManager.shared.currentThemeStyle, type: .segmented)
-        ) { theme in Text(theme.asString) }
+            content:  {
+                theme in Text(theme.asString)
+            },
+            style: .themed(themeManager.currentThemeStyle, type: .segmented)
+        )
     }
 }
