@@ -97,11 +97,11 @@ struct DictionaryRemoteFilter: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     ButtonNav(
-                        style: .close(ThemeManager.shared.currentThemeStyle),
+                        isPressed: $isPressedTrailing,
                         onTap: {
                             presentationMode.wrappedValue.dismiss()
                         },
-                        isPressed: $isPressedTrailing
+                        style: .close(ThemeManager.shared.currentThemeStyle)
                     )
                 }
             }

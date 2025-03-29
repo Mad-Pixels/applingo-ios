@@ -77,9 +77,7 @@ struct WordDetails: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     ButtonNav(
-                        style: isEditing ?
-                            .close(ThemeManager.shared.currentThemeStyle) :
-                            .back(ThemeManager.shared.currentThemeStyle),
+                        isPressed: $isPressedLeading,
                         onTap: {
                             if isEditing {
                                 isEditing = false
@@ -88,14 +86,14 @@ struct WordDetails: View {
                                 presentationMode.wrappedValue.dismiss()
                             }
                         },
-                        isPressed: $isPressedLeading
+                        style: isEditing ?
+                            .close(ThemeManager.shared.currentThemeStyle) :
+                            .back(ThemeManager.shared.currentThemeStyle)
                     )
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     ButtonNav(
-                        style: isEditing ?
-                            .save(ThemeManager.shared.currentThemeStyle, disabled: self.isSaveDisabled) :
-                            .edit(ThemeManager.shared.currentThemeStyle),
+                        isPressed: $isPressedTrailing,
                         onTap: {
                             if isEditing {
                                 updateWord()
@@ -103,7 +101,9 @@ struct WordDetails: View {
                                 isEditing = true
                             }
                         },
-                        isPressed: $isPressedTrailing
+                        style: isEditing ?
+                            .save(ThemeManager.shared.currentThemeStyle, disabled: self.isSaveDisabled) :
+                            .edit(ThemeManager.shared.currentThemeStyle)
                     )
                     .disabled(isEditing && isSaveDisabled)
                 }

@@ -30,9 +30,9 @@ struct GameModeViewGame<GameType: AbstractGame>: View {
                     }
                     ToolbarItem(placement: .navigationBarTrailing) {
                         ButtonNav(
-                            style: .close(ThemeManager.shared.currentThemeStyle),
+                            isPressed: $isPressedTrailing,
                             onTap: { isPresented = false },
-                            isPressed: $isPressedTrailing
+                            style: .close(ThemeManager.shared.currentThemeStyle)
                         )
                     }
                 }

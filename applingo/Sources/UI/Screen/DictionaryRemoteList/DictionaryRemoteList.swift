@@ -66,13 +66,13 @@ struct DictionaryRemoteList: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     ButtonNav(
-                        style: .close(ThemeManager.shared.currentThemeStyle),
+                        isPressed: $isPressedTrailing,
                         onTap: {
                             AppStorage.shared.activeScreen = .DictionaryLocalList
                             NotificationCenter.default.post(name: .dictionaryListShouldUpdate, object: nil)
                             presentationMode.wrappedValue.dismiss()
                         },
-                        isPressed: $isPressedTrailing
+                        style: .close(ThemeManager.shared.currentThemeStyle)
                     )
                 }
             }

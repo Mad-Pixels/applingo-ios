@@ -79,12 +79,12 @@ struct SettingsFeedback: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     ButtonNav(
-                        style: .back(ThemeManager.shared.currentThemeStyle),
+                        isPressed: $isPressedLeading,
                         onTap: {
                             AppStorage.shared.activeScreen = .Settings
                             dismiss()
                         },
-                        isPressed: $isPressedLeading
+                        style: .back(ThemeManager.shared.currentThemeStyle)
                     )
                 }
             }

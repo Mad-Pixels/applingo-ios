@@ -78,16 +78,16 @@ struct WordAddManual: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     ButtonNav(
-                        style: .back(ThemeManager.shared.currentThemeStyle),
+                        isPressed: $isPressedLeading,
                         onTap: { presentationMode.wrappedValue.dismiss() },
-                        isPressed: $isPressedLeading
+                        style: .back(ThemeManager.shared.currentThemeStyle)
                     )
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     ButtonNav(
-                        style: .save(ThemeManager.shared.currentThemeStyle, disabled: isSaveDisabled),
+                        isPressed: $isPressedTrailing,
                         onTap: { save() },
-                        isPressed: $isPressedTrailing
+                        style: .save(ThemeManager.shared.currentThemeStyle, disabled: isSaveDisabled)
                     )
                     .disabled(isSaveDisabled)
                 }
