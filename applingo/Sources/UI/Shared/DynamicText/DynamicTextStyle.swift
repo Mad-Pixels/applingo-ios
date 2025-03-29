@@ -57,6 +57,28 @@ extension DynamicTextStyle {
         )
     }
     
+    static func textBold(
+        _ theme: AppTheme,
+        alignment: TextAlignment = .leading,
+        lineLimit: Int = 1
+    ) -> DynamicTextStyle {
+        let shouldWrapWords = lineLimit > 1
+        
+        return DynamicTextStyle(
+            textColor: theme.textPrimary,
+            alignment: alignment,
+            letterSpacing: 0.2,
+            allowsTightening: true,
+            maxFontSize: 16,
+            minFontSize: 14,
+            lineBreakMode: shouldWrapWords ? .byWordWrapping : .byTruncatingTail,
+            wordWrapping: shouldWrapWords,
+            lineLimit: lineLimit,
+            fontWeight: .heavy,
+            fontDesign: .default
+        )
+    }
+    
     static func textLight(
         _ theme: AppTheme,
         alignment: TextAlignment = .leading,
