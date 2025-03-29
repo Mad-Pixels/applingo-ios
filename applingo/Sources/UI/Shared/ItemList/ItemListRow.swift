@@ -1,22 +1,21 @@
 import SwiftUI
 
-// MARK: - ItemListRow
-/// Represents a single row in the item list with tap and appearance handling.
 struct ItemListRow<Item: Identifiable, RowContent: View>: View {
+    @Binding var pressedItemId: Item.ID?
+    
     let item: Item
     let style: ItemListStyle
-    @Binding var pressedItemId: Item.ID?
-    let rowContent: (Item) -> RowContent
     let onItemTap: ((Item) -> Void)?
     let onItemAppear: ((Item) -> Void)?
+    let rowContent: (Item) -> RowContent
     
     var body: some View {
         rowContent(item)
-            .padding(.vertical, 8)
-            .padding(.horizontal, 8)
+            .padding(.vertical, style.rowVerticalPadding)
+            .padding(.horizontal, style.rowHorizontalPadding)
             .frame(maxWidth: .infinity)
             .background(
-                RoundedRectangle(cornerRadius: 12)
+                RoundedRectangle(cornerRadius: style.rowCornerRadius)
                     .fill(pressedItemId == item.id ? style.ontapColor : style.backgroundColor)
             )
             .simultaneousGesture(
@@ -31,7 +30,7 @@ struct ItemListRow<Item: Identifiable, RowContent: View>: View {
             .onTapGesture {
                 onItemTap?(item)
             }
-            .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
+            .listRowInsets(style.rowListInsets)
             .listRowBackground(Color.clear)
             .listRowSeparator(.hidden)
             .onAppear {

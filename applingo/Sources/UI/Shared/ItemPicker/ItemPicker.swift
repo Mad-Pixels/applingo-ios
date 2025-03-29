@@ -20,7 +20,6 @@ struct ItemPicker<Item: Hashable, Content: View>: View {
         items: [Item],
         onChange: ((Item) -> Void)? = nil,
         @ViewBuilder content: @escaping (Item) -> Content,
-        
         style: ItemPickerStyle = .themed(ThemeManager.shared.currentThemeStyle)
     ) {
         self._selectedValue = selectedValue

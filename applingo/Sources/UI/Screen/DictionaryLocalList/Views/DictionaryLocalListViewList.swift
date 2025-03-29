@@ -113,7 +113,7 @@ struct DictionaryLocalListViewList: View {
     private var emptyStateView: AnyView {
         if dictionaryGetter.dictionaries.isEmpty {
             if dictionaryGetter.isLoadingPage || !dictionaryGetter.hasLoadedInitialPage {
-                return AnyView(ItemListLoadingOverlay(style: .themed(themeManager.currentThemeStyle)))
+                return AnyView(ItemListLoading(style: .themed(themeManager.currentThemeStyle)))
             } else {
                 return AnyView(DictionaryLocalListViewNoItems(style: style, locale: locale))
             }

@@ -62,7 +62,7 @@ struct DictionaryRemoteFilter: View {
                 if categoryGetter.isLoadingPage { 
                     VStack {
                         Spacer()
-                        ItemListLoadingOverlay(style: .themed(ThemeManager.shared.currentThemeStyle))
+                        ItemListLoading(style: .themed(ThemeManager.shared.currentThemeStyle))
                         Spacer()
                     }
                     .frame(minHeight: UIScreen.main.bounds.height - 200)

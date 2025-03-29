@@ -92,7 +92,7 @@ struct WordListViewList: View {
         if wordsGetter.words.isEmpty {
             if wordsGetter.isLoadingPage || !wordsGetter.hasLoadedInitialPage {
                 onListStateChanged(false)
-                return AnyView(ItemListLoadingOverlay(style: .themed(themeManager.currentThemeStyle)))
+                return AnyView(ItemListLoading(style: .themed(themeManager.currentThemeStyle)))
             } else {
                 if wordsGetter.searchText.isEmpty {
                     onListStateChanged(true)
