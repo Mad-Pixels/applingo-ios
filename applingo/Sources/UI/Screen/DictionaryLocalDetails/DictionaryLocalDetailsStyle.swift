@@ -1,16 +1,18 @@
 import SwiftUI
 
-/// Defines styling properties for the Dictionary Local Details view.
 final class DictionaryLocalDetailsStyle: ObservableObject {
-    // MARK: - Properties
+    // Colors
     let backgroundColor: Color
+
+    // Layout
     let padding: EdgeInsets
-    let paddingBlock: CGFloat
     let spacing: CGFloat
     let sectionSpacing: CGFloat
 
-    // MARK: - Initializer
-    /// Initializes a new instance of `DictionaryLocalDetailsStyle`.
+    // Internal Blocks
+    let paddingBlock: CGFloat
+
+    /// Initializes the DictionaryLocalDetailsStyle.
     /// - Parameters:
     ///   - backgroundColor: The background color of the view.
     ///   - padding: The overall padding around the content.
@@ -32,11 +34,7 @@ final class DictionaryLocalDetailsStyle: ObservableObject {
     }
 }
 
-// MARK: - Themed Style Extension
 extension DictionaryLocalDetailsStyle {
-    /// Returns a themed style based on the current application theme.
-    /// - Parameter theme: The current application theme.
-    /// - Returns: A new instance of `DictionaryLocalDetailsStyle` configured for the given theme.
     static func themed(_ theme: AppTheme) -> DictionaryLocalDetailsStyle {
         DictionaryLocalDetailsStyle(
             backgroundColor: theme.backgroundPrimary,

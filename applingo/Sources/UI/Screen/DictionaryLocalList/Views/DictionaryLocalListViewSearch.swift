@@ -1,16 +1,14 @@
 import SwiftUI
 
-/// A view that provides a search input for filtering dictionaries.
-struct DictionaryLocalListViewSearch: View {
-    // MARK: - Properties
+internal struct DictionaryLocalListViewSearch: View {
     @EnvironmentObject private var themeManager: ThemeManager
-    private let locale: DictionaryLocalListLocale
-    private let style: DictionaryLocalListStyle
     
     @Binding var searchText: String
     
-    // MARK: - Initializer
-    /// Initializes a new instance of `WordListViewWelcome`.
+    private let locale: DictionaryLocalListLocale
+    private let style: DictionaryLocalListStyle
+    
+    /// Initializes the DictionaryLocalListViewSearch.
     /// - Parameters:
     ///   - style: `DictionaryLocalListStyle` object that defines the visual style.
     ///   - locale: `DictionaryLocalListLocale` object that provides localized strings.
@@ -25,7 +23,6 @@ struct DictionaryLocalListViewSearch: View {
         self.style = style
     }
     
-    // MARK: - Body
     var body: some View {
         InputSearch(
             text: $searchText,

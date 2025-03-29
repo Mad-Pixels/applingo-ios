@@ -1,14 +1,19 @@
 import SwiftUI
 
-/// A view that displays a description section composed of cards with column titles.
-struct DictionaryImportViewDescription: View {
+internal struct DictionaryImportViewDescription: View {
+    @EnvironmentObject private var themeManager: ThemeManager
+
+    private let locale: DictionaryImportLocale
+    private let style: DictionaryImportStyle
     
-    // MARK: - Properties
-    
-    let locale: DictionaryImportLocale
-    let style: DictionaryImportStyle
-   
-    // MARK: - Body
+    /// Initializes the WordDetailsViewStatistic.
+    /// - Parameters:
+    ///   - style: The style configuration.
+    ///   - locale: The localization object.
+    init(style: DictionaryImportStyle, locale: DictionaryImportLocale) {
+        self.locale = locale
+        self.style = style
+    }
     
     var body: some View {
         VStack(spacing: 16) {
@@ -41,9 +46,7 @@ struct DictionaryImportViewDescription: View {
             .frame(maxWidth: .infinity)
         }
     }
-    
-    // MARK: - Private Methods
-    
+
     /// Creates a card view with a given title.
     /// - Parameters:
     ///   - title: The title to display on the card.
@@ -53,21 +56,34 @@ struct DictionaryImportViewDescription: View {
     private func cardView(title: String, description: String, required: Bool) -> some View {
         SectionBody {
             VStack(alignment: .center, spacing: style.sectionSpacing) {
-                Text(title.uppercased())
-                    .font(style.titleFont)
-                    .foregroundColor(style.accentColor)
-                    .multilineTextAlignment(.center)
-                Text(description)
-                    .font(style.descriptionFont)
-                    .foregroundColor(style.descriptionColor)
-                    .multilineTextAlignment(.center)
-                    .padding(.top, -12)
-                Text(required ? locale.screenTagRequired : locale.screenTagOptional)
-                    .font(.system(size: 12))
-                    .foregroundColor(required ? style.accentColor : style.textColor)
-                    .italic()
-                    .multilineTextAlignment(.center)
-                    .padding(.top, -18)
+                DynamicText(
+                    model: DynamicTextModel(text: title.uppercased()),
+                    style: .textMain(
+                        themeManager.currentThemeStyle,
+                        alignment: .leading,
+                        lineLimit: 1
+                    )
+                )
+                
+                DynamicText(
+                    model: DynamicTextModel(text: description),
+                    style: .textMain(
+                        themeManager.currentThemeStyle,
+                        alignment: .leading,
+                        lineLimit: 1
+                    )
+                )
+                .padding(.top, -12)
+                
+                DynamicText(
+                    model: DynamicTextModel(text: required ? locale.screenTagRequired : locale.screenTagOptional),
+                    style: .textMain(
+                        themeManager.currentThemeStyle,
+                        alignment: .center,
+                        lineLimit: 1
+                    )
+                )
+                .padding(.top, -18)
             }
             .frame(maxWidth: .infinity)
         }

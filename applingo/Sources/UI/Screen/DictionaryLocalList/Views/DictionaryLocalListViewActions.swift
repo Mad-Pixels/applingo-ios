@@ -1,17 +1,13 @@
 import SwiftUI
 
-/// A view that provides floating action buttons for import and download operations.
-struct DictionaryLocalListViewActions: View {
-    // MARK: - Properties
-    @EnvironmentObject private var themeManager: ThemeManager
+internal struct DictionaryLocalListViewActions: View {    
     private let locale: DictionaryLocalListLocale
     private let style: DictionaryLocalListStyle
     
-    let onImport: () -> Void
-    let onDownload: () -> Void
+    internal let onDownload: () -> Void
+    internal let onImport: () -> Void
     
-    // MARK: - Initializer
-    /// Initializes the view with localized titles and action closures.
+    /// Initializes the DictionaryLocalListViewActions.
     /// - Parameters:
     ///   - style: `DictionaryLocalListStyle` object that defines the visual style.
     ///   - locale: `DictionaryLocalListLocale` object that provides localized strings.
@@ -29,7 +25,6 @@ struct DictionaryLocalListViewActions: View {
         self.style = style
     }
     
-    // MARK: - Body
     var body: some View {
         ButtonFloatingMultiple(
             items: [

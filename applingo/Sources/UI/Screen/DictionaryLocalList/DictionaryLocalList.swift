@@ -1,30 +1,24 @@
 import SwiftUI
 
-/// A view that displays a list of local dictionaries with search, import, and download functionalities.
 struct DictionaryLocalList: View {
-    // MARK: - Constants
-    private let bottomInsetHeight: CGFloat = 130
     private let overlayBottomPadding: CGFloat = 80
+    private let bottomInsetHeight: CGFloat = 130
     
-    // MARK: - State Objects
     @StateObject private var style: DictionaryLocalListStyle
     @StateObject private var locale = DictionaryLocalListLocale()
     @StateObject private var dictionaryGetter = DictionaryGetter()
     @StateObject private var dictionaryAction = DictionaryAction()
     
-    // MARK: - Local State
     @State private var selectedDictionary: DatabaseModelDictionary?
     @State private var isShowingImportSheet = false
     @State private var isShowingRemoteList = false
    
-    // MARK: - Initializer
-    /// Initializes the local dictionary list view with an optional style.
+    /// Initializes the DictionaryLocalList.
     /// - Parameter style: Optional style configuration; if nil, a themed style is used.
-    init(style: DictionaryLocalListStyle? = nil) {
-        _style = StateObject(wrappedValue: style ?? .themed(ThemeManager.shared.currentThemeStyle))
+    init(style: DictionaryLocalListStyle = .themed(ThemeManager.shared.currentThemeStyle)) {
+        _style = StateObject(wrappedValue: style)
     }
     
-    // MARK: - Body
     var body: some View {
         BaseScreen(
             screen: .DictionaryLocalList,

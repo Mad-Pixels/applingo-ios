@@ -1,18 +1,17 @@
 import SwiftUI
 
-/// A view that displays a list of local dictionaries with pagination, deletion, and status update functionalities.
-struct DictionaryLocalListViewList: View {
-    // MARK: - Properties
+internal struct DictionaryLocalListViewList: View {
     @EnvironmentObject private var themeManager: ThemeManager
-    private let locale: DictionaryLocalListLocale
-    private let style: DictionaryLocalListStyle
     
     @ObservedObject private var dictionaryAction: DictionaryAction
     @ObservedObject private var dictionaryGetter: DictionaryGetter
-    let onDictionarySelect: (DatabaseModelDictionary) -> Void
     
-    // MARK: - Initializer
-    /// Initializes the list view with localization and dictionary data.
+    private let locale: DictionaryLocalListLocale
+    private let style: DictionaryLocalListStyle
+    
+    internal let onDictionarySelect: (DatabaseModelDictionary) -> Void
+    
+    /// Initializes the DictionaryLocalListViewList.
     /// - Parameters:
     ///   - style: `DictionaryLocalListStyle` object that defines the visual style.
     ///   - locale: `DictionaryLocalListLocale` object that provides localized strings.
@@ -33,7 +32,6 @@ struct DictionaryLocalListViewList: View {
         self.onDictionarySelect = onDictionarySelect
     }
     
-    // MARK: - Body
     var body: some View {
         let dictionariesBinding = Binding(
             get: { dictionaryGetter.dictionaries },
@@ -78,7 +76,6 @@ struct DictionaryLocalListViewList: View {
         }
     }
     
-    // MARK: - Private Methods
     /// Deletes a dictionary at specified offsets.
     private func delete(at offsets: IndexSet) {
         offsets.forEach { index in

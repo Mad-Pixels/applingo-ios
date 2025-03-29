@@ -1,18 +1,16 @@
 import SwiftUI
 
-/// A view that displays the main details of a dictionary,
-/// including the name, description, and topic.
 struct DictionaryLocalDetailsViewMain: View {
-    // MARK: - Properties
     @EnvironmentObject private var themeManager: ThemeManager
+    
+    @Binding var dictionary: DatabaseModelDictionary
+    
     private let locale: DictionaryLocalDetailsLocale
     private let style: DictionaryLocalDetailsStyle
     
-    @Binding var dictionary: DatabaseModelDictionary
-    let isEditing: Bool
+    internal let isEditing: Bool
     
-    // MARK: - Initializer
-    /// Initializes the additional details view.
+    /// Initializes the DictionaryLocalDetailsViewMain.
     /// - Parameters:
     ///   - style: `DictionaryLocalDetailsStyle` style configuration.
     ///   - locale: `DictionaryLocalDetailsLocale` localization object.
@@ -24,23 +22,23 @@ struct DictionaryLocalDetailsViewMain: View {
         dictionary: Binding<DatabaseModelDictionary>,
         isEditing: Bool
     ) {
-        self._dictionary = dictionary
         self.isEditing = isEditing
         self.locale = locale
         self.style = style
+        
+        self._dictionary = dictionary
     }
     
-    // MARK: - Body
     var body: some View {
         VStack(spacing: style.spacing) {
             SectionHeader(
                 title: locale.screenSubtitleDictionary,
-                style: .block(ThemeManager.shared.currentThemeStyle)
+                style: .block(themeManager.currentThemeStyle)
             )
             .padding(.top, style.paddingBlock)
             
             VStack(spacing: style.spacing) {
-                InputText(
+                InputTextArea(
                     text: Binding(
                         get: { dictionary.name },
                         set: { dictionary.name = $0 }

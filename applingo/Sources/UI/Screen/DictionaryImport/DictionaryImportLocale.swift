@@ -1,36 +1,29 @@
-import SwiftUI
+import Foundation
 
-/// Provides localized strings for the Dictionary Import view.
 final class DictionaryImportLocale: ObservableObject {
-    
-    // MARK: - Private Constants
-    
-    private enum Strings {
-        static let title = "screen.dictionaryImport.title"
-        static let textNote = "screen.dictionaryImport.text.note"
-        static let tagRequired = "screen.dictionaryImport.tag.required"
-        static let tagOptional = "screen.dictionaryImport.tag.optional"
-        static let descriptionBlockA = "screen.dictionaryImport.description.BlockA"
-        static let descriptionBlockB = "screen.dictionaryImport.description.BlockB"
-        static let descriptionBlockC = "screen.dictionaryImport.description.BlockC"
-        static let descriptionBlockD = "screen.dictionaryImport.description.BlockD"
-        static let subtitleCreateTable = "screen.dictionaryImport.subtitle.ctreateTable"
-        static let subtitleDictionaryAdd = "screen.dictionaryImport.subtitle.dictionaryAdd"
-        static let textDictionaryAdd = "screen.dictionaryImport.text.dictionaryAdd"
-        
-        static let navigationTitle = "ImportNoteTitle"
-        static let titleHeader = "DictionaryImportViewTitleHeader"
-        static let titleBody = "DictionaryImportViewTitleBody"
-        static let tableHeader = "DictionaryImportViewTableHeader"
-        static let tableColumnA = "DictionaryImportViewTableColumnA"
-        static let tableColumnB = "DictionaryImportViewTableColumnB"
-        static let tableColumnC = "DictionaryImportViewTableColumnC"
-        static let tableColumnD = "DictionaryImportViewTableColumnD"
-        static let tableBody = "DictionaryImportViewTableBody"
+    private enum LocalizedKey: String {
+        case title = "screen.dictionaryImport.title"
+        case textNote = "screen.dictionaryImport.text.note"
+        case tagRequired = "screen.dictionaryImport.tag.required"
+        case tagOptional = "screen.dictionaryImport.tag.optional"
+        case descriptionBlockA = "screen.dictionaryImport.description.BlockA"
+        case descriptionBlockB = "screen.dictionaryImport.description.BlockB"
+        case descriptionBlockC = "screen.dictionaryImport.description.BlockC"
+        case descriptionBlockD = "screen.dictionaryImport.description.BlockD"
+        case subtitleCreateTable = "screen.dictionaryImport.subtitle.ctreateTable"
+        case subtitleDictionaryAdd = "screen.dictionaryImport.subtitle.dictionaryAdd"
+        case textDictionaryAdd = "screen.dictionaryImport.text.dictionaryAdd"
+        case navigationTitle = "ImportNoteTitle"
+        case titleHeader = "DictionaryImportViewTitleHeader"
+        case titleBody = "DictionaryImportViewTitleBody"
+        case tableHeader = "DictionaryImportViewTableHeader"
+        case tableColumnA = "DictionaryImportViewTableColumnA"
+        case tableColumnB = "DictionaryImportViewTableColumnB"
+        case tableColumnC = "DictionaryImportViewTableColumnC"
+        case tableColumnD = "DictionaryImportViewTableColumnD"
+        case tableBody = "DictionaryImportViewTableBody"
     }
-    
-    // MARK: - Published Properties
-    
+
     @Published private(set) var screenTitle: String
     @Published private(set) var screenTextNote: String
     @Published private(set) var screenTagRequired: String
@@ -42,7 +35,6 @@ final class DictionaryImportLocale: ObservableObject {
     @Published private(set) var screenSubtitleCreateTable: String
     @Published private(set) var screenSubtitleDictionaryAdd: String
     @Published private(set) var screenTextDictionaryAdd: String
-    
     @Published private(set) var navigationTitle: String
     @Published private(set) var titleHeader: String
     @Published private(set) var titleBody: String
@@ -52,33 +44,31 @@ final class DictionaryImportLocale: ObservableObject {
     @Published private(set) var tableColumnC: String
     @Published private(set) var tableColumnD: String
     @Published private(set) var tableBody: String
-    
-    
-    // MARK: - Initialization
-    
+
     init() {
-        self.screenTitle = Self.localizedString(for: .title)
-        self.screenTextNote = Self.localizedString(for: .textNote)
-        self.screenTagRequired = Self.localizedString(for: .tagRequired)
-        self.screenTagOptional = Self.localizedString(for: .tagOptional)
-        self.screenDescriptionBlockA = Self.localizedString(for: .descriptionBlockA)
-        self.screenDescriptionBlockB = Self.localizedString(for: .descriptionBlockB)
-        self.screenDescriptionBlockC = Self.localizedString(for: .descriptionBlockC)
-        self.screenDescriptionBlockD = Self.localizedString(for: .descriptionBlockD)
-        self.screenSubtitleCreateTable = Self.localizedString(for: .subtitleCreateTable)
-        self.screenSubtitleDictionaryAdd = Self.localizedString(for: .subtitleDictionaryAdd)
-        self.screenTextDictionaryAdd = Self.localizedString(for: .textDictionaryAdd)
-        
-        self.navigationTitle = Self.localizedString(for: .navigationTitle)
-        self.titleHeader = Self.localizedString(for: .titleHeader)
-        self.titleBody = Self.localizedString(for: .titleBody)
-        self.tableHeader = Self.localizedString(for: .tableHeader)
-        self.tableColumnA = Self.localizedString(for: .tableColumnA)
-        self.tableColumnB = Self.localizedString(for: .tableColumnB)
-        self.tableColumnC = Self.localizedString(for: .tableColumnC)
-        self.tableColumnD = Self.localizedString(for: .tableColumnD)
-        self.tableBody = Self.localizedString(for: .tableBody)
-        
+        self.screenTitle = ""
+        self.screenTextNote = ""
+        self.screenTagRequired = ""
+        self.screenTagOptional = ""
+        self.screenDescriptionBlockA = ""
+        self.screenDescriptionBlockB = ""
+        self.screenDescriptionBlockC = ""
+        self.screenDescriptionBlockD = ""
+        self.screenSubtitleCreateTable = ""
+        self.screenSubtitleDictionaryAdd = ""
+        self.screenTextDictionaryAdd = ""
+        self.navigationTitle = ""
+        self.titleHeader = ""
+        self.titleBody = ""
+        self.tableHeader = ""
+        self.tableColumnA = ""
+        self.tableColumnB = ""
+        self.tableColumnC = ""
+        self.tableColumnD = ""
+        self.tableBody = ""
+
+        updateLocalizedStrings()
+
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(localeDidChange),
@@ -86,64 +76,20 @@ final class DictionaryImportLocale: ObservableObject {
             object: nil
         )
     }
-    
+
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
-    
-    // MARK: - Localization Helper
-    
-    private enum LocalizedKey {
-        case title
-        case textNote
-        case tagRequired
-        case tagOptional
-        case descriptionBlockA
-        case descriptionBlockB
-        case descriptionBlockC
-        case descriptionBlockD
-        case subtitleCreateTable
-        case subtitleDictionaryAdd
-        case textDictionaryAdd
-        
-        case navigationTitle
-        case titleHeader, titleBody
-        case tableHeader, tableColumnA, tableColumnB, tableColumnC, tableColumnD, tableBody
-        
-        var key: String {
-            switch self {
-            case .title: return Strings.title
-            case .textNote: return Strings.textNote
-            case .tagRequired: return Strings.tagRequired
-            case .tagOptional: return Strings.tagOptional
-            case .descriptionBlockA: return Strings.descriptionBlockA
-            case .descriptionBlockB: return Strings.descriptionBlockB
-            case .descriptionBlockC: return Strings.descriptionBlockC
-            case .descriptionBlockD: return Strings.descriptionBlockD
-            case .subtitleCreateTable: return Strings.subtitleCreateTable
-            case .subtitleDictionaryAdd: return Strings.subtitleDictionaryAdd
-            case .textDictionaryAdd: return Strings.textDictionaryAdd
-                
-            case .navigationTitle: return Strings.navigationTitle
-            case .titleHeader: return Strings.titleHeader
-            case .titleBody: return Strings.titleBody
-            case .tableHeader: return Strings.tableHeader
-            case .tableColumnA: return Strings.tableColumnA
-            case .tableColumnB: return Strings.tableColumnB
-            case .tableColumnC: return Strings.tableColumnC
-            case .tableColumnD: return Strings.tableColumnD
-            case .tableBody: return Strings.tableBody
-            }
-        }
-    }
-    
-    private static func localizedString(for key: LocalizedKey) -> String {
-        return LocaleManager.shared.localizedString(for: key.key)
-    }
-    
-    // MARK: - Notification Handler
-    
+
     @objc private func localeDidChange() {
+        updateLocalizedStrings()
+    }
+
+    private static func localizedString(for key: LocalizedKey) -> String {
+        return LocaleManager.shared.localizedString(for: key.rawValue)
+    }
+
+    private func updateLocalizedStrings() {
         screenTitle = Self.localizedString(for: .title)
         screenTextNote = Self.localizedString(for: .textNote)
         screenTagRequired = Self.localizedString(for: .tagRequired)
@@ -155,7 +101,6 @@ final class DictionaryImportLocale: ObservableObject {
         screenSubtitleCreateTable = Self.localizedString(for: .subtitleCreateTable)
         screenSubtitleDictionaryAdd = Self.localizedString(for: .subtitleDictionaryAdd)
         screenTextDictionaryAdd = Self.localizedString(for: .textDictionaryAdd)
-        
         navigationTitle = Self.localizedString(for: .navigationTitle)
         titleHeader = Self.localizedString(for: .titleHeader)
         titleBody = Self.localizedString(for: .titleBody)

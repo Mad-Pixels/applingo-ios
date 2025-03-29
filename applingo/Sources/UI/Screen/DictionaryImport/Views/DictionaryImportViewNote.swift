@@ -1,29 +1,30 @@
 import SwiftUI
 
-/// A view that displays a note section in the dictionary import screen.
-struct DictionaryImportViewNote: View {
-    
-    // MARK: - Properties
-    
+internal struct DictionaryImportViewNote: View {
+    @EnvironmentObject private var themeManager: ThemeManager
+
     private let locale: DictionaryImportLocale
     private let style: DictionaryImportStyle
     
-    // MARK: - Initializer
-    
-    init(locale: DictionaryImportLocale, style: DictionaryImportStyle) {
+    /// Initializes the WordDetailsViewStatistic.
+    /// - Parameters:
+    ///   - style: The style configuration.
+    ///   - locale: The localization object.
+    init(style: DictionaryImportStyle, locale: DictionaryImportLocale) {
         self.locale = locale
         self.style = style
     }
-    
-    // MARK: - Body
-    
+
     var body: some View {
         SectionBody {
             VStack(alignment: .leading, spacing: style.sectionSpacing) {
-                Text(locale.screenTextNote)
-                    .font(style.textFont)
-                    .foregroundColor(style.textColor)
-                    .multilineTextAlignment(.center)
+                DynamicText(
+                    model: DynamicTextModel(text: locale.screenTextNote),
+                    style: .textMain(
+                        themeManager.currentThemeStyle,
+                        alignment: .center
+                    )
+                )
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, 12)

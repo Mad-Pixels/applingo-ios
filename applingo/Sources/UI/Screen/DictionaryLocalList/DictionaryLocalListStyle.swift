@@ -1,16 +1,18 @@
 import SwiftUI
 
-/// Defines styling properties for the Dictionary Local List view.
 final class DictionaryLocalListStyle: ObservableObject {
-    // MARK: - Properties
+    // Colors
     let backgroundColor: Color
+
+    // Layout
     let padding: EdgeInsets
     let spacing: CGFloat
+
+    // Typography & Icons
     let titleFont: Font
     let iconSize: CGFloat
 
-    // MARK: - Initializer
-    /// Initializes a new instance of `DictionaryLocalListStyle`.
+    /// Initializes the DictionaryLocalListStyle.
     /// - Parameters:
     ///   - backgroundColor: The primary background color for the view.
     ///   - padding: The padding around the content.
@@ -32,11 +34,7 @@ final class DictionaryLocalListStyle: ObservableObject {
     }
 }
 
-// MARK: - Themed Style Extension
 extension DictionaryLocalListStyle {
-    /// Returns a themed style based on the current application theme.
-    /// - Parameter theme: The current application theme.
-    /// - Returns: A new instance of `DictionaryLocalListStyle` configured for the given theme.
     static func themed(_ theme: AppTheme) -> DictionaryLocalListStyle {
         DictionaryLocalListStyle(
             backgroundColor: theme.backgroundPrimary,

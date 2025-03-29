@@ -1,26 +1,22 @@
 import SwiftUI
 
-/// A view that displays the details of a local dictionary and allows editing.
-/// It contains three sections: main details, category details, and additional details.
 struct DictionaryLocalDetails: View {
-    // MARK: - Properties
     @Environment(\.presentationMode) private var presentationMode
-    private let originalDictionary: DatabaseModelDictionary
-    let refresh: () -> Void
     
-    // MARK: - State Objects
     @StateObject private var style: DictionaryLocalDetailsStyle
     @StateObject private var locale = DictionaryLocalDetailsLocale()
     @StateObject private var dictionaryAction = DictionaryAction()
     
-    // MARK: - Local State
     @State private var isEditing = false
     @State private var isPressedLeading = false
     @State private var isPressedTrailing = false
     @State private var editableDictionary: DatabaseModelDictionary
-
-    // MARK: - Initializer
-    /// Initializes a new instance of DictionaryLocalDetails.
+    
+    private let originalDictionary: DatabaseModelDictionary
+    
+    internal let refresh: () -> Void
+    
+    /// Initializes the DictionaryLocalDetails.
     /// - Parameters:
     ///   - dictionary: The dictionary to display.
     ///   - isPresented: Binding for the presentation state.
@@ -29,15 +25,14 @@ struct DictionaryLocalDetails: View {
     init(
         dictionary: DatabaseModelDictionary,
         refresh: @escaping () -> Void,
-        style: DictionaryLocalDetailsStyle? = nil
+        style: DictionaryLocalDetailsStyle = .themed(ThemeManager.shared.currentThemeStyle)
     ) {
-        _style = StateObject(wrappedValue: style ?? .themed(ThemeManager.shared.currentThemeStyle))
+        _style = StateObject(wrappedValue: style)
         _editableDictionary = State(initialValue: dictionary)
         self.originalDictionary = dictionary
         self.refresh = refresh
     }
     
-    // MARK: - Body
     var body: some View {
         BaseScreen(
             screen: .DictionaryLocalDetails,
@@ -51,12 +46,14 @@ struct DictionaryLocalDetails: View {
                         dictionary: $editableDictionary,
                         isEditing: isEditing
                     )
+                    
                     DictionaryLocalDetailsViewCategory(
                         style: style,
                         locale: locale,
                         dictionary: $editableDictionary,
                         isEditing: isEditing
                     )
+                    
                     DictionaryLocalDetailsViewAdditional(
                         style: style,
                         locale: locale,
@@ -105,7 +102,6 @@ struct DictionaryLocalDetails: View {
         }
     }
     
-    // MARK: - Helper Computed Properties
     /// Determines if the save button should be disabled.
     private var isSaveDisabled: Bool {
         let trimmed = { (string: String) -> String in
@@ -118,7 +114,6 @@ struct DictionaryLocalDetails: View {
                trimmed(editableDictionary.description).isEmpty
     }
     
-    // MARK: - Private Methods
     /// Updates the dictionary using the dictionaryAction service.
     private func updateDictionary() {
         dictionaryAction.update(editableDictionary) { _ in

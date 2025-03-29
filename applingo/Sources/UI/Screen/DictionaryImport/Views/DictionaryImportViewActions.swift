@@ -1,20 +1,14 @@
 import SwiftUI
 
-/// A view that provides an action button for importing a dictionary CSV file.
-///
-/// This view displays a button to trigger the file importer for dictionary data.
-struct DictionaryImportViewActions: View {
-    // MARK: - Properties
+internal struct DictionaryImportViewActions: View {
     @EnvironmentObject private var themeManager: ThemeManager
+    
     private let locale: DictionaryImportLocale
     private let style: DictionaryImportStyle
     
-    let onImport: () -> Void
+    internal let onImport: () -> Void
     
-    // MARK: - Initialization
-    
-    // MARK: - Initialization
-    /// Initializes the view with localized titles and action handlers.
+    /// Initializes the DictionaryImportViewActions.
     /// - Parameters:
     ///   - style: `DictionaryImportStyle` style configuration.
     ///   - locale: `DictionaryImportLocale` localization object.
@@ -29,13 +23,12 @@ struct DictionaryImportViewActions: View {
         self.onImport = onImport
     }
     
-    // MARK: - Body
     var body: some View {
         HStack {
             ButtonAction(
                 title: locale.screenTitle.lowercased(),
                 action: onImport,
-                style: .action(ThemeManager.shared.currentThemeStyle)
+                style: .action(themeManager.currentThemeStyle)
             )
         }
         .padding(.horizontal)

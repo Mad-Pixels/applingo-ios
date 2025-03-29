@@ -1,31 +1,26 @@
 import UniformTypeIdentifiers
 import SwiftUI
 
-/// A view that handles the import of dictionaries.
-/// Provides UI for selecting a CSV file to import dictionary data.
 struct DictionaryImport: View {
-    
-    // MARK: - Environment & State Properties
-    
     @Environment(\.presentationMode) private var presentationMode
+    @EnvironmentObject private var themeManager: ThemeManager
+    
+    @Binding private var isPresented: Bool
+    
     @StateObject private var style: DictionaryImportStyle
     @StateObject private var locale = DictionaryImportLocale()
     
     @State private var isShowingFileImporter = false
     @State private var isPressedTrailing = false
-    @Binding private var isPresented: Bool
-    
-    // MARK: - Initializer
     
     /// Initializes the DictionaryImport view.
-    /// - Parameter style: Optional style configuration; if nil, a themed style is applied.
-    init(isPresented: Binding<Bool>, style: DictionaryImportStyle? = nil) {
-        let initialStyle = style ?? .themed(ThemeManager.shared.currentThemeStyle)
+    /// - Parameters:
+    ///   - isPresented: ...
+    ///   - style: Optional style configuration; if nil, a themed style is applied.
+    init(isPresented: Binding<Bool>, style: DictionaryImportStyle = .themed(ThemeManager.shared.currentThemeStyle)) {
+        _style = StateObject(wrappedValue: style)
         _isPresented = isPresented
-        _style = StateObject(wrappedValue: initialStyle)
     }
-    
-    // MARK: - Body
     
     var body: some View {
         VStack {
@@ -35,10 +30,10 @@ struct DictionaryImport: View {
             ) {
                 ScrollView {
                     VStack(spacing: style.spacing) {
-                        DictionaryImportViewTitle(locale: locale, style: style)
-                        DictionaryImportViewTable(locale: locale, style: style)
-                        DictionaryImportViewDescription(locale: locale, style: style)
-                        DictionaryImportViewNote(locale: locale, style: style)
+                        DictionaryImportViewTitle(style: style, locale: locale)
+                        DictionaryImportViewTable(style: style, locale: locale)
+                        DictionaryImportViewDescription(style: style, locale: locale)
+                        DictionaryImportViewNote(style: style, locale: locale)
                     }
                     .padding(style.padding)
                 }
@@ -48,7 +43,7 @@ struct DictionaryImport: View {
                         ButtonNav(
                             isPressed: $isPressedTrailing,
                             onTap: { presentationMode.wrappedValue.dismiss() },
-                            style: .close(ThemeManager.shared.currentThemeStyle)
+                            style: .close(themeManager.currentThemeStyle)
                         )
                     }
                 }
@@ -74,9 +69,7 @@ struct DictionaryImport: View {
             }
         )
     }
-    
-    // MARK: - Private Methods
-    
+
     /// Handles the result of the file importer dialog.
     /// - Parameter result: The result returned from the file importer.
     private func handleFileImport(result: Result<[URL], Error>) {

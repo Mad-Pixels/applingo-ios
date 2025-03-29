@@ -1,21 +1,19 @@
 import SwiftUI
 
-/// A view that displays the title section of the dictionary import screen.
-struct DictionaryImportViewTitle: View {
-    
-    // MARK: - Properties
+internal struct DictionaryImportViewTitle: View {
+    @EnvironmentObject private var themeManager: ThemeManager
 
     private let locale: DictionaryImportLocale
     private let style: DictionaryImportStyle
-    
-    // MARK: - Initializer
-    
-    init(locale: DictionaryImportLocale, style: DictionaryImportStyle) {
+
+    /// Initializes the WordDetailsViewStatistic.
+    /// - Parameters:
+    ///   - style: The style configuration.
+    ///   - locale: The localization object.
+    init(style: DictionaryImportStyle, locale: DictionaryImportLocale) {
         self.locale = locale
         self.style = style
     }
-    
-    // MARK: - Body
     
     var body: some View {
         SectionBody {
@@ -31,10 +29,11 @@ struct DictionaryImportViewTitle: View {
                     style: .block(ThemeManager.shared.currentThemeStyle)
                 )
                 
-                Text(locale.screenTextDictionaryAdd)
-                    .font(style.textFont)
-                    .foregroundStyle(style.textColor)
-                    .padding(.top, -8)
+                DynamicText(
+                    model: DynamicTextModel(text: locale.screenTextDictionaryAdd),
+                    style: .textMain(themeManager.currentThemeStyle)
+                )
+                .padding(.top, -8)
             }
             .padding(.vertical, 12)
             .padding(.horizontal, 8)

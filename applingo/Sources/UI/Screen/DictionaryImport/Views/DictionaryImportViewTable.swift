@@ -1,22 +1,20 @@
 import SwiftUI
 
-/// A view that displays a table section in the dictionary import screen.
-struct DictionaryImportViewTable: View {
-    
-    // MARK: - Properties
-    
+internal struct DictionaryImportViewTable: View {
+    @EnvironmentObject private var themeManager: ThemeManager
+
     private let locale: DictionaryImportLocale
     private let style: DictionaryImportStyle
     
-    // MARK: - Initializer
-    
-    init(locale: DictionaryImportLocale, style: DictionaryImportStyle) {
+    /// Initializes the WordDetailsViewStatistic.
+    /// - Parameters:
+    ///   - style: The style configuration.
+    ///   - locale: The localization object.
+    init(style: DictionaryImportStyle, locale: DictionaryImportLocale) {
         self.locale = locale
         self.style = style
     }
-    
-    // MARK: - Body
-    
+
     var body: some View {
         SectionBody {
             VStack(alignment: .leading, spacing: style.sectionSpacing) {
