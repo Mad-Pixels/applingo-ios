@@ -1,11 +1,6 @@
 import SwiftUI
 
-/// A view that provides filtering options for remote dictionaries.
-///
-/// This view allows users to apply filters such as category selection, level,
-/// and sorting order while fetching dictionaries from a remote source.
 struct DictionaryRemoteFilter: View {
-    // MARK: - Properties
     @Environment(\.presentationMode) var presentationMode
     @State private var selectedLevel: DictionaryLevelType = .undefined
     @State private var selectedSortBy: ApiSortType = .date

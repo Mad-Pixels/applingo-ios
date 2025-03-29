@@ -1,20 +1,14 @@
 import SwiftUI
 
-/// A view that provides action buttons for saving and resetting a dictionary filter.
-///
-/// This view displays two buttons:
-/// - **Save**: Triggers the `onSave` action.
-/// - **Reset**: Triggers the `onReset` action.
-struct DictionaryRemoteFilterViewActions: View {
-    // MARK: - Properties
+internal struct DictionaryRemoteFilterViewActions: View {
     @EnvironmentObject private var themeManager: ThemeManager
+    
     private let locale: DictionaryRemoteFilterLocale
     private let style: DictionaryRemoteFilterStyle
         
-    let onSave: () -> Void
-    let onReset: () -> Void
+    private let onSave: () -> Void
+    private let onReset: () -> Void
     
-    // MARK: - Initialization
     /// Initializes the view with localized titles and action handlers.
     /// - Parameters:
     ///   - style: `DictionaryRemoteFilterStyle` style configuration.
@@ -33,7 +27,6 @@ struct DictionaryRemoteFilterViewActions: View {
         self.onReset = onReset
     }
     
-    // MARK: - Body
     var body: some View {
         HStack {
             ButtonAction(

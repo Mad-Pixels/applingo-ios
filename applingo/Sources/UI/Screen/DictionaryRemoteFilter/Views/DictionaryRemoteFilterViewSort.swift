@@ -1,19 +1,14 @@
 import SwiftUI
 
-/// A view that allows users to select a sorting option for dictionaries.
-///
-/// This view provides a segmented picker for sorting dictionaries,
-/// with localized labels and theme support.
-struct DictionaryRemoteFilterViewSort: View {
-    // MARK: - Properties
+internal struct DictionaryRemoteFilterViewSort: View {
     @EnvironmentObject private var themeManager: ThemeManager
-    private let locale: DictionaryRemoteFilterLocale
-    private let style: DictionaryRemoteFilterStyle
     
     @Binding var selectedSortBy: ApiSortType
     
-    // MARK: - Initialization
-    /// Initializes the view with required dependencies.
+    private let locale: DictionaryRemoteFilterLocale
+    private let style: DictionaryRemoteFilterStyle
+
+    /// Initializes the DictionaryRemoteFilterViewSort.
     /// - Parameters:
     ///   - style: `DictionaryRemoteFilterStyle` style configuration.
     ///   - locale: `DictionaryRemoteFilterLocale` localization object.
@@ -28,16 +23,18 @@ struct DictionaryRemoteFilterViewSort: View {
         self.style = style
     }
     
-    // MARK: - Body
     var body: some View {
         SectionHeader(
             title: locale.screenSubtitleSortBy,
-            style: .block(ThemeManager.shared.currentThemeStyle)
+            style: .block(themeManager.currentThemeStyle)
         )
         ItemPicker(
             selectedValue: $selectedSortBy,
             items: ApiSortType.allCases,
-            style: .themed(ThemeManager.shared.currentThemeStyle, type: .segmented)
-        ) { sortBy in Text(sortBy.name) }
+            content:  {
+                sortBy in Text(sortBy.name)
+            },
+            style: .themed(themeManager.currentThemeStyle, type: .segmented)
+        )
     }
 }

@@ -1,9 +1,6 @@
 import Foundation
 
-/// Provides localized strings for the dictionary remote filter view.
-/// This class manages localized UI text and updates dynamically when the locale changes.
 final class DictionaryRemoteFilterLocale: ObservableObject {
-    // MARK: - Localized Keys
     private enum LocalizedKey: String {
         case title = "screen.dictionaryRemoteFilter.title"
         case subtitleSortBy = "screen.dictionaryRemoteFilter.subtitle.sortBy"
@@ -15,7 +12,6 @@ final class DictionaryRemoteFilterLocale: ObservableObject {
         case buttonClose = "base.button.close"
     }
     
-    // MARK: - Published Properties
     @Published private(set) var screenTitle: String
     @Published private(set) var screenSubtitleSortBy: String
     @Published private(set) var screenSubtitleLanguage: String
@@ -25,16 +21,17 @@ final class DictionaryRemoteFilterLocale: ObservableObject {
     @Published private(set) var screenButtonClose: String
     @Published private(set) var screenTextUFOLevel: String
     
-    // MARK: - Initialization
     init() {
-        self.screenTitle = Self.localizedString(for: .title)
-        self.screenSubtitleSortBy = Self.localizedString(for: .subtitleSortBy)
-        self.screenSubtitleLanguage = Self.localizedString(for: .subtitleLanguage)
-        self.screenSubtitleLevel = Self.localizedString(for: .subtitleLevel)
-        self.screenButtonSave = Self.localizedString(for: .buttonSave)
-        self.screenButtonReset = Self.localizedString(for: .buttonReset)
-        self.screenButtonClose = Self.localizedString(for: .buttonClose)
-        self.screenTextUFOLevel = Self.localizedString(for: .textUFOLevel)
+        self.screenTitle = ""
+        self.screenSubtitleSortBy = ""
+        self.screenSubtitleLanguage = ""
+        self.screenSubtitleLevel = ""
+        self.screenButtonSave = ""
+        self.screenButtonReset = ""
+        self.screenButtonClose = ""
+        self.screenTextUFOLevel = ""
+        
+        updateLocalizedStrings()
         
         NotificationCenter.default.addObserver(
             self,
@@ -48,14 +45,15 @@ final class DictionaryRemoteFilterLocale: ObservableObject {
         NotificationCenter.default.removeObserver(self)
     }
     
-    // MARK: - Localization Helper
-    /// Returns a localized string for the specified key.
+    @objc private func localeDidChange() {
+        updateLocalizedStrings()
+    }
+    
     private static func localizedString(for key: LocalizedKey) -> String {
         return LocaleManager.shared.localizedString(for: key.rawValue)
     }
     
-    // MARK: - Notification Handler
-    @objc private func localeDidChange() {
+    private func updateLocalizedStrings() {
         screenTitle = Self.localizedString(for: .title)
         screenSubtitleSortBy = Self.localizedString(for: .subtitleSortBy)
         screenSubtitleLanguage = Self.localizedString(for: .subtitleLanguage)

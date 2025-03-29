@@ -1,19 +1,14 @@
 import SwiftUI
 
-/// A view that allows users to select a dictionary difficulty level.
-///
-/// This view provides a picker for selecting a dictionary level,
-/// with localized labels and theme support.
-struct DictionaryRemoteFilterViewLevel: View {
-    // MARK: - Properties
+internal struct DictionaryRemoteFilterViewLevel: View {
     @EnvironmentObject private var themeManager: ThemeManager
-    private let locale: DictionaryRemoteFilterLocale
-    private let style: DictionaryRemoteFilterStyle
     
     @Binding var selectedLevel: DictionaryLevelType
     
-    // MARK: - Initialization
-    /// Initializes the view with required dependencies.
+    private let locale: DictionaryRemoteFilterLocale
+    private let style: DictionaryRemoteFilterStyle
+    
+    /// Initializes the DictionaryRemoteFilterViewLevel.
     /// - Parameters:
     ///   - style: `DictionaryRemoteFilterStyle` style configuration.
     ///   - locale: `DictionaryRemoteFilterLocale` localization object.
@@ -28,20 +23,23 @@ struct DictionaryRemoteFilterViewLevel: View {
         self.style = style
     }
     
-    // MARK: - Body
     var body: some View {
         Section() {
             SectionHeader(
                 title: locale.screenSubtitleLevel,
-                style: .block(ThemeManager.shared.currentThemeStyle)
+                style: .block(themeManager.currentThemeStyle)
             )
+            
             ItemPicker(
                 selectedValue: $selectedLevel,
                 items: DictionaryLevelType.allCases
             ) { level in
-                Text(
-                    level.rawValue == DictionaryLevelType.undefined.rawValue
-                    ? locale.screenTextUFOLevel : level.rawValue
+                DynamicText(
+                    model: DynamicTextModel(
+                        text: level.rawValue == DictionaryLevelType.undefined.rawValue
+                            ? locale.screenTextUFOLevel : level.rawValue
+                    ),
+                    style: .textMain(themeManager.currentThemeStyle)
                 )
             }
             .frame(maxWidth: .infinity)

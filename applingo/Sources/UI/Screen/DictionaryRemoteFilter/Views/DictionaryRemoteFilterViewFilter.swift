@@ -1,21 +1,17 @@
 import SwiftUI
 
-/// A view that provides category selection filters for a remote dictionary.
-///
-/// This view allows users to select categories for filtering dictionaries,
-/// displaying a loading indicator when categories are being fetched.
-struct DictionaryRemoteFilterViewFilter: View {
-    // MARK: - Properties
+internal struct DictionaryRemoteFilterViewFilter: View {
     @EnvironmentObject private var themeManager: ThemeManager
-    private let locale: DictionaryRemoteFilterLocale
-    private let style: DictionaryRemoteFilterStyle
-
-    @ObservedObject var categoryGetter: CategoryFetcher
+    
     @Binding var selectedFrontCategory: CategoryItem?
     @Binding var selectedBackCategory: CategoryItem?
-
-    // MARK: - Initialization
-    /// Initializes the view with required dependencies.
+    
+    @ObservedObject var categoryGetter: CategoryFetcher
+    
+    private let locale: DictionaryRemoteFilterLocale
+    private let style: DictionaryRemoteFilterStyle
+    
+    /// Initializes the DictionaryRemoteFilterViewFilter.
     /// - Parameters:
     ///   - style: `DictionaryRemoteFilterStyle` style configuration.
     ///   - locale: `DictionaryRemoteFilterLocale` localization object.
@@ -36,7 +32,6 @@ struct DictionaryRemoteFilterViewFilter: View {
         self.style = style
     }
     
-    // MARK: - Body
     var body: some View {
         Section() {
             SectionHeader(
@@ -47,19 +42,21 @@ struct DictionaryRemoteFilterViewFilter: View {
                 ItemPicker(
                     selectedValue: $selectedFrontCategory,
                     items: categoryGetter.frontCategories,
+                    content:  {
+                        category in Text(category?.code ?? "")
+                    },
                     style: .themed(themeManager.currentThemeStyle)
-                ) {
-                    category in Text(category?.code ?? "")
-                }
+                )
                 .frame(maxWidth: .infinity)
                     
                 ItemPicker(
                     selectedValue: $selectedBackCategory,
                     items: categoryGetter.backCategories,
+                    content:  {
+                        category in Text(category?.code ?? "")
+                    },
                     style: .themed(themeManager.currentThemeStyle)
-                ) {
-                    category in Text(category?.code ?? "")
-                }
+                )
                 .frame(maxWidth: .infinity)
             }
             .padding(.top, -24)
