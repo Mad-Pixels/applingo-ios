@@ -18,12 +18,12 @@ struct SectionBodyStyle {
 extension SectionBodyStyle {
     static func block(_ theme: AppTheme) -> SectionBodyStyle {
         SectionBodyStyle(
-            backgroundColor: theme.backgroundSecondary.opacity(0.5),
-            cornerRadius: 8,
+            backgroundColor: theme.backgroundSecondary,
+            cornerRadius: 12,
             borderWidth: nil,
             borderColor: nil,
             shadowColor: theme.backgroundSecondary,
-            shadowRadius: 0,
+            shadowRadius: 4,
             padding: EdgeInsets(top: 8, leading: 12, bottom: 8, trailing: 12)
         )
     }
