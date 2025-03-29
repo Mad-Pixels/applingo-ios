@@ -1,28 +1,22 @@
 import SwiftUI
 
-/// A view that displays the feedback screen in the Settings section.
 struct SettingsFeedback: View {
-    // MARK: - Constants
-    private let urlAbout: String = "https://docs.madpixels.io/applingo/about"
     private let urlReport: String = "https://docs.madpixels.io/applingo/feedback"
+    private let urlAbout: String = "https://docs.madpixels.io/applingo/about"
     
     @Environment(\.dismiss) private var dismiss
     
-    // MARK: - State Objects
     @StateObject private var style: SettingsFeedbackStyle
     @StateObject private var locale = SettingsFeedbackLocale()
     
-    // MARK: - Local State
     @State private var isPressedLeading = false
     
-    // MARK: - Initializer
-    /// Initializes the SettingsFeedback view.
+    /// Initializes the SettingsFeedback.
     /// - Parameter style: Optional style; if nil, a themed style is applied.
-    init(style: SettingsFeedbackStyle? = nil) {
-        _style = StateObject(wrappedValue: style ?? .themed(ThemeManager.shared.currentThemeStyle))
+    init(style: SettingsFeedbackStyle = .themed(ThemeManager.shared.currentThemeStyle)) {
+        _style = StateObject(wrappedValue: style)
     }
     
-    // MARK: - Body
     var body: some View {
         BaseScreen(
             screen: .SettingsFeedback,

@@ -1,8 +1,6 @@
 import Foundation
 
-/// Provides localized strings for the SettingsFeedback view.
 final class SettingsFeedbackLocale: ObservableObject {
-    // MARK: - Localized Keys
     private enum LocalizedKey: String {
         case title = "screen.settingsFeedback.title"
         case subtitleSendLogs = "screen.settingsFeedback.subtitle.sendLogs"
@@ -12,8 +10,7 @@ final class SettingsFeedbackLocale: ObservableObject {
         case descriptionSendLogs = "screen.settingsFeedback.description.sendLogs"
         case textSendLogs = "screen.settingsFeedback.text.sendLogs"
     }
-    
-    // MARK: - Published Properties
+
     @Published private(set) var screenTitle: String
     @Published private(set) var screenSubtitleUrls: String
     @Published private(set) var screenButtonAbout: String
@@ -21,17 +18,18 @@ final class SettingsFeedbackLocale: ObservableObject {
     @Published private(set) var screenSubtitleSendLogs: String
     @Published private(set) var screenDescriptionSendLogs: String
     @Published private(set) var screenTextSendLogs: String
-    
-    // MARK: - Initialization
+
     init() {
-        self.screenTitle = Self.localizedString(for: .title)
-        self.screenSubtitleUrls = Self.localizedString(for: .subtitleUrls)
-        self.screenButtonAbout = Self.localizedString(for: .buttonAbout)
-        self.screenButtonReport = Self.localizedString(for: .buttonReport)
-        self.screenSubtitleSendLogs = Self.localizedString(for: .subtitleSendLogs)
-        self.screenDescriptionSendLogs = Self.localizedString(for: .descriptionSendLogs)
-        self.screenTextSendLogs = Self.localizedString(for: .textSendLogs)
-        
+        self.screenTitle = ""
+        self.screenSubtitleUrls = ""
+        self.screenButtonAbout = ""
+        self.screenButtonReport = ""
+        self.screenSubtitleSendLogs = ""
+        self.screenDescriptionSendLogs = ""
+        self.screenTextSendLogs = ""
+
+        updateLocalizedStrings()
+
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(localeDidChange),
@@ -39,19 +37,20 @@ final class SettingsFeedbackLocale: ObservableObject {
             object: nil
         )
     }
-    
+
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
-    
-    // MARK: - Localization Helper
-    /// Returns a localized string for the specified key.
+
+    @objc private func localeDidChange() {
+        updateLocalizedStrings()
+    }
+
     private static func localizedString(for key: LocalizedKey) -> String {
         return LocaleManager.shared.localizedString(for: key.rawValue)
     }
-    
-    // MARK: - Notification Handler
-    @objc private func localeDidChange() {
+
+    private func updateLocalizedStrings() {
         screenTitle = Self.localizedString(for: .title)
         screenSubtitleUrls = Self.localizedString(for: .subtitleUrls)
         screenButtonAbout = Self.localizedString(for: .buttonAbout)

@@ -1,16 +1,14 @@
 import SwiftUI
 
-/// A view that displays a toggle for sending error logs.
-struct SettingsFeedbackViewLogger: View {
-    // MARK: - Properties
+internal struct SettingsFeedbackViewLogger: View {
     @EnvironmentObject private var themeManager: ThemeManager
-    private let locale: SettingsFeedbackLocale
-    private let style: SettingsFeedbackStyle
     
     @ObservedObject private var logHandler = LogHandler.shared
     
-    // MARK: - Initializer
-    /// Initializes the additional view.
+    private let locale: SettingsFeedbackLocale
+    private let style: SettingsFeedbackStyle
+    
+    /// Initializes the SettingsFeedbackViewLogger.
     /// - Parameters:
     ///   - style: `SettingsFeedbackStyle` object that defines the visual style.
     ///   - locale: `SettingsFeedbackLocale` object that provides localized strings.
@@ -22,12 +20,12 @@ struct SettingsFeedbackViewLogger: View {
         self.style = style
     }
     
-    // MARK: - Body
     var body: some View {
         SectionHeader(
             title: locale.screenSubtitleSendLogs,
             style: .block(ThemeManager.shared.currentThemeStyle)
         )
+        
         ItemToggle(
             isOn: $logHandler.sendLogs,
             title: locale.screenDescriptionSendLogs,
@@ -35,15 +33,19 @@ struct SettingsFeedbackViewLogger: View {
             onChange: { newValue in
                 logHandler.sendLogs = newValue
             }
-            
         )
         
-        SectionBody(style: .accent(themeManager.currentThemeStyle)) {
-            Text(locale.screenTextSendLogs)
-                .font(style.font)
-                .foregroundColor(style.textColor)
-                .frame(maxWidth: .infinity)
-        }
-        
+        SectionBody(content: {
+            DynamicText(
+                model: DynamicTextModel(text: locale.screenTextSendLogs),
+                style: .textLight(
+                    ThemeManager.shared.currentThemeStyle,
+                    alignment: .leading,
+                    lineLimit: 8
+                )
+            )
+        },
+            style: .accent(themeManager.currentThemeStyle)
+        )
     }
 }

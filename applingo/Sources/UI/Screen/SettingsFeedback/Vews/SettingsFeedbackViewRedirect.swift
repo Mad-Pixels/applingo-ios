@@ -1,16 +1,14 @@
 import SwiftUI
 
-struct SettingsFeedbackViewRedirect: View {
-    // MARK: - Properties
+internal struct SettingsFeedbackViewRedirect: View {
     @EnvironmentObject private var themeManager: ThemeManager
+    
     private let locale: SettingsFeedbackLocale
     private let style: SettingsFeedbackStyle
-    
     private let title: String
     private let url: String
     
-    // MARK: - Initializer
-    /// Initializes the additional view.
+    /// Initializes the SettingsFeedbackViewRedirect.
     /// - Parameters:
     ///   - style: `SettingsFeedbackStyle` object that defines the visual style.
     ///   - locale: `SettingsFeedbackLocale` object that provides localized strings.
@@ -28,7 +26,6 @@ struct SettingsFeedbackViewRedirect: View {
         self.url = url
     }
     
-    // MARK: - Body
     var body: some View {
         ButtonMenu(
             title: title,
