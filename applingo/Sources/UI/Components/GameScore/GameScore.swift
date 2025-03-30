@@ -40,7 +40,7 @@ struct GameScore: View {
                 .padding(.top, 23)
             }
         }
-        .frame(width: 42, height: 72, alignment: .leading)
+        .frame(width: 42, height: 96, alignment: .leading)
         .onChange(of: stats.score) { newScore in
             handleNewScore(newScore)
         }

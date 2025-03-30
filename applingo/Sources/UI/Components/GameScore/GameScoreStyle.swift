@@ -21,8 +21,7 @@ final class GameScoreStyle: ObservableObject {
     let minSaturation: Double
     let saturationStep: Double
 
-    // MARK: - Initializer
-    /// Initializes a new instance of `GameScoreStyle`.
+    /// Initializes the GameScoreStyle.
     /// - Parameters:
     ///   - positiveTextColor: The color for positive score values.
     ///   - negativeTextColor: The color for negative score values.

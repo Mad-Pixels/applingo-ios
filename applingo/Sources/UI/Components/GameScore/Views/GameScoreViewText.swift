@@ -19,7 +19,7 @@ internal struct GameScoreViewText: View {
     }
     
     var body: some View {
-        DynamicText(
+        DynamicTextCompact(
             model: DynamicTextModel(text: "\(item.score.sign)\(abs(item.score.value))"),
             style: .gameScore(
                 themeManager.currentThemeStyle,
