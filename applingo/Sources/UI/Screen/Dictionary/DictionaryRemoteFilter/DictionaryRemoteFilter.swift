@@ -49,72 +49,75 @@ struct DictionaryRemoteFilter: View {
             screen: .DictionaryRemoteFilter,
             title: locale.screenTitle
         ) {
-            ScrollView {
-                if categoryGetter.isLoadingPage { 
-                    VStack {
-                        Spacer()
-                        ItemListLoading(style: .themed(ThemeManager.shared.currentThemeStyle))
-                        Spacer()
+            VStack(alignment: .center) {
+                ScrollView {
+                    if categoryGetter.isLoadingPage {
+                        VStack {
+                            Spacer()
+                            ItemListLoading(style: .themed(ThemeManager.shared.currentThemeStyle))
+                            Spacer()
+                        }
+                        .frame(minHeight: UIScreen.main.bounds.height - 200)
+                    } else {
+                        VStack(spacing: style.spacing) {
+                            DictionaryRemoteFilterViewFilter(
+                                style: style,
+                                locale: locale,
+                                categoryGetter: categoryGetter,
+                                selectedFrontCategory: $selectedFrontCategory,
+                                selectedBackCategory: $selectedBackCategory
+                            )
+                            
+                            DictionaryRemoteFilterViewSort(
+                                style: style,
+                                locale: locale,
+                                selectedSortBy: $selectedSortBy
+                            )
+                            
+                            DictionaryRemoteFilterViewLevel(
+                                style: style,
+                                locale: locale,
+                                selectedLevel: $selectedLevel
+                            )
+                        }
+                        .padding(style.padding)
                     }
-                    .frame(minHeight: UIScreen.main.bounds.height - 200)
-                } else {
-                    VStack(spacing: style.spacing) {
-                        DictionaryRemoteFilterViewFilter(
-                            style: style,
-                            locale: locale,
-                            categoryGetter: categoryGetter,
-                            selectedFrontCategory: $selectedFrontCategory,
-                            selectedBackCategory: $selectedBackCategory
-                        )
-
-                        DictionaryRemoteFilterViewSort(
-                            style: style,
-                            locale: locale,
-                            selectedSortBy: $selectedSortBy
-                        )
-
-                        DictionaryRemoteFilterViewLevel(
-                            style: style,
-                            locale: locale,
-                            selectedLevel: $selectedLevel
+                }
+                .onAppear {
+                    categoryGetter.setScreen(.DictionaryRemoteFilter)
+                    categoryGetter.get { _ in }
+                }
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        ButtonNav(
+                            isPressed: $isPressedTrailing,
+                            onTap: {
+                                presentationMode.wrappedValue.dismiss()
+                            },
+                            style: .close(ThemeManager.shared.currentThemeStyle)
                         )
                     }
-                    .padding(style.padding)
                 }
-            }
-            .onAppear {
-                categoryGetter.setScreen(.DictionaryRemoteFilter)
-                categoryGetter.get { _ in }
-            }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    ButtonNav(
-                        isPressed: $isPressedTrailing,
-                        onTap: {
-                            presentationMode.wrappedValue.dismiss()
-                        },
-                        style: .close(ThemeManager.shared.currentThemeStyle)
-                    )
+                .onChange(of: categoryGetter.frontCategories) { frontCategories in
+                    if selectedFrontCategory == nil || !frontCategories.contains(where: { $0.code == selectedFrontCategory?.code }) {
+                        selectedFrontCategory = frontCategories.first
+                    }
                 }
-            }
-            .onChange(of: categoryGetter.frontCategories) { frontCategories in
-                if selectedFrontCategory == nil || !frontCategories.contains(where: { $0.code == selectedFrontCategory?.code }) {
-                    selectedFrontCategory = frontCategories.first
+                .onChange(of: categoryGetter.backCategories) { backCategories in
+                    if selectedBackCategory == nil || !backCategories.contains(where: { $0.code == selectedBackCategory?.code }) {
+                        selectedBackCategory = backCategories.first
+                    }
                 }
-            }
-            .onChange(of: categoryGetter.backCategories) { backCategories in
-                if selectedBackCategory == nil || !backCategories.contains(where: { $0.code == selectedBackCategory?.code }) {
-                    selectedBackCategory = backCategories.first
-                }
+                
+                DictionaryRemoteFilterViewActions(
+                    style: style,
+                    locale: locale,
+                    onSave: saveFilters,
+                    onReset: resetFilters
+                )
+                .padding(.bottom, 32)
             }
         }
-        
-        DictionaryRemoteFilterViewActions(
-            style: style,
-            locale: locale,
-            onSave: saveFilters,
-            onReset: resetFilters
-        )
     }
     
     /// Saves the selected filters and updates the API request parameters.
