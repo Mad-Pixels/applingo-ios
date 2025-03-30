@@ -58,18 +58,18 @@ internal struct DictionaryImportViewDescription: View {
             VStack(alignment: .center, spacing: style.sectionSpacing) {
                 DynamicText(
                     model: DynamicTextModel(text: title.uppercased()),
-                    style: .textMain(
+                    style: .headerGame(
                         themeManager.currentThemeStyle,
-                        alignment: .leading,
+                        alignment: .center,
                         lineLimit: 1
                     )
                 )
                 
                 DynamicText(
                     model: DynamicTextModel(text: description),
-                    style: .textMain(
+                    style: .textGame(
                         themeManager.currentThemeStyle,
-                        alignment: .leading,
+                        alignment: .center,
                         lineLimit: 1
                     )
                 )
@@ -77,7 +77,7 @@ internal struct DictionaryImportViewDescription: View {
                 
                 DynamicText(
                     model: DynamicTextModel(text: required ? locale.screenTagRequired : locale.screenTagOptional),
-                    style: .textMain(
+                    style: .textLight(
                         themeManager.currentThemeStyle,
                         alignment: .center,
                         lineLimit: 1

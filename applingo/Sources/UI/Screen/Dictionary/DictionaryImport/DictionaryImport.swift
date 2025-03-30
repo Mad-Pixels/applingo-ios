@@ -23,51 +23,69 @@ struct DictionaryImport: View {
     }
     
     var body: some View {
-        VStack {
-            BaseScreen(
-                screen: .DictionaryImport,
-                title: locale.screenTitle
-            ) {
+        BaseScreen(
+            screen: .WordNotFound
+        ) {
+            VStack(alignment: .center) {
                 ScrollView {
-                    VStack(spacing: style.spacing) {
-                        DictionaryImportViewTitle(style: style, locale: locale)
-                        DictionaryImportViewTable(style: style, locale: locale)
-                        DictionaryImportViewDescription(style: style, locale: locale)
-                        DictionaryImportViewNote(style: style, locale: locale)
-                    }
-                    .padding(style.padding)
-                }
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        ButtonNav(
-                            isPressed: $isPressedTrailing,
-                            onTap: { presentationMode.wrappedValue.dismiss() },
-                            style: .close(themeManager.currentThemeStyle)
+                    VStack(alignment: .center, spacing: style.spacing) {
+                        DictionaryImportViewTitle(
+                            style: style,
+                            locale: locale
                         )
+                        
+                        DictionaryImportViewTable(
+                            style: style,
+                            locale: locale
+                        )
+                        
+                        DictionaryImportViewDescription(
+                            style: style,
+                            locale: locale
+                        )
+                        
+                        DictionaryImportViewNote(
+                            style: style,
+                            locale: locale
+                        )
+                        .padding(.bottom, 32)
                     }
                 }
+                .padding(.top, 8)
+                .padding(.horizontal, style.spacing)
+                .scrollIndicators(.hidden)
+                
+                DictionaryImportViewActions(
+                    style: style,
+                    locale: locale,
+                    onImport: {
+                        isShowingFileImporter = true
+                    }
+                )
+                .padding(.bottom, 32)
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    ButtonNav(
+                        isPressed: $isPressedTrailing,
+                        onTap: { presentationMode.wrappedValue.dismiss() },
+                        style: .close(themeManager.currentThemeStyle)
+                    )
+                }
+            }
+            .fileImporter(
+                isPresented: $isShowingFileImporter,
+                allowedContentTypes: [
+                    .plainText,
+                    .commaSeparatedText,
+                    UTType(filenameExtension: "xlsx")!
+                ],
+                allowsMultipleSelection: false
+            ) { result in
+                handleFileImport(result: result)
             }
         }
-        .fileImporter(
-            isPresented: $isShowingFileImporter,
-            allowedContentTypes: [
-                .plainText,
-                .commaSeparatedText,
-                UTType(filenameExtension: "xlsx")!
-            ],
-            allowsMultipleSelection: false
-        ) { result in
-            handleFileImport(result: result)
-        }
-        
-        DictionaryImportViewActions(
-            style: style,
-            locale: locale,
-            onImport: {
-                isShowingFileImporter = true
-            }
-        )
     }
 
     /// Handles the result of the file importer dialog.

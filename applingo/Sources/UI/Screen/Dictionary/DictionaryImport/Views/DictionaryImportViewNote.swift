@@ -16,7 +16,7 @@ internal struct DictionaryImportViewNote: View {
     }
 
     var body: some View {
-        SectionBody {
+        SectionBody(content:  {
             VStack(alignment: .leading, spacing: style.sectionSpacing) {
                 DynamicText(
                     model: DynamicTextModel(text: locale.screenTextNote),
@@ -29,7 +29,7 @@ internal struct DictionaryImportViewNote: View {
             .frame(maxWidth: .infinity)
             .padding(.vertical, 12)
             .padding(.horizontal, 4)
-        }
+        }, style: .accent(themeManager.currentThemeStyle))
         .frame(maxWidth: .infinity)
     }
 }

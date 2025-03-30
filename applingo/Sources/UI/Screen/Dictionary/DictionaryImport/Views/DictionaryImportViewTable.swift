@@ -18,9 +18,13 @@ internal struct DictionaryImportViewTable: View {
     var body: some View {
         SectionBody {
             VStack(alignment: .leading, spacing: style.sectionSpacing) {
-                SectionHeader(
-                    title: locale.screenSubtitleCreateTable,
-                    style: .block(ThemeManager.shared.currentThemeStyle)
+                DynamicText(
+                    model: DynamicTextModel(text: locale.screenSubtitleCreateTable),
+                    style: .headerGame(
+                        ThemeManager.shared.currentThemeStyle,
+                        alignment: .center,
+                        lineLimit: 1
+                    )
                 )
                 
                 Image(ThemeManager.shared.currentTheme.asString == "Dark" ? "table_example_dark" : "table_example_light")

@@ -17,26 +17,32 @@ internal struct DictionaryImportViewTitle: View {
     
     var body: some View {
         SectionBody {
-            VStack(alignment: .leading, spacing: style.sectionSpacing) {
+            VStack(alignment: .center, spacing: style.sectionSpacing) {
                 Image("import_title")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 250, height: 125)
                     .frame(maxWidth: .infinity, alignment: .center)
                 
-                SectionHeader(
-                    title: locale.screenSubtitleDictionaryAdd,
-                    style: .block(ThemeManager.shared.currentThemeStyle)
+                DynamicText(
+                    model: DynamicTextModel(text: locale.screenSubtitleDictionaryAdd),
+                    style: .headerGame(
+                        ThemeManager.shared.currentThemeStyle,
+                        alignment: .center,
+                        lineLimit: 1
+                    )
                 )
-                
+
                 DynamicText(
                     model: DynamicTextModel(text: locale.screenTextDictionaryAdd),
-                    style: .textMain(themeManager.currentThemeStyle)
+                    style: .textBold(
+                        themeManager.currentThemeStyle,
+                        alignment: .center,
+                        lineLimit: 4
+                    )
                 )
-                .padding(.top, -8)
             }
-            .padding(.vertical, 12)
-            .padding(.horizontal, 8)
+            .padding(8)
         }
     }
 }
