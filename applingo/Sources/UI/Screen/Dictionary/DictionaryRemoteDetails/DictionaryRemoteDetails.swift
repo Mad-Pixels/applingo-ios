@@ -30,27 +30,55 @@ struct DictionaryRemoteDetails: View {
             screen: .DictionaryRemoteDetails,
             title: locale.screenTitle
         ) {
-            ScrollView {
-                VStack(spacing: style.spacing) {
-                    DictionaryRemoteDetailsViewMain(
-                        style: style,
-                        locale: locale,
-                        dictionary: editedDictionary
-                    )
-                    
-                    DictionaryRemoteDetailsViewCategory(
-                        style: style,
-                        locale: locale,
-                        dictionary: editedDictionary
-                    )
-                    
-                    DictionaryRemoteDetailsViewAdditional(
-                        style: style,
-                        locale: locale,
-                        dictionary: editedDictionary
-                    )
+            VStack(alignment: .center) {
+                ScrollView {
+                    VStack(spacing: style.spacing) {
+                        DictionaryRemoteDetailsViewMain(
+                            style: style,
+                            locale: locale,
+                            dictionary: editedDictionary
+                        )
+                        
+                        DictionaryRemoteDetailsViewCategory(
+                            style: style,
+                            locale: locale,
+                            dictionary: editedDictionary
+                        )
+                        
+                        DictionaryRemoteDetailsViewAdditional(
+                            style: style,
+                            locale: locale,
+                            dictionary: editedDictionary
+                        )
+                    }
+                    .padding(style.padding)
                 }
-                .padding(style.padding)
+                
+                if dictionaryExists {
+                    DynamicText(
+                        model: DynamicTextModel(text: locale.screenSubtitleDictionaryExist),
+                        style: .textGame(
+                            themeManager.currentThemeStyle,
+                            alignment: .center,
+                            lineLimit: 1
+                        )
+                    )
+                    .padding(style.spacing)
+                    .padding(.bottom, 32)
+                } else if isDownloading {
+                    ProgressView(locale.screenButtonDownload)
+                        .progressViewStyle(CircularProgressViewStyle())
+                        .padding(style.spacing)
+                        .padding(.bottom, 32)
+                } else {
+                    ButtonAction(
+                        title: locale.screenButtonDownload,
+                        action: downloadDictionary,
+                        style: .action(themeManager.currentThemeStyle)
+                    )
+                    .padding(.horizontal, style.spacing)
+                    .padding(.bottom, 32)
+                }
             }
             .onAppear() {
                 dictionaryAction.setScreen(.DictionaryRemoteDetails)
@@ -71,29 +99,6 @@ struct DictionaryRemoteDetails: View {
                     )
                 }
             }
-        }
-        
-        if dictionaryExists {
-            DynamicText(
-                model: DynamicTextModel(text: locale.screenSubtitleDictionaryExist),
-                style: .textGame(
-                    themeManager.currentThemeStyle,
-                    alignment: .center,
-                    lineLimit: 1
-                )
-            )
-            .padding(style.spacing)
-        } else if isDownloading {
-            ProgressView(locale.screenButtonDownload)
-                .progressViewStyle(CircularProgressViewStyle())
-                .padding(style.spacing)
-        } else {
-            ButtonAction(
-                title: locale.screenButtonDownload,
-                action: downloadDictionary,
-                style: .action(themeManager.currentThemeStyle)
-            )
-            .padding(.horizontal, style.spacing)
         }
     }
     
