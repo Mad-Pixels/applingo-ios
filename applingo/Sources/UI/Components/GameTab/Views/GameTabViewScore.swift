@@ -13,7 +13,7 @@ internal struct GameTabViewScore: View {
                 model: DynamicTextModel(text: locale.screenScore),
                 style: .textMain(themeManager.currentThemeStyle, alignment: .center, lineLimit: 1)
             )
-            
+
             DynamicTextCompact(
                 model: DynamicTextModel(text: "\(score)"),
                 style: .textGameBold(themeManager.currentThemeStyle, alignment: .center, lineLimit: 1)

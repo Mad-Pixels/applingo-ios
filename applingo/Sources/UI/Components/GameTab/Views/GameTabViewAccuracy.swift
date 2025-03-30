@@ -5,7 +5,7 @@ internal struct GameTabViewAccuracy: View {
     
     internal let accuracy: Double
     internal let style: GameTabStyle
-    
+
     var body: some View {
         DynamicTextCompact(
             model: DynamicTextModel(text: "\(Int(accuracy * 100))%"),

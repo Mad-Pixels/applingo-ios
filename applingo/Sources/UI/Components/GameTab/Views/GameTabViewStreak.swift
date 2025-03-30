@@ -13,7 +13,7 @@ struct GameTabViewStreak: View {
                 model: DynamicTextModel(text: locale.screenStreak),
                 style: .textMain(themeManager.currentThemeStyle, alignment: .center, lineLimit: 1)
             )
-            
+
             DynamicTextCompact(
                 model: DynamicTextModel(text: "\(streak)"),
                 style: .textGameBold(themeManager.currentThemeStyle, alignment: .center, lineLimit: 1)

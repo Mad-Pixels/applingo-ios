@@ -2,11 +2,11 @@ import SwiftUI
 
 internal struct GameTabViewTimer: View {
     @EnvironmentObject private var themeManager: ThemeManager
-    
+
     @ObservedObject var timer: GameStateUtilsTimer
-    
+
     internal let style: GameTabStyle
-    
+
     var body: some View {
         DynamicTextCompact(
             model: DynamicTextModel(text: timer.timeLeft.formatAsTimer),
