@@ -30,26 +30,32 @@ struct DictionaryLocalRow: View {
                             .foregroundColor(style.subtitleColor)
                     }
                     
-                    if model.level.rawValue != "UFO" {
+                    HStack(spacing: 8) {
                         HStack(spacing: 4) {
-                            Image(systemName: "graduationcap")
+                            Image(systemName: "book")
                                 .font(.system(size: 11))
                                 .foregroundColor(style.accentColor)
-                            
-                            Text(model.level.rawValue)
+
+                            Text(model.formattedWordCount)
                                 .font(style.wordCountFont)
                                 .foregroundColor(style.subtitleColor)
                         }
-                    }
-                    
-                    HStack(spacing: 4) {
-                        Image(systemName: "book")
-                            .font(.system(size: 11))
-                            .foregroundColor(style.accentColor)
-
-                        Text(model.formattedWordCount)
-                            .font(style.wordCountFont)
-                            .foregroundColor(style.subtitleColor)
+                        
+                        if model.level.rawValue != "UFO" {
+                            Text("|")
+                                .font(style.wordCountFont)
+                                .foregroundColor(style.subtitleColor.opacity(0.5))
+                            
+                            HStack(spacing: 4) {
+                                Image(systemName: "graduationcap")
+                                    .font(.system(size: 11))
+                                    .foregroundColor(style.accentColor)
+                                
+                                Text(model.level.rawValue)
+                                    .font(style.wordCountFont)
+                                    .foregroundColor(style.subtitleColor)
+                            }
+                        }
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
