@@ -67,9 +67,9 @@ struct GameNoWords: View {
                     action: { dismiss() },
                     style: .action(ThemeManager.shared.currentThemeStyle)
                 )
-                .padding(.bottom, style.padding.bottom)
+                .padding(.bottom, 32)
             }
-            .padding(.horizontal, style.padding.leading)
+            .padding(.horizontal, 8)
             .scrollIndicators(.hidden)
         }
         .padding(.top, 64)
