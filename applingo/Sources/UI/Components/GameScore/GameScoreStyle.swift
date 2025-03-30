@@ -1,32 +1,23 @@
 import SwiftUI
 
-/// A style object for configuring the appearance and animations of the game score view.
 final class GameScoreStyle: ObservableObject {
-    // MARK: - Visual Properties
+    // Visual Properties
     let positiveTextColor: Color
     let negativeTextColor: Color
     let iconSize: CGFloat
     let font: Font
 
-    // MARK: - Animation Properties
-    /// Maximum number of score history items to display simultaneously.
+    // Animation Properties
     let maxAnimationItems: Int
-    /// Ratio used to fade older score entries.
     let fadeRatio: Double
-    /// Vertical offset step for each subsequent score entry.
     let offsetStep: CGFloat
-    /// Scale factor for older score entries.
     let scaleRatio: CGFloat
-    /// Base duration for score animations.
     let baseAnimationDuration: Double
-    /// Duration the score remains visible before removal.
     let displayDuration: Double
-    /// Duration of the removal animation.
     let removalDuration: Double
-    /// Delay before the removal animation begins.
     let removalDelay: Double
     
-    // MARK: - Text Saturation
+    // Text Saturation
     let minSaturation: Double
     let saturationStep: Double
 
@@ -78,12 +69,7 @@ final class GameScoreStyle: ObservableObject {
     }
 }
 
-// MARK: - Themed Style Extension
 extension GameScoreStyle {
-    /// Returns a themed style based on the current application theme.
-    /// - Parameter theme: The current application theme.
-    /// - Returns: A new instance of `GameScoreStyle` configured for the given theme,
-    ///            with animation values set directly.
     static func themed(_ theme: AppTheme) -> GameScoreStyle {
         GameScoreStyle(
             positiveTextColor: theme.success,

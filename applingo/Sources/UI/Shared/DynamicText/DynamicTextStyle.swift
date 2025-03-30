@@ -251,4 +251,23 @@ extension DynamicTextStyle {
             fontDesign: .default
         )
     }
+    
+    static func gameScore(
+        _ theme: AppTheme,
+        isPositive: Bool
+    ) -> DynamicTextStyle {
+        return DynamicTextStyle(
+            textColor: isPositive ? theme.success : theme.error,
+            alignment: .center,
+            letterSpacing: 0.0,
+            allowsTightening: true,
+            maxFontSize: 14,
+            minFontSize: 10,
+            lineBreakMode: .byTruncatingTail,
+            wordWrapping: false,
+            lineLimit: 1,
+            fontWeight: .bold,
+            fontDesign: .default
+        )
+    }
 }

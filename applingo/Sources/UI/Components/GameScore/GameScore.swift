@@ -1,34 +1,24 @@
 import SwiftUI
 
-/// A view that displays animated game score updates.
-///
-/// This view observes changes in game statistics and maintains a history of score updates,
-/// which are rendered with fading, offset, scaling, and varying saturation animations.
-/// New score updates are inserted at the top (with full saturation) while older entries animate out over time.
-/// Animation and visual style parameters are configured via a `GameScoreStyle` object.
 struct GameScore: View {
-    // MARK: - Properties
+    @EnvironmentObject private var themeManager: ThemeManager
+    
     @State private var hideScoreWorkItem: DispatchWorkItem? = nil
     @State private var scoreHistory: [ScoreHistoryModel] = []
     
-    // MARK: - State Objects
     @StateObject private var style: GameScoreStyle
     
-    // MARK: - Observed Objects
     @ObservedObject var stats: GameStats
     
-    // MARK: - Initializer
-    /// Initializes the GameScore view with the provided game statistics and an optional style.
-    /// If no style is provided, a themed style based on the current theme is used.
+    /// Initializes the GameScore.
     /// - Parameters:
     ///   - stats: The game statistics.
     ///   - style: An optional GameScoreStyle instance.
-    init(stats: GameStats, style: GameScoreStyle? = nil) {
-        _style = StateObject(wrappedValue: style ?? .themed(ThemeManager.shared.currentThemeStyle))
+    init(stats: GameStats, style: GameScoreStyle = .themed(ThemeManager.shared.currentThemeStyle)) {
+        _style = StateObject(wrappedValue: style)
         self.stats = stats
     }
     
-    // MARK: - Body
     var body: some View {
         VStack {
             if !scoreHistory.isEmpty {
@@ -56,7 +46,6 @@ struct GameScore: View {
         }
     }
     
-    // MARK: - Private Methods
     /// Handles a new score update by updating the history with animation.
     /// - Parameter newScore: The newly computed score.
     private func handleNewScore(_ newScore: GameScoringScoreAnswerModel) {
