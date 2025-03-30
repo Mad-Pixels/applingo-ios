@@ -1,7 +1,5 @@
 import SwiftUI
 
-// MARK: - InputSearch View
-/// A search input field with a magnifying glass icon, clear button, and custom styling.
 struct InputSearch: View {
     @Binding var text: String
     let placeholder: String
@@ -10,11 +8,11 @@ struct InputSearch: View {
     
     @FocusState private var isFocused: Bool
     
-    /// Initializes the InputSearch view.
+    /// Initializes the InputSearch.
     /// - Parameters:
     ///   - text: Binding to the search text value.
     ///   - placeholder: Placeholder text displayed when empty.
-    ///   - style: The style for the search input. Defaults to themed style.
+    ///   - style: The style for the picker. Defaults to themed style using the current theme.
     ///   - isDisabled: Flag to disable the input. Defaults to false.
     init(
         text: Binding<String>,

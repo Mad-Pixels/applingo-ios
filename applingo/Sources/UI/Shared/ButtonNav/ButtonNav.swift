@@ -1,11 +1,10 @@
 import SwiftUI
 
-// MARK: - ButtonNav View
-/// A circular navigation button that responds to press gestures with animation.
 struct ButtonNav: View {
-    let style: ButtonNavStyle
-    let onTap: () -> Void
     @Binding var isPressed: Bool
+    
+    let onTap: () -> Void
+    let style: ButtonNavStyle
     
     var body: some View {
         Group {

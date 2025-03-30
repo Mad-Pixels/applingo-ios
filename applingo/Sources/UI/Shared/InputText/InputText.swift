@@ -1,9 +1,8 @@
 import SwiftUI
 
-// MARK: - InputText View
-/// A text field with an optional title, icon, and custom styling.
 struct InputText: View {
     @Binding var text: String
+    
     let title: String?
     let placeholder: String
     let isEditing: Bool
@@ -12,14 +11,14 @@ struct InputText: View {
     
     @FocusState private var isFocused: Bool
     
-    /// Initializes the InputText view.
+    /// Initializes the InputText.
     /// - Parameters:
     ///   - text: Binding to the text value.
     ///   - title: Optional title displayed above the text field.
     ///   - placeholder: Placeholder text for the field.
     ///   - isEditing: A flag to enable/disable editing (default is true).
     ///   - icon: Optional SF Symbol name to display.
-    ///   - style: The style for the text input. Defaults to themed style.
+    ///   - style: The style for the picker. Defaults to themed style using the current theme.
     init(
         text: Binding<String>,
         title: String? = nil,
@@ -28,23 +27,13 @@ struct InputText: View {
         icon: String? = nil,
         style: InputTextStyle = .themed(ThemeManager.shared.currentThemeStyle)
     ) {
-        self._text = text
-        self.title = title
         self.placeholder = placeholder
         self.isEditing = isEditing
-        self.icon = icon
+        self.title = title
         self.style = style
-    }
-    
-    /// Determines the background color based on editing state.
-    private var backgroundColor: Color {
-        isEditing ? style.backgroundColor : style.disabledBackgroundColor
-    }
-    
-    /// Creates a border view with varying line width depending on focus.
-    private var border: some View {
-        RoundedRectangle(cornerRadius: style.cornerRadius)
-            .stroke(style.borderColor, lineWidth: isFocused ? 6 : 2)
+        self.icon = icon
+        
+        self._text = text
     }
     
     var body: some View {
@@ -74,5 +63,16 @@ struct InputText: View {
                     .cornerRadius(style.cornerRadius)
             }
         }
+    }
+    
+    /// Determines the background color based on editing state.
+    private var backgroundColor: Color {
+        isEditing ? style.backgroundColor : style.disabledBackgroundColor
+    }
+    
+    /// Creates a border view with varying line width depending on focus.
+    private var border: some View {
+        RoundedRectangle(cornerRadius: style.cornerRadius)
+            .stroke(style.borderColor, lineWidth: isFocused ? 6 : 2)
     }
 }

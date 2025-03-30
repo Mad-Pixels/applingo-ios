@@ -1,12 +1,14 @@
 import SwiftUI
 
 struct Main: View {
-    @ObservedObject private var locale = LocaleManager.shared
     @EnvironmentObject var themeManager: ThemeManager
+    
+    @ObservedObject private var locale = LocaleManager.shared
+    
     @State private var selectedTab: Int = 0
 
     var body: some View {
-        AppTab(theme: themeManager.currentTheme, style: .default) {
+        AppTab(style: .default) {
             TabView(selection: $selectedTab) {
                 Home()
                     .environmentObject(ThemeManager.shared)
@@ -56,7 +58,7 @@ struct Main: View {
                     }
                     .tag(2)
 
-                Settings()
+                SettingsMain()
                     .environmentObject(ThemeManager.shared)
                     .environmentObject(LocaleManager.shared)
                     .tabItem {

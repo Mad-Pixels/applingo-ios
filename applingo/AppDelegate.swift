@@ -1,30 +1,32 @@
-import SwiftUI
 import IQKeyboardManagerSwift
+import SwiftUI
 
 @main
 struct LingocardApp: App {
-//    @StateObject private var hapticManager = HardwareHaptic.shared
-    @StateObject private var themeManager = ThemeManager.shared
-    
-    private let dbName = "AppLingoDB.sqlite"
-    private let apiUrl = GlobalConfig.apiURL
     private let apiToken = GlobalConfig.apiToken
+    private let apiUrl = GlobalConfig.apiURL
+    private let dbName = GlobalConfig.dbFile
     
     init() {
         Logger.initializeLogger()
+        
         do {
             try AppDatabase.shared.connect(dbName: dbName)
         } catch {
-
+            fatalError("DB connection failed: \(error)")
         }
+        
         AppAPI.configure(baseURL: apiUrl, token: apiToken)
         _ = ApiManagerCache.shared
+        _ = HardwareHaptic.shared
+        _ = TTS.shared
     }
 
     var body: some Scene {
         WindowGroup {
             Main()
-                .environmentObject(themeManager)
+                .environmentObject(HardwareMotion.shared)
+                .environmentObject(ThemeManager.shared)
                 .environmentObject(AppDatabase.shared)
         }
     }

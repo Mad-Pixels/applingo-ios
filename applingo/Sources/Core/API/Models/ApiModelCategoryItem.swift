@@ -14,6 +14,16 @@ struct CategoryItem: Codable, Equatable, Hashable {
     init(code: String) {
         self.code = code
     }
+    
+    /// Returns the localized name of the language represented by the code.
+    /// - Parameter locale: The locale in which to display the language name (defaults to current locale).
+    /// - Returns: The localized language name, or the code itself if no name is found.
+    func localizedLanguageName(in locale: Locale = .current) -> String {
+        if let languageName = locale.localizedString(forLanguageCode: code) {
+            return languageName
+        }
+        return code
+    }
 }
 
 /// A model representing a categorized item used in dictionary queries.

@@ -1,0 +1,58 @@
+import SwiftUI
+
+/// A view that renders the background for a game mode using a parallax effect based on device motion.
+///
+/// `BackgroundGameMode` displays a collection of shapes (retrieved from a shared manager) over a given
+/// color palette. The shapes are offset based on the device's roll and pitch values, creating a dynamic,
+/// parallax-like effect. The parallax offset is computed using the current motion state and a configurable
+/// strength factor.
+///
+/// - Parameters:
+///   - colors: An array of `Color` values used to generate the background shapes.
+struct BackgroundGameMode: View {
+    @EnvironmentObject private var motionManager: HardwareMotion
+    @EnvironmentObject private var themeManager: ThemeManager
+    
+    @StateObject private var manager = BackgroundGameModeManager.shared
+    @StateObject private var motionState = MotionState()
+    
+    // List of Colors for generate background.
+    let colors: [Color]
+    
+    // Determines the intensity of the parallax effect, scaling the motion offsets applied to background words.
+    private let parallaxStrength: CGFloat = 180
+    
+    var body: some View {
+        ZStack {
+            let shapes = manager.backgroundShapes
+            if !shapes.isEmpty {
+                ForEach(shapes, id: \.id) { shape in
+                    BackgroundGameModeViewShape(
+                        shape: shape,
+                        offset: CGPoint(
+                            x: motionState.offsetX * parallaxStrength * shape.opacity,
+                            y: motionState.offsetY * parallaxStrength * shape.opacity
+                        )
+                    )
+                    .position(shape.position)
+                }
+            }
+        }
+        .onAppear {
+            manager.reset()
+            manager.generateIfNeeded(for: UIScreen.main.bounds.size, using: colors)
+        }
+        .onReceive(motionManager.$roll) { roll in
+            motionState.updateMotion(
+                roll: roll,
+                pitch: motionManager.pitch
+            )
+        }
+        .onReceive(motionManager.$pitch) { pitch in
+            motionState.updateMotion(
+                roll: motionManager.roll,
+                pitch: pitch
+            )
+        }
+    }
+}
