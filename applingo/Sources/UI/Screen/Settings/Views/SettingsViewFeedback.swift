@@ -26,20 +26,27 @@ internal struct SettingsViewFeedback: View {
                 style: .block(themeManager.currentThemeStyle)
             )
             .padding(.top, 8)
-            .padding(.bottom, -8)
             
-            SectionBody {
-                HStack {
-                    NavigationLink(destination: SettingsFeedback()) {
-                        DynamicText(
-                            model: DynamicTextModel(text: locale.screenDescriptionFeedback),
-                            style: .textLight(themeManager.currentThemeStyle)
-                        )
+            VStack(spacing: style.spacing) {
+                SectionBody {
+                    HStack {
+                        NavigationLink(destination: SettingsFeedback()) {
+                            DynamicText(
+                                model: DynamicTextModel(text: locale.screenDescriptionFeedback),
+                                style: .textMain(themeManager.currentThemeStyle)
+                            )
+                            
+                            Spacer()
+                            
+                            Image(systemName: "chevron.right")
+                                .foregroundColor(style.navIconColor)
+                        }
                     }
+                    .padding(.vertical, 8)
                 }
-                .padding(.vertical, 8)
             }
-            .padding(.top, 8)
+            .padding(.horizontal, 8)
+            .background(Color.clear)
         }
     }
 }

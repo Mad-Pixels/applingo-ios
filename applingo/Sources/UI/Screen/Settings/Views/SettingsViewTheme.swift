@@ -19,20 +19,25 @@ internal struct SettingsViewTheme: View {
         self.style = style
     }
     
-    // MARK: - Body
     var body: some View {
         SectionHeader(
             title: locale.screenSubtitleTheme,
             style: .block(ThemeManager.shared.currentThemeStyle)
         )
-        ItemPicker(
-            selectedValue: $themeManager.currentTheme,
-            items: themeManager.supportedThemes,
-            onChange: { newTheme in themeManager.setTheme(to: newTheme) },
-            content:  {
-                theme in Text(theme.asString)
-            },
-            style: .themed(themeManager.currentThemeStyle, type: .segmented)
-        )
+        .padding(.top, 8)
+        
+        VStack(spacing: style.spacing) {
+            ItemPicker(
+                selectedValue: $themeManager.currentTheme,
+                items: themeManager.supportedThemes,
+                onChange: { newTheme in themeManager.setTheme(to: newTheme) },
+                content:  {
+                    theme in Text(theme.asString)
+                },
+                style: .themed(themeManager.currentThemeStyle, type: .segmented)
+            )
+        }
+        .padding(.horizontal, 8)
+        .background(Color.clear)
     }
 }

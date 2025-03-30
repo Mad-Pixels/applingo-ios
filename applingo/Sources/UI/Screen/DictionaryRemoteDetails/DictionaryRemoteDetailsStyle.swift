@@ -13,7 +13,11 @@ final class DictionaryRemoteDetailsStyle: ObservableObject {
     ///   - backgroundColor: The background color for the view.
     ///   - padding: The padding around the content.
     ///   - spacing: The spacing between UI elements.
-    init(backgroundColor: Color, padding: EdgeInsets, spacing: CGFloat) {
+    init(
+        backgroundColor: Color,
+        padding: EdgeInsets,
+        spacing: CGFloat
+    ) {
         self.backgroundColor = backgroundColor
         self.padding = padding
         self.spacing = spacing

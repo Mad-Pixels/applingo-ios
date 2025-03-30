@@ -32,12 +32,18 @@ internal struct SettingsViewLocale: View {
             title: locale.screenSubtitleLanguage,
             style: .block(themeManager.currentThemeStyle)
         )
-        ItemPicker(
-            selectedValue: selectedLocale,
-            items: localeManager.supportedLocales,
-            onChange: { newLocale in localeManager.setLocale(newLocale) }
-        ) {
-            locale in Text(locale.displayName)
+        .padding(.top, 8)
+        
+        VStack(spacing: style.spacing) {
+            ItemPicker(
+                selectedValue: selectedLocale,
+                items: localeManager.supportedLocales,
+                onChange: { newLocale in localeManager.setLocale(newLocale) }
+            ) {
+                locale in Text(locale.displayName.capitalizedFirstLetter)
+            }
         }
+        .padding(.horizontal, 8)
+        .background(Color.clear)
     }
 }

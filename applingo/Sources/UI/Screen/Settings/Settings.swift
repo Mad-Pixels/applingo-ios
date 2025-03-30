@@ -16,58 +16,26 @@ struct Settings: View {
             screen: .Settings,
             title: locale.screenTitle
         ) {
-            List {
-                SettingsViewTheme(
-                    style: style,
-                    locale: locale
-                )
-                    .listRowBackground(Color.clear)
-                    .listRowInsets(EdgeInsets(
-                        top: style.padding.top + 8,
-                        leading: style.padding.leading + 8,
-                        bottom: 0,
-                        trailing: style.padding.trailing + 8
-                    ))
-                    .listRowSeparator(.hidden)
-                    .frame(maxWidth: .infinity)
-                
-                SettingsViewLocale(
-                    style: style,
-                    locale: locale
-                )
-                    .listRowBackground(Color.clear)
-                    .listRowInsets(EdgeInsets(
-                        top: style.spacing,
-                        leading: style.padding.leading + 8,
-                        bottom: 0,
-                        trailing: style.padding.trailing + 8
-                    ))
-                    .listRowSeparator(.hidden)
-                    .frame(maxWidth: .infinity)
-                
-                SettingsViewFeedback(
-                    style: style,
-                    locale: locale
-                )
-                    .listRowBackground(Color.clear)
-                    .listRowInsets(EdgeInsets(
-                        top: style.spacing,
-                        leading: style.padding.leading + 8,
-                        bottom: 0,
-                        trailing: style.padding.trailing + 8
-                    ))
-                    .listRowSeparator(.hidden)
-                    .frame(maxWidth: .infinity)
+            ScrollView {
+                VStack(spacing: style.spacing) {
+                    SettingsViewTheme(
+                        style: style,
+                        locale: locale
+                    )
+                    
+                    SettingsViewLocale(
+                        style: style,
+                        locale: locale
+                    )
+                    
+                    SettingsViewFeedback(
+                        style: style,
+                        locale: locale
+                    )
+                }
+                .padding(style.padding)
             }
-            .listStyle(.plain)
-            .background(style.backgroundColor)
-            .scrollContentBackground(.hidden)
-            .safeAreaInset(edge: .bottom) {
-                Color.clear.frame(height: 80)
-            }
-            .navigationTitle(locale.screenTitle)
             .navigationBarTitleDisplayMode(.large)
-            .ignoresSafeArea(edges: .bottom)
         }
     }
 }

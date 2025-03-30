@@ -1,29 +1,40 @@
 import SwiftUI
 
 final class SettingsStyle: ObservableObject {
+    // Color
     let backgroundColor: Color
+    let navIconColor: Color
 
+    // Layout
     let padding: EdgeInsets
     let spacing: CGFloat
 
     /// Initializes the SettingsStyle.
     /// - Parameters:
-    ///   - spacing: The spacing between elements.
-    ///   - padding: The padding around the content.
     ///   - backgroundColor: The background color of the view.
-    init(spacing: CGFloat, padding: EdgeInsets, backgroundColor: Color) {
+    ///   - padding: The padding around the content.
+    ///   - spacing: The spacing between elements.
+    ///   - navIconColor: The color for nav icon.
+    init(
+        backgroundColor: Color,
+        padding: EdgeInsets,
+        spacing: CGFloat,
+        navIconColor: Color
+    ) {
         self.backgroundColor = backgroundColor
-        self.spacing = spacing
+        self.navIconColor = navIconColor
         self.padding = padding
+        self.spacing = spacing
     }
 }
 
 extension SettingsStyle {
     static func themed(_ theme: AppTheme) -> SettingsStyle {
         SettingsStyle(
-            spacing: 24,
+            backgroundColor: theme.backgroundPrimary,
             padding: EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16),
-            backgroundColor: theme.backgroundPrimary
+            spacing: 16,
+            navIconColor: theme.textSecondary
         )
     }
 }
