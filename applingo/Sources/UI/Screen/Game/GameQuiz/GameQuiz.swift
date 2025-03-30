@@ -61,8 +61,8 @@ struct GameQuiz: View {
                                 VStack(spacing: style.optionsSpacing) {
                                     ForEach(card.options, id: \.self) { option in
                                         GameQuizViewAnswer(
-                                            locale: locale,
                                             style: style,
+                                            locale: locale,
                                             option: option,
                                             onSelect: { viewModel.handleAnswer(option) },
                                             viewModel: viewModel
