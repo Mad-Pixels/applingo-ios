@@ -40,13 +40,13 @@ struct ButtonMenu: View {
                 VStack(alignment: .leading) {
                     DynamicText(
                         model: DynamicTextModel(text: title),
-                        style: .textGame(ThemeManager.shared.currentThemeStyle)
+                        style: .textGameBold(ThemeManager.shared.currentThemeStyle)
                     )
                     
                     if let subtitle = subtitle {
                         DynamicText(
                             model: DynamicTextModel(text: subtitle),
-                            style: .textLight(ThemeManager.shared.currentThemeStyle)
+                            style: .textMain(ThemeManager.shared.currentThemeStyle)
                         )
                     }
                 }

@@ -140,8 +140,8 @@ extension DynamicTextStyle {
             lineBreakMode: shouldWrapWords ? .byWordWrapping : .byTruncatingTail,
             wordWrapping: shouldWrapWords,
             lineLimit: lineLimit,
-            fontWeight: .bold,
-            fontDesign: .default
+            fontWeight: .heavy,
+            fontDesign: .rounded
         )
     }
     
