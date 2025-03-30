@@ -36,18 +36,42 @@ internal struct DictionaryRemoteFilterViewLevel: View {
                     selectedValue: $selectedLevel,
                     items: DictionaryLevelType.allCases
                 ) { level in
-                    DynamicText(
-                        model: DynamicTextModel(
-                            text: level.rawValue == DictionaryLevelType.undefined.rawValue
-                            ? locale.screenTextUFOLevel : level.rawValue
-                        ),
-                        style: .textMain(themeManager.currentThemeStyle)
-                    )
+                    Text(getFormattedLevelName(for: level))
                 }
                 .frame(maxWidth: .infinity)
             }
             .padding(.horizontal, 8)
             .background(Color.clear)
+        }
+    }
+    
+    /// Returns formatted level name with localized title and code.
+    private func getFormattedLevelName(for level: DictionaryLevelType) -> String {
+        if level == .undefined {
+            return locale.screenTextUFOLevel
+        }
+        
+        let localizedName = getLocalizedLevelName(for: level)
+        return "\(localizedName) (\(level.rawValue))"
+    }
+    
+    /// Returns localized name for dictionary level.
+    private func getLocalizedLevelName(for level: DictionaryLevelType) -> String {
+        switch level {
+        case .undefined:
+            return locale.screenTextUFOLevel
+        case .beginner:
+            return locale.screenTextBeginnerLevel
+        case .elementary:
+            return locale.screenTextElementaryLevel
+        case .intermediate:
+            return locale.screenTextIntermediateLevel
+        case .upperIntermediate:
+            return locale.screenTextUpperIntermediateLevel
+        case .advanced:
+            return locale.screenTextAdvancedLevel
+        case .proficient:
+            return locale.screenTextProficientLevel
         }
     }
 }

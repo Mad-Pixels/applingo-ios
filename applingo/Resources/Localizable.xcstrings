@@ -1418,6 +1418,91 @@
         }
       }
     },
+    "screen.dictionaryRemoteFilter.text.advancedLevel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Advanced"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Продвинутый"
+          }
+        }
+      }
+    },
+    "screen.dictionaryRemoteFilter.text.beginnerLevel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beginner"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Начальный"
+          }
+        }
+      }
+    },
+    "screen.dictionaryRemoteFilter.text.elementaryLevel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elementary"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Элементарный"
+          }
+        }
+      }
+    },
+    "screen.dictionaryRemoteFilter.text.intermediateLevel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Intermediate"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Средний"
+          }
+        }
+      }
+    },
+    "screen.dictionaryRemoteFilter.text.proficientLevel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Proficient"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Свободное владение"
+          }
+        }
+      }
+    },
     "screen.dictionaryRemoteFilter.text.UFOLevel" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1431,6 +1516,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Любой"
+          }
+        }
+      }
+    },
+    "screen.dictionaryRemoteFilter.text.upperIntermediateLevel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Upper-Intermediate"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выше среднего"
           }
         }
       }
