@@ -9,7 +9,7 @@ internal struct GameTabViewAccuracy: View {
     var body: some View {
         DynamicTextCompact(
             model: DynamicTextModel(text: "\(Int(accuracy * 100))%"),
-            style: .textGameBold(themeManager.currentThemeStyle, alignment: .center, lineLimit: 1)
+            style: .gameTab(themeManager.currentThemeStyle, color: style.textPrimaryColor)
         )
         .monospacedDigit()
     }

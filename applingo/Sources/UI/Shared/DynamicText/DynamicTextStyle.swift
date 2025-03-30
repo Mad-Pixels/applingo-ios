@@ -270,4 +270,23 @@ extension DynamicTextStyle {
             fontDesign: .default
         )
     }
+    
+    static func gameTab(
+        _ theme: AppTheme,
+        color: Color
+    ) -> DynamicTextStyle {
+        return DynamicTextStyle(
+            textColor: color,
+            alignment: .center,
+            letterSpacing: 0.0,
+            allowsTightening: true,
+            maxFontSize: 24,
+            minFontSize: 10,
+            lineBreakMode: .byTruncatingTail,
+            wordWrapping: false,
+            lineLimit: 1,
+            fontWeight: .bold,
+            fontDesign: .rounded
+        )
+    }
 }

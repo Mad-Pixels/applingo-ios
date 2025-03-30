@@ -11,12 +11,12 @@ struct GameTabViewStreak: View {
         VStack(spacing: 4) {
             DynamicTextCompact(
                 model: DynamicTextModel(text: locale.screenStreak),
-                style: .textMain(themeManager.currentThemeStyle, alignment: .center, lineLimit: 1)
+                style: .gameTab(themeManager.currentThemeStyle, color: style.textSecondaryColor)
             )
 
             DynamicTextCompact(
                 model: DynamicTextModel(text: "\(streak)"),
-                style: .textGameBold(themeManager.currentThemeStyle, alignment: .center, lineLimit: 1)
+                style: .gameTab(themeManager.currentThemeStyle, color: style.heartColor)
             )
         }
     }

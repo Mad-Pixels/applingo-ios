@@ -14,7 +14,6 @@ struct GameTab<GameType: AbstractGame>: View {
         _stats = ObservedObject(wrappedValue: game.stats)
         _game = ObservedObject(wrappedValue: game)
         _style = StateObject(wrappedValue: style)
-        
     }
     
     var body: some View {
@@ -53,7 +52,9 @@ struct GameTab<GameType: AbstractGame>: View {
         .padding(.top, style.padding)
         .frame(
             minWidth: UIScreen.main.bounds.width * style.tabWidth,
-            maxWidth: UIScreen.main.bounds.width * style.tabWidth
+            maxWidth: UIScreen.main.bounds.width * style.tabWidth,
+            minHeight: 64,
+            maxHeight: 64
         )
         .fixedSize(horizontal: true, vertical: false)
         .frame(maxWidth: .infinity)

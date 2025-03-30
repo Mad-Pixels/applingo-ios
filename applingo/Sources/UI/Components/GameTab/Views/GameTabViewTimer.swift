@@ -10,7 +10,7 @@ internal struct GameTabViewTimer: View {
     var body: some View {
         DynamicTextCompact(
             model: DynamicTextModel(text: timer.timeLeft.formatAsTimer),
-            style: .textGameBold(themeManager.currentThemeStyle, alignment: .center, lineLimit: 1)
+            style: .gameTab(themeManager.currentThemeStyle, color: style.textPrimaryColor)
         )
         .animation(.linear(duration: 0.1), value: timer.timeLeft)
     }
