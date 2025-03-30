@@ -11,12 +11,12 @@ final class DictionaryRemoteFilterStyle: ObservableObject {
     /// Initializes the DictionaryRemoteFilterStyle.
     /// - Parameters:
     ///   - backgroundColor: The background color for the filter view.
-    ///   - spacing: The spacing between UI elements.
     ///   - padding: The padding applied to the filter view.
+    ///   - spacing: The spacing between UI elements.
     init(
         backgroundColor: Color,
-        spacing: CGFloat,
-        padding: EdgeInsets
+        padding: EdgeInsets,
+        spacing: CGFloat
     ) {
         self.backgroundColor = backgroundColor
         self.spacing = spacing
@@ -28,8 +28,8 @@ extension DictionaryRemoteFilterStyle {
     static func themed(_ theme: AppTheme) -> DictionaryRemoteFilterStyle {
         DictionaryRemoteFilterStyle(
             backgroundColor: theme.backgroundPrimary,
-            spacing: 16,
-            padding: EdgeInsets(top: 0, leading: 16, bottom: 16, trailing: 16)
+            padding: EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16),
+            spacing: 16
         )
     }
 }

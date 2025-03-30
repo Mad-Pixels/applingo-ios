@@ -5,19 +5,16 @@ struct DictionaryRemoteFilter: View {
     @State private var selectedLevel: DictionaryLevelType = .undefined
     @State private var selectedSortBy: ApiSortType = .date
     
-    // MARK: - State Objects
     @StateObject private var locale = DictionaryRemoteFilterLocale()
     @StateObject private var style: DictionaryRemoteFilterStyle
     @StateObject private var categoryGetter = CategoryFetcher()
     
-    // MARK: - Local State
     @Binding var apiRequestParams: ApiModelDictionaryQueryRequest
     @State private var selectedFrontCategory: CategoryItem?
     @State private var selectedBackCategory: CategoryItem?
     @State private var isPressedTrailing = false
     
-    // MARK: - Initialization
-    /// Initializes the view with required dependencies.
+    /// Initializes DictionaryRemoteFilter.
     /// - Parameters:
     ///   - apiRequestParams: Binding for API request parameters.
     ///   - style: Optional style for the filter UI.
@@ -47,7 +44,6 @@ struct DictionaryRemoteFilter: View {
         }
     }
     
-    // MARK: - Body
     var body: some View {
         BaseScreen(
             screen: .DictionaryRemoteFilter,
@@ -70,24 +66,25 @@ struct DictionaryRemoteFilter: View {
                             selectedFrontCategory: $selectedFrontCategory,
                             selectedBackCategory: $selectedBackCategory
                         )
-                        .padding(style.padding)
-                            
+
                         DictionaryRemoteFilterViewSort(
                             style: style,
                             locale: locale,
                             selectedSortBy: $selectedSortBy
                         )
-                        .padding(style.padding)
-                            
+
                         DictionaryRemoteFilterViewLevel(
                             style: style,
                             locale: locale,
                             selectedLevel: $selectedLevel
                         )
-                        .padding(style.padding)
                     }
                     .padding(style.padding)
                 }
+            }
+            .onAppear {
+                categoryGetter.setScreen(.DictionaryRemoteFilter)
+                categoryGetter.get { _ in }
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -100,19 +97,15 @@ struct DictionaryRemoteFilter: View {
                     )
                 }
             }
-        }
-        .onAppear {
-            categoryGetter.setScreen(.DictionaryRemoteFilter)
-            categoryGetter.get { _ in }
-        }
-        .onChange(of: categoryGetter.frontCategories) { frontCategories in
-            if selectedFrontCategory == nil || !frontCategories.contains(where: { $0.code == selectedFrontCategory?.code }) {
-                selectedFrontCategory = frontCategories.first
+            .onChange(of: categoryGetter.frontCategories) { frontCategories in
+                if selectedFrontCategory == nil || !frontCategories.contains(where: { $0.code == selectedFrontCategory?.code }) {
+                    selectedFrontCategory = frontCategories.first
+                }
             }
-        }
-        .onChange(of: categoryGetter.backCategories) { backCategories in
-            if selectedBackCategory == nil || !backCategories.contains(where: { $0.code == selectedBackCategory?.code }) {
-                selectedBackCategory = backCategories.first
+            .onChange(of: categoryGetter.backCategories) { backCategories in
+                if selectedBackCategory == nil || !backCategories.contains(where: { $0.code == selectedBackCategory?.code }) {
+                    selectedBackCategory = backCategories.first
+                }
             }
         }
         
@@ -124,7 +117,6 @@ struct DictionaryRemoteFilter: View {
         )
     }
     
-    // MARK: - Private Methods
     /// Saves the selected filters and updates the API request parameters.
     private func saveFilters() {
         let frontCategoryName = selectedFrontCategory?.code ?? ""

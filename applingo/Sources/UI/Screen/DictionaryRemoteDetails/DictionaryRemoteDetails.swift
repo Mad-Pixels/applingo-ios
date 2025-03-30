@@ -26,7 +26,10 @@ struct DictionaryRemoteDetails: View {
     }
     
     var body: some View {
-        BaseScreen(screen: .DictionaryRemoteDetails, title: locale.screenTitle) {
+        BaseScreen(
+            screen: .DictionaryRemoteDetails,
+            title: locale.screenTitle
+        ) {
             ScrollView {
                 VStack(spacing: style.spacing) {
                     DictionaryRemoteDetailsViewMain(

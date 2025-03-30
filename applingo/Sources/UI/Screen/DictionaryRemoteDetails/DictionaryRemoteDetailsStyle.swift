@@ -1,8 +1,10 @@
 import SwiftUI
 
 final class DictionaryRemoteDetailsStyle: ObservableObject {
+    // Colors
     let backgroundColor: Color
 
+    // Layout
     let padding: EdgeInsets
     let spacing: CGFloat
 

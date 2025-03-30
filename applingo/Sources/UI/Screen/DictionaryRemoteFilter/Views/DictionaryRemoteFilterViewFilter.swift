@@ -38,7 +38,9 @@ internal struct DictionaryRemoteFilterViewFilter: View {
                 title: locale.screenSubtitleLanguage,
                 style: .block(themeManager.currentThemeStyle)
             )
-            HStack {
+            .padding(.top, 8)
+            
+            HStack(spacing: style.spacing) {
                 ItemPicker(
                     selectedValue: $selectedFrontCategory,
                     items: categoryGetter.frontCategories,
@@ -59,7 +61,8 @@ internal struct DictionaryRemoteFilterViewFilter: View {
                 )
                 .frame(maxWidth: .infinity)
             }
-            .padding(.top, -24)
+            .padding(.horizontal, 8)
+            .background(Color.clear)
         }
     }
 }

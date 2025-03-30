@@ -29,20 +29,25 @@ internal struct DictionaryRemoteFilterViewLevel: View {
                 title: locale.screenSubtitleLevel,
                 style: .block(themeManager.currentThemeStyle)
             )
+            .padding(.top, 8)
             
-            ItemPicker(
-                selectedValue: $selectedLevel,
-                items: DictionaryLevelType.allCases
-            ) { level in
-                DynamicText(
-                    model: DynamicTextModel(
-                        text: level.rawValue == DictionaryLevelType.undefined.rawValue
+            VStack(spacing: style.spacing) {
+                ItemPicker(
+                    selectedValue: $selectedLevel,
+                    items: DictionaryLevelType.allCases
+                ) { level in
+                    DynamicText(
+                        model: DynamicTextModel(
+                            text: level.rawValue == DictionaryLevelType.undefined.rawValue
                             ? locale.screenTextUFOLevel : level.rawValue
-                    ),
-                    style: .textMain(themeManager.currentThemeStyle)
-                )
+                        ),
+                        style: .textMain(themeManager.currentThemeStyle)
+                    )
+                }
+                .frame(maxWidth: .infinity)
             }
-            .frame(maxWidth: .infinity)
+            .padding(.horizontal, 8)
+            .background(Color.clear)
         }
     }
 }
