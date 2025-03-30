@@ -2,43 +2,28 @@ import SwiftUI
 
 /// Defines styling properties for the GameNoWords view.
 final class GameNoWordsStyle: ObservableObject {
-    // MARK: - Properties
-    let sectionSpacing: CGFloat
-    let textFont: Font
-    let textColor: Color
+    // Layout
     let padding: EdgeInsets
+    let spacing: CGFloat
 
-    // MARK: - Initializer
-    /// Initializes a new instance of `GameNoWordsStyle`.
+    /// Initializes the GameNoWordsStyle.
     /// - Parameters:
-    ///   - sectionSpacing: The spacing between elements in the section.
-    ///   - textFont: The font used for the main text.
-    ///   - textColor: The color of the main text.
     ///   - padding: The overall padding around the content.
+    ///   - spacing: The spacing between individual elements.
     init(
-        sectionSpacing: CGFloat,
-        textFont: Font,
-        textColor: Color,
-        padding: EdgeInsets
+        padding: EdgeInsets,
+        spacing: CGFloat
     ) {
-        self.sectionSpacing = sectionSpacing
-        self.textFont = textFont
-        self.textColor = textColor
         self.padding = padding
+        self.spacing = spacing
     }
 }
 
-// MARK: - Themed Style Extension
 extension GameNoWordsStyle {
-    /// Returns a themed style for the GameNoWords view based on the current app theme.
-    /// - Parameter theme: The current application theme.
-    /// - Returns: A new instance of `GameNoWordsStyle` configured for the given theme.
     static func themed(_ theme: AppTheme) -> GameNoWordsStyle {
         GameNoWordsStyle(
-            sectionSpacing: 12,
-            textFont: .system(size: 16, weight: .regular, design: .default),
-            textColor: theme.textPrimary,
-            padding: EdgeInsets(top: 12, leading: 8, bottom: 12, trailing: 8)
+            padding: EdgeInsets(top: 16, leading: 16, bottom: 32, trailing: 16),
+            spacing: 24
         )
     }
 }

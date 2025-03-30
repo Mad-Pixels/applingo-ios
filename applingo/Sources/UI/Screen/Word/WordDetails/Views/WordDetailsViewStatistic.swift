@@ -37,8 +37,13 @@ internal struct WordDetailsViewStatistic: View {
                 if word.fail == 0 && word.success == 0 {
                     DynamicText(
                         model: DynamicTextModel(text: locale.screenSubtitleNoData),
-                        style: .textGame(themeManager.currentThemeStyle)
+                        style: .headerMain(
+                            themeManager.currentThemeStyle,
+                            alignment: .center,
+                            lineLimit: 1
+                        )
                     )
+                    .padding(.bottom, -16)
                     
                     Image(warningImageName)
                         .resizable()

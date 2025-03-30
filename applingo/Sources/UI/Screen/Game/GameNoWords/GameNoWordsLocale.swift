@@ -1,9 +1,6 @@
 import Foundation
 
-/// Provides localized strings for the GameNoWords view.
 final class GameNoWordsLocale: ObservableObject {
-    
-    // MARK: - Localized Keys
     private enum LocalizedKey: String {
         case subtitle = "screen.noWords.subtitle"
         case closeButton = "base.button.close"
@@ -17,7 +14,6 @@ final class GameNoWordsLocale: ObservableObject {
         case tabDictionariesDescriptionImport = "screen.noWords.tabDictionariesDescriptionImport"
     }
     
-    // MARK: - Published Properties
     @Published private(set) var screenSubtitleNoWords: String
     @Published private(set) var screenButtonClose: String
     @Published private(set) var screenNoWordsDescription: String
@@ -29,18 +25,19 @@ final class GameNoWordsLocale: ObservableObject {
     @Published private(set) var screenImportOptionRemote: String
     @Published private(set) var screenImportOptionLocal: String
     
-    // MARK: - Initialization
     init() {
-        self.screenSubtitleNoWords = Self.localizedString(for: .subtitle)
-        self.screenButtonClose = Self.localizedString(for: .closeButton)
-        self.screenNoWordsDescription = Self.localizedString(for: .noWordsDescription)
-        self.screenImportOptionRemote = Self.localizedString(for: .importOptionRemote)
-        self.screenImportOptionLocal = Self.localizedString(for: .importOptionLocal)
-        self.screenAddDictionariesTitle = Self.localizedString(for: .addDictionariesTitle)
-        self.screenTabWordsDescription = Self.localizedString(for: .tabWordsDescription)
-        self.tabWordsDescriptionActions = Self.localizedString(for: .tabWordsDescriptionActions)
-        self.screenAddDictionariesChoice = Self.localizedString(for: .addDictionariesChoice)
-        self.screenTabDictionariesDescriptionImport = Self.localizedString(for: .tabDictionariesDescriptionImport)
+        self.screenSubtitleNoWords = ""
+        self.screenButtonClose = ""
+        self.screenNoWordsDescription = ""
+        self.screenImportOptionRemote = ""
+        self.screenImportOptionLocal = ""
+        self.screenAddDictionariesTitle = ""
+        self.screenTabWordsDescription = ""
+        self.tabWordsDescriptionActions = ""
+        self.screenAddDictionariesChoice = ""
+        self.screenTabDictionariesDescriptionImport = ""
+        
+        updateLocalizedStrings()
         
         NotificationCenter.default.addObserver(
             self,
@@ -54,14 +51,15 @@ final class GameNoWordsLocale: ObservableObject {
         NotificationCenter.default.removeObserver(self)
     }
     
-    // MARK: - Localization Helper
-    /// Returns a localized string for the specified key.
+    @objc private func localeDidChange() {
+        updateLocalizedStrings()
+    }
+    
     private static func localizedString(for key: LocalizedKey) -> String {
         return LocaleManager.shared.localizedString(for: key.rawValue)
     }
     
-    // MARK: - Notification Handler
-    @objc private func localeDidChange() {
+    private func updateLocalizedStrings() {
         screenSubtitleNoWords = Self.localizedString(for: .subtitle)
         screenButtonClose = Self.localizedString(for: .closeButton)
         screenNoWordsDescription = Self.localizedString(for: .noWordsDescription)

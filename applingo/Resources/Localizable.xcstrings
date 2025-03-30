@@ -1750,13 +1750,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "OR"
+            "value" : "or"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ИЛИ"
+            "value" : "или"
           }
         }
       }
