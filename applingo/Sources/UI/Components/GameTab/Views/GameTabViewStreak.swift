@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct GameTabViewStreak: View {
+internal struct GameTabViewStreak: View {
     @EnvironmentObject private var themeManager: ThemeManager
     
     internal let streak: Int
