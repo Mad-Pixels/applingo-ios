@@ -8,7 +8,7 @@ import SwiftUI
 /// - Parameters:
 ///   - cornerRadius: The corner radius for the rounded rectangle. Default is 16.
 ///   - opacity: The opacity of the background effect. Default is 0.9.
-struct GlassBackgroundModifier: ViewModifier {
+struct StyleGlassModifier: ViewModifier {
     let cornerRadius: CGFloat
     let opacity: CGFloat
     

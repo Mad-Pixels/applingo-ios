@@ -54,7 +54,7 @@ extension View {
         opacity: CGFloat = 0.85
     ) -> some View {
         let adjustedOpacity = ThemeManager.shared.currentTheme == .dark ? opacity : 0.98 // фиксированное значение для светлой темы
-        return modifier(GlassBackgroundModifier(
+        return modifier(StyleGlassModifier(
             cornerRadius: cornerRadius,
             opacity: adjustedOpacity
         ))
@@ -65,13 +65,13 @@ extension View {
         /// - Parameter screen: The screen type that is being tracked.
         /// - Returns: A view modified to display error alerts.
         func withErrorTracker(_ screen: ScreenType) -> some View {
-            modifier(ErrorTrackerModifier(screen: screen))
+            modifier(TrackerErrorModifier(screen: screen))
         }
     
     /// Applies the locale tracker to the view.
         /// - Returns: A view that uses the current locale from LocaleManager.
     func withLocaleTracker() -> some View {
-        modifier(LocaleTrackerModifier())
+        modifier(TrackerLocaleModifier())
     }
     
     /// Applies the screen tracker to the view.
@@ -79,14 +79,14 @@ extension View {
         /// - Parameter screen: The screen type to track.
         /// - Returns: A view modified to update the active screen.
     func withScreenTracker(_ screen: ScreenType) -> some View {
-        modifier(ScreenTrackerModifier(screen: screen))
+        modifier(TrackerScreenModifier(screen: screen))
     }
     
     /// Applies the theme tracker to the view.
         /// This modifier adjusts the color scheme and background based on the current theme.
         /// - Returns: A view modified with the current theme settings.
         func withThemeTracker() -> some View {
-            modifier(ThemeTrackerModifier())
+            modifier(TrackerThemeModifier())
         }
     
     

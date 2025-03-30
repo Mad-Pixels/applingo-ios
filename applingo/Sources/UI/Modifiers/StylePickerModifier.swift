@@ -1,6 +1,8 @@
 import SwiftUI
 
-struct PickerStyleModifier: ViewModifier {
+/// A view modifier that applies different picker styles based on the provided `ItemPickerStyle`.
+/// This modifier allows for consistent styling of pickers throughout the application.
+struct StylePickerModifier: ViewModifier {
     let style: ItemPickerStyle
     
     func body(content: Content) -> some View {

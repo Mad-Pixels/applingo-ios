@@ -52,6 +52,6 @@ struct ItemPicker<Item: Hashable, Content: View>: View {
                     .tag(item)
             }
         }
-        .modifier(PickerStyleModifier(style: style))
+        .modifier(StylePickerModifier(style: style))
     }
 }
