@@ -58,7 +58,7 @@ struct Main: View {
                     }
                     .tag(2)
 
-                Settings()
+                SettingsMain()
                     .environmentObject(ThemeManager.shared)
                     .environmentObject(LocaleManager.shared)
                     .tabItem {

@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct ModalWindow<Content: View>: View {
-    @StateObject private var style: ModalWindowStyle
+    @StateObject private var style: ModalStyle
 
     @Binding private var isPresented: Bool
     
@@ -14,7 +14,7 @@ struct ModalWindow<Content: View>: View {
     ///   - content: A ViewBuilder that provides the content to be displayed in the modal.
     init(
         isPresented: Binding<Bool>,
-        style: ModalWindowStyle = .themed(ThemeManager.shared.currentThemeStyle),
+        style: ModalStyle = .themed(ThemeManager.shared.currentThemeStyle),
         @ViewBuilder content: () -> Content
     ) {
         _style = StateObject(wrappedValue: style)

@@ -14,7 +14,7 @@ extension View {
     /// - Returns: A view with an overlay that presents the modal window centered on the screen.
     func showModal<Content: View>(
         isPresented: Binding<Bool>,
-        style: ModalWindowStyle,
+        style: ModalStyle,
         @ViewBuilder modalContent: @escaping () -> Content
     ) -> some View {
         self.overlay(

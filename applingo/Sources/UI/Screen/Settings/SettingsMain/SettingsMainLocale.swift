@@ -1,6 +1,6 @@
 import Foundation
 
-final class SettingsLocale: ObservableObject {
+final class SettingsMainLocale: ObservableObject {
     private enum LocalizedKey: String {
         case title = "screen.settings.title"
         case subtitleTheme = "screen.settings.subtitle.theme"

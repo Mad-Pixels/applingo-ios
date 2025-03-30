@@ -1,6 +1,6 @@
 import SwiftUI
 
-final class SettingsStyle: ObservableObject {
+final class SettingsMainStyle: ObservableObject {
     // Color
     let backgroundColor: Color
     let navIconColor: Color
@@ -28,9 +28,9 @@ final class SettingsStyle: ObservableObject {
     }
 }
 
-extension SettingsStyle {
-    static func themed(_ theme: AppTheme) -> SettingsStyle {
-        SettingsStyle(
+extension SettingsMainStyle {
+    static func themed(_ theme: AppTheme) -> SettingsMainStyle {
+        SettingsMainStyle(
             backgroundColor: theme.backgroundPrimary,
             padding: EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16),
             spacing: 16,

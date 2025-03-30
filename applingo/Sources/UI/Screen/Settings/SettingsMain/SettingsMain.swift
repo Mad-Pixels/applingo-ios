@@ -1,13 +1,13 @@
 import SwiftUI
 
-struct Settings: View {
-    @StateObject private var style: SettingsStyle
-    @StateObject private var locale = SettingsLocale()
+struct SettingsMain: View {
+    @StateObject private var style: SettingsMainStyle
+    @StateObject private var locale = SettingsMainLocale()
     
     /// Initializes the WordDetails.
     /// - Parameters:
     ///   - style: Optional style; if nil, a themed style is applied.
-    init(style: SettingsStyle = .themed(ThemeManager.shared.currentThemeStyle)) {
+    init(style: SettingsMainStyle = .themed(ThemeManager.shared.currentThemeStyle)) {
         _style = StateObject(wrappedValue: style)
     }
     
@@ -18,17 +18,17 @@ struct Settings: View {
         ) {
             ScrollView {
                 VStack(spacing: style.spacing) {
-                    SettingsViewTheme(
+                    SettingsMainViewTheme(
                         style: style,
                         locale: locale
                     )
                     
-                    SettingsViewLocale(
+                    SettingsMainViewLocale(
                         style: style,
                         locale: locale
                     )
                     
-                    SettingsViewFeedback(
+                    SettingsMainViewFeedback(
                         style: style,
                         locale: locale
                     )

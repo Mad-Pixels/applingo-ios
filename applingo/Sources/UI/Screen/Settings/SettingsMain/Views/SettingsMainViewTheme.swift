@@ -1,19 +1,19 @@
 import SwiftUI
 
-internal struct SettingsViewTheme: View {
+internal struct SettingsMainViewTheme: View {
     @EnvironmentObject private var themeManager: ThemeManager
     
-    @ObservedObject private var locale: SettingsLocale
+    @ObservedObject private var locale: SettingsMainLocale
     
-    private let style: SettingsStyle
+    private let style: SettingsMainStyle
     
-    /// Initializes the SettingsViewTheme.
+    /// Initializes the SettingsMainViewTheme.
     /// - Parameters:
-    ///   - style: `SettingsStyle` object that defines the visual style.
-    ///   - locale: `SettingsLocale` object that provides localized strings.
+    ///   - style: `SettingsMainStyle` object that defines the visual style.
+    ///   - locale: `SettingsMainLocale` object that provides localized strings.
     init(
-        style: SettingsStyle,
-        locale: SettingsLocale
+        style: SettingsMainStyle,
+        locale: SettingsMainLocale
     ) {
         self.locale = locale
         self.style = style

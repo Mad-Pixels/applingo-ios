@@ -1,6 +1,6 @@
 import SwiftUI
 
-final class ModalWindowStyle: ObservableObject {
+final class ModalStyle: ObservableObject {
     // Colors
     let dimBackgroundColor: Color
     let modalBackgroundColor: Color
@@ -37,11 +37,11 @@ final class ModalWindowStyle: ObservableObject {
     }
 }
 
-extension ModalWindowStyle {
-    static func themed(_ theme: AppTheme) -> ModalWindowStyle {
+extension ModalStyle {
+    static func themed(_ theme: AppTheme) -> ModalStyle {
         let screen = UIScreen.main.bounds
         
-        return ModalWindowStyle(
+        return ModalStyle(
             dimBackgroundColor: Color.black.opacity(0.5),
             modalBackgroundColor: theme.backgroundPrimary,
             padding: EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16),
