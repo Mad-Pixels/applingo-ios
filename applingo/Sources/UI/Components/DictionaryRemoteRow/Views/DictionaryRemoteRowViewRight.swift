@@ -1,8 +1,10 @@
 import SwiftUI
 
-struct DictionaryRemoteRowViewRight: View {
-    let model: DictionaryRemoteRowModel
-    let style: DictionaryRemoteRowStyle
+internal struct DictionaryRemoteRowViewRight: View {
+    @EnvironmentObject private var themeManager: ThemeManager
+    
+    internal let model: DictionaryRemoteRowModel
+    internal let style: DictionaryRemoteRowStyle
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {

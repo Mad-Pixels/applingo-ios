@@ -38,12 +38,13 @@ extension DynamicTextStyle {
     static func textMain(
         _ theme: AppTheme,
         alignment: TextAlignment = .leading,
-        lineLimit: Int = 1
+        lineLimit: Int = 1,
+        color: Color = ThemeManager.shared.currentThemeStyle.textPrimary
     ) -> DynamicTextStyle {
         let shouldWrapWords = lineLimit > 1
         
         return DynamicTextStyle(
-            textColor: theme.textPrimary,
+            textColor: color,
             alignment: alignment,
             letterSpacing: 0.2,
             allowsTightening: true,

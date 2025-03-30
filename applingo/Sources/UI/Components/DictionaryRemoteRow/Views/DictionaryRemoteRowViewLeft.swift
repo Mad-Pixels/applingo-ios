@@ -1,13 +1,19 @@
 import SwiftUI
 
-struct DictionaryRemoteRowViewLeft: View {
-    let model: DictionaryRemoteRowModel
-    let style: DictionaryRemoteRowStyle
+internal struct DictionaryRemoteRowViewLeft: View {
+    @EnvironmentObject private var themeManager: ThemeManager
+    
+    internal let model: DictionaryRemoteRowModel
+    internal let style: DictionaryRemoteRowStyle
 
     var body: some View {
-        Text(model.title)
-            .font(style.titleFont)
-            .foregroundColor(style.titleColor)
+        DynamicTextCompact(
+            model: DynamicTextModel(text: model.title),
+            style: .textBold(
+                themeManager.currentThemeStyle,
+                lineLimit: 6
+            )
+        )
         
         HStack(spacing: 4) {
             Image(systemName: "book")

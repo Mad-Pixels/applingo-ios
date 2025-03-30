@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct DictionaryLocalRow: View {
+    @EnvironmentObject private var themeManager: ThemeManager
+    
     let model: DictionaryLocalRowModel
     let style: DictionaryLocalRowStyle
     let onTap: () -> Void
@@ -10,9 +12,13 @@ struct DictionaryLocalRow: View {
         SectionBody {
             HStack(spacing: style.spacing) {
                 VStack(alignment: .leading, spacing: style.spacing / 2) {
-                    Text(model.title)
-                        .font(style.titleFont)
-                        .foregroundColor(style.titleColor)
+                    DynamicTextCompact(
+                        model: DynamicTextModel(text: model.title),
+                        style: .textBold(
+                            themeManager.currentThemeStyle,
+                            lineLimit: 6
+                        )
+                    )
                     
                     if let pair = model.languagePair {
                         HStack(spacing: 4) {
@@ -25,9 +31,14 @@ struct DictionaryLocalRow: View {
                                    style: .themed(ThemeManager.shared.currentThemeStyle))
                         }
                     } else {
-                        Text(model.subtitle)
-                            .font(style.subtitleFont)
-                            .foregroundColor(style.subtitleColor)
+                        DynamicTextCompact(
+                            model: DynamicTextModel(text: model.subtitle),
+                            style: .textMain(
+                                themeManager.currentThemeStyle,
+                                lineLimit: 1,
+                                color: style.subtitleColor
+                            )
+                        )
                     }
                     
                     HStack(spacing: 8) {
