@@ -50,7 +50,9 @@ struct ButtonMenu: View {
                         )
                     }
                 }
+                
                 Spacer()
+                
                 if style.transitionType != "" {
                     Image(systemName: style.transitionType)
                         .font(.system(size: 24))
