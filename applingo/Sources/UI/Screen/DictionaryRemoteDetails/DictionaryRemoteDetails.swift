@@ -82,17 +82,18 @@ struct DictionaryRemoteDetails: View {
                     lineLimit: 1
                 )
             )
-            .padding(style.padding)
+            .padding(style.spacing)
         } else if isDownloading {
             ProgressView(locale.screenButtonDownload)
                 .progressViewStyle(CircularProgressViewStyle())
-                .padding(style.padding)
+                .padding(style.spacing)
         } else {
             ButtonAction(
                 title: locale.screenButtonDownload,
                 action: downloadDictionary,
                 style: .action(themeManager.currentThemeStyle)
             )
+            .padding(.horizontal, style.spacing)
         }
     }
     
