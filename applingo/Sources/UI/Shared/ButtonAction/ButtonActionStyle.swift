@@ -96,7 +96,7 @@ extension ButtonActionStyle {
             borderWidth: 4,
             padding: EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4),
             textStyle: { theme in
-                .button(
+                .textGame(
                     theme,
                     alignment: .center,
                     lineLimit: 4
