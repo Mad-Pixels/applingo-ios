@@ -24,7 +24,11 @@ internal struct DictionaryRemoteListViewNoItems: View {
 
             DynamicText(
                 model: DynamicTextModel(text: locale.screenNoWords),
-                style: .textGame(themeManager.currentThemeStyle)
+                style: .headerMain(
+                    themeManager.currentThemeStyle,
+                    alignment: .center,
+                    lineLimit: 1
+                )
             )
         }
         .frame(maxWidth: .infinity, alignment: .center)
