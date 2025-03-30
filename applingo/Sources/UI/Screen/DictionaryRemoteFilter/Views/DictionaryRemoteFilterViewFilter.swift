@@ -26,7 +26,7 @@ internal struct DictionaryRemoteFilterViewFilter: View {
     }
     
     var body: some View {
-        Section() {
+        VStack(spacing: style.spacing) {
             SectionHeader(
                 title: locale.screenSubtitleLanguage,
                 style: .block(themeManager.currentThemeStyle)

@@ -21,31 +21,36 @@ internal struct SettingsFeedbackViewLogger: View {
     }
     
     var body: some View {
-        SectionHeader(
-            title: locale.screenSubtitleSendLogs,
-            style: .block(themeManager.currentThemeStyle)
-        )
-        
-        ItemToggle(
-            isOn: $logHandler.sendLogs,
-            title: locale.screenDescriptionSendLogs,
-            
-            onChange: { newValue in
-                logHandler.sendLogs = newValue
-            }
-        )
-        
-        SectionBody(content: {
-            DynamicText(
-                model: DynamicTextModel(text: locale.screenTextSendLogs),
-                style: .textLight(
-                    themeManager.currentThemeStyle,
-                    alignment: .leading,
-                    lineLimit: 8
-                )
+        VStack(spacing: style.spacing) {
+            SectionHeader(
+                title: locale.screenSubtitleSendLogs,
+                style: .block(themeManager.currentThemeStyle)
             )
-        },
-            style: .accent(themeManager.currentThemeStyle)
-        )
+            .padding(.top, 8)
+            
+            VStack(spacing: style.spacing) {
+                ItemToggle(
+                    isOn: $logHandler.sendLogs,
+                    title: locale.screenDescriptionSendLogs,
+                    
+                    onChange: { newValue in
+                        logHandler.sendLogs = newValue
+                    }
+                )
+                
+                SectionBody(content: {
+                    DynamicText(
+                        model: DynamicTextModel(text: locale.screenTextSendLogs),
+                        style: .textLight(
+                            themeManager.currentThemeStyle,
+                            alignment: .leading,
+                            lineLimit: 8
+                        )
+                    )
+                }, style: .accent(themeManager.currentThemeStyle))
+            }
+            .padding(.horizontal, 8)
+            .background(Color.clear)
+        }
     }
 }

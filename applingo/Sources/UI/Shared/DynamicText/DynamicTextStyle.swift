@@ -52,7 +52,7 @@ extension DynamicTextStyle {
             lineBreakMode: shouldWrapWords ? .byWordWrapping : .byTruncatingTail,
             wordWrapping: shouldWrapWords,
             lineLimit: lineLimit,
-            fontWeight: .bold,
+            fontWeight: .regular,
             fontDesign: .default
         )
     }
@@ -74,7 +74,7 @@ extension DynamicTextStyle {
             lineBreakMode: shouldWrapWords ? .byWordWrapping : .byTruncatingTail,
             wordWrapping: shouldWrapWords,
             lineLimit: lineLimit,
-            fontWeight: .heavy,
+            fontWeight: .bold,
             fontDesign: .default
         )
     }

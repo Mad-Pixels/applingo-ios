@@ -23,52 +23,41 @@ struct SettingsFeedback: View {
             screen: .SettingsFeedback,
             title: locale.screenTitle
         ) {
-            List {
-                SettingsFeedbackViewLogger(
-                    style: style,
-                    locale: locale
-                )
-                .listRowBackground(Color.clear)
-                .listRowSeparator(.hidden)
-                .frame(maxWidth: .infinity)
-                
-                SectionHeader(
-                    title: locale.screenSubtitleUrls,
-                    style: .block(themeManager.currentThemeStyle)
-                )
-                .listRowBackground(Color.clear)
-                .listRowSeparator(.hidden)
-                .frame(maxWidth: .infinity)
-                .padding(.top, 24)
-                .padding(.bottom, -12)
-                
-                SettingsFeedbackViewRedirect(
-                    style: style,
-                    locale: locale,
-                    title: locale.screenButtonReport,
-                    url: urlReport
-                )
-                .listRowBackground(Color.clear)
-                .listRowSeparator(.hidden)
-                .frame(maxWidth: .infinity)
-                
-                SettingsFeedbackViewRedirect(
-                    style: style,
-                    locale: locale,
-                    title: locale.screenButtonAbout,
-                    url: urlAbout
-                )
-                .listRowBackground(Color.clear)
-                .listRowSeparator(.hidden)
-                .frame(maxWidth: .infinity)
+            ScrollView {
+                VStack(spacing: style.spacing) {
+                    SettingsFeedbackViewLogger(
+                        style: style,
+                        locale: locale
+                    )
+                    
+                    VStack(spacing: style.spacing) {
+                        SectionHeader(
+                            title: locale.screenSubtitleUrls,
+                            style: .block(themeManager.currentThemeStyle)
+                        )
+                        .padding(.top, 8)
+                        
+                        VStack(spacing: style.spacing) {
+                            SettingsFeedbackViewRedirect(
+                                style: style,
+                                locale: locale,
+                                title: locale.screenButtonReport,
+                                url: urlReport
+                            )
+                            
+                            SettingsFeedbackViewRedirect(
+                                style: style,
+                                locale: locale,
+                                title: locale.screenButtonAbout,
+                                url: urlAbout
+                            )
+                        }
+                        .padding(.horizontal, 8)
+                        .background(Color.clear)
+                    }
+                }
+                .padding(style.padding)
             }
-            .listStyle(.plain)
-            .background(style.backgroundColor)
-            .scrollContentBackground(.hidden)
-            .safeAreaInset(edge: .bottom) {
-                Color.clear.frame(height: 80)
-            }
-            .navigationTitle(locale.screenTitle)
             .navigationBarTitleDisplayMode(.large)
             .navigationBarBackButtonHidden(true)
             .toolbar {
@@ -83,7 +72,6 @@ struct SettingsFeedback: View {
                     )
                 }
             }
-            .ignoresSafeArea(edges: .bottom)
         }
     }
 }

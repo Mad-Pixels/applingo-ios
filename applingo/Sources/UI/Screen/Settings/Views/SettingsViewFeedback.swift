@@ -20,7 +20,7 @@ internal struct SettingsViewFeedback: View {
     }
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(spacing: style.spacing) {
             SectionHeader(
                 title: locale.screenSubtitleFeedback,
                 style: .block(themeManager.currentThemeStyle)

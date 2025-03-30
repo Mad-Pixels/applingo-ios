@@ -24,23 +24,25 @@ internal struct DictionaryRemoteFilterViewSort: View {
     }
     
     var body: some View {
-        SectionHeader(
-            title: locale.screenSubtitleSortBy,
-            style: .block(themeManager.currentThemeStyle)
-        )
-        .padding(.top, 8)
-        
         VStack(spacing: style.spacing) {
-            ItemPicker(
-                selectedValue: $selectedSortBy,
-                items: ApiSortType.allCases,
-                content:  {
-                    sortBy in Text(sortBy.name)
-                },
-                style: .themed(themeManager.currentThemeStyle, type: .segmented)
+            SectionHeader(
+                title: locale.screenSubtitleSortBy,
+                style: .block(themeManager.currentThemeStyle)
             )
+            .padding(.top, 8)
+            
+            VStack(spacing: style.spacing) {
+                ItemPicker(
+                    selectedValue: $selectedSortBy,
+                    items: ApiSortType.allCases,
+                    content:  {
+                        sortBy in Text(sortBy.name)
+                    },
+                    style: .themed(themeManager.currentThemeStyle, type: .segmented)
+                )
+            }
+            .padding(.horizontal, 8)
+            .background(Color.clear)
         }
-        .padding(.horizontal, 8)
-        .background(Color.clear)
     }
 }

@@ -24,13 +24,13 @@ internal struct DictionaryRemoteFilterViewLevel: View {
     }
     
     var body: some View {
-        Section() {
+        VStack(spacing: style.spacing) {
             SectionHeader(
                 title: locale.screenSubtitleLevel,
                 style: .block(themeManager.currentThemeStyle)
             )
             .padding(.top, 8)
-            
+        
             VStack(spacing: style.spacing) {
                 ItemPicker(
                     selectedValue: $selectedLevel,
@@ -41,6 +41,7 @@ internal struct DictionaryRemoteFilterViewLevel: View {
                 .frame(maxWidth: .infinity)
             }
             .padding(.horizontal, 8)
+            .padding(.bottom, style.spacing)
             .background(Color.clear)
         }
     }

@@ -29,7 +29,7 @@ final class SettingsFeedbackStyle: ObservableObject {
 extension SettingsFeedbackStyle {
     static func themed(_ theme: AppTheme) -> SettingsFeedbackStyle {
         SettingsFeedbackStyle(
-            spacing: 24,
+            spacing: 16,
             padding: EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16),
             backgroundColor: theme.backgroundPrimary
         )

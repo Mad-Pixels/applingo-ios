@@ -28,22 +28,24 @@ internal struct SettingsViewLocale: View {
     }
     
     var body: some View {
-        SectionHeader(
-            title: locale.screenSubtitleLanguage,
-            style: .block(themeManager.currentThemeStyle)
-        )
-        .padding(.top, 8)
-        
         VStack(spacing: style.spacing) {
-            ItemPicker(
-                selectedValue: selectedLocale,
-                items: localeManager.supportedLocales,
-                onChange: { newLocale in localeManager.setLocale(newLocale) }
-            ) {
-                locale in Text(locale.displayName.capitalizedFirstLetter)
+            SectionHeader(
+                title: locale.screenSubtitleLanguage,
+                style: .block(themeManager.currentThemeStyle)
+            )
+            .padding(.top, 8)
+            
+            VStack(spacing: style.spacing) {
+                ItemPicker(
+                    selectedValue: selectedLocale,
+                    items: localeManager.supportedLocales,
+                    onChange: { newLocale in localeManager.setLocale(newLocale) }
+                ) {
+                    locale in Text(locale.displayName.capitalizedFirstLetter)
+                }
             }
+            .padding(.horizontal, 8)
+            .background(Color.clear)
         }
-        .padding(.horizontal, 8)
-        .background(Color.clear)
     }
 }

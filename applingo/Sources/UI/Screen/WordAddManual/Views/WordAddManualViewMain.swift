@@ -59,7 +59,13 @@ internal struct WordAddManualViewMain: View {
                     selectedValue: $selectedDictionary,
                     items: dictionaries,
                     content:  { dictionary in
-                        Text(dictionary?.name ?? "")
+                        DynamicText(
+                            model: DynamicTextModel(text: dictionary?.name ?? ""),
+                            style: .picker(
+                                themeManager.currentThemeStyle,
+                                fontSize: 13
+                            )
+                        )
                     },
                     style: .themed(themeManager.currentThemeStyle))
             }
