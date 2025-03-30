@@ -1,13 +1,16 @@
 import SwiftUI
 
-struct GameTabViewAccuracy: View {
-    let accuracy: Double
-    let style: GameTabStyle
+internal struct GameTabViewAccuracy: View {
+    @EnvironmentObject private var themeManager: ThemeManager
+    
+    internal let accuracy: Double
+    internal let style: GameTabStyle
     
     var body: some View {
-        Text(verbatim: "\(Int(accuracy * 100))%")
-            .font(style.valueFont)
-            .foregroundColor(style.textPrimaryColor)
-            .monospacedDigit()
+        DynamicTextCompact(
+            model: DynamicTextModel(text: "\(Int(accuracy * 100))%"),
+            style: .textGameBold(themeManager.currentThemeStyle, alignment: .center, lineLimit: 1)
+        )
+        .monospacedDigit()
     }
 }

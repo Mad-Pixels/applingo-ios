@@ -1,8 +1,8 @@
 import SwiftUI
 
-struct GameTabViewLives: View {
-    let lives: Int
-    let style: GameTabStyle
+internal struct GameTabViewLives: View {
+    internal let lives: Int
+    internal let style: GameTabStyle
     
     var body: some View {
         HStack(spacing: 4) {

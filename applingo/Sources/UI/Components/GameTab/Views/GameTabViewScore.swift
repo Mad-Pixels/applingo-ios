@@ -1,25 +1,23 @@
 import SwiftUI
 
-struct GameTabViewScore: View {
-    let score: Int
-    let style: GameTabStyle
-    let locale: GameTabLocale
+internal struct GameTabViewScore: View {
+    @EnvironmentObject private var themeManager: ThemeManager
+    
+    internal let score: Int
+    internal let style: GameTabStyle
+    internal let locale: GameTabLocale
     
     var body: some View {
         VStack(spacing: 4) {
-            Text(locale.screenScore)
-                .font(style.titleFont)
-                .foregroundColor(style.textSecondaryColor)
+            DynamicTextCompact(
+                model: DynamicTextModel(text: locale.screenScore),
+                style: .textMain(themeManager.currentThemeStyle, alignment: .center, lineLimit: 1)
+            )
             
-            Text(verbatim: "\(score)")
-                .font(style.valueFont)
-                .foregroundColor(style.textPrimaryColor)
-                .onAppear {
-                    Logger.debug("[GameTabViewScore]: Score displayed: \(score)")
-                }
-                .onChange(of: score) { newScore in
-                    Logger.debug("[GameTabViewScore]: Score updated: \(newScore)")
-                }
+            DynamicTextCompact(
+                model: DynamicTextModel(text: "\(score)"),
+                style: .textGameBold(themeManager.currentThemeStyle, alignment: .center, lineLimit: 1)
+            )
         }
     }
 }
