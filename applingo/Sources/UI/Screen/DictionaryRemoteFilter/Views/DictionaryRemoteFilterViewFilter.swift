@@ -11,13 +11,6 @@ internal struct DictionaryRemoteFilterViewFilter: View {
     private let locale: DictionaryRemoteFilterLocale
     private let style: DictionaryRemoteFilterStyle
     
-    /// Initializes the DictionaryRemoteFilterViewFilter.
-    /// - Parameters:
-    ///   - style: `DictionaryRemoteFilterStyle` style configuration.
-    ///   - locale: `DictionaryRemoteFilterLocale` localization object.
-    ///   - categoryGetter: The object responsible for fetching categories.
-    ///   - selectedFrontCategory: Binding for the front category selection.
-    ///   - selectedBackCategory: Binding for the back category selection.
     init(
         style: DictionaryRemoteFilterStyle,
         locale: DictionaryRemoteFilterLocale,
@@ -43,9 +36,19 @@ internal struct DictionaryRemoteFilterViewFilter: View {
             HStack(spacing: style.spacing) {
                 ItemPicker(
                     selectedValue: $selectedFrontCategory,
-                    items: categoryGetter.frontCategories,
-                    content:  {
-                        category in Text(category?.code ?? "")
+                    items: categoryGetter.backCategories,
+                    content: { category in
+                        let text = category != nil
+                            ? "\(category!.localizedLanguageName()) (\(category!.code.uppercased()))"
+                            : locale.screenTextUFOLevel
+                        
+                        return DynamicText(
+                            model: DynamicTextModel(text: text),
+                            style: .picker(
+                                themeManager.currentThemeStyle,
+                                fontSize: 13
+                            )
+                        )
                     },
                     style: .themed(themeManager.currentThemeStyle)
                 )
@@ -54,8 +57,18 @@ internal struct DictionaryRemoteFilterViewFilter: View {
                 ItemPicker(
                     selectedValue: $selectedBackCategory,
                     items: categoryGetter.backCategories,
-                    content:  {
-                        category in Text(category?.code ?? "")
+                    content: { category in
+                        let text = category != nil
+                        ? "\(category!.localizedLanguageName()) (\(category!.code.uppercased()))"
+                            : locale.screenTextUFOLevel
+                        
+                        return DynamicText(
+                            model: DynamicTextModel(text: text),
+                            style: .picker(
+                                themeManager.currentThemeStyle,
+                                fontSize: 13
+                            )
+                        )
                     },
                     style: .themed(themeManager.currentThemeStyle)
                 )

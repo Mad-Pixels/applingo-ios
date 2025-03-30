@@ -210,4 +210,23 @@ extension DynamicTextStyle {
             fontDesign: .default
         )
     }
+    
+    static func picker(
+        _ theme: AppTheme,
+        fontSize: CGFloat = 14
+    ) -> DynamicTextStyle {
+        return DynamicTextStyle(
+            textColor: theme.textPrimary,
+            alignment: .center,
+            letterSpacing: 0.0,
+            allowsTightening: true,
+            maxFontSize: fontSize,
+            minFontSize: fontSize - 2,
+            lineBreakMode: .byTruncatingTail,
+            wordWrapping: false,
+            lineLimit: 1,
+            fontWeight: .medium,
+            fontDesign: .default
+        )
+    }
 }
