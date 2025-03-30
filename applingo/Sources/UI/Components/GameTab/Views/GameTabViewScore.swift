@@ -16,7 +16,7 @@ internal struct GameTabViewScore: View {
 
             DynamicTextCompact(
                 model: DynamicTextModel(text: "\(score)"),
-                style: .gameTab(themeManager.currentThemeStyle, color: style.accentColor)
+                style: .gameTab(themeManager.currentThemeStyle, color: style.textPrimaryColor)
             )
         }
     }

@@ -16,7 +16,7 @@ struct GameTabViewStreak: View {
 
             DynamicTextCompact(
                 model: DynamicTextModel(text: "\(streak)"),
-                style: .gameTab(themeManager.currentThemeStyle, color: style.heartColor)
+                style: .gameTab(themeManager.currentThemeStyle, color: style.textPrimaryColor)
             )
         }
     }
