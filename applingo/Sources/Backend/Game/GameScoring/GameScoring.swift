@@ -1,25 +1,31 @@
 import SwiftUI
 
 final class GameScoring {
-    let baseScore: Int
     let quickResponseThreshold: TimeInterval
+    
+    let baseScore: Int
     let quickResponseBonus: Int
     let specialCardBonus: Int
     
+    /// Initializes the GameScoring.
+    /// - Parameters:
+    ///   - baseScore: The standard number of points awarded for a correct answer.
+    ///   - quickResponseThreshold: The maximum time in seconds that qualifies for a quick response bonus.
+    ///   - quickResponseBonus: Additional points awarded when the player answers within the quick response threshold.
+    ///   - specialCardBonus: Additional points awarded when a special card is used for the answer.
     init(
         baseScore: Int,
         quickResponseThreshold: TimeInterval,
         quickResponseBonus: Int,
         specialCardBonus: Int
     ) {
-        self.baseScore = baseScore
         self.quickResponseThreshold = quickResponseThreshold
         self.quickResponseBonus = quickResponseBonus
         self.specialCardBonus = specialCardBonus
+        self.baseScore = baseScore
     }
     
     /// Calculates the score for a correct answer and returns a model with the score value and its type.
-    ///
     /// - Parameters:
     ///   - responseTime: The time taken by the player to respond.
     ///   - isSpecialCard: A Boolean indicating if a special card was used.
@@ -29,21 +35,18 @@ final class GameScoring {
         var totalScore = baseScore
         var bonusCount = 0
         
-        // Флаг быстрого ответа
         let quickBonus = responseTime <= quickResponseThreshold
         if quickBonus {
             totalScore += quickResponseBonus
             bonusCount += 1
         }
         
-        // Флаг использования специальной карточки
         let specialBonus = isSpecialCard
         if specialBonus {
             totalScore += specialCardBonus
             bonusCount += 1
         }
         
-        // Флаг бонуса за серию (streak), если streak больше 5
         let streakBonus = streaks > 5
         if streakBonus {
             bonusCount += 1
@@ -52,7 +55,6 @@ final class GameScoring {
         // Всегда добавляем количество streaks
         totalScore += streaks
         
-        // Определяем тип начисления очков
         var scoreType: ScoreType = .regular
         if bonusCount > 1 {
             scoreType = .multiple
@@ -71,7 +73,6 @@ final class GameScoring {
     }
     
     /// Calculates the penalty for an incorrect answer.
-    ///
     /// - Returns: The penalty value as an integer.
     func calculatePenalty() -> Int {
         let penalty = baseScore / 2

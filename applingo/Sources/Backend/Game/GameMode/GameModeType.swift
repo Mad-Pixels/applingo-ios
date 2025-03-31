@@ -1,5 +1,3 @@
-/// An enumeration that defines the different game modes available in the game.
-///
 /// Each case represents a distinct mode of play:
 /// - `practice`: A relaxed mode without penalties, ideal for learning and practice.
 /// - `survival`: A challenging mode where players have limited lives.

@@ -1,3 +1,4 @@
+/// Define icons for each answer type.
 enum ScoreType {
     case regular
     case streakBonus

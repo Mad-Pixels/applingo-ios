@@ -1,21 +1,16 @@
 import Combine
 
-/// A base cache class for game data that supports customizable grouping and validation via closures.
-/// This class observes an underlying WordCache and publishes its own cache state.
 class GameCache<T: Hashable, C>: ObservableObject {
     typealias CacheItem = T
     typealias CardItem = C
 
-    // MARK: - Published Properties
     @Published private(set) var cache: [CacheItem] = []
     @Published private(set) var isLoadingCache: Bool = false
 
-    // MARK: - Private Properties
     private let wordCache: WordCache
     private var cancellables = Set<AnyCancellable>()
 
-    // MARK: - Initialization
-    /// Initializes a new instance of BaseGameCache with the given cache size and threshold.
+    /// Initializes the GameCache.
     /// - Parameters:
     ///   - cacheSize: The total number of items to cache.
     ///   - threshold: The minimum number of items before triggering a refill.
@@ -24,22 +19,26 @@ class GameCache<T: Hashable, C>: ObservableObject {
         setupObservers()
     }
     
-    /// Sets up Combine observers to update the cache and loading state based on the underlying WordCache.
-    private func setupObservers() {
-        wordCache.$cache
-            .sink { [weak self] words in
-                self?.cache = words as? [CacheItem] ?? []
-            }
-            .store(in: &cancellables)
-        
-        wordCache.$isLoadingCache
-            .sink { [weak self] isLoading in
-                self?.isLoadingCache = isLoading
-            }
-            .store(in: &cancellables)
+    deinit {
+        clear()
     }
     
-    // MARK: - Public Methods
+    /// Must be overridden by subclasses.
+    /// - Parameter item: The cache item.
+    /// - Returns: A string representing the group key.
+    func getGroupKeyImpl(_ item: CacheItem) -> String {
+        fatalError("Must be overridden by concrete game")
+    }
+    
+    /// Must be overridden by subclasses.
+    /// - Parameters:
+    ///   - item: The cache item to validate.
+    ///   - selected: An array of already selected cache items.
+    /// - Returns: A Boolean indicating whether the item is valid.
+    func validateItemImpl(_ item: CacheItem, _ selected: [CacheItem]) -> Bool {
+        fatalError("Must be overridden by concrete game")
+    }
+    
     /// Retrieves a specified number of items from the cache.
     /// - Parameter count: The number of items requested.
     /// - Returns: An array of CacheItem if sufficient items exist, otherwise nil.
@@ -71,8 +70,8 @@ class GameCache<T: Hashable, C>: ObservableObject {
         ])
         
         var selected = Set<CacheItem>()
-        var attempts = 0
         let maxAttempts = count * 4
+        var attempts = 0
         
         while selected.count < count && attempts < maxAttempts {
             if let item = items.randomElement(),
@@ -106,28 +105,18 @@ class GameCache<T: Hashable, C>: ObservableObject {
         wordCache.clearCache()
     }
     
-    /// Deinit object.
-    deinit {
-        Logger.debug("[GameCache]: Deinitializing")
-        clear()
-    }
-    
-    // MARK: - Methods to Override
-    /// Returns a grouping key for the given cache item.
-    /// Must be overridden by subclasses.
-    /// - Parameter item: The cache item.
-    /// - Returns: A string representing the group key.
-    func getGroupKeyImpl(_ item: CacheItem) -> String {
-        fatalError("Must be overridden by concrete game")
-    }
-    
-    /// Validates a cache item against a list of selected items.
-    /// Must be overridden by subclasses.
-    /// - Parameters:
-    ///   - item: The cache item to validate.
-    ///   - selected: An array of already selected cache items.
-    /// - Returns: A Boolean indicating whether the item is valid.
-    func validateItemImpl(_ item: CacheItem, _ selected: [CacheItem]) -> Bool {
-        fatalError("Must be overridden by concrete game")
+    /// Sets up Combine observers to update the cache and loading state based on the underlying WordCache.
+    private func setupObservers() {
+        wordCache.$cache
+            .sink { [weak self] words in
+                self?.cache = words as? [CacheItem] ?? []
+            }
+            .store(in: &cancellables)
+        
+        wordCache.$isLoadingCache
+            .sink { [weak self] isLoading in
+                self?.isLoadingCache = isLoading
+            }
+            .store(in: &cancellables)
     }
 }
