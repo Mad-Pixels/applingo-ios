@@ -213,40 +213,6 @@ final class WordCache: ProcessDatabase {
             .store(in: &cancellables)
     }
     
-    /// Performs the initial load of words into the cache from the database.
-    private func performInitialLoad() {
-        queue.async { [weak self] in
-            guard let self = self else { return }
-            
-            self.queue.sync(flags: .barrier) {
-                self.isLoadingCache = true
-            }
-            
-            let currentToken = self.cancellationToken
-            
-            self.performDatabaseOperation({
-                try self.wordRepository.fetchCache(count: self.cacheSize)
-            }, screen: .WordList, metadata: ["operation": "initialLoad"])
-            .sink { [weak self] completion in
-                guard let self = self,
-                      currentToken == self.cancellationToken else { return }
-                
-                if case .failure(let error) = completion {
-                    Logger.error("[Word]: Initial load failed", metadata: ["error": error.localizedDescription])
-                    DispatchQueue.main.async {
-                        self.isLoadingCache = false
-                    }
-                }
-            } receiveValue: { [weak self] fetchedWords in
-                guard let self = self,
-                      currentToken == self.cancellationToken else { return }
-                
-                self.processNewWords(fetchedWords, operation: "initialLoad")
-            }
-            .store(in: &self.cancellables)
-        }
-    }
-    
     /// Triggers a refill of the cache if no refill operation is already in progress.
     private func triggerCacheRefill() {
         queue.async(flags: .barrier) { [weak self] in
@@ -262,46 +228,8 @@ final class WordCache: ProcessDatabase {
                 self?.isLoadingCache = true
             }
             
-            self.performRefill()
+            self.refillCache()
         }
-    }
-    
-    /// Performs the refill operation to fetch missing words and update the cache.
-    private func performRefill() {
-        let needCount = cacheSize - cache.count
-        guard needCount > 0 else {
-            DispatchQueue.main.async { [weak self] in
-                self?.isLoadingCache = false
-                self?.inProgressRefill = false
-            }
-            return
-        }
-        
-        let currentToken = cancellationToken
-        let existingIds = Set(cache.compactMap { $0.id })
-        let existingFrontTexts = Set(cache.map { $0.frontText.lowercased() })
-        
-        performDatabaseOperation({
-            try self.wordRepository.fetchCache(
-                count: needCount,
-                excludeIds: Array(existingIds),
-                excludeFrontTexts: Array(existingFrontTexts)
-            )
-        }, screen: .WordList, metadata: ["operation": "refill"])
-        .sink { [weak self] completion in
-            if case .failure(let error) = completion {
-                Logger.error("[Word]: Refill failed", metadata: ["error": error.localizedDescription])
-            }
-            DispatchQueue.main.async {
-                self?.isLoadingCache = false
-                self?.inProgressRefill = false
-            }
-        } receiveValue: { [weak self] words in
-            guard let self = self,
-                  currentToken == self.cancellationToken else { return }
-            self.processNewWords(words, operation: "refill")
-        }
-        .store(in: &cancellables)
     }
     
     /// Processes the newly fetched words by filtering out duplicates and updating the cache.

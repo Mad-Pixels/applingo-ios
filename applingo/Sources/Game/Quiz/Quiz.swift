@@ -66,7 +66,7 @@ final class Quiz: ObservableObject, AbstractGame {
     }
     
     func start() {
-        cache.initialize()
+        self.cache.initialize()
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
             guard let self = self else { return }
