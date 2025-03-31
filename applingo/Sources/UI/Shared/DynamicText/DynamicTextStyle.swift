@@ -281,7 +281,7 @@ extension DynamicTextStyle {
             alignment: .center,
             letterSpacing: 0.0,
             allowsTightening: true,
-            maxFontSize: 24,
+            maxFontSize: 18,
             minFontSize: 10,
             lineBreakMode: .byTruncatingTail,
             wordWrapping: false,

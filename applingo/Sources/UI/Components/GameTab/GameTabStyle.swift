@@ -83,8 +83,8 @@ extension GameTabStyle {
             spacing: 16,
             padding: 16,
             dividerHeight: 24,
-            iconSize: 16,
-            modeSectionSize: 60,
+            iconSize: 12,
+            modeSectionSize: 46,
             tabWidth: 0.9,
             heartColor: theme.errorPrimaryColor
         )
