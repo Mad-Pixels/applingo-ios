@@ -55,20 +55,6 @@ final class Quiz: ObservableObject, AbstractGame {
         
         self.state = GameState()
         self.stats = GameStats(game: self)
-        
-        cache.$isLoadingCache
-            .sink { [weak self] isLoading in
-                self?.isLoadingCache = isLoading
-            }
-            .store(in: &cancellables)
-                    
-        cache.$cache
-            .sink { words in
-                Logger.debug("[Quiz]: Cache updated", metadata: [
-                    "count": String(words.count)
-                ])
-            }
-            .store(in: &cancellables)
     }
     
     @ViewBuilder
