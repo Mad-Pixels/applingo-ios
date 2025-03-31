@@ -56,7 +56,7 @@ class IncorrectAnswerBackgroundVisualFeedback: VisualFeedback {
     init(theme: GameTheme) {
         super.init(
             selectedColor: theme.incorrect,
-            duration: 0.8
+            duration: 0.5
         )
     }
 }
@@ -65,7 +65,7 @@ class CorrectAnswerBackgroundVisualFeedback: VisualFeedback {
     init(theme: GameTheme) {
         super.init(
             selectedColor: theme.correct,
-            duration: 0.8
+            duration: 0.5
         )
     }
 }
@@ -75,7 +75,7 @@ class CompleteBackgroundVisualFeedback: VisualFeedback {
         super.init(
             selectedColor: theme.incorrect,
             correctColor: theme.correct,
-            duration: 0.8
+            duration: 0.5
         )
     }
 }

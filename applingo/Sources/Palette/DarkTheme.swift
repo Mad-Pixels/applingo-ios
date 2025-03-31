@@ -55,8 +55,8 @@ struct DarkTheme: AppTheme {
             main: Color(hex: "AAE282"),
             secondary: Color(hex: "779E5B"),
             accent: Color(hex: "445A34"),
-            correct: Color(hex: "eab308"),
-            incorrect: Color(hex: "06b6d4")
+            correct: Color(hex: "445A34"),
+            incorrect: Color(hex: "A83232")
         )
     }
         
