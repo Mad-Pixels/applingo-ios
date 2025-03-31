@@ -14,6 +14,7 @@ final class Swipe: ObservableObject, AbstractGame {
     
     private var cancellables = Set<AnyCancellable>()
     private var gameTimer: GameStateUtilsTimer?
+    private var cacheInitialized = false
     private(set) var state: GameState
     
     /// Initializes the Quiz.
@@ -80,7 +81,10 @@ final class Swipe: ObservableObject, AbstractGame {
     }
     
     func start() {
-        cache.initialize()
+        if !cacheInitialized {
+            self.cache.initialize()
+            cacheInitialized = true
+        }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
             guard let self = self else { return }
@@ -128,12 +132,7 @@ final class Swipe: ObservableObject, AbstractGame {
     }
     
     internal func getItems(_ count: Int) -> [any Hashable]? {
-        let items = cache.getItems(count)
-        
-        if items == nil && !isLoadingCache {
-            cache.initialize()
-        }
-        return items
+        return cache.getItems(count)
     }
 
     internal func removeItem(_ item: any Hashable) {
