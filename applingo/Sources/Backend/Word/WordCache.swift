@@ -12,6 +12,7 @@ final class WordCache: ProcessDatabase {
     
     private var cancellables = Set<AnyCancellable>()
     private var cancellationToken = UUID()
+    private var preventAutoRefill = false
     private var inProgressRefill = false
     
     /// Initializes the WordCache.
@@ -61,7 +62,11 @@ final class WordCache: ProcessDatabase {
     
     deinit {
         Logger.debug("[Word]: Deinitializing cache")
-        clearCache()
+        cancellables.removeAll()
+        
+        cancellationToken = UUID()
+        inProgressRefill = false
+        preventAutoRefill = true
     }
     
     /// Initializes the word cache by fetching a new set of words from the database.
@@ -183,7 +188,21 @@ final class WordCache: ProcessDatabase {
     /// Remove all from cache.
     func clearCache() {
         Logger.debug("[Word]: clearCache() called", metadata: ["currentCacheCount": String(cache.count)])
-        resetCacheState()
+            
+        preventAutoRefill = true
+            
+        cancellationToken = UUID()
+        inProgressRefill = false
+            
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            self.cache.removeAll()
+            self.isLoadingCache = false
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
+                self?.preventAutoRefill = false
+            }
+        }
     }
     
     /// Resets the internal cache state, including the cancellation token and refill flag.
@@ -201,7 +220,10 @@ final class WordCache: ProcessDatabase {
         Logger.debug("[Word]: Setting up cache observer")
         $cache
             .dropFirst()
-            .filter { $0.count < self.cacheThreshold }
+            .filter { [weak self] currentCache in
+                guard let self = self else { return false }
+                return currentCache.count < self.cacheThreshold && !self.preventAutoRefill
+            }
             .debounce(for: .seconds(0.1), scheduler: DispatchQueue.main)
             .sink { [weak self] currentCache in
                 guard let self = self else { return }

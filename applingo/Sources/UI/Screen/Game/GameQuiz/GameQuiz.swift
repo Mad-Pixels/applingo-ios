@@ -9,8 +9,8 @@ struct GameQuiz: View {
     @StateObject private var viewModel: QuizViewModel
     
     @ObservedObject var game: Quiz
-    @State private var isLoading = true
     @State private var shouldShowPreloader = false
+    @State private var preloaderTimer: DispatchWorkItem?
     
     init(
         game: Quiz,
@@ -24,18 +24,21 @@ struct GameQuiz: View {
     var body: some View {
         ZStack {
             style.backgroundColor.ignoresSafeArea()
-                
+            
+            if shouldShowPreloader {
+                ItemListLoading(style: .themed(themeManager.currentThemeStyle))
+            }
+            
             if let card = viewModel.currentCard {
-                VStack(spacing: style.optionsSpacing) {
-                    GameQuizViewQuestion(
-                        locale: locale,
-                        style: style,
-                        question: card.question
-                    )
-                    .padding(.bottom, 24)
-                    .padding(.top, 36)
-                                
+                VStack {
                     VStack(spacing: style.optionsSpacing) {
+                        GameQuizViewQuestion(
+                            locale: locale,
+                            style: style,
+                            question: card.question
+                        )
+                        .padding(.vertical, style.optionsSpacing)
+                        
                         ForEach(card.options, id: \.self) { option in
                             GameQuizViewAnswer(
                                 style: style,
@@ -46,49 +49,38 @@ struct GameQuiz: View {
                             )
                         }
                     }
-                }
-                .padding()
-            }
-            
-            // Показываем прелоадер только если shouldShowPreloader == true
-            if shouldShowPreloader {
-                ItemListLoading(style: .themed(themeManager.currentThemeStyle))
-            }
-            
-            VStack {
-                Spacer()
-                HStack {
+                    .padding(.top, 128)
+                    
                     Spacer()
-                    GameQuizViewActions(
-                        style: style,
-                        onAdd: { }
+                    
+                    ButtonFloatingSingle(
+                        icon: "volume",
+                        action: {}
                     )
                     .padding(.bottom, 32)
-                    .padding(.trailing, 16)
-                    .opacity(isLoading ? 0 : 1)
+                    .padding(.horizontal, 8)
                 }
             }
         }
-        .padding()
         .onAppear {
-            isLoading = true
-            shouldShowPreloader = false
-            
-            // Начинаем загрузку
             viewModel.generateCard()
-            
-            // Проверяем через 0.2 сек, всё ли загрузилось
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                // Если всё ещё идёт загрузка, показываем прелоадер
-                if isLoading {
-                    shouldShowPreloader = true
+        }
+        .onChange(of: viewModel.isLoadingCard) { isLoading in
+            if isLoading {
+                preloaderTimer?.cancel()
+                
+                let timer = DispatchWorkItem {
+                    if viewModel.isLoadingCard {
+                        shouldShowPreloader = true
+                    }
                 }
-            }
-            
-            // В любом случае скрываем прелоадер и завершаем загрузку через 0.8 сек
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                preloaderTimer = timer
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: timer)
+            } else {
+                preloaderTimer?.cancel()
+                preloaderTimer = nil
+                
                 shouldShowPreloader = false
-                isLoading = false
             }
         }
         .onReceive(game.state.$isGameOver) { isGameOver in

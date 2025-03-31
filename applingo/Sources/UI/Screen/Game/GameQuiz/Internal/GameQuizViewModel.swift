@@ -4,6 +4,7 @@ import SwiftUI
 internal final class QuizViewModel: ObservableObject {
     @Published private(set) var currentCard: QuizModelCard?
     @Published private(set) var shouldShowEmptyView = false
+    @Published private(set) var isLoadingCard = false
     
     @Published var highlightedOptions: [String: Color] = [:]
     @Published var isProcessingAnswer = false
@@ -46,6 +47,7 @@ internal final class QuizViewModel: ObservableObject {
         
         shouldShowEmptyView = false
         currentCard = nil
+        isLoadingCard = true
         
         loadingTask = Task { @MainActor in
             for attempt in 1...3 {
@@ -73,6 +75,7 @@ internal final class QuizViewModel: ObservableObject {
                     cardStartTime = Date()
                     
                     self.isProcessingAnswer = false
+                    self.isLoadingCard = false
                     return
                 }
                 
@@ -83,6 +86,7 @@ internal final class QuizViewModel: ObservableObject {
             
             shouldShowEmptyView = true
             self.isProcessingAnswer = false
+            self.isLoadingCard = false
         }
     }
     
@@ -104,10 +108,12 @@ internal final class QuizViewModel: ObservableObject {
         
         if result == .incorrect {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                self.isLoadingCard = true
                 self.generateCard()
             }
         } else {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                self.isLoadingCard = true
                 self.generateCard()
             }
         }

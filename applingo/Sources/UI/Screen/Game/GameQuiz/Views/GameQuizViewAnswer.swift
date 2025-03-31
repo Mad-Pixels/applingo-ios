@@ -35,6 +35,7 @@ internal struct GameQuizViewAnswer: View {
         )
         .opacity(viewModel.isProcessingAnswer && !viewModel.highlightedOptions.keys.contains(option) ? 0.7 : 1.0)
         .disabled(viewModel.isProcessingAnswer)
+        .padding(.horizontal, style.optionsPadding)
     }
     
     private func getButtonStyle() -> ButtonActionStyle {
