@@ -1,7 +1,7 @@
 import SwiftUI
 
 final class GameQuizStyle: ObservableObject {
-    // MARK: - Colors
+    // Colors
     let backgroundColor: Color
     let cardBackground: Color
     let cardBorder: Color
@@ -10,7 +10,7 @@ final class GameQuizStyle: ObservableObject {
     let optionBackgroundPressed: Color
     let optionTextColor: Color
     
-    // MARK: - Fonts & Sizes
+    // Fonts & Sizes
     let questionFont: Font
     let optionFont: Font
     let cardCornerRadius: CGFloat
@@ -19,31 +19,31 @@ final class GameQuizStyle: ObservableObject {
     let optionsPadding: CGFloat
     let optionsSpacing: CGFloat
     
-    // MARK: - Shadows
+    // Shadows
     let cardShadowRadius: CGFloat
     let optionShadowRadius: CGFloat
     
-    // MARK: - Pattern
+    // Pattern
     let pattern: DynamicPatternModel
     
-    // MARK: - Layout Constants
+    // Layout Constants
     let widthRatio: CGFloat
     let heightRatio: CGFloat
     let maxHeight: CGFloat
     
-    // MARK: - Pattern Animation Constants
+    // Pattern Animation Constants
     let patternOpacity: CGFloat
     let patternMinScale: CGFloat
     let patternAnimationDuration: Double
     
-    // MARK: - Border Constants
+    // Border Constants
     let borderWidth: CGFloat
     
-    // MARK: - Shadow Constants
+    // Shadow Constants
     let shadowOpacity: CGFloat
     let shadowOffset: CGPoint
     
-    // MARK: - Text Constants
+    // Text Constants
     let minScaleFactor: CGFloat
     let maxLines: Int
     let lineSpacing: CGFloat
@@ -117,7 +117,6 @@ final class GameQuizStyle: ObservableObject {
     }
 }
 
-// MARK: - Themed Style Extension
 extension GameQuizStyle {
     static func themed(_ theme: AppTheme) -> GameQuizStyle {
         GameQuizStyle(
