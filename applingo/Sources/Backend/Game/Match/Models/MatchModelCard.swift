@@ -1,15 +1,11 @@
 import SwiftUI
 
-/// A model representing a quiz card that holds the question, correct answer, and answer options.
 struct MatchModelCard {
     let word: DatabaseModelWord
-    /// The text of the question (either the front text or the back text).
+    
     let question: String
-    /// The correct answer (the opposite text of the question).
     let answer: String
-    /// An array of answer options.
     let options: [String]
-    /// A flag indicating whether the front text is shown as the question.
     let showingFront: Bool
     
     /// Initializes a new instance of QuizModelCard.

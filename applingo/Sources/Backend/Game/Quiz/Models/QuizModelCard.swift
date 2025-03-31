@@ -6,7 +6,6 @@ struct QuizModelCard {
     let question: String
     let answer: String
     let options: [String]
-    
     let showingFront: Bool
     
     /// Initializes the QuizModelCard.
