@@ -99,7 +99,7 @@ final class Quiz: ObservableObject, AbstractGame {
     }
     
     internal var isReadyToPlay: Bool {
-        !cache.cache.isEmpty && cache.cache.count >= MIN_WORDS_IN_CACHE
+        !cache.cache.isEmpty && cache.cache.count >= QUIZ_MIN_WORDS_IN_CACHE
     }
     
     internal func validateAnswer(_ answer: String) -> GameValidationResult {

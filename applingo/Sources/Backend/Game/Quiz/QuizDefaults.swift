@@ -17,4 +17,4 @@ internal let QUIZ_CACHE_THRESHOLD = 10
 internal let QUIZ_CACHE_SIZE = 50
 
 /// The minimum active words for invoke the game
-internal let MIN_WORDS_IN_CACHE = 10
+internal let QUIZ_MIN_WORDS_IN_CACHE = 16
