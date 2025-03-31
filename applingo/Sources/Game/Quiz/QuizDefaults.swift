@@ -11,10 +11,10 @@ internal let QUIZ_SCORE_QUICK_BONUS = 5
 internal let QUIZ_SCORE_SUCCESS = 8
 
 /// The threshold for the quiz cache; if the cache drops below this number, it will be refilled.
-internal let QUIZ_CACHE_THRESHOLD = 10
+internal let QUIZ_CACHE_THRESHOLD = 5
 
 /// The maximum size of the quiz cache.
-internal let QUIZ_CACHE_SIZE = 50
+internal let QUIZ_CACHE_SIZE = 10
 
 /// The minimum active words for invoke the game.
-internal let QUIZ_MIN_WORDS_IN_CACHE = 16
+internal let QUIZ_MIN_WORDS_IN_CACHE = 8

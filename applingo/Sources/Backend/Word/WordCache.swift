@@ -1,25 +1,10 @@
 import Foundation
 import Combine
 
-/// A cache manager that handles fetching, storing, and updating a list of words
-/// from the database. It maintains an internal cache of `DatabaseModelWord` objects,
-/// provides methods to initialize the cache, remove words, and automatically refills
-/// the cache when it drops below a specified threshold.
-///
-/// The class uses a dedicated concurrent queue with barrier flags to ensure thread safety,
-/// and it leverages Combine for asynchronous operations.
 final class WordCache: ProcessDatabase {
-    
-    // MARK: - Public Properties
-    
-    /// The current cache of words.
     @Published private(set) var cache: [DatabaseModelWord] = []
-    
-    /// A flag indicating whether the cache is currently loading.
     @Published private(set) var isLoadingCache = false
-    
-    // MARK: - Private Properties
-    
+
     private let wordRepository: DatabaseManagerWord
     private let queue: DispatchQueue
     private let cacheThreshold: Int
@@ -29,10 +14,7 @@ final class WordCache: ProcessDatabase {
     private var cancellationToken = UUID()
     private var inProgressRefill = false
     
-    // MARK: - Initialization
-    
-    /// Initializes a new instance of `WordCache` with the specified cache size and threshold.
-    ///
+    /// Initializes the WordCache.
     /// - Parameters:
     ///   - cacheSize: The total number of words to be cached. Must be greater than zero.
     ///   - threshold: The minimum number of words required before triggering a cache refill.
@@ -43,7 +25,6 @@ final class WordCache: ProcessDatabase {
             "threshold": String(threshold)
         ])
         
-        // Validate parameters
         if cacheSize <= 0 {
             fatalError("Invalid cache size")
         }
@@ -60,7 +41,6 @@ final class WordCache: ProcessDatabase {
             ])
         }
         
-        // Ensure the database is connected
         guard let dbQueue = AppDatabase.shared.databaseQueue else {
             fatalError("Database is not connected")
         }
@@ -76,11 +56,13 @@ final class WordCache: ProcessDatabase {
             "adjustedCacheSize": String(self.cacheSize),
             "cacheThreshold": String(self.cacheThreshold)
         ])
-        
         setupCacheObserver()
     }
     
-    // MARK: - Public Methods
+    deinit {
+        Logger.debug("[Word]: Deinitializing cache")
+        clearCache()
+    }
     
     /// Initializes the word cache by fetching a new set of words from the database.
     ///
@@ -121,7 +103,6 @@ final class WordCache: ProcessDatabase {
     }
     
     /// Removes the specified word from the cache.
-    ///
     /// - Parameter item: The `DatabaseModelWord` item to be removed.
     func removeFromCache(_ item: DatabaseModelWord) {
         Logger.debug("[Word]: removeFromCache() called", metadata: [
@@ -134,11 +115,9 @@ final class WordCache: ProcessDatabase {
                   let itemId = item.id else { return }
             
             let beforeCount = self.cache.count
-            // Prepare a new cache array in the background.
             let newCache = self.cache.filter { $0.id != itemId }
             let afterCount = newCache.count
             
-            // Update the cache on the main thread.
             DispatchQueue.main.async {
                 self.cache = newCache
                 
@@ -147,8 +126,6 @@ final class WordCache: ProcessDatabase {
                     "afterCount": String(afterCount),
                     "removedWord": item.frontText
                 ])
-                
-                // Trigger a cache refill if needed.
                 if afterCount < self.cacheThreshold {
                     self.triggerCacheRefill()
                 }
@@ -203,13 +180,10 @@ final class WordCache: ProcessDatabase {
         .store(in: &cancellables)
     }
 
-    /// Clears the current cache and resets internal state.
     func clearCache() {
         Logger.debug("[Word]: clearCache() called", metadata: ["currentCacheCount": String(cache.count)])
         resetCacheState()
     }
-    
-    // MARK: - Private Methods
     
     /// Resets the internal cache state, including the cancellation token and refill flag.
     private func resetCacheState() {
@@ -331,7 +305,6 @@ final class WordCache: ProcessDatabase {
     }
     
     /// Processes the newly fetched words by filtering out duplicates and updating the cache.
-    ///
     /// - Parameters:
     ///   - words: An array of `DatabaseModelWord` objects fetched from the database.
     ///   - operation: A string identifier for the operation (e.g., "initialize", "refill", "initialLoad").
@@ -365,7 +338,6 @@ final class WordCache: ProcessDatabase {
     }
     
     /// Validates and filters the fetched words by removing duplicates based on `frontText` and `id`.
-    ///
     /// - Parameter words: The array of fetched `DatabaseModelWord` objects.
     /// - Returns: A filtered array containing only unique words.
     private func validateAndFilterWords(_ words: [DatabaseModelWord]) -> [DatabaseModelWord] {
@@ -389,12 +361,5 @@ final class WordCache: ProcessDatabase {
             
             return isUnique
         }
-    }
-    
-    // MARK: - Deinitialization
-    
-    deinit {
-        Logger.debug("[Word]: Deinitializing cache")
-        clearCache()
     }
 }
