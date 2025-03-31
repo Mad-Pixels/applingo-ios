@@ -107,7 +107,9 @@ internal final class QuizViewModel: ObservableObject {
                 self.generateCard()
             }
         } else {
-            generateCard()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                self.generateCard()
+            }
         }
     }
 }
