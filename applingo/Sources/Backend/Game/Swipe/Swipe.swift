@@ -38,7 +38,7 @@ final class Swipe: ObservableObject, AbstractGame {
             feedbacks: [
                 .incorrect: [
                     IncorrectAnswerHapticFeedback(),
-                    IncorrectAnswerVisualFeedback()
+                    IncorrectAnswerBackgroundVisualFeedback(theme: ThemeManager.shared.currentThemeStyle.swipeTheme)
                 ]
             ]
         ),

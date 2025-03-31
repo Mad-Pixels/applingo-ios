@@ -1,32 +1,36 @@
 import SwiftUI
 
-/// A base class that provides common functionality for validating answers in a game,
-/// updating word statistics, and playing associated feedback.
-/// Subclasses must override `validateImpl(answer:)` and `getCurrentWord()` to provide
-/// game-specific validation logic and access to the current word.
 class BaseGameValidation: AbstractGameValidation {
-    // MARK: - Properties
     private var feedbacks: [GameValidationResult: [AbstractGameFeedback]]
     private var wordAction: WordAction
     
-    // MARK: - Initializer
-    /// Initializes a new instance of `BaseGameValidation` with the specified feedbacks.
-    ///
-    /// - Parameter feedbacks: A dictionary mapping validation results (e.g., `.correct`, `.incorrect`)
-    ///   to arrays of feedback implementations.
+    /// Initializes the BaseGameValidation.
+    /// - Parameter feedbacks: A dictionary mapping validation results (e.g., `.correct`, `.incorrect`).
     init(feedbacks: [GameValidationResult: [AbstractGameFeedback]]) {
         self.wordAction = WordAction()
         self.feedbacks = feedbacks
     }
 
-    // MARK: - Internal
+    /// Returns the correct answer for the current question, if available.
+    /// - Returns: The correct answer as a String, or nil if not available.
+    func getCorrectAnswer() -> String? {
+        return nil
+    }
+    
+    /// Must be overridden by subclasses to implement the specific answer validation logic.
+    /// - Parameter answer: The answer provided by the user.
+    /// - Returns: `GameValidationResult` based on game-specific criteria.
+    func validateAnswer(answer: Any) -> GameValidationResult {
+        fatalError("Must be overridden by concrete game")
+    }
+    
+    /// Must be overridden by subclasses to provide the current word for validation.
+    /// - Returns: The current `DatabaseModelWord`, if available.
+    func getCurrentWord() -> DatabaseModelWord? {
+        fatalError("Must be overridden by concrete game")
+    }
+    
     /// Validates the provided answer and returns the corresponding validation result.
-    ///
-    /// This method performs the following steps:
-    /// 1. Calls `validateAnswer(answer:)` to compute the validation result.
-    /// 2. If a current word is available, updates its statistics based on the result.
-    /// 3. Returns the computed `GameValidationResult`.
-    ///
     /// - Parameter answer: The answer provided by the user.
     /// - Returns: A `GameValidationResult` indicating whether the answer is correct, incorrect, or partial.
     final internal func validate(answer: Any) -> GameValidationResult {
@@ -39,49 +43,28 @@ class BaseGameValidation: AbstractGameValidation {
     }
     
     /// Plays all feedback mechanisms associated with the given validation result.
-    ///
-    /// - Parameter result: The result of the validation.
-    final internal func playFeedback(_ result: GameValidationResult, answer: String? = nil) {
-        feedbacks[result]?.forEach { feedback in
-            if let visualFeedback = feedback as? VisualFeedback,
-            let answer = answer {
-                visualFeedback.setOption(answer)
-            }
-            feedback.play()
-        }
-    }
-    
-    /// Calculates the new weight for a word based on its success and fail counts.
-    ///
-    /// The weight is calculated using the formula:
-    ///   weight = 500 + (500 * (success - fail) / (success + fail))
-    /// The resulting weight is clamped between 0 and 1000.
-    ///
     /// - Parameters:
-    ///   - success: The number of times the word was answered correctly.
-    ///   - fail: The number of times the word was answered incorrectly.
-    /// - Returns: The calculated weight as an `Int`.
-    static func calculateWeight(success: Int, fail: Int) -> Int {
-        let total = Double(success + fail)
-        if total > 0 {
-            let ratio = Double(success - fail) / total
-            let calculatedWeight = Int(500.0 + (500.0 * ratio))
-            return min(1000, max(0, calculatedWeight))
-        } else {
-            return 500
+    ///   - result: The validation result determining which feedbacks to play.
+    ///   - answer: The answer selected by the user. If nil, no feedback will be played.
+    final internal func playFeedback(_ result: GameValidationResult, answer: String? = nil) {
+        guard let answer = answer else { return }
+        
+        let correctAnswer: String? = getCorrectAnswer()
+        let context = FeedbackContext(
+            selectedOption: answer,
+            correctOption: result == .incorrect ? correctAnswer : nil
+        )
+        
+        feedbacks[result]?.forEach { feedback in
+            feedback.play(context: context)
         }
     }
     
     /// Updates the statistics of the provided word based on the validation result.
-    ///
-    /// The update includes:
-    /// - Incrementing the success or fail counters.
-    /// - Recalculating the word's weight using `calculateWeight(success:fail:)`.
-    ///
     /// - Parameters:
     ///   - word: The `DatabaseModelWord` to update.
     ///   - result: The result of the validation.
-    final private func updateWordStats(word: DatabaseModelWord, result: GameValidationResult) {
+    private final func updateWordStats(word: DatabaseModelWord, result: GameValidationResult) {
         var updatedWord = word
         
         switch result {
@@ -112,19 +95,19 @@ class BaseGameValidation: AbstractGameValidation {
         }
     }
     
-    // MARK: - Methods to Override
-    /// Must be overridden by subclasses to implement the specific answer validation logic.
-    ///
-    /// - Parameter answer: The answer provided by the user.
-    /// - Returns: `GameValidationResult` based on game-specific criteria.
-    func validateAnswer(answer: Any) -> GameValidationResult {
-        fatalError("Must be overridden by concrete game")
-    }
-    
-    /// Must be overridden by subclasses to provide the current word for validation.
-    ///
-    /// - Returns: The current `DatabaseModelWord`, if available.
-    func getCurrentWord() -> DatabaseModelWord? {
-        fatalError("Must be overridden by concrete game")
+    /// Calculates the new weight for a word based on its success and fail counts.
+    /// - Parameters:
+    ///   - success: The number of times the word was answered correctly.
+    ///   - fail: The number of times the word was answered incorrectly.
+    /// - Returns: The calculated weight as an `Int`.
+    private static func calculateWeight(success: Int, fail: Int) -> Int {
+        let total = Double(success + fail)
+        if total > 0 {
+            let ratio = Double(success - fail) / total
+            let calculatedWeight = Int(500.0 + (500.0 * ratio))
+            return min(1000, max(0, calculatedWeight))
+        } else {
+            return 500
+        }
     }
 }

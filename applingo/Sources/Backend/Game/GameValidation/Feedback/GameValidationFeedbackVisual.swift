@@ -1,25 +1,40 @@
 import SwiftUI
 
 class VisualFeedback: AbstractGameFeedback {
-    private let color: Color
+    private let selectedColor: Color
+    private let correctColor: Color?
     private let duration: TimeInterval
-    private var selectedOption: String?
     
-    init(color: Color, duration: TimeInterval = 0.7) {
-        self.color = color
+    init(selectedColor: Color, correctColor: Color? = nil, duration: TimeInterval = 0.7) {
+        self.selectedColor = selectedColor
+        self.correctColor = correctColor
         self.duration = duration
     }
     
-    func setOption(_ option: String) {
-        self.selectedOption = option
-    }
-    
-    func play() {
-        guard let option = selectedOption else {
-            Logger.warning("[VisualFeedback]: Attempting to play without a selected option")
+    func play(context: FeedbackContext?) {
+        guard let context = context else {
+            Logger.warning("[VisualFeedback]: Attempting to play without context")
             return
         }
         
+        sendHighlightNotification(
+            option: context.selectedOption,
+            color: selectedColor,
+            duration: duration
+        )
+        
+        if let correctOption = context.correctOption,
+           correctOption != context.selectedOption,
+           let correctColor = correctColor {
+            sendHighlightNotification(
+                option: correctOption,
+                color: correctColor,
+                duration: duration
+            )
+        }
+    }
+    
+    private func sendHighlightNotification(option: String, color: Color, duration: TimeInterval) {
         let userInfo: [String: Any] = [
             "option": option,
             "color": color,
@@ -36,10 +51,30 @@ class VisualFeedback: AbstractGameFeedback {
     func stop() {}
 }
 
-class IncorrectAnswerVisualFeedback: VisualFeedback {
-    init() {
+class IncorrectAnswerBackgroundVisualFeedback: VisualFeedback {
+    @EnvironmentObject private var themeManager: ThemeManager
+    init(theme: GameTheme) {
         super.init(
-            color: .red.opacity(0.3),
+            selectedColor: theme.incorrect,
+            duration: 0.8
+        )
+    }
+}
+
+class CorrectAnswerBackgroundVisualFeedback: VisualFeedback {
+    init(theme: GameTheme) {
+        super.init(
+            selectedColor: theme.correct,
+            duration: 0.8
+        )
+    }
+}
+
+class CompleteBackgroundVisualFeedback: VisualFeedback {
+    init(theme: GameTheme) {
+        super.init(
+            selectedColor: theme.incorrect,
+            correctColor: theme.correct,
             duration: 0.8
         )
     }

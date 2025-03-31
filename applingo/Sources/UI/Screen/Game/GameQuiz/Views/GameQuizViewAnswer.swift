@@ -39,7 +39,7 @@ internal struct GameQuizViewAnswer: View {
     
     private func getButtonStyle() -> ButtonActionStyle {
         if let highlightColor = viewModel.highlightedOptions[option] {
-            return .incorrectGameAnswer(themeManager.currentThemeStyle, highlightColor: highlightColor)
+            return .GameAnswer(themeManager.currentThemeStyle, highlightColor: highlightColor)
         } else {
             return .game(themeManager.currentThemeStyle)
         }

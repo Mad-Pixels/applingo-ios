@@ -1,4 +1,4 @@
 protocol AbstractGameFeedback {
-    func play()
+    func play(context: FeedbackContext?)
     func stop()
 }

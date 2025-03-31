@@ -43,4 +43,8 @@ final class QuizValidation: BaseGameValidation {
     override func getCurrentWord() -> DatabaseModelWord? {
         return currentWord
     }
+    
+    override func getCorrectAnswer() -> String? {
+        return currentCard?.answer
+    }
 }
