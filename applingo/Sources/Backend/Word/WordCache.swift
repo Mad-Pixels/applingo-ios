@@ -180,6 +180,7 @@ final class WordCache: ProcessDatabase {
         .store(in: &cancellables)
     }
 
+    /// Remove all from cache.
     func clearCache() {
         Logger.debug("[Word]: clearCache() called", metadata: ["currentCacheCount": String(cache.count)])
         resetCacheState()
@@ -218,8 +219,8 @@ final class WordCache: ProcessDatabase {
         queue.async(flags: .barrier) { [weak self] in
             guard let self = self else { return }
             
-            guard !self.inProgressRefill && !self.isLoadingCache else {
-                Logger.debug("[Word]: Skipping refill - operation in progress")
+            guard !self.inProgressRefill && !self.isLoadingCache && self.cancellationToken != UUID() else {
+                Logger.debug("[Word]: Skipping refill - operation in progress or cache was just initialized")
                 return
             }
             

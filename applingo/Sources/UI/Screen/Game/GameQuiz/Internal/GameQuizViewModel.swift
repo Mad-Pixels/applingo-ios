@@ -48,7 +48,7 @@ internal final class QuizViewModel: ObservableObject {
         currentCard = nil
         
         loadingTask = Task { @MainActor in
-            for attempt in 1...2 {
+            for attempt in 1...3 {
                 if Task.isCancelled {
                     return
                 }
@@ -77,7 +77,7 @@ internal final class QuizViewModel: ObservableObject {
                 }
                 
                 if attempt < 3 {
-                    try? await Task.sleep(nanoseconds: 500_000_000)
+                    try? await Task.sleep(nanoseconds: 800_000_000)
                 }
             }
             

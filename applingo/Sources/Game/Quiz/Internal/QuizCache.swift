@@ -1,6 +1,6 @@
 import Foundation
 
-internal final class QuizCache: GameCache<DatabaseModelWord, QuizModelCard> {
+internal final class QuizCache: GameCache<DatabaseModelWord> {
     override func getGroupKeyImpl(_ item: DatabaseModelWord) -> String {
         return item.subcategory
     }

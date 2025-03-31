@@ -1,14 +1,18 @@
+import SwiftUI
 import Combine
 
-class GameCache<T: Hashable, C>: ObservableObject {
+class GameCache<T: Hashable>: ObservableObject {
     typealias CacheItem = T
-    typealias CardItem = C
 
     @Published private(set) var cache: [CacheItem] = []
     @Published private(set) var isLoadingCache: Bool = false
 
+    private let refillCooldownInterval: TimeInterval = 1.0
     private let wordCache: WordCache
+    
     private var cancellables = Set<AnyCancellable>()
+    private var refillCooldown: Timer?
+    private var canRefill: Bool = true
 
     /// Initializes the GameCache.
     /// - Parameters:
@@ -20,6 +24,7 @@ class GameCache<T: Hashable, C>: ObservableObject {
     }
     
     deinit {
+        refillCooldown?.invalidate()
         clear()
     }
     
@@ -48,7 +53,7 @@ class GameCache<T: Hashable, C>: ObservableObject {
                 "available": String(cache.count),
                 "requested": String(count)
             ])
-            wordCache.refillCache()
+            requestRefill()
             return nil
         }
         
@@ -60,7 +65,7 @@ class GameCache<T: Hashable, C>: ObservableObject {
         
         guard let (subcategory, items) = groupedItems.first(where: { $0.value.count >= count }) else {
             Logger.debug("[GameCache]: No group has enough items")
-            wordCache.refillCache()
+            requestRefill()
             return nil
         }
         
@@ -69,22 +74,34 @@ class GameCache<T: Hashable, C>: ObservableObject {
             "availableWords": String(items.count)
         ])
         
-        var selected = Set<CacheItem>()
+        var availableItems = Set(items)
+        var selected = [CacheItem]()
         let maxAttempts = count * 4
         var attempts = 0
         
-        while selected.count < count && attempts < maxAttempts {
-            if let item = items.randomElement(),
-               validateItemImpl(item, Array(selected)) {
-                selected.insert(item)
+        while selected.count < count && attempts < maxAttempts && !availableItems.isEmpty {
+            guard let item = availableItems.randomElement() else { break }
+            
+            if validateItemImpl(item, selected) {
+                selected.append(item)
+                availableItems.remove(item)
+            } else {
+                availableItems.remove(item)
             }
+            
             attempts += 1
         }
+        
         guard selected.count == count else {
-            Logger.debug("[GameCache]: Failed to select required items")
+            Logger.debug("[GameCache]: Failed to select required items", metadata: [
+                "selected": String(selected.count),
+                "required": String(count),
+                "attempts": String(attempts)
+            ])
+            requestRefill()
             return nil
         }
-        return Array(selected)
+        return selected
     }
     
     /// Removes the specified item from the cache.
@@ -92,11 +109,16 @@ class GameCache<T: Hashable, C>: ObservableObject {
     final func removeItem(_ item: CacheItem) {
         if let word = item as? DatabaseModelWord {
             wordCache.removeFromCache(word)
-        } else {}
+        } else {
+            Logger.warning("[GameCache]: Attempt to remove non-DatabaseModelWord item", metadata: [
+                "itemType": String(describing: type(of: item))
+            ])
+        }
     }
     
     /// Initializes the cache by fetching data from the database.
     final func initialize() {
+        Logger.debug("[GameCache]: Initializing cache")
         wordCache.initializeCache()
     }
     
@@ -105,17 +127,44 @@ class GameCache<T: Hashable, C>: ObservableObject {
         wordCache.clearCache()
     }
     
+    /// Adding items to cache.
+    private func requestRefill() {
+        guard canRefill else {
+            Logger.debug("[GameCache]: Refill on cooldown")
+            return
+        }
+        
+        canRefill = false
+        wordCache.refillCache()
+        
+        refillCooldown?.invalidate()
+        refillCooldown = Timer.scheduledTimer(withTimeInterval: refillCooldownInterval, repeats: false) { [weak self] _ in
+            self?.canRefill = true
+            Logger.debug("[GameCache]: Refill cooldown expired")
+        }
+    }
+    
     /// Sets up Combine observers to update the cache and loading state based on the underlying WordCache.
     private func setupObservers() {
         wordCache.$cache
             .sink { [weak self] words in
-                self?.cache = words as? [CacheItem] ?? []
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    if let typedWords = words as? [CacheItem] {
+                        self.cache = typedWords
+                    } else {
+                        Logger.warning("[GameCache]: Type mismatch in cache update")
+                        self.cache = []
+                    }
+                }
             }
             .store(in: &cancellables)
         
         wordCache.$isLoadingCache
             .sink { [weak self] isLoading in
-                self?.isLoadingCache = isLoading
+                DispatchQueue.main.async {
+                    self?.isLoadingCache = isLoading
+                }
             }
             .store(in: &cancellables)
     }
