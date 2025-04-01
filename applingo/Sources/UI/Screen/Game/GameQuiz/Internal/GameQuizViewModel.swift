@@ -64,8 +64,7 @@ internal final class QuizViewModel: ObservableObject {
                     
                     currentCard = QuizModelCard(
                         word: correctWord,
-                        allWords: shuffledWords,
-                        showingFront: Bool.random()
+                        allWords: shuffledWords
                     )
                     
                     if let validation = game.validation as? QuizValidation,
