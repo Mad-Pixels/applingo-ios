@@ -1,7 +1,7 @@
 import AVFoundation
 import Foundation
 
-internal class TTSDelegate: NSObject, AVSpeechSynthesizerDelegate {
+class TTSDelegate: NSObject, AVSpeechSynthesizerDelegate {
     private let completion: () -> Void
     
     init(completion: @escaping () -> Void) {
@@ -11,5 +11,6 @@ internal class TTSDelegate: NSObject, AVSpeechSynthesizerDelegate {
     
     func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
         completion()
+        NotificationCenter.default.post(name: .TTSDidFinishSpeaking, object: nil)
     }
 }

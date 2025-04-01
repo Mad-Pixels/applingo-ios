@@ -54,8 +54,7 @@ struct GameQuiz: View {
                     Spacer()
                     
                     ButtonFloatingSpeaker(
-                        word: card,
-                        style: style
+                        word: card.word
                     )
                     .padding(.bottom, 32)
                     .padding(.horizontal, 8)
@@ -95,13 +94,59 @@ struct GameQuiz: View {
 
 
 
+import SwiftUI
+
+struct AnimatedSpeakerIcon: View {
+    @State private var currentImageIndex = 0
+    @State private var timer: Timer?
+    let isPlaying: Bool
+    let iconColor: Color
+    
+    let images = ["speaker", "speaker.wave.1", "speaker.wave.2", "speaker.wave.3"]
+    
+    var body: some View {
+        Image(systemName: isPlaying ? images[currentImageIndex] : "speaker.wave.2")
+            .font(.system(size: 24))
+            .foregroundColor(iconColor)
+            .onAppear {
+                if isPlaying {
+                    startAnimation()
+                }
+            }
+            .onDisappear {
+                stopAnimation()
+            }
+            .onChange(of: isPlaying) { newValue in
+                if newValue {
+                    startAnimation()
+                } else {
+                    stopAnimation()
+                }
+            }
+    }
+    
+    private func startAnimation() {
+        timer?.invalidate()
+        timer = Timer.scheduledTimer(withTimeInterval: 0.3, repeats: true) { _ in
+            withAnimation(.easeInOut(duration: 0.2)) {
+                currentImageIndex = (currentImageIndex + 1) % images.count
+            }
+        }
+    }
+    
+    private func stopAnimation() {
+        timer?.invalidate()
+        timer = nil
+    }
+}
+
 struct ButtonFloatingSpeaker: View {
-    let word: QuizModelCard
-    let style: GameQuizStyle
+    let word: DatabaseModelWord
+    var iconColor: Color = .white
+    var backgroundColor: Color = .blue
     
     @State private var isPlaying: Bool = false
-    @State private var waveLevel: Int = 0
-    @State private var animationTimer: Timer? = nil
+    @State private var observer: NSObjectProtocol?
     
     var body: some View {
         Button(action: {
@@ -109,79 +154,46 @@ struct ButtonFloatingSpeaker: View {
                 startSpeaking()
             }
         }) {
-            Image(systemName: getIconName())
-                .font(.system(size: 24))
-                .foregroundColor(isPlaying ? .blue : .red)
+            AnimatedSpeakerIcon(isPlaying: isPlaying, iconColor: iconColor)
                 .frame(width: 44, height: 44)
-                .background(Circle().fill(style.backgroundColor))
-                //.shadow(color: style.shadowColor.opacity(0.2), radius: 4, x: 0, y: 2)
+                .background(Circle().fill(backgroundColor))
+                .shadow(color: Color.black.opacity(0.2), radius: 4, x: 0, y: 2)
                 .contentShape(Circle())
         }
         .padding(.bottom, 32)
         .padding(.horizontal, 8)
-    }
-    
-    private func getIconName() -> String {
-        if !isPlaying {
-            return "speaker.wave.2"
+        .onAppear {
+            // Подписываемся на уведомление о завершении
+            observer = NotificationCenter.default.addObserver(
+                forName: .TTSDidFinishSpeaking,
+                object: nil,
+                queue: .main
+            ) { _ in
+                self.isPlaying = false
+            }
         }
-        
-        switch waveLevel {
-            case 0: return "speaker"
-            case 1: return "speaker.wave.1"
-            case 2: return "speaker.wave.2"
-            case 3: return "speaker.wave.3"
-            default: return "speaker.wave.2"
+        .onDisappear {
+            // Отписываемся от уведомления при исчезновении вида
+            if let observer = observer {
+                NotificationCenter.default.removeObserver(observer)
+            }
         }
     }
     
     private func startSpeaking() {
-        // Начать воспроизведение
         isPlaying = true
         
-        // Запустить анимацию
-        animationTimer = Timer.scheduledTimer(withTimeInterval: 0.3, repeats: true) { _ in
-            withAnimation(.easeInOut(duration: 0.2)) {
-                waveLevel = (waveLevel + 1) % 4
-            }
-        }
-        
-        // Запустить TTS
+        // Запускаем воспроизведение
         TTS.shared.speak(
-            word.question,
-            languageCode: "ru"
+            word.backText,
+            languageCode: word.backTextCode
         )
         
-        // Подписаться на уведомление о завершении TTS (предполагая, что ваш TTS отправляет такое уведомление)
-        NotificationCenter.default.addObserver(
-            forName: Notification.Name("TTSDidFinishSpeaking"),
-            object: nil,
-            queue: .main
-        ) { _ in
-            stopSpeakingAnimation()
-        }
-        
-        // Резервный таймер на случай, если уведомление не придет
+        // Резервный таймер на случай, если уведомление не сработает
         DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
             if isPlaying {
-                stopSpeakingAnimation()
+                isPlaying = false
             }
         }
-    }
-    
-    private func stopSpeakingAnimation() {
-        animationTimer?.invalidate()
-        animationTimer = nil
-        
-        withAnimation {
-            isPlaying = false
-        }
-        
-        // Удалить наблюдателя
-        NotificationCenter.default.removeObserver(
-            self,
-            name: Notification.Name("TTSDidFinishSpeaking"),
-            object: nil
-        )
     }
 }

@@ -12,9 +12,9 @@ struct QuizModelCard {
     ///   - correctWord: The DatabaseModelWord used as the basis for the card.
     ///   - allWords: An array of DatabaseModelWord objects used to extract answer options.
     init(word: DatabaseModelWord, allWords: [DatabaseModelWord]) {
-        self.options = allWords.map { $0.backText }
-        self.question = word.frontText
-        self.answer = word.backText
+        self.options = allWords.map { $0.frontText }
+        self.question = word.backText
+        self.answer = word.frontText
         
         self.word = word
     }
