@@ -61,10 +61,8 @@ struct GameQuiz: View {
                         Spacer()
                         HStack {
                             Spacer()
-                            ButtonFloatingSpeaker(
-                                word: card.word,
-                                iconColor: .red,
-                                backgroundColor: .blue
+                            GameFloatingBtnSpeaker(
+                                word: card.word
                             )
                             .padding(.bottom, 32)
                         }
