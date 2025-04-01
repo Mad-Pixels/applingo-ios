@@ -12,9 +12,11 @@ internal final class QuizViewModel: ObservableObject {
     private var loadingTask: Task<Void, Never>?
     private var cancellables = Set<AnyCancellable>()
     private var cardStartTime: Date?
+    private let disableVoice: Bool
     private let game: Quiz
     
     init(game: Quiz) {
+        self.disableVoice = AppStorage.shared.noVoice
         self.game = game
         
         NotificationCenter.default.publisher(for: .visualFeedbackShouldUpdate)
@@ -56,7 +58,7 @@ internal final class QuizViewModel: ObservableObject {
                 }
                 
                 if let items = game.getItems(4) as? [DatabaseModelWord] {
-                    let supportSpeaking = TTSLanguageType.shared.supported(for: items[0].backTextCode)
+                    let supportSpeaking = self.disableVoice ? false : TTSLanguageType.shared.supported(for: items[0].backTextCode)
                     let correctWord = items[0]
                     game.removeItem(correctWord)
                     

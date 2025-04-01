@@ -68,6 +68,8 @@ struct GameMode<GameType: AbstractGame>: View {
                     ForEach(game.availableModes, id: \.self) { mode in
                         modeCard(for: mode)
                     }
+                    
+                    GameModeViewSettings()
                 }
                 .padding(.vertical, 24)
                 .glassBackground()
