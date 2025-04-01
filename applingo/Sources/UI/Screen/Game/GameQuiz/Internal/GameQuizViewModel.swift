@@ -44,10 +44,10 @@ internal final class QuizViewModel: ObservableObject {
     
     func generateCard() {
         loadingTask?.cancel()
-        
+
         shouldShowEmptyView = false
-        currentCard = nil
         isLoadingCard = true
+        currentCard = nil
         
         loadingTask = Task { @MainActor in
             for attempt in 1...3 {
@@ -56,6 +56,7 @@ internal final class QuizViewModel: ObservableObject {
                 }
                 
                 if let items = game.getItems(4) as? [DatabaseModelWord] {
+                    let supportSpeaking = TTSLanguageType.shared.supported(for: items[0].backTextCode)
                     let correctWord = items[0]
                     game.removeItem(correctWord)
                     
@@ -64,7 +65,8 @@ internal final class QuizViewModel: ObservableObject {
                     
                     currentCard = QuizModelCard(
                         word: correctWord,
-                        allWords: shuffledWords
+                        allWords: shuffledWords,
+                        voice: supportSpeaking ? (Double.random(in: 0..<1) < 0.2) : false
                     )
                     
                     if let validation = game.validation as? QuizValidation,

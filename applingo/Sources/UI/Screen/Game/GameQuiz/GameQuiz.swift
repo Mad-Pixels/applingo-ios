@@ -35,7 +35,7 @@ struct GameQuiz: View {
                             GameQuizViewQuestion(
                                 locale: locale,
                                 style: style,
-                                question: card.question
+                                card: card
                             )
                             .padding(.vertical, style.optionsSpacing)
                             

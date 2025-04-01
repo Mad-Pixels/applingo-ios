@@ -26,4 +26,9 @@ class TTSLanguageType {
     func get(for key: String) -> String {
         return languageMap[key.lowercased()] ?? ""
     }
+    
+    /// Return Boolean answer, support or not support language code.
+    func supported(for key: String) -> Bool {
+        return !get(for: key).isEmpty
+    }
 }
