@@ -35,7 +35,7 @@ final class TTS: NSObject, AVSpeechSynthesizerDelegate, Sendable {
         _ text: String,
         languageCode: String,
         rate: Float = 0.3,
-        pitch: Float = 1.0,
+        pitch: Float = 0.7,
         completion: (() -> Void)? = nil
     ) {
         let ttsCode = TTSLanguageType.shared.get(for: languageCode)
