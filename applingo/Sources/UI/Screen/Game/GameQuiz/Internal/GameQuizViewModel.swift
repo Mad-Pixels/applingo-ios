@@ -75,10 +75,10 @@ internal final class QuizViewModel: ObservableObject {
                        let card = currentCard {
                         validation.setCurrentCard(currentCard: card, currentWord: correctWord)
                     }
-                    cardStartTime = Date()
                     
                     self.isProcessingAnswer = false
                     self.isLoadingCard = false
+                    cardStartTime = Date()
                     return
                 }
                 
