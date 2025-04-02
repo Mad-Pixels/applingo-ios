@@ -137,12 +137,6 @@ internal final class MatchGameViewModel: ObservableObject {
         selectedFrontIndex = nil
         selectedBackIndex = nil
         cardStartTime = nil
-        
-        Logger.debug("[MatchViewModel]: Pair checked", metadata: [
-            "isMatch": String(isCorrect),
-            "responseTime": String(responseTime),
-            "matchedIndicesCount": String(matchedIndices.count)
-        ])
     }
     
     private func resetGameState() {
