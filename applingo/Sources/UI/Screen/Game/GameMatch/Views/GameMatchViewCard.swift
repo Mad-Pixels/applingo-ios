@@ -5,14 +5,14 @@ internal struct GameMatchViewCard: View {
     
     @ObservedObject private var viewModel: GameMatchViewModel
     
-    private let style: GameMatchStyle
+    private let style: GameTheme
     private let text: String
     private let index: Int
     private let isFrontCard: Bool
     private let onSelect: () -> Void
     
     init(
-        style: GameMatchStyle,
+        style: GameTheme,
         text: String,
         index: Int,
         isFrontCard: Bool,
