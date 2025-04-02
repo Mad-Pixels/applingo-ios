@@ -56,7 +56,7 @@ struct GameMatch: View {
             questionsColumn
             
             // Разделитель
-            separatorView
+            GameMatchViewSeparator()
             
             // Правая колонка (ответы)
             answersColumn
@@ -94,16 +94,6 @@ struct GameMatch: View {
             }
         }
         .padding(.horizontal)
-    }
-    
-    private var separatorView: some View {
-        ZStack {
-            Rectangle()
-                .fill(Color.gray.opacity(0.5))
-                .frame(width: 1)
-                .scaleEffect(y: 0.7)
-        }
-        .frame(width: 20)
     }
     
     private func shuffleIndices() {
