@@ -39,7 +39,7 @@ final class Match: ObservableObject, AbstractGame {
                 .incorrect: [
                     IncorrectAnswerHapticFeedback(),
                     IncorrectAnswerBackgroundVisualFeedback(
-                        theme: ThemeManager.shared.currentThemeStyle.quizTheme
+                        theme: ThemeManager.shared.currentThemeStyle.matchTheme
                     )
                 ]
             ]
@@ -94,7 +94,7 @@ final class Match: ObservableObject, AbstractGame {
     
     internal func validateAnswer(_ answer: String) -> GameValidationResult {
         let result = validation.validate(answer: answer)
-        validation.playFeedback(result, answer: answer)
+        validation.playFeedback(result, answer: answer, selected: nil)
         return result
     }
     

@@ -100,7 +100,7 @@ internal final class GameQuizViewModel: ObservableObject {
         let responseTime = cardStartTime.map { Date().timeIntervalSince($0) } ?? 0
         let result = game.validateAnswer(answer)
         
-        game.validation.playFeedback(result, answer: answer)
+        game.validation.playFeedback(result, answer: answer, selected: nil)
         
         game.updateStats(
             correct: result == .correct,

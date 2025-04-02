@@ -94,7 +94,7 @@ final class Quiz: ObservableObject, AbstractGame {
     
     internal func validateAnswer(_ answer: String) -> GameValidationResult {
         let result = validation.validate(answer: answer)
-        validation.playFeedback(result, answer: answer)
+        validation.playFeedback(result, answer: answer, selected: nil)
         return result
     }
     

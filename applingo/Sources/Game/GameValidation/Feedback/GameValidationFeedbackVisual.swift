@@ -32,13 +32,21 @@ class VisualFeedback: AbstractGameFeedback {
                 duration: duration
             )
         }
+        
+        if context.customOption != nil {
+            sendHighlightNotification(
+                option: context.customOption!,
+                color: selectedColor,
+                duration: duration
+            )
+        }
     }
     
     private func sendHighlightNotification(option: String, color: Color, duration: TimeInterval) {
         let userInfo: [String: Any] = [
+            "duration": duration,
             "option": option,
             "color": color,
-            "duration": duration
         ]
         
         NotificationCenter.default.post(

@@ -2,13 +2,14 @@ import Combine
 import SwiftUI
 
 internal final class GameMatchViewModel: ObservableObject {
+    @Published var highlightedOptions: [String: Color] = [:]
     @Published private(set) var currentCards: [MatchModelCard] = []
     @Published private(set) var shouldShowEmptyView = false
     @Published private(set) var isLoadingCard = false
     
+    @Published var matchedIndices: Set<Int> = []
     @Published var selectedFrontIndex: Int?
     @Published var selectedBackIndex: Int?
-    @Published var matchedIndices: Set<Int> = []
     
     private var loadingTask: Task<Void, Never>?
     private var cancellables = Set<AnyCancellable>()
@@ -20,6 +21,25 @@ internal final class GameMatchViewModel: ObservableObject {
     
     init(game: Match) {
         self.game = game
+        
+        NotificationCenter.default.publisher(for: .visualFeedbackShouldUpdate)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] notification in
+                guard let self = self,
+                      let userInfo = notification.userInfo,
+                      let option = userInfo["option"] as? String,
+                      let color = userInfo["color"] as? Color,
+                      let duration = userInfo["duration"] as? TimeInterval else {
+                    return
+                }
+                
+                self.highlightedOptions[option] = color
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
+                    self.highlightedOptions.removeValue(forKey: option)
+                }
+            }
+            .store(in: &cancellables)
     }
     
     deinit {
@@ -41,21 +61,13 @@ internal final class GameMatchViewModel: ObservableObject {
                 }
                 
                 if let items = game.getItems(maxCards) as? [DatabaseModelWord], !items.isEmpty {
-                    let validWords = items.prefix(maxCards).filter { $0.id != nil }
+                    let words = items.prefix(maxCards).filter { $0.id != nil }
+                    words.forEach { game.removeItem($0) }
                     
-                    if validWords.count < maxCards {
-                        Logger.debug("[MatchViewModel]: WARNING - Not enough valid words", metadata: [
-                            "validWordsCount": String(validWords.count),
-                            "requiredCount": String(maxCards)
-                        ])
-                    }
-                    
-                    currentCards = validWords.map { MatchModelCard(word: $0) }
-                    validWords.forEach { game.removeItem($0) }
-                    
-                    resetGameState()
+                    currentCards = words.map { MatchModelCard(word: $0) }
                     isLoadingCard = false
                     cardStartTime = Date()
+                    resetGameState()
                     return
                 }
                 
@@ -71,7 +83,6 @@ internal final class GameMatchViewModel: ObservableObject {
     
     func selectFront(at index: Int) {
         guard index >= 0, index < currentCards.count else { return }
-        
         selectedFrontIndex = (selectedFrontIndex == index) ? nil : index
         
         if cardStartTime == nil && (selectedFrontIndex != nil || selectedBackIndex != nil) {
@@ -79,13 +90,11 @@ internal final class GameMatchViewModel: ObservableObject {
         } else if selectedFrontIndex == nil && selectedBackIndex == nil {
             cardStartTime = nil
         }
-        
         checkMatch()
     }
     
     func selectBack(at index: Int) {
         guard index >= 0, index < currentCards.count else { return }
-        
         selectedBackIndex = (selectedBackIndex == index) ? nil : index
         
         if cardStartTime == nil && (selectedFrontIndex != nil || selectedBackIndex != nil) {
@@ -93,7 +102,6 @@ internal final class GameMatchViewModel: ObservableObject {
         } else if selectedFrontIndex == nil && selectedBackIndex == nil {
             cardStartTime = nil
         }
-        
         checkMatch()
     }
     
@@ -106,17 +114,25 @@ internal final class GameMatchViewModel: ObservableObject {
         }
         
         let responseTime = cardStartTime.map { Date().timeIntervalSince($0) } ?? 0
-        
-        let frontId = currentCards[frontIndex].word.id
-        let backId = currentCards[backIndex].word.id
-        let isCorrect = frontId == backId
+        let isCorrect = currentCards[frontIndex].word.id == currentCards[backIndex].word.id
         
         if let matchValidation = game.validation as? MatchValidation {
             let card = currentCards[frontIndex]
-            matchValidation.setCurrentCard(currentCard: card, currentWord: card.word)
             
+            matchValidation.setCurrentCard(currentCard: card, currentWord: card.word)
             let result: GameValidationResult = isCorrect ? .correct : .incorrect
-            game.validation.playFeedback(result, answer: currentCards[backIndex].answer)
+            
+            game.validation.playFeedback(
+                result,
+                answer: currentCards[backIndex].answer,
+                selected: currentCards[frontIndex].question
+            )
+            
+            game.updateStats(
+                correct: isCorrect,
+                responseTime: responseTime,
+                isSpecialCard: false
+            )
         }
         
         if isCorrect {
@@ -127,19 +143,13 @@ internal final class GameMatchViewModel: ObservableObject {
                 generateCards()
             }
         }
-        
-        game.updateStats(
-            correct: isCorrect,
-            responseTime: responseTime,
-            isSpecialCard: false
-        )
-        
         selectedFrontIndex = nil
         selectedBackIndex = nil
         cardStartTime = nil
     }
     
     private func resetGameState() {
+        highlightedOptions.removeAll()
         matchedIndices.removeAll()
         selectedFrontIndex = nil
         selectedBackIndex = nil

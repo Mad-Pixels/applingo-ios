@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 
 struct GameMatch: View {
     @EnvironmentObject private var themeManager: ThemeManager
@@ -37,9 +38,11 @@ struct GameMatch: View {
         .onAppear {
             viewModel.generateCards()
         }
+        .onChange(of: viewModel.currentCards.count) { _ in
+            shuffleIndices()
+        }
         .onChange(of: viewModel.isLoadingCard) { isLoading in
             handleLoadingStateChange(isLoading)
-            shuffleIndices()
         }
         .onReceive(game.state.$isGameOver) { isGameOver in
             if isGameOver {
@@ -56,7 +59,7 @@ struct GameMatch: View {
             questionsColumn
             
             // Разделитель
-            GameMatchViewSeparator()
+            separatorView
             
             // Правая колонка (ответы)
             answersColumn
@@ -68,11 +71,11 @@ struct GameMatch: View {
         VStack(spacing: 4) {
             ForEach(shuffledFrontIndices, id: \.self) { index in
                 GameMatchViewCard(
-                    style: themeManager.currentThemeStyle.matchTheme,
                     text: viewModel.currentCards[index].question,
                     index: index,
-                    isFrontCard: true,
                     onSelect: { viewModel.selectFront(at: index) },
+                    isSelected: viewModel.selectedFrontIndex == index,
+                    isMatched: viewModel.matchedIndices.contains(index),
                     viewModel: viewModel
                 )
             }
@@ -84,16 +87,26 @@ struct GameMatch: View {
         VStack(spacing: 4) {
             ForEach(shuffledBackIndices, id: \.self) { index in
                 GameMatchViewCard(
-                    style: themeManager.currentThemeStyle.matchTheme,
                     text: viewModel.currentCards[index].answer,
                     index: index,
-                    isFrontCard: false,
                     onSelect: { viewModel.selectBack(at: index) },
+                    isSelected: viewModel.selectedBackIndex == index,
+                    isMatched: viewModel.matchedIndices.contains(index),
                     viewModel: viewModel
                 )
             }
         }
         .padding(.horizontal)
+    }
+    
+    private var separatorView: some View {
+        ZStack {
+            Rectangle()
+                .fill(Color.gray.opacity(0.5))
+                .frame(width: 1)
+                .scaleEffect(y: 0.7)
+        }
+        .frame(width: 20)
     }
     
     private func shuffleIndices() {

@@ -5,25 +5,25 @@ internal struct GameMatchViewCard: View {
     
     @ObservedObject private var viewModel: GameMatchViewModel
     
-    private let style: GameTheme
     private let text: String
     private let index: Int
-    private let isFrontCard: Bool
     private let onSelect: () -> Void
+    private let isSelected: Bool
+    private let isMatched: Bool
     
     init(
-        style: GameTheme,
         text: String,
         index: Int,
-        isFrontCard: Bool,
         onSelect: @escaping () -> Void,
+        isSelected: Bool,
+        isMatched: Bool,
         viewModel: GameMatchViewModel
     ) {
-        self.style = style
         self.text = text
         self.index = index
-        self.isFrontCard = isFrontCard
         self.onSelect = onSelect
+        self.isSelected = isSelected
+        self.isMatched = isMatched
         self.viewModel = viewModel
     }
     
@@ -37,36 +37,24 @@ internal struct GameMatchViewCard: View {
             style: getButtonStyle()
         )
         .opacity(viewModel.isLoadingCard ? 0.7 : 1.0)
-        .disabled(isMatched() || viewModel.isLoadingCard)
+        .disabled(isMatched || viewModel.isLoadingCard)
         .padding(.horizontal, 8)
         .padding(.vertical, 4)
     }
     
     private func getButtonStyle() -> ButtonActionStyle {
-        if isMatched() {
+        if let highlightColor = viewModel.highlightedOptions[text] {
+            return .GameAnswer(themeManager.currentThemeStyle, highlightColor: highlightColor)
+        } else if isMatched {
             // Стиль для совпавших карточек
             return createMatchedStyle()
-        } else if isSelected() {
+        } else if isSelected {
             // Стиль для выбранных карточек
             return createSelectedStyle()
         } else {
             // Стандартный стиль
             return .game(themeManager.currentThemeStyle)
         }
-    }
-    
-    // Проверяет, выбрана ли карточка
-    private func isSelected() -> Bool {
-        if isFrontCard {
-            return viewModel.selectedFrontIndex == index
-        } else {
-            return viewModel.selectedBackIndex == index
-        }
-    }
-    
-    // Проверяет, совпала ли карточка
-    private func isMatched() -> Bool {
-        return viewModel.matchedIndices.contains(index)
     }
     
     // Создает стиль для выбранной карточки
