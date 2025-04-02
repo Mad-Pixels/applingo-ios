@@ -63,5 +63,6 @@ internal struct GameMatchViewSeparator: View {
             .frame(width: centerLineWidth, height: lineHeight)
             .position(x: geometry.size.width / 2, y: geometry.size.height / 2)
         }
+        .frame(width: centerLineWidth)
     }
 }
