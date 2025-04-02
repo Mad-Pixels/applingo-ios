@@ -16,7 +16,10 @@ struct GameSettingsViewBoolean: View {
             {
                 DynamicText(
                     model: DynamicTextModel(text: setting.name),
-                    style: .textGame(ThemeManager.shared.currentThemeStyle)
+                    style: .textGame(
+                        ThemeManager.shared.currentThemeStyle,
+                        alignment: .leading
+                    )
                 )
                 .padding(.vertical, 16)
                 
