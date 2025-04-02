@@ -1,6 +1,6 @@
 import SwiftUI
 
-final class MatchValidation: BaseGameValidation {
+internal final class MatchValidation: BaseGameValidation {
     private var currentCard: MatchModelCard?
     private var currentWord: DatabaseModelWord?
     

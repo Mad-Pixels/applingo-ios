@@ -57,7 +57,7 @@ internal final class QuizViewModel: ObservableObject {
                     return
                 }
                 
-                if let items = game.getItems(4) as? [DatabaseModelWord] {
+                if let items = game.getItems(4) as? [DatabaseModelWord], !items.isEmpty {
                     let supportSpeaking = self.disableVoice ? false : TTSLanguageType.shared.supported(for: items[0].backTextCode)
                     let correctWord = items[0]
                     game.removeItem(correctWord)

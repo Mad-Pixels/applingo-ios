@@ -8,6 +8,9 @@ struct GameMatch: View {
     @ObservedObject private var cache: MatchCache
     @EnvironmentObject private var themeManager: ThemeManager
     
+    @State private var shouldShowPreloader = false
+    @State private var preloaderTimer: DispatchWorkItem?
+    
     init(game: Match) {
         self.game = game
         self._viewModel = StateObject(wrappedValue: MatchGameViewModel(game: game))
@@ -15,103 +18,94 @@ struct GameMatch: View {
     }
     
     var body: some View {
-        HStack(spacing: 0) {
-            // Первый ряд – frontText
-            if !viewModel.frontItems.isEmpty {  // Добавим проверку
-                VStack(spacing: 4) {
-                    ForEach(viewModel.frontItems, id: \.id) { word in
-                        GameMatchButton(
-                            text: word.frontText,
-                            action: {
-                                viewModel.selectFront(word)
-                            },
-                            isSelected: viewModel.selectedFront?.id == word.id,
-                            isMatched: viewModel.matchedPairs.contains(word.id ?? 0)
-                        )
-                    }
-                }
-                .padding(.horizontal)
+        ZStack {
+            if shouldShowPreloader {
+                ItemListLoading(style: .themed(themeManager.currentThemeStyle))
             }
             
-            // Контейнер для разделителя
-            ZStack {
-                // Разделитель (70% высоты)
-                Rectangle()
-                    .fill(Color.gray.opacity(0.5))
-                    .frame(width: 1)
-                    .scaleEffect(y: 0.7) // Масштабируем только по высоте до 70%
-            }
-            .frame(width: 20) // Резервируем место для разделителя
-            
-            // Второй ряд – backText
-            if !viewModel.backItems.isEmpty {  // Добавим проверку
-                VStack(spacing: 4) {
-                    ForEach(viewModel.backItems, id: \.id) { word in
-                        GameMatchButton(
-                            text: word.backText,
-                            action: {
-                                viewModel.selectBack(word)
-                            },
-                            isSelected: viewModel.selectedBack?.id == word.id,
-                            isMatched: viewModel.matchedPairs.contains(word.id ?? 0)
-                        )
+            if !viewModel.currentCards.isEmpty {
+                HStack(spacing: 0) {
+                    // Первый ряд – frontText (вопросы)
+                    VStack(spacing: 4) {
+                        ForEach(0..<viewModel.currentCards.count, id: \.self) { index in
+                            GameMatchButton(
+                                text: viewModel.currentCards[index].question,
+                                action: {
+                                    viewModel.selectFront(at: index)
+                                },
+                                isSelected: viewModel.selectedFrontIndex == index,
+                                isMatched: viewModel.matchedIndices.contains(index)
+                            )
+                        }
                     }
+                    .padding(.horizontal)
+                    
+                    // Контейнер для разделителя
+                    ZStack {
+                        // Разделитель (70% высоты)
+                        Rectangle()
+                            .fill(Color.gray.opacity(0.5))
+                            .frame(width: 1)
+                            .scaleEffect(y: 0.7) // Масштабируем только по высоте до 70%
+                    }
+                    .frame(width: 20) // Резервируем место для разделителя
+                    
+                    // Второй ряд – backText (ответы)
+                    VStack(spacing: 4) {
+                        ForEach(0..<viewModel.currentCards.count, id: \.self) { index in
+                            GameMatchButton(
+                                text: viewModel.currentCards[index].answer,
+                                action: {
+                                    viewModel.selectBack(at: index)
+                                },
+                                isSelected: viewModel.selectedBackIndex == index,
+                                isMatched: viewModel.matchedIndices.contains(index)
+                            )
+                        }
+                    }
+                    .padding(.horizontal)
                 }
-                .padding(.horizontal)
+            } else if viewModel.shouldShowEmptyView {
+                Text("Недостаточно слов для игры")
+                    .foregroundColor(.gray)
             }
         }
         .padding(.top, 36)
         .onAppear {
-            loadNewWords()
+            viewModel.generateCards()
         }
         .onChange(of: cache.cache.count) { count in
-            // Если кэш заполнился и у нас нет слов - пробуем загрузить
-            if count > 0 && viewModel.frontItems.isEmpty {
-                loadNewWords()
+            // Если кэш заполнился и у нас нет карточек - пробуем загрузить
+            if count > 0 && viewModel.currentCards.isEmpty {
+                viewModel.generateCards()
             }
         }
-        .onChange(of: viewModel.matchedPairs.count) { count in
-            if count >= viewModel.replaceThreshold {  // Используем новый порог
-                replaceMatchedWords()
+        .onChange(of: viewModel.isLoadingCard) { isLoading in
+            if isLoading {
+                preloaderTimer?.cancel()
+                
+                let timer = DispatchWorkItem {
+                    if viewModel.isLoadingCard {
+                        shouldShowPreloader = true
+                    }
+                }
+                
+                preloaderTimer = timer
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: timer)
+            } else {
+                preloaderTimer?.cancel()
+                preloaderTimer = nil
+                
+                shouldShowPreloader = false
             }
         }
-    }
-    
-    private func loadNewWords() {
-        Logger.debug("[GameMatch]: Loading new words")
-        
-        guard let words = game.getItems(8) as? [DatabaseModelWord] else {
-            Logger.debug("[GameMatch]: Failed to get words")
-            return
+        .onReceive(game.state.$isGameOver) { isGameOver in
+            if isGameOver {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    // Обработка завершения игры, если необходимо
+                }
+            }
         }
-        
-        Logger.debug("[GameMatch]: Got words", metadata: [
-            "count": String(words.count)
-        ])
-        
-        if !words.isEmpty {
-            // Удаляем слова из кэша после того как убедились что они есть
-            words.forEach { game.removeItem($0) }
-            viewModel.setupGame(with: words)
-            Logger.debug("[GameMatch]: Setup game with words")
-        }
-    }
-    
-    private func replaceMatchedWords() {
-        Logger.debug("[GameMatch]: Replacing matched words")
-        
-        // Запрашиваем больше слов, чтобы гарантировать maxWords после фильтрации
-        let requestCount = viewModel.maxWords
-        
-        guard let newWords = game.getItems(requestCount) as? [DatabaseModelWord] else {
-            Logger.debug("[GameMatch]: Failed to get replacement words")
-            return
-        }
-        
-        // Удаляем новые слова из кэша
-        newWords.forEach { game.removeItem($0) }
-        
-        viewModel.addNewWords(newWords)
     }
 }
 
