@@ -75,23 +75,7 @@ struct GameQuiz: View {
             viewModel.generateCard()
         }
         .onChange(of: viewModel.isLoadingCard) { isLoading in
-            if isLoading {
-                preloaderTimer?.cancel()
-                
-                let timer = DispatchWorkItem {
-                    if viewModel.isLoadingCard {
-                        shouldShowPreloader = true
-                    }
-                }
-                
-                preloaderTimer = timer
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: timer)
-            } else {
-                preloaderTimer?.cancel()
-                preloaderTimer = nil
-                
-                shouldShowPreloader = false
-            }
+            handleLoadingStateChange(isLoading)
         }
         .onReceive(game.state.$isGameOver) { isGameOver in
             if isGameOver {
@@ -99,6 +83,26 @@ struct GameQuiz: View {
                     dismiss()
                 }
             }
+        }
+    }
+    
+    private func handleLoadingStateChange(_ isLoading: Bool) {
+        if isLoading {
+            preloaderTimer?.cancel()
+            
+            let timer = DispatchWorkItem {
+                if viewModel.isLoadingCard {
+                    shouldShowPreloader = true
+                }
+            }
+            
+            preloaderTimer = timer
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: timer)
+        } else {
+            preloaderTimer?.cancel()
+            preloaderTimer = nil
+            
+            shouldShowPreloader = false
         }
     }
 }

@@ -6,16 +6,22 @@ struct GameMatch: View {
     @Environment(\.dismiss) private var dismiss
     
     @StateObject private var viewModel: GameMatchViewModel
-    
-    @State private var preloaderTimer: DispatchWorkItem?
-    @State private var shuffledFrontIndices: [Int] = []
-    @State private var shuffledBackIndices: [Int] = []
-    @State private var shouldShowPreloader = false
+    @StateObject private var locale = GameMatchLocale()
+    @StateObject private var style: GameMatchStyle
     
     @ObservedObject var game: Match
     
-    init(game: Match) {
-        self._viewModel = StateObject(wrappedValue: GameMatchViewModel(game: game))
+    @State private var shouldShowPreloader = false
+    @State private var preloaderTimer: DispatchWorkItem?
+    @State private var shuffledFrontIndices: [Int] = []
+    @State private var shuffledBackIndices: [Int] = []
+    
+    init(
+        game: Match,
+        style: GameMatchStyle = .themed(ThemeManager.shared.currentThemeStyle)
+    ) {
+        _viewModel = StateObject(wrappedValue: GameMatchViewModel(game: game))
+        _style = StateObject(wrappedValue: style)
         self.game = game
     }
     
@@ -27,10 +33,38 @@ struct GameMatch: View {
                 }
                 
                 if !viewModel.currentCards.isEmpty {
-                    matchContent
-                } else if viewModel.shouldShowEmptyView {
-                    Text("Недостаточно слов для игры")
-                        .foregroundColor(.gray)
+                    HStack(spacing: 0) {
+                        VStack(spacing: 4) {
+                            ForEach(shuffledFrontIndices, id: \.self) { index in
+                                GameMatchViewCard(
+                                    text: viewModel.currentCards[index].question,
+                                    index: index,
+                                    onSelect: { viewModel.selectFront(at: index) },
+                                    isSelected: viewModel.selectedFrontIndex == index,
+                                    isMatched: viewModel.matchedIndices.contains(index),
+                                    viewModel: viewModel
+                                )
+                            }
+                        }
+                        .padding(.horizontal)
+                        
+                        GameMatchViewSeparator()
+                        
+                        VStack(spacing: 4) {
+                            ForEach(shuffledBackIndices, id: \.self) { index in
+                                GameMatchViewCard(
+                                    text: viewModel.currentCards[index].answer,
+                                    index: index,
+                                    onSelect: { viewModel.selectBack(at: index) },
+                                    isSelected: viewModel.selectedBackIndex == index,
+                                    isMatched: viewModel.matchedIndices.contains(index),
+                                    viewModel: viewModel
+                                )
+                            }
+                        }
+                        .padding(.horizontal)
+                    }
+                    .padding(.top, 36)
                 }
             }
             .frame(width: geometry.size.width, height: geometry.size.height)
@@ -38,11 +72,11 @@ struct GameMatch: View {
         .onAppear {
             viewModel.generateCards()
         }
-        .onChange(of: viewModel.currentCards.count) { _ in
-            shuffleIndices()
-        }
         .onChange(of: viewModel.isLoadingCard) { isLoading in
             handleLoadingStateChange(isLoading)
+        }
+        .onChange(of: viewModel.currentCards.count) { _ in
+            shuffleIndices()
         }
         .onReceive(game.state.$isGameOver) { isGameOver in
             if isGameOver {
@@ -51,68 +85,6 @@ struct GameMatch: View {
                 }
             }
         }
-    }
-    
-    private var matchContent: some View {
-        HStack(spacing: 0) {
-            // Левая колонка (вопросы)
-            questionsColumn
-            
-            // Разделитель
-            separatorView
-            
-            // Правая колонка (ответы)
-            answersColumn
-        }
-        .padding(.top, 36)
-    }
-    
-    private var questionsColumn: some View {
-        VStack(spacing: 4) {
-            ForEach(shuffledFrontIndices, id: \.self) { index in
-                GameMatchViewCard(
-                    text: viewModel.currentCards[index].question,
-                    index: index,
-                    onSelect: { viewModel.selectFront(at: index) },
-                    isSelected: viewModel.selectedFrontIndex == index,
-                    isMatched: viewModel.matchedIndices.contains(index),
-                    viewModel: viewModel
-                )
-            }
-        }
-        .padding(.horizontal)
-    }
-    
-    private var answersColumn: some View {
-        VStack(spacing: 4) {
-            ForEach(shuffledBackIndices, id: \.self) { index in
-                GameMatchViewCard(
-                    text: viewModel.currentCards[index].answer,
-                    index: index,
-                    onSelect: { viewModel.selectBack(at: index) },
-                    isSelected: viewModel.selectedBackIndex == index,
-                    isMatched: viewModel.matchedIndices.contains(index),
-                    viewModel: viewModel
-                )
-            }
-        }
-        .padding(.horizontal)
-    }
-    
-    private var separatorView: some View {
-        ZStack {
-            Rectangle()
-                .fill(Color.gray.opacity(0.5))
-                .frame(width: 1)
-                .scaleEffect(y: 0.7)
-        }
-        .frame(width: 20)
-    }
-    
-    private func shuffleIndices() {
-        let indices = Array(0..<viewModel.currentCards.count)
-        shuffledFrontIndices = indices.shuffled()
-        shuffledBackIndices = indices.shuffled()
     }
     
     private func handleLoadingStateChange(_ isLoading: Bool) {
@@ -133,5 +105,11 @@ struct GameMatch: View {
             
             shouldShowPreloader = false
         }
+    }
+    
+    private func shuffleIndices() {
+        let indices = Array(0..<viewModel.currentCards.count)
+        shuffledFrontIndices = indices.shuffled()
+        shuffledBackIndices = indices.shuffled()
     }
 }

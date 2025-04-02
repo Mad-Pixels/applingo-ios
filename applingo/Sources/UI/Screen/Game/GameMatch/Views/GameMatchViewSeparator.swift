@@ -1,7 +1,5 @@
 import SwiftUI
 
-/// Кастомная фигура для маски, которая в центре имеет ширину centerWidth,
-/// а к краям плавно сужается до edgeWidth
 struct TaperedLineShape: Shape {
     /// Ширина линии в центре (максимальная)
     var centerWidth: CGFloat
