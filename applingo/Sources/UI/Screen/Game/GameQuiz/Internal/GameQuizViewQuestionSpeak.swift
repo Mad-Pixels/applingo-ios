@@ -70,7 +70,9 @@ internal struct GameQuizViewQuestionSpeak: View {
             }
         }
         .onAppear{
-            self.startSpeaking()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                self.startSpeaking()
+            }
         }
         .onDisappear {
             if let observer = observer {
