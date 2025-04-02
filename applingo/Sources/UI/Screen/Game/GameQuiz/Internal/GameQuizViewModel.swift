@@ -1,7 +1,7 @@
 import Combine
 import SwiftUI
 
-internal final class QuizViewModel: ObservableObject {
+internal final class GameQuizViewModel: ObservableObject {
     @Published private(set) var currentCard: QuizModelCard?
     @Published private(set) var shouldShowEmptyView = false
     @Published private(set) var isLoadingCard = false

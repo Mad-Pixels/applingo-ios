@@ -1,7 +1,7 @@
 import Combine
 import SwiftUI
 
-internal final class MatchGameViewModel: ObservableObject {
+internal final class GameMatchViewModel: ObservableObject {
     @Published private(set) var currentCards: [MatchModelCard] = []
     @Published private(set) var shouldShowEmptyView = false
     @Published private(set) var isLoadingCard = false
