@@ -104,4 +104,25 @@ extension ButtonActionStyle {
             }
         )
     }
+    
+    static func gameCompact(_ theme: AppTheme) -> ButtonActionStyle {
+        ButtonActionStyle(
+            pattern: theme.mainPattern,
+            patternBorder: false,
+            patternBackground: false,
+            backgroundColor: theme.backgroundSecondary,
+            borderColor: theme.cardBorder,
+            height: 65,
+            cornerRadius: 14,
+            borderWidth: 4,
+            padding: EdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4),
+            textStyle: { theme in
+                .textGameCompact(
+                    theme,
+                    alignment: .center,
+                    lineLimit: 3
+                )
+            }
+        )
+    }
 }

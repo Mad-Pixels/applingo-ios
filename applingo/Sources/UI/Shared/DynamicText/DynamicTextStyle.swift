@@ -124,6 +124,28 @@ extension DynamicTextStyle {
         )
     }
     
+    static func textGameCompact(
+        _ theme: AppTheme,
+        alignment: TextAlignment = .leading,
+        lineLimit: Int = 1
+    ) -> DynamicTextStyle {
+        let shouldWrapWords = lineLimit > 1
+        
+        return DynamicTextStyle(
+            textColor: theme.textPrimary,
+            alignment: alignment,
+            letterSpacing: 0.0,
+            allowsTightening: true,
+            maxFontSize: 18,
+            minFontSize: 8,
+            lineBreakMode: shouldWrapWords ? .byWordWrapping : .byTruncatingTail,
+            wordWrapping: shouldWrapWords,
+            lineLimit: lineLimit,
+            fontWeight: .medium,
+            fontDesign: .default
+        )
+    }
+    
     static func textGameBold(
         _ theme: AppTheme,
         alignment: TextAlignment = .leading,

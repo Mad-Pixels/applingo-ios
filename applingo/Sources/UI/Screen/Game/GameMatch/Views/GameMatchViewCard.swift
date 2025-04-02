@@ -51,7 +51,7 @@ internal struct GameMatchViewCard: View {
             return createSelectedStyle()
         } else {
             // Стандартный стиль
-            return .game(themeManager.currentThemeStyle)
+            return .gameCompact(themeManager.currentThemeStyle)
         }
     }
     
