@@ -21,7 +21,7 @@ struct GameSettingsViewBoolean: View {
                 .padding(.vertical, 16)
                 
             }
-            .padding(16)
+            .padding(12)
             .tint(themeManager.currentThemeStyle.accentPrimary)
             .background(
                 RoundedRectangle(cornerRadius: 16)
