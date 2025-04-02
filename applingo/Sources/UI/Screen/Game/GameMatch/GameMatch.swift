@@ -6,13 +6,12 @@ struct GameMatch: View {
     
     @StateObject private var viewModel: GameMatchViewModel
     
+    @State private var preloaderTimer: DispatchWorkItem?
     @State private var shuffledFrontIndices: [Int] = []
     @State private var shuffledBackIndices: [Int] = []
+    @State private var shouldShowPreloader = false
     
     @ObservedObject var game: Match
-    
-    @State private var shouldShowPreloader = false
-    @State private var preloaderTimer: DispatchWorkItem?
     
     init(game: Match) {
         self._viewModel = StateObject(wrappedValue: GameMatchViewModel(game: game))

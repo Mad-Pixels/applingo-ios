@@ -2,11 +2,10 @@ import Combine
 import SwiftUI
 
 internal final class GameQuizViewModel: ObservableObject {
+    @Published var highlightedOptions: [String: Color] = [:]
     @Published private(set) var currentCard: QuizModelCard?
     @Published private(set) var shouldShowEmptyView = false
     @Published private(set) var isLoadingCard = false
-    
-    @Published var highlightedOptions: [String: Color] = [:]
     @Published var isProcessingAnswer = false
     
     private var loadingTask: Task<Void, Never>?
