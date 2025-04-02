@@ -49,6 +49,16 @@ extension View {
             ))
         }
     
+
+    
+    func waveEffect(
+            isActive: Bool,
+            colors: [Color] = [.blue, .purple, .cyan],
+            radius: CGFloat = 15
+        ) -> some View {
+            self.modifier(WaveEffect(isActive: isActive, colors: colors, radius: radius))
+        }
+    
     func glassBackground(
         cornerRadius: CGFloat = 16,
         opacity: CGFloat = 0.85

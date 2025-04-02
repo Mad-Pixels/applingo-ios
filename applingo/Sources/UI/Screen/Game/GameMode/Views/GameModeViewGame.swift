@@ -20,7 +20,7 @@ struct GameModeViewGame<GameType: AbstractGame>: View {
                 .toolbarBackground(.clear, for: .navigationBar)
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
-                        GameScore(stats: game.stats)
+                       GameScore(stats: game.stats)
                     }
                     ToolbarItem(placement: .principal) {
                         GameTab(

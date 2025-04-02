@@ -1,12 +1,16 @@
 import AVFoundation
 import Foundation
 
-class TTS {
+@MainActor
+final class TTS: NSObject, AVSpeechSynthesizerDelegate, Sendable {
     static let shared = TTS()
     
     private let speechSynthesizer = AVSpeechSynthesizer()
+    private var completionHandler: (() -> Void)?
     
-    private init() {
+    private override init() {
+        super.init()
+        speechSynthesizer.delegate = self
         setupAudioSession()
     }
     
@@ -31,7 +35,7 @@ class TTS {
         _ text: String,
         languageCode: String,
         rate: Float = 0.3,
-        pitch: Float = 1.0,
+        pitch: Float = 0.7,
         completion: (() -> Void)? = nil
     ) {
         let ttsCode = TTSLanguageType.shared.get(for: languageCode)
@@ -40,6 +44,7 @@ class TTS {
             return
         }
         
+        self.completionHandler = completion
         let utterance = AVSpeechUtterance(string: text)
         
         if let voice = AVSpeechSynthesisVoice(language: ttsCode) {
@@ -58,11 +63,6 @@ class TTS {
             speechSynthesizer.stopSpeaking(at: .immediate)
         }
         
-        if let completion = completion {
-            let delegate = TTSDelegate(completion: completion)
-            utterance.setValue(delegate, forKey: "delegate")
-        }
-        
         DispatchQueue.main.async { [weak self] in
             self?.speechSynthesizer.speak(utterance)
         }
@@ -72,6 +72,23 @@ class TTS {
     func stop() {
         if speechSynthesizer.isSpeaking {
             speechSynthesizer.stopSpeaking(at: .immediate)
+            NotificationCenter.default.post(name: .TTSDidFinishSpeaking, object: nil)
+        }
+    }
+    
+    nonisolated func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
+        Task { @MainActor in
+            self.completionHandler?()
+            self.completionHandler = nil
+            NotificationCenter.default.post(name: .TTSDidFinishSpeaking, object: nil)
+        }
+    }
+    
+    nonisolated func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didCancel utterance: AVSpeechUtterance) {
+        Task { @MainActor in
+            self.completionHandler?()
+            self.completionHandler = nil
+            NotificationCenter.default.post(name: .TTSDidFinishSpeaking, object: nil)
         }
     }
 }

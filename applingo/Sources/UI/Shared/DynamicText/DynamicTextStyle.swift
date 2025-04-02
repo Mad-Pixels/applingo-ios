@@ -38,12 +38,13 @@ extension DynamicTextStyle {
     static func textMain(
         _ theme: AppTheme,
         alignment: TextAlignment = .leading,
-        lineLimit: Int = 1
+        lineLimit: Int = 1,
+        color: Color = ThemeManager.shared.currentThemeStyle.textPrimary
     ) -> DynamicTextStyle {
         let shouldWrapWords = lineLimit > 1
         
         return DynamicTextStyle(
-            textColor: theme.textPrimary,
+            textColor: color,
             alignment: alignment,
             letterSpacing: 0.2,
             allowsTightening: true,
@@ -140,8 +141,8 @@ extension DynamicTextStyle {
             lineBreakMode: shouldWrapWords ? .byWordWrapping : .byTruncatingTail,
             wordWrapping: shouldWrapWords,
             lineLimit: lineLimit,
-            fontWeight: .bold,
-            fontDesign: .default
+            fontWeight: .heavy,
+            fontDesign: .rounded
         )
     }
     
@@ -249,6 +250,44 @@ extension DynamicTextStyle {
             lineLimit: 1,
             fontWeight: .medium,
             fontDesign: .default
+        )
+    }
+    
+    static func gameScore(
+        _ theme: AppTheme,
+        isPositive: Bool
+    ) -> DynamicTextStyle {
+        return DynamicTextStyle(
+            textColor: isPositive ? theme.success : theme.error,
+            alignment: .center,
+            letterSpacing: 0.0,
+            allowsTightening: true,
+            maxFontSize: 16,
+            minFontSize: 10,
+            lineBreakMode: .byTruncatingTail,
+            wordWrapping: false,
+            lineLimit: 1,
+            fontWeight: .bold,
+            fontDesign: .default
+        )
+    }
+    
+    static func gameTab(
+        _ theme: AppTheme,
+        color: Color
+    ) -> DynamicTextStyle {
+        return DynamicTextStyle(
+            textColor: color,
+            alignment: .center,
+            letterSpacing: 0.0,
+            allowsTightening: true,
+            maxFontSize: 18,
+            minFontSize: 10,
+            lineBreakMode: .byTruncatingTail,
+            wordWrapping: false,
+            lineLimit: 1,
+            fontWeight: .bold,
+            fontDesign: .rounded
         )
     }
 }

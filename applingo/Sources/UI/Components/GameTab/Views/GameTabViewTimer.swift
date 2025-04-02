@@ -1,13 +1,17 @@
 import SwiftUI
 
-struct GameTabViewTimer: View {
+internal struct GameTabViewTimer: View {
+    @EnvironmentObject private var themeManager: ThemeManager
+
     @ObservedObject var timer: GameStateUtilsTimer
-    let style: GameTabStyle
-    
+
+    internal let style: GameTabStyle
+
     var body: some View {
-        Text(timer.timeLeft.formatAsTimer)
-            .font(style.timerFont)
-            .foregroundColor(style.textPrimaryColor)
-            .animation(.linear(duration: 0.1), value: timer.timeLeft)
+        DynamicTextCompact(
+            model: DynamicTextModel(text: timer.timeLeft.formatAsTimer),
+            style: .gameTab(themeManager.currentThemeStyle, color: style.textPrimaryColor)
+        )
+        .animation(.linear(duration: 0.1), value: timer.timeLeft)
     }
 }

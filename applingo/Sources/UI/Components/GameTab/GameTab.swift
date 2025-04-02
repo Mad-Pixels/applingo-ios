@@ -1,29 +1,21 @@
 import SwiftUI
 
-/// A view that displays the game tab with score, streak, and mode details.
-/// The component maintains a fixed width of 80% of the screen and remains centered.
-/// The mode section is wrapped in a fixed container to ensure consistent sizing,
-/// even when data is initially missing.
 struct GameTab<GameType: AbstractGame>: View {
     @ObservedObject var stats: GameStats
     @ObservedObject private var game: GameType
-    // Новое наблюдаемое свойство для отслеживания состояния игры
+    
     @ObservedObject private var gameState: GameState
 
-    // MARK: - State Objects
     @StateObject private var style: GameTabStyle
     @StateObject private var locale = GameTabLocale()
     
-    // MARK: - Initializer
-    init(game: GameType, style: GameTabStyle? = nil) {
-        _style = StateObject(wrappedValue: style ?? .themed(ThemeManager.shared.currentThemeStyle))
+    init(game: GameType, style: GameTabStyle = .themed(ThemeManager.shared.currentThemeStyle)) {
+        _gameState = ObservedObject(wrappedValue: game.state)
         _stats = ObservedObject(wrappedValue: game.stats)
         _game = ObservedObject(wrappedValue: game)
-        // Инициализируем наблюдение за состоянием игры
-        _gameState = ObservedObject(wrappedValue: game.state)
+        _style = StateObject(wrappedValue: style)
     }
     
-    // MARK: - Body
     var body: some View {
         SectionBody {
             HStack(spacing: style.spacing) {
@@ -60,13 +52,14 @@ struct GameTab<GameType: AbstractGame>: View {
         .padding(.top, style.padding)
         .frame(
             minWidth: UIScreen.main.bounds.width * style.tabWidth,
-            maxWidth: UIScreen.main.bounds.width * style.tabWidth
+            maxWidth: UIScreen.main.bounds.width * style.tabWidth,
+            minHeight: 64,
+            maxHeight: 64
         )
         .fixedSize(horizontal: true, vertical: false)
         .frame(maxWidth: .infinity)
     }
     
-    // MARK: - Private Methods
     @ViewBuilder
     private func makeModeSection(_ mode: GameModeType) -> some View {
         switch mode {

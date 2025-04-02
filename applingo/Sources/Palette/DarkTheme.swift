@@ -54,7 +54,9 @@ struct DarkTheme: AppTheme {
         GameTheme(
             main: Color(hex: "AAE282"),
             secondary: Color(hex: "779E5B"),
-            accent: Color(hex: "445A34")
+            accent: Color(hex: "445A34"),
+            correct: Color(hex: "445A34"),
+            incorrect: Color(hex: "A83232")
         )
     }
         
@@ -63,7 +65,9 @@ struct DarkTheme: AppTheme {
         GameTheme(
             main: Color(hex: "AAE282"),
             secondary: Color(hex: "779E5B"),
-            accent: Color(hex: "445A34")
+            accent: Color(hex: "445A34"),
+            correct: Color(hex: "eab308"),
+            incorrect: Color(hex: "06b6d4")
         )
     }
     
@@ -72,7 +76,9 @@ struct DarkTheme: AppTheme {
         GameTheme(
             main: Color(hex: "AAE282"),
             secondary: Color(hex: "779E5B"),
-            accent: Color(hex: "445A34")
+            accent: Color(hex: "445A34"),
+            correct: Color(hex: "eab308"),
+            incorrect: Color(hex: "06b6d4")
         )
     }
 }

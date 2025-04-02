@@ -1,10 +1,8 @@
 import SwiftUI
 
-/// Manages the generation and storage of game mode background shapes.
 final class BackgroundGameModeManager: ObservableObject {
     static let shared = BackgroundGameModeManager()
     
-    /// Array of generated background shapes.
     @Published private(set) var backgroundShapes: [BackgroundGameModeModelShape] = []
     
     private static var isFirstLaunchGenerated = false
@@ -15,8 +13,6 @@ final class BackgroundGameModeManager: ObservableObject {
     private let padding: CGFloat = 3
     private let lock = NSLock()
     private let maxShapes = 20
-    
-    // MARK: - Public Methods
 
     /// Generates background shapes for the given size if not already generated.
     /// - Parameters:
@@ -39,8 +35,6 @@ final class BackgroundGameModeManager: ObservableObject {
         backgroundShapes.removeAll()
         BackgroundGameModeManager.isFirstLaunchGenerated = false
     }
-    
-    // MARK: - Private Methods
 
     /// Generates background shapes based on the available size.
     /// - Parameters:

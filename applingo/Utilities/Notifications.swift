@@ -13,4 +13,7 @@ extension Notification.Name {
     /// Notification posted when the word list should be updated.
     /// Observers (such as UI components) can refresh their data upon receiving this notification.
     static let wordListShouldUpdate = Notification.Name("wordListShouldUpdate")
+    
+    /// Notification posted when text-to-speech has finished speaking.
+    static let TTSDidFinishSpeaking = Notification.Name("TTSDidFinishSpeaking")
 }

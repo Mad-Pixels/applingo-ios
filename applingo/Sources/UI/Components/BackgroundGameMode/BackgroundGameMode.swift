@@ -1,14 +1,5 @@
 import SwiftUI
 
-/// A view that renders the background for a game mode using a parallax effect based on device motion.
-///
-/// `BackgroundGameMode` displays a collection of shapes (retrieved from a shared manager) over a given
-/// color palette. The shapes are offset based on the device's roll and pitch values, creating a dynamic,
-/// parallax-like effect. The parallax offset is computed using the current motion state and a configurable
-/// strength factor.
-///
-/// - Parameters:
-///   - colors: An array of `Color` values used to generate the background shapes.
 struct BackgroundGameMode: View {
     @EnvironmentObject private var motionManager: HardwareMotion
     @EnvironmentObject private var themeManager: ThemeManager
@@ -16,10 +7,8 @@ struct BackgroundGameMode: View {
     @StateObject private var manager = BackgroundGameModeManager.shared
     @StateObject private var motionState = MotionState()
     
-    // List of Colors for generate background.
     let colors: [Color]
     
-    // Determines the intensity of the parallax effect, scaling the motion offsets applied to background words.
     private let parallaxStrength: CGFloat = 180
     
     var body: some View {

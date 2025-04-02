@@ -1,10 +1,8 @@
 import SwiftUI
 
-/// Manages generation and storage of background words.
 final class BackgroundMainManager: ObservableObject {
     static let shared = BackgroundMainManager()
    
-    /// Array of background words with associated properties.
     @Published private(set) var backgroundWords: [
         (
             id: UUID,
@@ -54,9 +52,7 @@ final class BackgroundMainManager: ObservableObject {
     private let padding: CGFloat = 2
     private let maxAttempts = 100
     private let maxWords = 200
-      
-    // MARK: - Public Methods
-    
+
     /// Generates background words for the given size if not already generated.
     /// - Parameter size: The available screen size.
     func generateIfNeeded(for size: CGSize) {
@@ -76,9 +72,7 @@ final class BackgroundMainManager: ObservableObject {
         backgroundWords.removeAll()
         BackgroundMainManager.isFirstLaunchGenerated = false
     }
-   
-    // MARK: - Private Methods
-    
+
     /// Generates background words based on the available size.
     /// - Parameter size: The available screen size.
     private func generateBackground(for size: CGSize) {

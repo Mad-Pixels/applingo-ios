@@ -1,93 +1,104 @@
 import SwiftUI
 
-/// A view that presents a quiz game interface by generating quiz cards from a word cache and handling user answers.
-///
-/// The `GameQuiz` view uses a dedicated view model (`QuizViewModel`) to encapsulate the logic for generating quiz cards
-/// and processing user responses. It observes the state of the underlying quiz game model (`Quiz`) to react to changes such as
-/// cache loading and game over conditions. When a new card is generated, it displays the question using `GameQuizViewQuestion`
-/// and answer options using `GameQuizViewAnswer`. Upon the user selecting an answer, the view model processes the answer,
-/// updates game statistics, and eventually generates a new quiz card. If the game state indicates that the game is over,
-/// the view dismisses itself.
-///
-/// - Environment:
-///   - `dismiss`: A function that dismisses the current view, typically used when the game is over.
-/// - State Objects:
-///   - `style`: The visual style for the quiz interface.
-///   - `locale`: Provides localized strings for the quiz view.
-///   - `viewModel`: The view model that handles quiz card generation and answer processing.
-/// - Observed Objects:
-///   - `game`: The quiz game model that holds the core game logic and state.
 struct GameQuiz: View {
+    @EnvironmentObject private var themeManager: ThemeManager
     @Environment(\.dismiss) private var dismiss
-    @StateObject private var style: GameQuizStyle
+    
     @StateObject private var locale = GameQuizLocale()
     @StateObject private var viewModel: QuizViewModel
+    @StateObject private var style: GameQuizStyle
+    
     @ObservedObject var game: Quiz
     
-    init(game: Quiz, style: GameQuizStyle? = nil) {
-        _style = StateObject(wrappedValue: style ?? .themed(ThemeManager.shared.currentThemeStyle))
+    @State private var shouldShowPreloader = false
+    @State private var preloaderTimer: DispatchWorkItem?
+    
+    init(
+        game: Quiz,
+        style: GameQuizStyle = .themed(ThemeManager.shared.currentThemeStyle)
+    ) {
         _viewModel = StateObject(wrappedValue: QuizViewModel(game: game))
+        _style = StateObject(wrappedValue: style)
         self.game = game
     }
     
     var body: some View {
+        GeometryReader { geometry in
             ZStack {
-                style.backgroundColor.ignoresSafeArea()
-                
-                if viewModel.shouldShowEmptyView {
-                    EmptyView()
-                } else {
-                    ZStack {
-//                        // Лоадер
-//                        VStack {
-//                            Text("Loading...")
-//                                .foregroundColor(style.questionTextColor)
-//                            ProgressView()
-//                        }
-//                        .opacity(viewModel.currentCard == nil ? 1 : 0)
-//                        .animation(.easeInOut(duration: 0.3), value: viewModel.currentCard == nil)
-                        
-                        // Карточка
-                        if let card = viewModel.currentCard {
-                            VStack(spacing: style.optionsSpacing) {
-                                GameQuizViewQuestion(
-                                    locale: locale,
+                if shouldShowPreloader {
+                    ItemListLoading(style: .themed(themeManager.currentThemeStyle))
+                }
+
+                if let card = viewModel.currentCard {
+                    VStack(spacing: 0) {
+                        VStack(spacing: style.optionsSpacing) {
+                            GameQuizViewQuestion(
+                                locale: locale,
+                                style: style,
+                                card: card
+                            )
+                            .padding(.vertical, style.optionsSpacing)
+                            
+                            ForEach(card.options, id: \.self) { option in
+                                GameQuizViewAnswer(
                                     style: style,
-                                    question: card.question
+                                    locale: locale,
+                                    option: option,
+                                    onSelect: { viewModel.handleAnswer(option) },
+                                    viewModel: viewModel
                                 )
-                                .padding(.bottom, 24)
-                                .padding(.top, 64)
-                                
-                                VStack(spacing: style.optionsSpacing) {
-                                    ForEach(card.options, id: \.self) { option in
-                                        GameQuizViewAnswer(
-                                            locale: locale,
-                                            style: style,
-                                            option: option,
-                                            onSelect: { viewModel.handleAnswer(option) },
-                                            viewModel: viewModel
-                                        )
-                                    }
-                                }
                             }
-                            .padding()
-                            .opacity(viewModel.currentCard != nil ? 1 : 0)
-                            .animation(.easeInOut(duration: 0.3), value: viewModel.currentCard != nil)
+                        }
+                        .padding(.horizontal)
+                        .padding(.top, geometry.size.height * 0.03)
+                        .frame(
+                            minHeight: geometry.size.height * 0.7,
+                            alignment: .center
+                        )
+                    }
+                    
+                    VStack {
+                        Spacer()
+                        HStack {
+                            Spacer()
+                            GameFloatingBtnSpeaker(
+                                word: card.word
+                            )
+                            .padding(.bottom, 32)
                         }
                     }
-                    .padding()
                 }
             }
-            .onAppear {
-                viewModel.generateCard()
-            }
-            .onReceive(game.state.$isGameOver) { isGameOver in
-                if isGameOver {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                        dismiss()
+            .frame(width: geometry.size.width, height: geometry.size.height)
+        }
+        .onAppear {
+            viewModel.generateCard()
+        }
+        .onChange(of: viewModel.isLoadingCard) { isLoading in
+            if isLoading {
+                preloaderTimer?.cancel()
+                
+                let timer = DispatchWorkItem {
+                    if viewModel.isLoadingCard {
+                        shouldShowPreloader = true
                     }
                 }
+                
+                preloaderTimer = timer
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: timer)
+            } else {
+                preloaderTimer?.cancel()
+                preloaderTimer = nil
+                
+                shouldShowPreloader = false
             }
-        
+        }
+        .onReceive(game.state.$isGameOver) { isGameOver in
+            if isGameOver {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    dismiss()
+                }
+            }
+        }
     }
 }

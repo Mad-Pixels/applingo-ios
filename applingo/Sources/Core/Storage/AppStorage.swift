@@ -78,6 +78,12 @@ final class AppStorage {
         set { temporary.setValue(newValue.rawValue, for: "screen") }
     }
     
+    /// 
+    var noVoice: Bool {
+        get { temporary.getValue(for: "no_voice") == "true" }
+        set { temporary.setValue(String(newValue), for: "no_voice")}
+    }
+    
     /// Checks if a specific screen is currently active.
     /// - Parameter screen: The screen to check.
     /// - Returns: `true` if the screen is active, `false` otherwise.

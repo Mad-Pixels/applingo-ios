@@ -1,16 +1,6 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "%@%lld" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@%2$lld"
-          }
-        }
-      }
-    },
     "%lld%%" : {
       "localizations" : {
         "ru" : {
@@ -2700,6 +2690,9 @@
 
     },
     "Нет доступных слов" : {
+
+    },
+    "Отключить озвучивание" : {
 
     }
   },

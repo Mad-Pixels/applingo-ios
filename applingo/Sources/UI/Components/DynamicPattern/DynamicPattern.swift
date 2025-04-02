@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// Renders a dynamic pattern using canvas drawing.
 struct DynamicPattern: View {
     let config: DynamicPatternConfig
     let model: DynamicPatternModel

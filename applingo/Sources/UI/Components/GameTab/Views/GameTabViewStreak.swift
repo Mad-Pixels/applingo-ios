@@ -1,21 +1,23 @@
 import SwiftUI
 
-struct GameTabViewStreak: View {
-    let streak: Int
-    let style: GameTabStyle
-    let locale: GameTabLocale
+internal struct GameTabViewStreak: View {
+    @EnvironmentObject private var themeManager: ThemeManager
+    
+    internal let streak: Int
+    internal let style: GameTabStyle
+    internal let locale: GameTabLocale
     
     var body: some View {
         VStack(spacing: 4) {
-            Text(locale.screenStreak)
-                .font(style.titleFont)
-                .foregroundColor(style.textSecondaryColor)
-            
-            HStack(spacing: 4) {
-                Text(verbatim: "\(streak)")
-                    .font(style.valueFont)
-                    .foregroundColor(style.textPrimaryColor)
-            }
+            DynamicTextCompact(
+                model: DynamicTextModel(text: locale.screenStreak),
+                style: .gameTab(themeManager.currentThemeStyle, color: style.textSecondaryColor)
+            )
+
+            DynamicTextCompact(
+                model: DynamicTextModel(text: "\(streak)"),
+                style: .gameTab(themeManager.currentThemeStyle, color: style.textPrimaryColor)
+            )
         }
     }
 }

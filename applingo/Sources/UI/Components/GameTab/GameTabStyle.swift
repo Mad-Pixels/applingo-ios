@@ -1,27 +1,27 @@
 import SwiftUI
 
-/// Defines styling properties for the Game Tab view.
 final class GameTabStyle: ObservableObject {
-    // MARK: - Properties
+    // Colors
     let textPrimaryColor: Color
     let textSecondaryColor: Color
     let accentColor: Color
     let dividerColor: Color
-
+    let heartColor: Color
+    
+    // Typography
     let titleFont: Font
     let valueFont: Font
     let timerFont: Font
-
+    
+    // Layout
     let spacing: CGFloat
     let padding: CGFloat
     let dividerHeight: CGFloat
     let iconSize: CGFloat
     let modeSectionSize: CGFloat
     let tabWidth: CGFloat
-    let heartColor: Color
-
-    // MARK: - Initializer
-    /// Initializes a new instance of `GameTabStyle`.
+    
+    /// Initializes the GameTabStyle.
     /// - Parameters:
     ///   - textPrimaryColor: The primary text color.
     ///   - textSecondaryColor: The secondary text color.
@@ -34,8 +34,9 @@ final class GameTabStyle: ObservableObject {
     ///   - padding: The overall padding.
     ///   - dividerHeight: The height of the divider.
     ///   - iconSize: The size of icons.
-    ///   - modeSectionSize: The size of additional section for specific mode.
-    ///   - tabWidth: The with of the GameTab.
+    ///   - modeSectionSize: The size of the additional section for specific modes.
+    ///   - tabWidth: The width of the Game Tab.
+    ///   - heartColor: The color used for the heart indicator.
     init(
         textPrimaryColor: Color,
         textSecondaryColor: Color,
@@ -69,11 +70,7 @@ final class GameTabStyle: ObservableObject {
     }
 }
 
-// MARK: - Themed Style Extension
 extension GameTabStyle {
-    /// Returns a themed style based on the current application theme.
-    /// - Parameter theme: The current application theme.
-    /// - Returns: A new instance of `GameTabStyle` configured for the given theme.
     static func themed(_ theme: AppTheme) -> GameTabStyle {
         GameTabStyle(
             textPrimaryColor: theme.textPrimary,
@@ -86,8 +83,8 @@ extension GameTabStyle {
             spacing: 16,
             padding: 16,
             dividerHeight: 24,
-            iconSize: 16,
-            modeSectionSize: 60,
+            iconSize: 12,
+            modeSectionSize: 46,
             tabWidth: 0.9,
             heartColor: theme.errorPrimaryColor
         )
