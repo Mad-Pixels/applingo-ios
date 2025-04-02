@@ -36,7 +36,12 @@ final class Match: ObservableObject, AbstractGame {
         ),
         validation: any AbstractGameValidation = MatchValidation(
             feedbacks: [
-                .incorrect: [IncorrectAnswerHapticFeedback()]
+                .incorrect: [
+                    IncorrectAnswerHapticFeedback(),
+                    IncorrectAnswerBackgroundVisualFeedback(
+                        theme: ThemeManager.shared.currentThemeStyle.quizTheme
+                    )
+                ]
             ]
         ),
         cacheGetter: MatchCache = MatchCache(
@@ -51,20 +56,6 @@ final class Match: ObservableObject, AbstractGame {
         
         self.state = GameState()
         self.stats = GameStats(game: self)
-        
-        cache.$isLoadingCache
-            .sink { [weak self] isLoading in
-                self?.isLoadingCache = isLoading
-            }
-            .store(in: &cancellables)
-                    
-        cache.$cache
-            .sink { words in
-                Logger.debug("[Match]: Cache updated", metadata: [
-                    "count": String(words.count)
-                ])
-            }
-            .store(in: &cancellables)
     }
     
     @ViewBuilder
