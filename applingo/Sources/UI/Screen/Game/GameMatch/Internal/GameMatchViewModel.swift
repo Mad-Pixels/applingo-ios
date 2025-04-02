@@ -50,15 +50,12 @@ internal final class MatchGameViewModel: ObservableObject {
                         ])
                     }
                     
+                    currentCards = validWords.map { MatchModelCard(word: $0) }
                     validWords.forEach { game.removeItem($0) }
-                    
-                    let cards = validWords.map { MatchModelCard(word: $0) }
-                    
-                    currentCards = cards
-                    cardStartTime = Date()
                     
                     resetGameState()
                     isLoadingCard = false
+                    cardStartTime = Date()
                     return
                 }
                 
