@@ -8,6 +8,7 @@ final class Swipe: ObservableObject, AbstractGame {
     internal let availableModes: [GameModeType] = [.practice, .survival, .time]
     internal let validation: AbstractGameValidation
     internal let type: GameType = .swipe
+    internal let settings: GameSettings
     internal let scoring: GameScoring
     internal let cache: SwipeCache
     internal let theme: GameTheme
@@ -26,6 +27,7 @@ final class Swipe: ObservableObject, AbstractGame {
     ///     configured with visual and haptic feedback for both correct and incorrect answers.
     ///   - cacheGetter: Word cache provider that supplies swipe questions. Defaults to a standard
     ///     SwipeCache with predefined size and threshold parameters.
+    ///   - settings: Game settings. Defaults to SwipeSettings.
     init(
         theme: GameTheme = ThemeManager.shared.currentThemeStyle.swipeTheme,
         scoring: GameScoring = GameScoring(
@@ -47,9 +49,11 @@ final class Swipe: ObservableObject, AbstractGame {
         cacheGetter: SwipeCache = SwipeCache(
             cacheSize: SWIPE_CACHE_SIZE,
             threshold: SWIPE_CACHE_THRESHOLD
-        )
+        ),
+        settings: GameSettings = SwipeSettings()
     ) {
         self.validation = validation
+        self.settings = settings
         self.cache = cacheGetter
         self.scoring = scoring
         self.theme = theme

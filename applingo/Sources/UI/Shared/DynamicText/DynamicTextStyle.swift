@@ -49,7 +49,7 @@ extension DynamicTextStyle {
             letterSpacing: 0.2,
             allowsTightening: true,
             maxFontSize: 16,
-            minFontSize: 14,
+            minFontSize: 12,
             lineBreakMode: shouldWrapWords ? .byWordWrapping : .byTruncatingTail,
             wordWrapping: shouldWrapWords,
             lineLimit: lineLimit,

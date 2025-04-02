@@ -8,6 +8,7 @@ final class Quiz: ObservableObject, AbstractGame {
     internal let availableModes: [GameModeType] = [.practice, .survival, .time]
     internal let validation: AbstractGameValidation
     internal let type: GameType = .quiz
+    internal let settings: GameSettings
     internal let scoring: GameScoring
     internal let cache: QuizCache
     internal let theme: GameTheme
@@ -26,6 +27,7 @@ final class Quiz: ObservableObject, AbstractGame {
     ///     configured with visual and haptic feedback for both correct and incorrect answers.
     ///   - cacheGetter: Word cache provider that supplies quiz questions. Defaults to a standard
     ///     QuizCache with predefined size and threshold parameters.
+    ///   - settings: Game settings. Defaults to QuizSettings.
     init(
         theme: GameTheme = ThemeManager.shared.currentThemeStyle.quizTheme,
         scoring: GameScoring = GameScoring(
@@ -47,9 +49,11 @@ final class Quiz: ObservableObject, AbstractGame {
         cacheGetter: QuizCache = QuizCache(
             cacheSize: QUIZ_CACHE_SIZE,
             threshold: QUIZ_CACHE_THRESHOLD
-        )
+        ),
+        settings: GameSettings = QuizSettings()
     ) {
         self.validation = validation
+        self.settings = settings
         self.cache = cacheGetter
         self.scoring = scoring
         self.theme = theme

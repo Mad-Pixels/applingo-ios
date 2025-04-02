@@ -1683,6 +1683,23 @@
         }
       }
     },
+    "screen.gameMode.titleSettings" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Настройки"
+          }
+        }
+      }
+    },
     "screen.home.game.matchup" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2584,6 +2601,23 @@
         }
       }
     },
+    "settings.game.noVoice" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disable voice tasks"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отключить голосовые задачи"
+          }
+        }
+      }
+    },
     "sort.api.DictionarySortByDate" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2690,9 +2724,6 @@
 
     },
     "Нет доступных слов" : {
-
-    },
-    "Отключить озвучивание" : {
 
     }
   },

@@ -3,23 +3,22 @@ import SwiftUI
 internal struct GameModeViewSettings: View {
     @EnvironmentObject private var themeManager: ThemeManager
     
-    @State private var noVoiceEnabled: Bool = AppStorage.shared.noVoice
+    private let settings: GameSettings
+
+    /// Initialize the GameModeViewSettings.
+    init(settings: GameSettings) {
+        self.settings = settings
+    }
     
     var body: some View {
-        HStack {
-            Text("Отключить озвучивание")
-                .foregroundColor(themeManager.currentThemeStyle.textPrimary)
-            
-            Spacer()
-            
-            ItemCheckbox(
-                isChecked: $noVoiceEnabled,
-                onChange: { newValue in
-                    AppStorage.shared.noVoice = newValue
-                },
-                style: .themed(themeManager.currentThemeStyle)
-            )
+        if settings.hasSettings {
+            VStack() {
+                ForEach(settings.getAllSettings(), id: \.id) { setting in
+                    if let boolSetting = setting as? BooleanSettingItemBoolean {
+                        GameSettingsViewBoolean(setting: boolSetting)
+                    }
+                }
+            }
         }
-        .padding(.vertical, 8)
     }
 }

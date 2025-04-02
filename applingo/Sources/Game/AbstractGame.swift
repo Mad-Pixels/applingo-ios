@@ -1,17 +1,12 @@
 import SwiftUI
 
-// MARK: - AbstractGame
-
 /// A protocol defining the core interface for a game.
 /// Conforming types must provide properties for game configuration and methods for
 /// updating game stats, validating answers, managing game modes, controlling game flow,
 /// and generating the game view.
 protocol AbstractGame: ObservableObject {
-    // MARK: - Associated Types
-    /// The type of the validation answer.
     associatedtype ValidationAnswer
     
-    // MARK: - Properties
     /// The game validation object.
     var validation: any AbstractGameValidation { get }
     /// The game statistics object.
@@ -28,8 +23,9 @@ protocol AbstractGame: ObservableObject {
     var type: GameType { get }
     /// A flag indicating whether the game is ready to play.
     var isReadyToPlay: Bool { get }
+    /// The game settings.
+    var settings: GameSettings { get }
     
-    // MARK: - Methods
     /// Updates the game statistics based on whether the answer was correct,
     /// the response time, and if a special card was used.
     /// - Parameters:

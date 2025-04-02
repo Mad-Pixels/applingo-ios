@@ -8,6 +8,7 @@ final class Match: ObservableObject, AbstractGame {
     internal let availableModes: [GameModeType] = [.practice, .survival, .time]
     internal let validation: AbstractGameValidation
     internal let type: GameType = .match
+    internal let settings: GameSettings
     internal let scoring: GameScoring
     internal let cache: MatchCache
     internal let theme: GameTheme
@@ -26,6 +27,7 @@ final class Match: ObservableObject, AbstractGame {
     ///     configured with visual and haptic feedback for both correct and incorrect answers.
     ///   - cacheGetter: Word cache provider that supplies match questions. Defaults to a standard
     ///     MatchCache with predefined size and threshold parameters.
+    ///   - settings: Game settings. Defaults to MatchSettings.
     init(
         theme: GameTheme = ThemeManager.shared.currentThemeStyle.matchTheme,
         scoring: GameScoring = GameScoring(
@@ -47,9 +49,11 @@ final class Match: ObservableObject, AbstractGame {
         cacheGetter: MatchCache = MatchCache(
             cacheSize: MATCH_CACHE_SIZE,
             threshold: MATCH_CACHE_THRESHOLD
-        )
+        ),
+        settings: GameSettings = MatchSettings()
     ) {
         self.validation = validation
+        self.settings = settings
         self.cache = cacheGetter
         self.scoring = scoring
         self.theme = theme

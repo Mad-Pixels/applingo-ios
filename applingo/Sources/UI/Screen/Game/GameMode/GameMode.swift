@@ -1,23 +1,21 @@
 import SwiftUI
 
-/// A view that displays the game mode selection screen.
-/// Users can choose a mode (e.g. practice, survival, time attack) before starting the game.
 struct GameMode<GameType: AbstractGame>: View {
-    // MARK: - Properties
-    let game: GameType
+    @EnvironmentObject private var themeManager: ThemeManager
     
-    // MARK: - State Objects
     @StateObject private var style: GameModeStyle
     @StateObject private var locale: GameModeLocale = GameModeLocale()
-    @Binding var isPresented: Bool
     
-    // MARK: - Local State
     @State private var isPressedTrailing = false
     @State private var showGameContent = false
     @State private var isAnimating = false
+    @State private var currentTab = 0
     
-    // MARK: - Initializer
-    /// Initializes the GameMode view.
+    @Binding var isPresented: Bool
+    
+    let game: GameType
+    
+    /// Initializes the GameMode.
     /// - Parameters:
     ///   - game: The game instance.
     ///   - isPresented: Binding to control the view's presentation.
@@ -32,7 +30,6 @@ struct GameMode<GameType: AbstractGame>: View {
         self.game = game
     }
     
-    // MARK: - Body
     var body: some View {
         BaseScreen(
             screen: .GameMode,
@@ -51,28 +48,36 @@ struct GameMode<GameType: AbstractGame>: View {
         }
     }
     
-    // MARK: - Private Views
     private var modeSelectionContent: some View {
         ZStack {
             BackgroundGameMode(colors: style.colors)
                 .edgesIgnoringSafeArea(.all)
             
-            VStack(spacing: style.spacing) {
-                Text(locale.screenTitle.uppercased())
-                    .font(style.titleStyle.font)
-                    .foregroundColor(style.titleStyle.color)
-                    .opacity(isAnimating ? 1 : 0)
-                    .offset(y: isAnimating ? 0 : 20)
-                
-                VStack(spacing: style.cardSpacing) {
-                    ForEach(game.availableModes, id: \.self) { mode in
-                        modeCard(for: mode)
-                    }
+            VStack(spacing: 0) {
+                TabView(selection: $currentTab) {
+                    tabContent(
+                        title: locale.screenTitle.uppercased(),
+                        content: {
+                            ForEach(game.availableModes, id: \.self) { mode in
+                                modeCard(for: mode)
+                            }
+                        }
+                    )
+                    .tag(0)
                     
-                    GameModeViewSettings()
+                    if game.settings.hasSettings {
+                        tabContent(
+                            title: locale.screenTitleSettings.uppercased(),
+                            content: {
+                                GameModeViewSettings(settings: game.settings)
+                                    .padding(.horizontal, 16)
+                            }
+                        )
+                        .tag(1)
+                    }
                 }
-                .padding(.vertical, 24)
-                .glassBackground()
+                .tabViewStyle(PageTabViewStyle(indexDisplayMode: .always))
+                .indexViewStyle(PageIndexViewStyle(backgroundDisplayMode: .always))
             }
             .padding(style.padding)
         }
@@ -93,7 +98,22 @@ struct GameMode<GameType: AbstractGame>: View {
         }
     }
     
-    // MARK: - Private Methods
+    @ViewBuilder
+    private func tabContent<Content: View>(title: String, content: () -> Content) -> some View {
+        VStack(spacing: style.cardSpacing) {
+            Text(title)
+                .font(style.titleStyle.font)
+                .foregroundColor(style.titleStyle.color)
+                .opacity(isAnimating ? 1 : 0)
+                .offset(y: isAnimating ? 0 : 20)
+            
+            content()
+        }
+        .padding(.vertical, 24)
+        .glassBackground()
+        .padding(.horizontal, 6)
+    }
+    
     /// Returns a card view for a given game mode.
     /// - Parameter mode: The game mode type.
     /// - Returns: A view representing the game mode card.

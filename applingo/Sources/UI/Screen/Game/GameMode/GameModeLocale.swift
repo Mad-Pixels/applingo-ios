@@ -1,11 +1,9 @@
 import Foundation
 
-/// Provides localized strings for the GameMode view.
 final class GameModeLocale: ObservableObject {
-    
-    // MARK: - Localized Keys
     private enum LocalizedKey: String {
         case title = "screen.gameMode.title"
+        case titleSettings = "screen.gameMode.titleSettings"
         case subtitlePractice = "screen.gameMode.subtitle.practice"
         case subtitleSurvival = "screen.gameMode.subtitle.survival"
         case subtitleTime = "screen.gameMode.subtitle.time"
@@ -14,8 +12,8 @@ final class GameModeLocale: ObservableObject {
         case descriptionTime = "screen.gameMode.description.time"
     }
     
-    // MARK: - Published Properties
     @Published private(set) var screenTitle: String
+    @Published private(set) var screenTitleSettings: String
     @Published private(set) var screenSubtitlePractice: String
     @Published private(set) var screenSubtitleSurvival: String
     @Published private(set) var screenSubtitleTime: String
@@ -23,9 +21,9 @@ final class GameModeLocale: ObservableObject {
     @Published private(set) var screenDescriptionSurvival: String
     @Published private(set) var screenDescriptionTime: String
     
-    // MARK: - Initialization
     init() {
         self.screenTitle = Self.localizedString(for: .title)
+        self.screenTitleSettings = Self.localizedString(for: .titleSettings)
         self.screenSubtitlePractice = Self.localizedString(for: .subtitlePractice)
         self.screenSubtitleSurvival = Self.localizedString(for: .subtitleSurvival)
         self.screenSubtitleTime = Self.localizedString(for: .subtitleTime)
@@ -45,13 +43,11 @@ final class GameModeLocale: ObservableObject {
         NotificationCenter.default.removeObserver(self)
     }
     
-    // MARK: - Localization Helper
     /// Returns a localized string for the specified key.
     private static func localizedString(for key: LocalizedKey) -> String {
         return LocaleManager.shared.localizedString(for: key.rawValue)
     }
     
-    // MARK: - Notification Handler
     @objc private func localeDidChange() {
         screenTitle = Self.localizedString(for: .title)
         screenSubtitlePractice = Self.localizedString(for: .subtitlePractice)
@@ -60,5 +56,6 @@ final class GameModeLocale: ObservableObject {
         screenDescriptionPractice = Self.localizedString(for: .descriptionPractice)
         screenDescriptionSurvival = Self.localizedString(for: .descriptionSurvival)
         screenDescriptionTime = Self.localizedString(for: .descriptionTime)
+        screenTitleSettings = Self.localizedString(for: .titleSettings)
     }
 }
