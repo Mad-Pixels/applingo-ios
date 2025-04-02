@@ -42,7 +42,7 @@ struct TaperedLineShape: Shape {
 
 internal struct GameMatchViewSeparator: View {
     /// Ширина линии в центре (px) – максимум
-    var centerLineWidth: CGFloat = 6
+    var centerLineWidth: CGFloat = 3
     /// Ширина линии на краях (px) – минимум
     var edgeLineWidth: CGFloat = 1
     /// Отношение высоты линии к высоте контейнера (70%)
