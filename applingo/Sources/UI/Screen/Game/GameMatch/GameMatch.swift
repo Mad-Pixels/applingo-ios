@@ -34,7 +34,7 @@ struct GameMatch: View {
                 
                 if !viewModel.currentCards.isEmpty {
                     HStack(spacing: 0) {
-                        VStack(spacing: 4) {
+                        VStack(spacing: 8) {
                             ForEach(shuffledFrontIndices, id: \.self) { index in
                                 GameMatchViewCard(
                                     text: viewModel.currentCards[index].question,
@@ -46,11 +46,11 @@ struct GameMatch: View {
                                 )
                             }
                         }
-                        .padding(.horizontal)
+                        .padding(.horizontal, 12)
                         
                         GameMatchViewSeparator()
                         
-                        VStack(spacing: 4) {
+                        VStack(spacing: 8) {
                             ForEach(shuffledBackIndices, id: \.self) { index in
                                 GameMatchViewCard(
                                     text: viewModel.currentCards[index].answer,
@@ -62,7 +62,7 @@ struct GameMatch: View {
                                 )
                             }
                         }
-                        .padding(.horizontal)
+                        .padding(.horizontal, 12)
                     }
                     .padding(.top, 36)
                 }

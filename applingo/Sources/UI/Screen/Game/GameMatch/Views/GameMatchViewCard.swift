@@ -38,8 +38,6 @@ internal struct GameMatchViewCard: View {
         )
         .opacity(viewModel.isLoadingCard ? 0.7 : 1.0)
         .disabled(isMatched || viewModel.isLoadingCard)
-        .padding(.horizontal, 8)
-        .padding(.vertical, 4)
     }
     
     private func getButtonStyle() -> ButtonActionStyle {

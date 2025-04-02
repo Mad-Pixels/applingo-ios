@@ -17,7 +17,7 @@ internal final class GameMatchViewModel: ObservableObject {
     private let game: Match
     
     let replaceThreshold = 3
-    let maxCards = 4
+    let maxCards = 6
     
     init(game: Match) {
         self.game = game
