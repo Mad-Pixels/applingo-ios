@@ -268,10 +268,12 @@ final class WordCache: ProcessDatabase {
         ])
         
         if !uniqueWords.isEmpty {
-            let currentIds = Set(cache.compactMap { $0.id })
+            let currentTexts = Set(cache.flatMap { [$0.frontText.lowercased(), $0.backText.lowercased()] })
+            
             let newWords = uniqueWords.filter { word in
-                guard let id = word.id else { return false }
-                return !currentIds.contains(id)
+                let front = word.frontText.lowercased()
+                let back = word.backText.lowercased()
+                return !(currentTexts.contains(front) || currentTexts.contains(back))
             }
             
             DispatchQueue.main.async { [weak self] in
