@@ -31,6 +31,11 @@ internal final class GameMatchViewModel: ObservableObject {
     
     // Задержки обновления карточек
     private var updateTasks: [Int: Task<Void, Never>] = [:]
+    
+    // Параметры для ступенчатой задержки
+    let baseDelay: Double = 0.5       // Базовая задержка для первой карточки
+    let stepDelay: Double = 0.7       // Добавочная задержка для каждой следующей карточки
+    let randomVariance: Double = 0.4  // Случайное отклонение для естественности
 
     init(game: Match) {
         self.game = game
@@ -133,16 +138,30 @@ internal final class GameMatchViewModel: ObservableObject {
             }
         }
         
-        // Заменяем слова в карточках с задержками
-        for (i, cardIndex) in matchedIndicesArray.enumerated() {
-            if i < words.count {
+        // Сортируем карточки по количеству оставшихся неотгаданных карточек
+        // Чем меньше осталось, тем быстрее появится эта карточка
+        let sortedCardIndices = matchedIndicesArray.sorted { idx1, idx2 in
+            // Счетчик неотгаданных карточек
+            let remainingCards1 = currentCards.count - (matchedIndices.count / 2)
+            
+            // Можно добавить другие условия сортировки для разнообразия
+            return Double.random(in: 0...1) < 0.5 // Немного случайности
+        }
+        
+        // Заменяем слова в карточках со ступенчатыми задержками
+        for (i, cardIndex) in sortedCardIndices.enumerated() {
+            if let _ = newWordsCache[cardIndex] {
                 // Отменяем предыдущую задачу для этой карточки, если она существует
                 updateTasks[cardIndex]?.cancel()
                 
                 let updateTask = Task { @MainActor in
-                    // Добавляем случайную задержку для каждой карточки
-                    let randomDelay = Double.random(in: 0.3...1.0)
-                    try? await Task.sleep(nanoseconds: UInt64(randomDelay * 1_000_000_000))
+                    // Создаем ступенчатую задержку: чем позже в списке, тем больше задержка
+                    let steppedDelay = baseDelay + (Double(i) * stepDelay)
+                    // Добавляем небольшую случайность для естественности
+                    let randomFactor = Double.random(in: -randomVariance...randomVariance)
+                    let finalDelay = max(0.1, steppedDelay + randomFactor)
+                    
+                    try? await Task.sleep(nanoseconds: UInt64(finalDelay * 1_000_000_000))
                     
                     // Обновляем карточку
                     if !Task.isCancelled, let newCard = newWordsCache[cardIndex] {
