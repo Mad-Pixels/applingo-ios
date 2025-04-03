@@ -10,7 +10,7 @@ final class GameMatchViewModel: ObservableObject {
     @Published var selectedFrontIndex: Int?
     @Published var selectedBackIndex: Int?
 
-    let board: MatchBoard
+    let board: GameMatchBoard
 
     private let game: Match
     private let maxCards = 6
@@ -21,7 +21,7 @@ final class GameMatchViewModel: ObservableObject {
 
     init(game: Match) {
         self.game = game
-        self.board = MatchBoard(maxCards: maxCards)
+        self.board = GameMatchBoard(maxCards: maxCards)
         generateCards()
     }
 
@@ -41,7 +41,7 @@ final class GameMatchViewModel: ObservableObject {
 
                 if let items = game.getItems(maxCards) as? [DatabaseModelWord], !items.isEmpty {
                     currentCards = items.map(MatchModelCard.init)
-                    // Передаём количество карточек
+                    // Заполняем доску карточками
                     board.fillBoard(withCount: currentCards.count)
                     isLoadingCard = false
                     return
@@ -68,10 +68,14 @@ final class GameMatchViewModel: ObservableObject {
     }
 
     private func checkMatch() {
-        guard let frontIndex = selectedFrontIndex,
-              let backIndex = selectedBackIndex,
-              currentCards.indices.contains(frontIndex),
-              currentCards.indices.contains(backIndex) else { return }
+        guard let frontPosition = selectedFrontIndex,
+              let backPosition = selectedBackIndex,
+              frontPosition < board.leftOrder.count,
+              backPosition < board.rightOrder.count,
+              let frontIndex = board.leftOrder[frontPosition],
+              let backIndex = board.rightOrder[backPosition],
+              frontIndex < currentCards.count,
+              backIndex < currentCards.count else { return }
 
         let questionCard = currentCards[frontIndex]
         let answerCard = currentCards[backIndex]
@@ -88,7 +92,7 @@ final class GameMatchViewModel: ObservableObject {
             matchedIndices.insert(frontIndex)
             matchedIndices.insert(backIndex)
 
-            // Теперь передаём индексы
+            // Удаляем совпавшую пару
             board.removeMatchedPair(questionIndex: frontIndex, answerIndex: backIndex)
 
             if matchedIndices.count / 2 >= replaceThreshold {
@@ -115,18 +119,23 @@ final class GameMatchViewModel: ObservableObject {
             for i in startIndex..<currentCards.count {
                 let delay = Double.random(in: 0.2...0.6)
                 try? await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
-                // Передаём индекс новой карточки
+                // Добавляем новую карточку на доску
                 board.addCard(cardIndex: i)
             }
         }
     }
 
-    func getCardText(index: Int, isQuestion: Bool) -> String {
-        guard currentCards.indices.contains(index) else { return "" }
-        return isQuestion ? currentCards[index].question : currentCards[index].answer
+    func getCardText(boardPosition: Int, isQuestion: Bool) -> String {
+        let array = isQuestion ? board.leftOrder : board.rightOrder
+        guard boardPosition < array.count, let cardIndex = array[boardPosition],
+              cardIndex < currentCards.count else { return "" }
+        
+        return isQuestion ? currentCards[cardIndex].question : currentCards[cardIndex].answer
     }
 
-    func isCardUpdating(index: Int) -> Bool {
-        matchedIndices.contains(index)
+    func isCardUpdating(boardPosition: Int, isQuestion: Bool) -> Bool {
+        let array = isQuestion ? board.leftOrder : board.rightOrder
+        guard boardPosition < array.count, let cardIndex = array[boardPosition] else { return false }
+        return matchedIndices.contains(cardIndex)
     }
 }

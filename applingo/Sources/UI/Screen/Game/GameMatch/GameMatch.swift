@@ -35,9 +35,9 @@ struct GameMatch: View {
                                 if let cardIndex = viewModel.board.leftOrder[position] {
                                     GameMatchViewCard(
                                         text: viewModel.currentCards[cardIndex].question,
-                                        index: cardIndex,
-                                        onSelect: { viewModel.selectFront(at: cardIndex) },
-                                        isSelected: viewModel.selectedFrontIndex == cardIndex,
+                                        position: position,
+                                        onSelect: { viewModel.selectFront(at: position) }, // Передаем позицию, не индекс
+                                        isSelected: viewModel.selectedFrontIndex == position,
                                         isMatched: viewModel.matchedIndices.contains(cardIndex),
                                         viewModel: viewModel,
                                         isQuestion: true
@@ -59,9 +59,9 @@ struct GameMatch: View {
                                 if let cardIndex = viewModel.board.rightOrder[position] {
                                     GameMatchViewCard(
                                         text: viewModel.currentCards[cardIndex].answer,
-                                        index: cardIndex,
-                                        onSelect: { viewModel.selectBack(at: cardIndex) },
-                                        isSelected: viewModel.selectedBackIndex == cardIndex,
+                                        position: position,
+                                        onSelect: { viewModel.selectBack(at: position) }, // Передаем позицию, не индекс
+                                        isSelected: viewModel.selectedBackIndex == position,
                                         isMatched: viewModel.matchedIndices.contains(cardIndex),
                                         viewModel: viewModel,
                                         isQuestion: false
