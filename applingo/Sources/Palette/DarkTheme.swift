@@ -15,7 +15,7 @@ struct DarkTheme: AppTheme {
     
     // Accent colors
     let accentPrimary = Color(hex: "aae282")
-    let accentLight = Color(hex: "e38c10")
+    let accentLight = Color(hex: "b9e39a")
     let accentDark = Color(hex: "80ac60")
     let accentContrast = Color.white
     
@@ -56,7 +56,7 @@ struct DarkTheme: AppTheme {
             secondary: Color(hex: "779E5B"),
             accent: Color(hex: "445A34"),
             correct: Color(hex: "445A34"),
-            incorrect: Color(hex: "A83232")
+            incorrect: Color(hex: "963c3c")
         )
     }
         
@@ -66,8 +66,8 @@ struct DarkTheme: AppTheme {
             main: Color(hex: "AAE282"),
             secondary: Color(hex: "779E5B"),
             accent: Color(hex: "445A34"),
-            correct: Color(hex: "445A34"),
-            incorrect: Color(hex: "A83232")
+            correct: Color(hex: "334228"),
+            incorrect: Color(hex: "963c3c")
         )
     }
     

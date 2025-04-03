@@ -62,10 +62,9 @@ internal struct GameMatchViewCard: View {
         return style
     }
     
-    // Создает стиль для совпавшей карточки
     private func createMatchedStyle() -> ButtonActionStyle {
         var style = ButtonActionStyle.game(themeManager.currentThemeStyle)
-        style.backgroundColor = Color.gray.opacity(0.5)
+        style.backgroundColor = themeManager.currentThemeStyle.matchTheme.correct
         return style
     }
 }

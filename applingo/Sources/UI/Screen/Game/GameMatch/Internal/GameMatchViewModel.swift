@@ -59,10 +59,8 @@ internal final class GameMatchViewModel: ObservableObject {
                 if Task.isCancelled { return }
                 if let items = game.getItems(maxCards) as? [DatabaseModelWord], !items.isEmpty {
                     let words = items.prefix(maxCards).filter { $0.id != nil }
-                    // Не удаляем слова из кеша – они остаются до отгадывания
                     currentCards = words.map { MatchModelCard(word: $0) }
                     
-                    // Инициализируем случайный порядок для каждой колонки
                     leftOrder = Array(0..<currentCards.count).shuffled()
                     rightOrder = Array(0..<currentCards.count).shuffled()
                     isLoadingCard = false

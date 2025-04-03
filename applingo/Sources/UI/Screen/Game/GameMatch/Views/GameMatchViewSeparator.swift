@@ -1,9 +1,7 @@
 import SwiftUI
 
 struct TaperedLineShape: Shape {
-    /// Ширина линии в центре (максимальная)
     var centerWidth: CGFloat
-    /// Ширина линии на краях (минимальная)
     var edgeWidth: CGFloat
 
     func path(in rect: CGRect) -> Path {
@@ -14,7 +12,6 @@ struct TaperedLineShape: Shape {
         
         for i in 0...steps {
             let y = CGFloat(i) / CGFloat(steps) * rect.height
-            // Используем синус для плавного изменения: sin(0)=0, sin(pi/2)=1, sin(pi)=0
             let factor = sin(.pi * y / rect.height)
             let widthAtY = edgeWidth + (centerWidth - edgeWidth) * factor
             let halfWidth = widthAtY / 2
@@ -25,11 +22,11 @@ struct TaperedLineShape: Shape {
         if let firstPoint = rightPoints.first {
             path.move(to: firstPoint)
         }
-        // Правая сторона сверху вниз
+        
         for point in rightPoints {
             path.addLine(to: point)
         }
-        // Левая сторона снизу вверх
+        
         for point in leftPoints.reversed() {
             path.addLine(to: point)
         }
@@ -39,11 +36,8 @@ struct TaperedLineShape: Shape {
 }
 
 internal struct GameMatchViewSeparator: View {
-    /// Ширина линии в центре (px) – максимум
-    var centerLineWidth: CGFloat = 3
-    /// Ширина линии на краях (px) – минимум
+    var centerLineWidth: CGFloat = 4
     var edgeLineWidth: CGFloat = 1
-    /// Отношение высоты линии к высоте контейнера (70%)
     var heightRatio: CGFloat = 0.7
 
     var body: some View {
@@ -59,7 +53,6 @@ internal struct GameMatchViewSeparator: View {
                         .frame(width: centerLineWidth, height: lineHeight)
                 )
             }
-            // Фиксируем размер и центрируем линию
             .frame(width: centerLineWidth, height: lineHeight)
             .position(x: geometry.size.width / 2, y: geometry.size.height / 2)
         }

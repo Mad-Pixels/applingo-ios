@@ -55,7 +55,7 @@ struct LightTheme: AppTheme {
             main: Color(hex: "2563EB"),
             secondary: Color(hex: "1A47AA"),
             accent: Color(hex: "13337B"),
-            correct: Color(hex: "AEEFFF"),
+            correct: Color(hex: "7295e0"),
             incorrect: Color(hex: "FFAEAE")
         )
     }
@@ -66,8 +66,8 @@ struct LightTheme: AppTheme {
             main: Color(hex: "2563EB"),
             secondary: Color(hex: "1A47AA"),
             accent: Color(hex: "13337B"),
-            correct: Color(hex: "eab308"),
-            incorrect: Color(hex: "06b6d4")
+            correct: Color(hex: "335cb5"),
+            incorrect: Color(hex: "FFAEAE")
         )
     }
     
