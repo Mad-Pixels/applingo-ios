@@ -171,11 +171,9 @@ internal final class GameMatchViewModel: ObservableObject {
         }
 
         if isCorrect {
-            // Отмечаем индексы угаданных карточек
             matchedIndices.insert(frontIndex)
             matchedIndices.insert(backIndex)
 
-            // После достижения порога заменяем только отгаданные карточки
             if matchedIndices.count >= replaceThreshold {
                 updateMatchedCards()
             }
