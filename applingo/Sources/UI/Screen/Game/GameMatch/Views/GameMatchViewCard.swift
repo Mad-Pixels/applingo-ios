@@ -11,6 +11,9 @@ internal struct GameMatchViewCard: View {
     private let isSelected: Bool
     private let isMatched: Bool
     
+    // Добавляем состояние для анимации исчезновения
+    @State private var isVisible = true
+    
     init(
         text: String,
         index: Int,
@@ -36,15 +39,29 @@ internal struct GameMatchViewCard: View {
             },
             style: getButtonStyle()
         )
-        .opacity(viewModel.isLoadingCard ? 0.7 : 1.0)
-        .disabled(isMatched || viewModel.isLoadingCard)
+        .opacity(viewModel.isCardUpdating(index: index) ? 0 : (isMatched ? 0 : 1.0)) // Делаем невидимыми карточки, которые обновляются или уже сопоставлены
+        .scaleEffect(isMatched ? 0.8 : 1.0) // Уменьшаем размер сопоставленных карточек
+        .animation(.easeInOut(duration: 0.3), value: isMatched) // Добавляем анимацию
+        .disabled(isMatched || viewModel.isLoadingCard || viewModel.isCardUpdating(index: index))
+        .onChange(of: isMatched) { newValue in
+            if newValue {
+                // Задержка для эффекта исчезновения
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    withAnimation(.easeOut(duration: 0.3)) {
+                        isVisible = false
+                    }
+                }
+            } else {
+                isVisible = true
+            }
+        }
     }
     
     private func getButtonStyle() -> ButtonActionStyle {
         if let highlightColor = viewModel.highlightedOptions[text] {
             return .GameAnswer(themeManager.currentThemeStyle, highlightColor: highlightColor)
         } else if isMatched {
-            // Стиль для совпавших карточек
+            // Стиль для совпавших карточек с эффектом исчезновения
             return createMatchedStyle()
         } else if isSelected {
             // Стиль для выбранных карточек
@@ -64,7 +81,8 @@ internal struct GameMatchViewCard: View {
     
     private func createMatchedStyle() -> ButtonActionStyle {
         var style = ButtonActionStyle.game(themeManager.currentThemeStyle)
-        style.backgroundColor = themeManager.currentThemeStyle.matchTheme.correct
+        style.backgroundColor = themeManager.currentThemeStyle.matchTheme.correct.opacity(0.5)
+        //style.foregroundColor = .clear // Делаем текст невидимым
         return style
     }
 }

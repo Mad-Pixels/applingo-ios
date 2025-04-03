@@ -13,14 +13,21 @@ internal final class GameMatchViewModel: ObservableObject {
 
     @Published var leftOrder: [Int] = []
     @Published var rightOrder: [Int] = []
+    
+    // Отслеживаем карточки, которые в данный момент обновляются
+    @Published private var updatingCardIndices: Set<Int> = []
 
     private var loadingTask: Task<Void, Never>?
     private var cancellables = Set<AnyCancellable>()
     private var cardStartTime: Date?
     private let game: Match
 
-    let replaceThreshold = 4
+    // Уменьшаем порог замены до 2
+    let replaceThreshold = 2
     let maxCards = 6
+    
+    // Задержки обновления карточек
+    private var updateTasks: [Int: Task<Void, Never>] = [:]
 
     init(game: Match) {
         self.game = game
@@ -45,7 +52,13 @@ internal final class GameMatchViewModel: ObservableObject {
 
     deinit {
         loadingTask?.cancel()
+        updateTasks.values.forEach { $0.cancel() }
         cancellables.removeAll()
+    }
+    
+    // Публичный метод для проверки, обновляется ли карточка
+    func isCardUpdating(index: Int) -> Bool {
+        return updatingCardIndices.contains(index)
     }
 
     func generateCards() {
@@ -81,32 +94,58 @@ internal final class GameMatchViewModel: ObservableObject {
         let matchedIndicesArray = Array(matchedIndices)
         guard !matchedIndicesArray.isEmpty else { return }
 
+        // Удаляем угаданные слова из игры
         for cardIndex in matchedIndicesArray {
             let guessedWord = currentCards[cardIndex].word
             game.removeItem(guessedWord)
+            
+            // Помечаем карточку как обновляющуюся
+            updatingCardIndices.insert(cardIndex)
         }
 
+        // Получаем новые слова для замены
         guard let newItems = game.getItems(matchedIndicesArray.count) as? [DatabaseModelWord],
               !newItems.isEmpty else { return }
-
+              
         let words = newItems.prefix(matchedIndicesArray.count).filter { $0.id != nil }
 
+        // Заменяем слова в карточках с задержками
         for (i, cardIndex) in matchedIndicesArray.enumerated() {
-            currentCards[cardIndex] = MatchModelCard(word: words[i])
+            if i < words.count {
+                // Отменяем предыдущую задачу для этой карточки, если она существует
+                updateTasks[cardIndex]?.cancel()
+                
+                let newWord = words[i]
+                let updateTask = Task { @MainActor in
+                    // Добавляем случайную задержку для каждой карточки
+                    let randomDelay = Double.random(in: 0.3...1.0)
+                    try? await Task.sleep(nanoseconds: UInt64(randomDelay * 1_000_000_000))
+                    
+                    // Обновляем карточку
+                    if !Task.isCancelled {
+                        currentCards[cardIndex] = MatchModelCard(word: newWord)
+                        updatingCardIndices.remove(cardIndex)
+                    }
+                }
+                
+                updateTasks[cardIndex] = updateTask
+            }
         }
-
+        
+        // Обновляем порядок карточек - ОРИГИНАЛЬНЫЙ КОД
         updateOrder(&leftOrder)
         updateOrder(&rightOrder)
 
-        currentCards = currentCards
+        // Очищаем список отгаданных карточек
         matchedIndices.removeAll()
     }
-
+    
+    // ОРИГИНАЛЬНЫЙ метод для обновления порядка - НЕ ИЗМЕНЕН
     private func updateOrder(_ order: inout [Int]) {
         var freePositions: [Int] = []
         var freeCardIndices: [Int] = []
         for (pos, cardIndex) in order.enumerated() {
-            if matchedIndices.contains(cardIndex) {
+            if updatingCardIndices.contains(cardIndex) {
                 freePositions.append(pos)
                 freeCardIndices.append(cardIndex)
             }
@@ -118,7 +157,7 @@ internal final class GameMatchViewModel: ObservableObject {
     }
 
     func selectFront(at index: Int) {
-        guard index >= 0, index < currentCards.count else { return }
+        guard index >= 0, index < currentCards.count, !isCardUpdating(index: index) else { return }
         selectedFrontIndex = (selectedFrontIndex == index) ? nil : index
 
         if cardStartTime == nil && (selectedFrontIndex != nil || selectedBackIndex != nil) {
@@ -130,7 +169,7 @@ internal final class GameMatchViewModel: ObservableObject {
     }
 
     func selectBack(at index: Int) {
-        guard index >= 0, index < currentCards.count else { return }
+        guard index >= 0, index < currentCards.count, !isCardUpdating(index: index) else { return }
         selectedBackIndex = (selectedBackIndex == index) ? nil : index
 
         if cardStartTime == nil && (selectedFrontIndex != nil || selectedBackIndex != nil) {
@@ -185,6 +224,9 @@ internal final class GameMatchViewModel: ObservableObject {
     private func resetGameState() {
         highlightedOptions.removeAll()
         matchedIndices.removeAll()
+        updatingCardIndices.removeAll()
+        updateTasks.values.forEach { $0.cancel() }
+        updateTasks.removeAll()
         selectedFrontIndex = nil
         selectedBackIndex = nil
         cardStartTime = nil
