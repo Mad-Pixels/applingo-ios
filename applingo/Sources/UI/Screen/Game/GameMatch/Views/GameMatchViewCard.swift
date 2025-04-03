@@ -64,18 +64,19 @@ internal struct GameMatchViewCard: View {
     }
     
     private func getButtonStyle(for text: String) -> ButtonActionStyle {
-        if let highlightColor = viewModel.highlightedOptions[text] {
-            return .GameAnswer(themeManager.currentThemeStyle, highlightColor: highlightColor)
-        } else if isMatched {
-            // Стиль для совпавших карточек с эффектом исчезновения
-            return createMatchedStyle()
-        } else if isSelected {
-            // Стиль для выбранных карточек
-            return createSelectedStyle()
-        } else {
-            // Стандартный стиль
-            return .gameCompact(themeManager.currentThemeStyle)
-        }
+//        if let highlightColor = viewModel.highlightedOptions[text] {
+//            return .GameAnswer(themeManager.currentThemeStyle, highlightColor: highlightColor)
+//        } else if isMatched {
+//            // Стиль для совпавших карточек с эффектом исчезновения
+//            return createMatchedStyle()
+//        } else if isSelected {
+//            // Стиль для выбранных карточек
+//            return createSelectedStyle()
+//        } else {
+//            // Стандартный стиль
+//            return .gameCompact(themeManager.currentThemeStyle)
+//        }
+        return .gameCompact(themeManager.currentThemeStyle)
     }
     
     // Создает стиль для выбранной карточки

@@ -31,17 +31,23 @@ struct GameMatch: View {
                 if !viewModel.currentCards.isEmpty {
                     HStack(spacing: 0) {
                         VStack(spacing: 8) {
-                            ForEach(viewModel.leftOrder, id: \.self) { index in
-                                GameMatchViewCard(
-                                    text: viewModel.currentCards[index].question,
-                                    index: index,
-                                    onSelect: { viewModel.selectFront(at: index) },
-                                    isSelected: viewModel.selectedFrontIndex == index,
-                                    isMatched: viewModel.matchedIndices.contains(index),
-                                    viewModel: viewModel,
-                                    isQuestion: true // Это левая колонка с вопросами
-                                )
-                                .id("left_\(index)") // Важно для правильного обновления
+                            ForEach(viewModel.board.leftOrder.indices, id: \.self) { position in
+                                if let cardIndex = viewModel.board.leftOrder[position] {
+                                    GameMatchViewCard(
+                                        text: viewModel.currentCards[cardIndex].question,
+                                        index: cardIndex,
+                                        onSelect: { viewModel.selectFront(at: cardIndex) },
+                                        isSelected: viewModel.selectedFrontIndex == cardIndex,
+                                        isMatched: viewModel.matchedIndices.contains(cardIndex),
+                                        viewModel: viewModel,
+                                        isQuestion: true
+                                    )
+                                    .id("left_\(cardIndex)")
+                                } else {
+                                    Color.clear
+                                        .frame(height: 72)
+                                        .id("left_empty_\(position)")
+                                }
                             }
                         }
                         .padding(.horizontal, 12)
@@ -49,17 +55,23 @@ struct GameMatch: View {
                         GameMatchViewSeparator()
 
                         VStack(spacing: 8) {
-                            ForEach(viewModel.rightOrder, id: \.self) { index in
-                                GameMatchViewCard(
-                                    text: viewModel.currentCards[index].answer,
-                                    index: index,
-                                    onSelect: { viewModel.selectBack(at: index) },
-                                    isSelected: viewModel.selectedBackIndex == index,
-                                    isMatched: viewModel.matchedIndices.contains(index),
-                                    viewModel: viewModel,
-                                    isQuestion: false // Это правая колонка с ответами
-                                )
-                                .id("right_\(index)") // Важно для правильного обновления
+                            ForEach(viewModel.board.rightOrder.indices, id: \.self) { position in
+                                if let cardIndex = viewModel.board.rightOrder[position] {
+                                    GameMatchViewCard(
+                                        text: viewModel.currentCards[cardIndex].answer,
+                                        index: cardIndex,
+                                        onSelect: { viewModel.selectBack(at: cardIndex) },
+                                        isSelected: viewModel.selectedBackIndex == cardIndex,
+                                        isMatched: viewModel.matchedIndices.contains(cardIndex),
+                                        viewModel: viewModel,
+                                        isQuestion: false
+                                    )
+                                    .id("right_\(cardIndex)")
+                                } else {
+                                    Color.clear
+                                        .frame(height: 72)
+                                        .id("right_empty_\(position)")
+                                }
                             }
                         }
                         .padding(.horizontal, 12)
