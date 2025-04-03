@@ -59,9 +59,10 @@ internal final class GameMatchViewModel: ObservableObject {
                 if Task.isCancelled { return }
                 if let items = game.getItems(maxCards) as? [DatabaseModelWord], !items.isEmpty {
                     let words = items.prefix(maxCards).filter { $0.id != nil }
-                    words.forEach { game.removeItem($0) }
+                    // Не удаляем слова из кеша – они остаются до отгадывания
                     currentCards = words.map { MatchModelCard(word: $0) }
-
+                    
+                    // Инициализируем случайный порядок для каждой колонки
                     leftOrder = Array(0..<currentCards.count).shuffled()
                     rightOrder = Array(0..<currentCards.count).shuffled()
                     isLoadingCard = false
@@ -80,12 +81,17 @@ internal final class GameMatchViewModel: ObservableObject {
 
     func updateMatchedCards() {
         let matchedIndicesArray = Array(matchedIndices)
-        guard !matchedIndicesArray.isEmpty,
-              let newItems = game.getItems(matchedIndicesArray.count) as? [DatabaseModelWord],
+        guard !matchedIndicesArray.isEmpty else { return }
+
+        for cardIndex in matchedIndicesArray {
+            let guessedWord = currentCards[cardIndex].word
+            game.removeItem(guessedWord)
+        }
+
+        guard let newItems = game.getItems(matchedIndicesArray.count) as? [DatabaseModelWord],
               !newItems.isEmpty else { return }
 
         let words = newItems.prefix(matchedIndicesArray.count).filter { $0.id != nil }
-        words.forEach { game.removeItem($0) }
 
         for (i, cardIndex) in matchedIndicesArray.enumerated() {
             currentCards[cardIndex] = MatchModelCard(word: words[i])
@@ -165,9 +171,11 @@ internal final class GameMatchViewModel: ObservableObject {
         }
 
         if isCorrect {
+            // Отмечаем индексы угаданных карточек
             matchedIndices.insert(frontIndex)
             matchedIndices.insert(backIndex)
 
+            // После достижения порога заменяем только отгаданные карточки
             if matchedIndices.count >= replaceThreshold {
                 updateMatchedCards()
             }
