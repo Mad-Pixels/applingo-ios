@@ -1,21 +1,18 @@
 import SwiftUI
-import Combine
 
 struct GameMatch: View {
     @EnvironmentObject private var themeManager: ThemeManager
     @Environment(\.dismiss) private var dismiss
-    
+
     @StateObject private var viewModel: GameMatchViewModel
     @StateObject private var locale = GameMatchLocale()
     @StateObject private var style: GameMatchStyle
-    
+
     @ObservedObject var game: Match
-    
+
     @State private var shouldShowPreloader = false
     @State private var preloaderTimer: DispatchWorkItem?
-    @State private var shuffledFrontIndices: [Int] = []
-    @State private var shuffledBackIndices: [Int] = []
-    
+
     init(
         game: Match,
         style: GameMatchStyle = .themed(ThemeManager.shared.currentThemeStyle)
@@ -24,18 +21,17 @@ struct GameMatch: View {
         _style = StateObject(wrappedValue: style)
         self.game = game
     }
-    
+
     var body: some View {
         GeometryReader { geometry in
             ZStack {
                 if shouldShowPreloader {
                     ItemListLoading(style: .themed(themeManager.currentThemeStyle))
                 }
-                
                 if !viewModel.currentCards.isEmpty {
                     HStack(spacing: 0) {
                         VStack(spacing: 8) {
-                            ForEach(shuffledFrontIndices, id: \.self) { index in
+                            ForEach(viewModel.leftOrder, id: \.self) { index in
                                 GameMatchViewCard(
                                     text: viewModel.currentCards[index].question,
                                     index: index,
@@ -47,11 +43,11 @@ struct GameMatch: View {
                             }
                         }
                         .padding(.horizontal, 12)
-                        
+
                         GameMatchViewSeparator()
-                        
+
                         VStack(spacing: 8) {
-                            ForEach(shuffledBackIndices, id: \.self) { index in
+                            ForEach(viewModel.rightOrder, id: \.self) { index in
                                 GameMatchViewCard(
                                     text: viewModel.currentCards[index].answer,
                                     index: index,
@@ -75,9 +71,6 @@ struct GameMatch: View {
         .onChange(of: viewModel.isLoadingCard) { isLoading in
             handleLoadingStateChange(isLoading)
         }
-        .onChange(of: viewModel.currentCards.count) { _ in
-            shuffleIndices()
-        }
         .onReceive(game.state.$isGameOver) { isGameOver in
             if isGameOver {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -86,30 +79,21 @@ struct GameMatch: View {
             }
         }
     }
-    
+
     private func handleLoadingStateChange(_ isLoading: Bool) {
         if isLoading {
             preloaderTimer?.cancel()
-            
             let timer = DispatchWorkItem {
                 if viewModel.isLoadingCard {
                     shouldShowPreloader = true
                 }
             }
-            
             preloaderTimer = timer
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: timer)
         } else {
             preloaderTimer?.cancel()
             preloaderTimer = nil
-            
             shouldShowPreloader = false
         }
-    }
-    
-    private func shuffleIndices() {
-        let indices = Array(0..<viewModel.currentCards.count)
-        shuffledFrontIndices = indices.shuffled()
-        shuffledBackIndices = indices.shuffled()
     }
 }
