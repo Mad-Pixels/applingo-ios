@@ -16,6 +16,9 @@ internal final class GameMatchViewModel: ObservableObject {
     
     // Отслеживаем карточки, которые в данный момент обновляются
     @Published private var updatingCardIndices: Set<Int> = []
+    
+    // Кэш новых слов, чтобы избежать мерцания
+    private var newWordsCache: [Int: MatchModelCard] = [:]
 
     private var loadingTask: Task<Void, Never>?
     private var cancellables = Set<AnyCancellable>()
@@ -60,12 +63,25 @@ internal final class GameMatchViewModel: ObservableObject {
     func isCardUpdating(index: Int) -> Bool {
         return updatingCardIndices.contains(index)
     }
+    
+    // Публичный метод для получения текста карточки с учетом кэша
+    func getCardText(index: Int, isQuestion: Bool) -> String {
+        if let cachedCard = newWordsCache[index] {
+            // Если карточка в кэше, возвращаем новый текст
+            return isQuestion ? cachedCard.question : cachedCard.answer
+        } else {
+            // Иначе возвращаем текущий текст
+            guard index >= 0, index < currentCards.count else { return "" }
+            return isQuestion ? currentCards[index].question : currentCards[index].answer
+        }
+    }
 
     func generateCards() {
         loadingTask?.cancel()
         shouldShowEmptyView = false
         isLoadingCard = true
         currentCards = []
+        newWordsCache.removeAll()
 
         loadingTask = Task { @MainActor in
             for attempt in 1...3 {
@@ -109,22 +125,30 @@ internal final class GameMatchViewModel: ObservableObject {
               
         let words = newItems.prefix(matchedIndicesArray.count).filter { $0.id != nil }
 
+        // Сначала создаем кэш новых карточек
+        for (i, cardIndex) in matchedIndicesArray.enumerated() {
+            if i < words.count {
+                let newCard = MatchModelCard(word: words[i])
+                newWordsCache[cardIndex] = newCard
+            }
+        }
+        
         // Заменяем слова в карточках с задержками
         for (i, cardIndex) in matchedIndicesArray.enumerated() {
             if i < words.count {
                 // Отменяем предыдущую задачу для этой карточки, если она существует
                 updateTasks[cardIndex]?.cancel()
                 
-                let newWord = words[i]
                 let updateTask = Task { @MainActor in
                     // Добавляем случайную задержку для каждой карточки
                     let randomDelay = Double.random(in: 0.3...1.0)
                     try? await Task.sleep(nanoseconds: UInt64(randomDelay * 1_000_000_000))
                     
                     // Обновляем карточку
-                    if !Task.isCancelled {
-                        currentCards[cardIndex] = MatchModelCard(word: newWord)
-                        updatingCardIndices.remove(cardIndex)
+                    if !Task.isCancelled, let newCard = newWordsCache[cardIndex] {
+                        currentCards[cardIndex] = newCard
+                        newWordsCache.removeValue(forKey: cardIndex) // Удаляем из кэша
+                        updatingCardIndices.remove(cardIndex) // Делаем карточку видимой
                     }
                 }
                 
@@ -225,6 +249,7 @@ internal final class GameMatchViewModel: ObservableObject {
         highlightedOptions.removeAll()
         matchedIndices.removeAll()
         updatingCardIndices.removeAll()
+        newWordsCache.removeAll()
         updateTasks.values.forEach { $0.cancel() }
         updateTasks.removeAll()
         selectedFrontIndex = nil

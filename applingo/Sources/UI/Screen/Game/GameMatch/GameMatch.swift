@@ -38,8 +38,10 @@ struct GameMatch: View {
                                     onSelect: { viewModel.selectFront(at: index) },
                                     isSelected: viewModel.selectedFrontIndex == index,
                                     isMatched: viewModel.matchedIndices.contains(index),
-                                    viewModel: viewModel
+                                    viewModel: viewModel,
+                                    isQuestion: true // Это левая колонка с вопросами
                                 )
+                                .id("left_\(index)") // Важно для правильного обновления
                             }
                         }
                         .padding(.horizontal, 12)
@@ -54,8 +56,10 @@ struct GameMatch: View {
                                     onSelect: { viewModel.selectBack(at: index) },
                                     isSelected: viewModel.selectedBackIndex == index,
                                     isMatched: viewModel.matchedIndices.contains(index),
-                                    viewModel: viewModel
+                                    viewModel: viewModel,
+                                    isQuestion: false // Это правая колонка с ответами
                                 )
+                                .id("right_\(index)") // Важно для правильного обновления
                             }
                         }
                         .padding(.horizontal, 12)

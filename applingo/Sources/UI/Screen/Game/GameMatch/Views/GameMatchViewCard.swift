@@ -10,6 +10,7 @@ internal struct GameMatchViewCard: View {
     private let onSelect: () -> Void
     private let isSelected: Bool
     private let isMatched: Bool
+    private let isQuestion: Bool // Добавляем флаг для определения стороны карточки
     
     // Добавляем состояние для анимации исчезновения
     @State private var isVisible = true
@@ -20,7 +21,8 @@ internal struct GameMatchViewCard: View {
         onSelect: @escaping () -> Void,
         isSelected: Bool,
         isMatched: Bool,
-        viewModel: GameMatchViewModel
+        viewModel: GameMatchViewModel,
+        isQuestion: Bool = true // По умолчанию считаем, что это вопрос
     ) {
         self.text = text
         self.index = index
@@ -28,20 +30,24 @@ internal struct GameMatchViewCard: View {
         self.isSelected = isSelected
         self.isMatched = isMatched
         self.viewModel = viewModel
+        self.isQuestion = isQuestion
     }
     
     var body: some View {
+        // Используем метод из ViewModel для получения текста с учетом кэша
+        let displayText = viewModel.getCardText(index: index, isQuestion: isQuestion)
+        
         ButtonAction(
-            title: text,
+            title: displayText, // Используем текст из кэша или текущей карточки
             action: {
                 guard !viewModel.isLoadingCard else { return }
                 onSelect()
             },
-            style: getButtonStyle()
+            style: getButtonStyle(for: displayText) // Передаем новый текст в метод стиля
         )
-        .opacity(viewModel.isCardUpdating(index: index) ? 0 : (isMatched ? 0 : 1.0)) // Делаем невидимыми карточки, которые обновляются или уже сопоставлены
-        .scaleEffect(isMatched ? 0.8 : 1.0) // Уменьшаем размер сопоставленных карточек
-        .animation(.easeInOut(duration: 0.3), value: isMatched) // Добавляем анимацию
+        .opacity(viewModel.isCardUpdating(index: index) ? 0 : (isMatched ? 0 : 1.0))
+        .scaleEffect(isMatched ? 0.8 : 1.0)
+        .animation(.easeInOut(duration: 0.3), value: isMatched)
         .disabled(isMatched || viewModel.isLoadingCard || viewModel.isCardUpdating(index: index))
         .onChange(of: isMatched) { newValue in
             if newValue {
@@ -57,7 +63,7 @@ internal struct GameMatchViewCard: View {
         }
     }
     
-    private func getButtonStyle() -> ButtonActionStyle {
+    private func getButtonStyle(for text: String) -> ButtonActionStyle {
         if let highlightColor = viewModel.highlightedOptions[text] {
             return .GameAnswer(themeManager.currentThemeStyle, highlightColor: highlightColor)
         } else if isMatched {
@@ -82,7 +88,6 @@ internal struct GameMatchViewCard: View {
     private func createMatchedStyle() -> ButtonActionStyle {
         var style = ButtonActionStyle.game(themeManager.currentThemeStyle)
         style.backgroundColor = themeManager.currentThemeStyle.matchTheme.correct.opacity(0.5)
-        //style.foregroundColor = .clear // Делаем текст невидимым
         return style
     }
 }
