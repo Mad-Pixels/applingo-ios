@@ -31,18 +31,19 @@ struct GameMatch: View {
                 if !viewModel.currentCards.isEmpty {
                     HStack(spacing: 0) {
                         VStack(spacing: 8) {
-                            ForEach(viewModel.board.leftOrder.indices, id: \.self) { position in
-                                if let cardIndex = viewModel.board.leftOrder[position] {
+                            ForEach(viewModel.leftOrder.indices, id: \.self) { position in
+                                if let cardIndex = viewModel.leftOrder[position] {
                                     GameMatchViewCard(
                                         text: viewModel.currentCards[cardIndex].question,
-                                        position: position,
-                                        onSelect: { viewModel.selectFront(at: position) }, // Передаем позицию, не индекс
+                                        boardPosition: position,
+                                        cardIndex: cardIndex,
+                                        onSelect: { viewModel.selectFront(at: position) },
                                         isSelected: viewModel.selectedFrontIndex == position,
                                         isMatched: viewModel.matchedIndices.contains(cardIndex),
                                         viewModel: viewModel,
                                         isQuestion: true
                                     )
-                                    .id("left_\(cardIndex)")
+                                    .id("left_\(cardIndex)_\(position)")
                                 } else {
                                     Color.clear
                                         .frame(height: 72)
@@ -55,18 +56,19 @@ struct GameMatch: View {
                         GameMatchViewSeparator()
 
                         VStack(spacing: 8) {
-                            ForEach(viewModel.board.rightOrder.indices, id: \.self) { position in
-                                if let cardIndex = viewModel.board.rightOrder[position] {
+                            ForEach(viewModel.rightOrder.indices, id: \.self) { position in
+                                if let cardIndex = viewModel.rightOrder[position] {
                                     GameMatchViewCard(
                                         text: viewModel.currentCards[cardIndex].answer,
-                                        position: position,
-                                        onSelect: { viewModel.selectBack(at: position) }, // Передаем позицию, не индекс
+                                        boardPosition: position,
+                                        cardIndex: cardIndex,
+                                        onSelect: { viewModel.selectBack(at: position) },
                                         isSelected: viewModel.selectedBackIndex == position,
                                         isMatched: viewModel.matchedIndices.contains(cardIndex),
                                         viewModel: viewModel,
                                         isQuestion: false
                                     )
-                                    .id("right_\(cardIndex)")
+                                    .id("right_\(cardIndex)_\(position)")
                                 } else {
                                     Color.clear
                                         .frame(height: 72)
