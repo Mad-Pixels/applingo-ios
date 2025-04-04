@@ -37,7 +37,7 @@ protocol AbstractGame: ObservableObject {
     /// Validates the provided answer.
     /// - Parameter answer: The answer to validate.
     /// - Returns: A GameValidationResult indicating if the answer is correct or not.
-    func validateAnswer(_ answer: ValidationAnswer) -> GameValidationResult
+    func validateAnswer(_ answer: ValidationAnswer, selected: String?) -> GameValidationResult
     
     /// Returns the game mode model corresponding to the specified game mode type.
     /// - Parameter type: The game mode type.

@@ -10,12 +10,15 @@ final class GameMatchViewModel: ObservableObject {
     @Published var matchedIndices = Set<Int>()
     @Published var selectedFrontIndex: Int?
     @Published var selectedBackIndex: Int?
+    @Published var highlightedOptions: [String: Color] = [:]
     
     private var cancellables = Set<AnyCancellable>()
     private var loadingTask: Task<Void, Never>?
     private var isProcessingQueue = false
     private var cardQueue: [Int] = []
     private var matchedPairsCount = 0
+    private var isAddingNewCards = false
+    private var shouldStopAddingCards = false
 
     private let game: Match
     private let maxCards = 6
@@ -25,10 +28,33 @@ final class GameMatchViewModel: ObservableObject {
         self.game = game
         resetBoard()
         generateCards()
+        
+        NotificationCenter.default.publisher(for: .visualFeedbackShouldUpdate)
+            .receive(on: RunLoop.main)
+            .sink { [weak self] notification in
+                guard let self = self,
+                      let userInfo = notification.userInfo,
+                      let option = userInfo["option"] as? String,
+                      let color = userInfo["color"] as? Color,
+                      let duration = userInfo["duration"] as? TimeInterval else {
+                    return
+                }
+                
+                self.highlightedOptions[option] = color
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + duration) { [weak self] in
+                    self?.highlightedOptions.removeValue(forKey: option)
+                }
+            }
+            .store(in: &cancellables)
     }
 
     deinit {
         loadingTask?.cancel()
+        shouldStopAddingCards = true
+        isProcessingQueue = false
+        cardQueue.removeAll()
+        cancellables.removeAll()
     }
     
     func generateCards() {
@@ -37,6 +63,7 @@ final class GameMatchViewModel: ObservableObject {
         isLoadingCard = true
         currentCards = []
         matchedPairsCount = 0
+        shouldStopAddingCards = false
 
         loadingTask = Task { @MainActor in
             for attempt in 1...3 {
@@ -147,9 +174,13 @@ final class GameMatchViewModel: ObservableObject {
         let shuffledRight = freeRightIndices.shuffled()
         
         DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in
-            guard let self = self else { return }
-            self.leftOrder[shuffledLeft.first!] = cardIndex
-            self.rightOrder[shuffledRight.first!] = cardIndex
+            guard let self = self, !self.shouldStopAddingCards else { return }
+            
+            if !shuffledLeft.isEmpty && !shuffledRight.isEmpty {
+                self.leftOrder[shuffledLeft.first!] = cardIndex
+                self.rightOrder[shuffledRight.first!] = cardIndex
+            }
+            
             self.processCardQueue()
         }
     }
@@ -177,7 +208,7 @@ final class GameMatchViewModel: ObservableObject {
             matchValidation.setCurrentCard(currentCard: questionCard, currentWord: questionCard.word)
         }
         
-        let result = game.validateAnswer(answerCard.answer)
+        let result = game.validateAnswer(answerCard.answer, selected: questionCard.question)
         game.updateStats(correct: result == .correct, responseTime: 0, isSpecialCard: false)
         
         if result == .correct {
@@ -203,10 +234,16 @@ final class GameMatchViewModel: ObservableObject {
     }
     
     private func addNewCardsUntilFull() {
+        guard !shouldStopAddingCards else { return }
+        
         let emptyPairs = countEmptyPairs()
-        if emptyPairs > 0 {
+        if emptyPairs > 0 && !isAddingNewCards {
+            isAddingNewCards = true
             addNewCards()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+                guard let self = self, !self.shouldStopAddingCards else { return }
+                self.isAddingNewCards = false
                 self.addNewCardsUntilFull()
             }
         }
@@ -225,7 +262,12 @@ final class GameMatchViewModel: ObservableObject {
         }
         
         let uniqueWords = filterUniqueWords(from: newWords, neededCount: emptyPairs)
-        guard !uniqueWords.isEmpty else {
+        
+        // Если не нашли подходящих слов, повторяем запрос
+        if uniqueWords.isEmpty {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                self.addNewCards()
+            }
             return
         }
         

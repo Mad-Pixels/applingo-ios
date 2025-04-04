@@ -6,8 +6,8 @@ internal struct GameMatchViewCard: View {
     @ObservedObject private var viewModel: GameMatchViewModel
     
     private let text: String
-    private let boardPosition: Int  // Это позиция на доске
-    private let cardIndex: Int      // Это индекс карточки в массиве
+    private let boardPosition: Int
+    private let cardIndex: Int
     private let onSelect: () -> Void
     private let isSelected: Bool
     private let isMatched: Bool
@@ -50,7 +50,6 @@ internal struct GameMatchViewCard: View {
         .disabled(isMatched || viewModel.isLoadingCard)
         .onChange(of: isMatched) { newValue in
             if newValue {
-                // Задержка для эффекта исчезновения
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                     withAnimation(.easeOut(duration: 0.3)) {
                         isVisible = false
@@ -60,15 +59,25 @@ internal struct GameMatchViewCard: View {
                 isVisible = true
             }
         }
+        
     }
     
     private func getButtonStyle(for text: String) -> ButtonActionStyle {
-        return .gameCompact(themeManager.currentThemeStyle)
+        if viewModel.highlightedOptions[text] != nil {
+            // Приоритет визуального фидбека выше, чем обычного выбора
+            return ButtonActionStyle.GameAnswer(themeManager.currentThemeStyle, highlightColor: viewModel.highlightedOptions[text]!)
+        } else if isSelected {
+            return createSelectedStyle()
+        } else if isMatched {
+            return createMatchedStyle()
+        } else {
+            return .gameCompact(themeManager.currentThemeStyle)
+        }
     }
     
     private func createSelectedStyle() -> ButtonActionStyle {
         var style = ButtonActionStyle.game(themeManager.currentThemeStyle)
-        style.backgroundColor = themeManager.currentThemeStyle.accentPrimary.opacity(0.7)
+        style.backgroundColor = themeManager.currentThemeStyle.accentLight
         return style
     }
     
