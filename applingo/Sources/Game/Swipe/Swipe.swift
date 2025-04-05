@@ -110,7 +110,7 @@ final class Swipe: ObservableObject, AbstractGame {
         !cache.cache.isEmpty && cache.cache.count >= SWIPE_MIN_WORDS_IN_CACHE
     }
     
-    internal func validateAnswer(_ answer: Bool) -> GameValidationResult {
+    internal func validateAnswer(_ answer: Bool, selected: String? = nil) -> GameValidationResult {
         let result = validation.validate(answer: answer)
         return result
     }

@@ -96,7 +96,7 @@ final class Quiz: ObservableObject, AbstractGame {
         !cache.cache.isEmpty && cache.cache.count >= QUIZ_MIN_WORDS_IN_CACHE
     }
     
-    internal func validateAnswer(_ answer: String) -> GameValidationResult {
+    internal func validateAnswer(_ answer: String, selected: String? = nil) -> GameValidationResult {
         let result = validation.validate(answer: answer)
         validation.playFeedback(result, answer: answer, selected: nil)
         return result

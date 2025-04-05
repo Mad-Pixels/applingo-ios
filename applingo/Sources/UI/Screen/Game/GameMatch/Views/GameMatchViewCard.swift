@@ -1,70 +1,45 @@
 import SwiftUI
 
-internal struct GameMatchViewCard: View {
+struct GameMatchButton: View {
     @EnvironmentObject private var themeManager: ThemeManager
-    
-    @ObservedObject private var viewModel: GameMatchViewModel
-    
-    private let text: String
-    private let index: Int
-    private let onSelect: () -> Void
-    private let isSelected: Bool
-    private let isMatched: Bool
-    
-    init(
-        text: String,
-        index: Int,
-        onSelect: @escaping () -> Void,
-        isSelected: Bool,
-        isMatched: Bool,
-        viewModel: GameMatchViewModel
-    ) {
-        self.text = text
-        self.index = index
-        self.onSelect = onSelect
-        self.isSelected = isSelected
-        self.isMatched = isMatched
-        self.viewModel = viewModel
-    }
-    
+
+    let text: String
+    let action: () -> Void
+    let isSelected: Bool
+    let isMatched: Bool
+    let highlightColor: Color?
+
     var body: some View {
         ButtonAction(
             title: text,
-            action: {
-                guard !viewModel.isLoadingCard else { return }
-                onSelect()
-            },
+            action: action,
+            disabled: isMatched,
             style: getButtonStyle()
         )
-        .opacity(viewModel.isLoadingCard ? 0.7 : 1.0)
-        .disabled(isMatched || viewModel.isLoadingCard)
+        .frame(height: 72)
     }
-    
+
     private func getButtonStyle() -> ButtonActionStyle {
-        if let highlightColor = viewModel.highlightedOptions[text] {
-            return .GameAnswer(themeManager.currentThemeStyle, highlightColor: highlightColor)
+        if let color = highlightColor {
+            return .GameAnswer(themeManager.currentThemeStyle, highlightColor: color)
         } else if isMatched {
-            // Стиль для совпавших карточек
             return createMatchedStyle()
         } else if isSelected {
-            // Стиль для выбранных карточек
             return createSelectedStyle()
         } else {
-            // Стандартный стиль
-            return .gameCompact(themeManager.currentThemeStyle)
+            return .game(themeManager.currentThemeStyle)
         }
     }
-    
-    // Создает стиль для выбранной карточки
+
     private func createSelectedStyle() -> ButtonActionStyle {
         var style = ButtonActionStyle.game(themeManager.currentThemeStyle)
         style.backgroundColor = themeManager.currentThemeStyle.accentPrimary.opacity(0.7)
         return style
     }
-    
+
     private func createMatchedStyle() -> ButtonActionStyle {
         var style = ButtonActionStyle.game(themeManager.currentThemeStyle)
-        style.backgroundColor = themeManager.currentThemeStyle.matchTheme.correct
+        style.backgroundColor = Color.gray.opacity(0.4)
         return style
     }
 }

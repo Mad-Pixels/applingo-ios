@@ -4,7 +4,7 @@ struct GameQuiz: View {
     @EnvironmentObject private var themeManager: ThemeManager
     @Environment(\.dismiss) private var dismiss
     
-    @StateObject private var viewModel: GameQuizViewModel
+    @StateObject private var viewModel: QuizViewModel
     @StateObject private var locale = GameQuizLocale()
     @StateObject private var style: GameQuizStyle
     
@@ -17,7 +17,9 @@ struct GameQuiz: View {
         game: Quiz,
         style: GameQuizStyle = .themed(ThemeManager.shared.currentThemeStyle)
     ) {
-        _viewModel = StateObject(wrappedValue: GameQuizViewModel(game: game))
+        let vm = QuizViewModel(game: game)
+        
+        _viewModel = StateObject(wrappedValue: vm)
         _style = StateObject(wrappedValue: style)
         self.game = game
     }
