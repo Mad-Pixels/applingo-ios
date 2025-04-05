@@ -53,7 +53,7 @@ final class GameMatchViewModel: ObservableObject {
                 
                 if let items = game.getItems(slots) as? [DatabaseModelWord], !items.isEmpty {
                     for item in items {
-                        gameBoard.add(card: MatchModelCard(word: item))
+                        gameBoard.enqueue(card: MatchModelCard(word: item))
                     }
                     isLoadingCards = false
                     return

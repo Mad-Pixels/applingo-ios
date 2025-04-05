@@ -4,11 +4,15 @@ struct GameMatch: View {
     @StateObject private var viewModel: GameMatchViewModel
     @ObservedObject var game: Match
     
+    @ObservedObject private var board: GameMatchBoard
+    
     @State private var selectedLeftPosition: Int? = nil
     @State private var selectedRightPosition: Int? = nil
 
     init(game: Match) {
-        _viewModel = StateObject(wrappedValue: GameMatchViewModel(game: game))
+        let vm = GameMatchViewModel(game: game)
+        _viewModel = StateObject(wrappedValue: vm)
+        _board = ObservedObject(wrappedValue: vm.gameBoard)
         self.game = game
     }
 
@@ -16,7 +20,7 @@ struct GameMatch: View {
         HStack(spacing: 20) {
             // Левая колонка (вопросы)
             VStack(spacing: 8) {
-                ForEach(0..<viewModel.gameBoard.columnLeft.count, id: \.self) { position in
+                ForEach(0..<board.columnLeft.count, id: \.self) { position in
                     let text = viewModel.gameBoard.text(position: position, isLeft: true)
                     if !text.isEmpty {
                         Text(text)
@@ -43,7 +47,7 @@ struct GameMatch: View {
 
             // Правая колонка (ответы)
             VStack(spacing: 8) {
-                ForEach(0..<viewModel.gameBoard.columnRight.count, id: \.self) { position in
+                ForEach(0..<board.columnRight.count, id: \.self) { position in
                     let text = viewModel.gameBoard.text(position: position, isLeft: false)
                     if !text.isEmpty {
                         Text(text)
