@@ -1,12 +1,12 @@
 import SwiftUI
 
-/// Представление для игры «Swipe» с карточкой, которую можно свайпать влево или вправо.
 struct GameSwipe: View {
+    @EnvironmentObject private var themeManager: ThemeManager
     @Environment(\.dismiss) private var dismiss
+    
     @StateObject private var viewModel: SwipeViewModel
     @ObservedObject var game: Swipe
     @ObservedObject private var cache: SwipeCache
-    @EnvironmentObject private var themeManager: ThemeManager
     
     init(game: Swipe) {
         self.game = game
@@ -56,7 +56,6 @@ struct GameSwipe: View {
     @ViewBuilder
     private func cardView(for card: SwipeModelCard) -> some View {
         VStack {
-            // Индикаторы свайпа
             HStack {
                 Text("❌ Не верно")
                     .foregroundColor(.red)
@@ -82,7 +81,7 @@ struct GameSwipe: View {
 
                 // 🎨 Основной фон
                 RoundedRectangle(cornerRadius: 20)
-                    .fill(Color.white.opacity(0.6))
+                    .fill(themeManager.currentThemeStyle.backgroundPrimary.opacity(0.8))
                     .shadow(radius: 5)
 
                 // 🖌️ Паттерн-граница
