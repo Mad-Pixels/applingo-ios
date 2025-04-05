@@ -46,6 +46,11 @@ final class GameMatchViewModel: ObservableObject {
         shouldShowEmptyView = false
         isLoadingCards = true
         loadingTask?.cancel()
+        
+        if let matchCache = game.cache as? MatchCache {
+            let activeWordIDs = Set(gameBoard.cards.values.compactMap { $0.word.id })
+            matchCache.usedWordIDs = activeWordIDs
+        }
                 
         loadingTask = Task { @MainActor in
             for attempt in 1...3 {

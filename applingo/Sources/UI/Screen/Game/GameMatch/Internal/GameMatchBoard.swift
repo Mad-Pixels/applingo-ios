@@ -8,7 +8,7 @@ internal class GameMatchBoard: ObservableObject {
     private let maxCards: Int
     private var nextID: Int = 0
     private let treashold: Int = 2
-    private let addQueue = DispatchQueue(label: "GameMatchBoard.addQueue", qos: .userInitiated)
+    private let addQueue = DispatchQueue(label: "com.applingo.gameMatchBoard", qos: .userInitiated)
 
     init(maxCards: Int) {
         self.maxCards = maxCards
@@ -16,14 +16,12 @@ internal class GameMatchBoard: ObservableObject {
         self.columnRight = Array(repeating: nil, count: maxCards)
     }
 
-    /// Количество свободных парных слотов
     func freeSlotsCount() -> Int {
         let leftEmpty = columnLeft.filter { $0 == nil }.count
         let rightEmpty = columnRight.filter { $0 == nil }.count
         return min(leftEmpty, rightEmpty)
     }
 
-    /// Количество угаданных карточек (удалённых с доски)
     private var guessedCount: Int {
         nextID - cards.count
     }
