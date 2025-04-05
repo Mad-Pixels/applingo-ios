@@ -7,18 +7,21 @@ struct QuizModelCard {
     let answer: String
     let options: [String]
     let voice: Bool
+    let flip: Bool
     
-    /// Initializes the QuizModelCard.
-    /// - Parameters:
-    ///   - word: The DatabaseModelWord used as the basis for the card.
-    ///   - allWords: An array of DatabaseModelWord objects used to extract answer options.
-    init(word: DatabaseModelWord, allWords: [DatabaseModelWord], voice: Bool = false) {
-        self.options = allWords.map { $0.frontText }
-        self.question = word.backText
-        self.answer = word.frontText
-        
-        self.voice = voice
-        
+    init(word: DatabaseModelWord, allWords: [DatabaseModelWord], flip: Bool = false, voice: Bool = false) {
         self.word = word
+        self.voice = voice
+        self.flip = flip
+        
+        self.options = allWords.map { flip ? $0.backText : $0.frontText }
+        
+        if flip {
+            self.question = word.frontText
+            self.answer = word.backText
+        } else {
+            self.question = word.backText
+            self.answer = word.frontText
+        }
     }
 }

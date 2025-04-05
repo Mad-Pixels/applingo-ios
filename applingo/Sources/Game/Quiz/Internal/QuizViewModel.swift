@@ -66,6 +66,7 @@ internal final class QuizViewModel: ObservableObject {
                     currentCard = QuizModelCard(
                         word: correctWord,
                         allWords: shuffledWords,
+                        flip: (Double.random(in: 0..<1) < 0.35),
                         voice: supportSpeaking ? (Double.random(in: 0..<1) < 0.2) : false
                     )
                     

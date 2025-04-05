@@ -45,6 +45,7 @@ struct GameQuiz: View {
                                 GameQuizViewAnswer(
                                     style: style,
                                     locale: locale,
+                                    card: card,
                                     option: option,
                                     onSelect: { viewModel.handleAnswer(option) },
                                     viewModel: viewModel

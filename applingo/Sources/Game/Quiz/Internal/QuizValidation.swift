@@ -14,7 +14,7 @@ internal final class QuizValidation: BaseGameValidation {
               let card = currentCard else {
             return .incorrect
         }
-        return answer == card.answer ? .correct : .incorrect
+        return answer.lowercased() == card.answer.lowercased() ? .correct : .incorrect
     }
     
     override func getCurrentWord() -> DatabaseModelWord? {
