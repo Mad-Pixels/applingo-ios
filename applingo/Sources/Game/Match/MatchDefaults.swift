@@ -1,5 +1,5 @@
 /// The threshold for a quick response in the quiz (as a fraction).
-internal let MATCH_SCORE_THRESHOLD = 1.6
+internal let MATCH_SCORE_THRESHOLD = 1.0
 
 /// The bonus score awarded for using a special card.
 internal let MATCH_SCORE_SPECIAL_BONUS = 20
