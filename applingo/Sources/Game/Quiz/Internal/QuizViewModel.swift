@@ -93,7 +93,6 @@ internal final class QuizViewModel: ObservableObject {
     
     func handleAnswer(_ answer: String) {
         guard !isProcessingAnswer else { return }
-        
         isProcessingAnswer = true
         
         let responseTime = cardStartTime.map { Date().timeIntervalSince($0) } ?? 0

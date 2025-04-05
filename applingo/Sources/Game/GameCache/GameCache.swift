@@ -56,42 +56,48 @@ class GameCache<T: Hashable>: ObservableObject {
             requestRefill()
             return nil
         }
-        
+
         let groupKeyFunction = { [weak self] (item: CacheItem) -> String in
             self?.getGroupKeyImpl(item) ?? ""
         }
+
+        let allGrouped = Dictionary(grouping: cache, by: groupKeyFunction)
+        let allKeys = allGrouped.keys
+
+        let groupedItems: [String: [CacheItem]]
         
-        let groupedItems = Dictionary(grouping: cache, by: groupKeyFunction)
-        
+        if allKeys.allSatisfy({ $0.isEmpty }) {
+            groupedItems = allGrouped
+        } else {
+            groupedItems = allGrouped.filter { !$0.key.isEmpty }
+        }
+
         guard let (subcategory, items) = groupedItems.first(where: { $0.value.count >= count }) else {
             Logger.debug("[GameCache]: No group has enough items")
             requestRefill()
             return nil
         }
-        
+
         Logger.debug("[GameCache]: Using group", metadata: [
             "subcategory": subcategory,
             "availableWords": String(items.count)
         ])
-        
+
         var availableItems = Set(items)
         var selected = [CacheItem]()
         let maxAttempts = count * 4
         var attempts = 0
-        
+
         while selected.count < count && attempts < maxAttempts && !availableItems.isEmpty {
             guard let item = availableItems.randomElement() else { break }
-            
+
             if validateItemImpl(item, selected) {
                 selected.append(item)
-                availableItems.remove(item)
-            } else {
-                availableItems.remove(item)
             }
-            
+            availableItems.remove(item)
             attempts += 1
         }
-        
+
         guard selected.count == count else {
             Logger.debug("[GameCache]: Failed to select required items", metadata: [
                 "selected": String(selected.count),
@@ -101,6 +107,7 @@ class GameCache<T: Hashable>: ObservableObject {
             requestRefill()
             return nil
         }
+
         return selected
     }
     

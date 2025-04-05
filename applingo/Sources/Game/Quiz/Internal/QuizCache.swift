@@ -2,7 +2,7 @@ import Foundation
 
 internal final class QuizCache: GameCache<DatabaseModelWord> {
     override func getGroupKeyImpl(_ item: DatabaseModelWord) -> String {
-        return item.subcategory
+        return item.backTextCode
     }
     
     override func validateItemImpl(_ item: DatabaseModelWord, _ selected: [DatabaseModelWord]) -> Bool {
