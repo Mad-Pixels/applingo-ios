@@ -10,6 +10,8 @@ internal class GameMatchBoard: ObservableObject {
     private let treashold: Int = 2
     private let addQueue = DispatchQueue(label: "com.applingo.gameMatchBoard", qos: .userInitiated)
 
+    private var pendingDelay: TimeInterval = 0
+
     init(maxCards: Int) {
         self.maxCards = maxCards
         self.columnLeft = Array(repeating: nil, count: maxCards)
@@ -25,15 +27,34 @@ internal class GameMatchBoard: ObservableObject {
     func enqueue(card: MatchModelCard) {
         guard self.freeSlotsCount() >= treashold else { return }
 
-        let delay = guessedCount == 0 ? 0 : max(0.1, 1.0 - Double(guessedCount) * 0.1)
+        let visibleCount = cards.count
+        let baseDelay: TimeInterval
 
-        addQueue.asyncAfter(deadline: .now() + delay) { [weak self] in
+        switch visibleCount {
+        case 0:
+            baseDelay = 0
+        case 1...2:
+            baseDelay = 1.6
+        case 3...4:
+            baseDelay = 1.2
+        case 5:
+            baseDelay = 0.8
+        default:
+            baseDelay = 0.2
+        }
+
+        let scheduledDelay = pendingDelay
+        pendingDelay += baseDelay
+
+        addQueue.asyncAfter(deadline: .now() + scheduledDelay) { [weak self] in
             DispatchQueue.main.async {
-                self?.add(card: card)
+                guard let self else { return }
+                self.add(card: card)
+                self.pendingDelay = max(0, self.pendingDelay - baseDelay)
             }
         }
     }
-    
+
     func text(position: Int, isLeft: Bool) -> String {
         let column = isLeft ? columnLeft : columnRight
         guard position >= 0, position < column.count,
@@ -85,13 +106,13 @@ internal class GameMatchBoard: ObservableObject {
         columnRight[right] = id
         columnLeft[left] = id
     }
-    
+
     private func getFreePositions(in column: [Int?]) -> [Int] {
         column.enumerated()
             .filter { $0.element == nil }
             .map { $0.offset }
     }
-    
+
     private var guessedCount: Int {
         nextID - cards.count
     }
