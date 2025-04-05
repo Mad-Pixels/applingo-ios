@@ -47,11 +47,9 @@ final class GameMatchViewModel: ObservableObject {
         isLoadingCards = true
         loadingTask?.cancel()
         
-        if let matchCache = game.cache as? MatchCache {
-            let activeWordIDs = Set(gameBoard.cards.values.compactMap { $0.word.id })
-            matchCache.usedWordIDs = activeWordIDs
-        }
-                
+        let activeWordIDs = Set(gameBoard.cards.values.compactMap { $0.word.id })
+        (game.cache).usedWordIDs = activeWordIDs
+
         loadingTask = Task { @MainActor in
             for attempt in 1...3 {
                 if Task.isCancelled { return }

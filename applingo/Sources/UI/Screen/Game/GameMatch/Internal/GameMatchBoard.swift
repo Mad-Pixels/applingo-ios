@@ -22,11 +22,6 @@ internal class GameMatchBoard: ObservableObject {
         return min(leftEmpty, rightEmpty)
     }
 
-    private var guessedCount: Int {
-        nextID - cards.count
-    }
-
-    /// Поставить карточку в очередь на добавление
     func enqueue(card: MatchModelCard) {
         guard self.freeSlotsCount() >= treashold else { return }
 
@@ -38,25 +33,17 @@ internal class GameMatchBoard: ObservableObject {
             }
         }
     }
-
-    /// Добавить карточку немедленно (внутренне вызывается очередью)
-    private func add(card: MatchModelCard) {
-        let freeRightPositions = getFreePositions(in: columnRight).shuffled()
-        let freeLeftPositions = getFreePositions(in: columnLeft).shuffled()
-
-        guard let right = freeRightPositions.first,
-              let left = freeLeftPositions.first else {
-            return
+    
+    func text(position: Int, isLeft: Bool) -> String {
+        let column = isLeft ? columnLeft : columnRight
+        guard position >= 0, position < column.count,
+              let cardID = column[position],
+              let card = cards[cardID] else {
+            return ""
         }
-
-        let id = nextID
-        nextID += 1
-        cards[id] = card
-        columnRight[right] = id
-        columnLeft[left] = id
+        return isLeft ? card.question : card.answer
     }
 
-    /// Удалить карточку с доски
     func remove(leftPosition: Int, rightPosition: Int) {
         guard leftPosition >= 0, leftPosition < columnLeft.count,
               rightPosition >= 0, rightPosition < columnRight.count else {
@@ -74,7 +61,6 @@ internal class GameMatchBoard: ObservableObject {
         columnRight[rightPosition] = nil
     }
 
-    /// Получить карточку по позиции (вопрос/ответ)
     func get(position: Int, isQuestion: Bool) -> MatchModelCard? {
         let column = isQuestion ? columnLeft : columnRight
         guard position >= 0, position < column.count,
@@ -84,21 +70,29 @@ internal class GameMatchBoard: ObservableObject {
         return cards[cardID]
     }
 
-    /// Получить текст карточки по позиции (вопрос/ответ)
-    func text(position: Int, isLeft: Bool) -> String {
-        let column = isLeft ? columnLeft : columnRight
-        guard position >= 0, position < column.count,
-              let cardID = column[position],
-              let card = cards[cardID] else {
-            return ""
-        }
-        return isLeft ? card.question : card.answer
-    }
+    private func add(card: MatchModelCard) {
+        let freeRightPositions = getFreePositions(in: columnRight).shuffled()
+        let freeLeftPositions = getFreePositions(in: columnLeft).shuffled()
 
-    /// Список свободных индексов в колонке
+        guard let right = freeRightPositions.first,
+              let left = freeLeftPositions.first else {
+            return
+        }
+
+        let id = nextID
+        nextID += 1
+        cards[id] = card
+        columnRight[right] = id
+        columnLeft[left] = id
+    }
+    
     private func getFreePositions(in column: [Int?]) -> [Int] {
         column.enumerated()
             .filter { $0.element == nil }
             .map { $0.offset }
+    }
+    
+    private var guessedCount: Int {
+        nextID - cards.count
     }
 }

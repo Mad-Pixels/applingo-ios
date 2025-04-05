@@ -9,10 +9,6 @@ internal final class MatchCache: GameCache<DatabaseModelWord> {
 
     override func validateItemImpl(_ item: DatabaseModelWord, _ selected: [DatabaseModelWord]) -> Bool {
         if let id = item.id, usedWordIDs.contains(id) {
-            Logger.warning("[MatchCache]: Word already on board", metadata: [
-                "wordId": String(id),
-                "word": item.frontText
-            ])
             return false
         }
 
