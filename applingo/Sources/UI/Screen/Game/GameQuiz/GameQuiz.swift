@@ -18,7 +18,6 @@ struct GameQuiz: View {
         style: GameQuizStyle = .themed(ThemeManager.shared.currentThemeStyle)
     ) {
         let vm = QuizViewModel(game: game)
-        
         _viewModel = StateObject(wrappedValue: vm)
         _style = StateObject(wrappedValue: style)
         self.game = game
@@ -30,7 +29,7 @@ struct GameQuiz: View {
                 if shouldShowPreloader {
                     ItemListLoading(style: .themed(themeManager.currentThemeStyle))
                 }
-
+                
                 if let card = viewModel.currentCard {
                     VStack(spacing: 0) {
                         VStack(spacing: style.optionsSpacing) {
@@ -40,17 +39,14 @@ struct GameQuiz: View {
                                 card: card
                             )
                             .padding(.vertical, style.optionsSpacing)
-                            
-                            ForEach(card.options, id: \.self) { option in
-                                GameQuizViewAnswer(
-                                    style: style,
-                                    locale: locale,
-                                    card: card,
-                                    option: option,
-                                    onSelect: { viewModel.handleAnswer(option) },
-                                    viewModel: viewModel
-                                )
-                            }
+
+                            GameQuizViewAnswer(
+                                style: style,
+                                locale: locale,
+                                card: card,
+                                onSelect: { viewModel.handleAnswer($0) },
+                                viewModel: viewModel
+                            )
                         }
                         .padding(.horizontal)
                         .padding(.top, geometry.size.height * 0.03)
@@ -59,15 +55,13 @@ struct GameQuiz: View {
                             alignment: .center
                         )
                     }
-                    
+
                     VStack {
                         Spacer()
                         HStack {
                             Spacer()
-                            GameFloatingBtnSpeaker(
-                                word: card.word
-                            )
-                            .padding(.bottom, 32)
+                            GameFloatingBtnSpeaker(word: card.word)
+                                .padding(.bottom, 32)
                         }
                     }
                 }
@@ -92,19 +86,16 @@ struct GameQuiz: View {
     private func handleLoadingStateChange(_ isLoading: Bool) {
         if isLoading {
             preloaderTimer?.cancel()
-            
             let timer = DispatchWorkItem {
                 if viewModel.isLoadingCard {
                     shouldShowPreloader = true
                 }
             }
-            
             preloaderTimer = timer
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: timer)
         } else {
             preloaderTimer?.cancel()
             preloaderTimer = nil
-            
             shouldShowPreloader = false
         }
     }
