@@ -34,13 +34,13 @@ internal class GameMatchBoard: ObservableObject {
         case 0:
             baseDelay = 0
         case 1...2:
-            baseDelay = 1.6
-        case 3...4:
             baseDelay = 1.2
+        case 3...4:
+            baseDelay = 0.5
         case 5:
-            baseDelay = 0.8
+            baseDelay = 0.3
         default:
-            baseDelay = 0.2
+            baseDelay = 0.1
         }
 
         let scheduledDelay = pendingDelay

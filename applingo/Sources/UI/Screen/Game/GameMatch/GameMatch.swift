@@ -3,9 +3,9 @@ import SwiftUI
 struct GameMatch: View {
     @StateObject private var viewModel: GameMatchViewModel
     @ObservedObject var game: Match
-    
+
     @ObservedObject private var board: GameMatchBoard
-    
+
     @State private var selectedLeftPosition: Int? = nil
     @State private var selectedRightPosition: Int? = nil
 
@@ -21,49 +21,45 @@ struct GameMatch: View {
             // Левая колонка (вопросы)
             VStack(spacing: 8) {
                 ForEach(0..<board.columnLeft.count, id: \.self) { position in
-                    let text = viewModel.gameBoard.text(position: position, isLeft: true)
+                    let text = board.text(position: position, isLeft: true)
                     if !text.isEmpty {
-                        Text(text)
-                            .padding()
-                            .frame(height: 72)
-                            .background(selectedLeftPosition == position ?
-                                       Color.blue.opacity(0.5) :
-                                       Color.blue.opacity(0.2))
-                            .cornerRadius(8)
-                            .onTapGesture {
+                        GameMatchButton(
+                            text: text,
+                            action: {
                                 selectedLeftPosition = position
                                 checkForMatch()
-                            }
+                            },
+                            isSelected: selectedLeftPosition == position,
+                            isMatched: false
+                        )
+                        .frame(height: 72)
                     } else {
-                        Color.clear
-                            .frame(height: 72)
+                        Color.clear.frame(height: 72)
                     }
                 }
             }
             .padding(.horizontal)
 
             // Разделитель
-            Divider()
+            GameMatchViewSeparator()
 
             // Правая колонка (ответы)
             VStack(spacing: 8) {
                 ForEach(0..<board.columnRight.count, id: \.self) { position in
-                    let text = viewModel.gameBoard.text(position: position, isLeft: false)
+                    let text = board.text(position: position, isLeft: false)
                     if !text.isEmpty {
-                        Text(text)
-                            .padding()
-                            .frame(height: 72)
-                            .background(selectedRightPosition == position ?
-                                       Color.green.opacity(0.5) :
-                                       Color.green.opacity(0.2))
-                            .cornerRadius(8)
-                            .onTapGesture {
+                        GameMatchButton(
+                            text: text,
+                            action: {
                                 selectedRightPosition = position
                                 checkForMatch()
-                            }
+                            },
+                            isSelected: selectedRightPosition == position,
+                            isMatched: false
+                        )
+                        .frame(height: 72)
                     } else {
-                        Color.clear
-                            .frame(height: 72)
+                        Color.clear.frame(height: 72)
                     }
                 }
             }
@@ -74,11 +70,9 @@ struct GameMatch: View {
             viewModel.generateCards()
         }
     }
-    
+
     private func checkForMatch() {
-        // Проверяем, выбраны ли карточки в обеих колонках
         if let left = selectedLeftPosition, let right = selectedRightPosition {
-            
             viewModel.checkMatch(selectedLeft: left, selectedRight: right)
             selectedLeftPosition = nil
             selectedRightPosition = nil
