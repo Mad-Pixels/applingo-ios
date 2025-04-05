@@ -11,7 +11,6 @@ struct GameMatch: View {
 
     init(game: Match) {
         let vm = MatchViewModel(game: game)
-        
         _viewModel = StateObject(wrappedValue: vm)
         _board = ObservedObject(wrappedValue: vm.gameBoard)
         self.game = game
@@ -23,6 +22,8 @@ struct GameMatch: View {
             VStack(spacing: 8) {
                 ForEach(0..<board.columnLeft.count, id: \.self) { position in
                     let text = board.text(position: position, isLeft: true)
+                    let highlight = viewModel.highlightedOptions[text]
+
                     if !text.isEmpty {
                         GameMatchButton(
                             text: text,
@@ -31,7 +32,8 @@ struct GameMatch: View {
                                 checkForMatch()
                             },
                             isSelected: selectedLeftPosition == position,
-                            isMatched: false
+                            isMatched: false,
+                            highlightColor: highlight
                         )
                         .frame(height: 72)
                     } else {
@@ -48,6 +50,8 @@ struct GameMatch: View {
             VStack(spacing: 8) {
                 ForEach(0..<board.columnRight.count, id: \.self) { position in
                     let text = board.text(position: position, isLeft: false)
+                    let highlight = viewModel.highlightedOptions[text]
+
                     if !text.isEmpty {
                         GameMatchButton(
                             text: text,
@@ -56,7 +60,8 @@ struct GameMatch: View {
                                 checkForMatch()
                             },
                             isSelected: selectedRightPosition == position,
-                            isMatched: false
+                            isMatched: false,
+                            highlightColor: highlight
                         )
                         .frame(height: 72)
                     } else {

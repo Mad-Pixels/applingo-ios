@@ -7,6 +7,7 @@ struct GameMatchButton: View {
     let action: () -> Void
     let isSelected: Bool
     let isMatched: Bool
+    let highlightColor: Color?
 
     var body: some View {
         ButtonAction(
@@ -19,7 +20,9 @@ struct GameMatchButton: View {
     }
 
     private func getButtonStyle() -> ButtonActionStyle {
-        if isMatched {
+        if let color = highlightColor {
+            return .GameAnswer(themeManager.currentThemeStyle, highlightColor: color)
+        } else if isMatched {
             return createMatchedStyle()
         } else if isSelected {
             return createSelectedStyle()

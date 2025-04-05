@@ -3,7 +3,7 @@ import SwiftUI
 internal struct GameQuizViewAnswer: View {
     @EnvironmentObject private var themeManager: ThemeManager
     
-    @ObservedObject private var viewModel: GameQuizViewModel
+    @ObservedObject private var viewModel: QuizViewModel
     
     private let locale: GameQuizLocale
     private let style: GameQuizStyle
@@ -15,7 +15,7 @@ internal struct GameQuizViewAnswer: View {
         locale: GameQuizLocale,
         option: String,
         onSelect: @escaping () -> Void,
-        viewModel: GameQuizViewModel
+        viewModel: QuizViewModel
     ) {
         self.style = style
         self.option = option
