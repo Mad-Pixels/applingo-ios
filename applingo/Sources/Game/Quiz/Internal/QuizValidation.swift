@@ -14,7 +14,9 @@ internal final class QuizValidation: BaseGameValidation {
               let card = currentCard else {
             return .incorrect
         }
-        return answer.lowercased() == card.answer.lowercased() ? .correct : .incorrect
+        print("ZZZZZZZZZ")
+        print(normalize(answer), normalize(card.answer))
+        return normalize(answer) == normalize(card.answer) ? .correct : .incorrect
     }
     
     override func getCurrentWord() -> DatabaseModelWord? {
@@ -23,5 +25,24 @@ internal final class QuizValidation: BaseGameValidation {
     
     override func getCorrectAnswer() -> String? {
         return currentCard?.answer
+    }
+
+    /// Normalize input: lowercased + diacritic stripped (but keep spaces and punctuation)
+    private func normalize(_ text: String) -> String {
+        let lowered = text.lowercased()
+        
+        // Удаляем диакритики
+        let stripped = lowered.applyingTransform(.stripDiacritics, reverse: false) ?? lowered
+        
+        // Удаляем невидимые и форматные символы
+        let invisibleSet = CharacterSet(charactersIn: "\u{200B}\u{200E}\u{200F}\u{202A}\u{202B}\u{202C}\u{202D}\u{202E}")
+        
+        let filtered = stripped.unicodeScalars.filter { scalar in
+            !CharacterSet.controlCharacters.contains(scalar) &&
+            !CharacterSet.nonBaseCharacters.contains(scalar) &&
+            !invisibleSet.contains(scalar)
+        }
+        
+        return String(String.UnicodeScalarView(filtered))
     }
 }
