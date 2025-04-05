@@ -62,23 +62,36 @@ struct GameSwipe: View {
                     .foregroundColor(.red)
                     .opacity(viewModel.dragOffset.width < -20 ? 1 : 0)
                     .animation(.easeInOut, value: viewModel.dragOffset.width)
-                
+
                 Spacer()
-                
+
                 Text("Верно ✅")
                     .foregroundColor(.green)
                     .opacity(viewModel.dragOffset.width > 20 ? 1 : 0)
                     .animation(.easeInOut, value: viewModel.dragOffset.width)
             }
             .padding(.horizontal)
-            
+
             // Карточка
             ZStack {
+                // 🌈 Подложка с паттерном
+                GameSwipeCardBackground(
+                    cornerRadius: 20,
+                    style: themeManager.currentThemeStyle
+                )
+
+                // 🎨 Основной фон
                 RoundedRectangle(cornerRadius: 20)
-                    .fill(themeManager.currentThemeStyle.backgroundSecondary)
+                    .fill(Color.white.opacity(0.6))
                     .shadow(radius: 5)
-                    .overlay(CardPatternBorder(cornerRadius: 20, style: themeManager.currentThemeStyle))
-                
+
+                // 🖌️ Паттерн-граница
+                GameCardSwipeBorder(
+                    cornerRadius: 20,
+                    style: themeManager.currentThemeStyle
+                )
+
+                // Контент
                 VStack(spacing: 20) {
                     Text(card.frontText)
                         .font(.title)
@@ -86,11 +99,11 @@ struct GameSwipe: View {
                         .foregroundColor(themeManager.currentThemeStyle.textPrimary)
                         .multilineTextAlignment(.center)
                         .padding(.top, 30)
-                    
+
                     Divider()
                         .background(themeManager.currentThemeStyle.accentPrimary)
                         .padding(.horizontal, 30)
-                    
+
                     Text(card.backText)
                         .font(.title2)
                         .foregroundColor(themeManager.currentThemeStyle.textSecondary)
@@ -104,26 +117,3 @@ struct GameSwipe: View {
     }
 }
 
-private struct CardPatternBorder: View {
-    let cornerRadius: CGFloat
-    let style: AppTheme
-    let borderWidth: CGFloat = 8.0
-    
-    var body: some View {
-        GeometryReader { geometry in
-            RoundedRectangle(cornerRadius: cornerRadius)
-                .strokeBorder(.clear, lineWidth: borderWidth)
-                .background(
-                    DynamicPattern(
-                        model: style.mainPattern,
-                        size: CGSize(width: geometry.size.width * 2, height: geometry.size.height * 2)
-                    )
-                )
-                .mask(
-                    RoundedRectangle(cornerRadius: cornerRadius)
-                        .strokeBorder(style: StrokeStyle(lineWidth: borderWidth))
-                )
-        }
-        .allowsHitTesting(false)
-    }
-}
