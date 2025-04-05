@@ -2,10 +2,10 @@ import Combine
 import SwiftUI
 
 internal final class GameQuizViewModel: ObservableObject {
-    @Published var highlightedOptions: [String: Color] = [:]
     @Published private(set) var currentCard: QuizModelCard?
     @Published private(set) var shouldShowEmptyView = false
     @Published private(set) var isLoadingCard = false
+    @Published var highlightedOptions: [String: Color] = [:]
     @Published var isProcessingAnswer = false
     
     private var loadingTask: Task<Void, Never>?
@@ -28,7 +28,6 @@ internal final class GameQuizViewModel: ObservableObject {
                       let duration = userInfo["duration"] as? TimeInterval else {
                     return
                 }
-                
                 self.highlightedOptions[option] = color
                 
                 DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
@@ -101,7 +100,6 @@ internal final class GameQuizViewModel: ObservableObject {
         let result = game.validateAnswer(answer)
         
         game.validation.playFeedback(result, answer: answer, selected: nil)
-        
         game.updateStats(
             correct: result == .correct,
             responseTime: responseTime,
