@@ -1,7 +1,7 @@
 import SwiftUI
 import Combine
 
-final class GameMatchViewModel: ObservableObject {
+final class MatchViewModel: ObservableObject {
     @Published private(set) var shouldShowEmptyView = false
     @Published private(set) var isLoadingCards = false
     @Published var highlightedOptions: [String: Color] = [:]

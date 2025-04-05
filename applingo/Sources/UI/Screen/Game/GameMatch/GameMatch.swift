@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct GameMatch: View {
-    @StateObject private var viewModel: GameMatchViewModel
+    @StateObject private var viewModel: MatchViewModel
     @ObservedObject var game: Match
 
     @ObservedObject private var board: GameMatchBoard
@@ -10,7 +10,8 @@ struct GameMatch: View {
     @State private var selectedRightPosition: Int? = nil
 
     init(game: Match) {
-        let vm = GameMatchViewModel(game: game)
+        let vm = MatchViewModel(game: game)
+        
         _viewModel = StateObject(wrappedValue: vm)
         _board = ObservedObject(wrappedValue: vm.gameBoard)
         self.game = game
