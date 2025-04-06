@@ -32,9 +32,15 @@ struct SettingsMain: View {
                         style: style,
                         locale: locale
                     )
+                    
+                    SettingsMainViewASRPermissions(
+                        style: style,
+                        locale: locale
+                    )
                 }
                 .padding(style.padding)
             }
+            .padding(.bottom, 128)
             .navigationBarTitleDisplayMode(.large)
         }
     }

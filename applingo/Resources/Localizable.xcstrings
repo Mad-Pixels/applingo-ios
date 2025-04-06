@@ -1935,6 +1935,23 @@
         }
       }
     },
+    "screen.settings.description.asrPermission" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "To use voice-based answering in some games, please allow access to microphone and speech recognition in Settings > Privacy & Security > Microphone and Settings > Privacy & Security > Speech Recognition."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Чтобы использовать голосовые ответы в некоторых играх, откройте Настройки > Конфиденциальность и безопасность > Микрофон и Настройки > Конфиденциальность и безопасность > Распознавание речи и предоставьте доступ."
+          }
+        }
+      }
+    },
     "screen.settings.description.feedback" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1948,6 +1965,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Обратная связь"
+          }
+        }
+      }
+    },
+    "screen.settings.subtitle.asrPermission" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Speech Recognition Permission"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Доступ к распознаванию речи"
           }
         }
       }

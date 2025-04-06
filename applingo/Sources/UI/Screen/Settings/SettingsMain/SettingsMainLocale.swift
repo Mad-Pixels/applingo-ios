@@ -9,6 +9,8 @@ final class SettingsMainLocale: ObservableObject {
         case subtitleLanguage = "screen.settings.subtitle.language"
         case subtitleFeedback = "screen.settings.subtitle.feedback"
         case descriptionFeedback = "screen.settings.description.feedback"
+        case subtitleASRPermission = "screen.settings.subtitle.asrPermission"
+        case descriptionASRPermission = "screen.settings.description.asrPermission"
     }
 
     @Published private(set) var screenTitle: String
@@ -18,6 +20,8 @@ final class SettingsMainLocale: ObservableObject {
     @Published private(set) var screenSubtitleLanguage: String
     @Published private(set) var screenSubtitleFeedback: String
     @Published private(set) var screenDescriptionFeedback: String
+    @Published private(set) var screenSubtitleASRPermission: String
+    @Published private(set) var screenDescriptionASRPermission: String
 
     init() {
         self.screenTitle = ""
@@ -27,6 +31,8 @@ final class SettingsMainLocale: ObservableObject {
         self.screenSubtitleLanguage = ""
         self.screenSubtitleFeedback = ""
         self.screenDescriptionFeedback = ""
+        self.screenSubtitleASRPermission = ""
+        self.screenDescriptionASRPermission = ""
 
         updateLocalizedStrings()
 
@@ -58,5 +64,7 @@ final class SettingsMainLocale: ObservableObject {
         screenSubtitleLanguage = Self.localizedString(for: .subtitleLanguage)
         screenSubtitleFeedback = Self.localizedString(for: .subtitleFeedback)
         screenDescriptionFeedback = Self.localizedString(for: .descriptionFeedback)
+        screenSubtitleASRPermission = Self.localizedString(for: .subtitleASRPermission)
+        screenDescriptionASRPermission = Self.localizedString(for: .descriptionASRPermission)
     }
 }
