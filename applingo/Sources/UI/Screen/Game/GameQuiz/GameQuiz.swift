@@ -3,16 +3,16 @@ import SwiftUI
 struct GameQuiz: View {
     @EnvironmentObject private var themeManager: ThemeManager
     @Environment(\.dismiss) private var dismiss
-    
+
     @StateObject private var viewModel: QuizViewModel
     @StateObject private var locale = GameQuizLocale()
-    @StateObject private var style: GameQuizStyle
-    
+    @StateObject private var style = GameQuizStyle.themed(ThemeManager.shared.currentThemeStyle)
+
     @ObservedObject var game: Quiz
-    
+
     @State private var shouldShowPreloader = false
     @State private var preloaderTimer: DispatchWorkItem?
-    
+
     init(
         game: Quiz,
         style: GameQuizStyle = .themed(ThemeManager.shared.currentThemeStyle)
@@ -22,14 +22,14 @@ struct GameQuiz: View {
         _style = StateObject(wrappedValue: style)
         self.game = game
     }
-    
+
     var body: some View {
         GeometryReader { geometry in
             ZStack {
                 if shouldShowPreloader {
                     ItemListLoading(style: .themed(themeManager.currentThemeStyle))
                 }
-                
+
                 if let card = viewModel.currentCard {
                     VStack(spacing: 0) {
                         VStack(spacing: style.optionsSpacing) {
@@ -50,22 +50,30 @@ struct GameQuiz: View {
                         }
                         .padding(.horizontal)
                         .padding(.top, geometry.size.height * 0.03)
-                        .frame(
-                            minHeight: geometry.size.height * 0.7,
-                            alignment: .center
-                        )
+                        .frame(minHeight: geometry.size.height * 0.7)
                     }
 
                     VStack {
                         Spacer()
                         HStack {
                             Spacer()
-                            GameFloatingBtnSpeaker(
-                                word: card.word,
-                                disabled: (!card.voice && card.flip) ||
-                                          (card.voice && card.flip)
-                            )
-                            .padding(.bottom, style.floatingBtnPadding)
+
+                            if card.voice && card.flip {
+                                GameFloatingBtnRecord(
+                                    languageCode: card.word.backTextCode,
+                                    disabled: !TTSLanguageType.shared.supported(for: card.word.backTextCode),
+                                    onRecognized: { recognized in
+                                        viewModel.handleAnswer(recognized)
+                                    }
+                                )
+                                .padding(.bottom, style.floatingBtnPadding)
+                            } else {
+                                GameFloatingBtnSpeaker(
+                                    word: card.word,
+                                    disabled: (!card.voice && card.flip) || (card.voice && card.flip)
+                                )
+                                .padding(.bottom, style.floatingBtnPadding)
+                            }
                         }
                     }
                 }
@@ -86,7 +94,7 @@ struct GameQuiz: View {
             }
         }
     }
-    
+
     private func handleLoadingStateChange(_ isLoading: Bool) {
         if isLoading {
             preloaderTimer?.cancel()
