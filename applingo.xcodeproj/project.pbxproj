@@ -21,22 +21,9 @@
 		D8BD502B2CADC97100E978AB /* libsqlite3.0.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.0.tbd; path = usr/lib/libsqlite3.0.tbd; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		D66BC6D22DA29FFF00428B03 /* Exceptions for "applingo" folder in "applingo" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = D8BD4FED2CADA16500E978AB /* applingo */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		D8BD4FF02CADA16500E978AB /* applingo */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				D66BC6D22DA29FFF00428B03 /* Exceptions for "applingo" folder in "applingo" target */,
-			);
 			path = applingo;
 			sourceTree = "<group>";
 		};
