@@ -26,6 +26,8 @@ struct GameSwipe: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack {
+                OverlayIcon.GameAnswer(themeManager.currentThemeStyle)
+                
                 if shouldShowPreloader {
                     ItemListLoading(style: .themed(themeManager.currentThemeStyle))
                 }
@@ -66,7 +68,7 @@ struct GameSwipe: View {
                     }
                 }
             }
-            .animation(.easeOut(duration: 0.3), value: viewModel.currentCard?.id)
+            .animation(.easeOut(duration: 0.5), value: viewModel.currentCard?.id)
             .frame(width: geometry.size.width, height: geometry.size.height)
         }
         .onAppear {

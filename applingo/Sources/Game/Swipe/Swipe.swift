@@ -40,9 +40,10 @@ final class Swipe: ObservableObject, AbstractGame {
             feedbacks: [
                 .incorrect: [
                     IncorrectAnswerHapticFeedback(),
-                    IncorrectAnswerBackgroundVisualFeedback(
-                        theme: ThemeManager.shared.currentThemeStyle.swipeTheme
-                    )
+                    GameValidationFeedbackVisualIcon(iconName: "xmark", color: .red)
+                ],
+                .correct: [
+                    GameValidationFeedbackVisualIcon(iconName: "checkmark", color: .green)
                 ]
             ]
         ),

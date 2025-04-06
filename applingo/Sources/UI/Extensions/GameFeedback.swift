@@ -9,3 +9,11 @@ extension ButtonActionStyle {
         return style
     }
 }
+
+// Used in games like visual game feedback actions.
+extension OverlayIcon {
+    /// Default game icon feedback overlay.
+    static func GameAnswer(_ theme: AppTheme) -> OverlayIcon {
+        OverlayIcon(style: .themed(theme))
+    }
+}
