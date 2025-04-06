@@ -23,8 +23,11 @@ final class ASR: NSObject, SFSpeechRecognizerDelegate, Sendable {
     @MainActor
     func requestAccessIfNeeded() async {
         let status = await requestAuthorization()
+        AppStorage.shared.useASR = (status == .authorized)
+        
         Logger.debug("[ASR]: Authorization status", metadata: [
-            "status": String(describing: status)
+            "status": String(describing: status),
+            "useASR": AppStorage.shared.useASR.description
         ])
     }
 
