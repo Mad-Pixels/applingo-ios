@@ -47,7 +47,7 @@ class BaseGameValidation: AbstractGameValidation {
     ///   - result: The validation result determining which feedbacks to play.
     ///   - answer: The answer selected by the user. If nil, no feedback will be played.
     ///   - selected: The selected answer (different card).
-    final internal func playFeedback(_ result: GameValidationResult, answer: String? = nil, selected: String? = nil) {
+    internal func playFeedback(_ result: GameValidationResult, answer: String? = nil, selected: String? = nil) {
         guard let answer = answer else { return }
         
         let correctAnswer: String? = getCorrectAnswer()
@@ -57,6 +57,10 @@ class BaseGameValidation: AbstractGameValidation {
             customOption: selected
         )
         
+        play(context: context, result: result)
+    }
+    
+    internal final func play(context: FeedbackContext, result: GameValidationResult) {
         feedbacks[result]?.forEach { feedback in
             feedback.play(context: context)
         }
