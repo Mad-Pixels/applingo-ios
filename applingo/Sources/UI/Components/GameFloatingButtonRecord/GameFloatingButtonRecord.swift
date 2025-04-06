@@ -5,10 +5,21 @@ struct GameFloatingButtonRecord: View {
 
     @State private var isRecording: Bool = false
     @State private var fullLangCode: String = ""
-    
+    @State private var isPrepared: Bool = false
+
     internal let languageCode: String
     internal let disabled: Bool
     internal let onRecognized: (String) -> Void
+
+    init(
+        languageCode: String,
+        disabled: Bool,
+        onRecognized: @escaping (String) -> Void
+    ) {
+        self.languageCode = languageCode
+        self.disabled = disabled
+        self.onRecognized = onRecognized
+    }
 
     var body: some View {
         ButtonFloatingSingle(
@@ -17,11 +28,11 @@ struct GameFloatingButtonRecord: View {
                 if isRecording {
                     ASR.shared.stopRecognition()
                     isRecording = false
-                } else {
+                } else if isPrepared {
                     startRecognition()
                 }
             },
-            disabled: disabled
+            disabled: disabled || !isPrepared
         )
         .waveEffect(
             isActive: isRecording,
@@ -33,7 +44,7 @@ struct GameFloatingButtonRecord: View {
             radius: 5
         )
         .onAppear {
-            fullLangCode = TTSLanguageType.shared.get(for: languageCode)
+            prepareASR()
         }
         .onReceive(NotificationCenter.default.publisher(for: .ASRDidFinishRecognition)) { _ in
             let recognized = ASR.shared.transcription.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -46,6 +57,34 @@ struct GameFloatingButtonRecord: View {
             if isRecording {
                 ASR.shared.stopRecognition()
                 isRecording = false
+            }
+        }
+    }
+
+    private func prepareASR() {
+        Task {
+            fullLangCode = TTSLanguageType.shared.get(for: languageCode)
+
+            let isSupported = ASR.shared.isAvailable(for: fullLangCode)
+            if !isSupported {
+                Logger.debug("[GameFloatingBtnRecord] Language not supported", metadata: [
+                    "lang": fullLangCode
+                ])
+                isPrepared = false
+                return
+            }
+
+            let authStatus = await ASR.shared.requestAuthorization()
+            if authStatus == .authorized {
+                Logger.debug("[GameFloatingBtnRecord] ASR is ready", metadata: [
+                    "lang": fullLangCode
+                ])
+                isPrepared = true
+            } else {
+                Logger.debug("[GameFloatingBtnRecord] Authorization denied", metadata: [
+                    "status": String(describing: authStatus)
+                ])
+                isPrepared = false
             }
         }
     }
