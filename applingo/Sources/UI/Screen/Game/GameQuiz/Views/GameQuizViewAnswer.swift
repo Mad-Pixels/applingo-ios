@@ -2,14 +2,14 @@ import SwiftUI
 
 internal struct GameQuizViewAnswer: View {
     @EnvironmentObject private var themeManager: ThemeManager
-    
+
     @ObservedObject private var viewModel: QuizViewModel
-    
+
     private let locale: GameQuizLocale
     private let style: GameQuizStyle
     private let card: QuizModelCard
     private let onSelect: (String) -> Void
-    
+
     init(
         style: GameQuizStyle,
         locale: GameQuizLocale,
@@ -23,9 +23,9 @@ internal struct GameQuizViewAnswer: View {
         self.onSelect = onSelect
         self.viewModel = viewModel
     }
-    
+
     var body: some View {
-        if card.voice && card.flip {
+        if card.voice && card.flip && AppStorage.shared.useASR {
             GameQuizViewAnswerRecord(
                 languageCode: card.word.backTextCode,
                 onRecognized: { recognized in
@@ -53,7 +53,7 @@ internal struct GameQuizViewAnswer: View {
             }
         }
     }
-    
+
     private func getButtonStyle(for option: String) -> ButtonActionStyle {
         if let highlightColor = viewModel.highlightedOptions[option] {
             return .GameAnswer(themeManager.currentThemeStyle, highlightColor: highlightColor)
