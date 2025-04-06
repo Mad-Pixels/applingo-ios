@@ -266,4 +266,12 @@ final class ASR: NSObject, SFSpeechRecognizerDelegate, Sendable {
         let locales = SFSpeechRecognizer.supportedLocales()
         return locales.map { $0.identifier }
     }
+    
+    @MainActor
+    func requestAccessIfNeeded() async {
+        let status = await requestAuthorization()
+        Logger.debug("[ASR]: Authorization status", metadata: [
+            "status": String(describing: status)
+        ])
+    }
 }

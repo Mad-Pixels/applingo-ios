@@ -20,6 +20,12 @@ struct LingocardApp: App {
         _ = ApiManagerCache.shared
         _ = HardwareHaptic.shared
         _ = TTS.shared
+        _ = ASR.shared
+        
+        // User access request.
+        Task {
+            await ASR.shared.requestAccessIfNeeded()
+        }
     }
 
     var body: some Scene {
