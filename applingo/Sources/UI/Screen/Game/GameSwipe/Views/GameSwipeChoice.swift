@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct GameSwipeChoice: View {
+    @EnvironmentObject private var themeManager: ThemeManager
+    
     let dragOffset: CGSize
     
     private let locale: GameSwipeLocale
@@ -20,15 +22,18 @@ struct GameSwipeChoice: View {
         GeometryReader { geometry in
             HStack {
                 if dragOffset.width < -20 {
-                    Text(makeVertical(locale.screenCardWrong))
-                        .font(.title2)
-                        .fontWeight(.bold)
-                        .foregroundColor(style.textMainColor)
-                        //.opacity(textOpacity)
-                        .animation(.easeInOut, value: dragOffset.width)
-                        .glassBackground(cornerRadius: 12, opacity: 0.85)
-                        .frame(maxWidth: 60, maxHeight: .infinity)
-                        .zIndex(10)
+                    DynamicText(
+                        model: DynamicTextModel(text: makeVertical(locale.screenCardWrong).uppercased()),
+                        style: .headerGame(
+                            themeManager.currentThemeStyle,
+                            alignment: .center,
+                            lineLimit: 20
+                        )
+                    )
+                    .animation(.easeInOut, value: dragOffset.width)
+                    .glassBackground(cornerRadius: 12, opacity: 0.85)
+                    .frame(maxWidth: 60, maxHeight: .infinity)
+                    .zIndex(10)
                 } else {
                     Spacer().frame(width: 60)
                 }
@@ -36,15 +41,19 @@ struct GameSwipeChoice: View {
                 Spacer()
 
                 if dragOffset.width > 20 {
-                    Text(makeVertical(locale.screenCardRight))
-                        .font(.title2)
-                        .fontWeight(.bold)
-                        .foregroundColor(style.textMainColor)
-                        //.opacity(textOpacity)
-                        .animation(.easeInOut, value: dragOffset.width)
-                        .glassBackground(cornerRadius: 12, opacity: 0.85)
-                        .frame(maxWidth: 60, maxHeight: .infinity)
-                        .zIndex(10)
+                    DynamicText(
+                        model: DynamicTextModel(text: makeVertical(locale.screenCardRight).uppercased()),
+                        style: .headerGame(
+                            themeManager.currentThemeStyle,
+                            alignment: .center,
+                            lineLimit: 20
+                        )
+                    )
+                    .animation(.easeInOut, value: dragOffset.width)
+                    .glassBackground(cornerRadius: 12, opacity: 0.85)
+                    .frame(maxWidth: 60, maxHeight: .infinity)
+                    .zIndex(10)
+                    
                 } else {
                     Spacer().frame(width: 60)
                 }
