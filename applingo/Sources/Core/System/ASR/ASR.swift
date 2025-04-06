@@ -6,49 +6,26 @@ import Speech
 final class ASR: NSObject, SFSpeechRecognizerDelegate, Sendable {
     static let shared = ASR()
 
+    @Published private(set) var isRecording = false
+    @Published var transcription: String = ""
+    
     private var speechRecognizer: SFSpeechRecognizer?
     private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
     private var recognitionTask: SFSpeechRecognitionTask?
     private let audioEngine = AVAudioEngine()
-
     private var completionHandler: ((String?) -> Void)?
     private var isProcessing = false
-
-    @Published private(set) var isRecording = false
-    @Published var transcription: String = ""
-
+    
     private override init() {
         super.init()
     }
 
-    private func setupSpeechRecognizer(with languageCode: String) -> Bool {
-        Logger.debug(
-            "[ASR]: Setting up speech recognizer",
-            metadata: [
-                "language": languageCode
-            ]
-        )
-        
-        guard let recognizer = SFSpeechRecognizer(locale: Locale(identifier: languageCode)) else {
-            Logger.debug(
-                "[ASR]: Failed to create recognizer",
-                metadata: [
-                    "language": languageCode
-                ]
-            )
-            return false
-        }
-
-        speechRecognizer = recognizer
-        speechRecognizer?.delegate = self
-
-        Logger.debug(
-            "[ASR]: Recognizer initialized",
-            metadata: [
-                "isAvailable": recognizer.isAvailable.description
-            ]
-        )
-        return true
+    @MainActor
+    func requestAccessIfNeeded() async {
+        let status = await requestAuthorization()
+        Logger.debug("[ASR]: Authorization status", metadata: [
+            "status": String(describing: status)
+        ])
     }
 
     func isAvailable(for languageCode: String) -> Bool {
@@ -83,12 +60,9 @@ final class ASR: NSObject, SFSpeechRecognizerDelegate, Sendable {
             }
 
             guard setupSpeechRecognizer(with: languageCode) else {
-                Logger.debug(
-                    "[ASR]: Unsupported language",
-                    metadata: [
-                        "language": languageCode
-                    ]
-                )
+                Logger.debug("[ASR]: Unsupported language", metadata: [
+                    "language": languageCode
+                ])
                 isProcessing = false
                 throw ASRError.unsupportedLanguage(code: languageCode)
             }
@@ -107,13 +81,10 @@ final class ASR: NSObject, SFSpeechRecognizerDelegate, Sendable {
             let inputNode = audioEngine.inputNode
             let recordingFormat = inputNode.inputFormat(forBus: 0)
 
-            Logger.debug(
-                "[ASR]: Recording format initialized",
-                metadata: [
-                    "sampleRate": String(recordingFormat.sampleRate),
-                    "channels": String(recordingFormat.channelCount)
-                ]
-            )
+            Logger.debug("[ASR]: Recording format initialized", metadata: [
+                "sampleRate": String(recordingFormat.sampleRate),
+                "channels": String(recordingFormat.channelCount)
+            ])
 
             inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { [weak self] buffer, _ in
                 self?.recognitionRequest?.append(buffer)
@@ -132,36 +103,26 @@ final class ASR: NSObject, SFSpeechRecognizerDelegate, Sendable {
                 var isFinal = false
 
                 if let error = error {
-                    Logger.debug(
-                        "[ASR]: Recognition error",
-                        metadata: [
-                            "error": error.localizedDescription
-                        ]
-                    )
+                    Logger.debug("[ASR]: Recognition error", metadata: [
+                        "error": error.localizedDescription
+                    ])
 
                     if !self.transcription.isEmpty && error.localizedDescription.contains("No speech detected") {
-                        Logger.debug(
-                            "[ASR]: Ignoring 'no speech' error, partial result exists"
-                        )
+                        Logger.debug("[ASR]: Ignoring 'no speech' error, partial result exists")
                         return
                     }
                 }
 
                 if let result = result {
                     let recognizedText = result.bestTranscription.formattedString
-                    Logger.debug(
-                        "[ASR]: Transcription updated",
-                        metadata: [
-                            "text": recognizedText
-                        ]
-                    )
+                    Logger.debug("[ASR]: Transcription updated", metadata: [
+                        "text": recognizedText
+                    ])
                     self.transcription = recognizedText
                     isFinal = result.isFinal
 
                     if isFinal {
-                        Logger.debug(
-                            "[ASR]: Final transcription received"
-                        )
+                        Logger.debug("[ASR]: Final transcription received")
                     }
                 }
 
@@ -170,17 +131,50 @@ final class ASR: NSObject, SFSpeechRecognizerDelegate, Sendable {
                 }
             }
         } catch {
-            Logger.debug(
-                "[ASR]: Exception during recognition",
-                metadata: [
-                    "error": error.localizedDescription
-                ]
-            )
+            Logger.debug("[ASR]: Exception during recognition", metadata: [
+                "error": error.localizedDescription
+            ])
             cleanupResources()
             isProcessing = false
             isRecording = false
             throw error
         }
+    }
+
+    func stopRecognition() {
+        finishRecognition(isFinal: !transcription.isEmpty)
+    }
+
+    func getSupportedLanguages() -> [String] {
+        let locales = SFSpeechRecognizer.supportedLocales()
+        return locales.map { $0.identifier }
+    }
+
+    nonisolated func speechRecognizer(_ speechRecognizer: SFSpeechRecognizer, availabilityDidChange available: Bool) {
+        Logger.debug("[ASR]: Recognizer availability changed", metadata: [
+            "available": available.description
+        ])
+    }
+
+    private func setupSpeechRecognizer(with languageCode: String) -> Bool {
+        Logger.debug("[ASR]: Setting up speech recognizer", metadata: [
+            "language": languageCode
+        ])
+
+        guard let recognizer = SFSpeechRecognizer(locale: Locale(identifier: languageCode)) else {
+            Logger.debug("[ASR]: Failed to create recognizer", metadata: [
+                "language": languageCode
+            ])
+            return false
+        }
+
+        speechRecognizer = recognizer
+        speechRecognizer?.delegate = self
+
+        Logger.debug("[ASR]: Recognizer initialized", metadata: [
+            "isAvailable": recognizer.isAvailable.description
+        ])
+        return true
     }
 
     private func setupAudioSession() throws {
@@ -198,22 +192,15 @@ final class ASR: NSObject, SFSpeechRecognizerDelegate, Sendable {
 
         try audioSession.setActive(true, options: .notifyOthersOnDeactivation)
 
-        Logger.debug(
-            "[ASR]: Audio session configured",
-            metadata: [
-                "inputs": audioSession.availableInputs?.map 
-                { $0.portType.rawValue }.joined(separator: ", ") ?? "none"
-            ]
-        )
+        Logger.debug("[ASR]: Audio session configured", metadata: [
+            "inputs": audioSession.availableInputs?.map { $0.portType.rawValue }.joined(separator: ", ") ?? "none"
+        ])
     }
 
     private func finishRecognition(isFinal: Bool) {
-        Logger.debug(
-            "[ASR]: Finishing recognition",
-            metadata: [
-                "isFinal": isFinal.description
-            ]
-        )
+        Logger.debug("[ASR]: Finishing recognition", metadata: [
+            "isFinal": isFinal.description
+        ])
 
         if audioEngine.isRunning {
             audioEngine.stop()
@@ -236,10 +223,6 @@ final class ASR: NSObject, SFSpeechRecognizerDelegate, Sendable {
         NotificationCenter.default.post(name: .ASRDidFinishRecognition, object: nil)
     }
 
-    func stopRecognition() {
-        finishRecognition(isFinal: !transcription.isEmpty)
-    }
-
     private func cleanupResources() {
         if audioEngine.isRunning {
             audioEngine.stop()
@@ -251,27 +234,5 @@ final class ASR: NSObject, SFSpeechRecognizerDelegate, Sendable {
         recognitionRequest = nil
 
         try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
-    }
-
-    nonisolated func speechRecognizer(_ speechRecognizer: SFSpeechRecognizer, availabilityDidChange available: Bool) {
-        Logger.debug(
-            "[ASR]: Recognizer availability changed",
-            metadata: [
-                "available": available.description
-            ]
-        )
-    }
-
-    func getSupportedLanguages() -> [String] {
-        let locales = SFSpeechRecognizer.supportedLocales()
-        return locales.map { $0.identifier }
-    }
-    
-    @MainActor
-    func requestAccessIfNeeded() async {
-        let status = await requestAuthorization()
-        Logger.debug("[ASR]: Authorization status", metadata: [
-            "status": String(describing: status)
-        ])
     }
 }
