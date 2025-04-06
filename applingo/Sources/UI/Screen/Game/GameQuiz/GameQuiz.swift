@@ -59,7 +59,7 @@ struct GameQuiz: View {
                             Spacer()
 
                             if card.voice && card.flip {
-                                GameFloatingBtnRecord(
+                                GameFloatingButtonRecord(
                                     languageCode: card.word.backTextCode,
                                     disabled: !TTSLanguageType.shared.supported(for: card.word.backTextCode),
                                     onRecognized: { recognized in
@@ -68,7 +68,7 @@ struct GameQuiz: View {
                                 )
                                 .padding(.bottom, style.floatingBtnPadding)
                             } else {
-                                GameFloatingBtnSpeaker(
+                                GameFloatingButtonSpeaker(
                                     word: card.word,
                                     disabled: (!card.voice && card.flip) || (card.voice && card.flip)
                                 )

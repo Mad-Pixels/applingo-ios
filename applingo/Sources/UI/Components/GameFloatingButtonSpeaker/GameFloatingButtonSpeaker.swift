@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct GameFloatingBtnSpeaker: View {
+struct GameFloatingButtonSpeaker: View {
     @EnvironmentObject var themeManager: ThemeManager
     
     @State private var isPlaying: Bool = false

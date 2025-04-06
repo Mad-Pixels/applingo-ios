@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct GameFloatingBtnRecord: View {
+struct GameFloatingButtonRecord: View {
     @EnvironmentObject var themeManager: ThemeManager
 
     @State private var isRecording: Bool = false

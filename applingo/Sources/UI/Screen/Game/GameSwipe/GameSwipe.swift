@@ -64,7 +64,7 @@ struct GameSwipe: View {
                     VStack {
                         Spacer()
                         let disabled = TTSLanguageType.shared.get(for: card.backWord.backTextCode) == ""
-                        GameFloatingBtnSpeaker(word: card.backWord, disabled: disabled)
+                        GameFloatingButtonSpeaker(word: card.backWord, disabled: disabled)
                             .padding(.bottom, style.floatingButtonPadding)
                     }
                 }
