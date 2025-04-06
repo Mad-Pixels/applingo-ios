@@ -6,6 +6,7 @@ final class GameQuizStyle: ObservableObject {
     let cardBackground: Color
 
     // Layout & Sizing
+    let floatingBtnPadding: CGFloat
     let cardCornerRadius: CGFloat
     let cardPadding: CGFloat
     let optionsPadding: CGFloat
@@ -34,6 +35,7 @@ final class GameQuizStyle: ObservableObject {
     init(
         backgroundColor: Color,
         cardBackground: Color,
+        floatingBtnPadding: CGFloat,
         cardCornerRadius: CGFloat = 32,
         cardPadding: CGFloat = 20,
         optionsPadding: CGFloat = 16,
@@ -53,6 +55,7 @@ final class GameQuizStyle: ObservableObject {
     ) {
         self.backgroundColor = backgroundColor
         self.cardBackground = cardBackground
+        self.floatingBtnPadding = floatingBtnPadding
         self.cardCornerRadius = cardCornerRadius
         self.cardPadding = cardPadding
         self.optionsPadding = optionsPadding
@@ -77,6 +80,7 @@ extension GameQuizStyle {
         GameQuizStyle(
             backgroundColor: theme.backgroundPrimary,
             cardBackground: theme.cardBackground,
+            floatingBtnPadding: 32,
             cardCornerRadius: 32,
             cardPadding: 20,
             optionsPadding: 16,

@@ -7,6 +7,7 @@ struct GameFloatingBtnSpeaker: View {
     @State private var observer: NSObjectProtocol?
     
     internal let word: DatabaseModelWord
+    internal let disabled: Bool
     
     var body: some View {
         ButtonFloatingSingle(
@@ -17,7 +18,8 @@ struct GameFloatingBtnSpeaker: View {
                 } else {
                     stopSpeaking()
                 }
-            }
+            },
+            disabled: disabled
         )
         .waveEffect(
             isActive: isPlaying,

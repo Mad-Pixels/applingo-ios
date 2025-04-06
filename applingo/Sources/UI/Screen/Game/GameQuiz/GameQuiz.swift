@@ -59,11 +59,13 @@ struct GameQuiz: View {
                     VStack {
                         Spacer()
                         HStack {
-                            //if !card.flip {
-                                Spacer()
-                                GameFloatingBtnSpeaker(word: card.word)
-                                    .padding(.bottom, 32)
-                            //}
+                            Spacer()
+                            GameFloatingBtnSpeaker(
+                                word: card.word,
+                                disabled: (!card.voice && card.flip) ||
+                                          (card.voice && card.flip)
+                            )
+                            .padding(.bottom, style.floatingBtnPadding)
                         }
                     }
                 }

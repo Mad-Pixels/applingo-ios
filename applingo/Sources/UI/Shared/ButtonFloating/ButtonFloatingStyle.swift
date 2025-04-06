@@ -3,6 +3,7 @@ import SwiftUI
 struct ButtonFloatingStyle {
     // Color Properties
     let mainButtonColor: Color
+    let disabledButtonColor: Color
     let itemButtonColor: Color
     let shadowColor: Color
 
@@ -22,6 +23,7 @@ extension ButtonFloatingStyle {
     static func themed(_ theme: AppTheme) -> ButtonFloatingStyle {
         ButtonFloatingStyle(
             mainButtonColor: theme.accentPrimary,
+            disabledButtonColor: theme.interactiveDisabled,
             itemButtonColor: theme.accentPrimary,
             shadowColor: theme.backgroundPrimary.opacity(0.3),
             mainButtonSize: CGSize(width: 60, height: 60),
