@@ -3,12 +3,12 @@ import SwiftUI
 internal final class QuizValidation: BaseGameValidation {
     private var currentCard: QuizModelCard?
     private var currentWord: DatabaseModelWord?
-    
+
     func setCurrentCard(currentCard: QuizModelCard, currentWord: DatabaseModelWord) {
         self.currentCard = currentCard
         self.currentWord = currentWord
     }
-    
+
     override func validateAnswer(answer: Any) -> GameValidationResult {
         guard let answer = answer as? String,
               let card = currentCard else {
@@ -18,25 +18,29 @@ internal final class QuizValidation: BaseGameValidation {
         let normalizedAnswerParts = splitAndNormalize(answer)
         let normalizedCorrectParts = splitAndNormalize(card.answer)
 
-        let asSet = Set(normalizedAnswerParts)
+        let answerSet = Set(normalizedAnswerParts)
         let correctSet = Set(normalizedCorrectParts)
 
-        if asSet == correctSet || normalize(answer) == normalize(card.answer) {
+        if answerSet == correctSet || normalize(answer) == normalize(card.answer) {
             return .correct
         } else {
             return .incorrect
         }
     }
-    
+
     override func getCurrentWord() -> DatabaseModelWord? {
         return currentWord
     }
-    
+
     override func getCorrectAnswer() -> String? {
         return currentCard?.answer
     }
 
-    /// Normalize input: lowercased + diacritic stripped (but keep spaces and punctuation)
+    /// Normalizes a string by:
+    /// - Lowercasing
+    /// - Removing diacritics (accents, etc.)
+    /// - Filtering out punctuation and invisible characters
+    /// - Keeping only letters and spaces
     private func normalize(_ text: String) -> String {
         let lowered = text.lowercased()
         let stripped = lowered.applyingTransform(.stripDiacritics, reverse: false) ?? lowered
@@ -53,7 +57,8 @@ internal final class QuizValidation: BaseGameValidation {
 
         return String(String.UnicodeScalarView(filtered)).trimmingCharacters(in: .whitespaces)
     }
-    
+
+    /// Splits input string by `,` and `;`, normalizes each part, and removes empty results
     private func splitAndNormalize(_ text: String) -> [String] {
         return text
             .components(separatedBy: CharacterSet(charactersIn: ",;"))

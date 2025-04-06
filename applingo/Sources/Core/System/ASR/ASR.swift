@@ -22,12 +22,19 @@ final class ASR: NSObject, SFSpeechRecognizerDelegate, Sendable {
 
     @MainActor
     func requestAccessIfNeeded() async {
-        let status = await requestAuthorization()
-        AppStorage.shared.useASR = (status == .authorized)
-        
+        let speechStatus = await requestAuthorization()
+        AppStorage.shared.useASR = (speechStatus == .authorized)
+
+        let micStatus = await requestMicrophoneAccess()
+        AppStorage.shared.useMicrophone = micStatus
+
+        AppStorage.shared.noRecord = !AppStorage.shared.useASR || !AppStorage.shared.useMicrophone
         Logger.debug("[ASR]: Authorization status", metadata: [
-            "status": String(describing: status),
-            "useASR": AppStorage.shared.useASR.description
+            "speech": String(describing: speechStatus),
+            "mic": micStatus.description,
+            "useASR": AppStorage.shared.useASR.description,
+            "useMicrophone": AppStorage.shared.useMicrophone.description,
+            "noRecord": AppStorage.shared.noRecord.description
         ])
     }
 
@@ -237,5 +244,13 @@ final class ASR: NSObject, SFSpeechRecognizerDelegate, Sendable {
         recognitionRequest = nil
 
         try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+    }
+    
+    private func requestMicrophoneAccess() async -> Bool {
+        await withCheckedContinuation { continuation in
+            AVAudioSession.sharedInstance().requestRecordPermission { granted in
+                continuation.resume(returning: granted)
+            }
+        }
     }
 }

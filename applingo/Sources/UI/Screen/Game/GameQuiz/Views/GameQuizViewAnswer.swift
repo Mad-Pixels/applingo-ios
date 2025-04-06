@@ -25,7 +25,7 @@ internal struct GameQuizViewAnswer: View {
     }
 
     var body: some View {
-        if card.voice && card.flip && AppStorage.shared.useASR {
+        if card.voice && card.flip && !AppStorage.shared.noRecord {
             GameQuizViewAnswerRecord(
                 languageCode: card.word.backTextCode,
                 onRecognized: { recognized in

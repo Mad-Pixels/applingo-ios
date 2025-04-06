@@ -84,10 +84,22 @@ final class AppStorage {
         set { temporary.setValue(String(newValue), for: "no_voice")}
     }
     
+    /// Whether the app should avoid using voice features (e.g., TTS).
+    var noRecord: Bool {
+        get { temporary.getValue(for: "no_voice") == "true" }
+        set { temporary.setValue(String(newValue), for: "no_voice")}
+    }
+    
     /// Whether the application is allowed to use ASR (speech recognition).
     var useASR: Bool {
         get { temporary.getValue(for: "use_asr") == "true" }
         set { temporary.setValue(String(newValue), for: "use_asr") }
+    }
+    
+    /// Whether the application is allowed to use Microphone.
+    var useMicrophone: Bool {
+        get { temporary.getValue(for: "use_microphone") == "true" }
+        set { temporary.setValue(String(newValue), for: "use_microphone") }
     }
     
     /// Checks if a specific screen is currently active.
