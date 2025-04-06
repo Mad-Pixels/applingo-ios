@@ -3,8 +3,8 @@
 <plist version="1.0">
 <dict>
 	<key>NSMicrophoneUsageDescription</key>
-	<string></string>
+	<string>Speech recognition is used to transcribe your spoken answers</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
-	<string></string>
+	<string>Speech recognition is used to transcribe your spoken answers</string>
 </dict>
 </plist>
