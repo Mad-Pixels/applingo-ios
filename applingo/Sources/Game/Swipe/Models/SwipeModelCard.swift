@@ -2,12 +2,13 @@ import SwiftUI
 
 struct SwipeModelCard {
     let id = UUID()
+    
     let word: DatabaseModelWord
+    let backWord: DatabaseModelWord
 
     let frontText: String
     let backText: String
     let isCorrectPair: Bool
-    let backWord: DatabaseModelWord
     
     /// Initializes a new instance of SwipeModelCard.
     /// - Parameters:
