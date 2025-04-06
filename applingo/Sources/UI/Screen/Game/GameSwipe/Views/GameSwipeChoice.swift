@@ -24,7 +24,7 @@ struct GameSwipeChoice: View {
                 if dragOffset.width < -20 {
                     DynamicText(
                         model: DynamicTextModel(text: makeVertical(locale.screenCardWrong).uppercased()),
-                        style: .headerGame(
+                        style: .headerMain(
                             themeManager.currentThemeStyle,
                             alignment: .center,
                             lineLimit: 20
@@ -43,7 +43,7 @@ struct GameSwipeChoice: View {
                 if dragOffset.width > 20 {
                     DynamicText(
                         model: DynamicTextModel(text: makeVertical(locale.screenCardRight).uppercased()),
-                        style: .headerGame(
+                        style: .headerMain(
                             themeManager.currentThemeStyle,
                             alignment: .center,
                             lineLimit: 20
