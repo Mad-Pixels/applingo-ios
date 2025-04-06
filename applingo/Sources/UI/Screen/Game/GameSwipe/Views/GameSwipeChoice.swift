@@ -30,6 +30,7 @@ struct GameSwipeChoice: View {
                             lineLimit: 20
                         )
                     )
+                    .padding(.vertical, style.cardTextPadding)
                     .animation(.easeInOut, value: dragOffset.width)
                     .glassBackground(cornerRadius: 12, opacity: 0.85)
                     .frame(maxWidth: 60, maxHeight: .infinity)
@@ -49,6 +50,7 @@ struct GameSwipeChoice: View {
                             lineLimit: 20
                         )
                     )
+                    .padding(.vertical, style.cardTextPadding)
                     .animation(.easeInOut, value: dragOffset.width)
                     .glassBackground(cornerRadius: 12, opacity: 0.85)
                     .frame(maxWidth: 60, maxHeight: .infinity)
