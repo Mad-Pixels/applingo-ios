@@ -21,4 +21,8 @@ extension Notification.Name {
     
     /// Notification posted when text-to-speech has finished speaking.
     static let TTSDidFinishSpeaking = Notification.Name("TTSDidFinishSpeaking")
+    
+    /// Notification posted when automatic speech recognition (ASR) has finished recognizing a user's input.
+    /// Used to receive recognition results and continue voice-driven workflows.
+    static let ASRDidFinishRecognition = Notification.Name("ASRDidFinishRecognition")
 }
