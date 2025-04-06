@@ -21,9 +21,22 @@
 		D8BD502B2CADC97100E978AB /* libsqlite3.0.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.0.tbd; path = usr/lib/libsqlite3.0.tbd; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		D6594DD62DA2A9340068154C /* Exceptions for "applingo" folder in "applingo" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = D8BD4FED2CADA16500E978AB /* applingo */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		D8BD4FF02CADA16500E978AB /* applingo */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				D6594DD62DA2A9340068154C /* Exceptions for "applingo" folder in "applingo" target */,
+			);
 			path = applingo;
 			sourceTree = "<group>";
 		};
@@ -301,6 +314,7 @@
 				DEVELOPMENT_TEAM = 55CM3593S6;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = applingo/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = AppLingo;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -337,6 +351,7 @@
 				DEVELOPMENT_TEAM = 55CM3593S6;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = applingo/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = AppLingo;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
