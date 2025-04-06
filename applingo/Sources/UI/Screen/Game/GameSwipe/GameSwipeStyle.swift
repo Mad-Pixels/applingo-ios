@@ -9,20 +9,22 @@ final class GameSwipeStyle: ObservableObject {
     // Colors
     let backgroundColor: Color
     let textSecondaryColor: Color
+    let textMainColor: Color
     
     init(
         floatingButtonPadding: CGFloat,
         cardTextPadding: CGFloat,
         cornerRadius: CGFloat,
         backgroundColor: Color,
-        textSecondaryColor: Color
-        
+        textSecondaryColor: Color,
+        textMainColor: Color
     ) {
         self.floatingButtonPadding = floatingButtonPadding
         self.cornerRadius = cornerRadius
         self.backgroundColor = backgroundColor
         self.cardTextPadding = cardTextPadding
         self.textSecondaryColor = textSecondaryColor
+        self.textMainColor = textMainColor
     }
 }
 
@@ -33,7 +35,8 @@ extension GameSwipeStyle {
             cardTextPadding: 24,
             cornerRadius: 20,
             backgroundColor: theme.backgroundPrimary,
-            textSecondaryColor: theme.textSecondary
+            textSecondaryColor: theme.textSecondary,
+            textMainColor: theme.textPrimary
         )
     }
 }

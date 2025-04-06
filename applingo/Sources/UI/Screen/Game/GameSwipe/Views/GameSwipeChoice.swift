@@ -2,7 +2,19 @@ import SwiftUI
 
 struct GameSwipeChoice: View {
     let dragOffset: CGSize
-    let locale: GameSwipeLocale
+    
+    private let locale: GameSwipeLocale
+    private let style: GameSwipeStyle
+    
+    init(
+        locale: GameSwipeLocale,
+        style: GameSwipeStyle,
+        offset: CGSize
+    ) {
+        self.dragOffset = offset
+        self.locale = locale
+        self.style = style
+    }
 
     var body: some View {
         GeometryReader { geometry in
@@ -11,8 +23,8 @@ struct GameSwipeChoice: View {
                     Text(makeVertical(locale.screenCardWrong))
                         .font(.title2)
                         .fontWeight(.bold)
-                        .foregroundColor(.red)
-                        .opacity(textOpacity)
+                        .foregroundColor(style.textMainColor)
+                        //.opacity(textOpacity)
                         .animation(.easeInOut, value: dragOffset.width)
                         .glassBackground(cornerRadius: 12, opacity: 0.85)
                         .frame(maxWidth: 60, maxHeight: .infinity)
@@ -27,8 +39,8 @@ struct GameSwipeChoice: View {
                     Text(makeVertical(locale.screenCardRight))
                         .font(.title2)
                         .fontWeight(.bold)
-                        .foregroundColor(.green)
-                        .opacity(textOpacity)
+                        .foregroundColor(style.textMainColor)
+                        //.opacity(textOpacity)
                         .animation(.easeInOut, value: dragOffset.width)
                         .glassBackground(cornerRadius: 12, opacity: 0.85)
                         .frame(maxWidth: 60, maxHeight: .infinity)

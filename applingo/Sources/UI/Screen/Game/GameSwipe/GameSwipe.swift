@@ -32,8 +32,9 @@ struct GameSwipe: View {
 
                 if let card = viewModel.currentCard {
                     GameSwipeChoice(
-                        dragOffset: viewModel.dragOffset,
-                        locale: locale
+                        locale: locale,
+                        style: style,
+                        offset: viewModel.dragOffset
                     )
                     .zIndex(10)
 

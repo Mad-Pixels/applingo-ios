@@ -72,6 +72,7 @@ struct GameSwipeCard: View {
 
     private var cardOpacity: Double {
         let distance = abs(dragOffset.width)
-        return max(0.1, Double(1 - (distance / maxOffset)))
+        let normalized = min(1, distance / maxOffset)
+        return max(0.08, pow(1 - normalized, 2.2))
     }
 }
