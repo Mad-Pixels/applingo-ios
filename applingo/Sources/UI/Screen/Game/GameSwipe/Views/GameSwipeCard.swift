@@ -2,7 +2,7 @@ import SwiftUI
 
 struct GameSwipeCard: View {
     @EnvironmentObject private var themeManager: ThemeManager
-    
+
     private let locale: GameSwipeLocale
     private let style: GameSwipeStyle
     private let card: SwipeModelCard
@@ -19,68 +19,59 @@ struct GameSwipeCard: View {
         self.style = style
         self.card = card
     }
-    
+
     var body: some View {
-        VStack {
-            HStack {
-                Text("❌ Не верно")
-                    .foregroundColor(.red)
-                    .opacity(dragOffset.width < -20 ? 1 : 0)
-                    .animation(.easeInOut, value: dragOffset.width)
+        ZStack {
+            GameSwipeCardBackground(
+                cornerRadius: style.cornerRadius,
+                style: themeManager.currentThemeStyle
+            )
 
-                Spacer()
+            RoundedRectangle(cornerRadius: style.cornerRadius)
+                .fill(themeManager.currentThemeStyle.backgroundPrimary.opacity(0.8))
+                .shadow(radius: 5)
 
-                Text("Верно ✅")
-                    .foregroundColor(.green)
-                    .opacity(dragOffset.width > 20 ? 1 : 0)
-                    .animation(.easeInOut, value: dragOffset.width)
-            }
-            .padding(.horizontal)
+            GameCardSwipeBorder(
+                cornerRadius: style.cornerRadius,
+                style: themeManager.currentThemeStyle
+            )
 
-            ZStack {
-                GameSwipeCardBackground(
-                    cornerRadius: style.cornerRadius,
-                    style: themeManager.currentThemeStyle
+            VStack(spacing: style.cardTextPadding) {
+                DynamicText(
+                    model: DynamicTextModel(text: card.frontText),
+                    style: .headerGame(
+                        themeManager.currentThemeStyle,
+                        alignment: .center,
+                        lineLimit: 4
+                    )
                 )
 
-                RoundedRectangle(cornerRadius: style.cornerRadius)
-                    .fill(themeManager.currentThemeStyle.backgroundPrimary.opacity(0.8))
-                    .shadow(radius: 5)
+                Divider()
+                    .background(themeManager.currentThemeStyle.accentPrimary)
+                    .padding(.horizontal, 30)
 
-                GameCardSwipeBorder(
-                    cornerRadius: style.cornerRadius,
-                    style: themeManager.currentThemeStyle
+                DynamicText(
+                    model: DynamicTextModel(text: card.backText),
+                    style: .headerMain(
+                        themeManager.currentThemeStyle,
+                        alignment: .center,
+                        lineLimit: 4,
+                        fontColor: style.textSecondaryColor
+                    )
                 )
-
-                VStack(spacing: 1) {
-                    DynamicText(
-                        model: DynamicTextModel(text: card.frontText),
-                        style: .headerGame(
-                            ThemeManager.shared.currentThemeStyle,
-                            alignment: .center,
-                            lineLimit: 4
-                        )
-                    )
-                    .padding(.bottom, style.cardTextPadding)
-                    
-                    Divider()
-                        .background(themeManager.currentThemeStyle.accentPrimary)
-                        .padding(.horizontal, 30)
-                    
-                    DynamicText(
-                        model: DynamicTextModel(text: card.backText),
-                        style: .headerMain(
-                            ThemeManager.shared.currentThemeStyle,
-                            alignment: .center,
-                            lineLimit: 4,
-                            fontColor: style.textSecondaryColor
-                        )
-                    )
-                    .padding(.top, style.cardTextPadding)
-                }
-                .padding()
             }
-            .frame(width: 300, height: 400)
+            .padding()
         }
+        .frame(width: 300, height: 400)
+        .opacity(cardOpacity)
+    }
+    
+    private var maxOffset: CGFloat {
+        150
+    }
+
+    private var cardOpacity: Double {
+        let distance = abs(dragOffset.width)
+        return max(0.1, Double(1 - (distance / maxOffset)))
     }
 }

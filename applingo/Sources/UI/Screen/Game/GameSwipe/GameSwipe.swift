@@ -3,13 +3,13 @@ import SwiftUI
 struct GameSwipe: View {
     @EnvironmentObject private var themeManager: ThemeManager
     @Environment(\.dismiss) private var dismiss
-    
+
     @StateObject private var viewModel: SwipeViewModel
     @StateObject private var locale = GameSwipeLocale()
     @StateObject private var style: GameSwipeStyle
-    
+
     @ObservedObject var game: Swipe
-    
+
     @State private var shouldShowPreloader = false
     @State private var preloaderTimer: DispatchWorkItem?
     
@@ -22,15 +22,23 @@ struct GameSwipe: View {
         _style = StateObject(wrappedValue: style)
         self.game = game
     }
-    
+
     var body: some View {
         GeometryReader { geometry in
+            let cardY = geometry.size.height / 1.75
+            
             ZStack {
                 if shouldShowPreloader {
                     ItemListLoading(style: .themed(themeManager.currentThemeStyle))
                 }
-                
+
                 if let card = viewModel.currentCard {
+                    GameSwipeChoice(
+                        dragOffset: viewModel.dragOffset,
+                        locale: locale
+                    )
+                    .position(x: geometry.size.width / 2, y: cardY - 80)
+
                     GameSwipeCard(
                         locale: locale,
                         style: style,
@@ -72,7 +80,7 @@ struct GameSwipe: View {
             }
         }
     }
-    
+
     private func handleLoadingStateChange(_ isLoading: Bool) {
         if isLoading {
             preloaderTimer?.cancel()
@@ -90,4 +98,3 @@ struct GameSwipe: View {
         }
     }
 }
-

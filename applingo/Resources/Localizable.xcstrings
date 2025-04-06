@@ -14,9 +14,6 @@
     "|" : {
 
     },
-    "❌ Не верно" : {
-
-    },
     "base.button.again" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2753,9 +2750,6 @@
           }
         }
       }
-    },
-    "Верно ✅" : {
-
     }
   },
   "version" : "1.0"
