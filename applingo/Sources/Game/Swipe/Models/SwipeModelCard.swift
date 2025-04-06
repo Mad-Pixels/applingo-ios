@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct SwipeModelCard {
+    let id = UUID()
     let word: DatabaseModelWord
 
     let frontText: String

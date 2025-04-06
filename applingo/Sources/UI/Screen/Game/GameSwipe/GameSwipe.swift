@@ -12,7 +12,7 @@ struct GameSwipe: View {
 
     @State private var shouldShowPreloader = false
     @State private var preloaderTimer: DispatchWorkItem?
-    
+
     init(
         game: Swipe,
         style: GameSwipeStyle = .themed(ThemeManager.shared.currentThemeStyle)
@@ -44,7 +44,8 @@ struct GameSwipe: View {
                         card: card,
                         offset: viewModel.dragOffset
                     )
-                    .zIndex(5)
+                    .id(card.id)
+                    .transition(.scale.combined(with: .opacity))
                     .offset(viewModel.dragOffset)
                     .rotationEffect(.degrees(viewModel.cardRotation))
                     .gesture(
@@ -56,6 +57,7 @@ struct GameSwipe: View {
                                 viewModel.handleDragEnded(value: value)
                             }
                     )
+                    .zIndex(5)
 
                     VStack {
                         Spacer()
@@ -64,6 +66,7 @@ struct GameSwipe: View {
                     }
                 }
             }
+            .animation(.easeOut(duration: 0.3), value: viewModel.currentCard?.id)
             .frame(width: geometry.size.width, height: geometry.size.height)
         }
         .onAppear {
