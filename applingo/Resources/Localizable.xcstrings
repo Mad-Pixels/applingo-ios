@@ -966,40 +966,6 @@
         }
       }
     },
-    "NSMicrophoneUsageDescription" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "We use speech recognition in voice-based exercises"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Мы используем распознавание речи в упражнениях с голосом"
-          }
-        }
-      }
-    },
-    "NSSpeechRecognitionUsageDescription" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "We use speech recognition in voice-based exercises"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Мы используем распознавание речи в упражнениях с голосом"
-          }
-        }
-      }
-    },
     "screen.dictionaryImport.description.BlockA" : {
       "extractionState" : "manual",
       "localizations" : {
