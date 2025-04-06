@@ -1,6 +1,6 @@
 import SwiftUI
 
-internal struct SettingsMainViewASRPermissions: View {
+internal struct SettingsMainViewPermissionsMic: View {
     @EnvironmentObject private var themeManager: ThemeManager
     
     @ObservedObject private var locale: SettingsMainLocale
@@ -20,17 +20,17 @@ internal struct SettingsMainViewASRPermissions: View {
     }
 
     var body: some View {
-        if !AppStorage.shared.useASR {
+        if !AppStorage.shared.useMicrophone {
             VStack(spacing: style.spacing) {
                 SectionHeader(
-                    title: locale.screenSubtitleASRPermission,
+                    title: locale.screenSubtitleMicrophonePermission,
                     style: .block(themeManager.currentThemeStyle)
                 )
                 .padding(.top, 8)
 
                 SectionBody(content: {
                     DynamicText(
-                        model: DynamicTextModel(text: locale.screenDescriptionASRPermission),
+                        model: DynamicTextModel(text: locale.screenDescriptionMicrophonePermission),
                         style: .textLight(
                             themeManager.currentThemeStyle,
                             alignment: .leading,

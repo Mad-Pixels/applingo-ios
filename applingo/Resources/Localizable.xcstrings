@@ -1969,6 +1969,23 @@
         }
       }
     },
+    "screen.settings.description.microphonePermission" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "To use voice input, please allow microphone access in Settings > Privacy & Security > Microphone."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Для использования голосового ввода разрешите доступ к микрофону в Настройки > Конфиденциальность и безопасность > Микрофон."
+          }
+        }
+      }
+    },
     "screen.settings.subtitle.asrPermission" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2016,6 +2033,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Язык"
+          }
+        }
+      }
+    },
+    "screen.settings.subtitle.microphonePermission" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Microphone Access"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Доступ к микрофону"
           }
         }
       }
