@@ -2,25 +2,38 @@ import SwiftUI
 
 final class GameSwipeStyle: ObservableObject {
     // Layouts
-    let floatingBtnPadding: CGFloat
+    let floatingButtonPadding: CGFloat
+    let cardTextPadding: CGFloat
+    let cornerRadius: CGFloat
     
+    // Colors
     let backgroundColor: Color
+    let textSecondaryColor: Color
     
     init(
-        floatingBtnPadding: CGFloat,
-        backgroundColor: Color
+        floatingButtonPadding: CGFloat,
+        cardTextPadding: CGFloat,
+        cornerRadius: CGFloat,
+        backgroundColor: Color,
+        textSecondaryColor: Color
         
     ) {
-        self.floatingBtnPadding = floatingBtnPadding
+        self.floatingButtonPadding = floatingButtonPadding
+        self.cornerRadius = cornerRadius
         self.backgroundColor = backgroundColor
+        self.cardTextPadding = cardTextPadding
+        self.textSecondaryColor = textSecondaryColor
     }
 }
 
 extension GameSwipeStyle {
     static func themed(_ theme: AppTheme) -> GameSwipeStyle {
         GameSwipeStyle(
-            floatingBtnPadding: 32,
-            backgroundColor: theme.backgroundPrimary
+            floatingButtonPadding: 32,
+            cardTextPadding: 24,
+            cornerRadius: 20,
+            backgroundColor: theme.backgroundPrimary,
+            textSecondaryColor: theme.textSecondary
         )
     }
 }

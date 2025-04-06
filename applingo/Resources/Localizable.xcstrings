@@ -1700,6 +1700,40 @@
         }
       }
     },
+    "screen.gameSwipe.cardRight" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "right"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "верно"
+          }
+        }
+      }
+    },
+    "screen.gameSwipe.cardWrong" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "wrong"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "не верно"
+          }
+        }
+      }
+    },
     "screen.home.game.matchup" : {
       "extractionState" : "manual",
       "localizations" : {
