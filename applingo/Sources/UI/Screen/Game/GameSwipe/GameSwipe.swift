@@ -25,8 +25,6 @@ struct GameSwipe: View {
 
     var body: some View {
         GeometryReader { geometry in
-            let cardY = geometry.size.height / 1.75
-            
             ZStack {
                 if shouldShowPreloader {
                     ItemListLoading(style: .themed(themeManager.currentThemeStyle))
@@ -37,7 +35,7 @@ struct GameSwipe: View {
                         dragOffset: viewModel.dragOffset,
                         locale: locale
                     )
-                    .position(x: geometry.size.width / 2, y: cardY - 80)
+                    .zIndex(10)
 
                     GameSwipeCard(
                         locale: locale,
@@ -45,6 +43,7 @@ struct GameSwipe: View {
                         card: card,
                         offset: viewModel.dragOffset
                     )
+                    .zIndex(5)
                     .offset(viewModel.dragOffset)
                     .rotationEffect(.degrees(viewModel.cardRotation))
                     .gesture(

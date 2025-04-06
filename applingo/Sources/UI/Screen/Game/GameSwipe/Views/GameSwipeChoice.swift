@@ -6,19 +6,38 @@ struct GameSwipeChoice: View {
 
     var body: some View {
         GeometryReader { geometry in
-            VStack {
-                if !directionText.isEmpty {
-                    Text(directionText)
-                        .font(.title)
+            HStack {
+                if dragOffset.width < -20 {
+                    Text(makeVertical(locale.screenCardWrong))
+                        .font(.title2)
                         .fontWeight(.bold)
-                        .foregroundColor(directionColor)
+                        .foregroundColor(.red)
                         .opacity(textOpacity)
                         .animation(.easeInOut, value: dragOffset.width)
-                        .frame(maxWidth: .infinity)
-                        .position(x: geometry.size.width / 2,
-                                  y: geometry.size.height / 2 - 250)
+                        .glassBackground(cornerRadius: 12, opacity: 0.85)
+                        .frame(maxWidth: 60, maxHeight: .infinity)
+                        .zIndex(10)
+                } else {
+                    Spacer().frame(width: 60)
+                }
+
+                Spacer()
+
+                if dragOffset.width > 20 {
+                    Text(makeVertical(locale.screenCardRight))
+                        .font(.title2)
+                        .fontWeight(.bold)
+                        .foregroundColor(.green)
+                        .opacity(textOpacity)
+                        .animation(.easeInOut, value: dragOffset.width)
+                        .glassBackground(cornerRadius: 12, opacity: 0.85)
+                        .frame(maxWidth: 60, maxHeight: .infinity)
+                        .zIndex(10)
+                } else {
+                    Spacer().frame(width: 60)
                 }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .ignoresSafeArea()
     }
@@ -32,17 +51,7 @@ struct GameSwipeChoice: View {
         return min(0.5, Double(distance / maxOffset))
     }
 
-    private var directionText: String {
-        if dragOffset.width < -20 {
-            return locale.screenCardWrong
-        } else if dragOffset.width > 20 {
-            return locale.screenCardRight
-        } else {
-            return ""
-        }
-    }
-
-    private var directionColor: Color {
-        dragOffset.width < 0 ? .red : .green
+    private func makeVertical(_ text: String) -> String {
+        text.map { String($0) }.joined(separator: "\n")
     }
 }
