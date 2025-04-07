@@ -10,11 +10,9 @@ struct SwipeModelCard {
     let backText: String
     let isCorrectPair: Bool
     
-    /// Initializes a new instance of SwipeModelCard.
-    /// - Parameters:
-    ///   - correctWord: The DatabaseModelWord used as the basis for the card.
-    ///   - allWords: An array of DatabaseModelWord objects used to extract answer options.
-    ///   - forceCorrect: A Boolean value for create a valid pair.
+    let isSpecialCard: Bool
+    let specialBonus: GameSpecialBonus?
+
     init(word: DatabaseModelWord, allWords: [DatabaseModelWord], forceCorrect: Bool? = nil) {
         self.frontText = word.frontText
         self.word = word
@@ -36,6 +34,14 @@ struct SwipeModelCard {
                 self.backWord = word
                 self.isCorrectPair = true
             }
+        }
+
+        if Bool.random() {
+            self.specialBonus = GameSpecial.shared.getRandomBonus()
+            self.isSpecialCard = true
+        } else {
+            self.specialBonus = nil
+            self.isSpecialCard = false
         }
     }
 }

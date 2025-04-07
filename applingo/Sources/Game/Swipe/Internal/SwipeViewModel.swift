@@ -131,13 +131,14 @@ final class SwipeViewModel: ObservableObject {
         isProcessingAnswer = true
         
         let responseTime = cardStartTime.map { Date().timeIntervalSince($0) } ?? 0
+        let isSpecial = currentCard?.isSpecialCard ?? false
         let result = game.validateAnswer(isSwipeRight)
         
         game.validation.playFeedback(result, answer: "answer", selected: nil)
         game.updateStats(
             correct: result == .correct,
             responseTime: responseTime,
-            isSpecialCard: false
+            isSpecialCard: isSpecial
         )
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
