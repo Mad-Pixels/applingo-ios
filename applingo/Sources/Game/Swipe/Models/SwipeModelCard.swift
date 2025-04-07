@@ -16,9 +16,9 @@ struct SwipeModelCard {
     init(word: DatabaseModelWord, allWords: [DatabaseModelWord], forceCorrect: Bool? = nil) {
         self.frontText = word.frontText
         self.word = word
-        
+
         let shouldBeCorrect = forceCorrect ?? Bool.random()
-        
+
         if shouldBeCorrect {
             self.backText = word.backText
             self.backWord = word
@@ -36,12 +36,8 @@ struct SwipeModelCard {
             }
         }
 
-        if Bool.random() {
-            self.specialBonus = GameSpecial.shared.getRandomBonus()
-            self.isSpecialCard = true
-        } else {
-            self.specialBonus = nil
-            self.isSpecialCard = false
-        }
+        let bonus = GameSpecial.shared.maybeGetRandomBonus()
+        self.specialBonus = bonus
+        self.isSpecialCard = bonus != nil
     }
 }

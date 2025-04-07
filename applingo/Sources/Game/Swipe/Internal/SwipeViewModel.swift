@@ -129,20 +129,23 @@ final class SwipeViewModel: ObservableObject {
     private func processAnswer(_ isSwipeRight: Bool) {
         guard !isProcessingAnswer else { return }
         isProcessingAnswer = true
-        
+
         let responseTime = cardStartTime.map { Date().timeIntervalSince($0) } ?? 0
-        let isSpecial = currentCard?.isSpecialCard ?? false
+        let card = currentCard
         let result = game.validateAnswer(isSwipeRight)
-        
+        let bonus = card?.specialBonus
+
         game.validation.playFeedback(result, answer: "answer", selected: nil)
+
         game.updateStats(
             correct: result == .correct,
             responseTime: responseTime,
-            isSpecialCard: isSpecial
+            specialBonus: bonus
         )
-        
+
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             self.generateCard()
         }
     }
+
 }

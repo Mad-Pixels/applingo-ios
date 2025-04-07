@@ -103,7 +103,7 @@ internal final class QuizViewModel: ObservableObject {
         game.updateStats(
             correct: result == .correct,
             responseTime: responseTime,
-            isSpecialCard: false
+            specialBonus: nil
         )
         
         if result == .incorrect {

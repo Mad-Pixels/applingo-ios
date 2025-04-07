@@ -2,7 +2,8 @@ import Foundation
 
 protocol GameSpecialBonus {
     var id: String { get }
-    var title: String { get }
+    var name: String { get }
     
-    func applyBonus() -> String
+    var scoreBonus: Int { get }
+    var penaltyBonus: Int { get }
 }

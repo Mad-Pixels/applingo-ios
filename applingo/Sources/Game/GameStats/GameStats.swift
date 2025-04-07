@@ -44,36 +44,45 @@ final class GameStats: ObservableObject {
     ///   - responseTime: The time taken to provide the answer.
     ///   - scoring: An instance conforming to `AbstractGameScoring` used to compute score changes.
     ///   - isSpecialCard: A Boolean indicating if a special card was involved in the answer.
-    final internal func updateGameStats(correct: Bool,
-                                        responseTime: TimeInterval,
-                                        scoring: GameScoring,
-                                        isSpecialCard: Bool) {
+    final internal func updateGameStats(
+        correct: Bool,
+        responseTime: TimeInterval,
+        scoring: GameScoring,
+        specialBonus: GameSpecialBonus? = nil
+    ) {
         totalAverageResponseTime = ((totalAverageResponseTime * Double(totalAnswers)) + responseTime) / Double(totalAnswers + 1)
         averageResponseTime = responseTime
-        
+
         if correct {
             streaks += 1
             correctAnswersStreak = max(correctAnswersStreak, streaks)
             
-            let scoreModel = scoring.calculateScore(responseTime: responseTime, isSpecialCard: isSpecialCard, streaks: streaks)
+            var scoreModel = scoring.calculateScore(responseTime: responseTime, isSpecialCard: specialBonus != nil, streaks: streaks)
+            if let bonus = specialBonus {
+                scoreModel.value += bonus.scoreBonus
+            }
+            
             score = scoreModel
             totalScore += scoreModel.value
             correctAnswers += 1
         } else {
             streaks = 0
             
-            let penaltyPoints = scoring.calculatePenalty()
-            totalScore -= penaltyPoints
-            if totalScore < 0 {
-                totalScore = 0
+            var penalty = scoring.calculatePenalty()
+            if let bonus = specialBonus {
+                penalty = bonus.penaltyBonus
             }
-            score = GameScoringScoreAnswerModel(value: -penaltyPoints, type: .penalty)
+
+            totalScore -= penalty
+            if totalScore < 0 { totalScore = 0 }
+
+            score = GameScoringScoreAnswerModel(value: -penalty, type: .penalty)
             updateSurvivalState()
         }
-        
+
         totalAnswers += 1
         accuracy = Double(correctAnswers) / Double(totalAnswers)
-        
+
         Logger.debug("[GameStats]: Updated stats", metadata: [
             "totalScore": String(totalScore),
             "streak": String(streaks),

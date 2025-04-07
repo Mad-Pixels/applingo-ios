@@ -7,7 +7,7 @@ struct GameScoringScoreAnswerModel: Identifiable, Equatable {
     internal let id = UUID()
     
     /// The score value for this particular scoring event.
-    internal let value: Int
+    internal var value: Int
     
     /// The type of the score, which is used to determine the corresponding icon.
     internal let type: ScoreType

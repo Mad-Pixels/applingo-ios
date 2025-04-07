@@ -101,7 +101,7 @@ final class MatchViewModel: ObservableObject {
         game.updateStats(
             correct: result == .correct,
             responseTime: responseTime,
-            isSpecialCard: false
+            specialBonus: nil
         )
         
         if result == .correct {

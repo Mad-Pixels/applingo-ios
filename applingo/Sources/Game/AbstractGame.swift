@@ -27,12 +27,12 @@ protocol AbstractGame: ObservableObject {
     var settings: GameSettings { get }
     
     /// Updates the game statistics based on whether the answer was correct,
-    /// the response time, and if a special card was used.
+    /// the response time, and any applied bonus.
     /// - Parameters:
-    ///   - correct: A Boolean indicating if the answer was correct.
-    ///   - responseTime: The time taken to answer.
-    ///   - isSpecialCard: A Boolean indicating if a special card was involved.
-    func updateStats(correct: Bool, responseTime: TimeInterval, isSpecialCard: Bool)
+    ///   - correct: Whether the answer was correct.
+    ///   - responseTime: Time taken by the user.
+    ///   - specialBonus: Optional bonus used in this answer.
+    func updateStats(correct: Bool, responseTime: TimeInterval, specialBonus: GameSpecialBonus?)
     
     /// Validates the provided answer.
     /// - Parameter answer: The answer to validate.

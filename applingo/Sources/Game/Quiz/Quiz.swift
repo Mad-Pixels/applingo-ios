@@ -102,12 +102,12 @@ final class Quiz: ObservableObject, AbstractGame {
         return result
     }
     
-    internal func updateStats(correct: Bool, responseTime: TimeInterval, isSpecialCard: Bool) {
+    internal func updateStats(correct: Bool, responseTime: TimeInterval, specialBonus: GameSpecialBonus? = nil) {
         stats.updateGameStats(
             correct: correct,
             responseTime: responseTime,
             scoring: scoring,
-            isSpecialCard: isSpecialCard
+            specialBonus: specialBonus
         )
     }
     

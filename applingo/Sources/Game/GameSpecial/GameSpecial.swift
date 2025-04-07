@@ -9,7 +9,8 @@ final class GameSpecial {
     
     private init() {}
 
-    func getRandomBonus() -> GameSpecialBonus {
-        return availableBonuses.first!
+    func maybeGetRandomBonus(chance: Double = 0.3) -> GameSpecialBonus? {
+        guard Double.random(in: 0...1) < chance else { return nil }
+        return availableBonuses.randomElement()
     }
 }
