@@ -37,9 +37,9 @@ class QuizSettings: GameSettings {
         )
 
         super.init(settings: [
-            noVoiceSetting,
+            timeDurationSetting,
             countLivesSetting,
-            timeDurationSetting
+            noVoiceSetting
         ])
     }
 
