@@ -7,6 +7,7 @@ final class MatchViewModel: ObservableObject {
     @Published var highlightedOptions: [String: Color] = [:]
     @Published var gameBoard: GameMatchBoard
     
+    private var selectionStartTime: Date?
     private var loadingTask: Task<Void, Never>?
     private var cancellables = Set<AnyCancellable>()
     private let maxCards = 6
@@ -79,6 +80,14 @@ final class MatchViewModel: ObservableObject {
             return
         }
         
+        let responseTime: TimeInterval
+        if let start = selectionStartTime {
+            responseTime = Date().timeIntervalSince(start)
+        } else {
+            responseTime = 0
+        }
+        selectionStartTime = nil
+        
         if let validation = game.validation as? MatchValidation {
             validation.setCurrentCard(currentCard: questionCard, currentWord: answerCard.word)
         }
@@ -91,7 +100,7 @@ final class MatchViewModel: ObservableObject {
         )
         game.updateStats(
             correct: result == .correct,
-            responseTime: 10,
+            responseTime: responseTime,
             isSpecialCard: false
         )
         
@@ -104,5 +113,9 @@ final class MatchViewModel: ObservableObject {
                 self.generateCards()
             }
         }
+    }
+    
+    func startTimer() {
+        selectionStartTime = Date()
     }
 }
