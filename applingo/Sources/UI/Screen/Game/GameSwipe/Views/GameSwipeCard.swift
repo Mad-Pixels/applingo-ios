@@ -22,19 +22,42 @@ struct GameSwipeCard: View {
 
     var body: some View {
         ZStack {
-            GameSwipeCardBackground(
-                cornerRadius: style.cornerRadius,
-                style: themeManager.currentThemeStyle
-            )
+            // ✅ Используем визуализацию из бонуса
+            if let bonus = card.specialBonus {
+                RoundedRectangle(cornerRadius: style.cornerRadius)
+                    .fill(bonus.backgroundColor)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: style.cornerRadius)
+                            .stroke(bonus.borderColor, lineWidth: 3)
+                    )
+                    .shadow(radius: 5)
 
-            RoundedRectangle(cornerRadius: style.cornerRadius)
-                .fill(themeManager.currentThemeStyle.backgroundPrimary.opacity(0.8))
-                .shadow(radius: 5)
+                if let icon = bonus.icon {
+                    icon
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 40, height: 40)
+                        .foregroundColor(bonus.borderColor)
+                        .padding(10)
+                        .background(Color.white.opacity(0.8))
+                        .clipShape(Circle())
+                        .offset(x: 120, y: -150)
+                }
+            } else {
+                GameSwipeCardBackground(
+                    cornerRadius: style.cornerRadius,
+                    style: themeManager.currentThemeStyle
+                )
 
-            GameCardSwipeBorder(
-                cornerRadius: style.cornerRadius,
-                style: themeManager.currentThemeStyle
-            )
+                RoundedRectangle(cornerRadius: style.cornerRadius)
+                    .fill(themeManager.currentThemeStyle.backgroundPrimary.opacity(0.8))
+                    .shadow(radius: 5)
+
+                GameCardSwipeBorder(
+                    cornerRadius: style.cornerRadius,
+                    style: themeManager.currentThemeStyle
+                )
+            }
 
             VStack(spacing: style.cardTextPadding) {
                 DynamicText(

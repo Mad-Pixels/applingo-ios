@@ -17,3 +17,10 @@ extension OverlayIcon {
         OverlayIcon(style: .themed(theme))
     }
 }
+
+
+extension GameSpecialBonus {
+    var backgroundColor: Color { .white }
+    var borderColor: Color { .clear }
+    var icon: Image? { nil }
+}
