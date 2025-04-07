@@ -66,7 +66,10 @@ struct GameQuiz: View {
                                     disabled: !TTSLanguageType.shared.supported(for: card.word.backTextCode),
                                     onRecognized: { recognized in
                                         recognizedAnswer = recognized
-                                        viewModel.handleAnswer(recognized)
+
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.6) {
+                                            viewModel.handleAnswer(recognized)
+                                        }
                                     }
                                 )
                                 .padding(.bottom, style.floatingBtnPadding)
