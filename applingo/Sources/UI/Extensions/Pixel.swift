@@ -25,7 +25,7 @@ struct PixelBackgroundEffect: View {
                 )
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.red.opacity(0.2))
+        //.background(Color.red.opacity(0.2))
         .onAppear {
             animate = true
         }

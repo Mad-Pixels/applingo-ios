@@ -1941,13 +1941,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "To use voice-based answering in some games, please allow access to microphone and speech recognition in Settings > Privacy & Security > Microphone and Settings > Privacy & Security > Speech Recognition."
+            "value" : "To use voice-based answering in some games, please allow access to speech recognition."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Чтобы использовать голосовые ответы в некоторых играх, откройте Настройки > Конфиденциальность и безопасность > Микрофон и Настройки > Конфиденциальность и безопасность > Распознавание речи и предоставьте доступ."
+            "value" : "Чтобы использовать голосовые ответы в некоторых играх предоставьте доступ к Распознованию речи."
           }
         }
       }
@@ -1975,13 +1975,47 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "To use voice input, please allow microphone access in Settings > Privacy & Security > Microphone."
+            "value" : "To use voice input, please allow microphone access."
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Для использования голосового ввода разрешите доступ к микрофону в Настройки > Конфиденциальность и безопасность > Микрофон."
+            "value" : "Для использования голосового ввода разрешите доступ к микрофону."
+          }
+        }
+      }
+    },
+    "screen.settings.settings.asrPermission" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings > Privacy & Security > Speech Recognition"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Настройки > Конфиденциальность и безопасность > Распознавание речи"
+          }
+        }
+      }
+    },
+    "screen.settings.settings.microphonePermission" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings > Privacy & Security > Microphone"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Настройки > Конфиденциальность и безопасность > Микрофон"
           }
         }
       }

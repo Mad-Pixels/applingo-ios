@@ -28,10 +28,20 @@ internal struct SettingsMainViewPermissionsMic: View {
                 )
                 .padding(.top, 8)
 
+                DynamicText(
+                    model: DynamicTextModel(text: locale.screenDescriptionMicrophonePermission),
+                    style: .textBold(
+                        themeManager.currentThemeStyle,
+                        alignment: .leading,
+                        lineLimit: 8
+                    )
+                )
+                .padding(.horizontal, 8)
+                
                 SectionBody(content: {
                     DynamicText(
-                        model: DynamicTextModel(text: locale.screenDescriptionMicrophonePermission),
-                        style: .textLight(
+                        model: DynamicTextModel(text: locale.screenSettingsMicrophonePermission),
+                        style: .textMain(
                             themeManager.currentThemeStyle,
                             alignment: .leading,
                             lineLimit: 8

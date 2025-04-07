@@ -28,10 +28,21 @@ internal struct SettingsMainViewPermissionsASR: View {
                 )
                 .padding(.top, 8)
 
+                
+                DynamicText(
+                    model: DynamicTextModel(text: locale.screenDescriptionASRPermission),
+                    style: .textBold(
+                        themeManager.currentThemeStyle,
+                        alignment: .leading,
+                        lineLimit: 8
+                    )
+                )
+                .padding(.horizontal, 8)
+                
                 SectionBody(content: {
                     DynamicText(
-                        model: DynamicTextModel(text: locale.screenDescriptionASRPermission),
-                        style: .textLight(
+                        model: DynamicTextModel(text: locale.screenSettingsASRPermission),
+                        style: .textMain(
                             themeManager.currentThemeStyle,
                             alignment: .leading,
                             lineLimit: 8
