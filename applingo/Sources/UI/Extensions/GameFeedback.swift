@@ -24,3 +24,16 @@ extension GameSpecialBonus {
     var borderColor: Color { .clear }
     var icon: Image? { nil }
 }
+
+
+extension GameSpecialBonus {
+    var backgroundEffectView: AnyView {
+            AnyView(EmptyView()) // по умолчанию ничего
+        }
+}
+
+extension GameSpecialX5Bonus {
+    var backgroundEffectView: AnyView {
+        AnyView(PixelBackgroundEffect())
+    }
+}

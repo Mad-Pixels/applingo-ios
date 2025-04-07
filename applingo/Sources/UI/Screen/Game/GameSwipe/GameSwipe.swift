@@ -8,6 +8,10 @@ struct GameSwipe: View {
     @StateObject private var locale = GameSwipeLocale()
     @StateObject private var style: GameSwipeStyle
 
+    //
+    @State private var currentBonusID: String? = nil
+
+    
     @ObservedObject var game: Swipe
 
     @State private var shouldShowPreloader = false
@@ -26,19 +30,29 @@ struct GameSwipe: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack {
+                // 🔥 1. Фоновая анимация для special бонуса
+                if let bonus = viewModel.currentCard?.specialBonus,
+                   bonus.id == currentBonusID {
+                    bonus.backgroundEffectView
+                        .ignoresSafeArea()
+                        .transition(.opacity)
+                }
+
+                // 🎨 2. Overlay и фоновые элементы
                 OverlayIcon.GameAnswer(themeManager.currentThemeStyle)
-                
+
+                // ⏳ 3. Прелоадер
                 if shouldShowPreloader {
                     ItemListLoading(style: .themed(themeManager.currentThemeStyle))
                 }
 
+                // 🧠 4. Контент карточки
                 if let card = viewModel.currentCard {
                     GameSwipeChoice(
                         locale: locale,
                         style: style,
                         offset: viewModel.dragOffset
                     )
-                    .zIndex(10)
 
                     GameSwipeCard(
                         locale: locale,
@@ -59,7 +73,6 @@ struct GameSwipe: View {
                                 viewModel.handleDragEnded(value: value)
                             }
                     )
-                    .zIndex(5)
 
                     VStack {
                         Spacer()
@@ -78,6 +91,9 @@ struct GameSwipe: View {
         .onChange(of: viewModel.isLoadingCard) { isLoading in
             handleLoadingStateChange(isLoading)
         }
+        .onChange(of: viewModel.currentCard?.id) { _ in
+            currentBonusID = viewModel.currentCard?.specialBonus?.id
+        }
         .onReceive(game.state.$isGameOver) { isGameOver in
             if isGameOver {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -86,6 +102,7 @@ struct GameSwipe: View {
             }
         }
     }
+
 
     private func handleLoadingStateChange(_ isLoading: Bool) {
         if isLoading {

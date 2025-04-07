@@ -10,3 +10,9 @@ struct GameSpecialX5Bonus: GameSpecialBonus {
     let borderColor: Color = Color.orange
     let icon: Image? = Image(systemName: "star.fill")
 }
+
+//extension GameSpecialX5Bonus {
+//    var backgroundEffect: some View {
+//        PixelBackgroundEffect()
+//    }
+//}
