@@ -4,9 +4,7 @@ internal struct GameQuizViewAnswerRecord: View {
     @EnvironmentObject var themeManager: ThemeManager
 
     let languageCode: String
-    let onRecognized: (String) -> Void
-
-    @State private var recognizedText: String = ""
+    @Binding var recognizedText: String
 
     var body: some View {
         VStack(spacing: 8) {
@@ -17,12 +15,6 @@ internal struct GameQuizViewAnswerRecord: View {
                 )
             }
         }
-        .onReceive(NotificationCenter.default.publisher(for: .ASRDidFinishRecognition)) { _ in
-            let text = ASR.shared.transcription.trimmingCharacters(in: .whitespacesAndNewlines)
-            if !text.isEmpty {
-                recognizedText = text
-                onRecognized(text)
-            }
-        }
     }
 }
+

@@ -11,6 +11,7 @@ struct GameQuiz: View {
     @ObservedObject var game: Quiz
 
     @State private var shouldShowPreloader = false
+    @State private var recognizedAnswer: String = ""
     @State private var preloaderTimer: DispatchWorkItem?
 
     init(
@@ -45,7 +46,8 @@ struct GameQuiz: View {
                                 locale: locale,
                                 card: card,
                                 onSelect: { viewModel.handleAnswer($0) },
-                                viewModel: viewModel
+                                viewModel: viewModel,
+                                recognizedText: $recognizedAnswer
                             )
                         }
                         .padding(.horizontal)
@@ -63,6 +65,7 @@ struct GameQuiz: View {
                                     languageCode: card.word.backTextCode,
                                     disabled: !TTSLanguageType.shared.supported(for: card.word.backTextCode),
                                     onRecognized: { recognized in
+                                        recognizedAnswer = recognized
                                         viewModel.handleAnswer(recognized)
                                     }
                                 )

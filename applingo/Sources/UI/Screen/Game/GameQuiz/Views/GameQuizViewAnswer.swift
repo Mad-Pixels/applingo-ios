@@ -3,6 +3,7 @@ import SwiftUI
 internal struct GameQuizViewAnswer: View {
     @EnvironmentObject private var themeManager: ThemeManager
 
+    @Binding var recognizedText: String
     @ObservedObject private var viewModel: QuizViewModel
 
     private let locale: GameQuizLocale
@@ -15,23 +16,26 @@ internal struct GameQuizViewAnswer: View {
         locale: GameQuizLocale,
         card: QuizModelCard,
         onSelect: @escaping (String) -> Void,
-        viewModel: QuizViewModel
+        viewModel: QuizViewModel,
+        recognizedText: Binding<String>
     ) {
         self.card = card
         self.style = style
         self.locale = locale
         self.onSelect = onSelect
         self.viewModel = viewModel
+        self._recognizedText = recognizedText
     }
 
     var body: some View {
         if card.voice && card.flip && !AppStorage.shared.noRecord {
             GameQuizViewAnswerRecord(
                 languageCode: card.word.backTextCode,
-                onRecognized: { recognized in
-                    onSelect(recognized)
-                }
+                recognizedText: $recognizedText
             )
+            .onAppear {
+                recognizedText = ""
+            }
             .opacity(viewModel.isProcessingAnswer ? 0.7 : 1.0)
             .disabled(viewModel.isProcessingAnswer)
             .padding(.horizontal, style.optionsPadding)
