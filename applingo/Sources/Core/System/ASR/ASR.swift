@@ -16,7 +16,7 @@ final class ASR: NSObject, SFSpeechRecognizerDelegate, Sendable {
     private var completionHandler: ((String?) -> Void)?
     private var isProcessing = false
     
-    private override init() {
+    override init() {
         super.init()
     }
 

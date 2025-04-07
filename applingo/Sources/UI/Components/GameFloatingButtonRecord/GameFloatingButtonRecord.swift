@@ -4,13 +4,14 @@ struct GameFloatingButtonRecord: View {
     @EnvironmentObject var themeManager: ThemeManager
 
     @State private var isRecording: Bool = false
-    @State private var fullLangCode: String = ""
     @State private var isPrepared: Bool = false
+    @State private var fullLangCode: String = ""
+    @State private var asr: ASR? = nil
 
-    internal let languageCode: String
-    internal let disabled: Bool
-    internal let onRecognized: (String) -> Void
-
+    let onRecognized: (String) -> Void
+    let languageCode: String
+    let disabled: Bool
+    
     init(
         languageCode: String,
         disabled: Bool,
@@ -26,7 +27,7 @@ struct GameFloatingButtonRecord: View {
             icon: isRecording ? "stop.circle.fill" : "mic.circle.fill",
             action: {
                 if isRecording {
-                    ASR.shared.stopRecognition()
+                    asr?.stopRecognition()
                     isRecording = false
                 } else if isPrepared {
                     startRecognition()
@@ -47,7 +48,7 @@ struct GameFloatingButtonRecord: View {
             prepareASR()
         }
         .onReceive(NotificationCenter.default.publisher(for: .ASRDidFinishRecognition)) { _ in
-            let recognized = ASR.shared.transcription.trimmingCharacters(in: .whitespacesAndNewlines)
+            let recognized = asr?.transcription.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
             if !recognized.isEmpty {
                 onRecognized(recognized)
             }
@@ -55,7 +56,7 @@ struct GameFloatingButtonRecord: View {
         }
         .onDisappear {
             if isRecording {
-                ASR.shared.stopRecognition()
+                asr?.stopRecognition()
                 isRecording = false
             }
         }
@@ -65,24 +66,14 @@ struct GameFloatingButtonRecord: View {
         Task {
             fullLangCode = TTSLanguageType.shared.get(for: languageCode)
 
-            let isSupported = ASR.shared.isAvailable(for: fullLangCode)
-            if !isSupported {
-                Logger.debug("[GameFloatingBtnRecord] Language not supported", metadata: [
-                    "lang": fullLangCode
-                ])
-                isPrepared = false
-                return
-            }
-
-            let authStatus = await ASR.shared.requestAuthorization()
-            if authStatus == .authorized {
-                Logger.debug("[GameFloatingBtnRecord] ASR is ready", metadata: [
-                    "lang": fullLangCode
-                ])
+            do {
+                asr = try await ASRPrepare.shared.get(for: fullLangCode)
+                Logger.debug("[GameFloatingButtonRecord] ASR ready", metadata: ["lang": fullLangCode])
                 isPrepared = true
-            } else {
-                Logger.debug("[GameFloatingBtnRecord] Authorization denied", metadata: [
-                    "status": String(describing: authStatus)
+            } catch {
+                Logger.error("[GameFloatingButtonRecord] Failed to prepare ASR", metadata: [
+                    "lang": fullLangCode,
+                    "error": error.localizedDescription
                 ])
                 isPrepared = false
             }
@@ -92,10 +83,10 @@ struct GameFloatingButtonRecord: View {
     private func startRecognition() {
         Task {
             do {
-                try await ASR.shared.startRecognition(languageCode: fullLangCode) { _ in }
+                try await asr?.startRecognition(languageCode: fullLangCode) { _ in }
                 isRecording = true
             } catch {
-                Logger.error("[GameFloatingBtnRecord] Failed to start recognition", metadata: [
+                Logger.error("[GameFloatingButtonRecord] Failed to start recognition", metadata: [
                     "lang": fullLangCode,
                     "error": error.localizedDescription
                 ])
