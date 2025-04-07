@@ -66,9 +66,9 @@ final class AppStorage {
     
     // MARK: - Log Sending
     /// Whether the application is configured to send logs.
-    var sendLogs: Bool {
-        get { permanent.getValue(for: "sendLogs") != "true" }
-        set { permanent.setValue(String(newValue), for: "sendLogs") }
+    var noLogs: Bool {
+        get { temporary.getValue(for: "no_voice") == "false" }
+        set { temporary.setValue(String(newValue), for: "no_logs")}
     }
     
     // MARK: - Active Screen
