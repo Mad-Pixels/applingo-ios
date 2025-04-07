@@ -2700,6 +2700,23 @@
         }
       }
     },
+    "settings.game.lives" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lives count"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Кол-во жизней"
+          }
+        }
+      }
+    },
     "settings.game.noVoice" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2713,6 +2730,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Отключить голосовые задачи"
+          }
+        }
+      }
+    },
+    "settings.game.timeDuration" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Game duration"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Время игры"
           }
         }
       }

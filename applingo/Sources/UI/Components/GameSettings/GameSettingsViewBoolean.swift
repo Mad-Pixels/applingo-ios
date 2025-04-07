@@ -3,7 +3,7 @@ import SwiftUI
 struct GameSettingsViewBoolean: View {
     @EnvironmentObject private var themeManager: ThemeManager
     
-    @ObservedObject var setting: BooleanSettingItemBoolean
+    @ObservedObject var setting: GameSettingItemBoolean
     
     var body: some View {
         HStack {
