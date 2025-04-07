@@ -2,37 +2,42 @@ import SwiftUI
 
 class GameSettings: ObservableObject {
     private var settings: [String: any GameSetting] = [:]
+    private var order: [String] = []
     
+    /// Initializes the container with a predefined list of settings.
+    /// - Parameter settings: An array of `GameSetting`-conforming objects.
     init(settings: [any GameSetting] = []) {
         for setting in settings {
-            self.settings[setting.id] = setting
+            add(setting)
         }
     }
     
+    /// Adds a new setting to the collection.
+    /// - Parameter setting: The setting to add.
     func add(_ setting: any GameSetting) {
         settings[setting.id] = setting
+        order.append(setting.id)
     }
     
-    /// Get a setting by ID
-    /// - Parameter id: The ID of the setting to retrieve
-    /// - Returns: The setting if found, nil otherwise
+    /// Retrieves a setting by its ID.
+    /// - Parameter id: The ID of the setting to retrieve.
+    /// - Returns: The setting if found, or `nil` otherwise.
     func getSetting(id: String) -> (any GameSetting)? {
         return settings[id]
     }
     
-    /// Get value of a setting by ID
-    /// - Parameter id: The ID of the setting
-    /// - Returns: The value if setting exists, nil otherwise
+    /// Retrieves the value of a setting by its ID.
+    /// - Parameter id: The ID of the setting.
+    /// - Returns: The value of the setting if it exists, or `nil` otherwise.
     func getValue(id: String) -> Any? {
-        guard let setting = settings[id] else { return nil }
-        return setting.getValue()
+        return settings[id]?.getValue()
     }
     
-    /// Set value of a setting by ID
+    /// Sets the value of a setting by its ID.
     /// - Parameters:
-    ///   - id: The ID of the setting
-    ///   - value: The new value
-    /// - Returns: True if setting was updated, false otherwise
+    ///   - id: The ID of the setting to update.
+    ///   - value: The new value to assign.
+    /// - Returns: `true` if the setting was updated, `false` otherwise.
     @discardableResult
     func setValue(id: String, value: Any) -> Bool {
         guard let setting = settings[id] else { return false }
@@ -40,13 +45,13 @@ class GameSettings: ObservableObject {
         return true
     }
     
-    /// Get all settings
-    /// - Returns: Array of all settings
+    /// Returns all settings in the order they were added.
+    /// - Returns: An array of settings.
     func getAllSettings() -> [any GameSetting] {
-        return Array(settings.values)
+        return order.compactMap { settings[$0] }
     }
     
-    /// Check if has any settings
+    /// Indicates whether any settings are stored.
     var hasSettings: Bool {
         return !settings.isEmpty
     }
