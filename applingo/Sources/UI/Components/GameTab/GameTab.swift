@@ -70,7 +70,7 @@ struct GameTab<GameType: AbstractGame>: View {
             )
         case .survival where gameState.survivalState != nil:
             GameTabViewLives(
-                lives: gameState.survivalState!.lives,
+                survival: gameState.survivalState!,
                 style: style
             )
         case .time where gameState.timeState != nil:

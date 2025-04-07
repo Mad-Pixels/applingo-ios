@@ -37,7 +37,10 @@ final class GameState: ObservableObject {
         
         switch mode {
         case .survival:
-            survivalState = SurvivalState(lives: AppStorage.shared.gameLives)
+            survivalState = SurvivalState(
+                initialLives: AppStorage.shared.gameLives,
+                lives: AppStorage.shared.gameLives
+            )
         case .time:
             let timer = GameStateUtilsTimer(duration: AppStorage.shared.gameDuration)
             
