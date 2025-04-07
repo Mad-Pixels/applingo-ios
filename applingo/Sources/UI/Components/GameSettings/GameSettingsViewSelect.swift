@@ -43,7 +43,7 @@ struct GameSettingsViewSelect<V: Hashable & CustomStringConvertible>: View {
                     .foregroundColor(themeManager.currentThemeStyle.accentPrimary)
             }
             .padding(12)
-            .padding(.vertical, 16)
+            .padding(.vertical, 14)
             .background(
                 RoundedRectangle(cornerRadius: 16)
                     .fill(themeManager.currentThemeStyle.backgroundPrimary)

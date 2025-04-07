@@ -21,7 +21,7 @@ struct GameSettingsViewBoolean: View {
                         alignment: .leading
                     )
                 )
-                .padding(.vertical, 16)
+                .padding(.vertical, 14)
                 
             }
             .padding(12)
