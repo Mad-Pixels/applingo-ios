@@ -13,7 +13,7 @@ final class SwipeSpecial {
 
     private init() {}
 
-    func maybeGetRandomBonus(chance: Double = 0.3) -> GameSpecialBonus? {
+    func maybeGetRandomBonus(chance: Double = 0.2) -> GameSpecialBonus? {
         guard Double.random(in: 0...1) < chance else { return nil }
 
         let totalWeight = bonusesWithWeights.map(\.weight).reduce(0, +)
