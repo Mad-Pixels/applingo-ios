@@ -9,6 +9,12 @@ final class SettingsMainLocale: ObservableObject {
         case subtitleLanguage = "screen.settings.subtitle.language"
         case subtitleFeedback = "screen.settings.subtitle.feedback"
         case descriptionFeedback = "screen.settings.description.feedback"
+        case subtitleASRPermission = "screen.settings.subtitle.asrPermission"
+        case descriptionASRPermission = "screen.settings.description.asrPermission"
+        case settingsASRPermission = "screen.settings.settings.asrPermission"
+        case subtitleMicrophonePermission = "screen.settings.subtitle.microphonePermission"
+        case descriptionMicrophonePermission = "screen.settings.description.microphonePermission"
+        case settingsMicrophonePermission = "screen.settings.settings.microphonePermission"
     }
 
     @Published private(set) var screenTitle: String
@@ -18,6 +24,12 @@ final class SettingsMainLocale: ObservableObject {
     @Published private(set) var screenSubtitleLanguage: String
     @Published private(set) var screenSubtitleFeedback: String
     @Published private(set) var screenDescriptionFeedback: String
+    @Published private(set) var screenSubtitleASRPermission: String
+    @Published private(set) var screenDescriptionASRPermission: String
+    @Published private(set) var screenSettingsASRPermission: String
+    @Published private(set) var screenSubtitleMicrophonePermission: String
+    @Published private(set) var screenDescriptionMicrophonePermission: String
+    @Published private(set) var screenSettingsMicrophonePermission: String
 
     init() {
         self.screenTitle = ""
@@ -27,6 +39,12 @@ final class SettingsMainLocale: ObservableObject {
         self.screenSubtitleLanguage = ""
         self.screenSubtitleFeedback = ""
         self.screenDescriptionFeedback = ""
+        self.screenSubtitleASRPermission = ""
+        self.screenDescriptionASRPermission = ""
+        self.screenSettingsASRPermission = ""
+        self.screenSubtitleMicrophonePermission = ""
+        self.screenDescriptionMicrophonePermission = ""
+        self.screenSettingsMicrophonePermission = ""
 
         updateLocalizedStrings()
 
@@ -58,5 +76,11 @@ final class SettingsMainLocale: ObservableObject {
         screenSubtitleLanguage = Self.localizedString(for: .subtitleLanguage)
         screenSubtitleFeedback = Self.localizedString(for: .subtitleFeedback)
         screenDescriptionFeedback = Self.localizedString(for: .descriptionFeedback)
+        screenSubtitleASRPermission = Self.localizedString(for: .subtitleASRPermission)
+        screenDescriptionASRPermission = Self.localizedString(for: .descriptionASRPermission)
+        screenSettingsASRPermission = Self.localizedString(for: .settingsASRPermission)
+        screenSubtitleMicrophonePermission = Self.localizedString(for: .subtitleMicrophonePermission)
+        screenDescriptionMicrophonePermission = Self.localizedString(for: .descriptionMicrophonePermission)
+        screenSettingsMicrophonePermission = Self.localizedString(for: .settingsMicrophonePermission)
     }
 }

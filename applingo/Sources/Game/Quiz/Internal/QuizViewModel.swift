@@ -66,7 +66,8 @@ internal final class QuizViewModel: ObservableObject {
                     currentCard = QuizModelCard(
                         word: correctWord,
                         allWords: shuffledWords,
-                        voice: supportSpeaking ? (Double.random(in: 0..<1) < 0.2) : false
+                        flip: (Double.random(in: 0..<1) < 0.5),
+                        voice: supportSpeaking ? (Double.random(in: 0..<1) < 0.5) : false
                     )
                     
                     if let validation = game.validation as? QuizValidation,
@@ -102,7 +103,7 @@ internal final class QuizViewModel: ObservableObject {
         game.updateStats(
             correct: result == .correct,
             responseTime: responseTime,
-            isSpecialCard: false
+            specialBonus: nil
         )
         
         if result == .incorrect {
@@ -115,6 +116,12 @@ internal final class QuizViewModel: ObservableObject {
                 self.isLoadingCard = true
                 self.generateCard()
             }
+        }
+    }
+    
+    func skipCard() {
+        withAnimation {
+            generateCard()
         }
     }
 }

@@ -171,12 +171,14 @@ extension DynamicTextStyle {
     static func headerMain(
         _ theme: AppTheme,
         alignment: TextAlignment = .leading,
-        lineLimit: Int = 1
+        lineLimit: Int = 1,
+        fontColor: Color? = nil
     ) -> DynamicTextStyle {
         let shouldWrapWords = lineLimit > 1
+        let color = fontColor ?? theme.textPrimary
         
         return DynamicTextStyle(
-            textColor: theme.textPrimary,
+            textColor: color,
             alignment: alignment,
             letterSpacing: 0.4,
             allowsTightening: true,

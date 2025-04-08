@@ -38,7 +38,7 @@ struct GameResult: View {
                 StatRow(title: locale.accuracyText, value: String(format: "%.1f%%", stats.accuracy * 100))
                 StatRow(title: locale.bestStreakText, value: "\(stats.correctAnswersStreak)")
                 StatRow(title: locale.totalAnswersText, value: "\(stats.totalAnswers)")
-                StatRow(title: locale.averageTimeText, value: String(format: "%.1f сек", stats.totalAverageResponseTime))
+                StatRow(title: locale.averageTimeText, value: String(format: "%.1f \(locale.screenSecText)", stats.averageResponseTime))
             }
             .padding()
             .background(Color(.systemGray6))

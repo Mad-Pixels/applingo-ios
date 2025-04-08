@@ -3,7 +3,7 @@ import SwiftUI
 struct GameSettingsViewBoolean: View {
     @EnvironmentObject private var themeManager: ThemeManager
     
-    @ObservedObject var setting: BooleanSettingItemBoolean
+    @ObservedObject var setting: GameSettingItemBoolean
     
     var body: some View {
         HStack {
@@ -21,7 +21,7 @@ struct GameSettingsViewBoolean: View {
                         alignment: .leading
                     )
                 )
-                .padding(.vertical, 16)
+                .padding(.vertical, 14)
                 
             }
             .padding(12)

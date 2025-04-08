@@ -10,6 +10,9 @@ final class SwipeViewModel: ObservableObject {
     @Published var dragOffset = CGSize.zero
     @Published var cardRotation: Double = 0
     
+    @State private var feedbackIcon: (name: String, color: Color)? = nil
+    @State private var isFeedbackIconVisible = false
+    
     private var cancellables = Set<AnyCancellable>()
     private var loadingTask: Task<Void, Never>?
     private var cardStartTime: Date?
@@ -21,23 +24,26 @@ final class SwipeViewModel: ObservableObject {
     init(game: Swipe) {
         self.game = game
         
-        NotificationCenter.default.publisher(for: .visualFeedbackShouldUpdate)
+        NotificationCenter.default.publisher(for: .visualIconFeedbackShouldUpdate)
             .receive(on: RunLoop.main)
             .sink { [weak self] notification in
                 guard let self = self,
                       let userInfo = notification.userInfo,
-                      let option = userInfo["option"] as? String,
+                      let iconName = userInfo["icon"] as? String,
                       let color = userInfo["color"] as? Color,
                       let duration = userInfo["duration"] as? TimeInterval else {
                     return
                 }
-                self.highlightedOptions[option] = color
+                
+                self.feedbackIcon = (iconName, color)
+                self.isFeedbackIconVisible = true
                 
                 DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
-                    self.highlightedOptions.removeValue(forKey: option)
+                    self.isFeedbackIconVisible = false
                 }
             }
             .store(in: &cancellables)
+
     }
     
     deinit {
@@ -123,19 +129,23 @@ final class SwipeViewModel: ObservableObject {
     private func processAnswer(_ isSwipeRight: Bool) {
         guard !isProcessingAnswer else { return }
         isProcessingAnswer = true
-        
+
         let responseTime = cardStartTime.map { Date().timeIntervalSince($0) } ?? 0
+        let card = currentCard
         let result = game.validateAnswer(isSwipeRight)
-        
+        let bonus = card?.specialBonus
+
         game.validation.playFeedback(result, answer: "answer", selected: nil)
+
         game.updateStats(
             correct: result == .correct,
             responseTime: responseTime,
-            isSpecialCard: false
+            specialBonus: bonus
         )
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             self.generateCard()
         }
     }
+
 }

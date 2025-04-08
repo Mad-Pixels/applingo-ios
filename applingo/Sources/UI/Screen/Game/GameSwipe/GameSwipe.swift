@@ -3,27 +3,58 @@ import SwiftUI
 struct GameSwipe: View {
     @EnvironmentObject private var themeManager: ThemeManager
     @Environment(\.dismiss) private var dismiss
-    
+
     @StateObject private var viewModel: SwipeViewModel
+    @StateObject private var locale = GameSwipeLocale()
+    @StateObject private var style: GameSwipeStyle
+    
     @ObservedObject var game: Swipe
-    @ObservedObject private var cache: SwipeCache
-    
-    init(game: Swipe) {
+
+    @State private var shouldShowPreloader = false
+    @State private var currentBonusID: String? = nil
+    @State private var preloaderTimer: DispatchWorkItem?
+
+    init(
+        game: Swipe,
+        style: GameSwipeStyle = .themed(ThemeManager.shared.currentThemeStyle)
+    ) {
+        let vm = SwipeViewModel(game: game)
+        _viewModel = StateObject(wrappedValue: vm)
+        _style = StateObject(wrappedValue: style)
         self.game = game
-        self._viewModel = StateObject(wrappedValue: SwipeViewModel(game: game))
-        self.cache = game.cache
     }
-    
+
     var body: some View {
-        ZStack {
-            themeManager.currentThemeStyle.backgroundPrimary.ignoresSafeArea()
-            
-            if viewModel.shouldShowEmptyView {
-                Text("Нет доступных слов")
-                    .font(.title)
-                    .foregroundColor(themeManager.currentThemeStyle.textPrimary)
-            } else if let card = viewModel.currentCard {
-                cardView(for: card)
+        GeometryReader { geometry in
+            ZStack {
+                if let bonus = viewModel.currentCard?.specialBonus,
+                   bonus.id == currentBonusID {
+                    bonus.backgroundEffectView
+                        .ignoresSafeArea()
+                        .transition(.opacity)
+                }
+
+                OverlayIcon.GameAnswer(themeManager.currentThemeStyle)
+
+                if shouldShowPreloader {
+                    ItemListLoading(style: .themed(themeManager.currentThemeStyle))
+                }
+
+                if let card = viewModel.currentCard {
+                    GameSwipeChoice(
+                        locale: locale,
+                        style: style,
+                        offset: viewModel.dragOffset
+                    )
+
+                    GameSwipeCard(
+                        locale: locale,
+                        style: style,
+                        card: card,
+                        offset: viewModel.dragOffset
+                    )
+                    .id(card.id)
+                    .transition(.scale.combined(with: .opacity))
                     .offset(viewModel.dragOffset)
                     .rotationEffect(.degrees(viewModel.cardRotation))
                     .gesture(
@@ -35,14 +66,26 @@ struct GameSwipe: View {
                                 viewModel.handleDragEnded(value: value)
                             }
                     )
-            } else {
-                ProgressView()
-                    .scaleEffect(1.5)
-                    .foregroundColor(themeManager.currentThemeStyle.accentPrimary)
+
+                    VStack {
+                        Spacer()
+                        let disabled = TTSLanguageType.shared.get(for: card.backWord.backTextCode) == ""
+                        GameFloatingButtonSpeaker(word: card.backWord, disabled: disabled)
+                            .padding(.bottom, style.floatingButtonPadding)
+                    }
+                }
             }
+            .animation(.easeOut(duration: 0.5), value: viewModel.currentCard?.id)
+            .frame(width: geometry.size.width, height: geometry.size.height)
         }
         .onAppear {
             viewModel.generateCard()
+        }
+        .onChange(of: viewModel.isLoadingCard) { isLoading in
+            handleLoadingStateChange(isLoading)
+        }
+        .onChange(of: viewModel.currentCard?.id) { _ in
+            currentBonusID = viewModel.currentCard?.specialBonus?.id
         }
         .onReceive(game.state.$isGameOver) { isGameOver in
             if isGameOver {
@@ -52,67 +95,22 @@ struct GameSwipe: View {
             }
         }
     }
-    
-    @ViewBuilder
-    private func cardView(for card: SwipeModelCard) -> some View {
-        VStack {
-            HStack {
-                Text("❌ Не верно")
-                    .foregroundColor(.red)
-                    .opacity(viewModel.dragOffset.width < -20 ? 1 : 0)
-                    .animation(.easeInOut, value: viewModel.dragOffset.width)
 
-                Spacer()
 
-                Text("Верно ✅")
-                    .foregroundColor(.green)
-                    .opacity(viewModel.dragOffset.width > 20 ? 1 : 0)
-                    .animation(.easeInOut, value: viewModel.dragOffset.width)
-            }
-            .padding(.horizontal)
-
-            // Карточка
-            ZStack {
-                // 🌈 Подложка с паттерном
-                GameSwipeCardBackground(
-                    cornerRadius: 20,
-                    style: themeManager.currentThemeStyle
-                )
-
-                // 🎨 Основной фон
-                RoundedRectangle(cornerRadius: 20)
-                    .fill(themeManager.currentThemeStyle.backgroundPrimary.opacity(0.8))
-                    .shadow(radius: 5)
-
-                // 🖌️ Паттерн-граница
-                GameCardSwipeBorder(
-                    cornerRadius: 20,
-                    style: themeManager.currentThemeStyle
-                )
-
-                // Контент
-                VStack(spacing: 20) {
-                    Text(card.frontText)
-                        .font(.title)
-                        .fontWeight(.bold)
-                        .foregroundColor(themeManager.currentThemeStyle.textPrimary)
-                        .multilineTextAlignment(.center)
-                        .padding(.top, 30)
-
-                    Divider()
-                        .background(themeManager.currentThemeStyle.accentPrimary)
-                        .padding(.horizontal, 30)
-
-                    Text(card.backText)
-                        .font(.title2)
-                        .foregroundColor(themeManager.currentThemeStyle.textSecondary)
-                        .multilineTextAlignment(.center)
-                        .padding(.bottom, 30)
+    private func handleLoadingStateChange(_ isLoading: Bool) {
+        if isLoading {
+            preloaderTimer?.cancel()
+            let timer = DispatchWorkItem {
+                if viewModel.isLoadingCard {
+                    shouldShowPreloader = true
                 }
-                .padding()
             }
-            .frame(width: 300, height: 400)
+            preloaderTimer = timer
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: timer)
+        } else {
+            preloaderTimer?.cancel()
+            preloaderTimer = nil
+            shouldShowPreloader = false
         }
     }
 }
-

@@ -20,4 +20,23 @@ final class SwipeValidation: BaseGameValidation {
     override func getCurrentWord() -> DatabaseModelWord? {
         return currentWord
     }
+    
+    override func playFeedback(_ result: GameValidationResult, answer: String? = nil, selected: String? = nil) {
+        guard let answer = answer else { return }
+
+        let correctAnswer: String? = {
+            if answer == "false" {
+                return "true"
+            } else {
+                return nil
+            }
+        }()
+
+        let context = FeedbackContext(
+            selectedOption: answer,
+            correctOption: correctAnswer,
+            customOption: selected
+        )
+        play(context: context, result: result)
+    }
 }

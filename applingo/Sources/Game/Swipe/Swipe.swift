@@ -40,9 +40,10 @@ final class Swipe: ObservableObject, AbstractGame {
             feedbacks: [
                 .incorrect: [
                     IncorrectAnswerHapticFeedback(),
-                    IncorrectAnswerBackgroundVisualFeedback(
-                        theme: ThemeManager.shared.currentThemeStyle.swipeTheme
-                    )
+                    GameValidationFeedbackVisualIcon(iconName: "xmark", color: .red)
+                ],
+                .correct: [
+                    GameValidationFeedbackVisualIcon(iconName: "checkmark", color: .green)
                 ]
             ]
         ),
@@ -112,15 +113,17 @@ final class Swipe: ObservableObject, AbstractGame {
     
     internal func validateAnswer(_ answer: Bool, selected: String? = nil) -> GameValidationResult {
         let result = validation.validate(answer: answer)
+        let answerStr = answer ? "true" : "false"
+        validation.playFeedback(result, answer: answerStr, selected: nil)
         return result
     }
     
-    internal func updateStats(correct: Bool, responseTime: TimeInterval, isSpecialCard: Bool) {
+    internal func updateStats(correct: Bool, responseTime: TimeInterval, specialBonus: GameSpecialBonus?) {
         stats.updateGameStats(
             correct: correct,
             responseTime: responseTime,
             scoring: scoring,
-            isSpecialCard: isSpecialCard
+            specialBonus: specialBonus
         )
     }
     

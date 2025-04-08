@@ -32,8 +32,19 @@ struct SettingsMain: View {
                         style: style,
                         locale: locale
                     )
+                    
+                    SettingsMainViewPermissionsASR(
+                        style: style,
+                        locale: locale
+                    )
+                    
+                    SettingsMainViewPermissionsMic(
+                        style: style,
+                        locale: locale
+                    )
                 }
                 .padding(style.padding)
+                .padding(.bottom, 128)
             }
             .navigationBarTitleDisplayMode(.large)
         }

@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct GameMatchButton: View {
+struct GameMatchViewButton: View {
     @EnvironmentObject private var themeManager: ThemeManager
 
     let text: String

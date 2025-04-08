@@ -2,16 +2,16 @@ import SwiftUI
 
 internal struct GameSwipeCardBackground: View {
     let cornerRadius: CGFloat
-    let style: AppTheme
+    let model: DynamicPatternModel
     let backgroundScale: CGFloat
 
     init(
         cornerRadius: CGFloat,
-        style: AppTheme,
+        model: DynamicPatternModel,
         backgroundScale: CGFloat = 2.0
     ) {
         self.cornerRadius = cornerRadius
-        self.style = style
+        self.model = model
         self.backgroundScale = backgroundScale
     }
 
@@ -20,7 +20,7 @@ internal struct GameSwipeCardBackground: View {
             let size = geometry.size
 
             GameSwipePatternImage(
-                model: style.mainPattern,
+                model: model,
                 size: CGSize(width: size.width * backgroundScale, height: size.height * backgroundScale)
             )
             .clipShape(RoundedRectangle(cornerRadius: cornerRadius))

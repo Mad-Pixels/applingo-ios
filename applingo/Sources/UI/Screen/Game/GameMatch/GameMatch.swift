@@ -43,9 +43,10 @@ struct GameMatch: View {
                                 let highlight = viewModel.highlightedOptions[text]
 
                                 if !text.isEmpty {
-                                    GameMatchButton(
+                                    GameMatchViewButton(
                                         text: text,
                                         action: {
+                                            startTimerIfNeeded()
                                             selectedLeftPosition = position
                                             checkForMatch()
                                         },
@@ -68,9 +69,10 @@ struct GameMatch: View {
                                 let highlight = viewModel.highlightedOptions[text]
 
                                 if !text.isEmpty {
-                                    GameMatchButton(
+                                    GameMatchViewButton(
                                         text: text,
                                         action: {
+                                            startTimerIfNeeded()
                                             selectedRightPosition = position
                                             checkForMatch()
                                         },
@@ -110,6 +112,12 @@ struct GameMatch: View {
             viewModel.checkMatch(selectedLeft: left, selectedRight: right)
             selectedLeftPosition = nil
             selectedRightPosition = nil
+        }
+    }
+    
+    private func startTimerIfNeeded() {
+        if selectedLeftPosition == nil && selectedRightPosition == nil {
+            viewModel.startTimer()
         }
     }
     

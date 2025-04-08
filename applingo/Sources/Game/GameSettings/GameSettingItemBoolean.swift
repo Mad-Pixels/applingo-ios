@@ -1,6 +1,6 @@
 import SwiftUI
 
-class BooleanSettingItemBoolean: GameSetting, ObservableObject {
+class GameSettingItemBoolean: GameSetting, ObservableObject {
     var id: String
     var name: String
     

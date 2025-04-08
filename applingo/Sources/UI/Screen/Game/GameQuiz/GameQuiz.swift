@@ -3,27 +3,27 @@ import SwiftUI
 struct GameQuiz: View {
     @EnvironmentObject private var themeManager: ThemeManager
     @Environment(\.dismiss) private var dismiss
-    
+
     @StateObject private var viewModel: QuizViewModel
     @StateObject private var locale = GameQuizLocale()
-    @StateObject private var style: GameQuizStyle
-    
+    @StateObject private var style = GameQuizStyle.themed(ThemeManager.shared.currentThemeStyle)
+
     @ObservedObject var game: Quiz
-    
+
     @State private var shouldShowPreloader = false
+    @State private var recognizedAnswer: String = ""
     @State private var preloaderTimer: DispatchWorkItem?
-    
+
     init(
         game: Quiz,
         style: GameQuizStyle = .themed(ThemeManager.shared.currentThemeStyle)
     ) {
         let vm = QuizViewModel(game: game)
-        
         _viewModel = StateObject(wrappedValue: vm)
         _style = StateObject(wrappedValue: style)
         self.game = game
     }
-    
+
     var body: some View {
         GeometryReader { geometry in
             ZStack {
@@ -40,33 +40,62 @@ struct GameQuiz: View {
                                 card: card
                             )
                             .padding(.vertical, style.optionsSpacing)
-                            
-                            ForEach(card.options, id: \.self) { option in
-                                GameQuizViewAnswer(
-                                    style: style,
-                                    locale: locale,
-                                    option: option,
-                                    onSelect: { viewModel.handleAnswer(option) },
-                                    viewModel: viewModel
-                                )
-                            }
+
+                            GameQuizViewAnswer(
+                                style: style,
+                                locale: locale,
+                                card: card,
+                                onSelect: { viewModel.handleAnswer($0) },
+                                viewModel: viewModel,
+                                recognizedText: $recognizedAnswer
+                            )
                         }
                         .padding(.horizontal)
                         .padding(.top, geometry.size.height * 0.03)
-                        .frame(
-                            minHeight: geometry.size.height * 0.7,
-                            alignment: .center
-                        )
+                        .frame(minHeight: geometry.size.height * 0.7)
                     }
-                    
+
                     VStack {
                         Spacer()
                         HStack {
-                            Spacer()
-                            GameFloatingBtnSpeaker(
-                                word: card.word
-                            )
-                            .padding(.bottom, 32)
+                            if card.voice && card.flip {
+                                HStack {
+                                    ButtonFloatingSingle(
+                                        icon: "arrow.trianglehead.turn.up.right.circle.fill",
+                                        action: {
+                                            viewModel.skipCard()
+                                        },
+                                        left: true
+                                    )
+                                    .padding(.bottom, style.floatingBtnPadding)
+                                    
+                                    Spacer()
+                                    
+                                    GameFloatingButtonRecord(
+                                        languageCode: card.word.backTextCode,
+                                        disabled: !TTSLanguageType.shared.supported(for: card.word.backTextCode),
+                                        onRecognized: { recognized in
+                                            recognizedAnswer = recognized
+                                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.6) {
+                                                viewModel.handleAnswer(recognized)
+                                            }
+                                        }
+                                    )
+                                    .padding(.bottom, style.floatingBtnPadding)
+                                }
+                                .frame(maxWidth: .infinity)
+                            } else {
+                                HStack {
+                                    Spacer()
+                                    
+                                    GameFloatingButtonSpeaker(
+                                        word: card.word,
+                                        disabled: (!card.voice && card.flip) || (card.voice && card.flip)
+                                    )
+                                    .padding(.bottom, style.floatingBtnPadding)
+                                }
+                                .frame(maxWidth: .infinity)
+                            }
                         }
                     }
                 }
@@ -87,23 +116,20 @@ struct GameQuiz: View {
             }
         }
     }
-    
+
     private func handleLoadingStateChange(_ isLoading: Bool) {
         if isLoading {
             preloaderTimer?.cancel()
-            
             let timer = DispatchWorkItem {
                 if viewModel.isLoadingCard {
                     shouldShowPreloader = true
                 }
             }
-            
             preloaderTimer = timer
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: timer)
         } else {
             preloaderTimer?.cancel()
             preloaderTimer = nil
-            
             shouldShowPreloader = false
         }
     }

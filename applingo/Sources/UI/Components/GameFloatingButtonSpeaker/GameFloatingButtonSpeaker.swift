@@ -1,12 +1,13 @@
 import SwiftUI
 
-struct GameFloatingBtnSpeaker: View {
+struct GameFloatingButtonSpeaker: View {
     @EnvironmentObject var themeManager: ThemeManager
     
     @State private var isPlaying: Bool = false
     @State private var observer: NSObjectProtocol?
     
     internal let word: DatabaseModelWord
+    internal let disabled: Bool
     
     var body: some View {
         ButtonFloatingSingle(
@@ -17,7 +18,8 @@ struct GameFloatingBtnSpeaker: View {
                 } else {
                     stopSpeaking()
                 }
-            }
+            },
+            disabled: disabled
         )
         .waveEffect(
             isActive: isPlaying,
