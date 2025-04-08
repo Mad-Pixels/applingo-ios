@@ -7,11 +7,14 @@ struct GameFloatingButtonRecord: View {
     @State private var isPrepared: Bool = false
     @State private var fullLangCode: String = ""
     @State private var asr: ASR? = nil
+    @State private var recordingTimer: Timer? = nil
 
     let onRecognized: (String) -> Void
     let languageCode: String
-    let disabled: Bool
-        
+    
+    private let disabled: Bool
+    private let recordingTimeout: TimeInterval = 3.5
+
     init(
         languageCode: String,
         disabled: Bool,
@@ -58,6 +61,7 @@ struct GameFloatingButtonRecord: View {
                 asr?.stopRecognition()
                 isRecording = false
             }
+            cancelRecordingTimer()
         }
     }
 
@@ -84,6 +88,7 @@ struct GameFloatingButtonRecord: View {
             do {
                 try await asr?.startRecognition(languageCode: fullLangCode) { _ in }
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    startRecordingTimer()
                     isRecording = true
                 }
             } catch {}
@@ -92,9 +97,26 @@ struct GameFloatingButtonRecord: View {
 
     private func stopRecognition() {
         isRecording = false
+        cancelRecordingTimer()
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
             asr?.stopRecognition()
         }
+    }
+    
+    private func startRecordingTimer() {
+        cancelRecordingTimer()
+        
+        recordingTimer = Timer.scheduledTimer(withTimeInterval: recordingTimeout, repeats: false) { _ in
+            if isRecording {
+                Logger.debug("[GameFloatingButtonRecord] Auto-stopping recording after timeout")
+                stopRecognition()
+            }
+        }
+    }
+    
+    private func cancelRecordingTimer() {
+        recordingTimer?.invalidate()
+        recordingTimer = nil
     }
 }

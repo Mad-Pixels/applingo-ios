@@ -30,8 +30,8 @@ internal struct GameQuizViewAnswer: View {
     var body: some View {
         if card.voice && card.flip && !AppStorage.shared.noRecord {
             GameQuizViewAnswerRecord(
-                languageCode: card.word.backTextCode,
-                recognizedText: $recognizedText
+                recognizedText: $recognizedText,
+                languageCode: card.word.backTextCode
             )
             .onAppear {
                 recognizedText = ""

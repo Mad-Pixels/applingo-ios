@@ -8,6 +8,7 @@ final class ASR: NSObject, SFSpeechRecognizerDelegate, Sendable {
 
     @Published private(set) var isRecording = false
     @Published var transcription: String = ""
+    @Published var audioLevel: Float = 0.0
     
     private var speechRecognizer: SFSpeechRecognizer?
     private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
@@ -96,8 +97,31 @@ final class ASR: NSObject, SFSpeechRecognizerDelegate, Sendable {
                 "channels": String(recordingFormat.channelCount)
             ])
 
-            inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { [weak self] buffer, _ in
+            inputNode.installTap(onBus: 0, bufferSize: 256, format: recordingFormat) { [weak self] buffer, _ in
                 self?.recognitionRequest?.append(buffer)
+                
+                let audioBuffer = buffer.audioBufferList.pointee.mBuffers
+                let bufferData = audioBuffer.mData!
+                let count = Int(audioBuffer.mDataByteSize) / MemoryLayout<Float>.size
+                let samples = bufferData.bindMemory(to: Float.self, capacity: count)
+                let sampleStride = 1
+                var sum: Float = 0
+                
+                for i in stride(from: 0, to: count, by: sampleStride) {
+                    sum += fabsf(samples[i])
+                }
+                
+                let avg = sum / Float(count / sampleStride)
+                let normalizedLevel = min(1.0, avg * 50)
+                self?.audioLevel = normalizedLevel
+
+                NotificationCenter.default.post(
+                    name: .ASRAudioLevelChanged,
+                    object: nil,
+                    userInfo: [
+                        "level": normalizedLevel
+                    ]
+                )
             }
 
             audioEngine.prepare()
@@ -229,6 +253,7 @@ final class ASR: NSObject, SFSpeechRecognizerDelegate, Sendable {
         cleanupResources()
         isProcessing = false
         isRecording = false
+        audioLevel = 0.0
 
         NotificationCenter.default.post(name: .ASRDidFinishRecognition, object: nil)
     }
@@ -240,8 +265,9 @@ final class ASR: NSObject, SFSpeechRecognizerDelegate, Sendable {
         }
 
         recognitionTask?.cancel()
-        recognitionTask = nil
         recognitionRequest = nil
+        recognitionTask = nil
+        audioLevel = 0.0
 
         try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
     }

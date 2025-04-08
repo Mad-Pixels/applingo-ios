@@ -25,4 +25,8 @@ extension Notification.Name {
     /// Notification posted when automatic speech recognition (ASR) has finished recognizing a user's input.
     /// Used to receive recognition results and continue voice-driven workflows.
     static let ASRDidFinishRecognition = Notification.Name("ASRDidFinishRecognition")
+    
+    /// Notification posted when the audio input level changes during ASR (automatic speech recognition).
+    /// Observers can use this to visualize audio activity, e.g., displaying waveforms or volume indicators.
+    static let ASRAudioLevelChanged = Notification.Name("ASRAudioLevelChanged")
 }
