@@ -1584,13 +1584,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3 lives"
+            "value" : "Limited lives"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3 жизни"
+            "value" : "Лимит на жизни"
           }
         }
       }
@@ -1601,13 +1601,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2-Minute Challenge"
+            "value" : "Time Challenge"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Успей за 2 минуты"
+            "value" : "Игра на время"
           }
         }
       }
