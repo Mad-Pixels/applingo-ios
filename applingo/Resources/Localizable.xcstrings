@@ -870,13 +870,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "accuracy"
+            "value" : "Accuracy"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "точность"
+            "value" : "Точность"
           }
         }
       }
@@ -887,13 +887,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "average time"
+            "value" : "Average Time"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "время ответов"
+            "value" : "Время ответов"
           }
         }
       }
@@ -904,7 +904,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "best streak"
+            "value" : "Best Streak"
           }
         },
         "ru" : {
@@ -921,13 +921,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "total answers"
+            "value" : "Total Answers"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ответов всего"
+            "value" : "Ответов всего"
           }
         }
       }
@@ -938,13 +938,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "scores"
+            "value" : "Scores"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "очки"
+            "value" : "Очки"
           }
         }
       }
