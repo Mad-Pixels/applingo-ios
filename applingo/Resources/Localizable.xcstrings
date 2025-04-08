@@ -915,6 +915,23 @@
         }
       }
     },
+    "game.result.stats.secText" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "sec"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "сек"
+          }
+        }
+      }
+    },
     "game.result.stats.totalAnswers" : {
       "extractionState" : "manual",
       "localizations" : {

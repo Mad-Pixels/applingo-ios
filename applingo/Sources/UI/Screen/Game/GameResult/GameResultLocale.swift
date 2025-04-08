@@ -14,6 +14,7 @@ final class GameResultLocale: ObservableObject {
         case bestStreak = "game.result.stats.bestStreak"
         case totalAnswers = "game.result.stats.totalAnswers"
         case averageTime = "game.result.stats.averageTime"
+        case secText = "game.result.stats.secText"
     }
    
     // MARK: - Published Properties
@@ -27,6 +28,7 @@ final class GameResultLocale: ObservableObject {
     @Published private(set) var bestStreakText: String
     @Published private(set) var totalAnswersText: String
     @Published private(set) var averageTimeText: String
+    @Published private(set) var screenSecText: String
    
     // MARK: - Initialization
     init() {
@@ -40,6 +42,7 @@ final class GameResultLocale: ObservableObject {
         self.bestStreakText = Self.localizedString(for: .bestStreak)
         self.totalAnswersText = Self.localizedString(for: .totalAnswers)
         self.averageTimeText = Self.localizedString(for: .averageTime)
+        self.screenSecText = Self.localizedString(for: .secText)
        
         NotificationCenter.default.addObserver(
             self,
@@ -70,5 +73,6 @@ final class GameResultLocale: ObservableObject {
         bestStreakText = Self.localizedString(for: .bestStreak)
         totalAnswersText = Self.localizedString(for: .totalAnswers)
         averageTimeText = Self.localizedString(for: .averageTime)
+        screenSecText = Self.localizedString(for: .secText)
     }
 }
