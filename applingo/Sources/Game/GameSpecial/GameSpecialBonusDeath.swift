@@ -26,5 +26,5 @@ struct GameSpecialBonusDeath: GameSpecialBonus {
         ]
     )
 
-    let icon: Image? = Image(systemName: "flame.fill")
+    let icon: Image? = Image(systemName: "exclamationmark.triangle.fill")
 }

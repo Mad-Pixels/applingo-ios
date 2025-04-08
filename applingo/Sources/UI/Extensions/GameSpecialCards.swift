@@ -22,30 +22,65 @@ extension GameSpecialBonus {
 
 extension GameSpecialBonusBronze {
     var backgroundEffectView: AnyView {
-        AnyView(PixelBackgroundEffect())
+        AnyView(
+            GameSpecialBoardGrid(
+                style: .colors(
+                    ThemeManager.shared.currentThemeStyle,
+                    colors: self.backgroundColor.colors
+                )
+            )
+        )
     }
 }
 
 extension GameSpecialBonusSilver {
     var backgroundEffectView: AnyView {
-        AnyView(PixelBackgroundEffect())
+        AnyView(
+            GameSpecialBoardWaves(
+                style: .colors(
+                    ThemeManager.shared.currentThemeStyle,
+                    colors: self.backgroundColor.colors
+                )
+            )
+        )
     }
 }
 
 extension GameSpecialBonusGold {
     var backgroundEffectView: AnyView {
-        AnyView(PixelBackgroundEffect())
+        AnyView(
+            GameSpecialBoardPulsingCircles(
+                style: .colors(
+                    ThemeManager.shared.currentThemeStyle,
+                    colors: self.backgroundColor.colors
+                )
+            )
+        )
     }
 }
 
 extension GameSpecialBonusUltra {
     var backgroundEffectView: AnyView {
-        AnyView(PixelBackgroundEffect())
+        AnyView(
+            GameSpecialBoardStarLines(
+                style: .colors(
+                    ThemeManager.shared.currentThemeStyle,
+                    colors: self.backgroundColor.colors
+                )
+            )
+        )
     }
 }
 
 extension GameSpecialBonusDeath {
     var backgroundEffectView: AnyView {
-        AnyView(PixelBackgroundEffect())
+        AnyView(
+            GameSpecialBoardOrbitingParticles(
+                style: .colors(
+                    ThemeManager.shared.currentThemeStyle,
+                    colors: self.backgroundColor.colors
+                )
+            )
+        )
     }
 }
