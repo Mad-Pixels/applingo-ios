@@ -2,7 +2,7 @@ import SwiftUI
 
 internal struct GameCardSwipeBorder: View {
     let cornerRadius: CGFloat
-    let style: AppTheme
+    let model: DynamicPatternModel
     let borderWidth: CGFloat = 8.0
 
     var body: some View {
@@ -13,7 +13,7 @@ internal struct GameCardSwipeBorder: View {
                 .strokeBorder(.clear, lineWidth: borderWidth)
                 .background(
                     GameSwipePatternImage(
-                        model: style.mainPattern,
+                        model: model,
                         size: CGSize(width: size.width * 2, height: size.height * 2)
                     )
                     .mask(

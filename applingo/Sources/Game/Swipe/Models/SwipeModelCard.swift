@@ -36,7 +36,7 @@ struct SwipeModelCard {
             }
         }
 
-        let bonus = GameSpecial.shared.maybeGetRandomBonus()
+        let bonus = SwipeSpecial.shared.maybeGetRandomBonus()
         self.specialBonus = bonus
         self.isSpecialCard = bonus != nil
     }
