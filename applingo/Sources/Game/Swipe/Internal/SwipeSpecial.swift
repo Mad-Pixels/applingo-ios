@@ -4,12 +4,11 @@ final class SwipeSpecial {
     static let shared = SwipeSpecial()
 
     private let bonusesWithWeights: [(bonus: GameSpecialBonus, weight: Int)] = [
-//        (GameSpecialBonusBronze(), 45),
-//        (GameSpecialBonusSilver(), 25),
-//        (GameSpecialBonusGold(), 15),
-//        (GameSpecialBonusUltra(), 10),
-//        (GameSpecialBonusDeath(), 5)
-        (GameSpecialBonusDeath(), 100)
+        (GameSpecialBonusBronze(), 45),
+        (GameSpecialBonusSilver(), 25),
+        (GameSpecialBonusGold(), 15),
+        (GameSpecialBonusUltra(), 10),
+        (GameSpecialBonusDeath(), 5)
     ]
 
     private init() {}
