@@ -17,7 +17,7 @@ internal struct GameQuizViewAnswerRecord: View {
                         lineLimit: 4
                     )
                 )
-                .frame(height: 72)
+                .frame(height: 128)
             },
                 style: .accent(themeManager.currentThemeStyle)
             )
