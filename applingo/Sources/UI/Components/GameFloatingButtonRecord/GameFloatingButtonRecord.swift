@@ -13,7 +13,7 @@ struct GameFloatingButtonRecord: View {
     let languageCode: String
     
     private let disabled: Bool
-    private let recordingTimeout: TimeInterval = 3.5
+    private let recordingTimeout: TimeInterval = 3.0
 
     init(
         languageCode: String,

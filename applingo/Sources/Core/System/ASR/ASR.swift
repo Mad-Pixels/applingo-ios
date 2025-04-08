@@ -98,7 +98,7 @@ final class ASR: NSObject, SFSpeechRecognizerDelegate, Sendable {
                 "channels": String(recordingFormat.channelCount)
             ])
 
-            inputNode.installTap(onBus: 0, bufferSize: 256, format: recordingFormat) { [weak self] buffer, _ in
+            inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { [weak self] buffer, _ in
                 self?.recognitionRequest?.append(buffer)
                 
                 let audioBuffer = buffer.audioBufferList.pointee.mBuffers
