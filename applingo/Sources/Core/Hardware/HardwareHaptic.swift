@@ -2,7 +2,7 @@ import CoreHaptics
 import SwiftUI
 
 /// Manages haptic feedback using `CoreHaptics` and `UIKit`.
-final class HardwareHaptic: ObservableObject {
+final class HardwareHaptic {
     // MARK: - Singleton Instance
     
     /// Shared singleton instance for accessing `HardwareHaptic`.

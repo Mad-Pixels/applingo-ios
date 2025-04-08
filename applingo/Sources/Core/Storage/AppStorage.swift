@@ -66,9 +66,9 @@ final class AppStorage {
     
     // MARK: - Log Sending
     /// Whether the application is configured to send logs.
-    var sendLogs: Bool {
-        get { permanent.getValue(for: "sendLogs") != "true" }
-        set { permanent.setValue(String(newValue), for: "sendLogs") }
+    var noLogs: Bool {
+        get { temporary.getValue(for: "no_voice") == "false" }
+        set { temporary.setValue(String(newValue), for: "no_logs")}
     }
     
     // MARK: - Active Screen
@@ -76,6 +76,52 @@ final class AppStorage {
     var activeScreen: ScreenType {
         get { ScreenType(rawValue: temporary.getValue(for: "screen")) ?? .GameMode }
         set { temporary.setValue(newValue.rawValue, for: "screen") }
+    }
+    
+    ///
+    // MARK: - Game Lives (Survival Mode)
+    var gameLives: Int {
+        get {
+            Int(temporary.getValue(for: "lives")) ?? DEFAULT_SURVIVAL_LIVES_MIN
+        }
+        set {
+            temporary.setValue(String(newValue), for: "lives")
+        }
+    }
+
+    // MARK: - Game Duration (Time Mode)
+    var gameDuration: TimeInterval {
+        get {
+            Double(temporary.getValue(for: "game_duration")) ?? DEFAULT_TIME_DURATION_MIN
+        }
+        set {
+            temporary.setValue(String(newValue), for: "game_duration")
+        }
+    }
+
+
+    /// Whether the app should avoid using voice features (e.g., TTS).
+    var noVoice: Bool {
+        get { temporary.getValue(for: "no_voice") == "true" }
+        set { temporary.setValue(String(newValue), for: "no_voice")}
+    }
+    
+    /// Whether the app should avoid using voice features (e.g., TTS).
+    var noRecord: Bool {
+        get { temporary.getValue(for: "no_voice") == "true" }
+        set { temporary.setValue(String(newValue), for: "no_voice")}
+    }
+    
+    /// Whether the application is allowed to use ASR (speech recognition).
+    var useASR: Bool {
+        get { temporary.getValue(for: "use_asr") == "true" }
+        set { temporary.setValue(String(newValue), for: "use_asr") }
+    }
+    
+    /// Whether the application is allowed to use Microphone.
+    var useMicrophone: Bool {
+        get { temporary.getValue(for: "use_microphone") == "true" }
+        set { temporary.setValue(String(newValue), for: "use_microphone") }
     }
     
     /// Checks if a specific screen is currently active.

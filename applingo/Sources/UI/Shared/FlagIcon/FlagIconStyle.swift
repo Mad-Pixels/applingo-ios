@@ -1,11 +1,14 @@
 import SwiftUI
 
-// MARK: - FlagIconStyle
-/// Defines styling parameters for the FlagIcon component.
 struct FlagIconStyle {
+    // Size Properties
     let flagSize: CGFloat
     let codeSize: CGFloat
+
+    // Layout Properties
     let spacing: CGFloat
+
+    // Color Properties
     let borderColor: Color
     let shadowColor: Color
     let codeColor: Color
@@ -13,7 +16,6 @@ struct FlagIconStyle {
 }
 
 extension FlagIconStyle {
-    /// Returns a themed style based on the provided AppTheme.
     static func themed(_ theme: AppTheme) -> FlagIconStyle {
         FlagIconStyle(
             flagSize: 16,

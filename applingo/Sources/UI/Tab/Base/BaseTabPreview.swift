@@ -1,9 +1,9 @@
 import SwiftUI
 
 struct BaseViewTabPreview<Content: View>: View {
-    let style: BaseTabStyle
-    let theme: ThemeType
-    let content: Content
+    internal let style: BaseTabStyle
+    internal let theme: ThemeType
+    internal let content: Content
    
     init(
         theme: ThemeType = .light,

@@ -1,8 +1,5 @@
 import SwiftUI
 
-// MARK: - ButtonMenu View
-/// A menu button that displays a title, an optional subtitle, and an optional icon.
-/// The button shows a chevron indicator and applies custom styling.
 struct ButtonMenu: View {
     private let title: String
     private let subtitle: String?
@@ -17,8 +14,8 @@ struct ButtonMenu: View {
     ///   - subtitle: Optional secondary text.
     ///   - iconType: The type of icon to display (system, resource, or none).
     ///   - isSelected: A flag indicating selection state.
-    ///   - style: The style to apply. Defaults to themed style using LightTheme.
     ///   - action: The action to perform when tapped.
+    ///   - style: The style to apply. Defaults to themed style using LightTheme.
     init(
         title: String,
         subtitle: String? = nil,
@@ -27,12 +24,12 @@ struct ButtonMenu: View {
         action: @escaping () -> Void,
         style: ButtonMenuStyle = .themed(LightTheme())
     ) {
-        self.title = title
+        self.isSelected = isSelected
         self.subtitle = subtitle
         self.iconType = iconType
-        self.style = style
-        self.isSelected = isSelected
         self.action = action
+        self.title = title
+        self.style = style
     }
 
     var body: some View {
@@ -41,18 +38,21 @@ struct ButtonMenu: View {
                 iconView
                 
                 VStack(alignment: .leading) {
-                    Text(title)
-                        .font(style.font)
-                        .foregroundColor(style.foregroundColor)
+                    DynamicText(
+                        model: DynamicTextModel(text: title),
+                        style: .textGameBold(ThemeManager.shared.currentThemeStyle)
+                    )
                     
                     if let subtitle = subtitle {
-                        Text(subtitle)
-                            .font(.subheadline)
-                            .foregroundColor(style.foregroundColor.opacity(0.7))
-                            .lineLimit(2)
+                        DynamicText(
+                            model: DynamicTextModel(text: subtitle),
+                            style: .textMain(ThemeManager.shared.currentThemeStyle)
+                        )
                     }
                 }
+                
                 Spacer()
+                
                 if style.transitionType != "" {
                     Image(systemName: style.transitionType)
                         .font(.system(size: 24))
@@ -70,7 +70,7 @@ struct ButtonMenu: View {
         .buttonStyle(PlainButtonStyle())
     }
     
-    // Computed property for icon view based on iconType
+    /// Computed property for icon view based on iconType
     private var iconView: some View {
         Group {
             switch iconType {

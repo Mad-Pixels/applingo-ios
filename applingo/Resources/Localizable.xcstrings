@@ -1,16 +1,6 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "%@%lld" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@%2$lld"
-          }
-        }
-      }
-    },
     "%lld%%" : {
       "localizations" : {
         "ru" : {
@@ -21,7 +11,7 @@
         }
       }
     },
-    "❌ Не верно" : {
+    "|" : {
 
     },
     "base.button.again" : {
@@ -880,13 +870,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "accuracy"
+            "value" : "Accuracy"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "точность"
+            "value" : "Точность"
           }
         }
       }
@@ -897,13 +887,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "average time"
+            "value" : "Average Time"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "время ответов"
+            "value" : "Время ответов"
           }
         }
       }
@@ -914,7 +904,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "best streak"
+            "value" : "Best Streak"
           }
         },
         "ru" : {
@@ -925,19 +915,36 @@
         }
       }
     },
+    "game.result.stats.secText" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "sec"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "сек"
+          }
+        }
+      }
+    },
     "game.result.stats.totalAnswers" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "total answers"
+            "value" : "Total Answers"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ответов всего"
+            "value" : "Ответов всего"
           }
         }
       }
@@ -948,13 +955,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "scores"
+            "value" : "Scores"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "очки"
+            "value" : "Очки"
           }
         }
       }
@@ -1418,6 +1425,91 @@
         }
       }
     },
+    "screen.dictionaryRemoteFilter.text.advancedLevel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Advanced"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Продвинутый"
+          }
+        }
+      }
+    },
+    "screen.dictionaryRemoteFilter.text.beginnerLevel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beginner"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Начальный"
+          }
+        }
+      }
+    },
+    "screen.dictionaryRemoteFilter.text.elementaryLevel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elementary"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Элементарный"
+          }
+        }
+      }
+    },
+    "screen.dictionaryRemoteFilter.text.intermediateLevel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Intermediate"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Средний"
+          }
+        }
+      }
+    },
+    "screen.dictionaryRemoteFilter.text.proficientLevel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Proficient"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Свободное владение"
+          }
+        }
+      }
+    },
     "screen.dictionaryRemoteFilter.text.UFOLevel" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1431,6 +1523,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Любой"
+          }
+        }
+      }
+    },
+    "screen.dictionaryRemoteFilter.text.upperIntermediateLevel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Upper-Intermediate"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выше среднего"
           }
         }
       }
@@ -1492,13 +1601,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3 lives"
+            "value" : "Limited lives"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "3 жизни"
+            "value" : "Лимит на жизни"
           }
         }
       }
@@ -1509,13 +1618,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2-Minute Challenge"
+            "value" : "Time Challenge"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Успей за 2 минуты"
+            "value" : "Игра на время"
           }
         }
       }
@@ -1588,6 +1697,57 @@
         }
       }
     },
+    "screen.gameMode.titleSettings" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Настройки"
+          }
+        }
+      }
+    },
+    "screen.gameSwipe.cardRight" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "right"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "верно"
+          }
+        }
+      }
+    },
+    "screen.gameSwipe.cardWrong" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "wrong"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "не верно"
+          }
+        }
+      }
+    },
     "screen.home.game.matchup" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1645,13 +1805,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "OR"
+            "value" : "or"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ИЛИ"
+            "value" : "или"
           }
         }
       }
@@ -1792,6 +1952,23 @@
         }
       }
     },
+    "screen.settings.description.asrPermission" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "To use voice-based answering in some games, please allow access to speech recognition."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Чтобы использовать голосовые ответы в некоторых играх предоставьте доступ к Распознованию речи."
+          }
+        }
+      }
+    },
     "screen.settings.description.feedback" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1805,6 +1982,74 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Обратная связь"
+          }
+        }
+      }
+    },
+    "screen.settings.description.microphonePermission" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "To use voice input, please allow microphone access."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Для использования голосового ввода разрешите доступ к микрофону."
+          }
+        }
+      }
+    },
+    "screen.settings.settings.asrPermission" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings > Privacy & Security > Speech Recognition"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Настройки > Конфиденциальность и безопасность > Распознавание речи"
+          }
+        }
+      }
+    },
+    "screen.settings.settings.microphonePermission" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings > Privacy & Security > Microphone"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Настройки > Конфиденциальность и безопасность > Микрофон"
+          }
+        }
+      }
+    },
+    "screen.settings.subtitle.asrPermission" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Speech Recognition Permission"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Доступ к распознаванию речи"
           }
         }
       }
@@ -1843,6 +2088,23 @@
         }
       }
     },
+    "screen.settings.subtitle.microphonePermission" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Microphone Access"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Доступ к микрофону"
+          }
+        }
+      }
+    },
     "screen.settings.subtitle.theme" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1856,6 +2118,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Тема"
+          }
+        }
+      }
+    },
+    "screen.settings.subtitle.theme.dark" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dark"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Темная"
+          }
+        }
+      }
+    },
+    "screen.settings.subtitle.theme.light" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Light"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Светлая"
           }
         }
       }
@@ -2455,6 +2751,57 @@
         }
       }
     },
+    "settings.game.lives" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lives count"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Кол-во жизней"
+          }
+        }
+      }
+    },
+    "settings.game.noVoice" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disable voice tasks"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отключить голосовые задачи"
+          }
+        }
+      }
+    },
+    "settings.game.timeDuration" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Game duration"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Время игры"
+          }
+        }
+      }
+    },
     "sort.api.DictionarySortByDate" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2556,12 +2903,6 @@
           }
         }
       }
-    },
-    "Верно ✅" : {
-
-    },
-    "Нет доступных слов" : {
-
     }
   },
   "version" : "1.0"

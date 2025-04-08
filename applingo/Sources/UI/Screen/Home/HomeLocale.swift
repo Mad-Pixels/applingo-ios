@@ -1,29 +1,23 @@
 import Foundation
 
-/// Provides localized strings for the Home view.
 final class HomeLocale: ObservableObject {
-    
-    // MARK: - Localized Keys
     private enum LocalizedKey: String {
         case gameQuiz = "screen.home.game.quiz"
         case gameMatchup = "screen.home.game.matchup"
         case gameSwipe = "screen.home.game.swipe"
     }
     
-    // MARK: - Published Properties
-    
-    /// Title for the quiz button.
     @Published private(set) var screenGameQuiz: String
     @Published private(set) var screenGameMatchup: String
     @Published private(set) var screenGameSwipe: String
-    
-    // MARK: - Initialization
-    
+
     init() {
-        self.screenGameQuiz = Self.localizedString(for: .gameQuiz)
-        self.screenGameMatchup = Self.localizedString(for: .gameMatchup)
-        self.screenGameSwipe = Self.localizedString(for: .gameSwipe)
+        self.screenGameQuiz = ""
+        self.screenGameMatchup = ""
+        self.screenGameSwipe = ""
         
+        updateLocalizedStrings()
+
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(localeDidChange),
@@ -36,16 +30,15 @@ final class HomeLocale: ObservableObject {
         NotificationCenter.default.removeObserver(self)
     }
     
-    // MARK: - Localization Helper
-    
-    /// Retrieves a localized string for the given key.
-    private static func localizedString(for key: LocalizedKey) -> String {
-        return LocaleManager.shared.localizedString(for: key.rawValue).uppercased()
+    @objc private func localeDidChange() {
+        updateLocalizedStrings()
     }
     
-    // MARK: - Notification Handler
+    private static func localizedString(for key: LocalizedKey) -> String {
+        return LocaleManager.shared.localizedString(for: key.rawValue)
+    }
     
-    @objc private func localeDidChange() {
+    private func updateLocalizedStrings() {
         screenGameQuiz = Self.localizedString(for: .gameQuiz)
         screenGameMatchup = Self.localizedString(for: .gameMatchup)
         screenGameSwipe = Self.localizedString(for: .gameSwipe)

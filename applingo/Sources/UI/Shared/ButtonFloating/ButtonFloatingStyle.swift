@@ -1,29 +1,35 @@
 import SwiftUI
 
-// MARK: - ButtonFloatingStyle
-/// Defines styling parameters for floating buttons.
 struct ButtonFloatingStyle {
+    // Color Properties
     let mainButtonColor: Color
+    let disabledButtonColor: Color
     let itemButtonColor: Color
+    let shadowColor: Color
+
+    // Size Properties
     let mainButtonSize: CGSize
     let itemButtonSize: CGSize
-    let spacing: CGFloat
     let cornerRadius: CGFloat
-    let shadowColor: Color
+
+    // Layout Properties
+    let spacing: CGFloat
+
+    // Shadow Properties
     let shadowRadius: CGFloat
 }
 
 extension ButtonFloatingStyle {
-    /// Returns a themed style based on the provided AppTheme.
     static func themed(_ theme: AppTheme) -> ButtonFloatingStyle {
         ButtonFloatingStyle(
             mainButtonColor: theme.accentPrimary,
+            disabledButtonColor: theme.interactiveDisabled,
             itemButtonColor: theme.accentPrimary,
+            shadowColor: theme.backgroundPrimary.opacity(0.3),
             mainButtonSize: CGSize(width: 60, height: 60),
             itemButtonSize: CGSize(width: 50, height: 50),
-            spacing: 10,
             cornerRadius: 30,
-            shadowColor: theme.backgroundPrimary.opacity(0.3),
+            spacing: 10,
             shadowRadius: 5
         )
     }

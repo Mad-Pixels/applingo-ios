@@ -8,6 +8,7 @@ enum ScreenType: String {
     case WordList
     case WordDetails
     case WordAddManual
+    case WordNotFound
     case Settings
     case SettingsFeedback
     case GameMode

@@ -6,15 +6,15 @@ final class LogHandler: ObservableObject {
     
     @Published var sendLogs: Bool {
         didSet {
-            if AppStorage.shared.sendLogs != sendLogs {
-                AppStorage.shared.sendLogs = sendLogs
+            if AppStorage.shared.noLogs != sendLogs {
+                AppStorage.shared.noLogs = sendLogs
                 Logger.debug("[LogHandler]: Updated sendLogs to \(sendLogs) in UserDefaults")
                 }
             }
         }
     
         private init() {
-            self.sendLogs = AppStorage.shared.sendLogs
+            self.sendLogs = AppStorage.shared.noLogs
         }
 }
 
