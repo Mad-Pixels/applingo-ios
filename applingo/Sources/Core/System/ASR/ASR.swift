@@ -13,9 +13,10 @@ final class ASR: NSObject, SFSpeechRecognizerDelegate, Sendable {
     private var speechRecognizer: SFSpeechRecognizer?
     private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
     private var recognitionTask: SFSpeechRecognitionTask?
-    private let audioEngine = AVAudioEngine()
     private var completionHandler: ((String?) -> Void)?
     private var isProcessing = false
+    
+    private let audioEngine = AVAudioEngine()
     
     override init() {
         super.init()
