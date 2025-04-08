@@ -58,27 +58,43 @@ struct GameQuiz: View {
                     VStack {
                         Spacer()
                         HStack {
-                            Spacer()
-
                             if card.voice && card.flip {
-                                GameFloatingButtonRecord(
-                                    languageCode: card.word.backTextCode,
-                                    disabled: !TTSLanguageType.shared.supported(for: card.word.backTextCode),
-                                    onRecognized: { recognized in
-                                        recognizedAnswer = recognized
-
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.6) {
-                                            viewModel.handleAnswer(recognized)
+                                HStack {
+                                    ButtonFloatingSingle(
+                                        icon: "arrow.trianglehead.turn.up.right.circle.fill",
+                                        action: {
+                                            viewModel.skipCard()
+                                        },
+                                        left: true
+                                    )
+                                    .padding(.bottom, style.floatingBtnPadding)
+                                    
+                                    Spacer()
+                                    
+                                    GameFloatingButtonRecord(
+                                        languageCode: card.word.backTextCode,
+                                        disabled: !TTSLanguageType.shared.supported(for: card.word.backTextCode),
+                                        onRecognized: { recognized in
+                                            recognizedAnswer = recognized
+                                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.6) {
+                                                viewModel.handleAnswer(recognized)
+                                            }
                                         }
-                                    }
-                                )
-                                .padding(.bottom, style.floatingBtnPadding)
+                                    )
+                                    .padding(.bottom, style.floatingBtnPadding)
+                                }
+                                .frame(maxWidth: .infinity)
                             } else {
-                                GameFloatingButtonSpeaker(
-                                    word: card.word,
-                                    disabled: (!card.voice && card.flip) || (card.voice && card.flip)
-                                )
-                                .padding(.bottom, style.floatingBtnPadding)
+                                HStack {
+                                    Spacer()
+                                    
+                                    GameFloatingButtonSpeaker(
+                                        word: card.word,
+                                        disabled: (!card.voice && card.flip) || (card.voice && card.flip)
+                                    )
+                                    .padding(.bottom, style.floatingBtnPadding)
+                                }
+                                .frame(maxWidth: .infinity)
                             }
                         }
                     }

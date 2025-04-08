@@ -118,4 +118,10 @@ internal final class QuizViewModel: ObservableObject {
             }
         }
     }
+    
+    func skipCard() {
+        withAnimation {
+            generateCard()
+        }
+    }
 }
