@@ -27,10 +27,9 @@ struct GameFloatingButtonRecord: View {
             icon: isRecording ? "stop.circle.fill" : "mic.circle.fill",
             action: {
                 if isRecording {
-                    asr?.stopRecognition()
-                    isRecording = false
+                    stopRecognitionWithDelay()
                 } else if isPrepared {
-                    startRecognition()
+                    startRecognitionWithDelay()
                 }
             },
             disabled: disabled || !isPrepared
@@ -92,6 +91,24 @@ struct GameFloatingButtonRecord: View {
                 ])
                 isRecording = false
             }
+        }
+    }
+    
+    private func startRecognitionWithDelay() {
+        Task {
+            do {
+                try await asr?.startRecognition(languageCode: fullLangCode) { _ in }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    isRecording = true
+                }
+            } catch {}
+        }
+    }
+
+    private func stopRecognitionWithDelay() {
+        isRecording = false
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+            asr?.stopRecognition()
         }
     }
 }
