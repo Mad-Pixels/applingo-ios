@@ -10,7 +10,7 @@ internal struct GameQuizViewAnswerRecord: View {
         VStack(spacing: 8) {
             SectionBody(content: {
                 DynamicText(
-                    model: DynamicTextModel(text: recognizedText),
+                    model: DynamicTextModel(text: recognizedText.lowercased()),
                     style: .headerGame(
                         themeManager.currentThemeStyle,
                         alignment: .center,

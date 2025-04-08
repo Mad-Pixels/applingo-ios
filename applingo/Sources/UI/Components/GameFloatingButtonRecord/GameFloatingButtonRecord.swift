@@ -11,7 +11,7 @@ struct GameFloatingButtonRecord: View {
     let onRecognized: (String) -> Void
     let languageCode: String
     let disabled: Bool
-    
+        
     init(
         languageCode: String,
         disabled: Bool,
@@ -27,9 +27,9 @@ struct GameFloatingButtonRecord: View {
             icon: isRecording ? "stop.circle.fill" : "mic.circle.fill",
             action: {
                 if isRecording {
-                    stopRecognitionWithDelay()
+                    stopRecognition()
                 } else if isPrepared {
-                    startRecognitionWithDelay()
+                    startRecognition()
                 }
             },
             disabled: disabled || !isPrepared
@@ -78,23 +78,8 @@ struct GameFloatingButtonRecord: View {
             }
         }
     }
-
-    private func startRecognition() {
-        Task {
-            do {
-                try await asr?.startRecognition(languageCode: fullLangCode) { _ in }
-                isRecording = true
-            } catch {
-                Logger.error("[GameFloatingButtonRecord] Failed to start recognition", metadata: [
-                    "lang": fullLangCode,
-                    "error": error.localizedDescription
-                ])
-                isRecording = false
-            }
-        }
-    }
     
-    private func startRecognitionWithDelay() {
+    private func startRecognition() {
         Task {
             do {
                 try await asr?.startRecognition(languageCode: fullLangCode) { _ in }
@@ -105,8 +90,9 @@ struct GameFloatingButtonRecord: View {
         }
     }
 
-    private func stopRecognitionWithDelay() {
+    private func stopRecognition() {
         isRecording = false
+        
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
             asr?.stopRecognition()
         }
