@@ -10,7 +10,7 @@ internal struct ItemListRow<Item: Identifiable, RowContent: View>: View {
     internal let rowContent: (Item) -> RowContent
     
     var body: some View {
-        var base = rowContent(item)
+        let base = rowContent(item)
             .padding(.vertical, style.rowVerticalPadding)
             .padding(.horizontal, style.rowHorizontalPadding)
             .frame(maxWidth: .infinity)
