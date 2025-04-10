@@ -30,7 +30,12 @@ internal struct ItemScrollView<Item: Identifiable & Equatable, RowContent: View>
                         ForEach(items) { item in
                             let isDeletable = canDelete?(item) ?? true
                             row(item)
+                                .id(item.id)
                                 .onAppear { onItemAppear?(item) }
+                                .transaction { $0.disablesAnimations = true }
+                                .task {
+                                    _ = LocaleManager.shared.currentLocale
+                                }
                                 .contextMenu {
                                     if isDeletable {
                                         Button(role: .destructive) {
