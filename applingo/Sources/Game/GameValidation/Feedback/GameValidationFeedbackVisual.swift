@@ -61,29 +61,29 @@ class VisualFeedback: AbstractGameFeedback {
 
 class IncorrectAnswerBackgroundVisualFeedback: VisualFeedback {
     @EnvironmentObject private var themeManager: ThemeManager
-    init(theme: GameTheme) {
+    init(theme: GameTheme, duration: Double = 0.8) {
         super.init(
             selectedColor: theme.incorrect,
-            duration: 0.5
+            duration: duration
         )
     }
 }
 
 class CorrectAnswerBackgroundVisualFeedback: VisualFeedback {
-    init(theme: GameTheme) {
+    init(theme: GameTheme, duration: Double = 0.5) {
         super.init(
             selectedColor: theme.correct,
-            duration: 0.5
+            duration: duration
         )
     }
 }
 
 class CompleteBackgroundVisualFeedback: VisualFeedback {
-    init(theme: GameTheme) {
+    init(theme: GameTheme, duration: Double = 0.5) {
         super.init(
             selectedColor: theme.incorrect,
             correctColor: theme.correct,
-            duration: 0.5
+            duration: duration
         )
     }
 }

@@ -143,9 +143,8 @@ final class SwipeViewModel: ObservableObject {
             specialBonus: bonus
         )
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + SWIPE_CORRECT_FEEDBACK_DURATION + 0.1) {
             self.generateCard()
         }
     }
-
 }

@@ -41,7 +41,8 @@ final class Quiz: ObservableObject, AbstractGame {
                 .incorrect: [
                     IncorrectAnswerHapticFeedback(),
                     CompleteBackgroundVisualFeedback(
-                        theme: ThemeManager.shared.currentThemeStyle.quizTheme
+                        theme: ThemeManager.shared.currentThemeStyle.quizTheme,
+                        duration: QUIZ_INCORRECT_FEEDBACK_DURATION
                     )
                 ],
             ]

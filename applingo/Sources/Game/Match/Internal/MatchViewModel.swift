@@ -108,7 +108,7 @@ final class MatchViewModel: ObservableObject {
             gameBoard.remove(leftPosition: selectedLeft, rightPosition: selectedRight)
             game.removeItem(questionCard.word)
             
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + MATCH_CORRECT_FEEDBACK_DURATION) {
                 self.isLoadingCards = true
                 self.generateCards()
             }
