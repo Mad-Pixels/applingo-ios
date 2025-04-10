@@ -42,7 +42,7 @@ final class GameState: ObservableObject {
                 lives: AppStorage.shared.gameLives
             )
         case .time:
-            let timer = GameStateUtilsTimer(duration: AppStorage.shared.gameDuration)
+            let timer = GameStateUtilsTimer(duration: TimeInterval(AppStorage.shared.gameDuration))
             
             timer.onTimeUp = { [weak self] in
                 self?.end(reason: .timeUp)
