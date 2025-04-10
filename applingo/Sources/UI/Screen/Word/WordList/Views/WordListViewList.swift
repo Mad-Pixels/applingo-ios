@@ -8,6 +8,7 @@ internal struct WordListViewList: View {
     
     private let onWordSelect: (DatabaseModelWord) -> Void
     private let onListStateChanged: (Bool) -> Void
+    private let sortOption: WordSortOption
     private let locale: WordListLocale
     private let style: WordListStyle
     
@@ -25,12 +26,14 @@ internal struct WordListViewList: View {
         wordsGetter: WordGetter,
         wordsAction: WordAction,
         onWordSelect: @escaping (DatabaseModelWord) -> Void,
-        onListStateChanged: @escaping (Bool) -> Void
+        onListStateChanged: @escaping (Bool) -> Void,
+        sortOption: WordSortOption
     ) {
         self.onListStateChanged = onListStateChanged
         self.onWordSelect = onWordSelect
         self.wordsGetter = wordsGetter
         self.wordsAction = wordsAction
+        self.sortOption = sortOption
         self.locale = locale
         self.style = style
     }

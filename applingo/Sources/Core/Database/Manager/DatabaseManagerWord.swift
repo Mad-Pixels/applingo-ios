@@ -80,6 +80,7 @@ final class DatabaseManagerWord {
     /// - Throws: An error if the query fails.
     func fetch(
         search: String?,
+        sortOption: WordSortOption = .default,
         offset: Int,
         limit: Int
     ) throws -> [DatabaseModelWord] {
@@ -92,6 +93,7 @@ final class DatabaseManagerWord {
         return try dbQueue.read { db in
             let (sql, arguments) = try buildFetchQuery(
                 search: search?.lowercased(),
+                sortOption: sortOption,
                 activeDictionaries: activeDictionaries,
                 limit: limit,
                 offset: offset
@@ -333,6 +335,7 @@ final class DatabaseManagerWord {
     /// - Throws: An error if the query construction fails.
     private func buildFetchQuery(
         search: String?,
+        sortOption: WordSortOption,
         activeDictionaries: [DatabaseModelDictionary],
         limit: Int,
         offset: Int
@@ -357,11 +360,11 @@ final class DatabaseManagerWord {
             
             sql = SQL.searchSelect
             sql += " WHERE " + conditions.joined(separator: " AND ")
-            sql += " ORDER BY relevance ASC, id ASC"
+            sql += " ORDER BY relevance ASC, " + sortClause(for: sortOption)
         } else {
             sql = SQL.baseSelect
             sql += " WHERE " + conditions.joined(separator: " AND ")
-            sql += " ORDER BY id ASC"
+            sql += " ORDER BY " + sortClause(for: sortOption)
         }
         
         sql += " LIMIT ? OFFSET ?"
@@ -370,4 +373,24 @@ final class DatabaseManagerWord {
         
         return (sql, arguments)
     }
+    
+    private func sortClause(for option: WordSortOption) -> String {
+        switch option {
+        case .az:
+            return "frontText COLLATE NOCASE ASC"
+        case .za:
+            return "frontText COLLATE NOCASE DESC"
+        case .incorrectMin:
+            return "fail ASC"
+        case .incorrectMax:
+            return "fail DESC"
+        case .weightMin:
+            return "weight ASC"
+        case .weightMax:
+            return "weight DESC"
+        default:
+            return "id ASC"
+        }
+    }
+
 }
