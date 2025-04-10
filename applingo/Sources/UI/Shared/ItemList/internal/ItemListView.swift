@@ -1,9 +1,9 @@
 import SwiftUI
 
-struct ItemList<Item: Identifiable & Equatable, RowContent: View>: View {
+internal struct ItemListView<Item: Identifiable & Equatable, RowContent: View>: View {
     @State private var pressedItemId: Item.ID?
     @Binding var items: [Item]
-   
+    
     let rowContent: (Item) -> RowContent
     let onItemAppear: ((Item) -> Void)?
     let onDelete: ((IndexSet) -> Void)?
@@ -13,71 +13,13 @@ struct ItemList<Item: Identifiable & Equatable, RowContent: View>: View {
     let style: ItemListStyle
     let isLoadingPage: Bool
     let error: Error?
-    
-    /// Initializes the ItemList.
-    /// - Parameters:
-    ///   - items: A binding to the array of items.
-    ///   - style: The list style. Defaults to the themed style using the current theme.
-    ///   - isLoadingPage: A Boolean value indicating whether a new page is currently loading.
-    ///   - error: An optional error to display.
-    ///   - emptyListView: A view to display when the list is empty.
-    ///   - onItemAppear: A closure called when an item appears.
-    ///   - onDelete: A closure called when an item is deleted.
-    ///   - onItemTap: A closure called when an item is tapped.
-    ///   - canDelete: A closure that determines whether a specific item can be deleted.
-    ///   - rowContent: A view builder closure for rendering each row.
-    init(
-        items: Binding<[Item]>,
-        style: ItemListStyle = .themed(ThemeManager.shared.currentThemeStyle),
-        isLoadingPage: Bool = false,
-        error: Error? = nil,
-        emptyListView: AnyView? = nil,
-        onItemAppear: ((Item) -> Void)? = nil,
-        onDelete: ((IndexSet) -> Void)? = nil,
-        onItemTap: ((Item) -> Void)? = nil,
-        canDelete: ((Item) -> Bool)? = nil,
-        @ViewBuilder rowContent: @escaping (Item) -> RowContent
-    ) {
-        self.isLoadingPage = isLoadingPage
-        self.emptyListView = emptyListView
-        self.onItemAppear = onItemAppear
-        self.rowContent = rowContent
-        self.canDelete = canDelete
-        self.onItemTap = onItemTap
-        self.onDelete = onDelete
-        self._items = items
-        self.style = style
-        self.error = error
-    }
-    
-    @ViewBuilder
+
     var body: some View {
-        if #available(iOS 18, *) {
-            ItemListView(
-                items: $items,
-                rowContent: rowContent,
-                onItemAppear: onItemAppear,
-                onDelete: onDelete,
-                onItemTap: onItemTap,
-                canDelete: canDelete,
-                emptyListView: emptyListView,
-                style: style,
-                isLoadingPage: isLoadingPage,
-                error: error
-            )
-        } else {
-            ItemScrollView(
-                items: $items,
-                rowContent: rowContent,
-                onItemAppear: onItemAppear,
-                onDelete: onDelete,
-                onItemTap: onItemTap,
-                canDelete: canDelete,
-                emptyListView: emptyListView,
-                style: style,
-                isLoadingPage: isLoadingPage,
-                error: error
-            )
+        ZStack {
+            listView
+            if isLoadingPage && items.isEmpty {
+                ItemListLoading(style: style)
+            }
         }
     }
     
@@ -99,7 +41,7 @@ struct ItemList<Item: Identifiable & Equatable, RowContent: View>: View {
                 let itemsWithIndex = items.enumerated().map { (index, item) in (index, item, canDelete(item)) }
                 let deletableItems = itemsWithIndex.filter { $0.2 }
                 let nonDeletableItems = itemsWithIndex.filter { !$0.2 }
-                
+
                 ForEach(nonDeletableItems, id: \.1.id) { _, item, _ in
                     ItemListRow(
                         pressedItemId: $pressedItemId,
@@ -110,7 +52,7 @@ struct ItemList<Item: Identifiable & Equatable, RowContent: View>: View {
                         rowContent: rowContent
                     )
                 }
-                
+
                 ForEach(deletableItems, id: \.1.id) { _, item, _ in
                     ItemListRow(
                         pressedItemId: $pressedItemId,
@@ -139,13 +81,13 @@ struct ItemList<Item: Identifiable & Equatable, RowContent: View>: View {
                 }
                 .onDelete(perform: onDelete)
             }
+
             if isLoadingPage {
                 loadingIndicator
             }
         }
     }
-    
-    /// The main list view.
+
     private var listView: some View {
         List {
             listContent
@@ -154,8 +96,7 @@ struct ItemList<Item: Identifiable & Equatable, RowContent: View>: View {
         .scrollContentBackground(.hidden)
         .background(style.backgroundColor)
     }
-    
-    /// A loading indicator shown at the end of the list.
+
     private var loadingIndicator: some View {
         HStack {
             Spacer()
