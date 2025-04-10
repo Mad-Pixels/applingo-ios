@@ -82,7 +82,7 @@ final class AppStorage {
     // MARK: - Game Lives (Survival Mode)
     var gameLives: Int {
         get {
-            Int(temporary.getValue(for: "lives")) ?? DEFAULT_SURVIVAL_LIVES_MIN
+            Int(temporary.getValue(for: "lives")) ?? DEFAULT_SURVIVAL_LIVES
         }
         set {
             temporary.setValue(String(newValue), for: "lives")
@@ -90,9 +90,9 @@ final class AppStorage {
     }
 
     // MARK: - Game Duration (Time Mode)
-    var gameDuration: TimeInterval {
+    var gameDuration: Int {
         get {
-            Double(temporary.getValue(for: "game_duration")) ?? DEFAULT_TIME_DURATION_MIN
+            Int(temporary.getValue(for: "game_duration")) ?? DEFAULT_TIME_DURATION
         }
         set {
             temporary.setValue(String(newValue), for: "game_duration")
