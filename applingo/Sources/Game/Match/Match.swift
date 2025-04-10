@@ -41,7 +41,8 @@ final class Match: ObservableObject, AbstractGame {
                 .incorrect: [
                     IncorrectAnswerHapticFeedback(),
                     IncorrectAnswerBackgroundVisualFeedback(
-                        theme: ThemeManager.shared.currentThemeStyle.matchTheme
+                        theme: ThemeManager.shared.currentThemeStyle.matchTheme,
+                        duration: MATCH_INCORRECT_FEEDBACK_DURATION
                     )
                 ]
             ]
