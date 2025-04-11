@@ -2,19 +2,14 @@ import SwiftUI
 
 struct ItemPicker<Item: Hashable, Content: View>: View {
     @Binding var selectedValue: Item
-    
+
     let items: [Item]
     let style: ItemPickerStyle
     let content: (Item) -> Content
     let onChange: ((Item) -> Void)?
-    
-    /// Initializes the ItemPicker.
-    /// - Parameters:
-    ///   - selectedValue: Binding to the selected item.
-    ///   - items: Array of selectable items.
-    ///   - onChange: Closure called on selection change.
-    ///   - content: A view builder to render each item.
-    ///   - style: The style for the picker. Defaults to themed style using the current theme.
+
+    @State private var viewId = UUID()
+
     init(
         selectedValue: Binding<Item>,
         items: [Item],
@@ -28,7 +23,7 @@ struct ItemPicker<Item: Hashable, Content: View>: View {
         self.items = items
         self.style = style
     }
-    
+
     var body: some View {
         VStack(spacing: style.spacing) {
             SectionBody {
@@ -36,22 +31,35 @@ struct ItemPicker<Item: Hashable, Content: View>: View {
                     .padding(.horizontal, style.type == .wheel ? 0 : style.spacing)
             }
         }
-    }
-    
-    @ViewBuilder
-    private var pickerContent: some View {
-        Picker(selection: Binding(
-            get: { selectedValue },
-            set: { newValue in
-                selectedValue = newValue
-                onChange?(newValue)
-            }
-        ), label: EmptyView()) {
-            ForEach(items, id: \.self) { item in
-                content(item)
-                    .tag(item)
+        .onChange(of: items) { _ in
+            viewId = UUID()
+        }
+        .onChange(of: selectedValue) { newValue in
+            if !items.contains(newValue), let first = items.first {
+                selectedValue = first
             }
         }
-        .modifier(StylePickerModifier(style: style))
+    }
+
+    @ViewBuilder
+    private var pickerContent: some View {
+        if !items.isEmpty, items.contains(selectedValue) {
+            Picker(selection: Binding(
+                get: { selectedValue },
+                set: { newValue in
+                    selectedValue = newValue
+                    onChange?(newValue)
+                }
+            ), label: EmptyView()) {
+                ForEach(items, id: \.self) { item in
+                    content(item)
+                        .tag(item)
+                }
+            }
+            .modifier(StylePickerModifier(style: style))
+            .id(viewId)
+        } else {
+            EmptyView()
+        }
     }
 }
