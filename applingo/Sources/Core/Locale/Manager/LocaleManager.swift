@@ -81,6 +81,11 @@ final class LocaleManager: ObservableObject {
         return String(format: format, arguments: arguments)
     }
     
+    func localizedLanguageName(for code: String) -> String {
+        let locale = Locale(identifier: currentLocale.rawValue)
+        return locale.localizedString(forLanguageCode: code) ?? code
+    }
+    
     // MARK: - Private Methods
     
     /// Retrieves the initial locale from `AppStorage`.
