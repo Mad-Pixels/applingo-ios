@@ -36,7 +36,12 @@ struct WordList: View {
                 )
                 .padding()
                 
-                WordListSortOptions(selected: $selectedSort)
+                WordListSortOptions(
+                    style: style,
+                    selected: $selectedSort
+                )
+                .padding(.bottom, 8)
+                .padding(.top, -8)
                 
                 WordListViewList(
                     style: style,

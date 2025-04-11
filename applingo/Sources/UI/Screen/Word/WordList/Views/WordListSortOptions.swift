@@ -1,25 +1,29 @@
 import SwiftUI
 
 internal struct WordListSortOptions: View {
+    let style: WordListStyle
     @Binding var selected: WordSortOption
 
     var body: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 12) {
+        HStack {
+            HStack(spacing: 8) {
                 ForEach(WordSortOption.allCases) { option in
                     Button(action: {
                         selected = option
                     }) {
                         Image(systemName: option.iconName)
-                            .font(.system(size: 18, weight: .medium))
-                            .padding(8)
-                            .background(selected == option ? Color.accentColor.opacity(0.2) : Color.clear)
-                            .clipShape(Circle())
+                            .font(.system(size: 18, weight: .bold))
+                            .foregroundColor(selected == option ? style.accentColor : style.accentColor)
+                            .padding(4)
+                            .background(
+                                Circle()
+                                    .fill(selected == option ? style.accentColor.opacity(0.2) : Color.clear)
+                            )
                     }
                 }
             }
-            .padding(.horizontal)
+            .frame(maxWidth: .infinity, alignment: .center)
         }
+        .padding(.horizontal)
     }
 }
-
