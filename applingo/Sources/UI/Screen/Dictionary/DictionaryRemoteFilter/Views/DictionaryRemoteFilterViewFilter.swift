@@ -38,16 +38,9 @@ internal struct DictionaryRemoteFilterViewFilter: View {
                     selectedValue: $selectedFrontCategory,
                     items: categoryGetter.backCategories,
                     content: { category in
-                        let text = category != nil
-                            ? "\(category!.localizedLanguageName()) (\(category!.code.uppercased()))"
-                            : locale.screenTextUFOLevel
-                        
-                        return DynamicText(
-                            model: DynamicTextModel(text: text),
-                            style: .picker(
-                                themeManager.currentThemeStyle,
-                                fontSize: 13
-                            )
+                        DynamicText(
+                            model: DynamicTextModel(text: getLocalizedCategoryText(for: category).capitalizedFirstLetter),
+                            style: .picker(themeManager.currentThemeStyle, fontSize: 13)
                         )
                     },
                     style: .themed(themeManager.currentThemeStyle)
@@ -58,16 +51,9 @@ internal struct DictionaryRemoteFilterViewFilter: View {
                     selectedValue: $selectedBackCategory,
                     items: categoryGetter.backCategories,
                     content: { category in
-                        let text = category != nil
-                        ? "\(category!.localizedLanguageName()) (\(category!.code.uppercased()))"
-                            : locale.screenTextUFOLevel
-                        
-                        return DynamicText(
-                            model: DynamicTextModel(text: text),
-                            style: .picker(
-                                themeManager.currentThemeStyle,
-                                fontSize: 13
-                            )
+                        DynamicText(
+                            model: DynamicTextModel(text: getLocalizedCategoryText(for: category).capitalizedFirstLetter),
+                            style: .picker(themeManager.currentThemeStyle, fontSize: 13)
                         )
                     },
                     style: .themed(themeManager.currentThemeStyle)
@@ -77,5 +63,14 @@ internal struct DictionaryRemoteFilterViewFilter: View {
             .padding(.horizontal, 8)
             .background(Color.clear)
         }
+    }
+    
+    /// Returns a localized category label with language name and code.
+    private func getLocalizedCategoryText(for category: CategoryItem?) -> String {
+        guard let category else {
+            return locale.screenTextUFOLevel
+        }
+        let localizedName = locale.localizedCategoryName(for: category.code)
+        return "\(localizedName) (\(category.code.uppercased()))"
     }
 }

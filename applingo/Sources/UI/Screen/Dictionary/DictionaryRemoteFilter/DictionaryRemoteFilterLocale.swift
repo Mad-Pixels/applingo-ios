@@ -67,6 +67,10 @@ final class DictionaryRemoteFilterLocale: ObservableObject {
         updateLocalizedStrings()
     }
     
+    func localizedCategoryName(for code: String) -> String {
+        LocaleManager.shared.localizedLanguageName(for: code)
+    }
+    
     private static func localizedString(for key: LocalizedKey) -> String {
         return LocaleManager.shared.localizedString(for: key.rawValue)
     }
