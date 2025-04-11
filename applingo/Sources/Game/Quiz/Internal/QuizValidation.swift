@@ -63,10 +63,10 @@ internal final class QuizValidation: BaseGameValidation {
        return String(String.UnicodeScalarView(filtered)).trimmingCharacters(in: .whitespaces)
    }
 
-   /// Splits input string by `,` and `;`, normalizes each part, and removes empty results
+   /// Splits input string by `,`, `;` `:`, `|`, `/`, `/` normalizes each part, and removes empty results
    private func splitAndNormalize(_ text: String) -> [String] {
        return text
-           .components(separatedBy: CharacterSet(charactersIn: ",;"))
+           .components(separatedBy: CharacterSet(charactersIn: ",;:|/\\"))
            .map { normalize($0) }
            .filter { !$0.isEmpty }
    }
