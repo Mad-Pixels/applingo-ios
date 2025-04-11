@@ -14,7 +14,7 @@ enum WordSortOption: String, CaseIterable, Identifiable {
         case .createdMax: return "calendar.circle"
         case .weightMin: return "arrow.up.circle"
         case .weightMax: return "arrow.down.circle"
-        case .az: return "character.circle"
+        case .az: return "a.circle"
         case .za: return "z.circle"
         }
     }
