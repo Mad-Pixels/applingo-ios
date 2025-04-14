@@ -1,13 +1,7 @@
 import Foundation
 
-/// A storage implementation using in-memory storage.
-final class MemoryStorage: AbstractStorage {
-    // MARK: - Properties
-    
-    /// Dictionary to store key-value pairs in memory.
+internal final class MemoryStorage: AbstractStorage {
     private var storage: [String: String] = [:]
-    
-    // MARK: - Methods
     
     /// Retrieves a value for a given key from memory storage.
     /// - Parameter key: The key to retrieve the value for.

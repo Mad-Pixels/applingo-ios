@@ -1,16 +1,11 @@
 import SwiftUI
 
-/// Enum representing available themes in the app.
 enum ThemeType: String, CaseIterable {
-    // MARK: - Cases
-    
     /// Light theme.
     case light = "Light"
     /// Dark theme.
     case dark = "Dark"
-    
-    // MARK: - Methods
-    
+        
     /// Converts a string into a `ThemeType`.
     /// - Parameter string: The string to convert.
     /// - Returns: A `ThemeType` corresponding to the string, or `.light` as the default.

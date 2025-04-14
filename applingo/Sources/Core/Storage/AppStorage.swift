@@ -1,16 +1,12 @@
 import Foundation
 
-/// Singleton to manage persistent and temporary application storage.
 final class AppStorage {
-    // MARK: - Singleton Instance
     static let shared = AppStorage()
     
-    // MARK: - Properties
     private let permanent: AbstractStorage
     private let temporary: AbstractStorage
     
-    // MARK: - Initialization
-    /// Private initializer for singleton pattern.
+    /// Private initializer for AppStorage.
     /// - Parameters:
     ///   - permanent: Persistent storage (default: `UserDefaultsStorage`).
     ///   - temporary: Temporary storage (default: `MemoryStorage`).
@@ -22,7 +18,6 @@ final class AppStorage {
         self.temporary = temporary
     }
     
-    // MARK: - App Locale
     /// The application's current locale.
     var appLocale: LocaleType {
         get {
@@ -43,14 +38,12 @@ final class AppStorage {
         }
     }
     
-    // MARK: - App Theme
     /// The application's current theme.
     var appTheme: ThemeType {
         get { ThemeType.fromString(permanent.getValue(for: "theme")) }
         set { permanent.setValue(newValue.asString, for: "theme") }
     }
     
-    // MARK: - App ID
     /// A unique identifier for the application instance.
     var appId: String {
         get {
@@ -64,22 +57,19 @@ final class AppStorage {
         }
     }
     
-    // MARK: - Log Sending
     /// Whether the application is configured to send logs.
     var noLogs: Bool {
         get { temporary.getValue(for: "no_voice") == "false" }
         set { temporary.setValue(String(newValue), for: "no_logs")}
     }
     
-    // MARK: - Active Screen
     /// The currently active screen in the application.
     var activeScreen: ScreenType {
         get { ScreenType(rawValue: temporary.getValue(for: "screen")) ?? .GameMode }
         set { temporary.setValue(newValue.rawValue, for: "screen") }
     }
     
-    ///
-    // MARK: - Game Lives (Survival Mode)
+    /// The currently active game lives count (Survival Mode).
     var gameLives: Int {
         get {
             Int(temporary.getValue(for: "lives")) ?? DEFAULT_SURVIVAL_LIVES
@@ -89,7 +79,7 @@ final class AppStorage {
         }
     }
 
-    // MARK: - Game Duration (Time Mode)
+    /// The currently active game duration (Time Mode).
     var gameDuration: Int {
         get {
             Int(temporary.getValue(for: "game_duration")) ?? DEFAULT_TIME_DURATION
@@ -98,7 +88,6 @@ final class AppStorage {
             temporary.setValue(String(newValue), for: "game_duration")
         }
     }
-
 
     /// Whether the app should avoid using voice features (e.g., TTS).
     var noVoice: Bool {

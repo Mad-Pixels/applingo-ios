@@ -1,7 +1,4 @@
-/// Protocol for defining an abstract storage mechanism.
-protocol AbstractStorage {
-    // MARK: - Methods
-    
+protocol AbstractStorage {    
     /// Retrieves a value for a given key.
     /// - Parameter key: The key for the value to retrieve.
     /// - Returns: The value as a `String`. Returns an empty string if the key does not exist.
