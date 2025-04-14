@@ -4,8 +4,8 @@ final class AppStorage {
     static let shared = AppStorage()
     
     private let permanent: AbstractStorage
-    private let cloud: AbstractStorage
     private let temporary: AbstractStorage
+    private let cloud: AbstractStorage
     
     /// Private initializer for singleton pattern.
     /// - Parameters:
@@ -14,14 +14,79 @@ final class AppStorage {
     ///   - temporary: Temporary storage (default: `MemoryStorage`).
     private init(
         permanent: AbstractStorage = UserDefaultsStorage(),
-        cloud: AbstractStorage = CloudKitStorage(),
-        temporary: AbstractStorage = MemoryStorage()
+        temporary: AbstractStorage = MemoryStorage(),
+        cloud: AbstractStorage = CloudKitStorage()
     ) {
         self.permanent = permanent
-        self.cloud = cloud
         self.temporary = temporary
+        self.cloud = cloud
     }
     
+    // Check CloudKit.
+    func evaluateCloudAvailability() {
+        let available = FileManager.default.ubiquityIdentityToken != nil
+        useCloud = available
+        
+        Logger.debug(
+            "[AppStorage] Cloud availability",
+            metadata: [
+                "status": available
+            ]
+        )
+    }
+    
+    // Sync cloud data.
+    func syncAllCloudData() {
+        guard useCloud else {
+            Logger.debug("[AppStorage] Cloud sync skipped — useCloud is false")
+            return
+        }
+
+        Task {
+            if let cloudStorage = cloud as? CloudKitStorage {
+                let cloudKit = cloudStorage.cloud
+
+                let cloudPreferredKeys = [
+                    "user_score_total",
+                    "user_level",
+                    "user_xp"
+                ]
+
+                for key in cloudPreferredKeys {
+                    let value = cloud.getValue(for: key)
+                    if !value.isEmpty {
+                        permanent.setValue(value, for: key)
+                        Logger.debug(
+                            "[AppStorage] Synced cloud → local (timestamp-based)",
+                            metadata: [
+                                "key": key,
+                                "value": value
+                            ]
+                        )
+                    }
+                }
+
+                let localPreferredKeys = [
+                    "user_name"
+                ]
+
+                for key in localPreferredKeys {
+                    let value = permanent.getValue(for: key)
+                    if !value.isEmpty {
+                        await cloudKit.saveValue(value, for: key)
+                        Logger.debug(
+                            "[AppStorage] Synced local → cloud (local preferred)",
+                            metadata: [
+                                "key": key,
+                                "value": value
+                            ]
+                        )
+                    }
+                }
+            }
+        }
+    }
+
     /// The application's current locale.
     var appLocale: LocaleType {
         get {
@@ -65,7 +130,7 @@ final class AppStorage {
     
     /// Whether the application is configured to send logs.
     var noLogs: Bool {
-        get { temporary.getValue(for: "no_voice") == "false" }
+        get { temporary.getValue(for: "no_logs") == "true" }
         set { temporary.setValue(String(newValue), for: "no_logs")}
     }
 
@@ -138,8 +203,8 @@ final class AppStorage {
     
     /// Whether the app should avoid recording audio.
     var noRecord: Bool {
-        get { temporary.getValue(for: "no_voice") == "true" }
-        set { temporary.setValue(String(newValue), for: "no_voice")}
+        get { temporary.getValue(for: "no_record") == "true" }
+        set { temporary.setValue(String(newValue), for: "no_record")}
     }
     
     // MARK: - Permission Params (Temporary Storage)
@@ -154,5 +219,11 @@ final class AppStorage {
     var useMicrophone: Bool {
         get { temporary.getValue(for: "use_microphone") == "true" }
         set { temporary.setValue(String(newValue), for: "use_microphone") }
+    }
+    
+    /// Whether the application is allowed to use iCloud (CloudKit).
+    var useCloud: Bool {
+        get { permanent.getValue(for: "use_cloud") == "true" }
+        set { permanent.setValue(String(newValue), for: "use_cloud") }
     }
 }

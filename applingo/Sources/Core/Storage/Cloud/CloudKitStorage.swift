@@ -2,7 +2,7 @@ import Foundation
 
 struct CloudKitStorage: AbstractStorage {
     private let local: AbstractStorage
-    private let cloud: CloudKit
+    internal let cloud: CloudKit
 
     init(
         local: AbstractStorage = UserDefaultsStorage(),
@@ -13,20 +13,33 @@ struct CloudKitStorage: AbstractStorage {
     }
 
     func getValue(for key: String) -> String {
-        let localValue = local.getValue(for: key)
-        if !localValue.isEmpty {
-            return localValue
-        }
+        let localEncoded = local.getValue(for: key)
+        let localData = decodeValue(localEncoded)
 
-        let cloudValue = cloud.fetchValue(for: key)
-        if !cloudValue.isEmpty {
-            local.setValue(cloudValue, for: key)
-        }
-        return cloudValue
+        return localData.value
     }
 
     func setValue(_ value: String, for key: String) {
-        local.setValue(value, for: key)
-        cloud.saveValue(value, for: key)
+        let encoded = encodeValue(value)
+        local.setValue(encoded, for: key)
+        
+        Task {
+            await cloud.saveValue(encoded, for: key)
+        }
+    }
+
+    private func encodeValue(_ value: String) -> String {
+        let timestamp = Int(Date().timeIntervalSince1970)
+        return "\(value)::\(timestamp)"
+    }
+
+    private func decodeValue(_ raw: String) -> (value: String, timestamp: Int) {
+        let components = raw.components(separatedBy: "::")
+        if components.count == 2,
+           let ts = Int(components[1]) {
+            return (value: components[0], timestamp: ts)
+        } else {
+            return (value: raw, timestamp: 0)
+        }
     }
 }

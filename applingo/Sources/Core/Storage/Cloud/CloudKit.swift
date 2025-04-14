@@ -2,83 +2,93 @@ import Foundation
 import CloudKit
 
 internal final class CloudKit {
-    private let database = CKContainer.default().privateCloudDatabase
     private let recordType = "AppStorage"
+    private let container: CKContainer?
+    private let database: CKDatabase?
+    
+    init() {
+        if FileManager.default.ubiquityIdentityToken != nil {
+            self.container = CKContainer.default()
+            self.database = container?.privateCloudDatabase
+        } else {
+            Logger.debug(
+                "[CloudKit] iCloud is not available — falling back to local only."
+            )
+            
+            self.container = nil
+            self.database = nil
+        }
+    }
 
-    /// Fetches a value from CloudKit for the given key.
-    func fetchValue(for key: String) -> String {
-        Logger.debug(
-            "[CloudKit] Fetch value",
-            metadata: [
-                "key": key
-            ]
-        )
-
-        var result: String = ""
-        let semaphore = DispatchSemaphore(value: 0)
+    func fetchValue(for key: String) async throws -> String {
+        guard let database else {
+            Logger.debug(
+                "[CloudKit] Fetch skipped — database not available",
+                metadata: [
+                    "key": key
+                ]
+            )
+            return ""
+        }
 
         let recordID = CKRecord.ID(recordName: key)
-        database.fetch(withRecordID: recordID) { record, error in
-            defer { semaphore.signal() }
-
-            if let error = error {
-                Logger.debug(
-                    "[CloudKit] Fetch failed",
-                    metadata: [
-                        "key": key,
-                        "error": error.localizedDescription
-                    ]
-                )
-                return
-            }
-
-            if let value = record?["value"] as? String {
-                result = value
+        
+        do {
+            let record = try await database.record(for: recordID)
+            
+            if let value = record["value"] as? String {
                 Logger.debug(
                     "[CloudKit] Value fetched",
                     metadata: [
-                        "key": key,
-                        "value": value
+                        "key": key, "value": value
                     ]
                 )
+                return value
             }
+            return ""
+        } catch {
+            Logger.debug(
+                "[CloudKit] Fetch failed",
+                metadata: [
+                    "key": key,
+                    "error": error.localizedDescription
+                ]
+            )
+            return ""
         }
-
-        semaphore.wait()
-        return result
     }
 
-    /// Saves a value to CloudKit for the given key.
-    func saveValue(_ value: String, for key: String) {
-        Logger.debug(
-            "[CloudKit] Save value",
-            metadata: [
-                "key": key,
-                "value": value
-            ]
-        )
+    func saveValue(_ value: String, for key: String) async {
+        guard let database else {
+            Logger.debug(
+                "[CloudKit] Save skipped — database not available",
+                metadata: [
+                    "key": key
+                ]
+            )
+            return
+        }
 
         let recordID = CKRecord.ID(recordName: key)
         let record = CKRecord(recordType: recordType, recordID: recordID)
         record["value"] = value as CKRecordValue
 
-        database.save(record) { _, error in
-            if let error = error {
-                Logger.debug(
-                    "[CloudKit] Save failed",
-                    metadata: [
-                        "key": key,
-                        "error": error.localizedDescription
-                    ]
-                )
-            } else {
-                Logger.debug(
-                    "[CloudKit] Value saved",
-                    metadata: [
-                        "key": key
-                    ]
-                )
-            }
+        do {
+            _ = try await database.save(record)
+            Logger.debug(
+                "[CloudKit] Value saved",
+                metadata: [
+                    "key": key
+                ]
+            )
+        } catch {
+            Logger.debug(
+                "[CloudKit] Save failed",
+                metadata: [
+                    "key": key,
+                    "error": error.localizedDescription
+                ]
+            )
         }
     }
 }
