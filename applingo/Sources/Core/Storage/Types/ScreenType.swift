@@ -11,6 +11,7 @@ enum ScreenType: String {
     case WordNotFound
     case Settings
     case SettingsFeedback
+    case UserInfo
     case GameMode
     case Home
 }
