@@ -1,6 +1,6 @@
 import Foundation
 
-struct UserDefaultsStorage: AbstractStorage {    
+internal struct UserDefaultsStorage: AbstractStorage {
     /// Retrieves a value for a given key from `UserDefaults`.
     /// - Parameter key: The key to retrieve the value for.
     /// - Returns: The value associated with the key, or an empty string if not found.
