@@ -20,6 +20,8 @@ final class AppStorage {
         self.permanent = permanent
         self.temporary = temporary
         self.cloud = cloud
+        
+        evaluateCloudAvailability()
     }
     
     // Check CloudKit.
@@ -36,52 +38,67 @@ final class AppStorage {
     }
     
     // Sync cloud data.
-    func syncAllCloudData() {
+    func syncAllCloudData() async {
         guard useCloud else {
             Logger.debug("[AppStorage] Cloud sync skipped — useCloud is false")
             return
         }
 
-        Task {
-            if let cloudStorage = cloud as? CloudKitStorage {
-                let cloudKit = cloudStorage.cloud
+        guard let cloudStorage = cloud as? CloudKitStorage else {
+            Logger.debug("[AppStorage] Cloud sync skipped — cloud storage is not CloudKitStorage")
+            return
+        }
+        
+        let cloudKit = cloudStorage.cloud
+        
+        guard cloudKit.checkCloudAvailability() else {
+            Logger.debug("[AppStorage] Cloud sync skipped — cloud is not available")
+            return
+        }
 
-                let cloudPreferredKeys = [
-                    "user_score_total",
-                    "user_level",
-                    "user_xp"
-                ]
+        let cloudPreferredKeys = [
+            "user_score_total",
+            "user_level",
+            "user_xp"
+        ]
 
-                for key in cloudPreferredKeys {
-                    let value = cloud.getValue(for: key)
-                    if !value.isEmpty {
-                        permanent.setValue(value, for: key)
-                        Logger.debug(
-                            "[AppStorage] Synced cloud → local (timestamp-based)",
-                            metadata: [
-                                "key": key,
-                                "value": value
-                            ]
-                        )
-                    }
-                }
+        for key in cloudPreferredKeys {
+            let value = await cloudStorage.getValueAsync(for: key)
+            if !value.isEmpty {
+                permanent.setValue(value, for: key)
+                Logger.debug(
+                    "[AppStorage] Synced cloud → local (async)",
+                    metadata: [
+                        "key": key,
+                        "value": value
+                    ]
+                )
+            }
+        }
 
-                let localPreferredKeys = [
-                    "user_name"
-                ]
+        let localPreferredKeys = [
+            "user_name"
+        ]
 
-                for key in localPreferredKeys {
-                    let value = permanent.getValue(for: key)
-                    if !value.isEmpty {
-                        await cloudKit.saveValue(value, for: key)
-                        Logger.debug(
-                            "[AppStorage] Synced local → cloud (local preferred)",
-                            metadata: [
-                                "key": key,
-                                "value": value
-                            ]
-                        )
-                    }
+        for key in localPreferredKeys {
+            let value = permanent.getValue(for: key)
+            if !value.isEmpty {
+                let success = await cloudKit.saveValue(value, for: key)
+                Logger.debug(
+                    "[AppStorage] Synced local → cloud (local preferred)",
+                    metadata: [
+                        "key": key,
+                        "value": value,
+                        "success": success
+                    ]
+                )
+                
+                if !success {
+                    cloudStorage.addPendingOperation(
+                        type: CloudPendingOperationType.save,
+                        key: key,
+                        value: value
+                    )
                 }
             }
         }

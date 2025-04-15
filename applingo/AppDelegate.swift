@@ -17,19 +17,13 @@ struct LingocardApp: App {
         }
         
         AppAPI.configure(baseURL: apiUrl, token: apiToken)
-        
-        AppStorage.shared.evaluateCloudAvailability()
-        if AppStorage.shared.useCloud {
-            AppStorage.shared.syncAllCloudData()
-        }
-        
         _ = ApiManagerCache.shared
         _ = HardwareHaptic.shared
         _ = TTS.shared
         _ = ASR.shared
         
-        // User access request.
         Task {
+            await AppStorage.shared.syncAllCloudData()
             await ASR.shared.requestAccessIfNeeded()
         }
     }

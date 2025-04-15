@@ -6,5 +6,25 @@
 	<string>Speech recognition is used to transcribe your spoken answers</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>Speech recognition is used to transcribe your spoken answers</string>
+	<key>NSUbiquitousContainers</key>
+	<dict>
+		<key>iCloud.io.madpixels.applingo</key>
+		<dict>
+			<key>NSUbiquitousContainerIsDocumentScopePublic</key>
+			<true/>
+			<key>NSUbiquitousContainerName</key>
+			<string>AppLingo</string>
+			<key>NSUbiquitousContainerSupportedFolderLevels</key>
+			<string>Any</string>
+		</dict>
+	</dict>
+	<key>com.apple.developer.icloud-container-identifiers</key>
+	<array>
+		<string>iCloud.io.madpixels.applingo</string>
+	</array>
+	<key>com.apple.developer.icloud-services</key>
+	<array>
+		<string>CloudKit</string>
+	</array>
 </dict>
 </plist>
