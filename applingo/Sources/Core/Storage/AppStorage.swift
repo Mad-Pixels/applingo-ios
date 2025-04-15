@@ -82,6 +82,9 @@ final class AppStorage {
         set { temporary.setValue(String(newValue), for: "no_logs")}
     }
     
+    /// First app launch flag.
+    
+    
     // MARK: - App Session Params (Temporary Storage)
     
     /// Checks if a specific screen is currently active.
@@ -121,6 +124,12 @@ final class AppStorage {
     var noVoice: Bool {
         get { temporary.getValue(for: "no_voice") == "true" }
         set { temporary.setValue(String(newValue), for: "no_voice")}
+    }
+    
+    /// First app launch flag.
+    var firstFlight: Bool {
+        get { temporary.getValue(for: "first_flight") == "true" }
+        set { temporary.setValue(String(newValue), for: "first_flight")}
     }
     
     /// Whether the app should avoid using voice features (e.g., TTS).
