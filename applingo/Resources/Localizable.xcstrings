@@ -1000,6 +1000,9 @@
         }
       }
     },
+    "Hello" : {
+
+    },
     "screen.dictionaryImport.description.BlockA" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1969,6 +1972,23 @@
         }
       }
     },
+    "screen.profile.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profile"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Профиль"
+          }
+        }
+      }
+    },
     "screen.settings.description.asrPermission" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2883,6 +2903,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Главная"
+          }
+        }
+      }
+    },
+    "tab.profile.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profile"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Профиль"
           }
         }
       }
