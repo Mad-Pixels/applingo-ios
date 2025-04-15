@@ -83,7 +83,10 @@ final class AppStorage {
     }
     
     /// First app launch flag.
-    
+    var firstFlight: Bool {
+        get { permanent.getValue(for: "first_flight") == "true" }
+        set { permanent.setValue(String(newValue), for: "first_flight")}
+    }
     
     // MARK: - App Session Params (Temporary Storage)
     
@@ -124,12 +127,6 @@ final class AppStorage {
     var noVoice: Bool {
         get { temporary.getValue(for: "no_voice") == "true" }
         set { temporary.setValue(String(newValue), for: "no_voice")}
-    }
-    
-    /// First app launch flag.
-    var firstFlight: Bool {
-        get { temporary.getValue(for: "first_flight") == "true" }
-        set { temporary.setValue(String(newValue), for: "first_flight")}
     }
     
     /// Whether the app should avoid using voice features (e.g., TTS).
