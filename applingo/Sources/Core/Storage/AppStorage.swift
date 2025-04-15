@@ -165,12 +165,6 @@ final class AppStorage {
         set { cloud.setValue(String(newValue), for: "user_xp") }
     }
 
-    /// The cumulative score across all sessions.
-    var userScoreTotal: Int {
-        get { Int(cloud.getValue(for: "user_score_total")) ?? 0 }
-        set { cloud.setValue(String(newValue), for: "user_score_total") }
-    }
-
     /// The user's display name.
     var userName: String {
         get { cloud.getValue(for: "user_name") }
