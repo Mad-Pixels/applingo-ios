@@ -5,7 +5,7 @@ import Network
 internal final class CloudKit {
     private let networkMonitor = NWPathMonitor()
     private var isNetworkAvailable = false
-    private let recordType = "AppStorage"
+    private let recordType = "ProfileData"
     private let container: CKContainer?
     private let database: CKDatabase?
     private let maxRetries = 3
