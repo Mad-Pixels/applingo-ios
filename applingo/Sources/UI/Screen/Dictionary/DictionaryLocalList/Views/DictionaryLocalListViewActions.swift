@@ -4,6 +4,7 @@ internal struct DictionaryLocalListViewActions: View {
     private let locale: DictionaryLocalListLocale
     private let style: DictionaryLocalListStyle
     
+    internal let onNearbySend: () -> Void
     internal let onDownload: () -> Void
     internal let onImport: () -> Void
     
@@ -17,8 +18,10 @@ internal struct DictionaryLocalListViewActions: View {
         style: DictionaryLocalListStyle,
         locale: DictionaryLocalListLocale,
         onImport: @escaping () -> Void,
-        onDownload: @escaping () -> Void
+        onDownload: @escaping () -> Void,
+        onNearbySend: @escaping () -> Void
     ) {
+        self.onNearbySend = onNearbySend
         self.onDownload = onDownload
         self.onImport = onImport
         self.locale = locale
@@ -26,17 +29,19 @@ internal struct DictionaryLocalListViewActions: View {
     }
     
     var body: some View {
-        ButtonFloatingMultiple(
-            items: [
-                ButtonFloatingModelIconAction(
-                    icon: "tray.and.arrow.down",
-                    action: onImport
-                ),
-                ButtonFloatingModelIconAction(
-                    icon: "arrow.down.circle",
-                    action: onDownload
-                )
+        let actions: [ButtonFloatingModelIconAction] = {
+            var base = [
+                ButtonFloatingModelIconAction(icon: "tray.and.arrow.down", action: onImport),
+                ButtonFloatingModelIconAction(icon: "arrow.down.circle", action: onDownload)
             ]
-        )
+            if NearbyAvailability.isAvailable {
+                base.append(
+                    ButtonFloatingModelIconAction(icon: "dot.radiowaves.left.and.right", action: onNearbySend)
+                )
+            }
+            return base
+        }()
+
+        return ButtonFloatingMultiple(items: actions)
     }
 }

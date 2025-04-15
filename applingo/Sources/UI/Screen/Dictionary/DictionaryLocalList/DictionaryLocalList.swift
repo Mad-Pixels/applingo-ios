@@ -12,6 +12,7 @@ struct DictionaryLocalList: View {
     @State private var selectedDictionary: DatabaseModelDictionary?
     @State private var isShowingImportSheet = false
     @State private var isShowingRemoteList = false
+    @State private var isShowingNearbySend = false
    
     /// Initializes the DictionaryLocalList.
     /// - Parameter style: Optional style configuration; if nil, a themed style is used.
@@ -48,7 +49,8 @@ struct DictionaryLocalList: View {
                     style: style,
                     locale: locale,
                     onImport: { isShowingImportSheet = true },
-                    onDownload: { isShowingRemoteList = true }
+                    onDownload: { isShowingRemoteList = true },
+                    onNearbySend: { isShowingNearbySend = true }
                 )
                 .padding(.bottom, overlayBottomPadding)
             }
@@ -75,6 +77,9 @@ struct DictionaryLocalList: View {
         }
         .fullScreenCover(isPresented: $isShowingRemoteList) {
             DictionaryRemoteList()
+        }
+        .fullScreenCover(isPresented: $isShowingNearbySend) {
+            DictionaryNearByDescription(isPresented: $isShowingNearbySend)
         }
     }
 }

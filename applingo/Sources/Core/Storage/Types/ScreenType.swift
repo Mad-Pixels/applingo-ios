@@ -1,4 +1,5 @@
 enum ScreenType: String {
+    case DictionarySend
     case DictionaryImport
     case DictionaryLocalList
     case DictionaryLocalDetails

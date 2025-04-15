@@ -4,7 +4,22 @@
 <dict>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Speech recognition is used to transcribe your spoken answers</string>
+
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>Speech recognition is used to transcribe your spoken answers</string>
+
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Bluetooth is used to connect nearby devices</string>
+
+	<key>NSNearbyInteractionUsageDescription</key>
+	<string>Nearby Interaction is used to detect nearby devices and share content</string>
+
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Local network access is needed to discover and connect to nearby devices</string>
+
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_applingonearby._tcp</string>
+	</array>
 </dict>
 </plist>
