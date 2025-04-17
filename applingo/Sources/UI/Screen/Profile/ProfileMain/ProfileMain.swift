@@ -4,7 +4,7 @@ struct ProfileMain: View {
     @StateObject private var style: ProfileMainStyle
     @StateObject private var locale = ProfileMainLocale()
     
-    private let profile = ProfileStorage().get()
+    @State private var profile: ProfileModel = ProfileStorage.shared.get()
 
     init(
         style: ProfileMainStyle = .themed(ThemeManager.shared.currentThemeStyle)
@@ -21,6 +21,9 @@ struct ProfileMain: View {
                 Text("Level: \(profile.level)")
                 Text("XP: \(profile.xp)")
             }
+        }
+        .onAppear {
+            profile = ProfileStorage.shared.get()
         }
     }
 }
