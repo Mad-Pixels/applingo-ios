@@ -32,7 +32,6 @@ struct GameModeViewGame<GameType: AbstractGame>: View {
                         ButtonNav(
                             isPressed: $isPressedTrailing,
                             onTap: {
-                                game.end()
                                 isPresented = false
                             },
                             style: .close(ThemeManager.shared.currentThemeStyle)

@@ -71,23 +71,6 @@ final class Match: ObservableObject, AbstractGame {
         )
     }
     
-    func start() {
-        if !cacheInitialized {
-            self.cache.initialize()
-            cacheInitialized = true
-        }
-            
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
-            guard let self = self else { return }
-                
-            if !self.isReadyToPlay && !self.isLoadingCache {
-                self.state.showNoWords = true
-            } else {
-                self.state.initialize(for: self.state.currentMode ?? .practice)
-            }
-        }
-    }
-    
     func end() {
         state.end(reason: .userQuit)
         cache.clear()
