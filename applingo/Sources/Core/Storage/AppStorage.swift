@@ -4,8 +4,8 @@ import CloudKit
 final class AppStorage {
     static let shared = AppStorage()
     
-    private let permanent: AbstractStorage
-    private let temporary: AbstractStorage
+    internal let permanent: AbstractStorage
+    internal let temporary: AbstractStorage
     
     /// Private initializer for singleton pattern.
     /// - Parameters:
@@ -147,5 +147,11 @@ final class AppStorage {
     var useMicrophone: Bool {
         get { temporary.getValue(for: "use_microphone") == "true" }
         set { temporary.setValue(String(newValue), for: "use_microphone") }
+    }
+    
+    /// Whether the application has a remote profile.
+    var remoteProfile: Bool {
+        get { permanent.getValue(for: "remote_profile") == "true" }
+        set { permanent.setValue(String(newValue), for: "remote_profile")}
     }
 }
