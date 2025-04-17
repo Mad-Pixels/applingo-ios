@@ -1,10 +1,11 @@
 import Foundation
+import CloudKit
 
 final class AppStorage {
     static let shared = AppStorage()
     
-    private let permanent: AbstractStorage
-    private let temporary: AbstractStorage
+    internal let permanent: AbstractStorage
+    internal let temporary: AbstractStorage
     
     /// Private initializer for singleton pattern.
     /// - Parameters:
@@ -48,15 +49,31 @@ final class AppStorage {
     
     /// A unique identifier for the application instance.
     var appId: String {
-        get {
-            let id = permanent.getValue(for: "id")
-            if id.isEmpty {
-                let newId = UUID().uuidString
-                permanent.setValue(newId, for: "id")
-                return newId
-            }
-            return id
+        let savedId = permanent.getValue(for: "id")
+        if !savedId.isEmpty {
+            return savedId
         }
+
+        var result: String?
+        let semaphore = DispatchSemaphore(value: 0)
+
+        CKContainer.default().fetchUserRecordID { recordID, error in
+            if let recordID = recordID {
+                result = recordID.recordName
+            }
+            semaphore.signal()
+        }
+
+        _ = semaphore.wait(timeout: .now() + 2)
+
+        if let cloudID = result {
+            permanent.setValue(cloudID, for: "id")
+            return cloudID
+        }
+
+        let fallbackId = UUID().uuidString
+        permanent.setValue(fallbackId, for: "id")
+        return fallbackId
     }
     
     /// Whether the application is configured to send logs.
@@ -124,5 +141,11 @@ final class AppStorage {
     var useMicrophone: Bool {
         get { temporary.getValue(for: "use_microphone") == "true" }
         set { temporary.setValue(String(newValue), for: "use_microphone") }
+    }
+    
+    /// Whether the application has a remote profile.
+    var remoteProfile: Bool {
+        get { permanent.getValue(for: "remote_profile") == "true" }
+        set { permanent.setValue(String(newValue), for: "remote_profile")}
     }
 }
