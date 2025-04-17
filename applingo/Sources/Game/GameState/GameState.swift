@@ -22,6 +22,12 @@ final class GameState: ObservableObject {
     /// Set a reason why game was ended.
     @Published var endReason: GameStateEndReasonType?
     
+    let stats: GameStats
+    
+    init(stats: GameStats) {
+        self.stats = stats
+    }
+    
     /// This method resets any previous state and configures the state according to the selected game mode.
     /// - Parameter mode: The game mode to initialize the state for.
     func initialize(for mode: GameModeType) {
@@ -72,6 +78,8 @@ final class GameState: ObservableObject {
         case .userQuit:
             self.isGameOver = true
         }
+        
+        ProfileStorage.shared.addXp(Int64(self.stats.totalScore))
         
         DispatchQueue.main.async {
             Logger.debug("[GameState]: Game ended", metadata: [

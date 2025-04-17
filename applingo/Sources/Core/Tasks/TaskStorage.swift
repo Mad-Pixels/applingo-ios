@@ -1,6 +1,8 @@
 import Foundation
 
 final internal class TaskStorage {
+    static let shared = TaskStorage()
+    
     private var internalMap: [String: String] = [:]
     
     init() {

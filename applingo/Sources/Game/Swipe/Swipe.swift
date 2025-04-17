@@ -61,14 +61,16 @@ final class Swipe: ObservableObject, AbstractGame {
         ),
         settings: GameSettings = SwipeSettings()
     ) {
+        let stats = GameStats()
+        
         self.validation = validation
         self.settings = settings
         self.cache = cacheGetter
         self.scoring = scoring
         self.theme = theme
         
-        self.state = GameState()
-        self.stats = GameStats()
+        self.state = GameState(stats: stats)
+        self.stats = stats
     }
     
     @ViewBuilder

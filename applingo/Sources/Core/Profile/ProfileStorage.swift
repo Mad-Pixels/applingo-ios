@@ -1,6 +1,8 @@
 import Foundation
 
 final internal class ProfileStorage {
+    static let shared = ProfileStorage()
+    
     private var internalJson: String?
 
     init() {
