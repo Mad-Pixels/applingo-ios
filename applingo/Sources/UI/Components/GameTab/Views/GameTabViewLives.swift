@@ -1,7 +1,7 @@
 import SwiftUI
 
 internal struct GameTabViewLives: View {
-    let survival: SurvivalState
+    @ObservedObject var survival: GameStateUtilsSurvival
     let style: GameTabStyle
     
     private let maxPerRow = 3

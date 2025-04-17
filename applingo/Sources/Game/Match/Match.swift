@@ -60,7 +60,7 @@ final class Match: ObservableObject, AbstractGame {
         self.theme = theme
         
         self.state = GameState()
-        self.stats = GameStats(game: self)
+        self.stats = GameStats()
     }
     
     @ViewBuilder
@@ -104,6 +104,9 @@ final class Match: ObservableObject, AbstractGame {
     }
     
     internal func updateStats(correct: Bool, responseTime: TimeInterval, specialBonus: GameSpecialBonus? = nil) {
+        if !correct && state.currentMode == .survival {
+            state.survivalState?.decreaseLife()
+        }
         stats.updateGameStats(
             correct: correct,
             responseTime: responseTime,

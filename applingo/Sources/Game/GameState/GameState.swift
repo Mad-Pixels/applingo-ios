@@ -4,8 +4,8 @@ final class GameState: ObservableObject {
     /// The currently selected game mode, if any.
     @Published var currentMode: GameModeType?
     
-    /// The current state specific to the survival mode (e.g., remaining lives).
-    @Published var survivalState: SurvivalState?
+    /// The current state specific to the survival mode, managed by a survival utility.
+    @Published var survivalState: GameStateUtilsSurvival?
     
     /// The current state specific to the time mode, managed by a timer utility.
     @Published var timeState: GameStateUtilsTimer?
@@ -37,10 +37,13 @@ final class GameState: ObservableObject {
         
         switch mode {
         case .survival:
-            survivalState = SurvivalState(
-                initialLives: AppStorage.shared.gameLives,
-                lives: AppStorage.shared.gameLives
-            )
+            let survivalManager = GameStateUtilsSurvival(initialLives: AppStorage.shared.gameLives)
+            
+            survivalManager.onNoLivesLeft = { [weak self] in
+                self?.end(reason: .noLives)
+            }
+            
+            survivalState = survivalManager
         case .time:
             let timer = GameStateUtilsTimer(duration: TimeInterval(AppStorage.shared.gameDuration))
             

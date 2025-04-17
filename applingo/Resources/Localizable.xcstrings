@@ -1000,7 +1000,7 @@
         }
       }
     },
-    "Hello" : {
+    "Level: %lld" : {
 
     },
     "screen.dictionaryImport.description.BlockA" : {
@@ -2957,6 +2957,9 @@
           }
         }
       }
+    },
+    "XP: %lld" : {
+
     }
   },
   "version" : "1.0"
