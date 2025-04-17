@@ -135,6 +135,12 @@ final class AppStorage {
         set { temporary.setValue(newValue, for: "tasks") }
     }
     
+    /// Serialized task storage JSON blob (used by ProfileStorage).
+    var profile: String {
+        get { permanent.getValue(for: "profile") }
+        set { permanent.setValue(newValue, for: "profile") }
+    }
+    
     // MARK: - Permission Params (Temporary Storage)
     
     /// Whether the application is allowed to use ASR (speech recognition).
