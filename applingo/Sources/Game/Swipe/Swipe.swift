@@ -69,20 +69,6 @@ final class Swipe: ObservableObject, AbstractGame {
         
         self.state = GameState()
         self.stats = GameStats(game: self)
-        
-        cache.$isLoadingCache
-            .sink { [weak self] isLoading in
-                self?.isLoadingCache = isLoading
-            }
-            .store(in: &cancellables)
-                    
-        cache.$cache
-            .sink { words in
-                Logger.debug("[Swipe]: Cache updated", metadata: [
-                    "count": String(words.count)
-                ])
-            }
-            .store(in: &cancellables)
     }
     
     @ViewBuilder
