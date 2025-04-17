@@ -52,6 +52,12 @@ struct BaseGameScreen<Content: View>: View {
                     .zIndex(5)
             }
         }
+        .onDisappear() {
+            if !gameState.isGameOver {
+                gameState.end(reason: .userQuit)
+                game.end()
+            }
+        }
         .withScreenTracker(screen)
         .withErrorTracker(screen)
         .withLocaleTracker()

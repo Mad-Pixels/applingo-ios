@@ -80,7 +80,6 @@ final class Swipe: ObservableObject, AbstractGame {
     }
     
     func end() {
-        state.end(reason: .userQuit)
         cache.clear()
     }
     

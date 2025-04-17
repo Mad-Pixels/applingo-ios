@@ -70,9 +70,8 @@ final class Quiz: ObservableObject, AbstractGame {
                 .environmentObject(cache)
         )
     }
-        
+
     func end() {
-        state.end(reason: .userQuit)
         cache.clear()
     }
     
