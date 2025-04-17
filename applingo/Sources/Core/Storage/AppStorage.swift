@@ -4,8 +4,8 @@ import CloudKit
 final class AppStorage {
     static let shared = AppStorage()
     
-    internal let permanent: AbstractStorage
-    internal let temporary: AbstractStorage
+    private let permanent: AbstractStorage
+    private let temporary: AbstractStorage
     
     /// Private initializer for singleton pattern.
     /// - Parameters:
@@ -82,12 +82,6 @@ final class AppStorage {
         set { temporary.setValue(String(newValue), for: "no_logs")}
     }
     
-    /// First app launch flag.
-    var firstFlight: Bool {
-        get { permanent.getValue(for: "first_flight") == "true" }
-        set { permanent.setValue(String(newValue), for: "first_flight")}
-    }
-    
     // MARK: - App Session Params (Temporary Storage)
     
     /// Checks if a specific screen is currently active.
@@ -133,6 +127,12 @@ final class AppStorage {
     var noRecord: Bool {
         get { temporary.getValue(for: "no_record") == "true" }
         set { temporary.setValue(String(newValue), for: "no_record")}
+    }
+    
+    /// Serialized task storage JSON blob (used by TaskStorage).
+    var tasks: String {
+        get { temporary.getValue(for: "tasks") }
+        set { temporary.setValue(newValue, for: "tasks") }
     }
     
     // MARK: - Permission Params (Temporary Storage)

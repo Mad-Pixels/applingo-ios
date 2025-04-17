@@ -1,9 +1,6 @@
 import Foundation
 
 final internal class TaskStorage {
-    private let storage = AppStorage.shared.temporary
-    private let storageKey = "tasks"
-    
     private var internalMap: [String: String] = [:]
     
     init() {
@@ -32,17 +29,17 @@ final internal class TaskStorage {
     }
     
     private func loadFromStorage() {
-        let raw = storage.getValue(for: storageKey)
+        let raw = AppStorage.shared.tasks
         if let data = raw.data(using: .utf8),
-            let decoded = try? JSONDecoder().decode([String: String].self, from: data) {
+           let decoded = try? JSONDecoder().decode([String: String].self, from: data) {
             internalMap = decoded
         }
     }
     
     private func persist() {
         if let data = try? JSONEncoder().encode(internalMap),
-            let json = String(data: data, encoding: .utf8) {
-            storage.setValue(json, for: storageKey)
+           let json = String(data: data, encoding: .utf8) {
+            AppStorage.shared.tasks = json
         }
     }
     
