@@ -4,8 +4,8 @@ struct ProfileMain: View {
     @StateObject private var style: ProfileMainStyle
     @StateObject private var locale = ProfileMainLocale()
     
-    /// Initializes the UserInfo.
-    /// - Parameter style: The style for the picker. Defaults to themed style using the current theme.
+    private let profile = ProfileStorage().get()
+
     init(
         style: ProfileMainStyle = .themed(ThemeManager.shared.currentThemeStyle)
     ) {
@@ -18,10 +18,9 @@ struct ProfileMain: View {
             title: locale.screenTitle
         ) {
             VStack(spacing: 20) {
-                Text("Hello")
+                Text("Level: \(profile.level)")
+                Text("XP: \(profile.xp)")
             }
         }
     }
-    
-    
 }
