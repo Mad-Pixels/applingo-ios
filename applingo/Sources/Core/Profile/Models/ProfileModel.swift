@@ -7,6 +7,15 @@ struct ProfileModel: Codable, Equatable {
         return xpNeeded(for: level + 1)
     }
     
+    var xpTotal: Int64 {
+        var total = xpCurrent
+        
+        for lvl in 2..<max(2, level+1) {
+            total += xpNeeded(for: lvl)
+        }
+        return total
+    }
+    
     private(set) var level: Int64
     
     static let `default` = ProfileModel(xpCurrent: 0, level: 1)

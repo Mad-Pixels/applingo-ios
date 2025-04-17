@@ -3,12 +3,28 @@ import Foundation
 final class ProfileMainLocale: ObservableObject {
     private enum LocalizedKey: String {
         case title = "screen.profile.title"
+        case subtitleLevel = "screen.profile.subtitleLevel"
+        case subtitleProgress = "screen.profile.subtitleProgress"
+        case textCurrentXp = "screen.profile.textCurrentXp"
+        case textNeedXp = "screen.profile.textNeedXp"
+        case textAllXp = "screen.profile.textAllXp"
+        
     }
     
     @Published private(set) var screenTitle: String
+    @Published private(set) var screenSubtitleLevel: String
+    @Published private(set) var screenSubtitleProgress: String
+    @Published private(set) var screenTextCurrentXp: String
+    @Published private(set) var screenTextNeedXp: String
+    @Published private(set) var screenTextAllXp: String
     
     init() {
         self.screenTitle = ""
+        self.screenSubtitleLevel = ""
+        self.screenSubtitleProgress = ""
+        self.screenTextCurrentXp = ""
+        self.screenTextNeedXp = ""
+        self.screenTextAllXp = ""
     
         updateLocalizedStrings()
         
@@ -34,5 +50,10 @@ final class ProfileMainLocale: ObservableObject {
     
     private func updateLocalizedStrings() {
         screenTitle = Self.localizedString(for: .title)
+        screenSubtitleLevel = Self.localizedString(for: .subtitleLevel)
+        screenSubtitleProgress = Self.localizedString(for: .subtitleProgress)
+        screenTextCurrentXp = Self.localizedString(for: .textCurrentXp)
+        screenTextNeedXp = Self.localizedString(for: .textNeedXp)
+        screenTextAllXp = Self.localizedString(for: .textAllXp)
     }
 }
