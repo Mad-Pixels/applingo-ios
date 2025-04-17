@@ -60,9 +60,6 @@ struct BaseGameScreen<Content: View>: View {
         .onAppear {
             game.start()
         }
-        .onDisappear {
-            game.end()
-        }
         .withScreenTracker(screen)
         .withErrorTracker(screen)
         .withLocaleTracker()
