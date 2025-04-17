@@ -61,21 +61,19 @@ final class GameState: ObservableObject {
     /// Ends the game with the given reason.
     /// - Parameter reason: The reason why the game is ending.
     func end(reason: GameStateEndReasonType) {
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-            
-            if case .time = self.currentMode {
-                self.timeState?.stop()
-            }
-            self.endReason = reason
-            
-            switch reason {
-            case .timeUp, .noLives:
-                self.showResults = true
-            case .userQuit:
-                self.isGameOver = true
-            }
-            
+        if case .time = self.currentMode {
+            self.timeState?.stop()
+        }
+        self.endReason = reason
+        
+        switch reason {
+        case .timeUp, .noLives:
+            self.showResults = true
+        case .userQuit:
+            self.isGameOver = true
+        }
+        
+        DispatchQueue.main.async {
             Logger.debug("[GameState]: Game ended", metadata: [
                 "reason": String(describing: reason),
                 "mode": String(describing: self.currentMode)
