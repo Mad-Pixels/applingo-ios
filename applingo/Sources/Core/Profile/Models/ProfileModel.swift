@@ -1,10 +1,15 @@
 import Foundation
 
 struct ProfileModel: Codable, Equatable {
-    var xp: Int64
+    var xpCurrent: Int64
+    
+    var xpNext: Int64 {
+        return xpNeeded(for: level + 1)
+    }
+    
     private(set) var level: Int64
-
-    static let `default` = ProfileModel(xp: 0, level: 1)
+    
+    static let `default` = ProfileModel(xpCurrent: 0, level: 1)
 
     private func xpNeeded(for level: Int64) -> Int64 {
         guard level > 1 else { return 0 }
@@ -14,8 +19,8 @@ struct ProfileModel: Codable, Equatable {
     mutating func recalculateLevel() {
         while true {
             let required = xpNeeded(for: level + 1)
-            if xp >= required {
-                xp -= required
+            if xpCurrent >= required {
+                xpCurrent -= required
                 level += 1
             } else {
                 break

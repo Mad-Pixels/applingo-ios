@@ -19,7 +19,8 @@ struct ProfileMain: View {
         ) {
             VStack(spacing: 20) {
                 Text("Level: \(profile.level)")
-                Text("XP: \(profile.xp)")
+                Text("XP: \(profile.xpCurrent)")
+                Text("XP до следующего уровня: \(profile.xpNext)")
             }
         }
         .onAppear {

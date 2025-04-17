@@ -22,7 +22,8 @@ final internal class ProfileStorage {
 
     func addXp(_ amount: Int64) {
         var profile = get()
-        profile.xp += amount
+        
+        profile.xpCurrent += amount
         profile.recalculateLevel()
         save(profile)
     }
