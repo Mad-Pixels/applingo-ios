@@ -1,10 +1,12 @@
 import SwiftUI
 
 struct ProfileMain: View {
-    @StateObject private var style: ProfileMainStyle
-    @StateObject private var locale = ProfileMainLocale()
     @EnvironmentObject private var themeManager: ThemeManager
+    @EnvironmentObject private var localeManager: LocaleManager
     
+    @ObservedObject private var locale = ProfileMainLocale()
+    @StateObject private var style: ProfileMainStyle
+
     @State private var profile: ProfileModel = ProfileStorage.shared.get()
     
     init(
