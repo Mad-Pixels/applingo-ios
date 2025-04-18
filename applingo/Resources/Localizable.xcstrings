@@ -2009,30 +2009,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "All XP"
+            "value" : "All"
           }
         },
         "ru" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Всего опыта"
-          }
-        }
-      }
-    },
-    "screen.profile.textCurrentXp" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Current XP"
-          }
-        },
-        "ru" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Текущий опыт"
+            "value" : "Всего"
           }
         }
       }
@@ -2043,13 +2026,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "To the next level"
+            "value" : "Next Level"
           }
         },
         "ru" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "До следующего уровня"
+            "state" : "needs_review",
+            "value" : "Следующий уровень"
           }
         }
       }

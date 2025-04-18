@@ -24,6 +24,12 @@ struct ProfileMain: View {
                     locale: locale,
                     profile: profile
                 )
+                
+                ProfileViewStatistic(
+                    style: style,
+                    locale: locale,
+                    profile: profile
+                )
             }
             .padding(.horizontal, style.mainPadding)
             .padding(.top, style.mainPadding)

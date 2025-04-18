@@ -5,7 +5,6 @@ final class ProfileMainLocale: ObservableObject {
         case title = "screen.profile.title"
         case subtitleLevel = "screen.profile.subtitleLevel"
         case subtitleProgress = "screen.profile.subtitleProgress"
-        case textCurrentXp = "screen.profile.textCurrentXp"
         case textNeedXp = "screen.profile.textNeedXp"
         case textAllXp = "screen.profile.textAllXp"
         
@@ -14,7 +13,6 @@ final class ProfileMainLocale: ObservableObject {
     @Published private(set) var screenTitle: String
     @Published private(set) var screenSubtitleLevel: String
     @Published private(set) var screenSubtitleProgress: String
-    @Published private(set) var screenTextCurrentXp: String
     @Published private(set) var screenTextNeedXp: String
     @Published private(set) var screenTextAllXp: String
     
@@ -22,7 +20,6 @@ final class ProfileMainLocale: ObservableObject {
         self.screenTitle = ""
         self.screenSubtitleLevel = ""
         self.screenSubtitleProgress = ""
-        self.screenTextCurrentXp = ""
         self.screenTextNeedXp = ""
         self.screenTextAllXp = ""
     
@@ -52,7 +49,6 @@ final class ProfileMainLocale: ObservableObject {
         screenTitle = Self.localizedString(for: .title)
         screenSubtitleLevel = Self.localizedString(for: .subtitleLevel)
         screenSubtitleProgress = Self.localizedString(for: .subtitleProgress)
-        screenTextCurrentXp = Self.localizedString(for: .textCurrentXp)
         screenTextNeedXp = Self.localizedString(for: .textNeedXp)
         screenTextAllXp = Self.localizedString(for: .textAllXp)
     }
