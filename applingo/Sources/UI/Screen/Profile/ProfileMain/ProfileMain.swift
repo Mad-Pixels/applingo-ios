@@ -18,16 +18,15 @@ struct ProfileMain: View {
             screen: .Profile,
             title: locale.screenTitle
         ) {
-            VStack(spacing: 30) {
+            VStack(spacing: style.blockPadding) {
                 ProfileViewProgress(
                     style: style,
                     locale: locale,
                     profile: profile
                 )
-                
             }
-            .padding(.horizontal, 26)
-            .padding(.top, 32)
+            .padding(.horizontal, style.mainPadding)
+            .padding(.top, style.mainPadding)
         }
         .onAppear {
             profile = ProfileStorage.shared.get()

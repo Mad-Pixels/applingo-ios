@@ -23,112 +23,67 @@ internal struct ProfileViewProgress: View {
     
     var body: some View {
         SectionBody {
-            VStack(alignment: .center) {
-                DynamicText(
-                    model: DynamicTextModel(text: locale.screenSubtitleLevel),
-                    style: .headerMain(
-                        ThemeManager.shared.currentThemeStyle,
-                        alignment: .center,
-                        lineLimit: 1
+            VStack(alignment: .center, spacing: style.blockPadding) {
+                HStack {
+                    ProfileViewAvatar(
+                        style: style,
+                        locale: locale,
+                        level: profile.level
                     )
-                )
-
-                DynamicText(
-                    model: DynamicTextModel(text: "\(profile.level)"),
-                    style: .headerGame(
-                        ThemeManager.shared.currentThemeStyle,
-                        alignment: .center,
-                        lineLimit: 1
-                    )
-                )
+                    
+                    Spacer()
+                    
+                    VStack {
+                        DynamicText(
+                            model: DynamicTextModel(text: locale.screenSubtitleLevel),
+                            style: .headerMain(
+                                ThemeManager.shared.currentThemeStyle,
+                                alignment: .trailing,
+                                lineLimit: 1
+                            )
+                        )
+                        
+                        DynamicText(
+                            model: DynamicTextModel(text: "\(profile.level)"),
+                            style: .headerHuge(
+                                ThemeManager.shared.currentThemeStyle,
+                                alignment: .trailing,
+                                lineLimit: 1,
+                                fontColor: style.accentColor
+                            )
+                        )
+                    }
+                }
                 
-                HStack {
-                    DynamicText(
-                        model: DynamicTextModel(text: locale.screenSubtitleProgress),
-                        style: .textGame(
-                            ThemeManager.shared.currentThemeStyle,
-                            alignment: .leading,
-                            lineLimit: 1
+                VStack(spacing: style.mainPadding) {
+                    HStack {
+                        DynamicText(
+                            model: DynamicTextModel(text: "\(locale.screenSubtitleProgress):"),
+                            style: .textGameBold(
+                                ThemeManager.shared.currentThemeStyle,
+                                alignment: .leading,
+                                lineLimit: 1
+                            )
                         )
-                    )
-
-                    DynamicText(
-                        model: DynamicTextModel(text: "\(profile.xpCurrent) / \(profile.xpNext)"),
-                        style: .textBold(
-                            ThemeManager.shared.currentThemeStyle,
-                            alignment: .trailing,
-                            lineLimit: 1
+                        
+                        DynamicText(
+                            model: DynamicTextModel(text: "\(profile.xpCurrent) / \(profile.xpNext)"),
+                            style: .textGameBold(
+                                ThemeManager.shared.currentThemeStyle,
+                                alignment: .trailing,
+                                lineLimit: 1,
+                                fontColor: style.accentColor
+                            )
                         )
-                    )
-                }
-
-                ChartIndicator(
-                    weight: min(1000, Int(Double(profile.xpCurrent) / Double(profile.xpNext) * 1000)),
-                    style: .themed(themeManager.currentThemeStyle)
-                )
-                .frame(height: 12)
-
-                HStack {
-                    DynamicText(
-                        model: DynamicTextModel(text: locale.screenTextNeedXp),
-                        style: .textMain(
-                            ThemeManager.shared.currentThemeStyle,
-                            alignment: .leading,
-                            lineLimit: 1
-                        )
-                    )
-
-                    DynamicText(
-                        model: DynamicTextModel(text: "\(profile.xpNext - profile.xpCurrent)"),
-                        style: .textBold(
-                            ThemeManager.shared.currentThemeStyle,
-                            alignment: .trailing,
-                            lineLimit: 1
-                        )
-                    )
-                }
-
-                HStack {
-                    DynamicText(
-                        model: DynamicTextModel(text: locale.screenTextCurrentXp),
-                        style: .textMain(
-                            ThemeManager.shared.currentThemeStyle,
-                            alignment: .leading,
-                            lineLimit: 1
-                        )
-                    )
-
-                    DynamicText(
-                        model: DynamicTextModel(text: "\(profile.xpCurrent)"),
-                        style: .textBold(
-                            ThemeManager.shared.currentThemeStyle,
-                            alignment: .trailing,
-                            lineLimit: 1
-                        )
-                    )
-                }
-
-                HStack {
-                    DynamicText(
-                        model: DynamicTextModel(text: locale.screenTextAllXp),
-                        style: .textMain(
-                            ThemeManager.shared.currentThemeStyle,
-                            alignment: .leading,
-                            lineLimit: 1
-                        )
-                    )
-
-                    DynamicText(
-                        model: DynamicTextModel(text: "\(profile.xpTotal)"),
-                        style: .textBold(
-                            ThemeManager.shared.currentThemeStyle,
-                            alignment: .trailing,
-                            lineLimit: 1
-                        )
+                    }
+                    
+                    ChartIndicator(
+                        weight: min(1000, Int(Double(profile.xpCurrent) / Double(profile.xpNext) * 1000)),
+                        style: .md(themeManager.currentThemeStyle)
                     )
                 }
             }
-            .padding(8)
+            .padding(style.mainPadding)
         }
     }
 }
