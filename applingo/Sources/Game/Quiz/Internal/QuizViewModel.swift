@@ -86,7 +86,8 @@ internal final class QuizViewModel: ObservableObject {
                 }
             }
             
-            shouldShowEmptyView = true
+            //shouldShowEmptyView = true
+            game.state.showNoWords = true
             self.isProcessingAnswer = false
             self.isLoadingCard = false
         }

@@ -91,7 +91,8 @@ final class SwipeViewModel: ObservableObject {
                 }
             }
             
-            shouldShowEmptyView = true
+            game.state.showNoWords = true
+            //shouldShowEmptyView = true
             self.isProcessingAnswer = false
             self.isLoadingCard = false
         }
