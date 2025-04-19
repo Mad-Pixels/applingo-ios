@@ -1,6 +1,6 @@
 import Foundation
 
-struct CreateRemoteProfile: AbstractTask {
+struct CreateRemoteProfile: AbstractTask, Codable, Equatable {
     var id: String
     var appId: String
     var retryCount: Int = 0
@@ -8,13 +8,41 @@ struct CreateRemoteProfile: AbstractTask {
 
     static var type: String { "create_profile" }
     var maxRetryCount: Int { 0 }
-
+    
     func execute() async throws {
-        Logger.debug("[CreateRemoteProfile] Simulating failure")
+        Logger.debug(
+            "[CreateRemoteProfile] Executing task",
+            metadata: [
+                "id": id,
+                "appId": appId
+            ]
+        )
         
-        struct SimulatedError: Error {}
-        throw SimulatedError()
+        let profileAction = ProfileAction()
         
-        AppStorage.shared.remoteProfile = true
+        return try await withCheckedThrowingContinuation { continuation in
+            profileAction.post(id: appId) { result in
+                switch result {
+                case .success:
+                    Logger.info("[CreateRemoteProfile] Profile created successfully")
+                    AppStorage.shared.remoteProfile = true
+                    continuation.resume()
+                    
+                case .failure(let error):
+                    Logger.error(
+                        "[CreateRemoteProfile] Failed to create profile",
+                        metadata: ["error": error.localizedDescription]
+                    )
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+    }
+    
+    static func == (lhs: CreateRemoteProfile, rhs: CreateRemoteProfile) -> Bool {
+        lhs.id == rhs.id &&
+        lhs.appId == rhs.appId &&
+        lhs.retryCount == rhs.retryCount &&
+        lhs.nextAttemptAt == rhs.nextAttemptAt
     }
 }
