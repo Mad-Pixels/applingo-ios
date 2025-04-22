@@ -53,14 +53,16 @@ final class Match: ObservableObject, AbstractGame {
         ),
         settings: GameSettings = MatchSettings()
     ) {
+        let stats = GameStats()
+        
         self.validation = validation
         self.settings = settings
         self.cache = cacheGetter
         self.scoring = scoring
         self.theme = theme
         
-        self.state = GameState()
-        self.stats = GameStats(game: self)
+        self.state = GameState(stats: stats)
+        self.stats = stats
     }
     
     @ViewBuilder
@@ -71,25 +73,7 @@ final class Match: ObservableObject, AbstractGame {
         )
     }
     
-    func start() {
-        if !cacheInitialized {
-            self.cache.initialize()
-            cacheInitialized = true
-        }
-            
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
-            guard let self = self else { return }
-                
-            if !self.isReadyToPlay && !self.isLoadingCache {
-                self.state.showNoWords = true
-            } else {
-                self.state.initialize(for: self.state.currentMode ?? .practice)
-            }
-        }
-    }
-    
     func end() {
-        state.end(reason: .userQuit)
         cache.clear()
     }
     
@@ -104,6 +88,9 @@ final class Match: ObservableObject, AbstractGame {
     }
     
     internal func updateStats(correct: Bool, responseTime: TimeInterval, specialBonus: GameSpecialBonus? = nil) {
+        if !correct && state.currentMode == .survival {
+            state.survivalState?.decreaseLife()
+        }
         stats.updateGameStats(
             correct: correct,
             responseTime: responseTime,

@@ -4,8 +4,8 @@ final class GameState: ObservableObject {
     /// The currently selected game mode, if any.
     @Published var currentMode: GameModeType?
     
-    /// The current state specific to the survival mode (e.g., remaining lives).
-    @Published var survivalState: SurvivalState?
+    /// The current state specific to the survival mode, managed by a survival utility.
+    @Published var survivalState: GameStateUtilsSurvival?
     
     /// The current state specific to the time mode, managed by a timer utility.
     @Published var timeState: GameStateUtilsTimer?
@@ -22,6 +22,12 @@ final class GameState: ObservableObject {
     /// Set a reason why game was ended.
     @Published var endReason: GameStateEndReasonType?
     
+    let stats: GameStats
+    
+    init(stats: GameStats) {
+        self.stats = stats
+    }
+    
     /// This method resets any previous state and configures the state according to the selected game mode.
     /// - Parameter mode: The game mode to initialize the state for.
     func initialize(for mode: GameModeType) {
@@ -37,10 +43,13 @@ final class GameState: ObservableObject {
         
         switch mode {
         case .survival:
-            survivalState = SurvivalState(
-                initialLives: AppStorage.shared.gameLives,
-                lives: AppStorage.shared.gameLives
-            )
+            let survival = GameStateUtilsSurvival(initialLives: AppStorage.shared.gameLives)
+            
+            survival.onNoLivesLeft = { [weak self] in
+                self?.end(reason: .noLives)
+            }
+            
+            survivalState = survival
         case .time:
             let timer = GameStateUtilsTimer(duration: TimeInterval(AppStorage.shared.gameDuration))
             
@@ -58,21 +67,21 @@ final class GameState: ObservableObject {
     /// Ends the game with the given reason.
     /// - Parameter reason: The reason why the game is ending.
     func end(reason: GameStateEndReasonType) {
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-            
-            if case .time = self.currentMode {
-                self.timeState?.stop()
-            }
-            self.endReason = reason
-            
-            switch reason {
-            case .timeUp, .noLives:
-                self.showResults = true
-            case .userQuit:
-                self.isGameOver = true
-            }
-            
+        if case .time = self.currentMode {
+            self.timeState?.stop()
+        }
+        self.endReason = reason
+        
+        switch reason {
+        case .timeUp, .noLives:
+            self.showResults = true
+        case .userQuit:
+            self.isGameOver = true
+        }
+        
+        ProfileStorage.shared.addXp(Int64(self.stats.totalScore))
+        
+        DispatchQueue.main.async {
             Logger.debug("[GameState]: Game ended", metadata: [
                 "reason": String(describing: reason),
                 "mode": String(describing: self.currentMode)

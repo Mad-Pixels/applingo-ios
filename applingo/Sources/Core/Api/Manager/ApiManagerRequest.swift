@@ -9,6 +9,7 @@ final class ApiManagerRequest {
         static let dictionaries = "/v1/dictionaries"
         static let categories = "/v1/subcategories"
         static let statistic = "/v1/dictionary/statistic"
+        static let profile = "/v1/profile"
         static let urls = "/v1/urls"
     }
         
@@ -191,5 +192,58 @@ final class ApiManagerRequest {
                 ]
             )
         }
+    }
+    
+    func createProfile(id: String) async throws -> Data {
+        Logger.debug(
+            "[API]: Creating profile...",
+            metadata: ["id": id]
+        )
+            
+        let request = ApiModelProfilePostRequest(id: id)
+        let bodyData = try JSONEncoder().encode(request)
+            
+        let data = try await AppAPI.shared.request(
+            endpoint: Endpoints.profile,
+            method: .post,
+            body: bodyData
+        )
+            
+        Logger.debug(
+            "[API]: Profile created successfully",
+            metadata: ["id": id]
+        )
+        
+        return data
+    }
+    
+    func updateProfile(id: String, level: Int64, xp: Int64) async throws -> Data {
+        Logger.debug(
+            "[API]: Updating profile...",
+            metadata: [
+                "id": id,
+                "level": level,
+                "xp": xp
+            ]
+        )
+            
+        let request = ApiModelProfilePatchRequest(id: id, level: level, xp: xp)
+        let bodyData = try JSONEncoder().encode(request)
+
+        let data = try await AppAPI.shared.request(
+            endpoint: Endpoints.profile,
+            method: .patch,
+            body: bodyData
+        )
+
+        Logger.debug(
+            "[API]: Profile updated successfully",
+            metadata: [
+                "id": id,
+                "dataSize": String(data.count)
+            ]
+        )
+
+        return data
     }
 }

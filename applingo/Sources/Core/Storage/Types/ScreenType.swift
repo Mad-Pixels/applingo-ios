@@ -9,6 +9,7 @@ enum ScreenType: String {
     case WordDetails
     case WordAddManual
     case WordNotFound
+    case Profile
     case Settings
     case SettingsFeedback
     case GameMode

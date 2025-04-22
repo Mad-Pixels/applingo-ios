@@ -1,9 +1,6 @@
 import Foundation
 
-/// A storage implementation using `UserDefaults`.
 struct UserDefaultsStorage: AbstractStorage {
-    // MARK: - Methods
-    
     /// Retrieves a value for a given key from `UserDefaults`.
     /// - Parameter key: The key to retrieve the value for.
     /// - Returns: The value associated with the key, or an empty string if not found.

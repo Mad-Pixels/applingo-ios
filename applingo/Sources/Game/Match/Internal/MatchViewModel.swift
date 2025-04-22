@@ -68,7 +68,8 @@ final class MatchViewModel: ObservableObject {
                 }
             }
             
-            shouldShowEmptyView = true
+            game.state.showNoWords = true
+            //shouldShowEmptyView = true
             self.isLoadingCards = false
         }
     }
