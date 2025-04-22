@@ -9,6 +9,7 @@ struct WordList: View {
     @StateObject private var wordsGetter = WordGetter()
     @StateObject private var wordsAction = WordAction()
     
+    @State private var selectedSort: WordSortOption = .default
     @State private var selectedWord: DatabaseModelWord?
     @State private var isSearchDisabled = false
     @State private var isShowingAddView = false
@@ -35,6 +36,13 @@ struct WordList: View {
                 )
                 .padding()
                 
+                WordListSortOptions(
+                    style: style,
+                    selected: $selectedSort
+                )
+                .padding(.bottom, 8)
+                .padding(.top, -8)
+                
                 WordListViewList(
                     style: style,
                     locale: locale,
@@ -43,7 +51,8 @@ struct WordList: View {
                     onWordSelect: { word in selectedWord = word },
                     onListStateChanged: { isEmpty in
                         isSearchDisabled = isEmpty
-                    }
+                    },
+                    sortOption: selectedSort
                 )
                 .safeAreaInset(edge: .bottom) {
                     Color.clear.frame(height: bottomInsetHeight)
@@ -60,6 +69,9 @@ struct WordList: View {
                 if wordsGetter.words.isEmpty { wordsGetter.resetPagination() }
                 wordsAction.setScreen(.WordList)
                 wordsGetter.setScreen(.WordList)
+            }
+            .onChange(of: selectedSort) { newValue in
+                wordsGetter.sortOption = newValue
             }
             .onDisappear() {
                 wordsGetter.searchText = ""

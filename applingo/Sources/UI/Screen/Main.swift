@@ -57,6 +57,22 @@ struct Main: View {
                         }
                     }
                     .tag(2)
+                
+                ProfileMain()
+                    .environmentObject(ThemeManager.shared)
+                    .environmentObject(LocaleManager.shared)
+                    .tabItem {
+                        Label {
+                            Text(
+                                locale.localizedString(
+                                    for: "tab.profile.title"
+                                ).capitalizedFirstLetter
+                            )
+                        } icon: {
+                            Image(systemName: "person.fill")
+                        }
+                    }
+                    .tag(3)
 
                 SettingsMain()
                     .environmentObject(ThemeManager.shared)
@@ -72,7 +88,7 @@ struct Main: View {
                             Image(systemName: "gearshape.2.fill")
                         }
                     }
-                    .tag(3)
+                    .tag(4)
             }
         }
     }

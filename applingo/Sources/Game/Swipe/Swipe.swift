@@ -40,10 +40,18 @@ final class Swipe: ObservableObject, AbstractGame {
             feedbacks: [
                 .incorrect: [
                     IncorrectAnswerHapticFeedback(),
-                    GameValidationFeedbackVisualIcon(iconName: "xmark", color: .red)
+                    GameValidationFeedbackVisualIcon(
+                        iconName: "xmark",
+                        color: ThemeManager.shared.currentThemeStyle.error,
+                        duration: SWIPE_INCORRECT_FEEDBACK_DURATION
+                    )
                 ],
                 .correct: [
-                    GameValidationFeedbackVisualIcon(iconName: "checkmark", color: .green)
+                    GameValidationFeedbackVisualIcon(
+                        iconName: "checkmark",
+                        color: ThemeManager.shared.currentThemeStyle.success,
+                        duration: SWIPE_CORRECT_FEEDBACK_DURATION
+                    )
                 ]
             ]
         ),
@@ -53,28 +61,16 @@ final class Swipe: ObservableObject, AbstractGame {
         ),
         settings: GameSettings = SwipeSettings()
     ) {
+        let stats = GameStats()
+        
         self.validation = validation
         self.settings = settings
         self.cache = cacheGetter
         self.scoring = scoring
         self.theme = theme
         
-        self.state = GameState()
-        self.stats = GameStats(game: self)
-        
-        cache.$isLoadingCache
-            .sink { [weak self] isLoading in
-                self?.isLoadingCache = isLoading
-            }
-            .store(in: &cancellables)
-                    
-        cache.$cache
-            .sink { words in
-                Logger.debug("[Swipe]: Cache updated", metadata: [
-                    "count": String(words.count)
-                ])
-            }
-            .store(in: &cancellables)
+        self.state = GameState(stats: stats)
+        self.stats = stats
     }
     
     @ViewBuilder
@@ -85,25 +81,7 @@ final class Swipe: ObservableObject, AbstractGame {
         )
     }
     
-    func start() {
-        if !cacheInitialized {
-            self.cache.initialize()
-            cacheInitialized = true
-        }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
-            guard let self = self else { return }
-            
-            if !self.isReadyToPlay && !self.isLoadingCache {
-                self.state.showNoWords = true
-            } else {
-                self.state.initialize(for: self.state.currentMode ?? .practice)
-            }
-        }
-    }
-    
     func end() {
-        state.end(reason: .userQuit)
         cache.clear()
     }
     
@@ -119,6 +97,9 @@ final class Swipe: ObservableObject, AbstractGame {
     }
     
     internal func updateStats(correct: Bool, responseTime: TimeInterval, specialBonus: GameSpecialBonus?) {
+        if !correct && state.currentMode == .survival {
+            state.survivalState?.decreaseLife()
+        }
         stats.updateGameStats(
             correct: correct,
             responseTime: responseTime,

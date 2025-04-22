@@ -26,6 +26,10 @@ final class WordGetter: ProcessDatabase {
     private let itemsPerPage = 50
     private var currentPage = 0
     
+    var sortOption: WordSortOption = .default {
+        didSet { resetPagination() }
+    }
+    
     // MARK: - Initialization
     init() {
         guard let dbQueue = AppDatabase.shared.databaseQueue else {
@@ -85,6 +89,7 @@ final class WordGetter: ProcessDatabase {
         loadingTask = performDatabaseOperation({
             try self.wordRepository.fetch(
                 search: self.searchText,
+                sortOption: self.sortOption,
                 offset: fetchOffset,
                 limit: self.itemsPerPage
             )

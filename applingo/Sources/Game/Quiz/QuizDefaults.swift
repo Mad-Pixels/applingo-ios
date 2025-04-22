@@ -1,3 +1,5 @@
+import Foundation
+
 /// The threshold for a quick response in the quiz (as a fraction).
 internal let QUIZ_SCORE_THRESHOLD = 1.6
 
@@ -18,3 +20,9 @@ internal let QUIZ_CACHE_SIZE = 25
 
 /// The minimum active words for invoke the game.
 internal let QUIZ_MIN_WORDS_IN_CACHE = 8
+
+/// The correct feedback duration.
+internal let QUIZ_CORRECT_FEEDBACK_DURATION: TimeInterval = 0.01
+
+/// The incorrect feedback duration.
+internal let QUIZ_INCORRECT_FEEDBACK_DURATION: TimeInterval = 0.8

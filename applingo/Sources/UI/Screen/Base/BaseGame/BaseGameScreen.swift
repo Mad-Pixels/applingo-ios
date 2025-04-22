@@ -52,16 +52,11 @@ struct BaseGameScreen<Content: View>: View {
                     .zIndex(5)
             }
         }
-        .onReceive(gameState.$isGameOver) { isGameOver in
-            if isGameOver, gameState.endReason == .userQuit {
-                dismiss()
+        .onDisappear() {
+            if !gameState.isGameOver {
+                gameState.end(reason: .userQuit)
+                game.end()
             }
-        }
-        .onAppear {
-            game.start()
-        }
-        .onDisappear {
-            game.end()
         }
         .withScreenTracker(screen)
         .withErrorTracker(screen)

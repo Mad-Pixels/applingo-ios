@@ -1,15 +1,12 @@
 import Foundation
+import CloudKit
 
-/// Singleton to manage persistent and temporary application storage.
 final class AppStorage {
-    // MARK: - Singleton Instance
     static let shared = AppStorage()
     
-    // MARK: - Properties
     private let permanent: AbstractStorage
     private let temporary: AbstractStorage
     
-    // MARK: - Initialization
     /// Private initializer for singleton pattern.
     /// - Parameters:
     ///   - permanent: Persistent storage (default: `UserDefaultsStorage`).
@@ -22,7 +19,8 @@ final class AppStorage {
         self.temporary = temporary
     }
     
-    // MARK: - App Locale
+    // MARK: - System Params (Permanent Storage)
+    
     /// The application's current locale.
     var appLocale: LocaleType {
         get {
@@ -43,62 +41,81 @@ final class AppStorage {
         }
     }
     
-    // MARK: - App Theme
     /// The application's current theme.
     var appTheme: ThemeType {
         get { ThemeType.fromString(permanent.getValue(for: "theme")) }
         set { permanent.setValue(newValue.asString, for: "theme") }
     }
     
-    // MARK: - App ID
     /// A unique identifier for the application instance.
     var appId: String {
-        get {
-            let id = permanent.getValue(for: "id")
-            if id.isEmpty {
-                let newId = UUID().uuidString
-                permanent.setValue(newId, for: "id")
-                return newId
-            }
-            return id
+        let savedId = permanent.getValue(for: "id")
+        if !savedId.isEmpty {
+            return savedId
         }
+
+        var result: String?
+        let semaphore = DispatchSemaphore(value: 0)
+
+        CKContainer.default().fetchUserRecordID { recordID, error in
+            if let recordID = recordID {
+                result = recordID.recordName
+            }
+            semaphore.signal()
+        }
+
+        _ = semaphore.wait(timeout: .now() + 2)
+
+        if let cloudID = result {
+            permanent.setValue(cloudID, for: "id")
+            return cloudID
+        }
+
+        let fallbackId = UUID().uuidString
+        permanent.setValue(fallbackId, for: "id")
+        return fallbackId
     }
     
-    // MARK: - Log Sending
     /// Whether the application is configured to send logs.
     var noLogs: Bool {
-        get { temporary.getValue(for: "no_voice") == "false" }
+        get { temporary.getValue(for: "no_logs") == "false" }
         set { temporary.setValue(String(newValue), for: "no_logs")}
     }
     
-    // MARK: - Active Screen
+    // MARK: - App Session Params (Temporary Storage)
+    
+    /// Checks if a specific screen is currently active.
+    /// - Parameter screen: The screen to check.
+    /// - Returns: `true` if the screen is active, `false` otherwise.
+    func isScreenActive(_ screen: ScreenType) -> Bool {
+        return activeScreen == screen
+    }
+    
     /// The currently active screen in the application.
     var activeScreen: ScreenType {
         get { ScreenType(rawValue: temporary.getValue(for: "screen")) ?? .GameMode }
         set { temporary.setValue(newValue.rawValue, for: "screen") }
     }
     
-    ///
-    // MARK: - Game Lives (Survival Mode)
+    /// The currently active Game Lives count (Survival Mode)
     var gameLives: Int {
         get {
-            Int(temporary.getValue(for: "lives")) ?? DEFAULT_SURVIVAL_LIVES_MIN
+            Int(temporary.getValue(for: "lives")) ?? DEFAULT_SURVIVAL_LIVES
         }
         set {
             temporary.setValue(String(newValue), for: "lives")
         }
     }
 
-    // MARK: - Game Duration (Time Mode)
-    var gameDuration: TimeInterval {
+    /// The currently active Game Duration (Time Mode)
+    var gameDuration: Int {
         get {
-            Double(temporary.getValue(for: "game_duration")) ?? DEFAULT_TIME_DURATION_MIN
+            Int(temporary.getValue(for: "game_duration")) ?? DEFAULT_TIME_DURATION
         }
         set {
             temporary.setValue(String(newValue), for: "game_duration")
         }
     }
-
 
     /// Whether the app should avoid using voice features (e.g., TTS).
     var noVoice: Bool {
@@ -108,9 +125,23 @@ final class AppStorage {
     
     /// Whether the app should avoid using voice features (e.g., TTS).
     var noRecord: Bool {
-        get { temporary.getValue(for: "no_voice") == "true" }
-        set { temporary.setValue(String(newValue), for: "no_voice")}
+        get { temporary.getValue(for: "no_record") == "true" }
+        set { temporary.setValue(String(newValue), for: "no_record")}
     }
+    
+    /// Serialized task storage JSON blob (used by TaskStorage).
+    var tasks: String {
+        get { temporary.getValue(for: "tasks") }
+        set { temporary.setValue(newValue, for: "tasks") }
+    }
+    
+    /// Serialized task storage JSON blob (used by ProfileStorage).
+    var profile: String {
+        get { permanent.getValue(for: "profile") }
+        set { permanent.setValue(newValue, for: "profile") }
+    }
+    
+    // MARK: - Permission Params (Temporary Storage)
     
     /// Whether the application is allowed to use ASR (speech recognition).
     var useASR: Bool {
@@ -124,10 +155,9 @@ final class AppStorage {
         set { temporary.setValue(String(newValue), for: "use_microphone") }
     }
     
-    /// Checks if a specific screen is currently active.
-    /// - Parameter screen: The screen to check.
-    /// - Returns: `true` if the screen is active, `false` otherwise.
-    func isScreenActive(_ screen: ScreenType) -> Bool {
-        return activeScreen == screen
+    /// Whether the application has a remote profile.
+    var remoteProfile: Bool {
+        get { permanent.getValue(for: "remote_profile") == "true" }
+        set { permanent.setValue(String(newValue), for: "remote_profile")}
     }
 }

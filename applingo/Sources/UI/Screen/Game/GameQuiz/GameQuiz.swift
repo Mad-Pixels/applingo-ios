@@ -61,7 +61,7 @@ struct GameQuiz: View {
                             if card.voice && card.flip {
                                 HStack {
                                     ButtonFloatingSingle(
-                                        icon: "arrow.trianglehead.turn.up.right.circle.fill",
+                                        icon: "arrow.right.circle.fill",
                                         action: {
                                             viewModel.skipCard()
                                         },

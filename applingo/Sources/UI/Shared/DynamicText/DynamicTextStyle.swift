@@ -149,12 +149,14 @@ extension DynamicTextStyle {
     static func textGameBold(
         _ theme: AppTheme,
         alignment: TextAlignment = .leading,
-        lineLimit: Int = 1
+        lineLimit: Int = 1,
+        fontColor: Color? = nil
     ) -> DynamicTextStyle {
         let shouldWrapWords = lineLimit > 1
+        let color = fontColor ?? theme.textPrimary
         
         return DynamicTextStyle(
-            textColor: theme.textPrimary,
+            textColor: color,
             alignment: alignment,
             letterSpacing: 0.2,
             allowsTightening: true,
@@ -184,6 +186,30 @@ extension DynamicTextStyle {
             allowsTightening: true,
             maxFontSize: 26,
             minFontSize: 20,
+            lineBreakMode: shouldWrapWords ? .byWordWrapping : .byTruncatingTail,
+            wordWrapping: shouldWrapWords,
+            lineLimit: lineLimit,
+            fontWeight: .bold,
+            fontDesign: .rounded
+        )
+    }
+    
+    static func headerHuge(
+        _ theme: AppTheme,
+        alignment: TextAlignment = .leading,
+        lineLimit: Int = 1,
+        fontColor: Color? = nil
+    ) -> DynamicTextStyle {
+        let shouldWrapWords = lineLimit > 1
+        let color = fontColor ?? theme.textPrimary
+        
+        return DynamicTextStyle(
+            textColor: color,
+            alignment: alignment,
+            letterSpacing: 0.4,
+            allowsTightening: true,
+            maxFontSize: 42,
+            minFontSize: 36,
             lineBreakMode: shouldWrapWords ? .byWordWrapping : .byTruncatingTail,
             wordWrapping: shouldWrapWords,
             lineLimit: lineLimit,

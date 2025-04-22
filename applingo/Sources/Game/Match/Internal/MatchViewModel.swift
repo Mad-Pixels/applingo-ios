@@ -68,7 +68,8 @@ final class MatchViewModel: ObservableObject {
                 }
             }
             
-            shouldShowEmptyView = true
+            game.state.showNoWords = true
+            //shouldShowEmptyView = true
             self.isLoadingCards = false
         }
     }
@@ -108,7 +109,7 @@ final class MatchViewModel: ObservableObject {
             gameBoard.remove(leftPosition: selectedLeft, rightPosition: selectedRight)
             game.removeItem(questionCard.word)
             
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + MATCH_CORRECT_FEEDBACK_DURATION) {
                 self.isLoadingCards = true
                 self.generateCards()
             }

@@ -86,7 +86,8 @@ internal final class QuizViewModel: ObservableObject {
                 }
             }
             
-            shouldShowEmptyView = true
+            //shouldShowEmptyView = true
+            game.state.showNoWords = true
             self.isProcessingAnswer = false
             self.isLoadingCard = false
         }
@@ -107,12 +108,12 @@ internal final class QuizViewModel: ObservableObject {
         )
         
         if result == .incorrect {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + QUIZ_INCORRECT_FEEDBACK_DURATION) {
                 self.isLoadingCard = true
                 self.generateCard()
             }
         } else {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + QUIZ_CORRECT_FEEDBACK_DURATION) {
                 self.isLoadingCard = true
                 self.generateCard()
             }

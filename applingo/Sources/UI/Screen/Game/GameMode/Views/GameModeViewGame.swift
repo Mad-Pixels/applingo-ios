@@ -31,7 +31,9 @@ struct GameModeViewGame<GameType: AbstractGame>: View {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         ButtonNav(
                             isPressed: $isPressedTrailing,
-                            onTap: { isPresented = false },
+                            onTap: {
+                                isPresented = false
+                            },
                             style: .close(ThemeManager.shared.currentThemeStyle)
                         )
                     }
@@ -40,4 +42,3 @@ struct GameModeViewGame<GameType: AbstractGame>: View {
         .ignoresSafeArea()
     }
 }
-
