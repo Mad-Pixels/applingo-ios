@@ -1,6 +1,6 @@
 import Foundation
 
-struct CreateRemoteProfile: AbstractTask, Codable, Equatable {
+struct ProfileCreate: AbstractTask, Codable, Equatable {
     var id: String
     var appId: String
     var retryCount: Int = 0
@@ -39,7 +39,7 @@ struct CreateRemoteProfile: AbstractTask, Codable, Equatable {
         }
     }
     
-    static func == (lhs: CreateRemoteProfile, rhs: CreateRemoteProfile) -> Bool {
+    static func == (lhs: ProfileCreate, rhs: ProfileCreate) -> Bool {
         lhs.id == rhs.id &&
         lhs.appId == rhs.appId &&
         lhs.retryCount == rhs.retryCount &&

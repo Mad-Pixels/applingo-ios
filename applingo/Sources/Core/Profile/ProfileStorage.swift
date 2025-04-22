@@ -19,6 +19,14 @@ final internal class ProfileStorage {
         }
         return profile
     }
+    
+    func set(level: Int64, xp: Int64) {
+        var profile = get()
+
+        profile.xpCurrent = xp
+        profile.level = level
+        save(profile)
+    }
 
     func addXp(_ amount: Int64) {
         var profile = get()

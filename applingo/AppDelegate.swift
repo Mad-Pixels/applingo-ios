@@ -22,7 +22,8 @@ struct LingocardApp: App {
         _ = TTS.shared
         _ = ASR.shared
         
-        AnyEncodableTask.register(CreateRemoteProfile.self)
+        AnyEncodableTask.register(ProfileCreate.self)
+        AnyEncodableTask.register(ProfileSync.self)
     }
 
     var body: some Scene {
@@ -33,24 +34,9 @@ struct LingocardApp: App {
                 .environmentObject(AppDatabase.shared)
                 .task {
                     await ASR.shared.requestAccessIfNeeded()
-                    await enqueueProfileCreationIfNeeded()
+                    await enqueueProfileCreate()
+                    await enqueueProfileSync()
                 }
-        }
-    }
-
-    /// Enqueues profile creation task if it hasn't been created yet.
-    private func enqueueProfileCreationIfNeeded() async {
-        if !AppStorage.shared.remoteProfile {
-            Logger.debug("[RemoteProfile] Enqueueing task")
-
-            TaskQueue.shared.enqueue(
-                CreateRemoteProfile(
-                    id: UUID().uuidString,
-                    appId: AppStorage.shared.appId
-                )
-            )
-        } else {
-            Logger.debug("[RemoteProfile] Already exists")
         }
     }
 }

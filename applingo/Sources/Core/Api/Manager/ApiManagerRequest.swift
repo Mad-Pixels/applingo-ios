@@ -222,26 +222,25 @@ final class ApiManagerRequest {
             "[API]: Updating profile...",
             metadata: [
                 "id": id,
-                "level": String(level),
-                "xp": String(xp)
+                "level": level,
+                "xp": xp
             ]
         )
             
         let request = ApiModelProfilePatchRequest(id: id, level: level, xp: xp)
         let bodyData = try JSONEncoder().encode(request)
-            
+
         let data = try await AppAPI.shared.request(
             endpoint: Endpoints.profile,
             method: .patch,
             body: bodyData
         )
-            
+
         Logger.debug(
             "[API]: Profile updated successfully",
             metadata: [
                 "id": id,
-                "level": String(level),
-                "xp": String(xp)
+                "dataSize": String(data.count)
             ]
         )
 

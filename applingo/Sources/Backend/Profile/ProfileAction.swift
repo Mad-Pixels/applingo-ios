@@ -4,12 +4,8 @@ import Combine
 /// A class responsible for managing profile-related API operations.
 /// Handles creation and updating of user profiles.
 final class ProfileAction: ProcessApi {
-    // MARK: - Properties
-    
     @Published private(set) var isProcessing = false
-    
-    // MARK: - Private Properties
-    
+        
     private let repository: ApiManagerRequest
     
     // MARK: - Initialization
@@ -55,16 +51,17 @@ final class ProfileAction: ProcessApi {
             ],
             completion: { [weak self] result in
                 guard let self = self else { return }
-                
-                if case .failure(let error) = result {
-                    Logger.error(
-                        "[Profile]: Profile creation failed",
-                        metadata: ["error": error.localizedDescription]
-                    )
-                }
-                
+
                 self.isProcessing = false
-                completion(result)
+                if case .failure(let error) = result,
+                   let apiError = error as? APIError,
+                   case .httpError(let statusCode) = apiError,
+                   statusCode == 409 {
+                    Logger.warning("[Profile]: Profile already exists (409), skipping")
+                    completion(.success(()))
+                } else {
+                    completion(result)
+                }
             }
         )
     }
@@ -95,15 +92,31 @@ final class ProfileAction: ProcessApi {
         
         performApiOperation(
             { try await self.repository.updateProfile(id: id, level: level, xp: xp) },
-            success: { _ in
-                Logger.info(
-                    "[Profile]: Profile updated successfully",
-                    metadata: [
-                        "id": id,
-                        "level": String(level),
-                        "xp": String(xp)
-                    ]
-                )
+            success: { data in
+                // Парсим ответ от сервера
+                do {
+                    let response = try JSONDecoder().decode(ApiModelProfilePatchResponse.self, from: data)
+                    
+                    Logger.info(
+                        "[Profile]: Profile updated successfully",
+                        metadata: [
+                            "id": id,
+                            "serverLevel": String(response.data.level),
+                            "serverXp": String(response.data.xp)
+                        ]
+                    )
+                    
+                    // Сохраняем полученные данные в локальное хранилище
+                    ProfileStorage.shared.set(level: response.data.level, xp: response.data.xp)
+                } catch {
+                    Logger.warning(
+                        "[Profile]: Could not parse profile response",
+                        metadata: [
+                            "error": error.localizedDescription,
+                            "dataSize": String(data.count)
+                        ]
+                    )
+                }
             },
             screen: .Home,
             metadata: [
