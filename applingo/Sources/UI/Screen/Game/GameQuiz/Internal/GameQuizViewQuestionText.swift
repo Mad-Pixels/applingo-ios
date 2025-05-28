@@ -15,7 +15,8 @@ internal struct GameQuizViewQuestionText: View {
                 model: DynamicTextModel(text: question),
                 style: .headerGame(
                     ThemeManager.shared.currentThemeStyle,
-                    alignment: .center
+                    alignment: .center,
+                    lineLimit: 5
                 )
             )
             .frame(

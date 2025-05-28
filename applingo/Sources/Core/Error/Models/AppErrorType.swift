@@ -14,8 +14,8 @@ enum AppErrorType {
     var isUserFacing: Bool {
         switch self {
         case .validation, .ui: return true
-        case .network(let statusCode):
-            return (400...499).contains(statusCode)
+        case .network(let statusCode): return false
+            //return (400...499).contains(statusCode)
         case .database: return true
         case .parser: return true
         case .business: return true

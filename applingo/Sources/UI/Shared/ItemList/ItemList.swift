@@ -50,12 +50,34 @@ struct ItemList<Item: Identifiable & Equatable, RowContent: View>: View {
         self.error = error
     }
     
+    @ViewBuilder
     var body: some View {
-        ZStack {
-            listView
-            if isLoadingPage && items.isEmpty {
-                ItemListLoading(style: style)
-            }
+        if #available(iOS 18, *) {
+            ItemListView(
+                items: $items,
+                rowContent: rowContent,
+                onItemAppear: onItemAppear,
+                onDelete: onDelete,
+                onItemTap: onItemTap,
+                canDelete: canDelete,
+                emptyListView: emptyListView,
+                style: style,
+                isLoadingPage: isLoadingPage,
+                error: error
+            )
+        } else {
+            ItemScrollView(
+                items: $items,
+                rowContent: rowContent,
+                onItemAppear: onItemAppear,
+                onDelete: onDelete,
+                onItemTap: onItemTap,
+                canDelete: canDelete,
+                emptyListView: emptyListView,
+                style: style,
+                isLoadingPage: isLoadingPage,
+                error: error
+            )
         }
     }
     

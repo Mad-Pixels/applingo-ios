@@ -1,9 +1,6 @@
 import GRDB
 
-/// A manager for handling CRUD operations and advanced queries related to words in the database.
 final class DatabaseManagerWord {
-    // MARK: - SQL Constants
-
     private enum SQL {
         /// Query to fetch active dictionaries.
         static let fetchActive = """
@@ -54,12 +51,8 @@ final class DatabaseManagerWord {
         """
     }
 
-    // MARK: - Properties
-
     /// The GRDB database queue used for executing SQL queries.
     private let dbQueue: DatabaseQueue
-
-    // MARK: - Initialization
 
     /// Initializes the word database manager with the specified database queue.
     ///
@@ -67,8 +60,6 @@ final class DatabaseManagerWord {
     init(dbQueue: DatabaseQueue) {
         self.dbQueue = dbQueue
     }
-
-    // MARK: - Public Methods
 
     /// Fetches words from the database with optional search filtering and pagination.
     ///
@@ -80,6 +71,7 @@ final class DatabaseManagerWord {
     /// - Throws: An error if the query fails.
     func fetch(
         search: String?,
+        sortOption: WordSortOption = .default,
         offset: Int,
         limit: Int
     ) throws -> [DatabaseModelWord] {
@@ -92,6 +84,7 @@ final class DatabaseManagerWord {
         return try dbQueue.read { db in
             let (sql, arguments) = try buildFetchQuery(
                 search: search?.lowercased(),
+                sortOption: sortOption,
                 activeDictionaries: activeDictionaries,
                 limit: limit,
                 offset: offset
@@ -112,7 +105,7 @@ final class DatabaseManagerWord {
             }
         }
     }
-    
+
     /// Retrieves a set of words from the database, excluding any words that match specified IDs or front texts.
     ///
     /// The function builds a SQL query using the `SQL.cacheSelectTemplate`. It dynamically adds conditions
@@ -127,35 +120,33 @@ final class DatabaseManagerWord {
     /// - Throws: A `DatabaseError.invalidLimit` if `count` is less than or equal to zero, or any database error that occurs during query execution.
     func fetchCache(count: Int, excludeIds: [Int] = [], excludeFrontTexts: [String] = []) throws -> [DatabaseModelWord] {
         guard count > 0 else { throw DatabaseError.invalidLimit(limit: count) }
-        
+
         return try dbQueue.read { db in
             var conditions: [String] = []
             var arguments: [DatabaseValueConvertible] = []
-            
+
             if !excludeIds.isEmpty {
                 conditions.append("AND w.id NOT IN (\(excludeIds.map { _ in "?" }.joined(separator: ",")))")
                 arguments.append(contentsOf: excludeIds)
             }
-            
+
             if !excludeFrontTexts.isEmpty {
                 conditions.append("AND LOWER(w.frontText) NOT IN (\(excludeFrontTexts.map { _ in "?" }.joined(separator: ",")))")
                 arguments.append(contentsOf: excludeFrontTexts)
             }
-            
+
             let sql = String(format: SQL.cacheSelectTemplate, conditions.joined(separator: " "))
             arguments.append(count)
-            
+
             Logger.debug(
                 "[Word]: Fetching words",
-                metadata: [
-                    "sql": sql
-                ]
+                metadata: ["sql": sql]
             )
-            
+
             return try DatabaseModelWord.fetchAll(db, sql: sql, arguments: StatementArguments(arguments))
         }
     }
-    
+
     /// Saves a word into the database.
     ///
     /// - Parameter word: The `DatabaseModelWord` object to be saved.
@@ -164,7 +155,7 @@ final class DatabaseManagerWord {
         guard isValidWord(word) else {
             throw DatabaseError.invalidWord(details: "Invalid word data provided")
         }
-        
+
         try dbQueue.write { db in
             do {
                 try formatWord(word).insert(db)
@@ -178,7 +169,7 @@ final class DatabaseManagerWord {
                 throw DatabaseError.saveFailed(details: "Failed to save word: \(error.localizedDescription)")
             }
         }
-        
+
         Logger.debug(
             "[Word]: Save executed",
             metadata: [
@@ -188,7 +179,7 @@ final class DatabaseManagerWord {
             ]
         )
     }
-    
+
     /// Updates an existing word in the database.
     ///
     /// - Parameter word: The `DatabaseModelWord` object to be updated.
@@ -197,7 +188,7 @@ final class DatabaseManagerWord {
         guard isValidWord(word) else {
             throw DatabaseError.invalidWord(details: "Invalid word data provided")
         }
-        
+
         try dbQueue.write { db in
             do {
                 try formatWord(word).update(db)
@@ -211,7 +202,7 @@ final class DatabaseManagerWord {
                 throw DatabaseError.updateFailed(details: error.localizedDescription)
             }
         }
-        
+
         Logger.debug(
             "[Word]: Update executed",
             metadata: [
@@ -221,7 +212,7 @@ final class DatabaseManagerWord {
             ]
         )
     }
-    
+
     /// Deletes a word from the database.
     ///
     /// - Parameter word: The `DatabaseModelWord` object to be deleted.
@@ -230,7 +221,7 @@ final class DatabaseManagerWord {
         guard word.id != nil else {
             throw DatabaseError.invalidWord(details: "Word has no ID")
         }
-        
+
         try dbQueue.write { db in
             do {
                 try word.delete(db)
@@ -238,7 +229,7 @@ final class DatabaseManagerWord {
                 throw DatabaseError.deleteFailed(details: error.localizedDescription)
             }
         }
-        
+
         Logger.debug(
             "[Word]: Delete executed",
             metadata: [
@@ -248,7 +239,7 @@ final class DatabaseManagerWord {
             ]
         )
     }
-    
+
     /// Upserts a word into the database.
     ///
     /// This method attempts to insert the word into the database. If a word with the same
@@ -260,7 +251,7 @@ final class DatabaseManagerWord {
         guard isValidWord(word) else {
             throw DatabaseError.invalidWord(details: "Invalid word data provided")
         }
-        
+
         try dbQueue.write { db in
             do {
                 try formatWord(word).upsert(db)
@@ -274,7 +265,7 @@ final class DatabaseManagerWord {
                 throw DatabaseError.saveFailed(details: "Failed to upsert word: \(error.localizedDescription)")
             }
         }
-        
+
         Logger.debug(
             "[Word]: Upsert executed",
             metadata: [
@@ -284,9 +275,7 @@ final class DatabaseManagerWord {
             ]
         )
     }
-    
-    // MARK: - Private Methods
-    
+
     /// Fetches all active dictionaries from the database.
     ///
     /// - Returns: An array of active `DatabaseModelDictionary` objects.
@@ -300,7 +289,7 @@ final class DatabaseManagerWord {
             }
         }
     }
-    
+
     /// Formats a word for insertion or update.
     ///
     /// - Parameter word: The `DatabaseModelWord` object to format.
@@ -310,7 +299,7 @@ final class DatabaseManagerWord {
         formatted.fmt()
         return formatted
     }
-    
+
     /// Validates if a word is suitable for database operations.
     ///
     /// - Parameter word: The `DatabaseModelWord` object to validate.
@@ -320,12 +309,13 @@ final class DatabaseManagerWord {
         !word.backText.isEmpty &&
         !word.dictionary.isEmpty
     }
-    
+
     /// Builds a SQL fetch query with dynamic conditions based on the search term,
     /// active dictionaries, and pagination parameters.
     ///
     /// - Parameters:
     ///   - search: An optional search string.
+    ///   - sortOption: The selected sort option.
     ///   - activeDictionaries: An array of active `DatabaseModelDictionary` objects.
     ///   - limit: The maximum number of results to return.
     ///   - offset: The offset for pagination.
@@ -333,6 +323,7 @@ final class DatabaseManagerWord {
     /// - Throws: An error if the query construction fails.
     private func buildFetchQuery(
         search: String?,
+        sortOption: WordSortOption,
         activeDictionaries: [DatabaseModelDictionary],
         limit: Int,
         offset: Int
@@ -340,34 +331,79 @@ final class DatabaseManagerWord {
         var sql: String
         var arguments: [DatabaseValueConvertible] = []
         var conditions: [String] = []
-        
+
         let activeGuids = activeDictionaries.map { $0.guid } as [DatabaseValueConvertible]
         let placeholders = activeGuids.map { _ in "?" }.joined(separator: ", ")
         conditions.append("dictionary IN (\(placeholders))")
         arguments.append(contentsOf: activeGuids)
-        
+
         if let trimmedSearch = search?.trimmingCharacters(in: .whitespacesAndNewlines),
            !trimmedSearch.isEmpty {
-            let relevanceArgs = Array(repeating: trimmedSearch, count: 6)
-            arguments = relevanceArgs + arguments
             
-            conditions.append("(LOWER(frontText) LIKE ? OR LOWER(backText) LIKE ?)")
-            arguments.append("%\(trimmedSearch)%")
-            arguments.append("%\(trimmedSearch)%")
-            
-            sql = SQL.searchSelect
-            sql += " WHERE " + conditions.joined(separator: " AND ")
-            sql += " ORDER BY relevance ASC, id ASC"
+            if sortOption == .default {
+                let relevanceArgs = Array(repeating: trimmedSearch, count: 6)
+                arguments = relevanceArgs + arguments
+                
+                conditions.append("(LOWER(frontText) LIKE ? OR LOWER(backText) LIKE ?)")
+                arguments.append("%\(trimmedSearch)%")
+                arguments.append("%\(trimmedSearch)%")
+                
+                let innerQuery = """
+                    \(SQL.searchSelect)
+                    WHERE \(conditions.joined(separator: " AND "))
+                """
+                
+                sql = """
+                    WITH SearchResults AS (
+                        \(innerQuery)
+                    )
+                    SELECT * FROM SearchResults
+                    ORDER BY relevance ASC, \(sortClause(for: sortOption))
+                """
+            } else {
+                conditions.append("(LOWER(frontText) LIKE ? OR LOWER(backText) LIKE ?)")
+                arguments.append("%\(trimmedSearch)%")
+                arguments.append("%\(trimmedSearch)%")
+
+                sql = SQL.baseSelect
+                sql += " WHERE " + conditions.joined(separator: " AND ")
+                sql += " ORDER BY " + sortClause(for: sortOption)
+            }
         } else {
             sql = SQL.baseSelect
             sql += " WHERE " + conditions.joined(separator: " AND ")
-            sql += " ORDER BY id ASC"
+            sql += " ORDER BY " + sortClause(for: sortOption)
         }
-        
+
         sql += " LIMIT ? OFFSET ?"
         arguments.append(limit)
         arguments.append(offset)
-        
+
         return (sql, arguments)
+    }
+
+    /// Returns the SQL `ORDER BY` clause based on the selected sort option.
+    ///
+    /// - Parameter option: The `WordSortOption` that defines how the words should be sorted.
+    /// - Returns: A `String` containing the SQL fragment for sorting.
+    ///
+    /// This method maps each sort option to its corresponding SQL order clause.
+    /// For example, `.az` maps to sorting by `frontText` ascending, while `.weightMax` sorts by `weight` descending.
+    /// It's used in building dynamic queries for word retrieval.
+    private func sortClause(for option: WordSortOption) -> String {
+        switch option {
+        case .az:
+            return "frontText COLLATE NOCASE ASC"
+        case .za:
+            return "frontText COLLATE NOCASE DESC"
+        case .weightMin:
+            return "weight ASC"
+        case .weightMax:
+            return "weight DESC"
+        case .createdMax:
+            return "created DESC"
+        default:
+            return "id ASC"
+        }
     }
 }

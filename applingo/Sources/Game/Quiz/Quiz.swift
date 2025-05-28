@@ -41,7 +41,8 @@ final class Quiz: ObservableObject, AbstractGame {
                 .incorrect: [
                     IncorrectAnswerHapticFeedback(),
                     CompleteBackgroundVisualFeedback(
-                        theme: ThemeManager.shared.currentThemeStyle.quizTheme
+                        theme: ThemeManager.shared.currentThemeStyle.quizTheme,
+                        duration: QUIZ_INCORRECT_FEEDBACK_DURATION
                     )
                 ],
             ]
@@ -52,14 +53,17 @@ final class Quiz: ObservableObject, AbstractGame {
         ),
         settings: GameSettings = QuizSettings()
     ) {
+        
+        let stats = GameStats()
+        
         self.validation = validation
         self.settings = settings
         self.cache = cacheGetter
         self.scoring = scoring
         self.theme = theme
         
-        self.state = GameState()
-        self.stats = GameStats(game: self)
+        self.state = GameState(stats: stats)
+        self.stats = stats
     }
     
     @ViewBuilder
@@ -69,26 +73,8 @@ final class Quiz: ObservableObject, AbstractGame {
                 .environmentObject(cache)
         )
     }
-    
-    func start() {
-        if !cacheInitialized {
-            self.cache.initialize()
-            cacheInitialized = true
-        }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
-            guard let self = self else { return }
-            
-            if !self.isReadyToPlay && !self.isLoadingCache {
-                self.state.showNoWords = true
-            } else {
-                self.state.initialize(for: self.state.currentMode ?? .practice)
-            }
-        }
-    }
-    
+
     func end() {
-        state.end(reason: .userQuit)
         cache.clear()
     }
     
@@ -103,6 +89,9 @@ final class Quiz: ObservableObject, AbstractGame {
     }
     
     internal func updateStats(correct: Bool, responseTime: TimeInterval, specialBonus: GameSpecialBonus? = nil) {
+        if !correct && state.currentMode == .survival {
+            state.survivalState?.decreaseLife()
+        }
         stats.updateGameStats(
             correct: correct,
             responseTime: responseTime,

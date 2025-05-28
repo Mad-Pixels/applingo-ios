@@ -56,10 +56,6 @@ protocol AbstractGame: ObservableObject {
     /// Indicates whether the game is currently loading cache.
     var isLoadingCache: Bool { get }
     
-    /// Starts the game with the specified mode.
-    /// - Parameter mode: The selected game mode.
-    func start()
-    
     /// Ends the game.
     func end()
     
